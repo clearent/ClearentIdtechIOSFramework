@@ -11,18 +11,22 @@
 
 /** Protocol methods established for IDT_UniPayIII class  **/
 @protocol Clearent_Public_IDT_UniPayIII_Delegate <NSObject>
+/**
+ * This will notify you when a Clearent Transaction Token has been successfully created based on the card data read from the ID Tech device.
+ */
+-(void) successClearentTransactionToken:(ClearentTransactionToken*)clearentTransactionToken;
+
+/**
+ * This will notify you when a Clearent Transaction Token failed to be created.
+ */
+//TODO Should be a response object
+-(NSString*) errorClearentTransactionToken;
+
 @optional
 -(void) deviceConnected; //!<Fires when device connects.  If a connection is established before the delegate is established (no delegate to send initial connection notification to), this method will fire upon establishing the delegate.
 -(void) deviceDisconnected; //!<Fires when device disconnects.
 - (void) plugStatusChange:(BOOL)deviceInserted; //!<Monitors the headphone jack for device insertion/removal.
 //!< @param deviceInserted TRUE = device inserted, FALSE = device removed
-
-//TODO Talk about this one. Sounds like we should not allow them to access this method.
-- (void) dataInOutMonitor:(NSData*)data  incoming:(BOOL)isIncoming; //!<All incoming/outgoing data going to the device can be monitored through this delegate.
-//!< @param data The serial data represented as a NSData object
-//!< @param isIncoming The direction of the data
-//!<- <c>TRUE</c> specifies data being received from the device,
-//!<- <c>FALSE</c> indicates data being sent to the device.
 
 - (void) deviceMessage:(NSString*)message;//!<Receives messages from the framework
 //!< @param message String message transmitted by framework
@@ -41,16 +45,5 @@
  */
 
 - (void) lcdDisplay:(int)mode  lines:(NSArray*)lines;
-
-/**
- * This will notify you when a Clearent Transaction Token has been successfully created based on the card data read from the ID Tech device.
- */
--(void) successClearentTransactionToken:(ClearentTransactionToken*)clearentTransactionToken;
-
-/**
- * This will notify you when a Clearent Transaction Token failed to be created.
- */
-//TODO Should be a response object
--(NSString*) errorClearentTransactionToken;
 
 @end

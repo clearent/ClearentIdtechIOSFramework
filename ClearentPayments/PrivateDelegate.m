@@ -22,8 +22,7 @@
 }
 
 - (void) dataInOutMonitor:(NSData*)data  incoming:(BOOL)isIncoming{
-     NSLog(@"Call Public delegate dataInOutMonitor");
-    [self.publicDelegate dataInOutMonitor:(NSData*)data  incoming:(BOOL)isIncoming];
+     NSLog(@"We do not allow the integrator to use this method. But should we use it ?");
 }
 
 - (void) plugStatusChange:(BOOL)deviceInserted{
