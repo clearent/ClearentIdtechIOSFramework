@@ -15,6 +15,7 @@
 @interface PrivateDelegate : NSObject<IDT_UniPayIII_Delegate>
 @property(nonatomic) id<Clearent_Public_IDT_UniPayIII_Delegate> publicDelegate;
 - (void) init : (id <Clearent_Public_IDT_UniPayIII_Delegate>) publicDelegate;
+- (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequest:(IDTEMVData*)emvData;
 - (ClearentTransactionToken*) createTransactionToken:(ClearentTransactionTokenRequest*)clearentTransactionTokenRequest;
 @end
 

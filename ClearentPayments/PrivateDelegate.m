@@ -199,33 +199,39 @@
     if (emvData.unencryptedTags != nil) NSLog(@"Unencrypted tags %@!", [NSString stringWithFormat:@"Unencrypted Tags: %@", emvData.unencryptedTags.description]);
     if (emvData.encryptedTags != nil) NSLog(@"Encrypted tags %@!",[NSString stringWithFormat:@"Encrypted Tags: %@", emvData.encryptedTags.description]);
     if (emvData.maskedTags != nil) NSLog(@"Masked tags %@!",[NSString stringWithFormat:@"Masked Tags: %@", emvData.maskedTags.description]);
-    //TODO what's this do ? swipe ?
+    //TODO what's this do ? fallback swipe ?
     if (emvData.cardData != nil) [self swipeMSRData:emvData.cardData];
     
     //TODO figure out when we need to perform emv_completeOnlineEMVTransaction.
-    if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_GO_ONLINE) {
-        ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [[ClearentTransactionTokenRequest alloc] init];
-        clearentTransactionTokenRequest.cvm = @"cardpresent";
-        clearentTransactionTokenRequest.track2Data = @"track12345";
-        clearentTransactionTokenRequest.entryMode = @"entryMode4444";
     
+    //TODO Should we just send all emv tags to our service ?
+    if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_GO_ONLINE) {
+        ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequest:emvData];
         ClearentTransactionToken *clearentTransactionToken = [self createTransactionToken:clearentTransactionTokenRequest];
         //TODO handle errors but always run the idtech complete method
         RETURN_CODE rtComplete = [[IDT_UniPayIII sharedController] emv_completeOnlineEMVTransaction:true hostResponseTags:[IDTUtility hexToData:@"8A023030"]];
+        //TODO what do we do if the complete method returns an error ?
         [self.publicDelegate successfulClearentTransactionToken:clearentTransactionToken];
     }
+}
 
+- (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequest:(IDTEMVData*)emvData {
+    ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [[ClearentTransactionTokenRequest alloc] init];
+    if (emvData.unencryptedTags != nil) {
+        NSData* tlv = [IDTUtility DICTotTLV:emvData.unencryptedTags];
+        NSString* tlvString = [IDTUtility dataToString:tlv];
+        clearentTransactionTokenRequest.tlv = tlvString;
+    } else if (emvData.encryptedTags != nil) {
+        NSData* tlv = [IDTUtility DICTotTLV:emvData.encryptedTags];
+        NSString* tlvString = [IDTUtility dataToString:tlv];
+        clearentTransactionTokenRequest.tlv = tlvString;
+    } else {
+        NSLog(@"No emv tags");
+    }
+    return clearentTransactionTokenRequest;
 }
 
 - (ClearentTransactionToken*) createTransactionToken:(ClearentTransactionTokenRequest*)clearentTransactionTokenRequest {
-    
-//    We learned that most data is inside the emv tags (IDTEMVData).
-//    EMV Tags
-//    9F34 - cvm
-//    57 - track 2 data
-//    9F39 - entry mode
-
-    
     NSLog(@"%@",clearentTransactionTokenRequest.asJson);
     ClearentTransactionToken *clearentTransactionToken = [[ClearentTransactionToken alloc] init];
     clearentTransactionToken.jwt = @"This is a really useful JWT";
