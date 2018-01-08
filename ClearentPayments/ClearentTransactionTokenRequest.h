@@ -9,11 +9,8 @@
 #import <Foundation/Foundation.h>
 
 @interface ClearentTransactionTokenRequest : NSObject
-//@property (nonatomic) NSString *cvm;
-//@property (nonatomic) NSString *track2Data;
-//@property (nonatomic) NSString *entryMode;
-//@property (nonatomic) NSString *ksn;
 @property (nonatomic) NSString *tlv;
+@property (nonatomic) BOOL isEncrypted;
 - (NSString*) asJson;
 - (NSDictionary*) asDictionary;
 @end

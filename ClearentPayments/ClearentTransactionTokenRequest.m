@@ -11,8 +11,7 @@
 @implementation ClearentTransactionTokenRequest
 
 - (NSDictionary*) asDictionary {
-    //NSDictionary* dict = @{@"cvm":self.cvm, @"track2Data":self.track2Data, @"entryMode":self.entryMode, @"ksn":self.ksn};
-    NSDictionary* dict = @{@"tlv":self.tlv};
+    NSDictionary* dict = @{@"tlv":self.tlv,@"isEncrypted":(self.isEncrypted  ? @"true" : @"false")};
     return dict;
 }
 

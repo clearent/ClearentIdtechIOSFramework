@@ -16,6 +16,8 @@
 -(void) deviceDisconnected; //!<Fires when device disconnects.
 - (void) plugStatusChange:(BOOL)deviceInserted; //!<Monitors the headphone jack for device insertion/removal.
 //!< @param deviceInserted TRUE = device inserted, FALSE = device removed
+
+//TODO Talk about this one. Sounds like we should not allow them to access this method.
 - (void) dataInOutMonitor:(NSData*)data  incoming:(BOOL)isIncoming; //!<All incoming/outgoing data going to the device can be monitored through this delegate.
 //!< @param data The serial data represented as a NSData object
 //!< @param isIncoming The direction of the data
@@ -43,6 +45,12 @@
 /**
  * This will notify you when a Clearent Transaction Token has been successfully created based on the card data read from the ID Tech device.
  */
--(void) successfulClearentTransactionToken:(ClearentTransactionToken*)clearentTransactionToken;
+-(void) successClearentTransactionToken:(ClearentTransactionToken*)clearentTransactionToken;
+
+/**
+ * This will notify you when a Clearent Transaction Token failed to be created.
+ */
+//TODO Should be a response object
+-(NSString*) errorClearentTransactionToken;
 
 @end
