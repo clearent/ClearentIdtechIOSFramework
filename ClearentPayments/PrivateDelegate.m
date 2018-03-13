@@ -51,9 +51,10 @@
     NSLog(@"This needs to be implemented");
 }
 
+//TODO Some of this is sample code from the tutorial just so we see the data in the log. Clean up when we don't care about it anymore.
 - (void) emvTransactionData:(IDTEMVData*)emvData errorCode:(int)error{
     NSLog(@"emvTransactionData called in private delegate" );
-
+//TODO do we call our error delegate with any of these scenarios ? This method seems to get called multiple times even when waiting for an online response.
     if (emvData.resultCodeV2 != EMV_RESULT_CODE_V2_NO_RESPONSE) NSLog(@"mvData.resultCodeV2 %@!",[NSString stringWithFormat:@"EMV_RESULT_CODE_V2_response = %2X",emvData.resultCodeV2]);
     if (emvData == nil) {
         return;
@@ -65,7 +66,7 @@
     if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_APPROVED || emvData.resultCodeV2 == EMV_RESULT_CODE_V2_APPROVED_OFFLINE ) {
         NSLog(@"APPROVED");
     }
-    
+    //TODO do we need to pull data from any of these objects ? does maskedTags have anything the unencrypted and encrypted objects.
     if (emvData.unencryptedTags != nil) NSLog(@"Unencrypted tags %@!", [NSString stringWithFormat:@"Unencrypted Tags: %@", emvData.unencryptedTags.description]);
     if (emvData.encryptedTags != nil) NSLog(@"Encrypted tags %@!",[NSString stringWithFormat:@"Encrypted Tags: %@", emvData.encryptedTags.description]);
     if (emvData.maskedTags != nil) NSLog(@"Masked tags %@!",[NSString stringWithFormat:@"Masked Tags: %@", emvData.maskedTags.description]);
@@ -74,30 +75,21 @@
     
     if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_GO_ONLINE) {
         ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequest:emvData];
-        ClearentTransactionToken *clearentTransactionToken = [self createTransactionToken:clearentTransactionTokenRequest];
-        //TODO handle errors but always run the idtech complete method. Should this be performed outside of this block ?
-        RETURN_CODE rtComplete = [[IDT_UniPayIII sharedController] emv_completeOnlineEMVTransaction:true hostResponseTags:[IDTUtility hexToData:@"8A023030"]];
-        NSLog(@"%@",@"After emv_completeOnlineEMVTransaction was called");
-        NSLog(@"%d@",rtComplete);
-
-        [self.publicDelegate successClearentTransactionToken:clearentTransactionToken];
-        //TODO handle error, return response/error object.
-        //[self.publicDelegate errorClearentTransactionToken];
+        [self createTransactionToken:clearentTransactionTokenRequest];
     }
 }
 
-//TODO Used TD Tech utility to create the tlv stream, not sure if it's in the format we can consume.
 - (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequest:(IDTEMVData*)emvData {
     ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [[ClearentTransactionTokenRequest alloc] init];
     if (emvData.unencryptedTags != nil) {
-        //NSData* tlv = [IDTUtility DICTotTLV:emvData.unencryptedTags];
-        //NSString* tlvString = [IDTUtility dataToHexString:tlv];
-        clearentTransactionTokenRequest.tlv = emvData.unencryptedTags;
+        NSData *data = [IDTUtility DICTotTLV:emvData.unencryptedTags];
+        NSString *theData = [IDTUtility dataToHexString:data];
+        clearentTransactionTokenRequest.tlv = theData;
         clearentTransactionTokenRequest.encrypted = FALSE;
     } else if (emvData.encryptedTags != nil) {
-        NSData* tlv = [IDTUtility DICTotTLV:emvData.encryptedTags];
-        NSString* tlvString = [IDTUtility dataToString:tlv];
-        clearentTransactionTokenRequest.tlv = emvData.encryptedTags;
+        NSData *data = [IDTUtility DICTotTLV:emvData.encryptedTags];
+         NSString *theData = [IDTUtility dataToHexString:data];
+        clearentTransactionTokenRequest.tlv = theData;
         clearentTransactionTokenRequest.encrypted = TRUE;
     } else {
         NSLog(@"No emv tags. Could this happen?");
@@ -105,29 +97,41 @@
     return clearentTransactionTokenRequest;
 }
 
-- (ClearentTransactionToken*) createTransactionToken:(ClearentTransactionTokenRequest*)clearentTransactionTokenRequest {
+- (void) createTransactionToken:(ClearentTransactionTokenRequest*)clearentTransactionTokenRequest { 
     NSLog(@"%@Send data to clearent...",clearentTransactionTokenRequest.asJson);
-    ClearentTransactionToken *clearentTransactionToken = [[ClearentTransactionToken alloc] init];
-    NSString *targetUrl = [NSString stringWithFormat:@"%@/rest/v2/emv", @"http://dhigginbotham.clearent.lan:9000"];
+    NSString *targetUrl = [NSString stringWithFormat:@"%@/rest/v2/emvjwt", [self.publicDelegate getTransactionTokenUrl]];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     NSError *error;
     NSData *postData = [NSJSONSerialization dataWithJSONObject:clearentTransactionTokenRequest.asDictionary options:0 error:&error];
-    
+    //TODO check for error from serialization?
     [request setHTTPBody:postData];
     [request setHTTPMethod:@"POST"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request setValue:[self.publicDelegate getPublicKey] forHTTPHeaderField:@"public-key"];
     [request setURL:[NSURL URLWithString:targetUrl]];
-    //TODO this code is just for testing. We should provide an interface where the caller will be returned a response from an asynchrnouse request.
     [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:
       ^(NSData * _Nullable data,
         NSURLResponse * _Nullable response,
         NSError * _Nullable error) {
-          NSString *responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-          clearentTransactionToken.jwt = responseStr;
-          NSLog(@"Clearent JWT Return is  received: %@", responseStr);
+          if(data != nil) {
+              //TODO handle error in response
+              NSString *responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+              NSLog(@"Clearent Transaction Token response %@", responseStr);
+              ClearentTransactionToken *clearentTransactionToken = [[ClearentTransactionToken alloc] init];
+              //TODO handle the response object
+              clearentTransactionToken.jwt = responseStr;
+              [self.publicDelegate successOnline:clearentTransactionToken];
+        
+          } else if(error != nil) {
+          //handle error ? call errorClearentTransactionToken with a string ?
+              [self.publicDelegate errorOnline:@"Failed to create a Clearent Transaction Token"];
+          }
+          //Always run the idtech complete method whether an error is returned or not.
+          //TODO I'm not sure what the host response tags represent.
+          RETURN_CODE rtComplete = [[IDT_UniPayIII sharedController] emv_completeOnlineEMVTransaction:true hostResponseTags:[IDTUtility hexToData:@"8A023030"]];
+          NSLog(@"%@",@"After emv_completeOnlineEMVTransaction was called");
+          NSLog(@"%d@",rtComplete);
       }] resume];
-    return clearentTransactionToken;
 }
-
 @end

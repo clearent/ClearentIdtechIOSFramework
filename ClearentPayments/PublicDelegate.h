@@ -11,16 +11,19 @@
 
 /** Protocol methods established for IDT_UniPayIII class  **/
 @protocol Clearent_Public_IDT_UniPayIII_Delegate <NSObject>
+
+- (NSString*) getTransactionTokenUrl;
+- (NSString*) getPublicKey;
+
 /**
  * This will notify you when a Clearent Transaction Token has been successfully created based on the card data read from the ID Tech device.
  */
--(void) successClearentTransactionToken:(ClearentTransactionToken*)clearentTransactionToken;
+-(void) successOnline:(ClearentTransactionToken*)clearentTransactionToken;
 
 /**
  * This will notify you when a Clearent Transaction Token failed to be created.
  */
-//TODO Should be a response object
--(NSString*) errorClearentTransactionToken;
+-(void) errorOnline:(NSString*)message;
 
 @optional
 -(void) deviceConnected; //!<Fires when device connects.  If a connection is established before the delegate is established (no delegate to send initial connection notification to), this method will fire upon establishing the delegate.

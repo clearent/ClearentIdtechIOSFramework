@@ -10,7 +10,7 @@
 
 @interface ClearentTransactionTokenRequest : NSObject
 @property (nonatomic) NSString *tlv;
-@property (nonatomic) BOOL isEncrypted;
+@property (nonatomic) BOOL encrypted;
 - (NSString*) asJson;
 - (NSDictionary*) asDictionary;
 @end
