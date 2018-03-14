@@ -97,14 +97,12 @@
     return clearentTransactionTokenRequest;
 }
 
-- (void) createTransactionToken:(ClearentTransactionTokenRequest*)clearentTransactionTokenRequest { 
-    NSLog(@"%@Send data to clearent...",clearentTransactionTokenRequest.asJson);
-    NSString *targetUrl = [NSString stringWithFormat:@"%@/rest/v2/emvjwt", [self.publicDelegate getTransactionTokenUrl]];
+- (void) createTransactionToken:(ClearentTransactionTokenRequest*)clearentTransactionTokenRequest {
+    NSString *targetUrl = [NSString stringWithFormat:@"%@", [self.publicDelegate getTransactionTokenUrl]];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     NSError *error;
     NSData *postData = [NSJSONSerialization dataWithJSONObject:clearentTransactionTokenRequest.asDictionary options:0 error:&error];
     if (error) {
-        NSLog(@"Failed to serialize the clearent transaction token request as json: %@", [error description]);
         [self.publicDelegate errorOnline:@"Failed to serialize the clearent transaction token request"];
     }
     [request setHTTPBody:postData];
@@ -118,14 +116,10 @@
         NSURLResponse * _Nullable response,
         NSError * _Nullable error) {
           NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
-          NSLog(@"Clearent Transaction Response status code: %ld", (long)[httpResponse statusCode]);
           if(200 == [httpResponse statusCode]) {
-          //if(data != nil) {
               NSString *responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-              NSLog(@"Clearent Transaction Token response %@", responseStr);
               NSDictionary *responseDictionary = [self responseAsDictionary:responseStr];
               NSString *responseCode = [responseDictionary objectForKey:@"code"];
-              NSLog(@"Clearent Transaction Token code %@", responseCode);
               if([responseCode isEqualToString:@"200"]) {
                   [self.publicDelegate successOnline:responseStr];
               } else {
@@ -137,26 +131,18 @@
           //Always run the idtech complete method whether an error is returned or not.
           //TODO I'm not sure what the host response tags represent.
           RETURN_CODE rtComplete = [[IDT_UniPayIII sharedController] emv_completeOnlineEMVTransaction:true hostResponseTags:[IDTUtility hexToData:@"8A023030"]];
-          NSLog(@"%@",@"After emv_completeOnlineEMVTransaction was called");
-          NSLog(@"%d@",rtComplete);
       }] resume];
 }
 
-- (NSDictionary *)responseAsDictionary:(NSString *)stringJson
-{
+- (NSDictionary *)responseAsDictionary:(NSString *)stringJson {
     NSData *data = [stringJson dataUsingEncoding:NSUTF8StringEncoding];
-    
     NSError *error;
-    
     NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data
                                                                    options:0
-                                                                     error:&error];
-    
-    if (error)
-    {
+                                                                    error:&error];
+    if (error) {
         NSLog(@"Error in json: %@", [error description]);
     }
-    
     return jsonDictionary;
 }
 
