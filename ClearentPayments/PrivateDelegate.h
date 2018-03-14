@@ -17,5 +17,6 @@
 - (void) init : (id <Clearent_Public_IDT_UniPayIII_Delegate>) publicDelegate;
 - (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequest:(IDTEMVData*)emvData;
 - (void) createTransactionToken:(ClearentTransactionTokenRequest*)clearentTransactionTokenRequest;
+- (NSDictionary *)responseAsDictionary:(NSString *)stringJson;
 @end
 

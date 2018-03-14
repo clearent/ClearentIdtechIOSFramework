@@ -103,7 +103,10 @@
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     NSError *error;
     NSData *postData = [NSJSONSerialization dataWithJSONObject:clearentTransactionTokenRequest.asDictionary options:0 error:&error];
-    //TODO check for error from serialization?
+    if (error) {
+        NSLog(@"Failed to serialize the clearent transaction token request as json: %@", [error description]);
+        [self.publicDelegate errorOnline:@"Failed to serialize the clearent transaction token request"];
+    }
     [request setHTTPBody:postData];
     [request setHTTPMethod:@"POST"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
@@ -114,17 +117,21 @@
       ^(NSData * _Nullable data,
         NSURLResponse * _Nullable response,
         NSError * _Nullable error) {
-          if(data != nil) {
-              //TODO handle error in response
+          NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
+          NSLog(@"Clearent Transaction Response status code: %ld", (long)[httpResponse statusCode]);
+          if(200 == [httpResponse statusCode]) {
+          //if(data != nil) {
               NSString *responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
               NSLog(@"Clearent Transaction Token response %@", responseStr);
-              ClearentTransactionToken *clearentTransactionToken = [[ClearentTransactionToken alloc] init];
-              //TODO handle the response object
-              clearentTransactionToken.jwt = responseStr;
-              [self.publicDelegate successOnline:clearentTransactionToken];
-        
+              NSDictionary *responseDictionary = [self responseAsDictionary:responseStr];
+              NSString *responseCode = [responseDictionary objectForKey:@"code"];
+              NSLog(@"Clearent Transaction Token code %@", responseCode);
+              if([responseCode isEqualToString:@"200"]) {
+                  [self.publicDelegate successOnline:responseStr];
+              } else {
+                  [self.publicDelegate errorOnline:responseStr];
+              }
           } else if(error != nil) {
-          //handle error ? call errorClearentTransactionToken with a string ?
               [self.publicDelegate errorOnline:@"Failed to create a Clearent Transaction Token"];
           }
           //Always run the idtech complete method whether an error is returned or not.
@@ -134,4 +141,23 @@
           NSLog(@"%d@",rtComplete);
       }] resume];
 }
+
+- (NSDictionary *)responseAsDictionary:(NSString *)stringJson
+{
+    NSData *data = [stringJson dataUsingEncoding:NSUTF8StringEncoding];
+    
+    NSError *error;
+    
+    NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data
+                                                                   options:0
+                                                                     error:&error];
+    
+    if (error)
+    {
+        NSLog(@"Error in json: %@", [error description]);
+    }
+    
+    return jsonDictionary;
+}
+
 @end
