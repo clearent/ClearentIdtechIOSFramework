@@ -12,7 +12,14 @@
 /** Protocol methods established for IDT_UniPayIII class  **/
 @protocol Clearent_Public_IDT_UniPayIII_Delegate <NSObject>
 
+/**
+ * Provide the url Clearent gives you to create a transaction token (JWT) representing the transaction request.
+ */
 - (NSString*) getTransactionTokenUrl;
+
+/**
+ * Provide the public key Clearent gives you. This will be presented as a heaer when calling the transaction token url.
+ */
 - (NSString*) getPublicKey;
 
 /**
@@ -23,7 +30,7 @@
 /**
  * This will notify you when a Clearent Transaction Token failed to be created.
  */
--(void) errorOnline:(NSString*)jsonString;
+-(void) errorOnline:(NSString*)message;
 
 @optional
 -(void) deviceConnected; //!<Fires when device connects.  If a connection is established before the delegate is established (no delegate to send initial connection notification to), this method will fire upon establishing the delegate.

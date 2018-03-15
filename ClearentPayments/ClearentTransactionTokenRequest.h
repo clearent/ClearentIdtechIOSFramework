@@ -11,6 +11,8 @@
 @interface ClearentTransactionTokenRequest : NSObject
 @property (nonatomic) NSString *tlv;
 @property (nonatomic) BOOL encrypted;
+@property (nonatomic) NSString *firmwareVersion;
+@property (nonatomic) NSString *deviceSerialNumber;
 - (NSString*) asJson;
 - (NSDictionary*) asDictionary;
 @end

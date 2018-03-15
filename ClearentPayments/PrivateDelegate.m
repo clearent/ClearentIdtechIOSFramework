@@ -32,7 +32,29 @@
 
 -(void)deviceConnected{
     NSLog(@"Call Public delegate deviceConnected");
+    self.firmwareVersion= [self getFirmwareVersion];
+    self.serialNumber = [self getSerialNumber];
     [self.publicDelegate deviceConnected];
+}
+
+- (NSString *) getFirmwareVersion {
+    NSString *result;
+    RETURN_CODE rt = [[IDT_UniPayIII sharedController] device_getFirmwareVersion:&result];
+    if (RETURN_CODE_DO_SUCCESS == rt) {
+        return result;
+    } else{
+        return @"Firmware version not found";
+    }
+}
+
+- (NSString *) getSerialNumber {
+    NSString *result;
+    RETURN_CODE rt = [[IDT_UniPayIII sharedController] config_getSerialNumber:&result];
+    if (RETURN_CODE_DO_SUCCESS == rt) {
+        return result;
+    } else{
+        return @"Serial number not found";
+    }
 }
 
 -(void)deviceDisconnected{
@@ -52,9 +74,9 @@
 }
 
 //TODO Some of this is sample code from the tutorial just so we see the data in the log. Clean up when we don't care about it anymore.
+//TODO do we call our error delegate with any of these scenarios ? This method seems to get called multiple times even when waiting for an online response.
 - (void) emvTransactionData:(IDTEMVData*)emvData errorCode:(int)error{
     NSLog(@"emvTransactionData called in private delegate" );
-//TODO do we call our error delegate with any of these scenarios ? This method seems to get called multiple times even when waiting for an online response.
     if (emvData.resultCodeV2 != EMV_RESULT_CODE_V2_NO_RESPONSE) NSLog(@"mvData.resultCodeV2 %@!",[NSString stringWithFormat:@"EMV_RESULT_CODE_V2_response = %2X",emvData.resultCodeV2]);
     if (emvData == nil) {
         return;
@@ -66,10 +88,6 @@
     if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_APPROVED || emvData.resultCodeV2 == EMV_RESULT_CODE_V2_APPROVED_OFFLINE ) {
         NSLog(@"APPROVED");
     }
-    //TODO do we need to pull data from any of these objects ? does maskedTags have anything the unencrypted and encrypted objects.
-    if (emvData.unencryptedTags != nil) NSLog(@"Unencrypted tags %@!", [NSString stringWithFormat:@"Unencrypted Tags: %@", emvData.unencryptedTags.description]);
-    if (emvData.encryptedTags != nil) NSLog(@"Encrypted tags %@!",[NSString stringWithFormat:@"Encrypted Tags: %@", emvData.encryptedTags.description]);
-    if (emvData.maskedTags != nil) NSLog(@"Masked tags %@!",[NSString stringWithFormat:@"Masked Tags: %@", emvData.maskedTags.description]);
     //TODO what's this do ? fallback swipe ?
     if (emvData.cardData != nil) [self swipeMSRData:emvData.cardData];
     
@@ -82,14 +100,18 @@
 - (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequest:(IDTEMVData*)emvData {
     ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [[ClearentTransactionTokenRequest alloc] init];
     if (emvData.unencryptedTags != nil) {
-        NSData *data = [IDTUtility DICTotTLV:emvData.unencryptedTags];
-        NSString *theData = [IDTUtility dataToHexString:data];
-        clearentTransactionTokenRequest.tlv = theData;
+        NSData *unencryptedData = [IDTUtility DICTotTLV:emvData.unencryptedTags];
+        NSString *tlvInHex = [IDTUtility dataToHexString:unencryptedData];
+        clearentTransactionTokenRequest.tlv = tlvInHex;
+        clearentTransactionTokenRequest.firmwareVersion = [self firmwareVersion];
+        clearentTransactionTokenRequest.deviceSerialNumber = [self serialNumber];
         clearentTransactionTokenRequest.encrypted = FALSE;
     } else if (emvData.encryptedTags != nil) {
-        NSData *data = [IDTUtility DICTotTLV:emvData.encryptedTags];
-         NSString *theData = [IDTUtility dataToHexString:data];
-        clearentTransactionTokenRequest.tlv = theData;
+        NSData *encryptedData = [IDTUtility DICTotTLV:emvData.encryptedTags];
+        NSString *tlvInHex = [IDTUtility dataToHexString:encryptedData];
+        clearentTransactionTokenRequest.firmwareVersion = [self firmwareVersion];
+        clearentTransactionTokenRequest.deviceSerialNumber = [self serialNumber];
+        clearentTransactionTokenRequest.tlv = tlvInHex;
         clearentTransactionTokenRequest.encrypted = TRUE;
     } else {
         NSLog(@"No emv tags. Could this happen?");
@@ -104,7 +126,7 @@
     NSData *postData = [NSJSONSerialization dataWithJSONObject:clearentTransactionTokenRequest.asDictionary options:0 error:&error];
     if (error) {
         [self.publicDelegate errorOnline:@"Failed to serialize the clearent transaction token request"];
-    }
+    }    
     [request setHTTPBody:postData];
     [request setHTTPMethod:@"POST"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
@@ -125,11 +147,12 @@
               } else {
                   [self.publicDelegate errorOnline:responseStr];
               }
-          } else if(error != nil) {
-              [self.publicDelegate errorOnline:@"Failed to create a Clearent Transaction Token"];
+          } else {
+              NSString *errorMessage = @"Failed to create a Clearent Transaction Token";
+              [self.publicDelegate errorOnline:errorMessage];
           }
           //Always run the idtech complete method whether an error is returned or not.
-          //TODO I'm not sure what the host response tags represent.
+          //TODO on success we are suppose to provice host response tags, at a minimum the 8A tag. Not sure how to get this (we aren't doing an authorization or actually running the transaction.
           RETURN_CODE rtComplete = [[IDT_UniPayIII sharedController] emv_completeOnlineEMVTransaction:true hostResponseTags:[IDTUtility hexToData:@"8A023030"]];
       }] resume];
 }
