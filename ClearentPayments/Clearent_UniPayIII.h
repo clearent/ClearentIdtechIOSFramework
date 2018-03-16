@@ -681,7 +681,6 @@
  If tags 9F02 (amount),9F03 (other amount), or 9C (transaction type) are included, they will take priority over these values supplied as individual parameters to this method.
  Tag DFEE1A can be used to specify tags to be returned in response, in addition to the default tags. Example DFEE1A049F029F03 will return tags 9F02 and 9F03 with the response
  @param forceOnline TRUE = do not allow offline approval,  FALSE = allow ICC to approve offline if terminal capable
- @param autoAuthenticate Will automatically execute Authenticate Transacation after start transaction returns successful
  @param fallback Indicate if it supports fallback to MSR
  * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
  */
