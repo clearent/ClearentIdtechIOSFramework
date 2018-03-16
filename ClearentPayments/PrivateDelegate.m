@@ -119,7 +119,7 @@
     NSError *error;
     NSData *postData = [NSJSONSerialization dataWithJSONObject:clearentTransactionTokenRequest.asDictionary options:0 error:&error];
     if (error) {
-        [self.publicDelegate errorOnline:@"Failed to serialize the clearent transaction token request"];
+        [self.publicDelegate errorTransactionToken:@"Failed to serialize the clearent transaction token request"];
     }    
     [request setHTTPBody:postData];
     [request setHTTPMethod:@"POST"];
@@ -134,19 +134,19 @@
           NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
           NSString *responseStr = nil;
           if(error != nil) {
-              [self.publicDelegate errorOnline:error.description];
+              [self.publicDelegate errorTransactionToken:error.description];
           } else if(data != nil) {
               responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
               if(200 == [httpResponse statusCode]) {
                   NSDictionary *responseDictionary = [self responseAsDictionary:responseStr];
                   NSString *responseCode = [responseDictionary objectForKey:@"code"];
                   if([responseCode isEqualToString:@"200"]) {
-                      [self.publicDelegate successOnline:responseStr];
+                      [self.publicDelegate successfulTransactionToken:responseStr];
                   } else {
-                      [self.publicDelegate errorOnline:responseStr];
+                      [self.publicDelegate errorTransactionToken:responseStr];
                   }
               } else {
-                  [self.publicDelegate errorOnline:responseStr];
+                  [self.publicDelegate errorTransactionToken:responseStr];
               }
           }
           

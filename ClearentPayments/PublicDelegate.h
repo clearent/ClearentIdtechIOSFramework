@@ -29,12 +29,12 @@
  * When you want to perform the payment transaction use the 'jwt' from this response as a header called 'emvjwt'. See demo for an example (the payment transaction API is not supported in
  * this SDK).
  */
--(void) successOnline:(NSString*)jsonString;
+-(void) successfulTransactionToken:(NSString*)jsonString;
 
 /**
  * This will notify you when a Clearent Transaction Token failed to be created.
  */
--(void) errorOnline:(NSString*)message;
+-(void) errorTransactionToken:(NSString*)message;
 
 @optional
 -(void) deviceConnected; //!<Fires when device connects.  If a connection is established before the delegate is established (no delegate to send initial connection notification to), this method will fire upon establishing the delegate.
