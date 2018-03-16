@@ -13,17 +13,21 @@
 @protocol Clearent_Public_IDT_UniPayIII_Delegate <NSObject>
 
 /**
- * Provide the url Clearent gives you to create a transaction token (JWT) representing the transaction request.
+ * Provide the url Clearent gives you to create a transaction token (JWT) representing the transaction request. When you are developing, point this url to the Clearent Sandbox. When you go live
+ * switch it to the Clearent Live/Production url.
  */
 - (NSString*) getTransactionTokenUrl;
 
 /**
- * Provide the public key Clearent gives you. This will be presented as a heaer when calling the transaction token url.
+ * Provide the public key Clearent gives you. This will be presented as a header when calling the transaction token url. When you are developing, use the Clearent Sandbox public key.
+ * When you go live switch to your Clearent Live/Production public key.
  */
 - (NSString*) getPublicKey;
 
 /**
- * This will notify you when a Clearent Transaction Token has been successfully created based on the card data read from the ID Tech device.
+ * This will notify you when a Clearent Transaction Token has been successfully created based on the card data read from the ID Tech device. The json returned represents a Clearent Response.
+ * When you want to perform the payment transaction use the 'jwt' from this response as a header called 'emvjwt'. See demo for an example (the payment transaction API is not supported in
+ * this SDK).
  */
 -(void) successOnline:(NSString*)jsonString;
 

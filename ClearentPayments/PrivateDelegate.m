@@ -17,21 +17,18 @@
 }
 
 - (void) lcdDisplay:(int)mode  lines:(NSArray*)lines {
-    NSLog(@"Call Public delegate lcdDisplay");
     [self.publicDelegate lcdDisplay:(int)mode  lines:(NSArray*)lines];
 }
 
-- (void) dataInOutMonitor:(NSData*)data  incoming:(BOOL)isIncoming{
-     NSLog(@"We do not allow the integrator to use this method. But should we use it ?");
+- (void) dataInOutMonitor:(NSData*)data  incoming:(BOOL)isIncoming {
+     //NSLog(@"Clearent debugging only");
 }
 
-- (void) plugStatusChange:(BOOL)deviceInserted{
-    NSLog(@"Call Public delegate plugStatusChange");
+- (void) plugStatusChange:(BOOL)deviceInserted {
     [self.publicDelegate plugStatusChange:(BOOL)deviceInserted];
 }
 
--(void)deviceConnected{
-    NSLog(@"Call Public delegate deviceConnected");
+-(void)deviceConnected {
     self.firmwareVersion= [self getFirmwareVersion];
     self.serialNumber = [self getSerialNumber];
     [self.publicDelegate deviceConnected];
@@ -58,12 +55,10 @@
 }
 
 -(void)deviceDisconnected{
-    NSLog(@"Call Public delegate deviceDisconnected");
     [self.publicDelegate deviceDisconnected];
 }
 
 - (void) deviceMessage:(NSString*)message {
-    NSLog(@"Call Public delegate deviceMessage");
     [self.publicDelegate deviceMessage:(NSString*)message];
 }
 
@@ -76,7 +71,6 @@
 //TODO Some of this is sample code from the tutorial just so we see the data in the log. Clean up when we don't care about it anymore.
 //TODO do we call our error delegate with any of these scenarios ? This method seems to get called multiple times even when waiting for an online response.
 - (void) emvTransactionData:(IDTEMVData*)emvData errorCode:(int)error{
-    NSLog(@"emvTransactionData called in private delegate" );
     if (emvData.resultCodeV2 != EMV_RESULT_CODE_V2_NO_RESPONSE) NSLog(@"mvData.resultCodeV2 %@!",[NSString stringWithFormat:@"EMV_RESULT_CODE_V2_response = %2X",emvData.resultCodeV2]);
     if (emvData == nil) {
         return;
@@ -85,6 +79,7 @@
     if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_START_TRANS_SUCCESS) {
         NSLog(@"START SUCCESS: AUTHENTICATION REQUIRED");
     }
+    //TODO After we initially go online this method gets called with a APPROVED message. Do we need to do anything here ??
     if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_APPROVED || emvData.resultCodeV2 == EMV_RESULT_CODE_V2_APPROVED_OFFLINE ) {
         NSLog(@"APPROVED");
     }
@@ -98,24 +93,23 @@
 }
 
 - (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequest:(IDTEMVData*)emvData {
-    ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [[ClearentTransactionTokenRequest alloc] init];
     if (emvData.unencryptedTags != nil) {
-        NSData *unencryptedData = [IDTUtility DICTotTLV:emvData.unencryptedTags];
-        NSString *tlvInHex = [IDTUtility dataToHexString:unencryptedData];
-        clearentTransactionTokenRequest.tlv = tlvInHex;
-        clearentTransactionTokenRequest.firmwareVersion = [self firmwareVersion];
-        clearentTransactionTokenRequest.deviceSerialNumber = [self serialNumber];
-        clearentTransactionTokenRequest.encrypted = FALSE;
+        return [self createClearentTransactionTokenRequest:emvData.unencryptedTags isEncrypted: false];
     } else if (emvData.encryptedTags != nil) {
-        NSData *encryptedData = [IDTUtility DICTotTLV:emvData.encryptedTags];
-        NSString *tlvInHex = [IDTUtility dataToHexString:encryptedData];
-        clearentTransactionTokenRequest.firmwareVersion = [self firmwareVersion];
-        clearentTransactionTokenRequest.deviceSerialNumber = [self serialNumber];
-        clearentTransactionTokenRequest.tlv = tlvInHex;
-        clearentTransactionTokenRequest.encrypted = TRUE;
-    } else {
-        NSLog(@"No emv tags. Could this happen?");
+        return [self createClearentTransactionTokenRequest:emvData.encryptedTags isEncrypted: true];
     }
+    ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [[ClearentTransactionTokenRequest alloc] init];
+    return clearentTransactionTokenRequest;
+}
+
+- (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequest:(NSDictionary*) tags isEncrypted:(BOOL) isEncrypted {
+    ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [[ClearentTransactionTokenRequest alloc] init];
+    NSData *tagsAsNSData = [IDTUtility DICTotTLV:tags];
+    NSString *tlvInHex = [IDTUtility dataToHexString:tagsAsNSData];
+    clearentTransactionTokenRequest.tlv = tlvInHex;
+    clearentTransactionTokenRequest.firmwareVersion = [self firmwareVersion];
+    clearentTransactionTokenRequest.deviceSerialNumber = [self serialNumber];
+    clearentTransactionTokenRequest.encrypted = isEncrypted;
     return clearentTransactionTokenRequest;
 }
 
@@ -138,22 +132,28 @@
         NSURLResponse * _Nullable response,
         NSError * _Nullable error) {
           NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
-          if(200 == [httpResponse statusCode]) {
-              NSString *responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-              NSDictionary *responseDictionary = [self responseAsDictionary:responseStr];
-              NSString *responseCode = [responseDictionary objectForKey:@"code"];
-              if([responseCode isEqualToString:@"200"]) {
-                  [self.publicDelegate successOnline:responseStr];
+          NSString *responseStr = nil;
+          if(error != nil) {
+              [self.publicDelegate errorOnline:error.description];
+          } else if(data != nil) {
+              responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+              if(200 == [httpResponse statusCode]) {
+                  NSDictionary *responseDictionary = [self responseAsDictionary:responseStr];
+                  NSString *responseCode = [responseDictionary objectForKey:@"code"];
+                  if([responseCode isEqualToString:@"200"]) {
+                      [self.publicDelegate successOnline:responseStr];
+                  } else {
+                      [self.publicDelegate errorOnline:responseStr];
+                  }
               } else {
                   [self.publicDelegate errorOnline:responseStr];
               }
-          } else {
-              NSString *errorMessage = @"Failed to create a Clearent Transaction Token";
-              [self.publicDelegate errorOnline:errorMessage];
           }
+          
           //Always run the idtech complete method whether an error is returned or not.
-          //TODO on success we are suppose to provice host response tags, at a minimum the 8A tag. Not sure how to get this (we aren't doing an authorization or actually running the transaction.
+          //We aren't doing an authorization or actually running the transaction so providing the 8A tag is just an acknowledgement the IDTech process should continue down a successful path.
           RETURN_CODE rtComplete = [[IDT_UniPayIII sharedController] emv_completeOnlineEMVTransaction:true hostResponseTags:[IDTUtility hexToData:@"8A023030"]];
+          //TODO do we want to alert someone of this completion code ?
       }] resume];
 }
 
