@@ -9,7 +9,6 @@
 #import <Foundation/Foundation.h>
 #import "PublicDelegate.h"
 #import "IDTech/IDT_UniPayIII.h"
-#import "ClearentTransactionToken.h"
 #import "ClearentTransactionTokenRequest.h"
 
 @interface PrivateDelegate : NSObject<IDT_UniPayIII_Delegate>

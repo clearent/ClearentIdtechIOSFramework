@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ClearentTransactionToken.h"
 
 /** Protocol methods established for IDT_UniPayIII class  **/
 @protocol Clearent_Public_IDT_UniPayIII_Delegate <NSObject>
@@ -48,16 +47,13 @@
 /**
  LCD Display Request
  During an EMV transaction, this delegate will receive data to clear virtual LCD display, display messages, display menu, or display language.  Applies to UniPay III
- 
  @param mode LCD Display Mode:
  - 0x01: Menu Display.  A selection must be made to resume the transaction
  - 0x02: Normal Display get function key.  A function must be selected to resume the transaction
  - 0x03: Display without input.  Message is displayed without pausing the transaction
  - 0x04: List of languages are presented for selection. A selection must be made to resume the transaction
  - 0x10: Clear Screen. Command to clear the LCD screen
- 
  */
-
 - (void) lcdDisplay:(int)mode  lines:(NSArray*)lines;
 
 @end
