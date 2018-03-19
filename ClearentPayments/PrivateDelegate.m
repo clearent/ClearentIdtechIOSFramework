@@ -68,27 +68,29 @@
     NSLog(@"This needs to be implemented");
 }
 
-//TODO Some of this is sample code from the tutorial just so we see the data in the log. Clean up when we don't care about it anymore.
-//TODO do we call our error delegate with any of these scenarios ? This method seems to get called multiple times even when waiting for an online response.
 - (void) emvTransactionData:(IDTEMVData*)emvData errorCode:(int)error{
-    if (emvData.resultCodeV2 != EMV_RESULT_CODE_V2_NO_RESPONSE) NSLog(@"mvData.resultCodeV2 %@!",[NSString stringWithFormat:@"EMV_RESULT_CODE_V2_response = %2X",emvData.resultCodeV2]);
     if (emvData == nil) {
         return;
     }
-    NSLog(@"emvData.resultCodeV2 %@!",[NSString stringWithFormat:@"EMV Transaction Data Response: = %@",[[IDT_UniPayIII sharedController] device_getResponseCodeString:error]]);
-    if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_START_TRANS_SUCCESS) {
-        NSLog(@"START SUCCESS: AUTHENTICATION REQUIRED");
-    }
-    //TODO After we initially go online this method gets called with a APPROVED message. Do we need to do anything here ??
+    //The emv-jwt call could success or fail. We call the IDTech complete method with a successful tag every time. We alert the client by messaging them via the errorTransactionToken delegate method.
     if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_APPROVED || emvData.resultCodeV2 == EMV_RESULT_CODE_V2_APPROVED_OFFLINE ) {
-        NSLog(@"APPROVED");
+        return;
     }
-    //TODO what's this do ? fallback swipe ?
-    if (emvData.cardData != nil) [self swipeMSRData:emvData.cardData];
-    
+    //We aren't starting an authorization so this result code should never me set. But return just in case.
+    if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_START_TRANS_SUCCESS) {
+        return;
+    }
+    //This is a fallback swipe.
+    if (emvData.cardData != nil) {
+        [self swipeMSRData:emvData.cardData];
+    }
+    //When we get an Go Online result code let's creeate the transaction token (jwt)
     if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_GO_ONLINE) {
-        ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequest:emvData];
-        [self createTransactionToken:clearentTransactionTokenRequest];
+        @autoreleasepool {
+            ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequest:emvData];
+            [self createTransactionToken:clearentTransactionTokenRequest];
+            clearentTransactionTokenRequest = nil;
+        }
     }
 }
 
