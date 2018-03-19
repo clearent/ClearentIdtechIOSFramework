@@ -84,13 +84,11 @@
     if (emvData.cardData != nil) {
         [self swipeMSRData:emvData.cardData];
     }
-    //When we get an Go Online result code let's creeate the transaction token (jwt)
+    //When we get an Go Online result code let's create the transaction token (jwt)
     if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_GO_ONLINE) {
-        @autoreleasepool {
-            ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequest:emvData];
-            [self createTransactionToken:clearentTransactionTokenRequest];
-            clearentTransactionTokenRequest = nil;
-        }
+        ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequest:emvData];
+        [self createTransactionToken:clearentTransactionTokenRequest];
+        clearentTransactionTokenRequest = nil;
     }
 }
 
@@ -151,7 +149,9 @@
                   [self.publicDelegate errorTransactionToken:responseStr];
               }
           }
-          
+          data = nil;
+          response = nil;
+          error = nil;
           //Always run the idtech complete method whether an error is returned or not.
           //We aren't doing an authorization or actually running the transaction so providing the 8A tag is just an acknowledgement the IDTech process should continue down a successful path.
           [[IDT_UniPayIII sharedController] emv_completeOnlineEMVTransaction:true hostResponseTags:[IDTUtility hexToData:@"8A023030"]];
