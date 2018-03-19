@@ -12,9 +12,9 @@
 #import "ClearentTransactionTokenRequest.h"
 
 @interface PrivateDelegate : NSObject<IDT_UniPayIII_Delegate>
-@property(nonatomic, weak) NSString *firmwareVersion;
-@property(nonatomic, weak) NSString *serialNumber;
-@property(nonatomic, weak) id<Clearent_Public_IDT_UniPayIII_Delegate> publicDelegate;
+@property(nonatomic) NSString *firmwareVersion;
+@property(nonatomic) NSString *serialNumber;
+@property(nonatomic) id<Clearent_Public_IDT_UniPayIII_Delegate> publicDelegate;
 - (void) init : (id <Clearent_Public_IDT_UniPayIII_Delegate>) publicDelegate;
 - (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequest:(IDTEMVData*)emvData;
 - (void) createTransactionToken:(ClearentTransactionTokenRequest*)clearentTransactionTokenRequest;

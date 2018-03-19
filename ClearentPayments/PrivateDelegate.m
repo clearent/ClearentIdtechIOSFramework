@@ -88,7 +88,6 @@
     if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_GO_ONLINE) {
         ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequest:emvData];
         [self createTransactionToken:clearentTransactionTokenRequest];
-        clearentTransactionTokenRequest = nil;
     }
 }
 

@@ -9,10 +9,10 @@
 #import <Foundation/Foundation.h>
 
 @interface ClearentTransactionTokenRequest : NSObject
-@property (nonatomic, weak) NSString *tlv;
+@property (nonatomic) NSString *tlv;
 @property (nonatomic) BOOL encrypted;
-@property (nonatomic, weak) NSString *firmwareVersion;
-@property (nonatomic, weak) NSString *deviceSerialNumber;
+@property (nonatomic) NSString *firmwareVersion;
+@property (nonatomic) NSString *deviceSerialNumber;
 - (NSString*) asJson;
 - (NSDictionary*) asDictionary;
 @end
