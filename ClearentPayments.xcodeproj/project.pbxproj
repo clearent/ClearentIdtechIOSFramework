@@ -17,11 +17,10 @@
 		E76505181FFC313A00B345F6 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76505171FFC313A00B345F6 /* AVFoundation.framework */; };
 		E765051A1FFC314300B345F6 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76505191FFC314300B345F6 /* AudioToolbox.framework */; };
 		E765051C1FFC314D00B345F6 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E765051B1FFC314D00B345F6 /* CFNetwork.framework */; };
+		E77687472062B66300284FF4 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = E77687462062B66300284FF4 /* .gitignore */; };
 		E77C8FCA1FFEB3AA00C3E590 /* Clearent_UniPayIII.m in Sources */ = {isa = PBXBuildFile; fileRef = E77C8FC91FFEB3AA00C3E590 /* Clearent_UniPayIII.m */; };
 		E77C900F1FFFE38100C3E590 /* PrivateDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E77C900D1FFFE38100C3E590 /* PrivateDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E77C90141FFFE8F800C3E590 /* PublicDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E77C90121FFFE8F800C3E590 /* PublicDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E77C904020003E7C00C3E590 /* ClearentTransactionToken.h in Headers */ = {isa = PBXBuildFile; fileRef = E77C903E20003E7C00C3E590 /* ClearentTransactionToken.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E77C904120003E7C00C3E590 /* ClearentTransactionToken.m in Sources */ = {isa = PBXBuildFile; fileRef = E77C903F20003E7C00C3E590 /* ClearentTransactionToken.m */; };
 		E77C90472000442200C3E590 /* ClearentTransactionTokenRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = E77C90452000442200C3E590 /* ClearentTransactionTokenRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E77C90482000442200C3E590 /* ClearentTransactionTokenRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = E77C90462000442200C3E590 /* ClearentTransactionTokenRequest.m */; };
 		E79A4D94204F14B000E4BBF6 /* PrivateDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E79A4D93204F14B000E4BBF6 /* PrivateDelegate.m */; };
@@ -51,11 +50,10 @@
 		E76505191FFC314300B345F6 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		E765051B1FFC314D00B345F6 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		E765055B1FFD219700B345F6 /* Clearent_UniPayIII.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Clearent_UniPayIII.h; sourceTree = "<group>"; };
+		E77687462062B66300284FF4 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		E77C8FC91FFEB3AA00C3E590 /* Clearent_UniPayIII.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Clearent_UniPayIII.m; sourceTree = "<group>"; };
 		E77C900D1FFFE38100C3E590 /* PrivateDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrivateDelegate.h; sourceTree = "<group>"; };
 		E77C90121FFFE8F800C3E590 /* PublicDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PublicDelegate.h; sourceTree = "<group>"; };
-		E77C903E20003E7C00C3E590 /* ClearentTransactionToken.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentTransactionToken.h; sourceTree = "<group>"; };
-		E77C903F20003E7C00C3E590 /* ClearentTransactionToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentTransactionToken.m; sourceTree = "<group>"; };
 		E77C90452000442200C3E590 /* ClearentTransactionTokenRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentTransactionTokenRequest.h; sourceTree = "<group>"; };
 		E77C90462000442200C3E590 /* ClearentTransactionTokenRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentTransactionTokenRequest.m; sourceTree = "<group>"; };
 		E79A4D93204F14B000E4BBF6 /* PrivateDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrivateDelegate.m; sourceTree = "<group>"; };
@@ -89,6 +87,7 @@
 		E76504EA1FFC306100B345F6 = {
 			isa = PBXGroup;
 			children = (
+				E77687462062B66300284FF4 /* .gitignore */,
 				E73741C51FFD7F62006E0E08 /* IDTech.bundle */,
 				E76504F61FFC306100B345F6 /* ClearentPayments */,
 				E76505011FFC306100B345F6 /* ClearentPaymentsTests */,
@@ -116,8 +115,6 @@
 				E77C900D1FFFE38100C3E590 /* PrivateDelegate.h */,
 				E79A4D93204F14B000E4BBF6 /* PrivateDelegate.m */,
 				E77C90121FFFE8F800C3E590 /* PublicDelegate.h */,
-				E77C903E20003E7C00C3E590 /* ClearentTransactionToken.h */,
-				E77C903F20003E7C00C3E590 /* ClearentTransactionToken.m */,
 				E77C90452000442200C3E590 /* ClearentTransactionTokenRequest.h */,
 				E77C90462000442200C3E590 /* ClearentTransactionTokenRequest.m */,
 			);
@@ -154,7 +151,6 @@
 			files = (
 				E76505051FFC306100B345F6 /* ClearentPayments.h in Headers */,
 				E77C90141FFFE8F800C3E590 /* PublicDelegate.h in Headers */,
-				E77C904020003E7C00C3E590 /* ClearentTransactionToken.h in Headers */,
 				E77C900F1FFFE38100C3E590 /* PrivateDelegate.h in Headers */,
 				E77C90472000442200C3E590 /* ClearentTransactionTokenRequest.h in Headers */,
 				E7108C321FFD36D00004027D /* Clearent_UniPayIII.h in Headers */,
@@ -242,6 +238,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E77687472062B66300284FF4 /* .gitignore in Resources */,
 				E73741C61FFD7F62006E0E08 /* IDTech.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -263,7 +260,6 @@
 				E77C8FCA1FFEB3AA00C3E590 /* Clearent_UniPayIII.m in Sources */,
 				E77C90482000442200C3E590 /* ClearentTransactionTokenRequest.m in Sources */,
 				E79A4D94204F14B000E4BBF6 /* PrivateDelegate.m in Sources */,
-				E77C904120003E7C00C3E590 /* ClearentTransactionToken.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
