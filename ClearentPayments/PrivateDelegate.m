@@ -154,12 +154,26 @@
         [self.publicDelegate errorTransactionToken:@"Card read error"];
         return;
     }
-    //fallback swipe or is it ? A rgualr swipe is coming here. So, for now we just call swipeMSRData, since sometimes IdTech just sends the message to that method.
+    
+    NSString *entryMode;
+    if (emvData.unencryptedTags != nil) {
+        entryMode = [[emvData.unencryptedTags objectForKey:@"9F39"] description];
+    } else if (emvData.encryptedTags != nil) {
+        entryMode = [[NSString alloc] initWithData:[emvData.encryptedTags objectForKey:@"9F39"] encoding:NSUTF8StringEncoding];
+    }
+    
+    //TODO contactless is not returning the correct result code
+    
+    //fallback swipe or is it ? A regular swipe is coming here. So, for now we just call swipeMSRData, since sometimes IdTech just sends the message to that method.
     //TODO The problem is we need to identify the fallback swipe and send it to emv-jwt.
     if (emvData.cardData != nil && emvData.resultCodeV2 == EMV_RESULT_CODE_V2_MSR_SUCCESS) {
-        [self swipeMSRData:emvData.cardData];
-//        ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequest:emvData];
-//        [self createTransactionToken:clearentTransactionTokenRequest];
+        NSLog(@"entryMode (90=regular swipe, 80=fallback swipe, 95=nontech fallback, 07=contactless, 91=contactless ): %@", entryMode);
+        if(entryMode != nil && [entryMode isEqualToString:@"<90>"]) {
+            [self swipeMSRData:emvData.cardData];
+        } else if(entryMode != nil && ([entryMode isEqualToString:@"<80>"] || [entryMode isEqualToString:@"<85>"] || [entryMode isEqualToString:@"<07>"] || [entryMode isEqualToString:@"<91>"])) {
+            ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequest:emvData];
+            [self createTransactionToken:clearentTransactionTokenRequest];
+        }
     }
     //When we get an Go Online result code let's create the transaction token (jwt)
     if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_GO_ONLINE) {
