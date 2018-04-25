@@ -13,12 +13,14 @@
 
 @interface PrivateDelegate : NSObject<IDT_UniPayIII_Delegate>
 @property(nonatomic) NSString *firmwareVersion;
-@property(nonatomic) NSString *serialNumber;
+@property(nonatomic) NSString *deviceSerialNumber;
+@property(nonatomic) NSString *kernelVersion;
 @property(nonatomic) id<Clearent_Public_IDT_UniPayIII_Delegate> publicDelegate;
 - (void) init : (id <Clearent_Public_IDT_UniPayIII_Delegate>) publicDelegate;
 - (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequest:(IDTEMVData*)emvData;
 - (void) createTransactionToken:(ClearentTransactionTokenRequest*)clearentTransactionTokenRequest;
 - (NSDictionary *)responseAsDictionary:(NSString *)stringJson;
 -(void) deviceConnected;
+-(void) configuration;
 @end
 

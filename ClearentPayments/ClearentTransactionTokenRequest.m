@@ -11,7 +11,12 @@
 @implementation ClearentTransactionTokenRequest
 
 - (NSDictionary*) asDictionary {
-    NSDictionary* dict = @{@"tlv":self.tlv,@"tlv-encrypted":(self.encrypted  ? @"true" : @"false"),@"device-format":@"IDTECH",@"firmware-version":self.firmwareVersion,@"device-serial-number":self.deviceSerialNumber};
+    NSDictionary* dict;
+    if(self.emv) {
+       dict = @{@"kernel-version":self.kernelVersion,@"firmware-version":self.firmwareVersion,@"device-serial-number":self.deviceSerialNumber,@"emv":@"true",@"device-format":@"IDTECH",@"tlv":self.tlv,@"tlv-encrypted":(self.encrypted  ? @"true" : @"false")};
+    } else {
+        dict = @{@"kernel-version":self.kernelVersion,@"firmware-version":self.firmwareVersion,@"device-serial-number":self.deviceSerialNumber,@"emv":@"false",@"device-format":@"IDTECH",@"track2-data":self.track2Data};
+    }
     return dict;
 }
 

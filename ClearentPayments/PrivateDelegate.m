@@ -29,9 +29,28 @@
 }
 
 -(void)deviceConnected {
-    self.firmwareVersion= [self getFirmwareVersion];
-    self.serialNumber = [self getSerialNumber];
+    [self configuration];
     [self.publicDelegate deviceConnected];
+}
+
+- (void) configuration {
+    self.firmwareVersion= [self getFirmwareVersion];
+    self.deviceSerialNumber = [self getDeviceSerialNumber];
+    self.kernelVersion = [self getKernelVersion];
+    NSMutableDictionary *tags;
+    RETURN_CODE rt = [[IDT_UniPayIII sharedController] emv_retrieveTerminalData:&tags];
+    if (RETURN_CODE_DO_SUCCESS == rt) {
+        //Set the terminal entry mode for ICC (emv dip)
+        [tags setObject:@"05" forKey:@"DFEE17"];
+        //set the device serial number
+        [tags setObject:self.deviceSerialNumber forKey:@"DF78"];
+        //set the kernel version
+        [tags setObject:self.kernelVersion forKey:@"DF79"];
+    } else{
+        NSLog(@"Failed to preconfigure required EMV tags");
+    }
+    [[IDT_UniPayIII sharedController] emv_setTerminalData:tags];
+
 }
 
 - (NSString *) getFirmwareVersion {
@@ -40,17 +59,27 @@
     if (RETURN_CODE_DO_SUCCESS == rt) {
         return result;
     } else{
-        return @"Firmware version not found";
+        return @"IDTECH Firmware version not found";
     }
 }
 
-- (NSString *) getSerialNumber {
+- (NSString *) getKernelVersion {
+    NSString *result;
+    RETURN_CODE rt = [[IDT_UniPayIII sharedController] emv_getEMVL2Version:&result];
+    if (RETURN_CODE_DO_SUCCESS == rt) {
+        return result;
+    } else{
+        return @"IDTECH Kernel Version Unknown";
+    }
+}
+
+- (NSString *) getDeviceSerialNumber {
     NSString *result;
     RETURN_CODE rt = [[IDT_UniPayIII sharedController] config_getSerialNumber:&result];
     if (RETURN_CODE_DO_SUCCESS == rt) {
         return result;
     } else{
-        return @"Serial number not found";
+        return @"IDTECH Serial number not found";
     }
 }
 
@@ -63,9 +92,50 @@
 }
 
 - (void) swipeMSRData:(IDTMSRData*)cardData{
-    NSLog(@"swipeMSRData called in private delegate" );
-    NSLog(@"--MSR event Received, Type: %d, data: %@", cardData.event, cardData.encTrack1);
-    NSLog(@"This needs to be implemented");
+    if (cardData != nil && cardData.event == EVENT_MSR_CARD_DATA && cardData.track2 != nil) {
+        ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequestForASwipe:cardData];
+        [self createTransactionToken:clearentTransactionTokenRequest];
+    } else {
+        [self.publicDelegate errorTransactionToken:@"Card read error"];
+    }
+}
+
+- (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequestForASwipe:(IDTMSRData*)cardData{
+    if(cardData == nil) {
+        [self.publicDelegate errorTransactionToken:@"Card read error"];
+    }
+    if (cardData.unencryptedTags != nil) {
+        if(cardData != nil && cardData.track2 != nil) {
+            ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [[ClearentTransactionTokenRequest alloc] init];
+            clearentTransactionTokenRequest.emv = false;
+            clearentTransactionTokenRequest.encrypted = false;
+            clearentTransactionTokenRequest.kernelVersion = [self kernelVersion];
+            clearentTransactionTokenRequest.deviceSerialNumber = [self deviceSerialNumber];
+            clearentTransactionTokenRequest.firmwareVersion = [self firmwareVersion];
+            clearentTransactionTokenRequest.track2Data = cardData.track2;
+            return clearentTransactionTokenRequest;
+        } else {
+            [self.publicDelegate errorTransactionToken:@"Card read error"];
+        }
+    } else if (cardData.encryptedTags != nil) {
+        if(cardData != nil && cardData.encTrack2 != nil) {
+            ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [[ClearentTransactionTokenRequest alloc] init];
+            clearentTransactionTokenRequest.emv = false;
+            clearentTransactionTokenRequest.encrypted = true;
+            clearentTransactionTokenRequest.kernelVersion = [self kernelVersion];
+            clearentTransactionTokenRequest.deviceSerialNumber = [self deviceSerialNumber];
+            clearentTransactionTokenRequest.firmwareVersion = [self firmwareVersion];
+            NSString *encryptedTrack2Data = [[NSString alloc] initWithData:cardData.encTrack2
+                                                                 encoding:NSUTF8StringEncoding];
+            clearentTransactionTokenRequest.track2Data = encryptedTrack2Data;
+            return clearentTransactionTokenRequest;
+        } else {
+            [self.publicDelegate errorTransactionToken:@"Card read error"];
+        }
+    
+    }
+    ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [[ClearentTransactionTokenRequest alloc] init];
+    return clearentTransactionTokenRequest;
 }
 
 - (void) emvTransactionData:(IDTEMVData*)emvData errorCode:(int)error{
@@ -76,13 +146,20 @@
     if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_APPROVED || emvData.resultCodeV2 == EMV_RESULT_CODE_V2_APPROVED_OFFLINE ) {
         return;
     }
-    //We aren't starting an authorization so this result code should never me set. But return just in case.
+    //We aren't starting an authorization so this result code should never be set. But return just in case.
     if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_START_TRANS_SUCCESS) {
         return;
     }
-    //This is a fallback swipe.
-    if (emvData.cardData != nil) {
+    if ( emvData.resultCodeV2 == EMV_RESULT_CODE_V2_MSR_CARD_ERROR) {
+        [self.publicDelegate errorTransactionToken:@"Card read error"];
+        return;
+    }
+    //fallback swipe or is it ? A rgualr swipe is coming here. So, for now we just call swipeMSRData, since sometimes IdTech just sends the message to that method.
+    //TODO The problem is we need to identify the fallback swipe and send it to emv-jwt.
+    if (emvData.cardData != nil && emvData.resultCodeV2 == EMV_RESULT_CODE_V2_MSR_SUCCESS) {
         [self swipeMSRData:emvData.cardData];
+//        ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequest:emvData];
+//        [self createTransactionToken:clearentTransactionTokenRequest];
     }
     //When we get an Go Online result code let's create the transaction token (jwt)
     if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_GO_ONLINE) {
@@ -93,9 +170,23 @@
 
 - (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequest:(IDTEMVData*)emvData {
     if (emvData.unencryptedTags != nil) {
-        return [self createClearentTransactionTokenRequest:emvData.unencryptedTags isEncrypted: false];
+        if(emvData.cardData != nil && emvData.cardData.track2 != nil) {
+            NSMutableDictionary *mutableTags = [emvData.unencryptedTags mutableCopy];
+            [mutableTags setValue:emvData.cardData.track2 forKey:@"57"];
+            return [self createClearentTransactionTokenRequest:mutableTags isEncrypted: false];
+        } else {
+            return [self createClearentTransactionTokenRequest:emvData.unencryptedTags isEncrypted: false];
+        }
     } else if (emvData.encryptedTags != nil) {
-        return [self createClearentTransactionTokenRequest:emvData.encryptedTags isEncrypted: true];
+        if(emvData.cardData != nil && emvData.cardData.encTrack2 != nil) {
+            NSMutableDictionary *mutableTags = [emvData.unencryptedTags mutableCopy];
+            NSString *encryptedTrack2Data = [[NSString alloc] initWithData:emvData.cardData.encTrack2
+                                                                  encoding:NSUTF8StringEncoding];
+            [mutableTags setValue:encryptedTrack2Data forKey:@"57"];
+            return [self createClearentTransactionTokenRequest:mutableTags isEncrypted: true];
+        } else {
+           return [self createClearentTransactionTokenRequest:emvData.encryptedTags isEncrypted: true];
+        }
     }
     ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [[ClearentTransactionTokenRequest alloc] init];
     return clearentTransactionTokenRequest;
@@ -106,8 +197,10 @@
     NSData *tagsAsNSData = [IDTUtility DICTotTLV:tags];
     NSString *tlvInHex = [IDTUtility dataToHexString:tagsAsNSData];
     clearentTransactionTokenRequest.tlv = tlvInHex;
+    clearentTransactionTokenRequest.emv = true;
+    clearentTransactionTokenRequest.kernelVersion = [self kernelVersion];
+    clearentTransactionTokenRequest.deviceSerialNumber = [self deviceSerialNumber];
     clearentTransactionTokenRequest.firmwareVersion = [self firmwareVersion];
-    clearentTransactionTokenRequest.deviceSerialNumber = [self serialNumber];
     clearentTransactionTokenRequest.encrypted = isEncrypted;
     return clearentTransactionTokenRequest;
 }
