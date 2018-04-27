@@ -11,6 +11,9 @@
 #import "IDTech/IDT_UniPayIII.h"
 #import "ClearentTransactionTokenRequest.h"
 
+typedef enum {FALLBACK_SWIPE=80, NONTECH_FALLBACK_SWIPE=95, CONTACTLESS_EMV=07, CONTACTLESS_MAGNETIC_SWIPE=91} supportedEmvEntryMode;
+typedef enum {SWIPE=90} supportedNonEmvEntryMode;
+ 
 @interface PrivateDelegate : NSObject<IDT_UniPayIII_Delegate>
 @property(nonatomic) NSString *firmwareVersion;
 @property(nonatomic) NSString *deviceSerialNumber;
@@ -19,8 +22,8 @@
 - (void) init : (id <Clearent_Public_IDT_UniPayIII_Delegate>) publicDelegate;
 - (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequest:(IDTEMVData*)emvData;
 - (void) createTransactionToken:(ClearentTransactionTokenRequest*)clearentTransactionTokenRequest;
-- (NSDictionary *)responseAsDictionary:(NSString *)stringJson;
 -(void) deviceConnected;
 -(void) configuration;
+- (ClearentTransactionTokenRequest*) createClearentTransactionToken:(BOOL)emv encrypted:(BOOL)encrypted track2Data:(NSString*) track2Data;
 @end
 
