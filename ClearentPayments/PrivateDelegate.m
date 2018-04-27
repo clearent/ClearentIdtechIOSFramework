@@ -10,6 +10,7 @@
 #import "IDTech/IDTUtility.h"
 
 static NSString *const TRACK2_DATA_EMV_TAG = @"57";
+static NSString *const TRACK2_DATA_CONTACTLESS_NON_CHIP_TAG = @"9F6B";
 static NSString *const IDTECH_EMV_ENTRY_MODE_EMV_TAG = @"DFEE17";
 static NSString *const EMV_DIP_ENTRY_MODE_TAG = @"05";
 static NSString *const DEVICE_SERIAL_NUMBER_EMV_TAG = @"DF78";
@@ -186,7 +187,7 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     return false;
 }
 
-- (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequest:(IDTEMVData*)emvData {
+- (ClearentTransactionTokenRequest*)  createClearentTransactionTokenRequest:(IDTEMVData*)emvData {
     if(emvData.cardData != nil) {
         if(emvData.cardData.encTrack2 != nil) {
             [emvData.encryptedTags setValue:emvData.cardData.encTrack2 forKey:TRACK2_DATA_EMV_TAG];
@@ -197,7 +198,14 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
             return [self createClearentTransactionTokenRequest:emvData.unencryptedTags isEncrypted: false];
         }
     } else if (emvData.unencryptedTags != nil) {
-        NSString *scrubbedTrack2Data = scrubInvalidCharactersForEmvTrack2Data([IDTUtility dataToHexString:[emvData.unencryptedTags objectForKey:TRACK2_DATA_EMV_TAG]]);
+        NSString *track2Data57 = [IDTUtility dataToHexString:[emvData.unencryptedTags objectForKey:TRACK2_DATA_EMV_TAG]];
+        NSString *track2Data9F6B = [IDTUtility dataToHexString:[emvData.unencryptedTags objectForKey:TRACK2_DATA_CONTACTLESS_NON_CHIP_TAG]];
+        NSString *scrubbedTrack2Data;
+        if(track2Data57 != nil && !([track2Data57 isEqualToString:@""])) {
+            scrubbedTrack2Data = scrubInvalidCharactersForEmvTrack2Data(track2Data57);
+        } else if(track2Data9F6B != nil && !([track2Data9F6B isEqualToString:@""])) {
+            scrubbedTrack2Data = scrubInvalidCharactersForEmvTrack2Data(track2Data9F6B);
+        }
         [emvData.unencryptedTags setValue:scrubbedTrack2Data forKey:TRACK2_DATA_EMV_TAG];
         return [self createClearentTransactionTokenRequest:emvData.unencryptedTags isEncrypted: false];
     } else if (emvData.encryptedTags != nil) {
