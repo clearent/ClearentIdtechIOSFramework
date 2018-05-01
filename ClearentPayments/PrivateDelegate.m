@@ -145,6 +145,13 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
         return;
     }
     
+    //Because of how the IdTech framework is sending messages to the swipe method and this method I would think we would want to never process in this method if there is no response.
+//
+//    if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_NO_RESPONSE) {
+//        return;
+//    }
+//
+    
     int entryMode = 0;
     if (emvData.unencryptedTags != nil) {
         entryMode = getEntryMode([[emvData.unencryptedTags objectForKey:@"9F39"] description]);
@@ -238,7 +245,7 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
 NSString* scrubInvalidCharactersForEmvTrack2Data (NSString* originalTrack2Data) {
     NSString *scrubbedTrack2Data;
     NSString *workTrack2Data = [originalTrack2Data copy];
-    NSString *track2DataWithout00000F = [workTrack2Data stringByReplacingOccurrencesOfString:@"00000f" withString:@""];
+    NSString *track2DataWithout00000F = [workTrack2Data stringByReplacingOccurrencesOfString:@"00000f" withString:@"F"];
     NSString *track2DataWithout00000FAndSixAtEnd = [track2DataWithout00000F stringByReplacingOccurrencesOfString:@"00000?6" withString:@"?"];
     NSString *prefixToRemove = @"f";
     NSString *work2Track2Data = [track2DataWithout00000FAndSixAtEnd copy];
