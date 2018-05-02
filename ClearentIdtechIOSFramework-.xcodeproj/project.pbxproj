@@ -10,7 +10,7 @@
 		E7108C321FFD36D00004027D /* Clearent_UniPayIII.h in Headers */ = {isa = PBXBuildFile; fileRef = E765055B1FFD219700B345F6 /* Clearent_UniPayIII.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E73741C41FFD7F42006E0E08 /* IDTech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E73741C31FFD7F42006E0E08 /* IDTech.framework */; };
 		E73741C61FFD7F62006E0E08 /* IDTech.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E73741C51FFD7F62006E0E08 /* IDTech.bundle */; };
-		E76504FE1FFC306100B345F6 /* ClearentPayments.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76504F41FFC306100B345F6 /* ClearentPayments.framework */; };
+		E76504FE1FFC306100B345F6 /* ClearentIdtechIOSFramework_.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76504F41FFC306100B345F6 /* ClearentIdtechIOSFramework_.framework */; };
 		E76505051FFC306100B345F6 /* ClearentPayments.h in Headers */ = {isa = PBXBuildFile; fileRef = E76504F71FFC306100B345F6 /* ClearentPayments.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E76505141FFC312500B345F6 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76505131FFC312500B345F6 /* ExternalAccessory.framework */; };
 		E76505161FFC313200B345F6 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76505151FFC313200B345F6 /* MediaPlayer.framework */; };
@@ -39,10 +39,10 @@
 /* Begin PBXFileReference section */
 		E73741C31FFD7F42006E0E08 /* IDTech.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IDTech.framework; path = ClearentPayments/IDTech.framework; sourceTree = "<group>"; };
 		E73741C51FFD7F62006E0E08 /* IDTech.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = IDTech.bundle; path = ClearentPayments/IDTech.bundle; sourceTree = "<group>"; };
-		E76504F41FFC306100B345F6 /* ClearentPayments.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ClearentPayments.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E76504F41FFC306100B345F6 /* ClearentIdtechIOSFramework_.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ClearentIdtechIOSFramework_.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E76504F71FFC306100B345F6 /* ClearentPayments.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentPayments.h; sourceTree = "<group>"; };
 		E76504F81FFC306100B345F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E76504FD1FFC306100B345F6 /* ClearentPaymentsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClearentPaymentsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		E76504FD1FFC306100B345F6 /* ClearentIdtechIOSFramework-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ClearentIdtechIOSFramework-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E76505041FFC306100B345F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E76505131FFC312500B345F6 /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
 		E76505151FFC313200B345F6 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
@@ -77,7 +77,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E76504FE1FFC306100B345F6 /* ClearentPayments.framework in Frameworks */,
+				E76504FE1FFC306100B345F6 /* ClearentIdtechIOSFramework_.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -89,7 +89,7 @@
 			children = (
 				E77687462062B66300284FF4 /* .gitignore */,
 				E73741C51FFD7F62006E0E08 /* IDTech.bundle */,
-				E76504F61FFC306100B345F6 /* ClearentPayments */,
+				E76504F61FFC306100B345F6 /* ClearentIdtechIOSFramework- */,
 				E76505011FFC306100B345F6 /* ClearentPaymentsTests */,
 				E76504F51FFC306100B345F6 /* Products */,
 				E765050E1FFC30F000B345F6 /* Frameworks */,
@@ -99,13 +99,13 @@
 		E76504F51FFC306100B345F6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				E76504F41FFC306100B345F6 /* ClearentPayments.framework */,
-				E76504FD1FFC306100B345F6 /* ClearentPaymentsTests.xctest */,
+				E76504F41FFC306100B345F6 /* ClearentIdtechIOSFramework_.framework */,
+				E76504FD1FFC306100B345F6 /* ClearentIdtechIOSFramework-Tests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		E76504F61FFC306100B345F6 /* ClearentPayments */ = {
+		E76504F61FFC306100B345F6 /* ClearentIdtechIOSFramework- */ = {
 			isa = PBXGroup;
 			children = (
 				E76504F71FFC306100B345F6 /* ClearentPayments.h */,
@@ -118,7 +118,7 @@
 				E77C90452000442200C3E590 /* ClearentTransactionTokenRequest.h */,
 				E77C90462000442200C3E590 /* ClearentTransactionTokenRequest.m */,
 			);
-			path = ClearentPayments;
+			path = "ClearentIdtechIOSFramework-";
 			sourceTree = "<group>";
 		};
 		E76505011FFC306100B345F6 /* ClearentPaymentsTests */ = {
@@ -160,9 +160,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		E76504F31FFC306100B345F6 /* ClearentPayments */ = {
+		E76504F31FFC306100B345F6 /* ClearentIdtechIOSFramework- */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E76505081FFC306100B345F6 /* Build configuration list for PBXNativeTarget "ClearentPayments" */;
+			buildConfigurationList = E76505081FFC306100B345F6 /* Build configuration list for PBXNativeTarget "ClearentIdtechIOSFramework-" */;
 			buildPhases = (
 				E76504EF1FFC306100B345F6 /* Sources */,
 				E76504F01FFC306100B345F6 /* Frameworks */,
@@ -173,14 +173,14 @@
 			);
 			dependencies = (
 			);
-			name = ClearentPayments;
+			name = "ClearentIdtechIOSFramework-";
 			productName = ClearentPayments;
-			productReference = E76504F41FFC306100B345F6 /* ClearentPayments.framework */;
+			productReference = E76504F41FFC306100B345F6 /* ClearentIdtechIOSFramework_.framework */;
 			productType = "com.apple.product-type.framework";
 		};
-		E76504FC1FFC306100B345F6 /* ClearentPaymentsTests */ = {
+		E76504FC1FFC306100B345F6 /* ClearentIdtechIOSFramework-Tests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E765050B1FFC306100B345F6 /* Build configuration list for PBXNativeTarget "ClearentPaymentsTests" */;
+			buildConfigurationList = E765050B1FFC306100B345F6 /* Build configuration list for PBXNativeTarget "ClearentIdtechIOSFramework-Tests" */;
 			buildPhases = (
 				E76504F91FFC306100B345F6 /* Sources */,
 				E76504FA1FFC306100B345F6 /* Frameworks */,
@@ -191,9 +191,9 @@
 			dependencies = (
 				E76505001FFC306100B345F6 /* PBXTargetDependency */,
 			);
-			name = ClearentPaymentsTests;
+			name = "ClearentIdtechIOSFramework-Tests";
 			productName = ClearentPaymentsTests;
-			productReference = E76504FD1FFC306100B345F6 /* ClearentPaymentsTests.xctest */;
+			productReference = E76504FD1FFC306100B345F6 /* ClearentIdtechIOSFramework-Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -202,7 +202,7 @@
 		E76504EB1FFC306100B345F6 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 0930;
 				ORGANIZATIONNAME = "Clearent, L.L.C.";
 				TargetAttributes = {
 					E76504F31FFC306100B345F6 = {
@@ -215,7 +215,7 @@
 					};
 				};
 			};
-			buildConfigurationList = E76504EE1FFC306100B345F6 /* Build configuration list for PBXProject "ClearentPayments" */;
+			buildConfigurationList = E76504EE1FFC306100B345F6 /* Build configuration list for PBXProject "ClearentIdtechIOSFramework-" */;
 			compatibilityVersion = "Xcode 8.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -227,8 +227,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				E76504F31FFC306100B345F6 /* ClearentPayments */,
-				E76504FC1FFC306100B345F6 /* ClearentPaymentsTests */,
+				E76504F31FFC306100B345F6 /* ClearentIdtechIOSFramework- */,
+				E76504FC1FFC306100B345F6 /* ClearentIdtechIOSFramework-Tests */,
 			);
 		};
 /* End PBXProject section */
@@ -275,7 +275,7 @@
 /* Begin PBXTargetDependency section */
 		E76505001FFC306100B345F6 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = E76504F31FFC306100B345F6 /* ClearentPayments */;
+			target = E76504F31FFC306100B345F6 /* ClearentIdtechIOSFramework- */;
 			targetProxy = E76504FF1FFC306100B345F6 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -295,6 +295,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -302,6 +303,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -353,6 +355,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -360,6 +363,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -405,7 +409,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/ClearentPayments",
 				);
-				INFOPLIST_FILE = ClearentPayments/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/ClearentIdtechIOSFramework-/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -433,7 +437,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/ClearentPayments",
 				);
-				INFOPLIST_FILE = ClearentPayments/Info.plist;
+				INFOPLIST_FILE = "$(SRCROOT)/ClearentIdtechIOSFramework-/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -476,7 +480,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		E76504EE1FFC306100B345F6 /* Build configuration list for PBXProject "ClearentPayments" */ = {
+		E76504EE1FFC306100B345F6 /* Build configuration list for PBXProject "ClearentIdtechIOSFramework-" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E76505061FFC306100B345F6 /* Debug */,
@@ -485,7 +489,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E76505081FFC306100B345F6 /* Build configuration list for PBXNativeTarget "ClearentPayments" */ = {
+		E76505081FFC306100B345F6 /* Build configuration list for PBXNativeTarget "ClearentIdtechIOSFramework-" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E76505091FFC306100B345F6 /* Debug */,
@@ -494,7 +498,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E765050B1FFC306100B345F6 /* Build configuration list for PBXNativeTarget "ClearentPaymentsTests" */ = {
+		E765050B1FFC306100B345F6 /* Build configuration list for PBXNativeTarget "ClearentIdtechIOSFramework-Tests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				E765050C1FFC306100B345F6 /* Debug */,
