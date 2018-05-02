@@ -130,13 +130,5 @@ playground.xcworkspace
 
 ## Various settings
 
-## Other
-
-### Xcode Patch ###
-*.xcodeproj/*
-!*.xcodeproj/project.pbxproj
-!*.xcworkspace/contents.xcworkspacedata
-/*.gcno
-
 
 # End of https://www.gitignore.io/api/osx,swift,objective-c,xcode
