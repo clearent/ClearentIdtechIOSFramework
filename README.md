@@ -10,3 +10,5 @@ github "clearent/ClearentIdtechIOSFramework-" ~>= 1.0.0
 3 - run this command from your project's root folder. carthage update --platform iOS
 
 
+
+
