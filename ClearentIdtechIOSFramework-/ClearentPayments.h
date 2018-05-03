@@ -1,1 +1,1 @@
-#import <ClearentPayments/Clearent_UniPayIII.h>
+#import <ClearentIdtechIOSFramework-/Clearent_UniPayIII.h>
