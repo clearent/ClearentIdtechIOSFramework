@@ -57,8 +57,6 @@
 		E79A4D93204F14B000E4BBF6 /* PrivateDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrivateDelegate.m; sourceTree = "<group>"; };
 		E7D95F3C209A556D001C5871 /* IDTech.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = IDTech.bundle; path = "ClearentIdtechIOSFramework-/IDTech.bundle"; sourceTree = "<group>"; };
 		E7D95F3E209A5577001C5871 /* IDTech.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IDTech.framework; path = "ClearentIdtechIOSFramework-/IDTech.framework"; sourceTree = "<group>"; };
-		E7D95F48209B4F1B001C5871 /* ClearentIdtechIOSFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentIdtechIOSFramework.h; sourceTree = "<group>"; };
-		E7D95F49209B4F1B001C5871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,7 +92,6 @@
 				E77687462062B66300284FF4 /* .gitignore */,
 				E76504F61FFC306100B345F6 /* ClearentIdtechIOSFramework- */,
 				E76505011FFC306100B345F6 /* ClearentIdtechIOSFrameworkTests */,
-				E7D95F47209B4F1B001C5871 /* ClearentIdtechIOSFramework */,
 				E76504F51FFC306100B345F6 /* Products */,
 				E765050E1FFC30F000B345F6 /* Frameworks */,
 			);
@@ -143,15 +140,6 @@
 				E76505131FFC312500B345F6 /* ExternalAccessory.framework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		E7D95F47209B4F1B001C5871 /* ClearentIdtechIOSFramework */ = {
-			isa = PBXGroup;
-			children = (
-				E7D95F48209B4F1B001C5871 /* ClearentIdtechIOSFramework.h */,
-				E7D95F49209B4F1B001C5871 /* Info.plist */,
-			);
-			path = ClearentIdtechIOSFramework;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
