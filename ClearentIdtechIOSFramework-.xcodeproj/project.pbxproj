@@ -59,8 +59,6 @@
 		E7D95F3E209A5577001C5871 /* IDTech.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IDTech.framework; path = "ClearentIdtechIOSFramework-/IDTech.framework"; sourceTree = "<group>"; };
 		E7D95F48209B4F1B001C5871 /* ClearentIdtechIOSFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentIdtechIOSFramework.h; sourceTree = "<group>"; };
 		E7D95F49209B4F1B001C5871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E7D95F55209B82C9001C5871 /* ClearentIdtechIOSFramework_iOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentIdtechIOSFramework_iOS.h; sourceTree = "<group>"; };
-		E7D95F56209B82C9001C5871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,7 +95,6 @@
 				E76504F61FFC306100B345F6 /* ClearentIdtechIOSFramework- */,
 				E76505011FFC306100B345F6 /* ClearentIdtechIOSFrameworkTests */,
 				E7D95F47209B4F1B001C5871 /* ClearentIdtechIOSFramework */,
-				E7D95F54209B82C9001C5871 /* ClearentIdtechIOSFramework-iOS */,
 				E76504F51FFC306100B345F6 /* Products */,
 				E765050E1FFC30F000B345F6 /* Frameworks */,
 			);
@@ -155,15 +152,6 @@
 				E7D95F49209B4F1B001C5871 /* Info.plist */,
 			);
 			path = ClearentIdtechIOSFramework;
-			sourceTree = "<group>";
-		};
-		E7D95F54209B82C9001C5871 /* ClearentIdtechIOSFramework-iOS */ = {
-			isa = PBXGroup;
-			children = (
-				E7D95F55209B82C9001C5871 /* ClearentIdtechIOSFramework_iOS.h */,
-				E7D95F56209B82C9001C5871 /* Info.plist */,
-			);
-			path = "ClearentIdtechIOSFramework-iOS";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
