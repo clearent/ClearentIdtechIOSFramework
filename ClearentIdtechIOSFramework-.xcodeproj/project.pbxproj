@@ -24,6 +24,7 @@
 		E79A4D94204F14B000E4BBF6 /* PrivateDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E79A4D93204F14B000E4BBF6 /* PrivateDelegate.m */; };
 		E7D95F3D209A556D001C5871 /* IDTech.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E7D95F3C209A556D001C5871 /* IDTech.bundle */; };
 		E7D95F3F209A5577001C5871 /* IDTech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7D95F3E209A5577001C5871 /* IDTech.framework */; };
+		E7D95F64209B8EE7001C5871 /* ClearentIdtechIOSFramework_iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = E7D95F62209B8EE7001C5871 /* ClearentIdtechIOSFramework_iOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +57,9 @@
 		E79A4D93204F14B000E4BBF6 /* PrivateDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PrivateDelegate.m; sourceTree = "<group>"; };
 		E7D95F3C209A556D001C5871 /* IDTech.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; name = IDTech.bundle; path = "ClearentIdtechIOSFramework-/IDTech.bundle"; sourceTree = "<group>"; };
 		E7D95F3E209A5577001C5871 /* IDTech.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IDTech.framework; path = "ClearentIdtechIOSFramework-/IDTech.framework"; sourceTree = "<group>"; };
+		E7D95F60209B8EE7001C5871 /* ClearentIdtechIOSFramework_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ClearentIdtechIOSFramework_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E7D95F62209B8EE7001C5871 /* ClearentIdtechIOSFramework_iOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentIdtechIOSFramework_iOS.h; sourceTree = "<group>"; };
+		E7D95F63209B8EE7001C5871 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +84,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E7D95F5C209B8EE7001C5871 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -90,6 +101,7 @@
 				E7D95F3C209A556D001C5871 /* IDTech.bundle */,
 				E77687462062B66300284FF4 /* .gitignore */,
 				E76504F61FFC306100B345F6 /* ClearentIdtechIOSFramework- */,
+				E7D95F61209B8EE7001C5871 /* ClearentIdtechIOSFramework-iOS */,
 				E76504F51FFC306100B345F6 /* Products */,
 				E765050E1FFC30F000B345F6 /* Frameworks */,
 			);
@@ -100,6 +112,7 @@
 			children = (
 				E76504F41FFC306100B345F6 /* ClearentIdtechIOSFramework_.framework */,
 				E76504FD1FFC306100B345F6 /* ClearentIdtechIOSFramework-Tests.xctest */,
+				E7D95F60209B8EE7001C5871 /* ClearentIdtechIOSFramework_iOS.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -132,6 +145,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		E7D95F61209B8EE7001C5871 /* ClearentIdtechIOSFramework-iOS */ = {
+			isa = PBXGroup;
+			children = (
+				E7D95F62209B8EE7001C5871 /* ClearentIdtechIOSFramework_iOS.h */,
+				E7D95F63209B8EE7001C5871 /* Info.plist */,
+			);
+			path = "ClearentIdtechIOSFramework-iOS";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -144,6 +166,14 @@
 				E77C900F1FFFE38100C3E590 /* PrivateDelegate.h in Headers */,
 				E77C90472000442200C3E590 /* ClearentTransactionTokenRequest.h in Headers */,
 				E7108C321FFD36D00004027D /* Clearent_UniPayIII.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E7D95F5D209B8EE7001C5871 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E7D95F64209B8EE7001C5871 /* ClearentIdtechIOSFramework_iOS.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -186,6 +216,24 @@
 			productReference = E76504FD1FFC306100B345F6 /* ClearentIdtechIOSFramework-Tests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		E7D95F5F209B8EE7001C5871 /* ClearentIdtechIOSFramework-iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E7D95F67209B8EE7001C5871 /* Build configuration list for PBXNativeTarget "ClearentIdtechIOSFramework-iOS" */;
+			buildPhases = (
+				E7D95F5B209B8EE7001C5871 /* Sources */,
+				E7D95F5C209B8EE7001C5871 /* Frameworks */,
+				E7D95F5D209B8EE7001C5871 /* Headers */,
+				E7D95F5E209B8EE7001C5871 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "ClearentIdtechIOSFramework-iOS";
+			productName = "ClearentIdtechIOSFramework-iOS";
+			productReference = E7D95F60209B8EE7001C5871 /* ClearentIdtechIOSFramework_iOS.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -203,6 +251,9 @@
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
 					};
+					E7D95F5F209B8EE7001C5871 = {
+						CreatedOnToolsVersion = 9.3;
+					};
 				};
 			};
 			buildConfigurationList = E76504EE1FFC306100B345F6 /* Build configuration list for PBXProject "ClearentIdtechIOSFramework-" */;
@@ -219,6 +270,7 @@
 			targets = (
 				E76504F31FFC306100B345F6 /* ClearentIdtechIOSFramework- */,
 				E76504FC1FFC306100B345F6 /* ClearentIdtechIOSFramework-Tests */,
+				E7D95F5F209B8EE7001C5871 /* ClearentIdtechIOSFramework-iOS */,
 			);
 		};
 /* End PBXProject section */
@@ -240,6 +292,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		E7D95F5E209B8EE7001C5871 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -254,6 +313,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		E76504F91FFC306100B345F6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E7D95F5B209B8EE7001C5871 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -485,6 +551,64 @@
 			};
 			name = Release;
 		};
+		E7D95F65209B8EE7001C5871 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = S7H96J5U5C;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_TESTABILITY = YES;
+				INFOPLIST_FILE = "ClearentIdtechIOSFramework-iOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.clearent.ClearentIdtechIOSFramework-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		E7D95F66209B8EE7001C5871 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = S7H96J5U5C;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_TESTABILITY = NO;
+				INFOPLIST_FILE = "ClearentIdtechIOSFramework-iOS/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.clearent.ClearentIdtechIOSFramework-iOS";
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -511,6 +635,15 @@
 			buildConfigurations = (
 				E765050C1FFC306100B345F6 /* Debug */,
 				E765050D1FFC306100B345F6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		E7D95F67209B8EE7001C5871 /* Build configuration list for PBXNativeTarget "ClearentIdtechIOSFramework-iOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E7D95F65209B8EE7001C5871 /* Debug */,
+				E7D95F66209B8EE7001C5871 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
