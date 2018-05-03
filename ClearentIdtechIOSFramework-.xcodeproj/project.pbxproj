@@ -41,7 +41,6 @@
 		E76504F71FFC306100B345F6 /* ClearentPayments.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentPayments.h; sourceTree = "<group>"; };
 		E76504F81FFC306100B345F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E76504FD1FFC306100B345F6 /* ClearentIdtechIOSFramework-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ClearentIdtechIOSFramework-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		E76505041FFC306100B345F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E76505131FFC312500B345F6 /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
 		E76505151FFC313200B345F6 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		E76505171FFC313A00B345F6 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -91,7 +90,6 @@
 				E7D95F3C209A556D001C5871 /* IDTech.bundle */,
 				E77687462062B66300284FF4 /* .gitignore */,
 				E76504F61FFC306100B345F6 /* ClearentIdtechIOSFramework- */,
-				E76505011FFC306100B345F6 /* ClearentIdtechIOSFrameworkTests */,
 				E76504F51FFC306100B345F6 /* Products */,
 				E765050E1FFC30F000B345F6 /* Frameworks */,
 			);
@@ -120,14 +118,6 @@
 				E77C90462000442200C3E590 /* ClearentTransactionTokenRequest.m */,
 			);
 			path = "ClearentIdtechIOSFramework-";
-			sourceTree = "<group>";
-		};
-		E76505011FFC306100B345F6 /* ClearentIdtechIOSFrameworkTests */ = {
-			isa = PBXGroup;
-			children = (
-				E76505041FFC306100B345F6 /* Info.plist */,
-			);
-			path = ClearentIdtechIOSFrameworkTests;
 			sourceTree = "<group>";
 		};
 		E765050E1FFC30F000B345F6 /* Frameworks */ = {
