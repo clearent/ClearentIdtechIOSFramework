@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E76504F31FFC306100B345F6"
-               BuildableName = "ClearentIdtechIOSFramework_.framework"
-               BlueprintName = "ClearentIdtechIOSFramework-"
-               ReferencedContainer = "container:ClearentIdtechIOSFramework-.xcodeproj">
+               BuildableName = "ClearentIdtechIOSFramework.framework"
+               BlueprintName = "ClearentIdtechIOSFramework"
+               ReferencedContainer = "container:ClearentIdtechIOSFramework.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E76504FC1FFC306100B345F6"
-               BuildableName = "ClearentIdtechIOSFramework-Tests.xctest"
-               BlueprintName = "ClearentIdtechIOSFramework-Tests"
-               ReferencedContainer = "container:ClearentIdtechIOSFramework-.xcodeproj">
+               BuildableName = "ClearentIdtechIOSFrameworkTests.xctest"
+               BlueprintName = "ClearentIdtechIOSFrameworkTests"
+               ReferencedContainer = "container:ClearentIdtechIOSFramework.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -43,9 +43,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E76504F31FFC306100B345F6"
-            BuildableName = "ClearentIdtechIOSFramework_.framework"
-            BlueprintName = "ClearentIdtechIOSFramework-"
-            ReferencedContainer = "container:ClearentIdtechIOSFramework-.xcodeproj">
+            BuildableName = "ClearentIdtechIOSFramework.framework"
+            BlueprintName = "ClearentIdtechIOSFramework"
+            ReferencedContainer = "container:ClearentIdtechIOSFramework.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -65,9 +65,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E76504F31FFC306100B345F6"
-            BuildableName = "ClearentIdtechIOSFramework_.framework"
-            BlueprintName = "ClearentIdtechIOSFramework-"
-            ReferencedContainer = "container:ClearentIdtechIOSFramework-.xcodeproj">
+            BuildableName = "ClearentIdtechIOSFramework.framework"
+            BlueprintName = "ClearentIdtechIOSFramework"
+            ReferencedContainer = "container:ClearentIdtechIOSFramework.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -83,9 +83,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E76504F31FFC306100B345F6"
-            BuildableName = "ClearentIdtechIOSFramework_.framework"
-            BlueprintName = "ClearentIdtechIOSFramework-"
-            ReferencedContainer = "container:ClearentIdtechIOSFramework-.xcodeproj">
+            BuildableName = "ClearentIdtechIOSFramework.framework"
+            BlueprintName = "ClearentIdtechIOSFramework"
+            ReferencedContainer = "container:ClearentIdtechIOSFramework.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </ProfileAction>

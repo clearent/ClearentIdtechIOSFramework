@@ -6,4 +6,4 @@
 //  Copyright © 2018 Clearent, L.L.C. All rights reserved.
 //
 
-#import <ClearentIdtechIOSFramework-/Clearent_UniPayIII.h>
+#import <ClearentIdtechIOSFramework/Clearent_UniPayIII.h>
