@@ -13,22 +13,23 @@
 		E76505181FFC313A00B345F6 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76505171FFC313A00B345F6 /* AVFoundation.framework */; };
 		E765051A1FFC314300B345F6 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76505191FFC314300B345F6 /* AudioToolbox.framework */; };
 		E765051C1FFC314D00B345F6 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E765051B1FFC314D00B345F6 /* CFNetwork.framework */; };
-		E77583FB209DAFBE0007C02A /* ClearentIdtechIOSFramework_iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = E77583F9209DAFBE0007C02A /* ClearentIdtechIOSFramework_iOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E77583FF209DB0010007C02A /* ClearentIdtechIOSFramework.h in Sources */ = {isa = PBXBuildFile; fileRef = E7D95F68209B96B4001C5871 /* ClearentIdtechIOSFramework.h */; };
-		E7758400209DB0070007C02A /* Clearent_UniPayIII.h in Sources */ = {isa = PBXBuildFile; fileRef = E765055B1FFD219700B345F6 /* Clearent_UniPayIII.h */; };
-		E7758401209DB00F0007C02A /* Clearent_UniPayIII.m in Sources */ = {isa = PBXBuildFile; fileRef = E77C8FC91FFEB3AA00C3E590 /* Clearent_UniPayIII.m */; };
-		E7758402209DB01A0007C02A /* PrivateDelegate.h in Sources */ = {isa = PBXBuildFile; fileRef = E77C900D1FFFE38100C3E590 /* PrivateDelegate.h */; };
-		E7758403209DB01A0007C02A /* PrivateDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E79A4D93204F14B000E4BBF6 /* PrivateDelegate.m */; };
-		E7758404209DB01A0007C02A /* PublicDelegate.h in Sources */ = {isa = PBXBuildFile; fileRef = E77C90121FFFE8F800C3E590 /* PublicDelegate.h */; };
-		E7758405209DB01A0007C02A /* ClearentTransactionTokenRequest.h in Sources */ = {isa = PBXBuildFile; fileRef = E77C90452000442200C3E590 /* ClearentTransactionTokenRequest.h */; };
-		E7758406209DB01A0007C02A /* ClearentTransactionTokenRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = E77C90462000442200C3E590 /* ClearentTransactionTokenRequest.m */; };
-		E7758407209DB0260007C02A /* IDTech.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E7D95F6D209B9F82001C5871 /* IDTech.bundle */; };
-		E7758408209DB0B00007C02A /* IDTech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7D95F6B209B9F73001C5871 /* IDTech.framework */; };
-		E7758409209DB0DA0007C02A /* ClearentIdtechIOSFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = E7D95F68209B96B4001C5871 /* ClearentIdtechIOSFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E775840A209DB0DA0007C02A /* Clearent_UniPayIII.h in Headers */ = {isa = PBXBuildFile; fileRef = E765055B1FFD219700B345F6 /* Clearent_UniPayIII.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E775840B209DB0DA0007C02A /* PrivateDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E77C900D1FFFE38100C3E590 /* PrivateDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E775840C209DB0DA0007C02A /* PublicDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E77C90121FFFE8F800C3E590 /* PublicDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E775840D209DB0DA0007C02A /* ClearentTransactionTokenRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = E77C90452000442200C3E590 /* ClearentTransactionTokenRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E7758410209DB76A0007C02A /* Clearent_UniPayIII.m in Sources */ = {isa = PBXBuildFile; fileRef = E77C8FC91FFEB3AA00C3E590 /* Clearent_UniPayIII.m */; };
+		E7758411209DB76A0007C02A /* ClearentTransactionTokenRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = E77C90462000442200C3E590 /* ClearentTransactionTokenRequest.m */; };
+		E7758412209DB76A0007C02A /* PrivateDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E79A4D93204F14B000E4BBF6 /* PrivateDelegate.m */; };
+		E7758414209DB76A0007C02A /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E765051B1FFC314D00B345F6 /* CFNetwork.framework */; };
+		E7758415209DB76A0007C02A /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76505191FFC314300B345F6 /* AudioToolbox.framework */; };
+		E7758416209DB76A0007C02A /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76505171FFC313A00B345F6 /* AVFoundation.framework */; };
+		E7758417209DB76A0007C02A /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76505151FFC313200B345F6 /* MediaPlayer.framework */; };
+		E7758418209DB76A0007C02A /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76505131FFC312500B345F6 /* ExternalAccessory.framework */; };
+		E7758419209DB76A0007C02A /* IDTech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7D95F6B209B9F73001C5871 /* IDTech.framework */; };
+		E775841B209DB76A0007C02A /* ClearentIdtechIOSFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = E7D95F68209B96B4001C5871 /* ClearentIdtechIOSFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E775841C209DB76A0007C02A /* PublicDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E77C90121FFFE8F800C3E590 /* PublicDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E775841D209DB76A0007C02A /* PrivateDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E77C900D1FFFE38100C3E590 /* PrivateDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E775841E209DB76A0007C02A /* ClearentTransactionTokenRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = E77C90452000442200C3E590 /* ClearentTransactionTokenRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E775841F209DB76A0007C02A /* Clearent_UniPayIII.h in Headers */ = {isa = PBXBuildFile; fileRef = E765055B1FFD219700B345F6 /* Clearent_UniPayIII.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E7758421209DB76A0007C02A /* IDTech.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E7D95F6D209B9F82001C5871 /* IDTech.bundle */; };
+		E7758422209DB76A0007C02A /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = E77687462062B66300284FF4 /* .gitignore */; };
+		E7758428209DB81A0007C02A /* ClearentIdtechIOSFramework_iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = E77583F9209DAFBE0007C02A /* ClearentIdtechIOSFramework_iOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E77687472062B66300284FF4 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = E77687462062B66300284FF4 /* .gitignore */; };
 		E77C8FCA1FFEB3AA00C3E590 /* Clearent_UniPayIII.m in Sources */ = {isa = PBXBuildFile; fileRef = E77C8FC91FFEB3AA00C3E590 /* Clearent_UniPayIII.m */; };
 		E77C900F1FFFE38100C3E590 /* PrivateDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E77C900D1FFFE38100C3E590 /* PrivateDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -62,9 +63,10 @@
 		E76505191FFC314300B345F6 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		E765051B1FFC314D00B345F6 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		E765055B1FFD219700B345F6 /* Clearent_UniPayIII.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Clearent_UniPayIII.h; sourceTree = "<group>"; };
-		E77583F7209DAFBE0007C02A /* ClearentIdtechIOSFramework_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ClearentIdtechIOSFramework_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E77583F9209DAFBE0007C02A /* ClearentIdtechIOSFramework_iOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentIdtechIOSFramework_iOS.h; sourceTree = "<group>"; };
 		E77583FA209DAFBE0007C02A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		E7758426209DB76A0007C02A /* ClearentIdtechIOSFramework-iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = "ClearentIdtechIOSFramework-iOS.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		E7758427209DB76A0007C02A /* ClearentIdtechIOSFramework copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "ClearentIdtechIOSFramework copy-Info.plist"; path = "/Users/davidhigginbotham/Documents/IOSProjects/ClearentIdtechIOSFramework/ClearentIdtechIOSFramework copy-Info.plist"; sourceTree = "<absolute>"; };
 		E77687462062B66300284FF4 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		E77C8FC91FFEB3AA00C3E590 /* Clearent_UniPayIII.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Clearent_UniPayIII.m; sourceTree = "<group>"; };
 		E77C900D1FFFE38100C3E590 /* PrivateDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PrivateDelegate.h; sourceTree = "<group>"; };
@@ -99,11 +101,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E77583F3209DAFBE0007C02A /* Frameworks */ = {
+		E7758413209DB76A0007C02A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E7758408209DB0B00007C02A /* IDTech.framework in Frameworks */,
+				E7758414209DB76A0007C02A /* CFNetwork.framework in Frameworks */,
+				E7758415209DB76A0007C02A /* AudioToolbox.framework in Frameworks */,
+				E7758416209DB76A0007C02A /* AVFoundation.framework in Frameworks */,
+				E7758417209DB76A0007C02A /* MediaPlayer.framework in Frameworks */,
+				E7758418209DB76A0007C02A /* ExternalAccessory.framework in Frameworks */,
+				E7758419209DB76A0007C02A /* IDTech.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -120,6 +127,7 @@
 				E77583F8209DAFBE0007C02A /* ClearentIdtechIOSFramework-iOS */,
 				E76504F51FFC306100B345F6 /* Products */,
 				E765050E1FFC30F000B345F6 /* Frameworks */,
+				E7758427209DB76A0007C02A /* ClearentIdtechIOSFramework copy-Info.plist */,
 			);
 			sourceTree = "<group>";
 		};
@@ -128,7 +136,7 @@
 			children = (
 				E76504F41FFC306100B345F6 /* ClearentIdtechIOSFramework.framework */,
 				E76504FD1FFC306100B345F6 /* ClearentIdtechIOSFrameworkTests.xctest */,
-				E77583F7209DAFBE0007C02A /* ClearentIdtechIOSFramework_iOS.framework */,
+				E7758426209DB76A0007C02A /* ClearentIdtechIOSFramework-iOS.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -185,16 +193,16 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E77583F4209DAFBE0007C02A /* Headers */ = {
+		E775841A209DB76A0007C02A /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E77583FB209DAFBE0007C02A /* ClearentIdtechIOSFramework_iOS.h in Headers */,
-				E7758409209DB0DA0007C02A /* ClearentIdtechIOSFramework.h in Headers */,
-				E775840B209DB0DA0007C02A /* PrivateDelegate.h in Headers */,
-				E775840D209DB0DA0007C02A /* ClearentTransactionTokenRequest.h in Headers */,
-				E775840C209DB0DA0007C02A /* PublicDelegate.h in Headers */,
-				E775840A209DB0DA0007C02A /* Clearent_UniPayIII.h in Headers */,
+				E7758428209DB81A0007C02A /* ClearentIdtechIOSFramework_iOS.h in Headers */,
+				E775841B209DB76A0007C02A /* ClearentIdtechIOSFramework.h in Headers */,
+				E775841C209DB76A0007C02A /* PublicDelegate.h in Headers */,
+				E775841D209DB76A0007C02A /* PrivateDelegate.h in Headers */,
+				E775841E209DB76A0007C02A /* ClearentTransactionTokenRequest.h in Headers */,
+				E775841F209DB76A0007C02A /* Clearent_UniPayIII.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -237,22 +245,22 @@
 			productReference = E76504FD1FFC306100B345F6 /* ClearentIdtechIOSFrameworkTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		E77583F6209DAFBE0007C02A /* ClearentIdtechIOSFramework-iOS */ = {
+		E775840E209DB76A0007C02A /* ClearentIdtechIOSFramework-iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E77583FE209DAFBE0007C02A /* Build configuration list for PBXNativeTarget "ClearentIdtechIOSFramework-iOS" */;
+			buildConfigurationList = E7758423209DB76A0007C02A /* Build configuration list for PBXNativeTarget "ClearentIdtechIOSFramework-iOS" */;
 			buildPhases = (
-				E77583F2209DAFBE0007C02A /* Sources */,
-				E77583F3209DAFBE0007C02A /* Frameworks */,
-				E77583F4209DAFBE0007C02A /* Headers */,
-				E77583F5209DAFBE0007C02A /* Resources */,
+				E775840F209DB76A0007C02A /* Sources */,
+				E7758413209DB76A0007C02A /* Frameworks */,
+				E775841A209DB76A0007C02A /* Headers */,
+				E7758420209DB76A0007C02A /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = "ClearentIdtechIOSFramework-iOS";
-			productName = "ClearentIdtechIOSFramework-iOS";
-			productReference = E77583F7209DAFBE0007C02A /* ClearentIdtechIOSFramework_iOS.framework */;
+			productName = ClearentPayments;
+			productReference = E7758426209DB76A0007C02A /* ClearentIdtechIOSFramework-iOS.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -272,9 +280,6 @@
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
 					};
-					E77583F6209DAFBE0007C02A = {
-						CreatedOnToolsVersion = 9.3;
-					};
 				};
 			};
 			buildConfigurationList = E76504EE1FFC306100B345F6 /* Build configuration list for PBXProject "ClearentIdtechIOSFramework" */;
@@ -291,7 +296,7 @@
 			targets = (
 				E76504F31FFC306100B345F6 /* ClearentIdtechIOSFramework */,
 				E76504FC1FFC306100B345F6 /* ClearentIdtechIOSFrameworkTests */,
-				E77583F6209DAFBE0007C02A /* ClearentIdtechIOSFramework-iOS */,
+				E775840E209DB76A0007C02A /* ClearentIdtechIOSFramework-iOS */,
 			);
 		};
 /* End PBXProject section */
@@ -313,11 +318,12 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E77583F5209DAFBE0007C02A /* Resources */ = {
+		E7758420209DB76A0007C02A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E7758407209DB0260007C02A /* IDTech.bundle in Resources */,
+				E7758421209DB76A0007C02A /* IDTech.bundle in Resources */,
+				E7758422209DB76A0007C02A /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -341,18 +347,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E77583F2209DAFBE0007C02A /* Sources */ = {
+		E775840F209DB76A0007C02A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E7758402209DB01A0007C02A /* PrivateDelegate.h in Sources */,
-				E7758403209DB01A0007C02A /* PrivateDelegate.m in Sources */,
-				E7758404209DB01A0007C02A /* PublicDelegate.h in Sources */,
-				E7758405209DB01A0007C02A /* ClearentTransactionTokenRequest.h in Sources */,
-				E7758406209DB01A0007C02A /* ClearentTransactionTokenRequest.m in Sources */,
-				E7758401209DB00F0007C02A /* Clearent_UniPayIII.m in Sources */,
-				E7758400209DB0070007C02A /* Clearent_UniPayIII.h in Sources */,
-				E77583FF209DB0010007C02A /* ClearentIdtechIOSFramework.h in Sources */,
+				E7758410209DB76A0007C02A /* Clearent_UniPayIII.m in Sources */,
+				E7758411209DB76A0007C02A /* ClearentTransactionTokenRequest.m in Sources */,
+				E7758412209DB76A0007C02A /* PrivateDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -581,10 +582,9 @@
 			};
 			name = Release;
 		};
-		E77583FC209DAFBE0007C02A /* Debug */ = {
+		E7758424209DB76A0007C02A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -596,24 +596,27 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/ClearentIdtechIOSFramework",
 				);
-				INFOPLIST_FILE = "ClearentIdtechIOSFramework-iOS/Info.plist";
+				INFOPLIST_FILE = "ClearentIdtechIOSFramework copy-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.clearent.quest.ClearentIdtechIOSFramework-iOS";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SKIP_INSTALL = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.clearent.quest.ClearentIdtechIOSFrameworks;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = NO;
+				STRIP_INSTALLED_PRODUCT = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
 			name = Debug;
 		};
-		E77583FD209DAFBE0007C02A /* Release */ = {
+		E7758425209DB76A0007C02A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -625,17 +628,21 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/ClearentIdtechIOSFramework",
 				);
-				INFOPLIST_FILE = "ClearentIdtechIOSFramework-iOS/Info.plist";
+				INFOPLIST_FILE = "ClearentIdtechIOSFramework copy-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = "com.clearent.quest.ClearentIdtechIOSFramework-iOS";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SKIP_INSTALL = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.clearent.quest.ClearentIdtechIOSFrameworks;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = NO;
+				STRIP_INSTALLED_PRODUCT = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
 			name = Release;
 		};
@@ -669,11 +676,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		E77583FE209DAFBE0007C02A /* Build configuration list for PBXNativeTarget "ClearentIdtechIOSFramework-iOS" */ = {
+		E7758423209DB76A0007C02A /* Build configuration list for PBXNativeTarget "ClearentIdtechIOSFramework-iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				E77583FC209DAFBE0007C02A /* Debug */,
-				E77583FD209DAFBE0007C02A /* Release */,
+				E7758424209DB76A0007C02A /* Debug */,
+				E7758425209DB76A0007C02A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
