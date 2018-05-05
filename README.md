@@ -5,10 +5,6 @@ Carthage was chosen to bring the Clearent framework into your project because of
 1 - Install Carthage if you have not done so. ex - brew install carthage.
 2 - Add a Cartfile to your project (at root). Point to Clearent's private github repository for this framework by adding the following to your Cartfile
 
-github "clearent/ClearentIdtechIOSFramework-" ~>= 1.0.0
+github "clearent/ClearentIdtechIOSFramework-" "release/1.0.1"
 
 3 - run this command from your project's root folder. carthage update --platform iOS
-
-
-
-
