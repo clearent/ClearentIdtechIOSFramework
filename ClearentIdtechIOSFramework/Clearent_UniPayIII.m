@@ -1,6 +1,6 @@
 //
 //  Clearent_UniPayIII.m
-//  ClearentIdtechIOSFramework-
+//  ClearentIdtechIOSFramework
 //
 //  Created by David Higginbotham on 1/4/18.
 //  Copyright © 2018 Clearent, L.L.C. All rights reserved.
