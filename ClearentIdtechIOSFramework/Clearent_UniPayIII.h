@@ -1,5 +1,4 @@
 #import <Foundation/Foundation.h>
-#import <IDTech/IDTech.h>
 #import <MessageUI/MessageUI.h>
 #import <AVFoundation/AVFoundation.h>
 #import "PrivateDelegate.h"
