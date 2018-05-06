@@ -1,12 +1,12 @@
 #import <Foundation/Foundation.h>
 #import <MessageUI/MessageUI.h>
 #import <AVFoundation/AVFoundation.h>
-#import "PrivateDelegate.h"
+#import "ClearentDelegate.h"
 #import "PublicDelegate.h"
 
 @interface Clearent_UniPayIII : NSObject
 
-@property(nonatomic) PrivateDelegate *privateDelegate;
+@property(nonatomic) ClearentDelegate *clearentDelegate;
 @property(nonatomic) SEL callBackSelector;
 - (void) init : (id <Clearent_Public_IDT_UniPayIII_Delegate>) publicDelegate;
 - (NSString*) SDK_version;

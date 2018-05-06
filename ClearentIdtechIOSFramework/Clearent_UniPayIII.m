@@ -12,12 +12,12 @@
 @implementation Clearent_UniPayIII
 
 - (void) init : (id <Clearent_Public_IDT_UniPayIII_Delegate>) publicDelegate {
-    NSLog(@"Set the delegate in the ID Tech solution to our PrivateDelegate, which will call the Public delegate when needed.");
+    NSLog(@"Set the delegate in the ID Tech solution to our ClearentDelegate, which will call the Public delegate when needed.");
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        self.privateDelegate = [[PrivateDelegate alloc] init];
-        [self.privateDelegate init:publicDelegate];
-        [IDT_UniPayIII sharedController].delegate = self.privateDelegate;
+        self.clearentDelegate = [[ClearentDelegate alloc] init];
+        [self.clearentDelegate init:publicDelegate];
+        [IDT_UniPayIII sharedController].delegate = self.clearentDelegate;
         NSLog(@"Clearent_UniPayIII initialized");
     });
 }

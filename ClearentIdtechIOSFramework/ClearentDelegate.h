@@ -1,5 +1,5 @@
 //
-//  PrivateDelegate.h
+//  ClearentDelegate.h
 //  ClearentIdtechIOSFramework
 //
 //  Created by David Higginbotham on 1/5/18.
@@ -14,7 +14,7 @@
 typedef enum {FALLBACK_SWIPE=80, NONTECH_FALLBACK_SWIPE=95, CONTACTLESS_EMV=07, CONTACTLESS_MAGNETIC_SWIPE=91} supportedEmvEntryMode;
 typedef enum {SWIPE=90} supportedNonEmvEntryMode;
  
-@interface PrivateDelegate : NSObject<IDT_UniPayIII_Delegate>
+@interface ClearentDelegate : NSObject<IDT_UniPayIII_Delegate>
 @property(nonatomic) NSString *firmwareVersion;
 @property(nonatomic) NSString *deviceSerialNumber;
 @property(nonatomic) NSString *kernelVersion;

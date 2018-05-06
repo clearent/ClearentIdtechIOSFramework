@@ -1,12 +1,12 @@
 //
-//  PrivateDelegate.m
+//  ClearentDelegate.m
 //  ClearentIdtechIOSFramework
 //
 //  Created by David Higginbotham on 1/5/18.
 //  Copyright © 2018 Clearent, L.L.C. All rights reserved.
 //
 
-#import "PrivateDelegate.h"
+#import "ClearentDelegate.h"
 #import "IDTech/IDTUtility.h"
 
 static NSString *const TRACK2_DATA_EMV_TAG = @"57";
@@ -18,11 +18,11 @@ static NSString *const KERNEL_VERSION_EMV_TAG = @"DF79";
 static NSString *const GENERIC_CARD_READ_ERROR_RESPONSE = @"Card read error";
 static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Transaction Token Failed";
 
-@implementation PrivateDelegate
+@implementation ClearentDelegate
 
 - (void) init : (id <Clearent_Public_IDT_UniPayIII_Delegate>) publicDelegate {
     self.publicDelegate = publicDelegate;
-    NSLog(@"PrivateDelegate initialized");
+    NSLog(@"ClearentDelegate initialized");
 }
 
 - (void) lcdDisplay:(int)mode  lines:(NSArray*)lines {
