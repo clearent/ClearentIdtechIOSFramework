@@ -7,5 +7,5 @@
 //
 #import <ClearentIdtechIOSFramework/Clearent_UniPayIII.h>
 #import <ClearentIdtechIOSFramework/PublicDelegate.h>
-#import <ClearentIdtechIOSFramework/PrivateDelegate.h>
+#import <ClearentIdtechIOSFramework/ClearentDelegate.h>
 #import <ClearentIdtechIOSFramework/ClearentTransactionTokenRequest.h>
