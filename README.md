@@ -1,6 +1,10 @@
+# Clearent IDTech IOS Framework
+
 This is an IOS Framework that works with the IDTech framework to handle credit card data from IDTECH readers (currently only UniPay III is supported).
 
 Carthage was chosen to bring the Clearent framework into your project because of its flexibility.  Reference Carthage documentation too (https://github.com/Carthage/Carthage).
+
+## Build the framework, build your app.
 
 1 - Install Carthage if you have not done so. ex - brew install carthage.
 
@@ -14,7 +18,7 @@ Carthage was chosen to bring the Clearent framework into your project because of
 
     carthage update
     
-5 - On your application targets’ General settings tab, in the Embedded Binaries section, drag and drop the Clearent Framework you want to use from the Carthage/Build folder.
+5 - On your application targets’ General settings tab, in the Embedded Binaries section, drag and drop the Clearent Framework from the Carthage/Build folder.
 
 6 - Additionally, you'll need to copy debug symbols for debugging and crash reporting on OS X.
     On your application target’s Build Phases settings tab, click the + icon and choose New Copy Files Phase.
@@ -25,7 +29,7 @@ Carthage was chosen to bring the Clearent framework into your project because of
 
 8 - Build your app. The Clearent Framework should be available for use.
 
-Example of framework usage 
+## Example of Clearent Framework usage 
 
 1 - Add this to your ViewController.h
 #import <ClearentIdtechIOSFramework/ClearentIdtechIOSFramework.h>
