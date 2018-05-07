@@ -1,8 +1,8 @@
 #import <Foundation/Foundation.h>
 #import <MessageUI/MessageUI.h>
 #import <AVFoundation/AVFoundation.h>
-#import "ClearentDevice.h"
-#import "PublicDelegate.h"
+#import "ClearentIdtechIOSFramework/ClearentDevice.h"
+#import "ClearentIdtechIOSFramework/PublicDelegate.h"
 
 @interface Clearent_UniPayIII : NSObject<Clearent_Device>
 

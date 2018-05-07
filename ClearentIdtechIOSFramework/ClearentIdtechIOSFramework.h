@@ -10,5 +10,6 @@
 #import "ClearentIdtechIOSFramework/ClearentDelegate.h"
 #import "ClearentIdtechIOSFramework/ClearentTransactionTokenRequest.h"
 #import "ClearentIdtechIOSFramework/ClearentDevice.h"
+#import "IDTech/IDT_UniPayIII.h"
 #import <IDTech/IDTCommon.h>
 #import <IDTech/APDUResponse.h>
