@@ -6,8 +6,8 @@
 //  Copyright © 2018 Clearent, L.L.C. All rights reserved.
 //
 #import <Foundation/Foundation.h>
-#import <IDTech/IDTCommon.h>
-#import <IDTech/APDUResponse.h>
+#import "IDTech/IDTCommon.h"
+#import "IDTech/APDUResponse.h"
 
 @protocol Clearent_Device <NSObject>
 /**
