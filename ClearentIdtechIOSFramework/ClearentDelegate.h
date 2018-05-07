@@ -5,6 +5,9 @@
 //  Created by David Higginbotham on 1/5/18.
 //  Copyright © 2018 Clearent, L.L.C. All rights reserved.
 //
+// The ClearentDelegate's goal is to wrap the functionality exposed to the public and insert
+// itself into the IdTech framework allowing for Clearent to manage the credit card data for the client.
+// It also gives us opportunity to do other things on behalf of the client, such as emv configuration.
 
 #import <Foundation/Foundation.h>
 #import "PublicDelegate.h"
