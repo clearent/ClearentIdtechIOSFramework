@@ -29,7 +29,7 @@ Carthage was chosen to bring the Clearent framework into your project because of
 
 8 - Build your app. The Clearent Framework should be available for use.
 
-## Example of Clearent Framework usage 
+## Use the Clearent Framework 
 
 1 - Add this to your ViewController.h
 #import <ClearentIdtechIOSFramework/ClearentIdtechIOSFramework.h>
@@ -48,85 +48,19 @@ clearentPayments = [[Clearent_UniPayIII alloc]  init];
 }
 
 -(NSString*) getPublicKey {
-return @"307a301406072a8648ce3d020106092b240303020801010c0362000474ce100cfdf0f3e15782c96b41f20522d5660e8474a753722e2b9c0d3a768a068c377b524750dd89163866caad1aba885fd34250d3e122b789499f87f262a0204c6e649617604bcebaa730bf6c2a74cf54a69abf9f6bf7ecfed3e44e463e31fc";
+    return @"fdsafkjsf384r73fnsdkguhag93488hegsr";
 }
 
 5- Implement the successfulTransactionToken and errorTransactionToken delegate methods. A transaction token is the representation of the credit card and allows you to submit a payment transaction.
 When a card is processed (swipe,contactless, or insert/dip of card with an emv chip), the framework will call one of these two methods.
 
 -(void) successfulTransactionToken:(NSString*) jsonString {
-    NSLog(@"A clearent transaction token (JWT) has been created. Let's show an example of how to use it.");
-    NSLog(@"%@",jsonString);
-    NSDictionary *successfulResponseDictionary = [self jsonAsDictionary:jsonString];
-    NSDictionary *payload = [successfulResponseDictionary objectForKey:@"payload"];
-    NSDictionary *emvJwt = [payload objectForKey:@"emv-jwt"];
-    NSString *cvm = [emvJwt objectForKey:@"cvm"];
-    NSString *lastFour = [emvJwt objectForKey:@"last-four"];
-    NSString *trackDataHash = [emvJwt objectForKey:@"track-data-hash"];
-    NSString *jwt = [emvJwt objectForKey:@"jwt"];
-    NSLog(@"%@",jwt);
-    NSLog(@"%@",cvm); 
-    NSLog(@"%@",lastFour); 
-    NSLog(@"%@",trackDataHash);
+  //This json contains the transaction token. See demo app for more details
 }
 
 - (void) errorTransactionToken:(NSString*)message{
-    NSLog(@"%@",message);
+     //See demo app for more details
 }
 
-- (NSDictionary *)jsonAsDictionary:(NSString *)stringJson {
-    NSData *data = [stringJson dataUsingEncoding:NSUTF8StringEncoding];
-    NSError *error;
-    NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data
-    options:0
-    error:&error];
-    if (error) {
-        NSLog(@"Error json: %@", [error description]);
-    }
-return jsonDictionary;
-}
+6 - When you are ready to process the payment, do a POST against endpoint /rest/v2/mobile/transactions. See demo app for an example
 
-6 - When you are ready to process the payment, do a POST against endpoint /rest/v2/mobile/transactions. Here's an example:
-
-- (void) exampleTransactionToClearentPayments:(NSString*)token {
-    NSLog(@"%@Run the transaction...",token);
-    //Construct the url
-    NSString *targetUrl = [NSString stringWithFormat:@"%@/rest/v2/mobile/transactions", @"https://gateway-dev.clearent.net"];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    //Create a sample json request.
-    NSData *postData = [self exampleClearentTransactionRequestAsJson];
-    //Build a url request. It's a POST.
-    [request setHTTPBody:postData];
-    [request setHTTPMethod:@"POST"];
-    //Use json
-    [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
-
-    //add a test apikey as a header
-    [request setValue:@"12fa1a5617464354a72b3c9eb92d4f3b" forHTTPHeaderField:@"api-key"];
-
-    //add the JWT as a header.
-    [request setValue:token forHTTPHeaderField:@"emvjwt"];
-    [request setURL:[NSURL URLWithString:targetUrl]];
-    //Do the Post. Report the result to your user (this example sends the message to the console on the demo app (lower left corner of ui)).
-    [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:
-    ^(NSData * _Nullable data,
-    NSURLResponse * _Nullable response,
-    NSError * _Nullable error) {
-    //Clearent returns an object that is defined the same for both successful and unsuccessful calls with one exception. The 'payload' can be different.
-    NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
-    NSLog(@"Clearent Transaction Response status code: %ld", (long)[httpResponse statusCode]);
-    if(error != nil) {
-       NSLog(@"%@Result...",error.description);
-    } else if(data != nil) {
-        NSString *responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        NSLog(@"Clearent Transaction : %s", responseStr);
-    }
-}] resume];
-}
-
-- (NSData*) exampleClearentTransactionRequestAsJson {
-    NSDictionary* dict = @{@"amount":@"4.55",@"type":@"SALE",@"email-address":@"someone@somewhere.com",@"email-receipt":@"true"};
-    return [NSJSONSerialization dataWithJSONObject:dict
-    options:NSJSONWritingPrettyPrinted error:nil];
-}
