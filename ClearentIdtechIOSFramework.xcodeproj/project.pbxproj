@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		E7108C321FFD36D00004027D /* Clearent_UniPayIII.h in Headers */ = {isa = PBXBuildFile; fileRef = E765055B1FFD219700B345F6 /* Clearent_UniPayIII.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E745E3BB20A1E2C0006F5871 /* IDTech.h in Headers */ = {isa = PBXBuildFile; fileRef = E775846C209DCA1A0007C02A /* IDTech.h */; };
 		E7467546209F0A8E00BC8504 /* uniMag.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467534209F0A8C00BC8504 /* uniMag.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E7467547209F0A8E00BC8504 /* IDT_BTMag.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467535209F0A8C00BC8504 /* IDT_BTMag.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E7467548209F0A8E00BC8504 /* UniPay.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467536209F0A8C00BC8504 /* UniPay.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -210,6 +211,7 @@
 				E746754B209F0A8E00BC8504 /* APDUData.h in Headers */,
 				E746754C209F0A8E00BC8504 /* APDUResponse.h in Headers */,
 				E746754D209F0A8E00BC8504 /* IDT_UniPayII.h in Headers */,
+				E745E3BB20A1E2C0006F5871 /* IDTech.h in Headers */,
 				E746754E209F0A8E00BC8504 /* IDTMSRData.h in Headers */,
 				E746754F209F0A8E00BC8504 /* IDT_UniPay.h in Headers */,
 				E7467550209F0A8E00BC8504 /* IDT_UniMag.h in Headers */,
