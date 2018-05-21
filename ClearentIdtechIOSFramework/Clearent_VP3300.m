@@ -218,6 +218,126 @@
     return [[IDT_VP3300 sharedController] isConnected];
 }
 
+-(void) assignBypassDelegate:(id<IDT_VP3300_Delegate>)del {
+     return [[IDT_VP3300 sharedController] assignBypassDelegate:del];
+}
+
+-(RETURN_CODE) ctls_getConfigurationGroup:(int)group response:(NSDictionary**)response {
+    return [[IDT_VP3300 sharedController] ctls_getConfigurationGroup:group response:response];
+}
+
+-(RETURN_CODE) ctls_removeAllCAPK {
+    return [[IDT_VP3300 sharedController] ctls_removeAllCAPK];
+}
+
+-(RETURN_CODE) ctls_removeApplicationData:(NSString*)AID {
+    return [[IDT_VP3300 sharedController] ctls_removeApplicationData:AID];
+}
+
+-(RETURN_CODE)  ctls_removeCAPK:(NSData*)capk {
+    return [[IDT_VP3300 sharedController] ctls_removeCAPK:capk ];
+}
+
+-(RETURN_CODE)  ctls_removeConfigurationGroup:(int)group {
+    return [[IDT_VP3300 sharedController] ctls_removeConfigurationGroup:group ];
+}
+
+-(RETURN_CODE) ctls_retrieveAIDList:(NSArray**)response {
+    return [[IDT_VP3300 sharedController] ctls_retrieveAIDList:response];
+}
+
+-(RETURN_CODE)  ctls_retrieveApplicationData:(NSString*)AID response:(NSDictionary**)response {
+    return [[IDT_VP3300 sharedController] ctls_retrieveApplicationData:AID response:response];
+}
+
+-(RETURN_CODE)  ctls_retrieveCAPK:(NSData*)capk key:(NSData**)key {
+    return [[IDT_VP3300 sharedController] ctls_retrieveCAPK:capk key:key];
+}
+
+-(RETURN_CODE)  ctls_retrieveCAPKList:(NSArray**)keys {
+    return [[IDT_VP3300 sharedController] ctls_retrieveCAPKList:keys];
+}
+
+-(RETURN_CODE)  ctls_retrieveTerminalData:(NSData**)tlv {
+    return [[IDT_VP3300 sharedController] ctls_retrieveTerminalData:tlv];
+}
+
+-(RETURN_CODE)  ctls_setApplicationData:(NSData*)tlv{
+     return [[IDT_VP3300 sharedController] ctls_setApplicationData:tlv];
+}
+
+-(RETURN_CODE)  ctls_setCAPK:(NSData*)key {
+    return [[IDT_VP3300 sharedController] ctls_setCAPK:key];
+}
+
+-(RETURN_CODE) ctls_setConfigurationGroup:(NSData*)tlv {
+   return [[IDT_VP3300 sharedController] ctls_setConfigurationGroup:tlv];
+}
+
+-(RETURN_CODE) ctls_setTerminalData:(NSData*)tlv {
+    return [[IDT_VP3300 sharedController] ctls_setTerminalData:tlv];
+}
+
+-(RETURN_CODE) ctls_startTransaction:(double)amount type:(int)type timeout:(int)timeout tags:(NSMutableDictionary *)tags {
+    return [[IDT_VP3300 sharedController] ctls_startTransaction:amount type:type timeout:timeout tags:tags];
+}
+
+-(RETURN_CODE) device_cancelTransaction {
+    return [[IDT_VP3300 sharedController] device_cancelTransaction];
+}
+
+-(void) device_disconnectBLE {
+    return [[IDT_VP3300 sharedController] device_disconnectBLE];
+}
+
+-(bool) device_enableBLEDeviceSearch:(NSUUID*)identifier {
+    return [[IDT_VP3300 sharedController] device_enableBLEDeviceSearch:identifier];
+}
+
+-(RETURN_CODE)  device_getAutoPollTransactionResults:(IDTEMVData**)result {
+    return [[IDT_VP3300 sharedController] device_getAutoPollTransactionResults:result];
+}
+
+-(NSString*) device_getBLEFriendlyName {
+    return [[IDT_VP3300 sharedController] device_getBLEFriendlyName];
+}
+
+-(void) device_setBLEFriendlyName:(NSString*)friendlyName {
+    return [[IDT_VP3300 sharedController] device_setBLEFriendlyName:friendlyName];
+}
+
+-(RETURN_CODE)  device_setBurstMode:(int) mode {
+    return [[IDT_VP3300 sharedController] device_setBurstMode:mode];
+}
+
+-(RETURN_CODE) device_setPollMode:(int) mode {
+     return [[IDT_VP3300 sharedController] device_setPollMode:mode];
+}
+
+-(RETURN_CODE) device_startTransaction:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline  fallback:(BOOL)fallback {
+    return [[IDT_VP3300 sharedController] device_startTransaction:amount amtOther:amtOther type:type timeout:timeout tags:tags forceOnline:forceOnline  fallback:fallback];
+    
+}
+
+-(RETURN_CODE) emv_callbackResponsePIN:(EMV_PIN_MODE_Types)mode KSN:(NSData*)KSN PIN:(NSData*)PIN {
+    return [[IDT_VP3300 sharedController] emv_callbackResponsePIN:(EMV_PIN_MODE_Types)mode KSN:KSN PIN:PIN];
+}
+
+-(RETURN_CODE) emv_cancelTransaction {
+    return [[IDT_VP3300 sharedController] emv_cancelTransaction];
+}
+
+-(RETURN_CODE) emv_getTerminalMajorConfiguration:(NSUInteger**)configuration {
+    return [[IDT_VP3300 sharedController] emv_getTerminalMajorConfiguration:configuration];
+}
+
+-(RETURN_CODE) emv_setTerminalMajorConfiguration:(int)configuration {
+    return [[IDT_VP3300 sharedController] emv_setTerminalMajorConfiguration:configuration];
+}
+
+-(void) processBypassResponse:(NSData*)data {
+    return [[IDT_VP3300 sharedController] processBypassResponse:data];
+}
 @end
 
 
