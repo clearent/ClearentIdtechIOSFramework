@@ -2,8 +2,7 @@
 #import <MessageUI/MessageUI.h>
 #import <AVFoundation/AVFoundation.h>
 #import "ClearentIdtechIOSFramework/ClearentDevice.h"
-#import "ClearentIdtechIOSFramework/PublicDelegate.h"
-
+#import "ClearentIdtechIOSFramework/PublicDelegate.h" 
 @interface Clearent_UniPayIII : NSObject<Clearent_Device>
 
 @property(nonatomic) SEL callBackSelector;
