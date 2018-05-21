@@ -1,6 +1,6 @@
 //
 //  PublicDelegate.h
-//  ClearentIdtechIOSFramework
+//  ClearentPayments
 //
 //  Created by David Higginbotham on 1/5/18.
 //  Copyright © 2018 Clearent, L.L.C. All rights reserved.
@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 
 /** Protocol methods established for IDT_UniPayIII class  **/
-@protocol Clearent_Public_IDT_UniPayIII_Delegate <NSObject>
+@protocol Clearent_Public_IDTech_VP3300_Delegate <NSObject>
 
 /**
  * Provide the url Clearent gives you to create a transaction token (JWT) representing the transaction request. When you are developing, point this url to the Clearent Sandbox. When you go live
@@ -56,4 +56,8 @@
  */
 - (void) lcdDisplay:(int)mode  lines:(NSArray*)lines;
 
+//TODO Should this be exposed ? probably ok if there is no sensitive data.
+- (void) dataInOutMonitor:(NSData*)data  incoming:(BOOL)isIncoming;
+
 @end
+

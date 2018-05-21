@@ -58,6 +58,9 @@
 - (void) deviceMessage:(NSString*)message;//!<Receives messages from the framework
 //!< @param message String message transmitted by framework
 
+- (void) bypassData:(NSData*)data;//!<When bypass output is enabled, all data intended for the current device will be sent here .
+//!< @param data The data intended for the device
+
 /**
  LCD Display Request
  During an EMV transaction, this delegate will receive data to clear virtual LCD display, display messages, display menu, or display language.  Applies to UniPay III
@@ -72,6 +75,25 @@
  */
 
 - (void) lcdDisplay:(int)mode  lines:(NSArray*)lines;
+
+/**
+ PIN Request
+ During an EMV transaction, this delegate will receive data that is a request to collect a PIN
+ 
+ @param mode PIN Mode:
+ - EMV_PIN_MODE_CANCEL = 0X00,
+ - EMV_PIN_MODE_ONLINE_PIN_DUKPT = 0X01,
+ - EMV_PIN_MODE_ONLINE_PIN_MKSK = 0X02,
+ - EMV_PIN_MODE_OFFLINE_PIN = 0X03
+ @param key Either DUKPT or SESSION, depending on mode. If offline plaintext, value is nil
+ @param PAN PAN for calculating PINBlock
+ @param startTO Timeout value to start PIN entry
+ @param intervalTO Timeout value between key presses
+ @param language "EN"=English, "ES"=Spanish, "ZH"=Chinese, "FR"=French
+ 
+ */
+
+- (void) pinRequest:(EMV_PIN_MODE_Types)mode  key:(NSData*)key  PAN:(NSData*)PAN startTO:(int)startTO intervalTO:(int)intervalTO language:(NSString*)language;
 
 
 /**
@@ -113,9 +135,9 @@
  This protocol will receive results from IDT_Device::startEMVTransaction:otherAmount:timeout:cashback:additionalTags:()
  
  
- @param emvData EMV Results Data.  Result code, card type, encryption type, masked tags, encrypted tags, unencrypted tags and KSN.  For UniPay1.5 / UniPayIII, the EMV results can be found in emvData.resultCodeV2
+ @param emvData EMV Results Data.  Result code, card type, encryption type, masked tags, encrypted tags, unencrypted tags and KSN.  For UniPay1.5 / VP3300 / VP4880, the EMV results can be found in emvData.resultCodeV2
 
- @param error The error code as defined in the errors.h file.  For UniPay1.5 / UniPayIII, the error is defined as RETURN_CODE
+ @param error The error code as defined in the errors.h file.  For UniPay1.5 / VP3300 / VP4880, the error is defined as RETURN_CODE
  
  
  */
@@ -165,23 +187,24 @@
 @interface IDT_Device : NSObject<EAAccessoryDelegate, NSStreamDelegate>{
     id<IDT_Device_Delegate> delegate;
     id<IDT_Device_Delegate> delegate2;
+    id<IDT_Device_Delegate> bypassDelegate;
 }
 #else
 @interface IDT_Device : NSObject<EAAccessoryDelegate, NSStreamDelegate,UniPay_Delegate,CBCentralManagerDelegate, CBPeripheralDelegate>{
     id<IDT_Device_Delegate> delegate;
     id<IDT_Device_Delegate> delegate2;
+    id<IDT_Device_Delegate> bypassDelegate;
 }
-
 @property (nonatomic, strong) CBCentralManager *centralManager;
 @property (nonatomic, strong) CBPeripheral *bleDevice;
 #endif
 
 #endif
 
-
+;
 @property(strong) id<IDT_Device_Delegate> delegate;  //!<- Reference to IDT_Device_Delegate.
 @property(strong) id<IDT_Device_Delegate> delegate2;  //!<- Reference to IDT_Device_Delegate.
-
+@property(strong) id<IDT_Device_Delegate> bypassDelegate;  //!<- Reference to IDT_Device_Delegate.
 
 
 
@@ -205,7 +228,11 @@
  */
 +(IDT_Device*) sharedController;
 
-
+/**
+ Sets the flag to bypass output.
+ @param bypass TRUE = bypass output
+ */
++(void) bypassOutput:(bool)bypass;
 
 
 /**
@@ -226,12 +253,14 @@
     IDT_DEVICE_UNIPAYII_IOS,
     IDT_DEVICE_UNIPAYII_OSX_USB,
     IDT_DEVICE_IMAG_IOS,
-    IDT_DEVICE_UNIPAYIII_IOS,
-    IDT_DEVICE_UNIPAYIII_OSX_USB,
+    IDT_DEVICE_VP3300_IOS,
+    IDT_DEVICE_VP3300_OSX_USB,
     IDT_DEVICE_UNIMAG,
     IDT_DEVICE_BTMAG_IOS,
     IDT_DEVICE_BTMAG_OSX_BT,
-    IDT_DEVICE_BTMAG_OSX_USB
+    IDT_DEVICE_BTMAG_OSX_USB,
+    IDT_DEVICE_VP3300_IOS,
+    IDT_DEVICE_VP4880
  }IDT_DEVICE_Types;
 
  @endcode
@@ -247,6 +276,18 @@
  DEPRECATED: Use singleton instance [IDT_Device sharedConroller];
  */
 -(id)init;
+
+
+
+/**
+ Process Bypass Response.
+ 
+ When output is being bypassed, and a command is received in the delegate redirectedOutput and sent to the device, the device rexponse must be sent to this
+ method so the SDK can finishing processing the results;
+ 
+ @param data The data received from the device that the SDK must process to complete the executing command
+ */
+-(void) processBypassResponse:(NSData*)data;
 
 /**
  Opens connection to device.
@@ -276,9 +317,9 @@
 
 /**
  * Begins searching for Bluetooth Low Energy devices in range
- - UniPayIII
+ - VP3300
  *
- * @param type When a NSUUID identifer is not provided, this will attempt to connect to the first device of this type it finds.  If a NSUUID identifer is provided, this filter will be ignored.
+ * @param type The device type to attempt to connect to.
  * @param identifier This will only connect to a device with this calculated UUID identifier
  *
  * @return bool  If successful, polling has started
@@ -295,10 +336,38 @@
  */
 -(bool) enableBLEDeviceSearch:(IDT_DEVICE_Types)type identifier:(NSUUID*)identifier;
 
+/**
+ * Get BLE Friendly Name
+ - VP3300
+ *
+ *
+ * @return NSString  Returns the default friendly name to be used when discovering any BLE devices
+ *
+ */
+-(NSString*) getBLEFriendlyName;
+
+
+/**
+ * Disconnect from BLE -
+ *
+ * Will disconnect from existing BLE connection. You can now set another BLE Friendly Name to attach to another device.
+ *
+ */
+-(void) device_disconnectBLE;
+
+/**
+ * Set BLE Friendly Name
+ - VP3300
+ *
+ *
+ * @param friendlyName  Sets the default friendly name to be used when discovering any BLE devices
+ *
+ */
+-(void) setBLEFriendlyName:(NSString*)friendlyName;
 
 /**
  * Stops searching for Bluetooth Low Energy devices in range
- - UniPayIII
+ - VP3300
  *
  *
  * @return bool  If successful, polling was in progress and has stopped. If unsuccessful, BLE Device Search was not in progress.
@@ -309,7 +378,7 @@
 
 /**
  * Returns the UUID of the connected BLE device
- - UniPayIII
+ - VP3300
  *
  * @return NSUUID  UUID of the connected BLE device.  Returns nil if no BLE device connected.
  *
@@ -384,7 +453,7 @@
 /**
  * Activate Transaction
  *
- - UniPayIII
+ - VP3300
  Initiates a CTLS transaction
  
  Use this command when the ctls reader is in “Poll on Demand” mode to begin an EMV or contactless MagStripe Card transaction. When the reader is in “Poll on Demand” mode, the RF is turned on only after receiving an Activate Transaction command. When a valid Activate Transaction command is sent to the ctls reader, it starts polling for cards.
@@ -474,6 +543,16 @@
 -(RETURN_CODE) activateTransaction:(NSMutableDictionary *)tags timeout:(int)timeout;
 
 
+/**
+ * Get Auto Poll Transaction Results
+ Gets the transaction results when the reader is functioning in "Auto Poll" mode
+ *
+ * @param result The transaction results
+ *
+ * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString().  When no data is available, return code = RETURN_CODE_NO_DATA_AVAILABLE
+ *
+ */
+-(RETURN_CODE) getAutoPollTransactionResults:(IDTEMVData**)result;
 
 /**
  * Retrieve Transaction Results
@@ -482,7 +561,7 @@
  Retrieves specified EMV tags from the currently executing transaction.
  
  @param tags Tags to be retrieved.  Example 0x9F028A will retrieve tags 9F02 and 8A
- @param retrievedTags All requested tags returned as unencrypted, encrypted and masked tags. The tlv NSDictionary will
+ @param tlv All requested tags returned as unencrypted, encrypted and masked tags. The tlv NSDictionary will
  contain a NSDictionary with key "tags" that has the unencrypted tag data, a NSDictionary with the key
  "masked" that has the masked tag data, and a NSDictionary with the key "encrypted" that has the
  encrypted tag data
@@ -493,10 +572,34 @@
 -(RETURN_CODE) retrieveTransactionResult:(NSData*)tags retrievedTags:(NSDictionary**)retrievedTags;
 
 
+/**
+ * Send Burst Mode
+ *
+ * Sets the burst mode forthe device.
+ *
+ * @param mode 0 = OFF, 1 = Always On, 2 = Auto Exit
+ 
+ 
+ * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+ */
+-(RETURN_CODE)  setBurstMode:(int) mode;
+
+
+/**
+ * Send Poll Mode
+ *
+ * Sets the poll mode forthe device. Auto Poll keeps reader active, Poll On Demand only polls when requested by terminal
+ *
+ * @param mode 0 = Auto Poll, 1 = Poll On Demand
+ 
+ 
+ * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+ */
+-(RETURN_CODE) setPollMode:(int) mode;
 
 /**
  * Cancel the Activate Transaction
- * - UniPayIII
+ * - VP3300
  
  Cancels the CTLS transaction.
  
@@ -616,7 +719,7 @@
  The tags will be returned in the emvTransactionData delegate protocol.
  
  
- By default, auto authorize is ENABLED.  If auto authorize is DISABLED, this function will complete with a return of EMV_RESULT_CODE_START_TRANSACTION_SUCCESS to emvTransactionData delegate protocol, and then IDT_UniPayII::emv_authenticateTransaction() must be executed.  If auto authorize is ENABLED (default), IDT_UniPayII::emv_authenticateTransaction() will automatically be executed after receiving the result EMV_RESULT_CODE_START_TRANSACTION_SUCCESS.  The auto authorize can be enabled/disabled with IDT_UniPayIII::emv_disableAutoAuthenticateTransaction:()
+ By default, auto authorize is ENABLED.  If auto authorize is DISABLED, this function will complete with a return of EMV_RESULT_CODE_START_TRANSACTION_SUCCESS to emvTransactionData delegate protocol, and then IDT_UniPayII::emv_authenticateTransaction() must be executed.  If auto authorize is ENABLED (default), IDT_UniPayII::emv_authenticateTransaction() will automatically be executed after receiving the result EMV_RESULT_CODE_START_TRANSACTION_SUCCESS.  The auto authorize can be enabled/disabled with IDT_VP3300::emv_disableAutoAuthenticateTransaction:()
  
  @param amount Transaction amount value  (tag value 9F02)
  @param amtOther Other amount value, if any  (tag value 9F03)
@@ -635,6 +738,33 @@
  
  */
 -(RETURN_CODE) startTransaction:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline  fallback:(BOOL)fallback;
+
+
+/**
+ * Start A Transaction Request
+ *
+ Authorizes the EMV, CTLS, or MSR transaction
+ 
+ 
+ For a contact ICC EMV transaction, by default auto authorize is ENABLED.  If auto authorize is DISABLED, this function will complete with a return of EMV_RESULT_CODE_START_TRANSACTION_SUCCESS to emvTransactionData delegate protocol, and then IDT_UniPayII::emv_authenticateTransaction() must be executed.  If auto authorize is ENABLED (default), IDT_UniPayII::emv_authenticateTransaction() will automatically be executed after receiving the result EMV_RESULT_CODE_START_TRANSACTION_SUCCESS.  The auto authorize can be enabled/disabled with IDT_VP3300::emv_disableAutoAuthenticateTransaction:()
+ 
+ @param amount Transaction amount value  (tag value 9F02)
+ @param amtOther Other amount value, if any  (tag value 9F03)
+ @param type Transaction type (tag value 9C).
+ @param timeout Timeout value in seconds.
+ @param tags Any other tags to be included in the request.  Passed as NSData.  Example, tag 9F0C with amount 0x000000000100 would be 0x9F0C06000000000100
+ If tags 9F02 (amount),9F03 (other amount), or 9C (transaction type) are included, they will take priority over these values supplied as individual parameters to this method.
+ Tag DFEE1A can be used to specify tags to be returned in response, in addition to the default tags. Example DFEE1A049F029F03 will return tags 9F02 and 9F03 with the response
+ 
+ @param forceOnline TRUE = do not allow offline approval,  FALSE = allow ICC to approve offline if terminal capable
+ @param autoAuthenticate Will automatically execute Authenticate Transacation after start transaction returns successful
+ @param fallback Indicate if it supports fallback to MSR
+ 
+ 
+ * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+ 
+ */
+-(RETURN_CODE) device_startTransaction:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline  fallback:(BOOL)fallback;
 
 /**
  * Complete EMV Transaction Online Request
@@ -2292,7 +2422,7 @@ Sets seconds of idle that must pass before entering sleep mode
  @param response Masking character. Range is 0x0A - 0x0F.  Response range is "A" to "F"
  - Default character is 0x0C ("C")
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniPay::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
  
  */
 
@@ -2308,7 +2438,7 @@ Sets seconds of idle that must pass before entering sleep mode
  @param mask Masking character. Range is 0x0A - 0x0F.
  - Default character is 0x0C
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniPay::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
  
  */
 
@@ -2326,7 +2456,7 @@ Sets seconds of idle that must pass before entering sleep mode
 - BCD Mask Char = 0x0C
 - L1 Transaction Timeout = 8 Seconds
 *
-* @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniPay::device_getResponseCodeString:()
+* @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
 */
 -(RETURN_CODE) restoreDefaultSettings;
 /**
@@ -2340,7 +2470,7 @@ Sets seconds of idle that must pass before entering sleep mode
  - "0" Output masked for Tag 57 and only output encrypted for Tag 5F24
  - "1" Output plaintext
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniPay::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
  
  */
 -(RETURN_CODE) getExpiryDateOption:(NSString**)response;
@@ -2357,7 +2487,7 @@ Sets seconds of idle that must pass before entering sleep mode
  @param response Masking character. Range is 0x20 - 0x7E.
  - Default character is 0x2A ("*")
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniPay::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
  
  */
 
@@ -2375,7 +2505,7 @@ Sets seconds of idle that must pass before entering sleep mode
  @param mask BCD Masking character. Range is 0x0A - 0x0F.
  - Default character is 0x0C
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniPay::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
  
  */
 
@@ -2390,7 +2520,7 @@ Sets seconds of idle that must pass before entering sleep mode
  @param mask Masking character. Range is 0x20 - 0x7E.
  - Default character is 0x2A ("*")
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniPay::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
  
  */
 
@@ -2407,7 +2537,7 @@ Sets seconds of idle that must pass before entering sleep mode
  - Prefix range is 0-6, default 4
  - Postfix range is 0-4, default 4
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniPay::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
  
  */
 
@@ -2423,7 +2553,7 @@ Sets seconds of idle that must pass before entering sleep mode
  @param prefix Prefix value range is 0-6
  @param postfix Postfix range is 0-4
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniPay::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
  
  */
 
@@ -2441,7 +2571,7 @@ Sets seconds of idle that must pass before entering sleep mode
   - "EMV" = EMV Card
   - "ISO" = ISO Card
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniPay::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
  
  */
 
@@ -2458,7 +2588,7 @@ Sets seconds of idle that must pass before entering sleep mode
  - 0xFF = EMV Card
  - 0x00 = ISO Card
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniPay::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
  
  */
 
@@ -2475,7 +2605,7 @@ Sets seconds of idle that must pass before entering sleep mode
  *
  @param response Response data
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniPay::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
  
  */
 
@@ -2490,7 +2620,7 @@ Sets seconds of idle that must pass before entering sleep mode
  *
  @param seconds Timeout value in seconds (120-3600)
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniPay::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
  
  */
 
@@ -2536,13 +2666,88 @@ Sets seconds of idle that must pass before entering sleep mode
 
 /**
  * Cancel PIN Command
- - BTPay 200
  *
  
  This command can cancel IDT_Device:getEncryptedPIN:keyType:line1:line2:line3:() and IDT_Device::getNumeric:minLength:maxLength:messageID:language:() and IDT_Device::getAmount:maxLength:messageID:language:() and IDT_Device::getCardAccount:max:line1:line2:() and 
      IDT_Device::pin_getFunctionKey() and IDT_Device::getEncryptedData:minLength:maxLength:messageID:language:() */
 -(RETURN_CODE) cancelPin;
 
+
+/**
+ * Capture PIN
+ *
+ 
+ @param type PAN and Key Type
+ - 00h = MKSK to encrypt PIN, Internal PAN (from MSR)
+ - 01h = DUKPT to encrypt PIN, Internal PAN (from MSR)
+ - 10h = MKSK to encrypt PIN, External Plaintext PAN
+ - 11h = DUKPT to encrypt PIN, External Plaintext PAN
+ - 20h = MKSK to encrypt PIN, External Ciphertext PAN
+ - 21h = DUKPT to encrypt PIN, External Ciphertext PAN
+ 
+ @param PAN Personal Account Number (if internal, value is 0)
+ @param minPIN Minimum PIN Length
+ @param maxPIN Maximum PIN Length
+ @param message LCD Message
+ 
+ Results returned to pinpadData delegate
+ 
+ * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+ 
+ */
+-(RETURN_CODE) pin_capturePin:(int)type PAN:(NSString*)PAN minPIN:(int)minPIN maxPIN:(int)maxPIN message:(NSString*)message;
+
+/**
+ * Capture Amount Input
+ *
+ 
+ 
+ @param minPIN Minimum PIN Length
+ @param maxPIN Maximum PIN Length
+ @param message LCD Message
+ @param signature Display message signed by Numeric Private Key using RSAPSS algorithm:
+ 1. Calculate 32 bytes Hash for “<Display Flag><Key Max Length>< Key Min Length><Plaintext Display Message>”
+ 2. Using RSAPSS algorithm calculate the Hash to be 256 bytes Raw Data
+ 3. Using Numeric Private Key to sign the Raw Data to be 256 bytes signature
+ 
+ Results returned to pinpadData delegate
+ 
+ * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+ 
+ */
+-(RETURN_CODE) pin_captureAmountInput:(int)minPIN maxPIN:(int)maxPIN message:(NSString*)message signature:(NSData*)signature;
+
+/**
+ * Capture Numeric Input
+ *
+ 
+ @param mask True = mask input with "*", False = no masking of input
+ @param minPIN Minimum PIN Length
+ @param maxPIN Maximum PIN Length
+ @param message LCD Message
+ @param signature Display message signed by Numeric Private Key using RSAPSS algorithm:
+   1. Calculate 32 bytes Hash for “<Display Flag><Key Max Length>< Key Min Length><Plaintext Display Message>”
+   2. Using RSAPSS algorithm calculate the Hash to be 256 bytes Raw Data
+   3. Using Numeric Private Key to sign the Raw Data to be 256 bytes signature
+
+  Results returned to pinpadData delegate
+ 
+ * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+ 
+ */
+-(RETURN_CODE) pin_captureNumericInput:(bool)mask minPIN:(int)minPIN maxPIN:(int)maxPIN message:(NSString*)message signature:(NSData*)signature;
+
+/**
+ * Capture Function Key
+ *
+ 
+ Captures a function key entry on the pinpad
+ 
+  Results returned to pinpadData delegate
+ 
+ * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+ */
+-(RETURN_CODE) pin_captureFunctionKey;
 
 /**
  * Set Numeric Length
@@ -5037,6 +5242,50 @@ Returns the connection status of the requested device
 -(RETURN_CODE) callbackResponseLCD:(int)mode selection:(unsigned char) selection;
 
 /**
+ * Callback Response PIN Request
+ *
+ Provides PIN data  to the kernel after a callback was received pinRequest delegate.
+ 
+ @param mode PIN Mode:
+ - EMV_PIN_MODE_CANCEL = 0X00,
+ - EMV_PIN_MODE_ONLINE_PIN_DUKPT = 0X01,
+ - EMV_PIN_MODE_ONLINE_PIN_MKSK = 0X02,
+ - EMV_PIN_MODE_OFFLINE_PIN = 0X03
+ @param KSN  Key Serial Number. If no pairing and PIN is plaintext, value is nil
+ @param PIN PIN data, encrypted.  If no pairing, PIN will be sent plaintext
+ 
+ * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+ 
+ */
+-(RETURN_CODE) callbackResponsePIN:(EMV_PIN_MODE_Types)mode KSN:(NSData*)KSN PIN:(NSData*)PIN;
+
+/**
+ Sets the terminal major configuration in ICS .
+ @param configuration A configuration value, range 1-5
+ - 1 = 1C
+ - 2 = 2C
+ - 3 = 3C
+ - 4 = 4C
+ - 5 = 5C
+ 
+ * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+ */
+-(RETURN_CODE) setTerminalMajorConfiguration:(int)configuration;
+
+/**
+ Gets the terminal major configuration in ICS .
+ @param configuration A configuration value, range 1-5
+ - 1 = 1C
+ - 2 = 2C
+ - 3 = 3C
+ - 4 = 4C
+ - 5 = 5C
+ 
+ * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+ */
+-(RETURN_CODE) getTerminalMajorConfiguration:(NSUInteger**)configuration;
+
+/**
  * Assign Delegate 2
  *
  Assigns a second delegate. Internal use only.
@@ -5047,9 +5296,19 @@ Returns the connection status of the requested device
  
  */
 
-
-
 -(void) assignDelegate2:(id<IDT_Device_Delegate>)del;
+
+/**
+ * Set Bypass Delegate
+ *
+ Sets the bypass delegate. .
+ 
+ @param del  IDT_Device_Delegate delegate.
+ 
+
+ */
+
+-(void) assignBypassDelegate:(id<IDT_Device_Delegate>)del;
 
 /**
  * Exchange Multi APDU
@@ -5105,7 +5364,7 @@ Returns the connection status of the requested device
 -(RETURN_CODE) pingVivoTech;
 
 /**
- * UniPayIII Command
+ * VP3300 Command
  *
  Reserved for system use
  */
@@ -5114,7 +5373,7 @@ Returns the connection status of the requested device
 /**
  * Set Pass Through
  
- Sets Pass-Through mode on UniPayIII 
+ Sets Pass-Through mode on VP3300 
  *
  @param enablePassThrough  TRUE = Pass through enabled
  
@@ -5203,7 +5462,7 @@ Returns the connection status of the requested device
  @param hexKSN Key Serial Number as a Hex string
  @param hexInitKey Initial key as a Hex string
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniPay::device_getResponseCodeString:())
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:())
  
  
  */
@@ -5226,4 +5485,376 @@ Returns the connection status of the requested device
  Reserved for system use
  */
 +(void) cancelM_APDU;
+
+
+
+
+/**
+ * Get Configuration Group
+ *
+ Retrieves the Configuration for the specified Group. Group 0 = terminal settings.
+ 
+ @param group Configuration Group
+ @param response Group TLV returned as a dictionary
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
+ 
+ 
+ */
+-(RETURN_CODE) ctls_getConfigurationGroup:(int)group response:(NSDictionary**)response;
+
+
+
+/**
+ * Remove All Certificate Authority Public Key
+ *
+ Removes all the CAPK for CTLS
+ 
+ * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
+ 
+ */
+-(RETURN_CODE) ctls_removeAllCAPK;
+
+/**
+ * Remove Application Data by AID
+ *
+ Removes the Application Data for CTLS as specified by the AID name passed as a parameter
+ 
+ @param AID Name of ApplicationID as Hex String (example "A0000000031010") Must be between 5 and 16 bytes
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
+ 
+ */
+-(RETURN_CODE) ctls_removeApplicationData:(NSString*)AID;
+
+/**
+ * Remove Certificate Authority Public Key
+ *
+ Removes the CAPK for CTLS as specified by the RID/Index
+ 
+ @param capk 6 byte CAPK =  5 bytes RID + 1 byte INDEX
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
+ 
+ */
+-(RETURN_CODE)  ctls_removeCAPK:(NSData*)capk;
+
+/**
+ * Remove Configuration Group
+ *
+ Removes the Configuration as specified by the Group.  Must not by group 0
+ 
+ @param group Configuration Group
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
+ 
+ */
+-(RETURN_CODE)  ctls_removeConfigurationGroup:(int)group;
+
+
+/**
+ * Retrieve AID list
+ *
+ Returns all the AID names installed on the terminal for CTLS.
+ 
+ @param response  array of AID name as NSData*
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
+ 
+ */
+-(RETURN_CODE) ctls_retrieveAIDList:(NSArray**)response;
+
+/**
+ * Retrieve Application Data by AID
+ *
+ Retrieves the CTLS Application Data as specified by the AID name passed as a parameter.
+ 
+ @param AID Name of ApplicationID as Hex String (example "A0000000031010"). Must be between 5 and 16 bytes
+ @param response  The TLV elements of the requested AID
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
+ */
+-(RETURN_CODE)  ctls_retrieveApplicationData:(NSString*)AID response:(NSDictionary**)response;
+
+/**
+ * Retrieve Certificate Authority Public Key
+ *
+ Retrieves the CAPKfor CTLS as specified by the RID/Index  passed as a parameter.
+ 
+ @param capk 6 bytes CAPK = 5 bytes RID + 1 byte Index
+ @param key Response returned as a CAKey format:
+ [5 bytes RID][1 byte Index][1 byte Hash Algorithm][1 byte Encryption Algorithm][20 bytes HashValue][4 bytes Public Key Exponent][2 bytes Modulus Length][Variable bytes Modulus]
+ Where:
+ - Hash Algorithm: The only algorithm supported is SHA-1.The value is set to 0x01
+ - Encryption Algorithm: The encryption algorithm in which this key is used. Currently support only one type: RSA. The value is set to 0x01.
+ - HashValue: Which is calculated using SHA-1 over the following fields: RID & Index & Modulus & Exponent
+ - Public Key Exponent: Actually, the real length of the exponent is either one byte or 3 bytes. It can have two values: 3 (Format is 0x00 00 00 03), or  65537 (Format is 0x00 01 00 01)
+ - Modulus Length: LenL LenH Indicated the length of the next field.
+ - Modulus: This is the modulus field of the public key. Its length is specified in the field above.
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
+ */
+-(RETURN_CODE)  ctls_retrieveCAPK:(NSData*)capk key:(NSData**)key;
+
+
+/**
+ * Retrieve the Certificate Authority Public Key list
+ *
+ Returns all the CAPK RID and Index installed on the terminal for CTLS.
+ 
+ @param keys NSArray of NSData CAPK name  (RID + Index)
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
+ */
+-(RETURN_CODE)  ctls_retrieveCAPKList:(NSArray**)keys;
+
+/**
+ * Retrieve Terminal Data
+ *
+ Retrieves the Terminal Data for CTLS. This is configuration group 0 (Tag FFEE - > FFEE0100).  The terminal data
+ can also be retrieved by ctls_getConfiguraitonGroup(0).
+ 
+ @param tlv Response returned as a TLV
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
+ 
+ 
+ */
+-(RETURN_CODE)  ctls_retrieveTerminalData:(NSData**)tlv;
+
+/**
+ * Set Application Data by AID
+ *
+ Sets the Application Data for CTLS as specified by TLV data
+ 
+ @param tlv  Application data in TLV format
+ The first tag of the TLV data must be the group number (FFE4).
+ The second tag of the TLV data must be the AID (9F06)
+ 
+ Example valid TLV, for Group #2, AID a0000000035010:
+ "ffe401029f0607a0000000051010ffe10101ffe50110ffe30114ffe20106"
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
+ 
+ */
+-(RETURN_CODE)  ctls_setApplicationData:(NSData*)tlv;
+
+/**
+ * Set Certificate Authority Public Key
+ *
+ Sets the CAPK for CTLS as specified by the CAKey structure
+ 
+ @param key CAKey format:
+ [5 bytes RID][1 byte Index][1 byte Hash Algorithm][1 byte Encryption Algorithm][20 bytes HashValue][4 bytes Public Key Exponent][2 bytes Modulus Length][Variable bytes Modulus]
+ Where:
+ - Hash Algorithm: The only algorithm supported is SHA-1.The value is set to 0x01
+ - Encryption Algorithm: The encryption algorithm in which this key is used. Currently support only one type: RSA. The value is set to 0x01.
+ - HashValue: Which is calculated using SHA-1 over the following fields: RID & Index & Modulus & Exponent
+ - Public Key Exponent: Actually, the real length of the exponent is either one byte or 3 bytes. It can have two values: 3 (Format is 0x00 00 00 03), or  65537 (Format is 0x00 01 00 01)
+ - Modulus Length: LenL LenH Indicated the length of the next field.
+ - Modulus: This is the modulus field of the public key. Its length is specified in the field above.
+ * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+ 
+ */
+-(RETURN_CODE)  ctls_setCAPK:(NSData*)key;
+
+
+/**
+ * Set Configuration Group
+ *
+ Sets the Configuration Group for CTLS as specified by the TLV data
+ 
+ @param tlv  Configuration Group Data in TLV format
+ The first tag of the TLV data must be the group number (FFE4).
+ A second tag must exist
+ 
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
+ 
+ */
+-(RETURN_CODE) ctls_setConfigurationGroup:(NSData*)tlv;
+
+
+/**
+ * Set Terminal Data
+ *
+ Sets the Terminal Data for CTLS as specified by the TLV.  The first TLV must be Configuration Group Number (Tag FFE4).  The terminal global data
+ is group 0, so the first TLV would be FFE40100.  Other groups can be defined using this method (1 or greater), and those can be
+ retrieved with ctls_getConfigurationGroup(), and deleted with ctls_removeConfigurationGroup(int group).  You cannot
+ delete group 0.
+ 
+ @param tlv TerminalData configuration data
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
+ 
+ */
+-(RETURN_CODE) ctls_setTerminalData:(NSData*)tlv;
+
+
+
+
+/**
+ * Start a CTLS Transaction Request
+ *
+ Authorizes the CTLS transaction for an CTLS card
+ 
+ The tags will be returned in the callback routine.
+ 
+ @param amount Transaction amount value  (tag value 9F02)
+ @param type Transaction type (tag value 9C).
+ @param timeout Timeout value in seconds.
+ @param tags Any other tags to be included in the request.
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:()
+ *
+ * NOTE ON APPLEPAY VAS:
+ * To enable ApplePay VAS, first a merchant record must be defined in one of the six available index positions (1-6) using device_setMerchantRecord, then container tag FFEE06
+ * must be sent as part of the additional tags parameter of ctls_startTransaction.  Tag FFEE06 must contain tag 9F26 and 9F22, and can optionanally contain tags 9F2B and DFO1.
+ * Example FFEE06189F220201009F2604000000009F2B050100000000DF010101
+ * 9F22 = two bytes = ApplePay Terminal Applicaiton Version Number.  Hard defined as 0100 for now. (required)
+ * 9F26 = four bytes = ApplePay Terminal Capabilities Information (required)
+ *  - Byte 1 = RFU
+ *  - Byte 2 = Terminal Type
+ *  - - Bit 8 = VAS Support  (1=on, 0 = off)
+ *  - - Bit 7 = Touch ID Required  (1=on, 0 = off)
+ *  - - Bit 6 = RFU
+ *  - - Bit 5 = RFU
+ *  - - Bit 1,2,3,4
+ *  - - - 0 = Payment Terminal
+ *  - - - 1 = Transit Terminal
+ *  - - - 2 = Access Terminal
+ *  - - - 3 = Wireless Handoff Terminal
+ *  - - - 4 = App Handoff Terminal
+ *  - - - 15 = Other Terminal
+ *  - Byte 3 = RFU
+ *  - Byte 4 = Terminal Mode
+ *  - - 0 = ApplePay VAS OR ApplePay
+ *  - - 1 = ApplePay VAS AND ApplePay
+ *  - - 2 = ApplePay VAS ONLY
+ *  - - 3 = ApplePay ONLY
+ *  9F2B = 5 bytes = ApplePay VAS Filter.  Each byte filters for that specific merchant index  (optional)
+ *  DF01 = 1 byte = ApplePay VAS Protocol.  (optional)
+ *  - - Bit 1 : 1 = URL VAS, 0 = Full VAS
+ *  - - Bit 2 : 1 = VAS Beeps, 0 = No VAS Beeps
+ *  - - Bit 3 : 1 = Silent Comm Error, 2 = EMEA Comm Error
+ *  - - Bit 4-8 : RFU
+ *
+ */
+-(RETURN_CODE) ctls_startTransaction:(double)amount type:(int)type timeout:(int)timeout tags:(NSMutableDictionary *)tags;
+
+
+/**
+ Cancels Transaction request (EMV).
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3300::device_getResponseCodeString:()
+ */
+
+-(RETURN_CODE) emv_cancelTransaction;
+
+
+
+/**
+ Cancels Transaction request (EMV, swipe or CTLS).
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3300::device_getResponseCodeString:()
+ */
+
+-(RETURN_CODE) device_cancelTransaction;
+
+
+
+/**
+ * FeliCa Authentication
+ *
+ Provides a key to be used in a follow up FeliCa Read with MAC (3 blocks max) or Write with MAC (1 block max).
+ This command must be executed before each Read w/MAC or Write w/MAC command
+ 
+ NOTE: The reader must be in Pass Through Mode for FeliCa commands to work.
+ 
+ @param key 16 byte key used for MAC generation of Read or Write with MAC
+ * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+ 
+ */
+-(RETURN_CODE) felica_authentication:(NSData*)key;
+
+
+
+/**
+ * FeliCa Read with MAC Generation
+ *
+ Reads up to 3 blocks with MAC Generation.  FeliCa Authentication must be performed first
+ 
+ NOTE: The reader must be in Pass Through Mode for FeliCa commands to work.
+ 
+ @param numBlocks Number of blocks
+ @param blockList Block to read. Each block in blockList   Maximum 3 block requests
+ @param blocks  Blocks read.  Each block 16 bytes.
+ * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+ 
+ */
+-(RETURN_CODE) felica_readWithMac:(int)numBlocks blockList:(NSData*)blockList blocks:(NSData**)blocks;
+
+
+/**
+ * FeliCa Write with MAC Generation
+ *
+ Writes a block with MAC Generation.  FeliCa Authentication must be performed first
+ 
+ NOTE: The reader must be in Pass Through Mode for FeliCa commands to work.
+ 
+ @param blockNumber Number of block
+ @param data  Block to write.  Must be 16 bytes.
+ * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+ 
+ */
+-(RETURN_CODE) felica_writeWithMac:(int)blockNumber data:(NSData*)data;
+
+
+/**
+ * FeliCa Read
+ *
+ Reads up to 4 blocks.
+ 
+ NOTE: The reader must be in Pass Through Mode for FeliCa commands to work.
+ 
+ @param serviceCode Service Code List. Each service code in Service Code List = 2 bytes of data
+ @param numBlocks Number of blocks
+ @param blockList Blocks to read. Maximum 4 block requests
+ @param blocks  Blocks read.  Each block 16 bytes.
+ * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+ 
+ */
+-(RETURN_CODE) felica_read:(NSData*)serviceCode numBlocks:(int)numBlocks blockList:(NSData*)blockList blocks:(NSData**)blocks;
+
+
+/**
+ * FeliCa Write
+ *
+ Writes a block
+ 
+ NOTE: The reader must be in Pass Through Mode for FeliCa commands to work.
+ 
+ @param serviceCode Service Code list.  Each service code must be be 2 bytes
+ @param blockList Block list.
+ @param data  Block to write.  Must be 16 bytes.
+ @param statusFlag  Status flag response as explained in FeliCA Lite-S User's Manual, Section 4.5
+ * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+ 
+ */
+-(RETURN_CODE) felica_write:(NSData*)serviceCode  blockList:(NSData*)blockList data:(NSData*)data statusFlag:(NSData**)statusFlag;
+
+
+/**
+ * FeliCa NFC Commands
+ *
+ Perform functions a Felica Card
+ 
+ NOTE: The reader must be in Pass Through Mode for FeliCa commands to work.
+ 
+ @param request Request as explained in IDTech NEO IDG Guide
+ @param response  Response as explained in FeliCA Lite-S User's Manual
+ * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+ 
+ */
+-(RETURN_CODE) felica_nfcCommand:(NSData*)request response:(NSData**)response;
+
 @end

@@ -132,7 +132,7 @@ typedef struct {
 // troubleshooting
 +(void) enableLogging:(BOOL) enable;
 +(UniPay*) sharedController;
-+(void) isUniPayIII:(BOOL)unipayIII;
++(void) isVP3300:(BOOL)VP3300;
 +(void) isUniMag:(BOOL)uniMag;
 -(void) setVivoAlive:(BOOL)val;
 -(void) clearTask;

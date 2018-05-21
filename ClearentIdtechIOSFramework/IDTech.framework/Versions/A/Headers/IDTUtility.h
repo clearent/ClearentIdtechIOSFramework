@@ -26,6 +26,7 @@
 +(NSData*) encodeTags:(NSMutableDictionary*)tags;
 +(NSDictionary*) processTLV:(NSData*)param;
 +(NSDictionary*) TLVtoDICT:(NSData*)param;
++(NSDictionary*) TLVtoDICT_HEX_ASCII:(NSData*)param;
 +(NSData*) DICTotTLV:(NSDictionary*)tags;
 + (NSString *) stringByPaddingTheLeftToLength:(NSString*)orig newLen:(NSUInteger)newLength withString:(NSString *) padString;
 + (NSString*) padLeftZeros:(NSString *)orig Length:(int)len;
@@ -36,6 +37,7 @@
 +(NSData*) byteToData:(Byte)val;
 +(NSData*) computeSHA1:(NSData*) data;
 +(NSDictionary*) combineDictionaries:(NSDictionary*)source dest:(NSDictionary*)dest overwrite:(BOOL)overwrite;
-
-
++(void)pause:(float)sec;
++(NSDictionary*) processTLVUnencrypted:(NSData*)param;
++(NSString*) dtv:(double)amt;
 @end

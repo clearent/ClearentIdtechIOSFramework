@@ -46,6 +46,25 @@
 - (void) lcdDisplay:(int)mode  lines:(NSArray*)lines;
 
 /**
+ PIN Request
+ During an EMV transaction, this delegate will receive data that is a request to collect a PIN
+ 
+ @param mode PIN Mode:
+  - EMV_PIN_MODE_CANCEL = 0X00,
+  - EMV_PIN_MODE_ONLINE_PIN_DUKPT = 0X01,
+  - EMV_PIN_MODE_ONLINE_PIN_MKSK = 0X02,
+  - EMV_PIN_MODE_OFFLINE_PIN = 0X03
+ @param key Either DUKPT or SESSION, depending on mode. If offline plaintext, value is nil
+ @param PAN PAN for calculating PINBlock
+ @param startTO Timeout value to start PIN entry
+ @param intervalTO Timeout value between key presses
+ @param language "EN"=English, "ES"=Spanish, "ZH"=Chinese, "FR"=French
+ 
+ */
+
+- (void) pinRequest:(EMV_PIN_MODE_Types)mode  key:(NSData*)key  PAN:(NSData*)PAN startTO:(int)startTO intervalTO:(int)intervalTO language:(NSString*)language;
+
+/**
  EMV Transaction Data
  
  This protocol will receive results from IDT_Device::startEMVTransaction:otherAmount:timeout:cashback:additionalTags:()
@@ -313,6 +332,51 @@
  */
 -(RETURN_CODE) emv_callbackResponseLCD:(int)mode selection:(unsigned char) selection;
 
+
+/**
+ * Callback Response PIN Request
+ *
+ Provides PIN data  to the kernel after a callback was received pinRequest delegate.
+ 
+ @param mode PIN Mode:
+ - EMV_PIN_MODE_CANCEL = 0X00,
+ - EMV_PIN_MODE_ONLINE_PIN_DUKPT = 0X01,
+ - EMV_PIN_MODE_ONLINE_PIN_MKSK = 0X02,
+ - EMV_PIN_MODE_OFFLINE_PIN = 0X03
+ @param KSN  Key Serial Number. If no pairing and PIN is plaintext, value is nil
+ @param PIN PIN data, encrypted.  If no pairing, PIN will be sent plaintext
+ 
+ * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+ 
+ */
+-(RETURN_CODE) emv_callbackResponsePIN:(EMV_PIN_MODE_Types)mode KSN:(NSData*)KSN PIN:(NSData*)PIN;
+
+
+/**
+ Sets the terminal major configuration in ICS .
+ @param configuration A configuration value, range 1-5
+ - 1 = 1C
+ - 2 = 2C
+ - 3 = 3C
+ - 4 = 4C
+ - 5 = 5C
+ 
+ * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+ */
+-(RETURN_CODE) emv_setTerminalMajorConfiguration:(int)configuration;
+
+/**
+ Gets the terminal major configuration in ICS .
+ @param configuration A configuration value, range 1-5
+ - 1 = 1C
+ - 2 = 2C
+ - 3 = 3C
+ - 4 = 4C
+ - 5 = 5C
+ 
+ * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+ */
+-(RETURN_CODE) emv_getTerminalMajorConfiguration:(NSUInteger**)configuration;
 
 
 /**
@@ -1044,11 +1108,32 @@ if(readerStatus->cardSeated)
 
 -(RETURN_CODE) msr_cancelMSRSwipe;
 
+
+
+/**
+ Cancels Transaction request (EMV).
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3300::device_getResponseCodeString:()
+ */
+
+-(RETURN_CODE) emv_cancelTransaction;
+
+
+
+/**
+ Cancels Transaction request (EMV, swipe or CTLS).
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3300::device_getResponseCodeString:()
+ */
+
+-(RETURN_CODE) device_cancelTransaction;
+
+
 /**
  * Enable MSR Swipe
  
  *
- Enables CLTS and MSR, waiting for swipe or tap to occur. If swipe captured, returns IDTMSRData instance to deviceDelegate::swipeMSRData:().  If CTLS captured, returns IDTEMVData to deviceDelegate::emvTransactionData:()
+ Enables MSR, waiting for swipe or tap to occur. If swipe captured, returns IDTMSRData instance to deviceDelegate::swipeMSRData:(). 
  
  
  * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniPay::device_getResponseCodeString:()
