@@ -42,6 +42,10 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
     [self.publicDelegate plugStatusChange:deviceInserted];
 }
 
+- (void) bypassData:(NSData*)data {
+    [self.publicDelegate bypassData:data];
+}
+
 -(void)deviceConnected {
     [self initClock];
     [self configuration];

@@ -54,10 +54,6 @@
     return [[IDT_VP3300 sharedController] device_getFirmwareVersion:response];
 }
 
-//-(bool) device_enableBLEDeviceSearch:(IDT_DEVICE_Types)type identifier:(NSUUID*)identifier {
-//    return [[IDT_VP3300 sharedController] device_enableBLEDeviceSearch:type identifier:identifier];
-//}
-
 -(bool) device_disableBLEDeviceSearch {
     return [[IDT_VP3300 sharedController] device_disableBLEDeviceSearch];
 }
