@@ -28,20 +28,18 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
     self.publicDelegate = publicDelegate;
     self.baseUrl = clearentBaseUrl;
     self.publicKey = publicKey;
-    NSLog(@"ClearentDelegate initialized");
 }
 
 - (void) lcdDisplay:(int)mode  lines:(NSArray*)lines {
-    [self.publicDelegate lcdDisplay:(int)mode  lines:(NSArray*)lines];
+    [self.publicDelegate lcdDisplay:mode  lines:lines];
 }
 
 - (void) dataInOutMonitor:(NSData*)data  incoming:(BOOL)isIncoming {
-    NSLog(@"dataInOutMonitor: %@", data);
     [self.publicDelegate dataInOutMonitor:data incoming:isIncoming];
 }
 
 - (void) plugStatusChange:(BOOL)deviceInserted {
-    [self.publicDelegate plugStatusChange:(BOOL)deviceInserted];
+    [self.publicDelegate plugStatusChange:deviceInserted];
 }
 
 -(void)deviceConnected {
@@ -916,8 +914,7 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
 }
 
 - (void) deviceMessage:(NSString*)message {
-    NSLog(@"IDTech framework called our device message");
-    [self.publicDelegate deviceMessage:(NSString*)message];
+    [self.publicDelegate deviceMessage:message];
 }
 
 - (void) swipeMSRData:(IDTMSRData*)cardData{
