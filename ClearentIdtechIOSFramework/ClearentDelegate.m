@@ -24,8 +24,10 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
 
 @implementation ClearentDelegate
 
-- (void) init : (id <Clearent_Public_IDTech_VP3300_Delegate>) publicDelegate {
+- (void) init : (id <Clearent_Public_IDTech_VP3300_Delegate>) publicDelegate clearentBaseUrl:(NSString*)clearentBaseUrl publicKey:(NSString*)publicKey  {
     self.publicDelegate = publicDelegate;
+    self.baseUrl = clearentBaseUrl;
+    self.publicKey = publicKey;
     NSLog(@"ClearentDelegate initialized");
 }
 
@@ -49,7 +51,6 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
     [self.publicDelegate deviceConnected];
 }
 
-//TODO expose this allowing the developer to configure based on region
 - (void) initClock {
     [self initClockDate];
     [self initClockTime];
@@ -919,7 +920,6 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
     [self.publicDelegate deviceMessage:(NSString*)message];
 }
 
-//TODO should we return an error here ? sometimes idtech sends the message here and says its an error but then sends the message to emvTransactionData and says there IS card data?!
 - (void) swipeMSRData:(IDTMSRData*)cardData{
     if (cardData != nil && cardData.event == EVENT_MSR_CARD_DATA && (cardData.track2 != nil || cardData.encTrack2 != nil)) {
         ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequestForASwipe:cardData];
@@ -956,7 +956,7 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
     if (emvData == nil) {
         return;
     }
-    //The mobilw-jwt call should succeed or fail. We call the IDTech complete method every time. We alert the client by messaging them via the errorTransactionToken delegate method.
+    //The mobile-jwt call should succeed or fail. We call the IDTech complete method every time. We alert the client by messaging them via the errorTransactionToken delegate method.
     if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_APPROVED || emvData.resultCodeV2 == EMV_RESULT_CODE_V2_APPROVED_OFFLINE ) {
         return;
     }
@@ -1201,7 +1201,7 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
 }
 
 - (void) createTransactionToken:(ClearentTransactionTokenRequest*)clearentTransactionTokenRequest {
-    NSString *targetUrl = [NSString stringWithFormat:@"%@", [self.publicDelegate getTransactionTokenUrl]];
+    NSString *targetUrl = [NSString stringWithFormat:@"%@/%@", self.baseUrl, @"/rest/v2/mobilejwt"];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     NSError *error;
     NSData *postData = [NSJSONSerialization dataWithJSONObject:clearentTransactionTokenRequest.asDictionary options:0 error:&error];
@@ -1215,7 +1215,7 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     [request setHTTPMethod:@"POST"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
-    [request setValue:[self.publicDelegate getPublicKey] forHTTPHeaderField:@"public-key"];
+    [request setValue:self.publicKey forHTTPHeaderField:@"public-key"];
     [request setURL:[NSURL URLWithString:targetUrl]];
     
     [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:
