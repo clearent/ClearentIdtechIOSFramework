@@ -248,41 +248,29 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
     }
     
     //mastercard contactless aid configuration
-    //    NSDictionary* mastercardContactlessAids = @{
-    //                       @"9F15":@"5999",
-    //                       @"9F06":@"A0000000041010",
-    //                       @"9F1A":@"0840",
-    //                       @"5F2A":@"0840",
-    //                       @"5F36":@"02",
-    //                       @"DF25":@"9F3704",
-    //                       //df13 tac default
-    //                       @"DF13":@"F45084800C",
-    //                       //df14 tac denial
-    //                       @"DF14":@"0000000000",
-    //                       //df15 tac online
-    //                       @"DF15":@"F45084800C",
-    //                       @"9F1B":@"00000000",
-    //                       @"DF17":@"00000000",
-    //                       @"DF19":@"99",
-    //                       @"DF18":@"99",
-    //                       @"DFEE15":@"01",
-    //                       @"9F09":@"0002"
-    //                       };
-    //
+    NSDictionary* mastercardContactlessAids = @{
+                           @"9F06":@"A0000000041010",
+                           //df13 tac default
+                           @"DF13":@"F45084800C",
+                           //df14 tac denial
+                           @"DF14":@"0000000000",
+                           //df15 tac online
+                           @"DF15":@"F45084800C"
+                           };
+    //TODO Enable MChip, Enable MStripe, Contactless Floor Limit,
+    //TODO Contactless CVM Required Limit, Contactless Transaction Limit
+    //TODO Contactless Terminal Capabilities, Contactless Terminal Capabilities CVM NotReq ???????
     
+    NSData *mastercardContactlessData = [IDTUtility DICTotTLV:mastercardContactlessAids];
     
-    
-    //    NSData *mastercardContactlessData = [IDTUtility DICTotTLV:mastercardContactlessAids];
-    //RETURN_CODE removeMastercardContactlessAidsRt = [[IDT_VP3300 sharedController] ctls_removeApplicationData:@"A0000000041010"];
-    
-    //RETURN_CODE mastercardContactlessAidsRt = [[IDT_VP3300 sharedController] ctls_setApplicationData:mastercardContactlessData];
-    //if (RETURN_CODE_DO_SUCCESS == mastercardContactlessAidsRt)
-    //{
-    //    NSLog(@"Mastercard Contactless Aids configured");
-    //}
-    //else{
-    //    NSLog(@"Mastercard Contactless Aids not configured");
-    //}
+    RETURN_CODE mastercardContactlessAidsRt = [[IDT_VP3300 sharedController] ctls_setApplicationData:mastercardContactlessData];
+    if (RETURN_CODE_DO_SUCCESS == mastercardContactlessAidsRt)
+    {
+        NSLog(@"Mastercard Contactless Aids configured");
+    }
+    else{
+        NSLog(@"Mastercard Contactless Aids not configured");
+    }
     
     //visa aid configuration
     NSDictionary* visaAids = @{
