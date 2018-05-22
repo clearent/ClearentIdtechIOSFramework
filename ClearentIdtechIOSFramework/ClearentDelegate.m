@@ -249,6 +249,7 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
     
     //mastercard contactless aid configuration
     NSDictionary* mastercardContactlessAids = @{
+                           @"FFE4":@"01",
                            @"9F06":@"A0000000041010",
                            //df13 tac default
                            @"DF13":@"F45084800C",
