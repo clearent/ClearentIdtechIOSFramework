@@ -1201,7 +1201,8 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
 }
 
 - (void) createTransactionToken:(ClearentTransactionTokenRequest*)clearentTransactionTokenRequest {
-    NSString *targetUrl = [NSString stringWithFormat:@"%@/%@", self.baseUrl, @"/rest/v2/mobilejwt"];
+    NSString *targetUrl = [NSString stringWithFormat:@"%@/%@", self.baseUrl, @"rest/v2/mobilejwt"];
+    NSLog(@"targetUrl: %@", targetUrl);
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     NSError *error;
     NSData *postData = [NSJSONSerialization dataWithJSONObject:clearentTransactionTokenRequest.asDictionary options:0 error:&error];
