@@ -25,9 +25,7 @@ Carthage was chosen to bring the Clearent framework into your project because of
     Click the Destination drop-down menu and select Products Directory.
     From the Clearent framework, drag and drop its corresponding dSYM file.
 
-7 - Under the Build Settings Configure this: Apple LLVM 9.0 Languages - Modules, change CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES to Yes.
-
-8 - Build your app. The Clearent Framework should be available for use.
+7 - Build your app. The Clearent Framework should be available for use.
 
 ## Use the Clearent Framework
 
@@ -39,19 +37,9 @@ Clearent_VP3300 *clearentVP3300;
 
 3 - Initialize the object
 clearentVP3300 = [[Clearent_VP3300 alloc]  init];
-[clearentVP3300 init:self];
+[clearentVP3300 init:self clearentBaseUrl:@"http://gateway-sb.clearent.net", @"the public key Clearent gave you"];
 
-4 - Implement these methods, providing the necessary configuration. We recommend not hard coding the public key.
-
--(NSString*) getTransactionTokenUrl {
-    return @"http://gateway-sb.clearent.net/rest/v2/emvjwt";
-}
-
--(NSString*) getPublicKey {
-    return @"fdsafkjsf384r73fnsdkguhag93488hegsr";
-}
-
-5- Implement the successfulTransactionToken and errorTransactionToken delegate methods. A transaction token is the representation of the credit card and allows you to submit a payment transaction.
+4- Implement the successfulTransactionToken and errorTransactionToken delegate methods. A transaction token is the representation of the credit card and allows you to submit a payment transaction.
 When a card is processed (swipe,contactless, or insert/dip of card with an emv chip), the framework will call one of these two methods.
 
 -(void) successfulTransactionToken:(NSString*) jsonString {
@@ -62,4 +50,4 @@ When a card is processed (swipe,contactless, or insert/dip of card with an emv c
      //See demo app for more details
 }
 
-6 - When you are ready to process the payment, do a POST against endpoint /rest/v2/mobile/transactions. See demo app for an example
+5 - When you are ready to process the payment, do a POST against endpoint /rest/v2/mobile/transactions. See demo app for an example (https://github.com/clearent/IDTech_VP3300_Demo)
