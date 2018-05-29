@@ -242,8 +242,8 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     
     
     //Remove Tags
-    [mutableTags removeObjectForKey:@"DF78"];
-    [mutableTags removeObjectForKey:@"DF79"];
+    //[mutableTags removeObjectForKey:@"DF78"];
+    //[mutableTags removeObjectForKey:@"DF79"];
     [mutableTags removeObjectForKey:@"DF27"];
     [mutableTags removeObjectForKey:@"DFEF4D"];
     [mutableTags removeObjectForKey:@"DFEF4C"];
@@ -266,7 +266,7 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     
     //remove these for now - 9F6E 9F53 9F16
     //Original big one
-    NSData *tsysTags = [IDTUtility hexToData:@"82959A9B9C9F349F029F039F404F849F069F099F159F339F1A5F2A5F369F1B9F359F1E9F1C9F4E9F0D9F0E9F0F9F369F399F219F269F275F2D5F349F10"];
+    NSData *tsysTags = [IDTUtility hexToData:@"82959A9B9C9F349F029F039F404F849F069F099F159F339F1A5F2A5F369F1B9F359F1E9F1C9F4E9F0D9F0E9F0F9F369F399F219F269F275F2D5F349F10DF78DF79"];
     //up to 5F36
     
     //include 9F09 9F15 9F33 9F1A 5F2A
@@ -330,8 +330,8 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         [mutableTags2 removeObjectForKey:@"DFEF4C"];
         [mutableTags2 removeObjectForKey:@"DF11"];
         [mutableTags2 removeObjectForKey:@"DFEE26"];
-        [mutableTags2 removeObjectForKey:@"DF78"];
-        [mutableTags2 removeObjectForKey:@"DF79"];
+      //  [mutableTags2 removeObjectForKey:@"DF78"];
+      //  [mutableTags2 removeObjectForKey:@"DF79"];
         [mutableTags2 removeObjectForKey:@"DFEE25"];
         [mutableTags2 removeObjectForKey:@"FFEE01"];
         [mutableTags2 removeObjectForKey:@"DFEE23"];

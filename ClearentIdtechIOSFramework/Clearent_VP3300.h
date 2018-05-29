@@ -13,7 +13,6 @@
  **/
 
 @interface Clearent_VP3300 : NSObject
-
 @property(nonatomic) ClearentDelegate *clearentDelegate;
 @property(nonatomic) SEL callBackSelector;
 - (void) init : (id <Clearent_Public_IDTech_VP3300_Delegate>)publicDelegate clearentBaseUrl:(NSString*)clearentBaseUrl publicKey:(NSString*)publicKey;
