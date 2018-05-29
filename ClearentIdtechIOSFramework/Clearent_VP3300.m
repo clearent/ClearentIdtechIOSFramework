@@ -23,19 +23,19 @@
 }
 
 -(void) configure_reader {
-    if([self.clearentDelegate deviceSerialNumber] == nil) {
+    if([[self clearentDelegate] deviceSerialNumber] == nil) {
         [self.clearentDelegate deviceMessage:@"Device must be connected to be configured"];
         return;
     }
-    if([self.clearentDelegate baseUrl] == nil) {
+    if([[self clearentDelegate] baseUrl] == nil) {
         [self.clearentDelegate deviceMessage:@"Clearent Base Url is required for reader configuration. Ex - https://gateway-sb.clearent.net"];
         return;
     }
-    NSString *targetUrl = [NSString stringWithFormat:@"%@/%@/%@", [self.clearentDelegate baseUrl], @"rest/v2/mobile/devices", [self.clearentDelegate deviceSerialNumber]];
+    NSString *targetUrl = [NSString stringWithFormat:@"%@/%@/%@", [[self clearentDelegate] baseUrl], @"rest/v2/mobile/devices", [[self clearentDelegate] deviceSerialNumber]];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setHTTPMethod:@"GET"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
-    [request setValue:[self.clearentDelegate publicKey] forHTTPHeaderField:@"public-key"];
+    [request setValue:[[self clearentDelegate] publicKey] forHTTPHeaderField:@"public-key"];
     [request setURL:[NSURL URLWithString:targetUrl]];
     
     [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:
