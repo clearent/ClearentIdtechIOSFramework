@@ -25,7 +25,6 @@ typedef enum {SWIPE=90} supportedNonEmvEntryMode;
 - (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequest:(IDTEMVData*)emvData;
 - (void) createTransactionToken:(ClearentTransactionTokenRequest*)clearentTransactionTokenRequest;
 -(void) deviceConnected;
--(void) configuration;
 - (ClearentTransactionTokenRequest*) createClearentTransactionToken:(BOOL)emv encrypted:(BOOL)encrypted track2Data:(NSString*) track2Data;
 @end
 

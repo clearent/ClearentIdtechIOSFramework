@@ -24,6 +24,8 @@
 		E7467555209F0A8E00BC8504 /* IDTech.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467543209F0A8D00BC8504 /* IDTech.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E7467556209F0A8E00BC8504 /* IDTEMVData.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467544209F0A8D00BC8504 /* IDTEMVData.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E7467557209F0A8E00BC8504 /* IDT_Device.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467545209F0A8D00BC8504 /* IDT_Device.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E74B45B320BD8CBA001C02C0 /* ReaderConfigurator.m in Sources */ = {isa = PBXBuildFile; fileRef = E74B45B220BD8CBA001C02C0 /* ReaderConfigurator.m */; };
+		E74B45B520BD8F06001C02C0 /* ReaderConfigurator.h in Headers */ = {isa = PBXBuildFile; fileRef = E74B45B420BD8F06001C02C0 /* ReaderConfigurator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E7594C1720A2609900E5995B /* ClearentIdtechIOSFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = E7D95F68209B96B4001C5871 /* ClearentIdtechIOSFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E76505141FFC312500B345F6 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76505131FFC312500B345F6 /* ExternalAccessory.framework */; };
 		E76505161FFC313200B345F6 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76505151FFC313200B345F6 /* MediaPlayer.framework */; };
@@ -74,6 +76,9 @@
 		E7467543209F0A8D00BC8504 /* IDTech.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDTech.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/IDTech.h; sourceTree = "<group>"; };
 		E7467544209F0A8D00BC8504 /* IDTEMVData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDTEMVData.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/IDTEMVData.h; sourceTree = "<group>"; };
 		E7467545209F0A8D00BC8504 /* IDT_Device.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDT_Device.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/IDT_Device.h; sourceTree = "<group>"; };
+		E74B45B120BD8CA0001C02C0 /* ReaderConfigurator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReaderConfigurator.h; sourceTree = "<group>"; };
+		E74B45B220BD8CBA001C02C0 /* ReaderConfigurator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReaderConfigurator.m; sourceTree = "<group>"; };
+		E74B45B420BD8F06001C02C0 /* ReaderConfigurator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ReaderConfigurator.h; path = ClearentIdtechIOSFramework/ReaderConfigurator.h; sourceTree = "<group>"; };
 		E76504F41FFC306100B345F6 /* ClearentIdtechIOSFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ClearentIdtechIOSFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E76504F81FFC306100B345F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E76504FD1FFC306100B345F6 /* ClearentIdtechIOSFrameworkTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ClearentIdtechIOSFrameworkTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -126,6 +131,7 @@
 		E76504EA1FFC306100B345F6 = {
 			isa = PBXGroup;
 			children = (
+				E74B45B420BD8F06001C02C0 /* ReaderConfigurator.h */,
 				E79BC82620B3676E0030FD8C /* Clearent_VP3300.h */,
 				E79BC82120B3658F0030FD8C /* IDT_VP3300.h */,
 				E775846C209DCA1A0007C02A /* IDTech.h */,
@@ -176,6 +182,8 @@
 				E737D9D820A05F1B00760CB8 /* ClearentDevice.h */,
 				E79BC82320B365F80030FD8C /* Clearent_VP3300.h */,
 				E79BC82420B366300030FD8C /* Clearent_VP3300.m */,
+				E74B45B120BD8CA0001C02C0 /* ReaderConfigurator.h */,
+				E74B45B220BD8CBA001C02C0 /* ReaderConfigurator.m */,
 			);
 			path = ClearentIdtechIOSFramework;
 			sourceTree = "<group>";
@@ -221,6 +229,7 @@
 				E7467555209F0A8E00BC8504 /* IDTech.h in Headers */,
 				E79BC82220B365900030FD8C /* IDT_VP3300.h in Headers */,
 				E7467556209F0A8E00BC8504 /* IDTEMVData.h in Headers */,
+				E74B45B520BD8F06001C02C0 /* ReaderConfigurator.h in Headers */,
 				E7C54CD420A08755002CC355 /* ClearentDevice.h in Headers */,
 				E7467557209F0A8E00BC8504 /* IDT_Device.h in Headers */,
 			);
@@ -328,6 +337,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				E79BC82520B366300030FD8C /* Clearent_VP3300.m in Sources */,
+				E74B45B320BD8CBA001C02C0 /* ReaderConfigurator.m in Sources */,
 				E77C90482000442200C3E590 /* ClearentTransactionTokenRequest.m in Sources */,
 				E79A4D94204F14B000E4BBF6 /* ClearentDelegate.m in Sources */,
 			);

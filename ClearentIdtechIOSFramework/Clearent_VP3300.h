@@ -4,6 +4,13 @@
 #import <AVFoundation/AVFoundation.h>
 #import "ClearentDelegate.h"
 #import "PublicDelegate.h"
+#import "ReaderConfigurator.h"
+
+
+/**
+ * Interact with this object as a singleton. Provide a delegate that adheres to the Clearent_Public_IDTech_VP3300_Delegate protocol will allow the framework to send messages to you.
+ * The Clearent solution wraps all of the IDTech functionality, allowing it to shield you from interacting with the credit card data. The methods that are available are well documented in the IDTech documentation.
+ **/
 
 @interface Clearent_VP3300 : NSObject
 
@@ -11,6 +18,13 @@
 @property(nonatomic) SEL callBackSelector;
 - (void) init : (id <Clearent_Public_IDTech_VP3300_Delegate>)publicDelegate clearentBaseUrl:(NSString*)clearentBaseUrl publicKey:(NSString*)publicKey;
 - (NSString*) SDK_version;
+
+/**
+ * This method will configure the reader for use. Call this method each time the reader is reset or restarted. It should not be necessary to call each
+ * time the device is connected since reader configuration is maintained in memory.
+ **/
+-(void) configure_reader;
+
 /**
  *Close Device
  */
