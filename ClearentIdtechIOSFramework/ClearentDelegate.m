@@ -203,31 +203,24 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [[ClearentTransactionTokenRequest alloc] init];
 
     //Get tags based on TSYS impl guide. TODO Rely on on what is returned from emv_retrieveTransactionResult
-    //NSData *tsysTags = [IDTUtility hexToData:@"82 9A 9C 5F2A 9F0D 9F0E 9F0F 9F21 9F35 9F36 9F06"];
-    //CONTACT 9F40 9F06 9F09 9F15 9F33 9F1A 5F2A 5F36 9F1B 9F35 9F53 9F1E 9F16 9F1C 9F4E 82 009A 009C 9F0D 9F0E 9F0F 9F36
-    //CONTACTLESS 9F6D 9F66
-    //0082009A009C
+    //TODO CONTACTLESS 9F6D 9F66
+    NSData *tsysTags = [IDTUtility hexToData:@"82959A9B9C4F849F349F029F039F069F099F159F339F1A5F2A5F369F1B9F359F1E9F1C9F4E9F0D9F0E9F0F9F369F399F219F269F275F2D5F349F10DF78DF795A9F6E9F5357"];
     
-    //remove these for now - 9F6E 9F53 do these work ?
-    
-    //Original big one
-    NSData *tsysTags = [IDTUtility hexToData:@"82959A9B9C4F849F349F029F039F069F099F159F339F1A5F2A5F369F1B9F359F1E9F1C9F4E9F0D9F0E9F0F9F369F399F219F269F275F2D5F349F10DF78DF795A9F6E9F53"];
+    //good ones confirmed!
+    //5a 9f1a 9c 95 9f03 9f15 9f27 9f39 df79 9f0d 9f35 9f1b 5f34 9f0e 9f36 9f1c 9f40 9f09 9f4e 5f2d 9f0f 9f21 9f33 82 4F 5f36 9f06 5f2a 9f02 9f26 84 9B 9F1E 9F34 DF78
+    //TODO Why does the TSYS decoder show this as an error 9f10 IAD must be at least 17 bytes long ??
     
     NSDictionary *transactionResultDictionary;
     RETURN_CODE transactionDateRt = [[IDT_VP3300 sharedController] emv_retrieveTransactionResult:tsysTags retrievedTags:&transactionResultDictionary];
     NSData *tagsAsNSData;
     NSString *tlvInHex;
-    NSMutableDictionary *mutableTags2;
+    NSMutableDictionary *transactionTags;
     if(RETURN_CODE_DO_SUCCESS == transactionDateRt) {
-        NSDictionary *transactionTags = [transactionResultDictionary objectForKey:@"tags"];
+        transactionTags = [transactionResultDictionary objectForKey:@"tags"];
         NSMutableDictionary *retrievedResultTags = [transactionTags mutableCopy];
         
         [retrievedResultTags setObject:self.deviceSerialNumber forKey:DEVICE_SERIAL_NUMBER_EMV_TAG];
         [retrievedResultTags setObject:self.kernelVersion forKey:KERNEL_VERSION_EMV_TAG];
-        
-        //good ones confirmed
-        //5a 9f1a 9c 95 9f03 9f15 9f27 9f39 df79 9f0d 9f35 9f1b 5f34 9f0e 9f36 9f1c 9f40 9f09 9f4e 5f2d 9f0f 9f21 9f33 82 4F 5f36 9f06 5f2a 9f02 9f26 84 9B 9F1E 9F34 DF78
-        //9f10 IAD mmust be at least 17 bytes long ??
         
         //Removed these.
         [retrievedResultTags removeObjectForKey:@"DFEF4D"];
@@ -239,13 +232,6 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         [retrievedResultTags setObject:@"01" forKey:@"DF26"];
         
         //Set Minor Tags
-        //5F36 Transaction Currency Exponent 02
-        //9F1A Terminal Country Code 840
-        //9F1E Interface Device (IFD) Serial Number 5465726D696E616C
-        //9F15 Merchant Category Code 5999
-        //9F16 Merchant Identifier 888000001516
-        //9F1C Terminal Identification 1515
-        //9F4E Merchant Name and Location Test Merchant
         [retrievedResultTags setObject:@"02" forKey:@"5F36"];
         [retrievedResultTags setObject:@"0840" forKey:@"9F1A"];
         [retrievedResultTags setObject:@"5465726D696E616C" forKey:@"9F1E"];
@@ -255,12 +241,9 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         
         //add these back in if needed
         //currently sends 3837363534333231 but we have 151 (needs to be 8 bytes)
-//        [retrievedResultTags setObject:@"1515" forKey:@"9F1C"];
-
-    
-    
-        tagsAsNSData = [IDTUtility DICTotTLV:retrievedResultTags];
+        //[retrievedResultTags setObject:@"1515" forKey:@"9F1C"];
         
+        tagsAsNSData = [IDTUtility DICTotTLV:retrievedResultTags];
         tlvInHex = [IDTUtility dataToHexString:tagsAsNSData];
     } else {
         tlvInHex = @"Failed to retrieve tlv from reader";
@@ -272,7 +255,7 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     clearentTransactionTokenRequest.firmwareVersion = [self firmwareVersion];
     clearentTransactionTokenRequest.encrypted = isEncrypted;
     
-    NSString *track2Data57 = [IDTUtility dataToHexString:[mutableTags2 objectForKey:TRACK2_DATA_EMV_TAG]];
+    NSString *track2Data57 = [IDTUtility dataToHexString:[transactionTags objectForKey:TRACK2_DATA_EMV_TAG]];
     if(track2Data57 != nil && !([track2Data57 isEqualToString:@""])) {
         clearentTransactionTokenRequest.track2Data = track2Data57;
     } else {
