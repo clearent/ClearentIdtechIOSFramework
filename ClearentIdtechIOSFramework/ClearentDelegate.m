@@ -226,7 +226,7 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     
     //Do we need these ? 9F33 9F40 DF26 DF11 DF27 9F16
     //Original big one
-    NSData *tsysTags = [IDTUtility hexToData:@"82959A9B9C4F849F349F029F039F069F099F159F339F1A5F2A5F369F1B9F359F1E9F1C9F4E9F0D9F0E9F0F9F369F399F219F269F275F2D5F349F10DF78DF79"];
+    NSData *tsysTags = [IDTUtility hexToData:@"82959A9B9C4F849F349F029F039F069F099F159F339F1A5F2A5F369F1B9F359F1E9F1C9F4E9F0D9F0E9F0F9F369F399F219F269F275F2D5F349F10DF78DF795A"];
     //up to 5F36
     
     NSDictionary *transactionResultDictionary;
@@ -253,8 +253,6 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         [retrievedResultTags setObject:@"6028C8" forKey:@"9F33"];
         [retrievedResultTags setObject:@"F000F0A001" forKey:@"9F40"];
         [retrievedResultTags setObject:@"01" forKey:@"DF26"];
-        [retrievedResultTags setObject:@"00" forKey:@"DF11"];
-        [retrievedResultTags setObject:@"00" forKey:@"DF27"];
         
         //Set Minor Tags
         //5F36 Transaction Currency Exponent 02
@@ -264,31 +262,18 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         //9F16 Merchant Identifier 888000001516
         //9F1C Terminal Identification 1515
         //9F4E Merchant Name and Location Test Merchant
-        
-        //add these back in if needed
         [retrievedResultTags setObject:@"02" forKey:@"5F36"];
         [retrievedResultTags setObject:@"0840" forKey:@"9F1A"];
         [retrievedResultTags setObject:@"5465726D696E616C" forKey:@"9F1E"];
         [retrievedResultTags setObject:@"5999" forKey:@"9F15"];
 //
 //        //888000001516 as CEC0ECB5EC
-//        [mutableTags setObject:@"888000001516" forKey:@"9F16"];
-//        [mutableTags setObject:@"1515" forKey:@"9F1C"];
+        [retrievedResultTags setObject:@"888000001516" forKey:@"9F16"];
+        //add these back in if needed
+//        [retrievedResultTags setObject:@"1515" forKey:@"9F1C"];
 //        //test merchant in hex 54657374204d65726368616e74
         [retrievedResultTags setObject:@"54657374204d65726368616e74" forKey:@"9F4E"];
-        
-        //NSDictionary *combined = [IDTUtility combineDictionaries:(NSDictionary*)transactionTags dest:mutableTags overwrite:false];
-//        [mutableTags2 removeObjectForKey:@"DF27"];
-//        [mutableTags2 removeObjectForKey:@"DFEF4D"];
-//        [mutableTags2 removeObjectForKey:@"DFEF4C"];
-//        [mutableTags2 removeObjectForKey:@"DF11"];
-//        [mutableTags2 removeObjectForKey:@"DFEE26"];
-//        [mutableTags2 removeObjectForKey:@"DFEE25"];
-//        [mutableTags2 removeObjectForKey:@"FFEE01"];
-//        [mutableTags2 removeObjectForKey:@"DFEE23"];
-//        [mutableTags2 removeObjectForKey:@"DF26"];
-//        [mutableTags2 removeObjectForKey:@"9F16"];
-        
+    
         tagsAsNSData = [IDTUtility DICTotTLV:retrievedResultTags];
         
         tlvInHex = [IDTUtility dataToHexString:tagsAsNSData];
