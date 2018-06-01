@@ -201,62 +201,20 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
 
 - (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequest:(NSDictionary*) tags isEncrypted:(BOOL) isEncrypted {
     ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [[ClearentTransactionTokenRequest alloc] init];
-    
-    NSMutableDictionary *mutableTags = [tags mutableCopy];
-    [mutableTags setObject:self.deviceSerialNumber forKey:DEVICE_SERIAL_NUMBER_EMV_TAG];
-    [mutableTags setObject:self.kernelVersion forKey:KERNEL_VERSION_EMV_TAG];
-    
-    //set Major tags
-    //9F35 Terminal Type 21
-    //9F33 Terminal Capabilities 6028C8
-    //9F40 Additional Terminal Capabilities F000F0A001
-    //DF26 Enable Revocation List Processing 01
-    //DF11 Enable Transaction Logging 00
-    //DF27 Enable Exception List Processing 00
-    //DFEE1E Terminal Configuration D0DC20D0C41E1400
-    
-    [mutableTags setObject:@"6028C8" forKey:@"9F33"];
-    [mutableTags setObject:@"F000F0A001" forKey:@"9F40"];
-    [mutableTags setObject:@"01" forKey:@"DF26"];
-    [mutableTags setObject:@"00" forKey:@"DF11"];
-    [mutableTags setObject:@"00" forKey:@"DF27"];
-    
-    //Set Minor Tags
-    //5F36 Transaction Currency Exponent 02
-    //9F1A Terminal Country Code 840
-    //9F1E Interface Device (IFD) Serial Number 5465726D696E616C
-    //9F15 Merchant Category Code 5999
-    //9F16 Merchant Identifier 888000001516
-    //9F1C Terminal Identification 1515
-    //9F4E Merchant Name and Location Test Merchant
-    [mutableTags setObject:@"02" forKey:@"5F36"];
-    [mutableTags setObject:@"0840" forKey:@"9F1A"];
-    [mutableTags setObject:@"5465726D696E616C" forKey:@"9F1E"];
-    [mutableTags setObject:@"5999" forKey:@"9F15"];
-    
-    //888000001516 as CEC0ECB5EC
-    [mutableTags setObject:@"888000001516" forKey:@"9F16"];
-    [mutableTags setObject:@"1515" forKey:@"9F1C"];
-    //test merchant in hex 54657374204d65726368616e74
-    [mutableTags setObject:@"54657374204d65726368616e74" forKey:@"9F4E"];
-    
-    
     //Remove Tags
-    //[mutableTags removeObjectForKey:@"DF78"];
-    //[mutableTags removeObjectForKey:@"DF79"];
-    [mutableTags removeObjectForKey:@"DF27"];
-    [mutableTags removeObjectForKey:@"DFEF4D"];
-    [mutableTags removeObjectForKey:@"DFEF4C"];
-    [mutableTags removeObjectForKey:@"DF11"];
-    [mutableTags removeObjectForKey:@"DFEE26"];
-    
-    [mutableTags removeObjectForKey:@"DFEE25"];
-    [mutableTags removeObjectForKey:@"FFEE01"];
-    [mutableTags removeObjectForKey:@"DFEE23"];
-    [mutableTags removeObjectForKey:@"DF26"];
-    
-    [mutableTags removeObjectForKey:@"9F16"];
-    
+//    [mutableTags removeObjectForKey:@"DF27"];
+//    [mutableTags removeObjectForKey:@"DFEF4D"];
+//    [mutableTags removeObjectForKey:@"DFEF4C"];
+//    [mutableTags removeObjectForKey:@"DF11"];
+//    [mutableTags removeObjectForKey:@"DFEE26"];
+//
+//    [mutableTags removeObjectForKey:@"DFEE25"];
+//    [mutableTags removeObjectForKey:@"FFEE01"];
+//    [mutableTags removeObjectForKey:@"DFEE23"];
+//    [mutableTags removeObjectForKey:@"DF26"];
+//
+//    [mutableTags removeObjectForKey:@"9F16"];
+//
     //Get tags based on TSYS impl guide. TODO Rely on on what is returned from emv_retrieveTransactionResult
     //NSData *tsysTags = [IDTUtility hexToData:@"82 9A 9C 5F2A 9F0D 9F0E 9F0F 9F21 9F35 9F36 9F06"];
     
@@ -265,55 +223,11 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     //0082009A009C
     
     //remove these for now - 9F6E 9F53 9F16
+    
+    //Do we need these ? 9F33 9F40 DF26 DF11 DF27 9F16
     //Original big one
     NSData *tsysTags = [IDTUtility hexToData:@"82959A9B9C4F849F349F029F039F069F099F159F339F1A5F2A5F369F1B9F359F1E9F1C9F4E9F0D9F0E9F0F9F369F399F219F269F275F2D5F349F10DF78DF79"];
     //up to 5F36
-    
-    //include 9F09 9F15 9F33 9F1A 5F2A
-    //NSData *tsysTags = [IDTUtility hexToData:@"5F369F1B9F359F1E9F1C9F4E9F0D9F0E9F0F9F369F399F219F269F275F2D5F349F10"];
-    //NSData *tsysTags = [IDTUtility hexToData:@"9F099F339F1A5F2A5F369F1B9F359F1E9F1C9F4E9F0D9F0E9F0F9F369F399F219F269F275F2D5F349F10"];
-    
-    //82959A9B9C9F349F029F039F404F849F06
-    
-    // exclude 9F09 9F15 9F33 9F1A 5F2A
-    
-    //include 82959A9B9C9F349F02
-    //NSData *tsysTags = [IDTUtility hexToData:@"82959A9B9C9F349F025F369F1B9F359F1E9F1C9F4E9F0D9F0E9F0F9F369F399F219F269F275F2D5F349F10"];
-    
-    //excluded 9F03 9F40 9F06 4F 84 9F09 9F15 9F33 9F1A 5F2A
-    //NSData *tsysTags = [IDTUtility hexToData:@"9F0382959A9B9C9F349F025F369F1B9F359F1E9F1C9F4E9F0D9F0E9F0F9F369F399F219F269F275F2D5F349F10"];
-    
-    //try 9F15 9F1A 5F2A
-    //NSData *tsysTags = [IDTUtility hexToData:@"82959A9B9C9F349F025F369F1B9F359F1E9F1C9F4E9F0D9F0E9F0F9F369F399F219F269F275F2D5F349F10"];
-    
-    //Good one
-    //NSData *tsysTags = [IDTUtility hexToData:@"5F369F1B9F359F1E9F1C9F4E9F0D9F0E9F0F9F369F399F219F269F275F2D5F349F10"];
-    
-    
-    //NSData *tsysTags = [IDTUtility hexToData:@"5F369F1B9F359F1E9F1C9F4E9F0D9F0E9F0F9F369F399F219F269F275F2D5F349F10"];
-    
-    //    NSData *tsysTags = [IDTUtility hexToData:@"5F369F1B9F359F1E9F1C9F4E9F0D9F0E9F0F9F369F399F219F269F275F2D5F349F10"];
-    //    NSData *tsysTags = [IDTUtility hexToData:@"9F1B9F359F1E9F1C9F4E9F0D9F0E9F0F9F369F399F219F269F275F2D5F349F10"];
-    //    NSData *tsysTags = [IDTUtility hexToData:@"9F359F1E9F1C9F4E9F0D9F0E9F0F9F369F399F219F269F275F2D5F349F10"];
-    //    NSData *tsysTags = [IDTUtility hexToData:@"9F1E9F1C9F4E9F0D9F0E9F0F9F369F399F219F269F275F2D5F349F10"];
-    //    NSData *tsysTags = [IDTUtility hexToData:@"9F1C9F4E9F0D9F0E9F0F9F369F399F219F269F275F2D5F349F10"];
-    //    NSData *tsysTags = [IDTUtility hexToData:@"9F4E9F0D9F0E9F0F9F369F399F219F269F275F2D5F349F10"];
-    //    NSData *tsysTags = [IDTUtility hexToData:@"9F0D9F0E9F0F9F369F399F219F269F275F2D5F349F10"];
-    //    NSData *tsysTags = [IDTUtility hexToData:@"9F0E9F0F9F369F399F219F269F275F2D5F349F10"];
-    //    NSData *tsysTags = [IDTUtility hexToData:@"9F0F9F369F399F219F269F275F2D5F349F10"];
-    //    NSData *tsysTags = [IDTUtility hexToData:@"9F369F399F219F269F275F2D5F349F10"];
-    //    NSData *tsysTags = [IDTUtility hexToData:@"9F399F219F269F275F2D5F349F10"];
-    //    NSData *tsysTags = [IDTUtility hexToData:@"9F219F269F275F2D5F349F10"];
-    //    NSData *tsysTags = [IDTUtility hexToData:@"9F269F275F2D5F349F10"];
-    //    NSData *tsysTags = [IDTUtility hexToData:@"9F275F2D5F349F10"];
-    //    NSData *tsysTags = [IDTUtility hexToData:@"5F2D5F349F10"];
-    //    NSData *tsysTags = [IDTUtility hexToData:@"5F349F10"];
-    //    NSData *tsysTags = [IDTUtility hexToData:@"9F10"];
-    //NSData *tsysTags = [IDTUtility hexToData:@""];
-    
-    //NSData *tsysTags = [IDTUtility hexToData:@"5F369F1B9F359F1E9F1C9F4E9F0D9F0E9F0F9F369F399F219F269F275F2D5F349F10"];
-    
-    //    NSData *tsysTagsGroupIII55Only = [IDTUtility hexToData:@"82959A9B9C5F2A9F029F039F0D9f0E9F0F9F1A9F219F269F279F339F349F359F369F379F399F404F845F2D5F349F069F10DF78DF79"];
     
     NSDictionary *transactionResultDictionary;
     RETURN_CODE transactionDateRt = [[IDT_VP3300 sharedController] emv_retrieveTransactionResult:tsysTags retrievedTags:&transactionResultDictionary];
@@ -322,31 +236,65 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     NSMutableDictionary *mutableTags2;
     if(RETURN_CODE_DO_SUCCESS == transactionDateRt) {
         NSDictionary *transactionTags = [transactionResultDictionary objectForKey:@"tags"];
-        NSDictionary *combined = [IDTUtility combineDictionaries:(NSDictionary*)transactionTags dest:mutableTags overwrite:false];
+        NSMutableDictionary *retrievedResultTags = [transactionTags mutableCopy];
         
-        mutableTags2 = [combined mutableCopy];
-        [mutableTags2 removeObjectForKey:@"DF27"];
-        [mutableTags2 removeObjectForKey:@"DFEF4D"];
-        [mutableTags2 removeObjectForKey:@"DFEF4C"];
-        [mutableTags2 removeObjectForKey:@"DF11"];
-        [mutableTags2 removeObjectForKey:@"DFEE26"];
-      //  [mutableTags2 removeObjectForKey:@"DF78"];
-      //  [mutableTags2 removeObjectForKey:@"DF79"];
-        [mutableTags2 removeObjectForKey:@"DFEE25"];
-        [mutableTags2 removeObjectForKey:@"FFEE01"];
-        [mutableTags2 removeObjectForKey:@"DFEE23"];
-        [mutableTags2 removeObjectForKey:@"DF26"];
+        [retrievedResultTags setObject:self.deviceSerialNumber forKey:DEVICE_SERIAL_NUMBER_EMV_TAG];
+        [retrievedResultTags setObject:self.kernelVersion forKey:KERNEL_VERSION_EMV_TAG];
         
-        [mutableTags2 removeObjectForKey:@"9F16"];
+        //set Major tags
+        //9F33 Terminal Capabilities 6028C8
+        //9F40 Additional Terminal Capabilities F000F0A001
+        //DF26 Enable Revocation List Processing 01
+        //DF11 Enable Transaction Logging 00
+        //DF27 Enable Exception List Processing 00
+        //DFEE1E Terminal Configuration D0DC20D0C41E1400
         
-        //tagsAsNSData = [IDTUtility DICTotTLV:mutableTags2];
+        //make sure these are configured. if they arent they need to be moved upstream and then retested
+       // [mutableTags setObject:@"6028C8" forKey:@"9F33"];
+        //[mutableTags setObject:@"F000F0A001" forKey:@"9F40"];
+        //[mutableTags setObject:@"01" forKey:@"DF26"];
+        //[mutableTags setObject:@"00" forKey:@"DF11"];
+        //[mutableTags setObject:@"00" forKey:@"DF27"];
         
-        tagsAsNSData = [IDTUtility DICTotTLV:mutableTags2];
+        //Set Minor Tags
+        //5F36 Transaction Currency Exponent 02
+        //9F1A Terminal Country Code 840
+        //9F1E Interface Device (IFD) Serial Number 5465726D696E616C
+        //9F15 Merchant Category Code 5999
+        //9F16 Merchant Identifier 888000001516
+        //9F1C Terminal Identification 1515
+        //9F4E Merchant Name and Location Test Merchant
+        
+        //add these back in if needed
+        
+//        [mutableTags setObject:@"02" forKey:@"5F36"];
+//        [mutableTags setObject:@"0840" forKey:@"9F1A"];
+//        [mutableTags setObject:@"5465726D696E616C" forKey:@"9F1E"];
+//        [mutableTags setObject:@"5999" forKey:@"9F15"];
+//
+//        //888000001516 as CEC0ECB5EC
+//        [mutableTags setObject:@"888000001516" forKey:@"9F16"];
+//        [mutableTags setObject:@"1515" forKey:@"9F1C"];
+//        //test merchant in hex 54657374204d65726368616e74
+//        [mutableTags setObject:@"54657374204d65726368616e74" forKey:@"9F4E"];
+        
+        //NSDictionary *combined = [IDTUtility combineDictionaries:(NSDictionary*)transactionTags dest:mutableTags overwrite:false];
+//        [mutableTags2 removeObjectForKey:@"DF27"];
+//        [mutableTags2 removeObjectForKey:@"DFEF4D"];
+//        [mutableTags2 removeObjectForKey:@"DFEF4C"];
+//        [mutableTags2 removeObjectForKey:@"DF11"];
+//        [mutableTags2 removeObjectForKey:@"DFEE26"];
+//        [mutableTags2 removeObjectForKey:@"DFEE25"];
+//        [mutableTags2 removeObjectForKey:@"FFEE01"];
+//        [mutableTags2 removeObjectForKey:@"DFEE23"];
+//        [mutableTags2 removeObjectForKey:@"DF26"];
+//        [mutableTags2 removeObjectForKey:@"9F16"];
+        
+        tagsAsNSData = [IDTUtility DICTotTLV:retrievedResultTags];
         
         tlvInHex = [IDTUtility dataToHexString:tagsAsNSData];
     } else {
-        tagsAsNSData = [IDTUtility DICTotTLV:mutableTags];
-        tlvInHex = [IDTUtility dataToHexString:tagsAsNSData];
+        tlvInHex = @"Failed to retrieve tlv from reader";
     }
     clearentTransactionTokenRequest.tlv = tlvInHex.uppercaseString;
     clearentTransactionTokenRequest.emv = true;
