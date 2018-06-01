@@ -241,6 +241,15 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         [retrievedResultTags setObject:self.deviceSerialNumber forKey:DEVICE_SERIAL_NUMBER_EMV_TAG];
         [retrievedResultTags setObject:self.kernelVersion forKey:KERNEL_VERSION_EMV_TAG];
         
+        //good ones confirmed
+        //9f1a 9c 95 9f03 9f15 9f27 9f39 df79 9f0d 9f35 9f1b 5f34 9f0e 9f36 9f1c 9f09 9f4e 5f2d 9f0f 9f21 9f33 5f36 9f06 5f2a 9f02 9f26 84 9B 9F1E 9F34 DF78
+        //9f10 IAD mmust be at least 17 bytes long ??
+        
+        //Removed these.
+        [retrievedResultTags removeObjectForKey:@"DFEF4D"];
+        [retrievedResultTags removeObjectForKey:@"DFEF4C"];
+        
+        
         //set Major tags
         //9F33 Terminal Capabilities 6028C8
         //9F40 Additional Terminal Capabilities F000F0A001
@@ -250,8 +259,8 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         //DFEE1E Terminal Configuration D0DC20D0C41E1400
         
         //make sure these are configured. if they arent they need to be moved upstream and then retested
-       // [mutableTags setObject:@"6028C8" forKey:@"9F33"];
-        //[mutableTags setObject:@"F000F0A001" forKey:@"9F40"];
+        [retrievedResultTags setObject:@"6028C8" forKey:@"9F33"];
+        [retrievedResultTags setObject:@"F000F0A001" forKey:@"9F40"];
         //[mutableTags setObject:@"01" forKey:@"DF26"];
         //[mutableTags setObject:@"00" forKey:@"DF11"];
         //[mutableTags setObject:@"00" forKey:@"DF27"];
