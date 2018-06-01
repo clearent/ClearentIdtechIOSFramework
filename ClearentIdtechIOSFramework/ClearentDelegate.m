@@ -242,28 +242,19 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         [retrievedResultTags setObject:self.kernelVersion forKey:KERNEL_VERSION_EMV_TAG];
         
         //good ones confirmed
-        //9f1a 9c 95 9f03 9f15 9f27 9f39 df79 9f0d 9f35 9f1b 5f34 9f0e 9f36 9f1c 9f09 9f4e 5f2d 9f0f 9f21 9f33 5f36 9f06 5f2a 9f02 9f26 84 9B 9F1E 9F34 DF78
+        //9f1a 9c 95 9f03 9f15 9f27 9f39 df79 9f0d 9f35 9f1b 5f34 9f0e 9f36 9f1c 9f40 9f09 9f4e 5f2d 9f0f 9f21 9f33 82 4F 5f36 9f06 5f2a 9f02 9f26 84 9B 9F1E 9F34 DF78
         //9f10 IAD mmust be at least 17 bytes long ??
         
         //Removed these.
         [retrievedResultTags removeObjectForKey:@"DFEF4D"];
         [retrievedResultTags removeObjectForKey:@"DFEF4C"];
         
-        
-        //set Major tags
-        //9F33 Terminal Capabilities 6028C8
-        //9F40 Additional Terminal Capabilities F000F0A001
-        //DF26 Enable Revocation List Processing 01
-        //DF11 Enable Transaction Logging 00
-        //DF27 Enable Exception List Processing 00
-        //DFEE1E Terminal Configuration D0DC20D0C41E1400
-        
-        //make sure these are configured. if they arent they need to be moved upstream and then retested
+        //majors
         [retrievedResultTags setObject:@"6028C8" forKey:@"9F33"];
         [retrievedResultTags setObject:@"F000F0A001" forKey:@"9F40"];
-        //[mutableTags setObject:@"01" forKey:@"DF26"];
-        //[mutableTags setObject:@"00" forKey:@"DF11"];
-        //[mutableTags setObject:@"00" forKey:@"DF27"];
+        [retrievedResultTags setObject:@"01" forKey:@"DF26"];
+        [retrievedResultTags setObject:@"00" forKey:@"DF11"];
+        [retrievedResultTags setObject:@"00" forKey:@"DF27"];
         
         //Set Minor Tags
         //5F36 Transaction Currency Exponent 02
@@ -275,17 +266,16 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         //9F4E Merchant Name and Location Test Merchant
         
         //add these back in if needed
-        
-//        [mutableTags setObject:@"02" forKey:@"5F36"];
-//        [mutableTags setObject:@"0840" forKey:@"9F1A"];
-//        [mutableTags setObject:@"5465726D696E616C" forKey:@"9F1E"];
-//        [mutableTags setObject:@"5999" forKey:@"9F15"];
+        [retrievedResultTags setObject:@"02" forKey:@"5F36"];
+        [retrievedResultTags setObject:@"0840" forKey:@"9F1A"];
+        [retrievedResultTags setObject:@"5465726D696E616C" forKey:@"9F1E"];
+        [retrievedResultTags setObject:@"5999" forKey:@"9F15"];
 //
 //        //888000001516 as CEC0ECB5EC
 //        [mutableTags setObject:@"888000001516" forKey:@"9F16"];
 //        [mutableTags setObject:@"1515" forKey:@"9F1C"];
 //        //test merchant in hex 54657374204d65726368616e74
-//        [mutableTags setObject:@"54657374204d65726368616e74" forKey:@"9F4E"];
+        [retrievedResultTags setObject:@"54657374204d65726368616e74" forKey:@"9F4E"];
         
         //NSDictionary *combined = [IDTUtility combineDictionaries:(NSDictionary*)transactionTags dest:mutableTags overwrite:false];
 //        [mutableTags2 removeObjectForKey:@"DF27"];
