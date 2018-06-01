@@ -201,33 +201,17 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
 
 - (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequest:(NSDictionary*) tags isEncrypted:(BOOL) isEncrypted {
     ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [[ClearentTransactionTokenRequest alloc] init];
-    //Remove Tags
-//    [mutableTags removeObjectForKey:@"DF27"];
-//    [mutableTags removeObjectForKey:@"DFEF4D"];
-//    [mutableTags removeObjectForKey:@"DFEF4C"];
-//    [mutableTags removeObjectForKey:@"DF11"];
-//    [mutableTags removeObjectForKey:@"DFEE26"];
-//
-//    [mutableTags removeObjectForKey:@"DFEE25"];
-//    [mutableTags removeObjectForKey:@"FFEE01"];
-//    [mutableTags removeObjectForKey:@"DFEE23"];
-//    [mutableTags removeObjectForKey:@"DF26"];
-//
-//    [mutableTags removeObjectForKey:@"9F16"];
-//
+
     //Get tags based on TSYS impl guide. TODO Rely on on what is returned from emv_retrieveTransactionResult
     //NSData *tsysTags = [IDTUtility hexToData:@"82 9A 9C 5F2A 9F0D 9F0E 9F0F 9F21 9F35 9F36 9F06"];
-    
     //CONTACT 9F40 9F06 9F09 9F15 9F33 9F1A 5F2A 5F36 9F1B 9F35 9F53 9F1E 9F16 9F1C 9F4E 82 009A 009C 9F0D 9F0E 9F0F 9F36
     //CONTACTLESS 9F6D 9F66
     //0082009A009C
     
-    //remove these for now - 9F6E 9F53 9F16
+    //remove these for now - 9F6E 9F53 do these work ?
     
-    //Do we need these ? 9F33 9F40 DF26 DF11 DF27 9F16
     //Original big one
-    NSData *tsysTags = [IDTUtility hexToData:@"82959A9B9C4F849F349F029F039F069F099F159F339F1A5F2A5F369F1B9F359F1E9F1C9F4E9F0D9F0E9F0F9F369F399F219F269F275F2D5F349F10DF78DF795A"];
-    //up to 5F36
+    NSData *tsysTags = [IDTUtility hexToData:@"82959A9B9C4F849F349F029F039F069F099F159F339F1A5F2A5F369F1B9F359F1E9F1C9F4E9F0D9F0E9F0F9F369F399F219F269F275F2D5F349F10DF78DF795A9F6E9F53"];
     
     NSDictionary *transactionResultDictionary;
     RETURN_CODE transactionDateRt = [[IDT_VP3300 sharedController] emv_retrieveTransactionResult:tsysTags retrievedTags:&transactionResultDictionary];
@@ -242,7 +226,7 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         [retrievedResultTags setObject:self.kernelVersion forKey:KERNEL_VERSION_EMV_TAG];
         
         //good ones confirmed
-        //9f1a 9c 95 9f03 9f15 9f27 9f39 df79 9f0d 9f35 9f1b 5f34 9f0e 9f36 9f1c 9f40 9f09 9f4e 5f2d 9f0f 9f21 9f33 82 4F 5f36 9f06 5f2a 9f02 9f26 84 9B 9F1E 9F34 DF78
+        //5a 9f1a 9c 95 9f03 9f15 9f27 9f39 df79 9f0d 9f35 9f1b 5f34 9f0e 9f36 9f1c 9f40 9f09 9f4e 5f2d 9f0f 9f21 9f33 82 4F 5f36 9f06 5f2a 9f02 9f26 84 9B 9F1E 9F34 DF78
         //9f10 IAD mmust be at least 17 bytes long ??
         
         //Removed these.
@@ -266,13 +250,14 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         [retrievedResultTags setObject:@"0840" forKey:@"9F1A"];
         [retrievedResultTags setObject:@"5465726D696E616C" forKey:@"9F1E"];
         [retrievedResultTags setObject:@"5999" forKey:@"9F15"];
-//
-//        //888000001516 as CEC0ECB5EC
         [retrievedResultTags setObject:@"888000001516" forKey:@"9F16"];
-        //add these back in if needed
-//        [retrievedResultTags setObject:@"1515" forKey:@"9F1C"];
-//        //test merchant in hex 54657374204d65726368616e74
         [retrievedResultTags setObject:@"54657374204d65726368616e74" forKey:@"9F4E"];
+        
+        //add these back in if needed
+        //currently sends 3837363534333231 but we have 151 (needs to be 8 bytes)
+//        [retrievedResultTags setObject:@"1515" forKey:@"9F1C"];
+
+    
     
         tagsAsNSData = [IDTUtility DICTotTLV:retrievedResultTags];
         
