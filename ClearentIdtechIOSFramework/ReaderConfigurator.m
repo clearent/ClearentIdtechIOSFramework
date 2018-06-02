@@ -216,15 +216,14 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
     bool allSuccessful = true;
     for(NSDictionary *contactCapk in contactCapks) {
         NSString *name = [contactCapk objectForKey:@"name"];
-        NSDictionary *values = [contactCapk objectForKey:@"aid-values"];
-        NSString *rid = [values objectForKey:@"rid"];
-        NSString *keyIndex = [values objectForKey:@"key-index"];
-        NSString *hashAlgorithm = [values objectForKey:@"hash-algorithm"];
-        NSString *hashValue = [values objectForKey:@"hash-value"];
-        NSString *modulus = [values objectForKey:@"modulus"];
-        NSString *modulusLength = [values objectForKey:@"big-endian-modulus-length"];
-        NSString *encryptionAlgorithm = [values objectForKey:@"encryption-algorithm"];
-        NSString *keyExponent = [values objectForKey:@"key-exponent"];
+        NSString *rid = [contactCapk objectForKey:@"rid"];
+        NSString *keyIndex = [contactCapk objectForKey:@"key-index"];
+        NSString *hashAlgorithm = [contactCapk objectForKey:@"hash-algorithm"];
+        NSString *hashValue = [contactCapk objectForKey:@"hash-value"];
+        NSString *modulus = [contactCapk objectForKey:@"modulus"];
+        NSString *modulusLength = [contactCapk objectForKey:@"big-endian-modulus-length"];
+        NSString *encryptionAlgorithm = [contactCapk objectForKey:@"encryption-algorithm"];
+        NSString *keyExponent = [contactCapk objectForKey:@"key-exponent"];
         
         NSArray *testKeyArray = [[NSArray alloc] initWithObjects:rid,keyIndex,hashAlgorithm,encryptionAlgorithm,hashValue,keyExponent,modulusLength,modulus, nil];
         
@@ -251,15 +250,14 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
     bool allSuccessful = true;
     for(NSDictionary *contactlessCapk in contactlessCapks) {
         NSString *name = [contactlessCapk objectForKey:@"name"];
-        NSDictionary *values = [contactlessCapk objectForKey:@"aid-values"];
-        NSString *rid = [values objectForKey:@"rid"];
-        NSString *keyIndex = [values objectForKey:@"key-index"];
-        NSString *hashAlgorithm = [values objectForKey:@"hash-algorithm"];
-        NSString *hashValue = [values objectForKey:@"hash-value"];
-        NSString *modulus = [values objectForKey:@"modulus"];
-        NSString *modulusLength = [values objectForKey:@"big-endian-modulus-length"];
-        NSString *encryptionAlgorithm = [values objectForKey:@"encryption-algorithm"];
-        NSString *keyExponent = [values objectForKey:@"key-exponent"];
+        NSString *rid = [contactlessCapk objectForKey:@"rid"];
+        NSString *keyIndex = [contactlessCapk objectForKey:@"key-index"];
+        NSString *hashAlgorithm = [contactlessCapk objectForKey:@"hash-algorithm"];
+        NSString *hashValue = [contactlessCapk objectForKey:@"hash-value"];
+        NSString *modulus = [contactlessCapk objectForKey:@"modulus"];
+        NSString *modulusLength = [contactlessCapk objectForKey:@"big-endian-modulus-length"];
+        NSString *encryptionAlgorithm = [contactlessCapk objectForKey:@"encryption-algorithm"];
+        NSString *keyExponent = [contactlessCapk objectForKey:@"key-exponent"];
         NSArray *testKeyArray = [[NSArray alloc] initWithObjects:rid,keyIndex,hashAlgorithm,encryptionAlgorithm,hashValue,keyExponent,modulusLength,modulus, nil];
         NSString* combined = [testKeyArray componentsJoinedByString:@""];
         NSData* capk = [IDTUtility hexToData:combined];
