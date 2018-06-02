@@ -31,7 +31,9 @@
         [self.clearentDelegate deviceMessage:@"Clearent Base Url is required for reader configuration. Ex - https://gateway-sb.clearent.net"];
         return;
     }
-    NSString *targetUrl = [NSString stringWithFormat:@"%@/%@/%@", _clearentDelegate.baseUrl, @"rest/v2/mobile/devices",  _clearentDelegate.deviceSerialNumber];
+    //732T860257
+    NSString *trimmedDeviceSerialNumber = [_clearentDelegate.deviceSerialNumber substringToIndex:9];
+    NSString *targetUrl = [NSString stringWithFormat:@"%@/%@/%@", _clearentDelegate.baseUrl, @"rest/v2/mobile/devices",  trimmedDeviceSerialNumber];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setHTTPMethod:@"GET"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
