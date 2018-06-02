@@ -118,19 +118,23 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
 //            return contactlessAidsRt;
 //        }
     }
-    NSDictionary *contactCapks = [mobileDevice objectForKey:@"contact-ca-public-keys"];
-    if(contactCapks != nil) {
-        int contactCapksRt  = [self configureContactCapks:contactCapks];
-//        if(contactCapksRt != CONFIGURATION_SUCCESS) {
-//            return contactCapksRt;
-//        }
-    }
-    NSDictionary *contactlessCapks = [mobileDevice objectForKey:@"contactless-ca-public-keys"];
-    if(contactlessCapks != nil) {
-        int contactlessCapksRt  = [self configureContactlessCapks:contactlessCapks];
-//        if(contactlessCapksRt != CONFIGURATION_SUCCESS) {
-//            return contactlessCapksRt;
-//        }
+    
+    NSDictionary *publicKeys = [mobileDevice objectForKey:@"public-keys"];
+    if(publicKeys != nil) {
+        NSDictionary *contactCapks = [publicKeys objectForKey:@"contact-ca-public-keys"];
+        if(contactCapks != nil) {
+            int contactCapksRt  = [self configureContactCapks:contactCapks];
+            //        if(contactCapksRt != CONFIGURATION_SUCCESS) {
+            //            return contactCapksRt;
+            //        }
+        }
+        NSDictionary *contactlessCapks = [publicKeys objectForKey:@"contactless-ca-public-keys"];
+        if(contactlessCapks != nil) {
+            int contactlessCapksRt  = [self configureContactlessCapks:contactlessCapks];
+            //        if(contactlessCapksRt != CONFIGURATION_SUCCESS) {
+            //            return contactlessCapksRt;
+            //        }
+        }
     }
     return CONFIGURATION_SUCCESS;
 }
@@ -209,6 +213,7 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
 }
 
 + (int) configureContactCapks:(NSDictionary*) contactCapks {
+    bool allSuccessful = true;
     for(NSDictionary *contactCapk in contactCapks) {
         NSString *name = [contactCapk objectForKey:@"name"];
         NSDictionary *values = [contactCapk objectForKey:@"aid-values"];
@@ -232,13 +237,18 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
         } else{
             NSString *error =[[IDT_VP3300 sharedController] device_getResponseCodeString:capkRt];
             NSLog(@"contact capk failed to load %@",[NSString stringWithFormat:@"%@,%@", name, error]);
-            return CONTACT_CAPKS_FAILED;
+            allSuccessful = false;
+            //return CONTACT_CAPKS_FAILED;
         }
+    }
+    if(!allSuccessful) {
+        return CONTACT_CAPKS_FAILED;
     }
     return CONFIGURATION_SUCCESS;
 }
 
 + (int) configureContactlessCapks:(NSDictionary*) contactlessCapks {
+    bool allSuccessful = true;
     for(NSDictionary *contactlessCapk in contactlessCapks) {
         NSString *name = [contactlessCapk objectForKey:@"name"];
         NSDictionary *values = [contactlessCapk objectForKey:@"aid-values"];
@@ -259,8 +269,12 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
         } else{
             NSString *error =[[IDT_VP3300 sharedController] device_getResponseCodeString:capkRt];
             NSLog(@"contactless capk failed to load %@",[NSString stringWithFormat:@"%@,%@", name, error]);
-            return CONTACTLESS_CAPKS_FAILED;
+            allSuccessful = false;
+            //return CONTACTLESS_CAPKS_FAILED;
         }
+    }
+    if(!allSuccessful) {
+        return CONTACTLESS_CAPKS_FAILED;
     }
     return CONFIGURATION_SUCCESS;
 }
