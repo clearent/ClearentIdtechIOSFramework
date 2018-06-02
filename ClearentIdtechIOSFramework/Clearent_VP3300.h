@@ -12,7 +12,7 @@
  * The Clearent solution wraps all of the IDTech functionality, allowing it to shield you from interacting with the credit card data. The methods that are available are well documented in the IDTech documentation.
  **/
 
-@interface Clearent_VP3300 : NSObject
+@interface Clearent_VP3300 : NSObject <NSURLSessionDelegate, NSURLSessionDownloadDelegate>
 @property(nonatomic) ClearentDelegate *clearentDelegate;
 @property(nonatomic) SEL callBackSelector;
 - (void) init : (id <Clearent_Public_IDTech_VP3300_Delegate>)publicDelegate clearentBaseUrl:(NSString*)clearentBaseUrl publicKey:(NSString*)publicKey;
