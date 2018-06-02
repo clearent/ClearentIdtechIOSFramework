@@ -38,46 +38,7 @@
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     [request setValue:_clearentDelegate.publicKey forHTTPHeaderField:@"public-key"];
     [request setURL:[NSURL URLWithString:targetUrl]];
-    
-//    NSURLSessionConfiguration *sessionConfiguration = [NSURLSessionConfiguration defaultSessionConfiguration];
-//    sessionConfiguration.timeoutIntervalForRequest = 60.0;
-//    sessionConfiguration.timeoutIntervalForResource = 60.0;
-//    NSURLSession *session = [NSURLSession sessionWithConfiguration:sessionConfiguration delegate:self delegateQueue:nil];
-//
-//    NSURLSessionDataTask *dataTask = [session dataTaskWithRequest:
-//                                      request completionHandler:
-//                                      ^(NSData * _Nullable data,
-//                                        NSURLResponse * _Nullable response,
-//                                        NSError * _Nullable error) {
-//                                          NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
-//                                          NSString *responseStr = nil;
-//                                          if(error != nil) {
-//                                              [self.clearentDelegate deviceMessage:@"Failed to retrieve the reader configuration. Confirm internet access and try reconnecting reader. If this does not work contact support."];
-//                                          } else if(data != nil) {
-//                                              responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-//                                              if(200 == [httpResponse statusCode]) {
-//                                                  NSData *data = [responseStr dataUsingEncoding:NSUTF8StringEncoding];
-//                                                  NSError *error;
-//                                                  NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data
-//                                                                                                                 options:0
-//                                                                                                                   error:&error];
-//                                                  if (error) {
-//                                                      [self.clearentDelegate deviceMessage:@"Failed to process the reader configuration. Please contact support."];
-//                                                  } else {
-//                                                      NSString *readerConfigurationMessage = [ReaderConfigurator configure:jsonDictionary];
-//                                                      [self.clearentDelegate deviceMessage:readerConfigurationMessage];
-//                                                  }
-//                                              } else {
-//                                                  [self.clearentDelegate deviceMessage:@"Failed to retrieve the reader configuration. Confirm internet access and try reconnecting reader. If this does not work contact support."];
-//                                              }
-//                                          }
-//                                          data = nil;
-//                                          response = nil;
-//                                          error = nil;
-//                                      }];
-//    [dataTask resume];
-    
-    
+    NSLog(@"config targetUrl: %@", targetUrl);
     [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:
       ^(NSData * _Nullable data,
         NSURLResponse * _Nullable response,
@@ -94,10 +55,12 @@
                   NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data
                                                                                  options:0
                                                                                    error:&error];
+                  NSLog(@"config: %@", jsonDictionary);
                   if (error) {
                       [self.clearentDelegate deviceMessage:@"Failed to process the reader configuration. Please contact support."];
                   } else {
                       NSString *readerConfigurationMessage = [ReaderConfigurator configure:jsonDictionary];
+                      NSLog(@"Reader Configuration Message: %@", readerConfigurationMessage);
                       [self.clearentDelegate deviceMessage:readerConfigurationMessage];
                   }
               } else {
@@ -109,26 +72,6 @@
           error = nil;
       }] resume];
 }
-
-//- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location {
-//    NSData *data = [NSData dataWithContentsOfURL:location];
-//    
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        NSLog(@"here");
-//    });
-//}
-//
-//- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didResumeAtOffset:(int64_t)fileOffset expectedTotalBytes:(int64_t)expectedTotalBytes {
-//    
-//}
-//
-//- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
-//    float progress = (double)totalBytesWritten / (double)totalBytesExpectedToWrite;
-//    
-//    dispatch_async(dispatch_get_main_queue(), ^{
-//        NSLog(@"we could log the progress");
-//    });
-//}
 
 - (NSString*) SDK_version {
     return [IDT_Device SDK_version];
