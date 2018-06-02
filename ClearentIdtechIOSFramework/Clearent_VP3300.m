@@ -110,6 +110,26 @@
 //      }] resume];
 }
 
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didFinishDownloadingToURL:(NSURL *)location {
+    NSData *data = [NSData dataWithContentsOfURL:location];
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSLog(@"here");
+    });
+}
+
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didResumeAtOffset:(int64_t)fileOffset expectedTotalBytes:(int64_t)expectedTotalBytes {
+    
+}
+
+- (void)URLSession:(NSURLSession *)session downloadTask:(NSURLSessionDownloadTask *)downloadTask didWriteData:(int64_t)bytesWritten totalBytesWritten:(int64_t)totalBytesWritten totalBytesExpectedToWrite:(int64_t)totalBytesExpectedToWrite {
+    float progress = (double)totalBytesWritten / (double)totalBytesExpectedToWrite;
+    
+    dispatch_async(dispatch_get_main_queue(), ^{
+        NSLog(@"we could log the progress");
+    });
+}
+
 - (NSString*) SDK_version {
     return [IDT_Device SDK_version];
 }
