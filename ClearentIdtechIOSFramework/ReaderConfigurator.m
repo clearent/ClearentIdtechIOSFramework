@@ -136,7 +136,7 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
 }
 
 + (int) configureContactAids:(NSDictionary*) contactAids {
-    BOOL allSuccessful = true;
+    bool allSuccessful = true;
     for(NSDictionary *contactAid in contactAids) {
         NSString *name = [contactAid objectForKey:@"name"];
         NSDictionary *values = [contactAid objectForKey:@"aid-values"];
@@ -157,7 +157,7 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
 }
 
 + (int) configureContactlessAids:(NSDictionary*) contactlessAids {
-    BOOL allSuccessful = true;
+    bool allSuccessful = true;
     for(NSDictionary *contactlessAid in contactlessAids) {
         NSString *name = [contactlessAid objectForKey:@"name"];
         NSDictionary *values = [contactlessAid objectForKey:@"aid-values"];
