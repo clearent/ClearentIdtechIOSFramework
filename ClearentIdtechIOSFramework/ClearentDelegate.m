@@ -205,8 +205,8 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     //Get tags based on TSYS impl guide. TODO Rely on on what is returned from emv_retrieveTransactionResult
     //TODO CONTACTLESS 9F6D 9F66
     
-    //leave out 9F10
-    NSData *tsysTags = [IDTUtility hexToData:@"82959A9B9C5F2A9F029F039F0D9F0E9F0F9F1A9F219F269F279F339F349F359F369F379F394F845F2D5F349F069F09DF78DF799F155F369F1B9F1E9F1C9F4E5A9F6E9F5357"];
+    //leave out 9F10, Danny says leave these too since they are not a part of AUTH (capture only tags) 9F0D, 9F0E, 9F0F
+    NSData *tsysTags = [IDTUtility hexToData:@"82959A9B9C5F2A9F029F039F1A9F219F269F279F339F349F359F369F379F394F845F2D5F349F069F09DF78DF799F155F369F1B9F1E9F1C9F4E5A9F6E9F5357"];
     
     //good ones confirmed!
     //57 5a 9f1a 9c 95 9f03 9f15 9f27 9f39 df79 9f0d 9f35 9f1b 5f34 9f0e 9f36 9f1c 9f40 9f09 9f4e 5f2d 9f0f 9f21 9f33 82 4F 5f36 9f06 5f2a 9f02 9f26 84 9B 9F1E 9F34 DF78
@@ -219,6 +219,7 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     NSMutableDictionary *transactionTags;
     if(RETURN_CODE_DO_SUCCESS == transactionDateRt) {
         transactionTags = [transactionResultDictionary objectForKey:@"tags"];
+        NSString *track2Data57 = [IDTUtility dataToHexString:[transactionTags objectForKey:TRACK2_DATA_EMV_TAG]];
         NSMutableDictionary *retrievedResultTags = [transactionTags mutableCopy];
         
         [retrievedResultTags setObject:self.deviceSerialNumber forKey:DEVICE_SERIAL_NUMBER_EMV_TAG];
@@ -250,28 +251,30 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         
         tagsAsNSData = [IDTUtility DICTotTLV:retrievedResultTags];
         tlvInHex = [IDTUtility dataToHexString:tagsAsNSData];
+        
+        clearentTransactionTokenRequest.tlv = tlvInHex.uppercaseString;
+        clearentTransactionTokenRequest.emv = true;
+        clearentTransactionTokenRequest.kernelVersion = [self kernelVersion];
+        clearentTransactionTokenRequest.deviceSerialNumber = [self deviceSerialNumber];
+        clearentTransactionTokenRequest.firmwareVersion = [self firmwareVersion];
+        clearentTransactionTokenRequest.encrypted = isEncrypted;
+        
+        if(track2Data57 != nil && !([track2Data57 isEqualToString:@""])) {
+            clearentTransactionTokenRequest.track2Data = track2Data57;
+        } else {
+            NSDictionary *ff8105 = [IDTUtility TLVtoDICT_HEX_ASCII:[tags objectForKey:@"FF8105"]];
+            NSString *track2Data9F6B = [ff8105 objectForKey:TRACK2_DATA_CONTACTLESS_NON_CHIP_TAG];
+            if(track2Data9F6B != nil && !([track2Data9F6B isEqualToString:@""])) {
+                clearentTransactionTokenRequest.track2Data = track2Data9F6B;
+            } else {
+                clearentTransactionTokenRequest.track2Data = @"Mobile SDK failed to read Track2Data";
+            }
+        }
     } else {
         tlvInHex = @"Failed to retrieve tlv from reader";
+        //TODO handle error?
     }
-    clearentTransactionTokenRequest.tlv = tlvInHex.uppercaseString;
-    clearentTransactionTokenRequest.emv = true;
-    clearentTransactionTokenRequest.kernelVersion = [self kernelVersion];
-    clearentTransactionTokenRequest.deviceSerialNumber = [self deviceSerialNumber];
-    clearentTransactionTokenRequest.firmwareVersion = [self firmwareVersion];
-    clearentTransactionTokenRequest.encrypted = isEncrypted;
     
-    NSString *track2Data57 = [IDTUtility dataToHexString:[transactionTags objectForKey:TRACK2_DATA_EMV_TAG]];
-    if(track2Data57 != nil && !([track2Data57 isEqualToString:@""])) {
-        clearentTransactionTokenRequest.track2Data = track2Data57;
-    } else {
-        NSDictionary *ff8105 = [IDTUtility TLVtoDICT_HEX_ASCII:[tags objectForKey:@"FF8105"]];
-        NSString *track2Data9F6B = [ff8105 objectForKey:TRACK2_DATA_CONTACTLESS_NON_CHIP_TAG];
-        if(track2Data9F6B != nil && !([track2Data9F6B isEqualToString:@""])) {
-            clearentTransactionTokenRequest.track2Data = track2Data9F6B;
-        } else {
-            clearentTransactionTokenRequest.track2Data = @"Mobile SDK failed to read Track2Data";
-        }
-    }
     return clearentTransactionTokenRequest;
 }
 
