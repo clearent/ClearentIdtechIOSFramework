@@ -107,35 +107,36 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
     NSDictionary *contactAids = [mobileDevice objectForKey:@"contact-aids"];
     if(contactAids != nil) {
         int contactAidsRt = [self configureContactAids:contactAids];
-        if(contactAidsRt != CONFIGURATION_SUCCESS) {
-            return contactAidsRt;
-        }
+//        if(contactAidsRt != CONFIGURATION_SUCCESS) {
+//            return contactAidsRt;
+//        }
     }
     NSDictionary *contactlessAids = [mobileDevice objectForKey:@"contactless-aids"];
     if(contactlessAids != nil) {
         int contactlessAidsRt = [self configureContactlessAids:contactlessAids];
-        if(contactlessAidsRt != CONFIGURATION_SUCCESS) {
-            return contactlessAidsRt;
-        }
+//        if(contactlessAidsRt != CONFIGURATION_SUCCESS) {
+//            return contactlessAidsRt;
+//        }
     }
     NSDictionary *contactCapks = [mobileDevice objectForKey:@"contact-ca-public-keys"];
     if(contactCapks != nil) {
         int contactCapksRt  = [self configureContactCapks:contactCapks];
-        if(contactCapksRt != CONFIGURATION_SUCCESS) {
-            return contactCapksRt;
-        }
+//        if(contactCapksRt != CONFIGURATION_SUCCESS) {
+//            return contactCapksRt;
+//        }
     }
     NSDictionary *contactlessCapks = [mobileDevice objectForKey:@"contactless-ca-public-keys"];
     if(contactlessCapks != nil) {
         int contactlessCapksRt  = [self configureContactlessCapks:contactlessCapks];
-        if(contactlessCapksRt != CONFIGURATION_SUCCESS) {
-            return contactlessCapksRt;
-        }
+//        if(contactlessCapksRt != CONFIGURATION_SUCCESS) {
+//            return contactlessCapksRt;
+//        }
     }
     return CONFIGURATION_SUCCESS;
 }
 
 + (int) configureContactAids:(NSDictionary*) contactAids {
+    BOOL allSuccessful = true;
     for(NSDictionary *contactAid in contactAids) {
         NSString *name = [contactAid objectForKey:@"name"];
         NSDictionary *values = [contactAid objectForKey:@"aid-values"];
@@ -145,13 +146,18 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
         } else{
             NSString *error =[[IDT_VP3300 sharedController] device_getResponseCodeString:rt];
             NSLog(@"contact aid failed to load %@",[NSString stringWithFormat:@"%@,%@", name, error]);
-            return CONTACT_FAILED;
+            allSuccessful = false;
+            //return CONTACT_FAILED;
         }
+    }
+    if(!allSuccessful) {
+        return CONTACT_FAILED;
     }
     return CONFIGURATION_SUCCESS;
 }
 
 + (int) configureContactlessAids:(NSDictionary*) contactlessAids {
+    BOOL allSuccessful = true;
     for(NSDictionary *contactlessAid in contactlessAids) {
         NSString *name = [contactlessAid objectForKey:@"name"];
         NSDictionary *values = [contactlessAid objectForKey:@"aid-values"];
@@ -192,8 +198,12 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
         } else{
             NSString *error =[[IDT_VP3300 sharedController] device_getResponseCodeString:rt];
             NSLog(@"contactless aid failed to load %@",[NSString stringWithFormat:@"name %@,error %@", name, error]);
-            return CONTACTLESS_FAILED;
+            allSuccessful = false;
+            //return CONTACTLESS_FAILED;
         }
+    }
+    if(!allSuccessful) {
+        return CONTACTLESS_FAILED;
     }
     return CONFIGURATION_SUCCESS;
 }
