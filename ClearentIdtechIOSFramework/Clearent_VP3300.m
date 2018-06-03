@@ -32,7 +32,8 @@
         return;
     }
     NSString *trimmedDeviceSerialNumber = [_clearentDelegate.deviceSerialNumber substringToIndex:10];
-    NSString *targetUrl = [NSString stringWithFormat:@"%@/%@/%@", _clearentDelegate.baseUrl, @"rest/v2/mobile/devices",  trimmedDeviceSerialNumber];
+    //NSString *targetUrl = [NSString stringWithFormat:@"%@/%@/%@", _clearentDelegate.baseUrl, @"rest/v2/mobile/devices",  trimmedDeviceSerialNumber];
+    NSString *targetUrl = [NSString stringWithFormat:@"%@/%@/%@", @"https://gateway-dev.clearent.net", @"rest/v2/mobile/devices",  trimmedDeviceSerialNumber];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setHTTPMethod:@"GET"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
