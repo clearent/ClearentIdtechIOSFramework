@@ -30,9 +30,11 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
     if(majorTagsRt != CONFIGURATION_SUCCESS) {
         return [NSString stringWithFormat:@"%@,%@", ERROR_MSG, [NSString stringWithFormat:@"%d",majorTagsRt]];
     }
-    int aidsRt = [self clearentConfiguration:clearentConfiguration];
-    if(aidsRt != CONFIGURATION_SUCCESS) {
-        return [NSString stringWithFormat:@"%@,%@", ERROR_MSG, [NSString stringWithFormat:@"%d",aidsRt]];
+    if(clearentConfiguration != nil) {
+        int clearentConfigurationRt = [self clearentConfiguration:clearentConfiguration];
+        if(clearentConfigurationRt != CONFIGURATION_SUCCESS) {
+            return [NSString stringWithFormat:@"%@,%@", ERROR_MSG, [NSString stringWithFormat:@"%d",clearentConfigurationRt]];
+        }
     }
     return @"Reader Configuration Completed";
 }
