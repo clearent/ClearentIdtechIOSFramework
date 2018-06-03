@@ -18,6 +18,7 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
 @implementation ReaderConfigurator
 
 + (NSString*) configure:(NSDictionary*) clearentConfiguration {
+    NSLog(@"Configure reader...");
     int dateRt = self.initClockDate;
     if(dateRt != CONFIGURATION_SUCCESS) {
         return [NSString stringWithFormat:@"%@,%@", ERROR_MSG, [NSString stringWithFormat:@"%d",dateRt]];
@@ -35,6 +36,8 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
         if(clearentConfigurationRt != CONFIGURATION_SUCCESS) {
             return [NSString stringWithFormat:@"%@,%@", ERROR_MSG, [NSString stringWithFormat:@"%d",clearentConfigurationRt]];
         }
+    } else {
+         NSLog(@"Skip configuring AIDs and CAPKs...");
     }
     return @"Reader Configuration Completed";
 }
