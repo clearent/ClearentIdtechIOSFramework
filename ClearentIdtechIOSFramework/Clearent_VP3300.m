@@ -46,7 +46,11 @@
           NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
           NSString *responseStr = nil;
           if(error != nil) {
-              [self.clearentDelegate deviceMessage:@"Failed to retrieve the reader configuration. Confirm internet access and try reconnecting reader. If this does not work contact support."];
+              //[self.clearentDelegate deviceMessage:@"Failed to retrieve the reader configuration. Confirm internet access and try reconnecting reader. If this does not work contact support."];
+              //TODO just configure the basic and skip the aids and capks for now.
+              NSString *readerConfigurationMessage = [ReaderConfigurator configure:nil];
+              NSLog(@"Reader Configuration Message: %@", readerConfigurationMessage);
+              [self.clearentDelegate deviceMessage:readerConfigurationMessage];
           } else if(data != nil) {
               responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
               if(200 == [httpResponse statusCode]) {
@@ -64,7 +68,11 @@
                       [self.clearentDelegate deviceMessage:readerConfigurationMessage];
                   }
               } else {
-                  [self.clearentDelegate deviceMessage:@"Failed to retrieve the reader configuration. Confirm internet access and try reconnecting reader. If this does not work contact support."];
+                  //[self.clearentDelegate deviceMessage:@"Failed to retrieve the reader configuration. Confirm internet access and try reconnecting reader. If this does not work contact support."];
+                  //TODO just configure the basic and skip the aids and capks for now.
+                  NSString *readerConfigurationMessage = [ReaderConfigurator configure:nil];
+                  NSLog(@"Reader Configuration Message: %@", readerConfigurationMessage);
+                  [self.clearentDelegate deviceMessage:readerConfigurationMessage];
               }
           }
           data = nil;
