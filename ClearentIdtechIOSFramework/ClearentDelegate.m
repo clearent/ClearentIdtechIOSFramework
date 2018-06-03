@@ -249,6 +249,9 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         //currently sends 3837363534333231 but we have 151 (needs to be 8 bytes)
         //[retrievedResultTags setObject:@"1515" forKey:@"9F1C"];
         
+        //Danny said dont send tag 57 in tlv.
+        [retrievedResultTags removeObjectForKey:TRACK2_DATA_EMV_TAG];
+        
         tagsAsNSData = [IDTUtility DICTotTLV:retrievedResultTags];
         tlvInHex = [IDTUtility dataToHexString:tagsAsNSData];
         
