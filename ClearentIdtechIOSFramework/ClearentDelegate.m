@@ -231,7 +231,6 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         //Removed these.
         [retrievedResultTags removeObjectForKey:@"DFEF4D"];
         [retrievedResultTags removeObjectForKey:@"DFEF4C"];
-        [retrievedResultTags removeObjectForKey:@"DFEF4B"];
         
         //majors
         [retrievedResultTags setObject:@"6028C8" forKey:@"9F33"];
