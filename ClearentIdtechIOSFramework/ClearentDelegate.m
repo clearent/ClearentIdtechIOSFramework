@@ -206,7 +206,10 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     //TODO CONTACTLESS 9F6D 9F66
     
     //leave out 9F10, Danny says leave these too since they are not a part of AUTH (capture only tags) 9F0D, 9F0E, 9F0F. DF26, 9F53, and 9F4E
-    NSData *tsysTags = [IDTUtility hexToData:@"82959A9B9C5F2A9F029F039F1A9F219F269F279F339F349F359F369F379F394F845F2D5F349F069F09DF78DF799F155F369F1B9F1E9F1C5A9F6E57"];
+    //NSData *tsysTags = [IDTUtility hexToData:@"82959A9B9C5F2A9F029F039F1A9F219F269F279F339F349F359F369F379F394F845F2D5F349F069F09DF78DF799F155F369F1B9F1E9F1C5A9F6E57"];
+    
+    //removed 5A added 91 9f10 9f5b
+    NSData *tsysTags = [IDTUtility hexToData:@"8291959A9B9C5F2A9F029F039F1A9F219F269F279F339F349F359F369F379F394F845F2D5F349F069F09DF78DF799F155F369F1B9F1E9F1C9F6E9F109F5B57"];
     
     //good ones confirmed!
     //57 5a 9f1a 9c 95 9f03 9f15 9f27 9f39 df79 9f0d 9f35 9f1b 5f34 9f0e 9f36 9f1c 9f40 9f09 9f4e 5f2d 9f0f 9f21 9f33 82 4F 5f36 9f06 5f2a 9f02 9f26 84 9B 9F1E 9F34 DF78
@@ -241,9 +244,6 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         [retrievedResultTags setObject:@"5999" forKey:@"9F15"];
         [retrievedResultTags setObject:@"888000001516" forKey:@"9F16"];
         //[retrievedResultTags setObject:@"54657374204d65726368616e74" forKey:@"9F4E"];
-        
-        //Terminal Version Number
-        [retrievedResultTags setObject:@"5999" forKey:@"9F15"];
         
         //add these back in if needed
         //currently sends 3837363534333231 but we have 151 (needs to be 8 bytes)
