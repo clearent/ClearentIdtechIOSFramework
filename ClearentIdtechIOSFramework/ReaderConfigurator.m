@@ -200,7 +200,8 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
                 return CONTACTLESS_NO_COMBINED_TLV;
             }
         } else {
-            rt = [[IDT_VP3300 sharedController] emv_setApplicationData:name configData:values];
+            NSLog(@"Group is required%@",[NSString stringWithFormat:@"name %@,group %@", name, group]);
+            //rt = [[IDT_VP3300 sharedController] emv_setApplicationData:name configData:values];
         }
         if (RETURN_CODE_DO_SUCCESS == rt) {
             NSLog(@"contactless aid loaded %@",[NSString stringWithFormat:@"name %@,group %@", name, group]);
