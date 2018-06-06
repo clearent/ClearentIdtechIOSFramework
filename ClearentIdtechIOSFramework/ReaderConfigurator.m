@@ -116,13 +116,13 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
 //            return contactAidsRt;
 //        }
     }
-    NSDictionary *contactlessAids = [mobileDevice objectForKey:@"contactless-aids"];
-    if(contactlessAids != nil) {
-        int contactlessAidsRt = [self configureContactlessAids:contactlessAids];
+    //NSDictionary *contactlessAids = [mobileDevice objectForKey:@"contactless-aids"];
+    //if(contactlessAids != nil) {
+    //    int contactlessAidsRt = [self configureContactlessAids:contactlessAids];
 //        if(contactlessAidsRt != CONFIGURATION_SUCCESS) {
 //            return contactlessAidsRt;
 //        }
-    }
+   // }
     
     NSDictionary *publicKeys = [mobileDevice objectForKey:@"public-keys"];
     if(publicKeys != nil) {
