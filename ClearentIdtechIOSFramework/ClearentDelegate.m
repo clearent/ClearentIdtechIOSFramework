@@ -230,18 +230,15 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
             NSDictionary *ff8105 = [IDTUtility TLVtoDICT_HEX_ASCII:[tags objectForKey:@"FF8105"]];
             NSString *track2Data9F6B = [ff8105 objectForKey:TRACK2_DATA_CONTACTLESS_NON_CHIP_TAG];
             if(track2Data9F6B != nil && !([track2Data9F6B isEqualToString:@""])) {
+                NSLog(@"Use the track 2 data from tag 9F6B");
                 clearentTransactionTokenRequest.track2Data = track2Data9F6B;
             } else {
+                NSLog(@"Mobile SDK failed to read Track2Data");
                 clearentTransactionTokenRequest.track2Data = @"Mobile SDK failed to read Track2Data";
             }
-            [retrievedResultTags removeObjectForKey:@"FF8105"];
         }
         [retrievedResultTags setObject:self.deviceSerialNumber forKey:DEVICE_SERIAL_NUMBER_EMV_TAG];
         [retrievedResultTags setObject:self.kernelVersion forKey:KERNEL_VERSION_EMV_TAG];
-        
-        //Removed these.
-        [retrievedResultTags removeObjectForKey:@"DFEF4D"];
-        [retrievedResultTags removeObjectForKey:@"DFEF4C"];
         
         //majors
         [retrievedResultTags setObject:@"6028C8" forKey:@"9F33"];
@@ -260,7 +257,10 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         //currently sends 3837363534333231 but we have 151 (needs to be 8 bytes)
         //[retrievedResultTags setObject:@"1515" forKey:@"9F1C"];
         
-        //Danny said dont send tag 57 in tlv.
+        //Removed these.
+        [retrievedResultTags removeObjectForKey:@"DFEF4D"];
+        [retrievedResultTags removeObjectForKey:@"DFEF4C"];
+        [retrievedResultTags removeObjectForKey:@"FF8105"];
         [retrievedResultTags removeObjectForKey:TRACK2_DATA_EMV_TAG];
         
         tagsAsNSData = [IDTUtility DICTotTLV:retrievedResultTags];
