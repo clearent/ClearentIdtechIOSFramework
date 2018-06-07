@@ -93,8 +93,10 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
 - (void) swipeMSRData:(IDTMSRData*)cardData{
     if (cardData != nil && cardData.event == EVENT_MSR_CARD_DATA && (cardData.track2 != nil || cardData.encTrack2 != nil)) {
         ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequestForASwipe:cardData];
+        NSLog(@"swipeMSRData createTransactionToken");
         [self createTransactionToken:clearentTransactionTokenRequest];
     } else {
+        NSLog(@"swipeMSRData generic error");
         [self.publicDelegate errorTransactionToken:GENERIC_CARD_READ_ERROR_RESPONSE];
     }
 }
@@ -123,6 +125,9 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
 }
 
 - (void) emvTransactionData:(IDTEMVData*)emvData errorCode:(int)error{
+    
+    NSLog(@"EMV Transaction Data Response: = %@",[[IDT_VP3300 sharedController] device_getResponseCodeString:error]);
+    
     if (emvData == nil) {
         return;
     }
@@ -139,28 +144,40 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
         return;
     }
     
+    if (emvData.cardType == 1) {
+        NSLog(@"CONTACTLESS");
+    }
+        
     int entryMode = 0;
     if (emvData.unencryptedTags != nil) {
         entryMode = getEntryMode([[emvData.unencryptedTags objectForKey:@"9F39"] description]);
     } else if (emvData.encryptedTags != nil) {
         entryMode = getEntryMode([[emvData.encryptedTags objectForKey:@"9F39"] description]);
     }
-    //Not sure how this scenario could happen but until we get some feedback from IdTech for some of the odd delegate communication behavior I think we'll just be defensive.
+    
     if(entryMode == 0) {
+        NSLog(@"No entryMode defined");
         return;
+    } else {
+        NSLog(@"entryMode: %d", entryMode);
     }
     //When we get an Go Online result code let's create the transaction token (jwt)
     //TODO clean up the carddata not nil check..its done in two places
     if (emvData.cardData != nil && emvData.resultCodeV2 == EMV_RESULT_CODE_V2_MSR_SUCCESS) {
         if(entryMode == SWIPE) {
+            NSLog(@"swipeMSRData");
             [self swipeMSRData:emvData.cardData];
         } else if(isSupportedEmvEntryMode(entryMode)) {
+            NSLog(@"isSupportedEmvEntryMode true");
             ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequest:emvData];
+            NSLog(@"createTransactionToken 1");
             [self createTransactionToken:clearentTransactionTokenRequest];
         } else {
+             NSLog(@"generic error 1");
             [self.publicDelegate errorTransactionToken:GENERIC_CARD_READ_ERROR_RESPONSE];
         }
     } else if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_GO_ONLINE || (entryMode == NONTECH_FALLBACK_SWIPE || entryMode == CONTACTLESS_EMV || entryMode == CONTACTLESS_MAGNETIC_SWIPE || emvData.cardType == 1)) {
+        NSLog(@"createTransactionToken 2");
         ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequest:emvData];
         [self createTransactionToken:clearentTransactionTokenRequest];
     }
