@@ -22,8 +22,6 @@
  */
 -(void) device_connectToUSB;
 
-
-
 /**
  Cancels Transaction request (swipe or CTLS).
  * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniPay::device_getResponseCodeString:()

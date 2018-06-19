@@ -20,6 +20,7 @@ typedef enum {SWIPE=90} supportedNonEmvEntryMode;
 @property(nonatomic) NSString *kernelVersion;
 @property(nonatomic) NSString *baseUrl;
 @property(nonatomic) NSString *publicKey;
+@property (assign, getter=isEditable) BOOL configured;
 @property(nonatomic) id<Clearent_Public_IDTech_VP3300_Delegate> publicDelegate;
 - (void) init : (id <Clearent_Public_IDTech_VP3300_Delegate>) publicDelegate clearentBaseUrl:(NSString*)clearentBaseUrl publicKey:(NSString*)publicKey ;
 - (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequest:(IDTEMVData*)emvData;

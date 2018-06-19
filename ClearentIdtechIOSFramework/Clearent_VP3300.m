@@ -1,6 +1,6 @@
 //
 //  Clearent_VP3300.m
-//  ClearentPayments
+//  ClearentIdtechIOSFramework
 //
 //  Created by David Higginbotham on 1/4/18.
 //  Copyright © 2018 Clearent, L.L.C. All rights reserved.
@@ -12,7 +12,7 @@
 @implementation Clearent_VP3300
 
 - (void) init : (id <Clearent_Public_IDTech_VP3300_Delegate>) publicDelegate clearentBaseUrl:(NSString*)clearentBaseUrl publicKey:(NSString*)publicKey {
-    NSLog(@"Set the delegate in the ID Tech solution to our ClearentDelegate, which will call the Public delegate when needed.");
+    NSLog(@"Set the delegate in the ID Tech solution to the ClearentDelegate, which will call the Public delegate when needed.");
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         self.clearentDelegate = [[ClearentDelegate alloc] init];
@@ -20,65 +20,6 @@
         [IDT_VP3300 sharedController].delegate = self.clearentDelegate;
         NSLog(@"Clearent_VP3300 initialized");
     });
-}
-
--(void) configure_reader {
-    if(_clearentDelegate.deviceSerialNumber == nil) {
-        [self.clearentDelegate deviceMessage:@"Device must be connected to be configured"];
-        return;
-    }
-    if(_clearentDelegate.baseUrl == nil) {
-        [self.clearentDelegate deviceMessage:@"Clearent Base Url is required for reader configuration. Ex - https://gateway-sb.clearent.net"];
-        return;
-    }
-    NSString *trimmedDeviceSerialNumber = [_clearentDelegate.deviceSerialNumber substringToIndex:10];
-    NSString *targetUrl = [NSString stringWithFormat:@"%@/%@/%@", _clearentDelegate.baseUrl, @"rest/v2/mobile/devices",  trimmedDeviceSerialNumber];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    [request setHTTPMethod:@"GET"];
-    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
-    [request setValue:_clearentDelegate.publicKey forHTTPHeaderField:@"public-key"];
-    [request setURL:[NSURL URLWithString:targetUrl]];
-    NSLog(@"config targetUrl: %@", targetUrl);
-    [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:
-      ^(NSData * _Nullable data,
-        NSURLResponse * _Nullable response,
-        NSError * _Nullable error) {
-          NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
-          NSString *responseStr = nil;
-          if(error != nil) {
-              //[self.clearentDelegate deviceMessage:@"Failed to retrieve the reader configuration. Confirm internet access and try reconnecting reader. If this does not work contact support."];
-              //TODO just configure the basic and skip the aids and capks for now.
-              NSString *readerConfigurationMessage = [ReaderConfigurator configure:nil];
-              NSLog(@"Reader Configuration Message: %@", readerConfigurationMessage);
-              [self.clearentDelegate deviceMessage:readerConfigurationMessage];
-          } else if(data != nil) {
-              responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-              if(200 == [httpResponse statusCode]) {
-                  NSData *data = [responseStr dataUsingEncoding:NSUTF8StringEncoding];
-                  NSError *error;
-                  NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data
-                                                                                 options:0
-                                                                                   error:&error];
-                  NSLog(@"config: %@", jsonDictionary);
-                  if (error) {
-                      [self.clearentDelegate deviceMessage:@"Failed to process the reader configuration. Please contact support."];
-                  } else {
-                      NSString *readerConfigurationMessage = [ReaderConfigurator configure:jsonDictionary];
-                      NSLog(@"Reader Configuration Message: %@", readerConfigurationMessage);
-                      [self.clearentDelegate deviceMessage:readerConfigurationMessage];
-                  }
-              } else {
-                  //[self.clearentDelegate deviceMessage:@"Failed to retrieve the reader configuration. Confirm internet access and try reconnecting reader. If this does not work contact support."];
-                  //TODO just configure the basic and skip the aids and capks for now.
-                  NSString *readerConfigurationMessage = [ReaderConfigurator configure:nil];
-                  NSLog(@"Reader Configuration Message: %@", readerConfigurationMessage);
-                  [self.clearentDelegate deviceMessage:readerConfigurationMessage];
-              }
-          }
-          data = nil;
-          response = nil;
-          error = nil;
-      }] resume];
 }
 
 - (NSString*) SDK_version {

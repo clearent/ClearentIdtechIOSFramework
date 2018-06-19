@@ -1,6 +1,6 @@
 //
 //  ClearentDelegate.m
-//  ClearentPayments
+//  ClearentIdtechIOSFramework
 //
 //  Created by David Higginbotham on 1/5/18.
 //  Copyright © 2018 Clearent, L.L.C. All rights reserved.
@@ -8,6 +8,7 @@
 
 #import "ClearentDelegate.h"
 #import "IDTech/IDTUtility.h"
+#import "ReaderConfigurator.h"
 
 static NSString *const TRACK2_DATA_EMV_TAG = @"57";
 static NSString *const TRACK2_DATA_CONTACTLESS_NON_CHIP_TAG = @"9F6B";
@@ -32,6 +33,7 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
     [self.publicDelegate lcdDisplay:mode  lines:lines];
 }
 
+//TODO talk about this. Initially I did not have this exposed in the public delegate. This information is needed when talking to IDTech support. The problem is when an unencrypted reader is used sensitive data is exposed. Encrypted data is fine ?
 - (void) dataInOutMonitor:(NSData*)data  incoming:(BOOL)isIncoming {
     [self.publicDelegate dataInOutMonitor:data incoming:isIncoming];
 }
@@ -49,7 +51,9 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
     self.deviceSerialNumber = [self getDeviceSerialNumber];
     self.kernelVersion = [self getKernelVersion];
     [self.publicDelegate deviceConnected];
-    
+    if(!self.configured) {
+        [self configure];
+    }
 }
 
 - (NSString *) getFirmwareVersion {
@@ -80,6 +84,59 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
     } else{
         return @"IDTECH Serial number not found";
     }
+}
+
+-(void) configure {
+    self.configured = NO;
+    if(self.deviceSerialNumber  == nil) {
+        [self deviceMessage:@"CONNECT DEVICE TO CONFIGURE"];
+        return;
+    }
+    if(self.baseUrl == nil) {
+        [self deviceMessage:@"Clearent Base Url is required for reader configuration. Ex - https://gateway-sb.clearent.net"];
+        return;
+    }
+    NSString *trimmedDeviceSerialNumber = [self.deviceSerialNumber substringToIndex:10];
+    NSString *targetUrl = [NSString stringWithFormat:@"%@/%@/%@", self.baseUrl, @"rest/v2/mobile/devices",  trimmedDeviceSerialNumber];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    [request setHTTPMethod:@"GET"];
+    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request setValue:self.publicKey forHTTPHeaderField:@"public-key"];
+    [request setURL:[NSURL URLWithString:targetUrl]];
+    NSLog(@"config targetUrl: %@", targetUrl);
+    [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:
+      ^(NSData * _Nullable data,
+        NSURLResponse * _Nullable response,
+        NSError * _Nullable error) {
+          NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
+          NSString *responseStr = nil;
+          if(error != nil) {
+              [self deviceMessage:@"CONFIGURATION FAILED"];
+          } else if(data != nil) {
+              responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+              if(200 == [httpResponse statusCode]) {
+                  NSData *data = [responseStr dataUsingEncoding:NSUTF8StringEncoding];
+                  NSError *error;
+                  NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data
+                                                                                 options:0
+                                                                                   error:&error];
+                  NSLog(@"config: %@", jsonDictionary);
+                  if (error) {
+                      [self deviceMessage:@"CONFIGURATION FAILED"];
+                  } else {
+                      NSString *readerConfigurationMessage = [ReaderConfigurator configure:jsonDictionary];
+                      NSLog(@"Reader Configuration Message: %@", readerConfigurationMessage);
+                      [self deviceMessage:readerConfigurationMessage];
+                      self.configured = YES;
+                  }
+              } else {
+                  [self deviceMessage:@"CONFIGURATION FAILED"];
+              }
+          }
+          data = nil;
+          response = nil;
+          error = nil;
+      }] resume];
 }
 
 -(void)deviceDisconnected{
@@ -125,9 +182,13 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
 }
 
 - (void) emvTransactionData:(IDTEMVData*)emvData errorCode:(int)error{
-    
+
     NSLog(@"EMV Transaction Data Response: = %@",[[IDT_VP3300 sharedController] device_getResponseCodeString:error]);
-    
+
+    if (error == 60938) {
+        NSLog(@"Failed to read card. This was happening when trying to get visa contactless to work. Send msg back to delegate?");
+        return;
+    }
     if (emvData == nil) {
         return;
     }
@@ -143,18 +204,18 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
         [self.publicDelegate errorTransactionToken:GENERIC_CARD_READ_ERROR_RESPONSE];
         return;
     }
-    
+
     if (emvData.cardType == 1) {
         NSLog(@"CONTACTLESS");
     }
-        
+
     int entryMode = 0;
     if (emvData.unencryptedTags != nil) {
         entryMode = getEntryMode([[emvData.unencryptedTags objectForKey:@"9F39"] description]);
     } else if (emvData.encryptedTags != nil) {
         entryMode = getEntryMode([[emvData.encryptedTags objectForKey:@"9F39"] description]);
     }
-    
+
     if(entryMode == 0) {
         NSLog(@"No entryMode defined");
         return;
@@ -202,49 +263,46 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     if(emvData.cardData != nil) {
         if(emvData.cardData.encTrack2 != nil) {
             [emvData.encryptedTags setValue:emvData.cardData.encTrack2 forKey:TRACK2_DATA_EMV_TAG];
-            return [self createClearentTransactionTokenRequest:emvData.encryptedTags isEncrypted: true];
+            return [self createClearentTransactionTokenRequest:emvData.encryptedTags isEncrypted: true cardType:emvData.cardType];
         } else if(emvData.cardData.track2 != nil) {
             [emvData.unencryptedTags setValue:emvData.cardData.track2 forKey:TRACK2_DATA_EMV_TAG];
-            return [self createClearentTransactionTokenRequest:emvData.unencryptedTags isEncrypted: false];
+            return [self createClearentTransactionTokenRequest:emvData.unencryptedTags isEncrypted: false cardType:emvData.cardType];
         }
     } else if (emvData.unencryptedTags != nil) {
-        return [self createClearentTransactionTokenRequest:emvData.unencryptedTags isEncrypted: false];
+        return [self createClearentTransactionTokenRequest:emvData.unencryptedTags isEncrypted: false cardType:emvData.cardType];
     } else if (emvData.encryptedTags != nil) {
-        return [self createClearentTransactionTokenRequest:emvData.encryptedTags isEncrypted: true];
+        return [self createClearentTransactionTokenRequest:emvData.encryptedTags isEncrypted: true cardType:emvData.cardType];
     }
     ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [[ClearentTransactionTokenRequest alloc] init];
     return clearentTransactionTokenRequest;
 }
 
-- (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequest:(NSDictionary*) tags isEncrypted:(BOOL) isEncrypted {
+- (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequest:(NSDictionary*) tags isEncrypted:(BOOL) isEncrypted cardType:(int) cardType {
     ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [[ClearentTransactionTokenRequest alloc] init];
-
-    //Get tags based on TSYS impl guide. TODO Rely on on what is returned from emv_retrieveTransactionResult
-    //TODO CONTACTLESS 9F6D 9F66
-    
-    //leave out 9F10, Danny says leave these too since they are not a part of AUTH (capture only tags) 9F0D, 9F0E, 9F0F. DF26, 9F53, and 9F4E
-    //NSData *tsysTags = [IDTUtility hexToData:@"82959A9B9C5F2A9F029F039F1A9F219F269F279F339F349F359F369F379F394F845F2D5F349F069F09DF78DF799F155F369F1B9F1E9F1C5A9F6E57"];
-    
-    //removed 5A added 91 9f10 9f5b
-    NSData *tsysTags = [IDTUtility hexToData:@"8291959A9B9C5F2A9F029F039F1A9F219F269F279F339F349F359F369F379F394F845F2D5F349F069F09DF78DF799F155F369F1B9F1E9F1C9F6E9F109F5B57FF8105"];
-    
-    //good ones confirmed!
-    //57 5a 9f1a 9c 95 9f03 9f15 9f27 9f39 df79 9f0d 9f35 9f1b 5f34 9f0e 9f36 9f1c 9f40 9f09 9f4e 5f2d 9f0f 9f21 9f33 82 4F 5f36 9f06 5f2a 9f02 9f26 84 9B 9F1E 9F34 DF78
-    //TODO Why does the TSYS decoder show this as an error 9f10 IAD must be at least 17 bytes long ??
-    
-    NSDictionary *transactionResultDictionary;
-    RETURN_CODE transactionDateRt = [[IDT_VP3300 sharedController] emv_retrieveTransactionResult:tsysTags retrievedTags:&transactionResultDictionary];
+    NSMutableDictionary *outgoingTags;
     NSData *tagsAsNSData;
     NSString *tlvInHex;
-    NSMutableDictionary *transactionTags;
-    if(RETURN_CODE_DO_SUCCESS == transactionDateRt) {
-        transactionTags = [transactionResultDictionary objectForKey:@"tags"];
-        NSMutableDictionary *retrievedResultTags = [transactionTags mutableCopy];
-        NSString *track2Data57 = [IDTUtility dataToHexString:[transactionTags objectForKey:TRACK2_DATA_EMV_TAG]];
-        if(track2Data57 != nil && !([track2Data57 isEqualToString:@""])) {
-            clearentTransactionTokenRequest.track2Data = track2Data57;
+    if (cardType == 1) {
+        outgoingTags = [tags mutableCopy];
+    } else {
+        NSDictionary *transactionResultDictionary;
+        NSData *tsysTags = [IDTUtility hexToData:@"8291959A9B9C5F2A9F029F039F1A9F219F269F279F339F349F359F369F379F394F845F2D5F349F069F09DF78DF799F155F369F1B9F1E9F1C9F6E9F109F5B5657FF8106FF8105FFEE14FFEE06"];
+        RETURN_CODE emvRetrieveTransactionResultRt = [[IDT_VP3300 sharedController] emv_retrieveTransactionResult:tsysTags retrievedTags:&transactionResultDictionary];
+        if(RETURN_CODE_DO_SUCCESS == emvRetrieveTransactionResultRt) {
+            NSLog(@"retrieved emv tags");
+            outgoingTags = [transactionResultDictionary objectForKey:@"tags"];
         } else {
-            NSDictionary *ff8105 = [IDTUtility TLVtoDICT_HEX_ASCII:[tags objectForKey:@"FF8105"]];
+            tlvInHex = @"Failed to retrieve tlv from reader";
+            //TODO handle error?
+        }
+    }
+    //TODO Search for this data element(DFEF18) Track2 Data during MC contactless swipe
+    NSString *track2Data57 = [IDTUtility dataToHexString:[tags objectForKey:TRACK2_DATA_EMV_TAG]];
+    if(track2Data57 != nil && !([track2Data57 isEqualToString:@""])) {
+        clearentTransactionTokenRequest.track2Data = track2Data57;
+    } else {
+        NSDictionary *ff8105 = [IDTUtility TLVtoDICT_HEX_ASCII:[tags objectForKey:@"FF8105"]];
+        if(ff8105 != nil) {
             NSString *track2Data9F6B = [ff8105 objectForKey:TRACK2_DATA_CONTACTLESS_NON_CHIP_TAG];
             if(track2Data9F6B != nil && !([track2Data9F6B isEqualToString:@""])) {
                 NSLog(@"Use the track 2 data from tag 9F6B");
@@ -254,48 +312,66 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
                 clearentTransactionTokenRequest.track2Data = @"Mobile SDK failed to read Track2Data";
             }
         }
-        [retrievedResultTags setObject:self.deviceSerialNumber forKey:DEVICE_SERIAL_NUMBER_EMV_TAG];
-        [retrievedResultTags setObject:self.kernelVersion forKey:KERNEL_VERSION_EMV_TAG];
-        
-        //majors
-        [retrievedResultTags setObject:@"6028C8" forKey:@"9F33"];
-        [retrievedResultTags setObject:@"F000F0A001" forKey:@"9F40"];
-       // [retrievedResultTags setObject:@"01" forKey:@"DF26"];
-        
-        //Set Minor Tags
-        [retrievedResultTags setObject:@"02" forKey:@"5F36"];
-        [retrievedResultTags setObject:@"0840" forKey:@"9F1A"];
-        [retrievedResultTags setObject:@"5465726D696E616C" forKey:@"9F1E"];
-        [retrievedResultTags setObject:@"5999" forKey:@"9F15"];
-        [retrievedResultTags setObject:@"888000001516" forKey:@"9F16"];
-        //[retrievedResultTags setObject:@"54657374204d65726368616e74" forKey:@"9F4E"];
-        
-        //add these back in if needed
-        //currently sends 3837363534333231 but we have 151 (needs to be 8 bytes)
-        //[retrievedResultTags setObject:@"1515" forKey:@"9F1C"];
-        
-        //Removed these.
-        [retrievedResultTags removeObjectForKey:@"DFEF4D"];
-        [retrievedResultTags removeObjectForKey:@"DFEF4C"];
-        [retrievedResultTags removeObjectForKey:@"FF8105"];
-        [retrievedResultTags removeObjectForKey:TRACK2_DATA_EMV_TAG];
-        
-        tagsAsNSData = [IDTUtility DICTotTLV:retrievedResultTags];
-        tlvInHex = [IDTUtility dataToHexString:tagsAsNSData];
-        
-        clearentTransactionTokenRequest.tlv = tlvInHex.uppercaseString;
-        clearentTransactionTokenRequest.emv = true;
-        clearentTransactionTokenRequest.kernelVersion = [self kernelVersion];
-        clearentTransactionTokenRequest.deviceSerialNumber = [self deviceSerialNumber];
-        clearentTransactionTokenRequest.firmwareVersion = [self firmwareVersion];
-        clearentTransactionTokenRequest.encrypted = isEncrypted;
-        
-    } else {
-        tlvInHex = @"Failed to retrieve tlv from reader";
-        //TODO handle error?
     }
     
+    //Add required tags. TODO try moving these into the ReaderConfiguration setMajorTags method. if they 'disappear' when coming into this method move them back here.
+    [self addRequiredTags: outgoingTags];
+    
+    //Remove any tags that would make the request fail in TSYS.
+    [self removeInvalidTSYSTags: outgoingTags];
+   
+    tagsAsNSData = [IDTUtility DICTotTLV:outgoingTags];
+    tlvInHex = [IDTUtility dataToHexString:tagsAsNSData];
+    
+    clearentTransactionTokenRequest.tlv = tlvInHex.uppercaseString;
+    clearentTransactionTokenRequest.emv = true;
+    clearentTransactionTokenRequest.kernelVersion = [self kernelVersion];
+    clearentTransactionTokenRequest.deviceSerialNumber = [self deviceSerialNumber];
+    clearentTransactionTokenRequest.firmwareVersion = [self firmwareVersion];
+    clearentTransactionTokenRequest.encrypted = isEncrypted;
+    
     return clearentTransactionTokenRequest;
+}
+
+- (void) addRequiredTags: (NSMutableDictionary*) outgoingTags {
+    [outgoingTags setObject:self.deviceSerialNumber forKey:DEVICE_SERIAL_NUMBER_EMV_TAG];
+    [outgoingTags setObject:self.kernelVersion forKey:KERNEL_VERSION_EMV_TAG];
+    
+    //majors
+    [outgoingTags setObject:@"6028C8" forKey:@"9F33"];
+    [outgoingTags setObject:@"F000F0A001" forKey:@"9F40"];
+    // [retrievedResultTags setObject:@"01" forKey:@"DF26"];
+    
+    //Set Minor Tags
+    
+    //Should set these as NSData and not NSString ?? [tags setObject:[IDTUtility hexToData:@"D0DC20D0C41E1400"] forKey:@"DFEE1E"];
+    [outgoingTags setObject:@"02" forKey:@"5F36"];
+    [outgoingTags setObject:@"0840" forKey:@"9F1A"];
+    [outgoingTags setObject:@"5465726D696E616C" forKey:@"9F1E"];
+    [outgoingTags setObject:@"5999" forKey:@"9F15"];
+    [outgoingTags setObject:@"888000001516" forKey:@"9F16"];
+    //added 6-11, removed from individual aid configuration
+    [outgoingTags setObject:@"9F3704" forKey:@"DF25"];
+    [outgoingTags setObject:@"00000000" forKey:@"9F1B"];
+    //[retrievedResultTags setObject:@"54657374204d65726368616e74" forKey:@"9F4E"];
+    //add these back in if needed
+    //currently sends 3837363534333231 but we have 151 (needs to be 8 bytes)
+    //[retrievedResultTags setObject:@"1515" forKey:@"9F1C"];
+    
+}
+
+- (void) removeInvalidTSYSTags: (NSMutableDictionary*) outgoingTags {
+    [outgoingTags removeObjectForKey:@"DFEF4D"];
+    [outgoingTags removeObjectForKey:@"DFEF4C"];
+    [outgoingTags removeObjectForKey:@"FFEE06"];
+    [outgoingTags removeObjectForKey:@"FFEE13"];
+    [outgoingTags removeObjectForKey:@"FFEE14"];
+    [outgoingTags removeObjectForKey:@"FF8106"];
+    [outgoingTags removeObjectForKey:@"FF8105"];
+    [outgoingTags removeObjectForKey:TRACK2_DATA_EMV_TAG];
+    [outgoingTags removeObjectForKey:@"DFEE26"];
+    [outgoingTags removeObjectForKey:@"FFEE01"];
+    [outgoingTags removeObjectForKey:@"DF8129"];
 }
 
 - (void) createTransactionToken:(ClearentTransactionTokenRequest*)clearentTransactionTokenRequest {
