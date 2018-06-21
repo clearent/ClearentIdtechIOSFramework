@@ -29,25 +29,26 @@ Carthage was chosen to bring the Clearent framework into your project because of
 
 ## Use the Clearent Framework
 
-1 - Add this to your ViewController.h
+1 - Add this to your ViewController.h  
 #import <ClearentIdtechIOSFramework/ClearentIdtechIOSFramework.h>
 
-2 - Define the framework object you will interact with in ViewController.m.
+2 - Change your interface to adhere to the Clearent public delegate (Clearent_Public_IDTech_VP3300_Delegate)
+Ex -@interface ViewController : UIViewController<UIAlertViewDelegate,Clearent_Public_IDTech_VP3300_Delegate, UIActionSheetDelegate,MFMailComposeViewControllerDelegate>
+
+3 - Define the framework object you will interact with in ViewController.m.
 Clearent_VP3300 *clearentVP3300;
 
-3 - Initialize the object
+4 - Initialize the object
 clearentVP3300 = [[Clearent_VP3300 alloc]  init];
 [clearentVP3300 init:self clearentBaseUrl:@"http://gateway-sb.clearent.net", @"the public key Clearent gave you"];
 
-4- Implement the successfulTransactionToken and errorTransactionToken delegate methods. A transaction token is the representation of the credit card and allows you to submit a payment transaction.
-When a card is processed (swipe,contactless, or insert/dip of card with an emv chip), the framework will call one of these two methods.
+5 - Implement the successfulTransactionToken method. This method returns a token which represents the credit card and the current transavtion request. It allows you to submit a payment transaction.
+When a card is processed (swipe or insert/dip of card with an emv chip), the framework will call successfulTransactionToken method when tokenization is successful.
 
 -(void) successfulTransactionToken:(NSString*) jsonString {
   //This json contains the transaction token. See demo app for more details
 }
 
-- (void) errorTransactionToken:(NSString*)message{
-     //See demo app for more details
-}
+6 - Monitor for errors by implementing the deviceMessage method.
 
-5 - When you are ready to process the payment, do a POST against endpoint /rest/v2/mobile/transactions. See demo app for an example (https://github.com/clearent/IDTech_VP3300_Demo)
+7 - When you are ready to process the payment, do a POST against endpoint /rest/v2/mobile/transactions. See demo app for an example (https://github.com/clearent/IDTech_VP3300_Demo)
