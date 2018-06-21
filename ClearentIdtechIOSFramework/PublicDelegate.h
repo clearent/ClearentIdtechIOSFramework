@@ -18,11 +18,6 @@
  */
 -(void) successfulTransactionToken:(NSString*)jsonString;
 
-/**
- * This will notify you when a Clearent Transaction Token failed to be created.
- */
--(void) errorTransactionToken:(NSString*)message;
-
 @optional
 -(void) deviceConnected; //!<Fires when device connects.  If a connection is established before the delegate is established (no delegate to send initial connection notification to), this method will fire upon establishing the delegate.
 -(void) deviceDisconnected; //!<Fires when device disconnects.

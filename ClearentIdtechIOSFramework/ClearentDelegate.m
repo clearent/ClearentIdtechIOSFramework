@@ -19,6 +19,7 @@ static NSString *const TAC_ONLINE = @"DF15";
 static NSString *const DEVICE_SERIAL_NUMBER_EMV_TAG = @"DF78";
 static NSString *const KERNEL_VERSION_EMV_TAG = @"DF79";
 static NSString *const GENERIC_CARD_READ_ERROR_RESPONSE = @"Card read error";
+static NSString *const TIMEOUT_ERROR_RESPONSE = @"TIMEOUT";
 static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Transaction Token Failed";
 
 @implementation ClearentDelegate
@@ -28,12 +29,22 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
     self.baseUrl = clearentBaseUrl;
     self.publicKey = publicKey;
 }
-
+//TODO Should we not expose this as another method and just rely on the deviceMessage ?
 - (void) lcdDisplay:(int)mode  lines:(NSArray*)lines {
-    [self.publicDelegate lcdDisplay:mode  lines:lines];
+    NSMutableArray *updatedArray = [[NSMutableArray alloc]initWithCapacity:1];
+    if (lines != nil) {
+        for (NSString* message in lines) {
+            if(message != nil && [message isEqualToString:@"DECLINED"]) {
+                NSLog(@"This is not really a decline. Clearent is creating a transaction token for later use.");
+            } else {
+               [updatedArray addObject:message];
+            }
+        }
+        [self.publicDelegate lcdDisplay:(int)mode  lines:(NSArray*)updatedArray];
+    }
 }
 
-//TODO talk about this. Initially I did not have this exposed in the public delegate. This information is needed when talking to IDTech support. The problem is when an unencrypted reader is used sensitive data is exposed. Encrypted data is fine ?
+//TODO talk about this. Initially I did not have this exposed in the public delegate. This information is needed when talking to IDTech support. The problem is when an unencrypted reader is used sensitive data is exposed. Encrypted data is fine ? Should we have a debug flag ? 
 - (void) dataInOutMonitor:(NSData*)data  incoming:(BOOL)isIncoming {
     [self.publicDelegate dataInOutMonitor:data incoming:isIncoming];
 }
@@ -51,7 +62,10 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
     self.deviceSerialNumber = [self getDeviceSerialNumber];
     self.kernelVersion = [self getKernelVersion];
     [self.publicDelegate deviceConnected];
-    if(!self.configured) {
+    [self deviceMessage:@"Reader connected. Waiting for configuration to complete..."];
+    if(self.configured) {
+        [self deviceMessage:@"Reader configured and ready"];
+    } else {
         [self configure];
     }
 }
@@ -97,7 +111,10 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
         return;
     }
     NSString *trimmedDeviceSerialNumber = [self.deviceSerialNumber substringToIndex:10];
-    NSString *targetUrl = [NSString stringWithFormat:@"%@/%@/%@", self.baseUrl, @"rest/v2/mobile/devices",  trimmedDeviceSerialNumber];
+    NSString *urlEncodedKernelVersion = [self.kernelVersion stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
+    NSLog(@"urlEncodedKernelVersion: %@", urlEncodedKernelVersion);
+    
+    NSString *targetUrl = [NSString stringWithFormat:@"%@/%@/%@/%@", self.baseUrl, @"rest/v2/mobile/devices",  trimmedDeviceSerialNumber, urlEncodedKernelVersion];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setHTTPMethod:@"GET"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
@@ -144,17 +161,23 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
 }
 
 - (void) deviceMessage:(NSString*)message {
+    if(message != nil && [message isEqualToString:@"POWERING UNIPAY"]) {
+       [self.publicDelegate deviceMessage:@"Starting VIVOpay..."];
+        return;
+    }
+    if(message != nil && [message isEqualToString:@"RETURN_CODE_LOW_VOLUME"]) {
+        [self.publicDelegate deviceMessage:@"Reader failed to connect.Turn the headphones volume all the way up and reconnect the reader."];
+        return;
+    }
     [self.publicDelegate deviceMessage:message];
 }
 
 - (void) swipeMSRData:(IDTMSRData*)cardData{
     if (cardData != nil && cardData.event == EVENT_MSR_CARD_DATA && (cardData.track2 != nil || cardData.encTrack2 != nil)) {
         ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequestForASwipe:cardData];
-        NSLog(@"swipeMSRData createTransactionToken");
         [self createTransactionToken:clearentTransactionTokenRequest];
     } else {
-        NSLog(@"swipeMSRData generic error");
-        [self.publicDelegate errorTransactionToken:GENERIC_CARD_READ_ERROR_RESPONSE];
+        [self deviceMessage:GENERIC_CARD_READ_ERROR_RESPONSE];
     }
 }
 
@@ -184,15 +207,22 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
 - (void) emvTransactionData:(IDTEMVData*)emvData errorCode:(int)error{
 
     NSLog(@"EMV Transaction Data Response: = %@",[[IDT_VP3300 sharedController] device_getResponseCodeString:error]);
+    
+    NSLog(@"emvData.resultCodeV2: = %@",[[IDT_VP3300 sharedController] device_getResponseCodeString:emvData.resultCodeV2]);
+    
+    if (emvData == nil) {
+        return;
+    }
+    if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_TIME_OUT) {
+        [self deviceMessage:TIMEOUT_ERROR_RESPONSE];
+        return;
+    }
 
     if (error == 60938) {
         NSLog(@"Failed to read card. This was happening when trying to get visa contactless to work. Send msg back to delegate?");
         return;
     }
-    if (emvData == nil) {
-        return;
-    }
-    //The mobile-jwt call should succeed or fail. We call the IDTech complete method every time. We alert the client by messaging them via the errorTransactionToken delegate method.
+    //The mobile-jwt call should succeed or fail. We call the IDTech complete method every time.
     if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_APPROVED || emvData.resultCodeV2 == EMV_RESULT_CODE_V2_APPROVED_OFFLINE ) {
         return;
     }
@@ -201,7 +231,7 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
         return;
     }
     if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_MSR_CARD_ERROR) {
-        [self.publicDelegate errorTransactionToken:GENERIC_CARD_READ_ERROR_RESPONSE];
+        [self deviceMessage:GENERIC_CARD_READ_ERROR_RESPONSE];
         return;
     }
 
@@ -235,7 +265,7 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
             [self createTransactionToken:clearentTransactionTokenRequest];
         } else {
              NSLog(@"generic error 1");
-            [self.publicDelegate errorTransactionToken:GENERIC_CARD_READ_ERROR_RESPONSE];
+            [self deviceMessage:GENERIC_CARD_READ_ERROR_RESPONSE];
         }
     } else if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_GO_ONLINE || (entryMode == NONTECH_FALLBACK_SWIPE || entryMode == CONTACTLESS_EMV || entryMode == CONTACTLESS_MAGNETIC_SWIPE || emvData.cardType == 1)) {
         NSLog(@"createTransactionToken 2");
@@ -300,6 +330,7 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     NSString *track2Data57 = [IDTUtility dataToHexString:[tags objectForKey:TRACK2_DATA_EMV_TAG]];
     if(track2Data57 != nil && !([track2Data57 isEqualToString:@""])) {
         clearentTransactionTokenRequest.track2Data = track2Data57;
+        [outgoingTags setObject:track2Data57 forKey:TRACK2_DATA_EMV_TAG];
     } else {
         NSDictionary *ff8105 = [IDTUtility TLVtoDICT_HEX_ASCII:[tags objectForKey:@"FF8105"]];
         if(ff8105 != nil) {
@@ -382,7 +413,7 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     NSData *postData = [NSJSONSerialization dataWithJSONObject:clearentTransactionTokenRequest.asDictionary options:0 error:&error];
     
     if (error) {
-        [self.publicDelegate errorTransactionToken:GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
+        [self deviceMessage:GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
         return;
     }
     
@@ -400,7 +431,7 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
           NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
           NSString *responseStr = nil;
           if(error != nil) {
-              [self.publicDelegate errorTransactionToken:error.description];
+              [self deviceMessage:error.description];
               [[IDT_VP3300 sharedController] emv_completeOnlineEMVTransaction:false hostResponseTags:nil];
           } else if(data != nil) {
               responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -426,15 +457,15 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
                                                                    options:0
                                                                      error:&error];
     if (error) {
-        [self.publicDelegate errorTransactionToken:GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
+        [self deviceMessage:GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
     } else {
         NSDictionary *payloadDictionary = [jsonDictionary objectForKey:@"payload"];
         NSDictionary *errorDictionary = [payloadDictionary objectForKey:@"error"];
         NSString *errorMessage = [errorDictionary objectForKey:@"error-message"];
         if(errorMessage != nil) {
-            [self.publicDelegate errorTransactionToken:[NSString stringWithFormat:@"%@. %@.", GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE, errorMessage]];
+             [self deviceMessage:[NSString stringWithFormat:@"%@. %@.", GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE, errorMessage]];
         } else {
-            [self.publicDelegate errorTransactionToken:GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
+           [self deviceMessage:GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
         }
     }
 }
@@ -446,13 +477,13 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
                                                                    options:0
                                                                      error:&error];
     if (error) {
-        [self.publicDelegate errorTransactionToken:GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
+        [self deviceMessage:GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
     }
     NSString *responseCode = [jsonDictionary objectForKey:@"code"];
     if([responseCode isEqualToString:@"200"]) {
         [self.publicDelegate successfulTransactionToken:response];
     } else {
-        [self.publicDelegate errorTransactionToken:GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
+        [self deviceMessage:GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];    
     }
 }
 

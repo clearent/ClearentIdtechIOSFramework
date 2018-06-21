@@ -18,28 +18,33 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
 @implementation ReaderConfigurator 
 
 + (NSString*) configure:(NSDictionary*) clearentConfiguration {
+    NSString *allErrors = @"";
     int dateRt = self.initClockDate;
     if(dateRt != CONFIGURATION_SUCCESS) {
-        return [NSString stringWithFormat:@"%@,%@", ERROR_MSG, [NSString stringWithFormat:@"%d",dateRt]];
+        allErrors = [NSString stringWithFormat:@"%@%@", allErrors, [NSString stringWithFormat:@"%@,%@", ERROR_MSG, [NSString stringWithFormat:@"%d",dateRt]]];
     }
     int timeRt = self.initClockTime;
     if(timeRt != CONFIGURATION_SUCCESS) {
-        return [NSString stringWithFormat:@"%@,%@", ERROR_MSG, [NSString stringWithFormat:@"%d",timeRt]];
+        allErrors = [NSString stringWithFormat:@"%@%@", allErrors, [NSString stringWithFormat:@"%@,%@", ERROR_MSG, [NSString stringWithFormat:@"%d",timeRt]]];
     }
-    int majorTagsRt = self.configureMajorTags;
-    //TODO Do we want to fail using the reader if any part of the configuration fails ?
+    
+//   IDTEch support (remember this with firmaware upgrades) There are two types of setTerminalData:  emv_setTerminalData and ctls_setTerminalData. ctls_setTerminalData is to set configuration group 0, and it doesn't have to include all the original tags (it will keep what is already there and overwrite/add any thing you send).  emv_setTerminalData only set contact tags and must be a complete set that INCLUDES all of the required major/minor tags for that configuration and it MUST MATCH the defined configuration for that device.  This means if your device is set to use configuration 1C, but you send tags meant for 2C, you will get an error.  This also means that potentially after a firmware update, your terminal tags may have remained, but the terminal configuration to be used may have been reset.  So after a firmware update it is good practices to both reset the configuration to be used (for example, set it to use conf 2C), followed by reloading the default tags for that configuration.  Then you can proceed to read/write terminal configuration for future updates.
+      int majorTagsRt = self.configureMajorTags;
 //    if(majorTagsRt != CONFIGURATION_SUCCESS) {
-//        return [NSString stringWithFormat:@"%@,%@", ERROR_MSG, [NSString stringWithFormat:@"%d",majorTagsRt]];
+//        allErrors = [NSString stringWithFormat:@"%@%@", allErrors, [NSString stringWithFormat:@"%@,%@", ERROR_MSG, [NSString stringWithFormat:@"%d",majorTagsRt]]];
 //    }
     if(clearentConfiguration != nil) {
         int clearentConfigurationRt = [self clearentConfiguration:clearentConfiguration];
         if(clearentConfigurationRt != CONFIGURATION_SUCCESS) {
-            return [NSString stringWithFormat:@"%@,%@", ERROR_MSG, [NSString stringWithFormat:@"%d",clearentConfigurationRt]];
+            allErrors = [NSString stringWithFormat:@"%@%@", allErrors, [NSString stringWithFormat:@"%@,%@", ERROR_MSG, [NSString stringWithFormat:@"%d",clearentConfigurationRt]]];
         }
     } else {
          NSLog(@"Skip configuring AIDs and CAPKs...");
     }
-    return @"READER CONFIGURED";
+    if(![allErrors isEqualToString:@""]) {
+        return allErrors;
+    }
+    return @"Reader configured and ready";
 }
 
 + (int) initClockDate {
@@ -145,7 +150,6 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
             NSString *error =[[IDT_VP3300 sharedController] device_getResponseCodeString:rt];
             NSLog(@"contact aid failed to load %@",[NSString stringWithFormat:@"%@,%@", name, error]);
             allSuccessful = false;
-            //return CONTACT_FAILED;
         }
     }
     if(!allSuccessful) {
@@ -193,7 +197,7 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
             //TODO review these. These probably will never change and can remain hard coded. setting Application Data for contactless is like providing a header in c.
             //the main configuration for contactless is in the configuration group
             if(groupInt == 8) {
-                tlvCombinedApplicationData = [NSString stringWithFormat:@"%@%@", tlvCombinedApplicationData, @"FFE10101"];
+                tlvCombinedApplicationData = [NSString stringWithFormat:@"%@%@", tlvCombinedApplicationData, @"FFE10101FFE60100FFE50116"];
             } else if(groupInt == 6) {
                 tlvCombinedApplicationData = [NSString stringWithFormat:@"%@%@", tlvCombinedApplicationData, @"FFE10101FFE50110"];
             } else if(groupInt == 5) {
@@ -214,7 +218,9 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
                 NSLog(@"The configuration group does not exist. Add before setting application data %@",[NSString stringWithFormat:@"name %@,group %@", name, group]);
             }
             
-            
+            //TODO !!! Need to revisit using the default group 0 and only introducing new tags or midyfing the group 0 for each aid/group.
+            //China Union Pay is not configuring.
+            //MC,AMEX,Discover work, but had to hard code some tags.
             NSString *tlvCombinedForConfigGroup = @"";
             tlvCombinedForConfigGroup = [NSString stringWithFormat:@"%@%@", tlvCombinedForConfigGroup, requiredFFE4Tlv];
             for(id key in values) {
