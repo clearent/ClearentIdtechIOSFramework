@@ -1,6 +1,6 @@
 # Clearent IDTech IOS Framework
 
-This is an IOS Framework that works with the IDTech framework to handle credit card data from IDTECH readers (currently only UniPay III is supported).
+This is an IOS Framework that works with the IDTech framework to handle credit card data for IDTECH VIVOpay reader.
 
 Carthage was chosen to bring the Clearent framework into your project because of its flexibility.  Reference Carthage documentation here (https://github.com/Carthage/Carthage).
 
