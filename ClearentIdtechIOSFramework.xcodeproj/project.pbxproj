@@ -23,12 +23,15 @@
 		E7467555209F0A8E00BC8504 /* IDTech.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467543209F0A8D00BC8504 /* IDTech.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E7467556209F0A8E00BC8504 /* IDTEMVData.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467544209F0A8D00BC8504 /* IDTEMVData.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E7467557209F0A8E00BC8504 /* IDT_Device.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467545209F0A8D00BC8504 /* IDT_Device.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E74B45B320BD8CBA001C02C0 /* ReaderConfigurator.m in Sources */ = {isa = PBXBuildFile; fileRef = E74B45B220BD8CBA001C02C0 /* ReaderConfigurator.m */; };
-		E74B45B520BD8F06001C02C0 /* ReaderConfigurator.h in Headers */ = {isa = PBXBuildFile; fileRef = E74B45B420BD8F06001C02C0 /* ReaderConfigurator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E74B45BD20BDA130001C02C0 /* ClearentIdtechIOSFramework_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E74B45BC20BDA130001C02C0 /* ClearentIdtechIOSFramework_Tests.m */; };
 		E74B45BF20BDA130001C02C0 /* ClearentIdtechIOSFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76504F41FFC306100B345F6 /* ClearentIdtechIOSFramework.framework */; };
 		E74B45C820BDA42F001C02C0 /* Clearent_VP3300Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E74B45C720BDA42F001C02C0 /* Clearent_VP3300Tests.m */; };
 		E7594C1720A2609900E5995B /* ClearentIdtechIOSFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = E7D95F68209B96B4001C5871 /* ClearentIdtechIOSFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E75A5BE920DD1CD80035B911 /* ClearentClockConfigurator.m in Sources */ = {isa = PBXBuildFile; fileRef = E75A5BE820DD1CD80035B911 /* ClearentClockConfigurator.m */; };
+		E75A5BEC20DD20580035B911 /* ClearentEmvConfigurator.m in Sources */ = {isa = PBXBuildFile; fileRef = E75A5BEB20DD20580035B911 /* ClearentEmvConfigurator.m */; };
+		E75A5BEF20DD21BF0035B911 /* ClearentEmvConfigurator.h in Headers */ = {isa = PBXBuildFile; fileRef = E75A5BEA20DD1FF60035B911 /* ClearentEmvConfigurator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E75A5BF020DD21C90035B911 /* ClearentClockConfigurator.h in Headers */ = {isa = PBXBuildFile; fileRef = E75A5BE720DD1CCC0035B911 /* ClearentClockConfigurator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E75A5BF120DD21FE0035B911 /* ClearentPublicVP3300Delegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E75A5BEE20DD21800035B911 /* ClearentPublicVP3300Delegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E76505141FFC312500B345F6 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76505131FFC312500B345F6 /* ExternalAccessory.framework */; };
 		E76505161FFC313200B345F6 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76505151FFC313200B345F6 /* MediaPlayer.framework */; };
 		E76505181FFC313A00B345F6 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76505171FFC313A00B345F6 /* AVFoundation.framework */; };
@@ -40,7 +43,6 @@
 		E77C90482000442200C3E590 /* ClearentTransactionTokenRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = E77C90462000442200C3E590 /* ClearentTransactionTokenRequest.m */; };
 		E79A4D94204F14B000E4BBF6 /* ClearentDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E79A4D93204F14B000E4BBF6 /* ClearentDelegate.m */; };
 		E79BC80E20B34AC10030FD8C /* IDTech.framework in Resources */ = {isa = PBXBuildFile; fileRef = E7D95F6B209B9F73001C5871 /* IDTech.framework */; };
-		E79BC81320B3531B0030FD8C /* PublicDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E77C90121FFFE8F800C3E590 /* PublicDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E79BC82220B365900030FD8C /* IDT_VP3300.h in Headers */ = {isa = PBXBuildFile; fileRef = E79BC82120B3658F0030FD8C /* IDT_VP3300.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E79BC82520B366300030FD8C /* Clearent_VP3300.m in Sources */ = {isa = PBXBuildFile; fileRef = E79BC82420B366300030FD8C /* Clearent_VP3300.m */; };
 		E79BC82720B3676E0030FD8C /* Clearent_VP3300.h in Headers */ = {isa = PBXBuildFile; fileRef = E79BC82620B3676E0030FD8C /* Clearent_VP3300.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -77,12 +79,14 @@
 		E7467543209F0A8D00BC8504 /* IDTech.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDTech.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/IDTech.h; sourceTree = "<group>"; };
 		E7467544209F0A8D00BC8504 /* IDTEMVData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDTEMVData.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/IDTEMVData.h; sourceTree = "<group>"; };
 		E7467545209F0A8D00BC8504 /* IDT_Device.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDT_Device.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/IDT_Device.h; sourceTree = "<group>"; };
-		E74B45B120BD8CA0001C02C0 /* ReaderConfigurator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ReaderConfigurator.h; sourceTree = "<group>"; };
-		E74B45B220BD8CBA001C02C0 /* ReaderConfigurator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ReaderConfigurator.m; sourceTree = "<group>"; };
-		E74B45B420BD8F06001C02C0 /* ReaderConfigurator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ReaderConfigurator.h; path = ClearentIdtechIOSFramework/ReaderConfigurator.h; sourceTree = "<group>"; };
 		E74B45BA20BDA130001C02C0 /* ClearentIdtechIOSFramework-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ClearentIdtechIOSFramework-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E74B45BC20BDA130001C02C0 /* ClearentIdtechIOSFramework_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentIdtechIOSFramework_Tests.m; sourceTree = "<group>"; };
 		E74B45C720BDA42F001C02C0 /* Clearent_VP3300Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Clearent_VP3300Tests.m; sourceTree = "<group>"; };
+		E75A5BE720DD1CCC0035B911 /* ClearentClockConfigurator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentClockConfigurator.h; sourceTree = "<group>"; };
+		E75A5BE820DD1CD80035B911 /* ClearentClockConfigurator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentClockConfigurator.m; sourceTree = "<group>"; };
+		E75A5BEA20DD1FF60035B911 /* ClearentEmvConfigurator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentEmvConfigurator.h; sourceTree = "<group>"; };
+		E75A5BEB20DD20580035B911 /* ClearentEmvConfigurator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentEmvConfigurator.m; sourceTree = "<group>"; };
+		E75A5BEE20DD21800035B911 /* ClearentPublicVP3300Delegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentPublicVP3300Delegate.h; sourceTree = "<group>"; };
 		E76504F41FFC306100B345F6 /* ClearentIdtechIOSFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ClearentIdtechIOSFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E76504F81FFC306100B345F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E76505131FFC312500B345F6 /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
@@ -92,7 +96,6 @@
 		E765051B1FFC314D00B345F6 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
 		E77687462062B66300284FF4 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		E77C900D1FFFE38100C3E590 /* ClearentDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentDelegate.h; sourceTree = "<group>"; };
-		E77C90121FFFE8F800C3E590 /* PublicDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PublicDelegate.h; sourceTree = "<group>"; };
 		E77C90452000442200C3E590 /* ClearentTransactionTokenRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentTransactionTokenRequest.h; sourceTree = "<group>"; };
 		E77C90462000442200C3E590 /* ClearentTransactionTokenRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentTransactionTokenRequest.m; sourceTree = "<group>"; };
 		E79A4D93204F14B000E4BBF6 /* ClearentDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClearentDelegate.m; sourceTree = "<group>"; };
@@ -142,7 +145,6 @@
 		E76504EA1FFC306100B345F6 = {
 			isa = PBXGroup;
 			children = (
-				E74B45B420BD8F06001C02C0 /* ReaderConfigurator.h */,
 				E79BC82620B3676E0030FD8C /* Clearent_VP3300.h */,
 				E79BC82120B3658F0030FD8C /* IDT_VP3300.h */,
 				E7467539209F0A8C00BC8504 /* APDUData.h */,
@@ -187,14 +189,16 @@
 				E76504F81FFC306100B345F6 /* Info.plist */,
 				E77C900D1FFFE38100C3E590 /* ClearentDelegate.h */,
 				E79A4D93204F14B000E4BBF6 /* ClearentDelegate.m */,
-				E77C90121FFFE8F800C3E590 /* PublicDelegate.h */,
 				E77C90452000442200C3E590 /* ClearentTransactionTokenRequest.h */,
 				E77C90462000442200C3E590 /* ClearentTransactionTokenRequest.m */,
 				E737D9D820A05F1B00760CB8 /* ClearentDevice.h */,
 				E79BC82320B365F80030FD8C /* Clearent_VP3300.h */,
 				E79BC82420B366300030FD8C /* Clearent_VP3300.m */,
-				E74B45B120BD8CA0001C02C0 /* ReaderConfigurator.h */,
-				E74B45B220BD8CBA001C02C0 /* ReaderConfigurator.m */,
+				E75A5BE720DD1CCC0035B911 /* ClearentClockConfigurator.h */,
+				E75A5BE820DD1CD80035B911 /* ClearentClockConfigurator.m */,
+				E75A5BEA20DD1FF60035B911 /* ClearentEmvConfigurator.h */,
+				E75A5BEB20DD20580035B911 /* ClearentEmvConfigurator.m */,
+				E75A5BEE20DD21800035B911 /* ClearentPublicVP3300Delegate.h */,
 			);
 			path = ClearentIdtechIOSFramework;
 			sourceTree = "<group>";
@@ -235,12 +239,13 @@
 				E7467553209F0A8E00BC8504 /* IDTUtility.h in Headers */,
 				E7467554209F0A8E00BC8504 /* IDT_iMag.h in Headers */,
 				E79BC82720B3676E0030FD8C /* Clearent_VP3300.h in Headers */,
-				E79BC81320B3531B0030FD8C /* PublicDelegate.h in Headers */,
 				E7467555209F0A8E00BC8504 /* IDTech.h in Headers */,
 				E79BC82220B365900030FD8C /* IDT_VP3300.h in Headers */,
 				E7467556209F0A8E00BC8504 /* IDTEMVData.h in Headers */,
-				E74B45B520BD8F06001C02C0 /* ReaderConfigurator.h in Headers */,
+				E75A5BF020DD21C90035B911 /* ClearentClockConfigurator.h in Headers */,
+				E75A5BF120DD21FE0035B911 /* ClearentPublicVP3300Delegate.h in Headers */,
 				E7C54CD420A08755002CC355 /* ClearentDevice.h in Headers */,
+				E75A5BEF20DD21BF0035B911 /* ClearentEmvConfigurator.h in Headers */,
 				E7467557209F0A8E00BC8504 /* IDT_Device.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -355,7 +360,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				E79BC82520B366300030FD8C /* Clearent_VP3300.m in Sources */,
-				E74B45B320BD8CBA001C02C0 /* ReaderConfigurator.m in Sources */,
+				E75A5BEC20DD20580035B911 /* ClearentEmvConfigurator.m in Sources */,
+				E75A5BE920DD1CD80035B911 /* ClearentClockConfigurator.m in Sources */,
 				E77C90482000442200C3E590 /* ClearentTransactionTokenRequest.m in Sources */,
 				E79A4D94204F14B000E4BBF6 /* ClearentDelegate.m in Sources */,
 			);

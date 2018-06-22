@@ -1,8 +1,8 @@
 //
-//  PublicDelegate.h
-//  ClearentPayments
+//  ClearentPublicVP3300Delegate.h
+//  ClearentIdtechIOSFramework
 //
-//  Created by David Higginbotham on 1/5/18.
+//  Created by David Higginbotham on 6/22/18.
 //  Copyright © 2018 Clearent, L.L.C. All rights reserved.
 //
 
@@ -45,4 +45,3 @@
 //!< @param data The data intended for the device
 
 @end
-

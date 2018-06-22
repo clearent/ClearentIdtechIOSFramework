@@ -8,7 +8,6 @@
 
 #import "ClearentDelegate.h"
 #import "IDTech/IDTUtility.h"
-#import "ReaderConfigurator.h"
 
 static NSString *const TRACK2_DATA_EMV_TAG = @"57";
 static NSString *const TRACK2_DATA_CONTACTLESS_NON_CHIP_TAG = @"9F6B";
@@ -21,6 +20,7 @@ static NSString *const KERNEL_VERSION_EMV_TAG = @"DF79";
 static NSString *const GENERIC_CARD_READ_ERROR_RESPONSE = @"Card read error";
 static NSString *const TIMEOUT_ERROR_RESPONSE = @"TIMEOUT";
 static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Transaction Token Failed";
+static NSString *const FAILED_TO_READ_CARD_ERROR_RESPONSE = @"Failed to read card";
 
 @implementation ClearentDelegate
 
@@ -29,7 +29,7 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
     self.baseUrl = clearentBaseUrl;
     self.publicKey = publicKey;
 }
-//TODO Should we not expose this as another method and just rely on the deviceMessage ?
+
 - (void) lcdDisplay:(int)mode  lines:(NSArray*)lines {
     NSMutableArray *updatedArray = [[NSMutableArray alloc]initWithCapacity:1];
     if (lines != nil) {
@@ -44,7 +44,6 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
     }
 }
 
-//TODO talk about this. Initially I did not have this exposed in the public delegate. This information is needed when talking to IDTech support. The problem is when an unencrypted reader is used sensitive data is exposed. Encrypted data is fine ? Should we have a debug flag ? 
 - (void) dataInOutMonitor:(NSData*)data  incoming:(BOOL)isIncoming {
     [self.publicDelegate dataInOutMonitor:data incoming:isIncoming];
 }
@@ -62,9 +61,9 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
     self.deviceSerialNumber = [self getDeviceSerialNumber];
     self.kernelVersion = [self getKernelVersion];
     [self.publicDelegate deviceConnected];
-    [self deviceMessage:@"Reader connected. Waiting for configuration to complete..."];
+    [self deviceMessage:@"VIVOpay connected. Waiting for configuration to complete..."];
     if(self.configured) {
-        [self deviceMessage:@"Reader configured and ready"];
+        [self deviceMessage:@"VIVOpay configured and ready"];
     } else {
         [self configure];
     }
@@ -76,7 +75,7 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
     if (RETURN_CODE_DO_SUCCESS == rt) {
         return result;
     } else{
-        return @"IDTECH Firmware version not found";
+        return @"VIVOpay Firmware version not found";
     }
 }
 
@@ -86,7 +85,7 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
     if (RETURN_CODE_DO_SUCCESS == rt) {
         return result;
     } else{
-        return @"IDTECH Kernel Version Unknown";
+        return @"VIVOpay Kernel Version Unknown";
     }
 }
 
@@ -96,18 +95,19 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
     if (RETURN_CODE_DO_SUCCESS == rt) {
         return result;
     } else{
-        return @"IDTECH Serial number not found";
+        return @"VIVOpay Serial number not found";
     }
 }
 
 -(void) configure {
+    [self initClock];
     self.configured = NO;
     if(self.deviceSerialNumber  == nil) {
-        [self deviceMessage:@"CONNECT DEVICE TO CONFIGURE"];
+        [self deviceMessage:@"Connect VIVOpay"];
         return;
     }
     if(self.baseUrl == nil) {
-        [self deviceMessage:@"Clearent Base Url is required for reader configuration. Ex - https://gateway-sb.clearent.net"];
+        [self deviceMessage:@"Configuration url is required for VIVOpay configuration"];
         return;
     }
     NSString *trimmedDeviceSerialNumber = [self.deviceSerialNumber substringToIndex:10];
@@ -128,7 +128,7 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
           NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
           NSString *responseStr = nil;
           if(error != nil) {
-              [self deviceMessage:@"CONFIGURATION FAILED"];
+              [self deviceMessage:@"VIVOpay configuration failed"];
           } else if(data != nil) {
               responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
               if(200 == [httpResponse statusCode]) {
@@ -139,21 +139,36 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
                                                                                    error:&error];
                   NSLog(@"config: %@", jsonDictionary);
                   if (error) {
-                      [self deviceMessage:@"CONFIGURATION FAILED"];
+                      [self deviceMessage:@"VIVOpay configuration failed"];
                   } else {
-                      NSString *readerConfigurationMessage = [ReaderConfigurator configure:jsonDictionary];
-                      NSLog(@"Reader Configuration Message: %@", readerConfigurationMessage);
+                      NSString *readerConfigurationMessage = [ClearentEmvConfigurator configure:jsonDictionary];
+                      NSLog(@"VIVOpay Emv Configuration Message: %@", readerConfigurationMessage);
                       [self deviceMessage:readerConfigurationMessage];
                       self.configured = YES;
                   }
               } else {
-                  [self deviceMessage:@"CONFIGURATION FAILED"];
+                  [self deviceMessage:@"VIVOpay configuration failed"];
               }
           }
           data = nil;
           response = nil;
           error = nil;
       }] resume];
+}
+
+-(void) initClock{
+    NSString *clockErrors = @"";
+    int dateRt = [ClearentClockConfigurator initClockDate];
+    if(dateRt != CLOCK_CONFIGURATION_SUCCESS) {
+        clockErrors = [NSString stringWithFormat:@"%@%@", clockErrors, [NSString stringWithFormat:@"%@,%@", @"Failed to configure VIVOpay clock date", [NSString stringWithFormat:@"%d",dateRt]]];
+    }
+    int timeRt = [ClearentClockConfigurator initClockTime];
+    if(timeRt != CLOCK_CONFIGURATION_SUCCESS) {
+        clockErrors = [NSString stringWithFormat:@"%@%@", clockErrors, [NSString stringWithFormat:@"%@,%@", @"Failed to configure VIVOpay clock time", [NSString stringWithFormat:@"%d",timeRt]]];
+    }
+    if(![clockErrors isEqualToString:@""]) {
+        [self deviceMessage:clockErrors];
+    }
 }
 
 -(void)deviceDisconnected{
@@ -166,7 +181,7 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
         return;
     }
     if(message != nil && [message isEqualToString:@"RETURN_CODE_LOW_VOLUME"]) {
-        [self.publicDelegate deviceMessage:@"Reader failed to connect.Turn the headphones volume all the way up and reconnect the reader."];
+        [self.publicDelegate deviceMessage:@"VIVOpay failed to connect.Turn the headphones volume all the way up and reconnect."];
         return;
     }
     [self.publicDelegate deviceMessage:message];
@@ -252,23 +267,17 @@ static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Trans
     } else {
         NSLog(@"entryMode: %d", entryMode);
     }
-    //When we get an Go Online result code let's create the transaction token (jwt)
-    //TODO clean up the carddata not nil check..its done in two places
+    
     if (emvData.cardData != nil && emvData.resultCodeV2 == EMV_RESULT_CODE_V2_MSR_SUCCESS) {
         if(entryMode == SWIPE) {
-            NSLog(@"swipeMSRData");
             [self swipeMSRData:emvData.cardData];
         } else if(isSupportedEmvEntryMode(entryMode)) {
-            NSLog(@"isSupportedEmvEntryMode true");
             ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequest:emvData];
-            NSLog(@"createTransactionToken 1");
             [self createTransactionToken:clearentTransactionTokenRequest];
         } else {
-             NSLog(@"generic error 1");
             [self deviceMessage:GENERIC_CARD_READ_ERROR_RESPONSE];
         }
     } else if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_GO_ONLINE || (entryMode == NONTECH_FALLBACK_SWIPE || entryMode == CONTACTLESS_EMV || entryMode == CONTACTLESS_MAGNETIC_SWIPE || emvData.cardType == 1)) {
-        NSLog(@"createTransactionToken 2");
         ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequest:emvData];
         [self createTransactionToken:clearentTransactionTokenRequest];
     }
@@ -319,10 +328,9 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         NSData *tsysTags = [IDTUtility hexToData:@"8291959A9B9C5F2A9F029F039F1A9F219F269F279F339F349F359F369F379F394F845F2D5F349F069F09DF78DF799F155F369F1B9F1E9F1C9F6E9F109F5B5657FF8106FF8105FFEE14FFEE06"];
         RETURN_CODE emvRetrieveTransactionResultRt = [[IDT_VP3300 sharedController] emv_retrieveTransactionResult:tsysTags retrievedTags:&transactionResultDictionary];
         if(RETURN_CODE_DO_SUCCESS == emvRetrieveTransactionResultRt) {
-            NSLog(@"retrieved emv tags");
             outgoingTags = [transactionResultDictionary objectForKey:@"tags"];
         } else {
-            tlvInHex = @"Failed to retrieve tlv from reader";
+            tlvInHex = @"Failed to retrieve tlv from VIVOpay";
             //TODO handle error?
         }
     }
@@ -345,7 +353,7 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         }
     }
     
-    //Add required tags. TODO try moving these into the ReaderConfiguration setMajorTags method. if they 'disappear' when coming into this method move them back here.
+    //Add required tags. TODO try moving these into the ClearentEmvConfigurator setMajorTags method. if they 'disappear' when coming into this method move them back here.
     [self addRequiredTags: outgoingTags];
     
     //Remove any tags that would make the request fail in TSYS.
@@ -406,6 +414,10 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
 }
 
 - (void) createTransactionToken:(ClearentTransactionTokenRequest*)clearentTransactionTokenRequest {
+    if(clearentTransactionTokenRequest == nil || clearentTransactionTokenRequest.track2Data == nil || [clearentTransactionTokenRequest.track2Data isEqualToString:@""]) {
+        [self deviceMessage:FAILED_TO_READ_CARD_ERROR_RESPONSE];
+        return;
+    }
     NSString *targetUrl = [NSString stringWithFormat:@"%@/%@", self.baseUrl, @"rest/v2/mobilejwt"];
     NSLog(@"targetUrl: %@", targetUrl);
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
