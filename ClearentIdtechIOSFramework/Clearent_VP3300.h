@@ -1019,8 +1019,6 @@
  */
 -(RETURN_CODE) emv_retrieveCAPKList:(NSArray**)response;
 
-
-
 /**
  * Retrieve the Certificate Revocation List
  
@@ -1041,10 +1039,6 @@
  - 0x0100 through 0xFFFF refer to IDT_Device::getResponseCodeString:()
  */
 -(RETURN_CODE) emv_retrieveCRLList:(NSMutableArray**)response;
-
-
-
-
 
 /**
  * Retrieve Terminal Data

@@ -12,12 +12,17 @@
 
 typedef enum{
     CLOCK_CONFIGURATION_SUCCESS,
-    TIME_FAILED,
-    DATE_FAILED,
+    CLOCK_FAILED,
 }CLOCK_CONFIGURATION_ERROR_CODE;
 
 @interface ClearentClockConfigurator : NSObject
-+ (int) initClockDate;
-+ (int) initClockTime;
+
+    @property (nonatomic) IDT_VP3300 *sharedController;
+
+    - (id)initWithIdtechSharedController:(IDT_VP3300*) sharedController;
+    - (int) initClock;
+    - (NSData*) getClockDateAsYYYYMMDD;
+    - (NSData*) getClockTimeAsHHMM;
+
 @end
 

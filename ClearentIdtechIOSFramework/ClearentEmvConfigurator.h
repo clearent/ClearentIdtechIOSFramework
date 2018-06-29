@@ -8,8 +8,10 @@
 #import <Foundation/Foundation.h>
 #import "IDTech/IDT_VP3300.h"
 #import "IDTech/IDTUtility.h"
+#import "ClearentConfiguration.h"
 
 typedef enum{
+    TERMINAL_MAJOR_5C_FAILED,
     EMV_CONFIGURATION_SUCCESS,
     MAJOR_TAGS_RETRIEVE_FAILED,
     CONTACT_MAJOR_TAGS_UPDATE_FAILED,
@@ -22,5 +24,10 @@ typedef enum{
 }CONFIGURATION_ERROR_CODE;
 
 @interface ClearentEmvConfigurator : NSObject
-+ (NSString*) configure:(NSDictionary*)clearentConfiguration;
+
+    @property (nonatomic) IDT_VP3300 *sharedController;
+
+    - (id)initWithIdtechSharedController:(IDT_VP3300*) sharedController;
+    - (NSString*) configure:(ClearentConfiguration*) clearentConfiguration;
+
 @end

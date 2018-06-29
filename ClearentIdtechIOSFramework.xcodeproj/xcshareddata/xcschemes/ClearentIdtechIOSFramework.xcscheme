@@ -29,12 +29,22 @@
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
          <TestableReference
-            skipped = "NO">
+            skipped = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E76504FC1FFC306100B345F6"
                BuildableName = "ClearentIdtechIOSFrameworkTests.xctest"
                BlueprintName = "ClearentIdtechIOSFrameworkTests"
+               ReferencedContainer = "container:ClearentIdtechIOSFramework.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E74B45B920BDA130001C02C0"
+               BuildableName = "ClearentIdtechIOSFramework-Tests.xctest"
+               BlueprintName = "ClearentIdtechIOSFramework-Tests"
                ReferencedContainer = "container:ClearentIdtechIOSFramework.xcodeproj">
             </BuildableReference>
          </TestableReference>

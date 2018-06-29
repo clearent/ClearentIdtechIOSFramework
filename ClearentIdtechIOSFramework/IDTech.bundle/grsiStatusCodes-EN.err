@@ -86,6 +86,8 @@ EE60	Data not exist
 EE61	Data Full
 EE62	Write Flash Error
 EE63	Ok and Have Next Command
+EE80	Cannot start Contact EMV transaction
+EE81	CTLS/MSR cancelled due to card insertion
 EE90	Account DUKPT Key not exist
 EE91	Account DUKPT Key KSN exhausted
 6200	No Serial Number

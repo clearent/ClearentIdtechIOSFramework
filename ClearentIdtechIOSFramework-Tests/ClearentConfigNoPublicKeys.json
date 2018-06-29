@@ -1,0 +1,45 @@
+
+
+{
+    "code": "200",
+    "status": "success",
+    "exchange-id": "ID-clearent-mobile-devices-1-ba385eb6-5577-422e-bcc6-5a33550fdd8d",
+    "links": [
+              {
+              "rel": "self",
+              "href": "https://mobile-devices-dev.clearent.net/rest/v2/mobile/devices/737T003754/IDTech 123"
+              }
+              ],
+    "payload": {
+        "mobile-device": {
+            "device-serial-number": "737T003754",
+            "kernel-version": "IDTech 123",
+            "manufacturer": "IDTech",
+            "isEnabled": true,
+            "contact-aids": [
+                             {
+                             "name": "a0000000651010",
+                             "aid-values": {
+                             "DFEE15": "01",
+                             "9F1B": "00000000",
+                             "9F1A": "0840",
+                             "9F06": "A0000000651010",
+                             "9F15": "5999",
+                             "9F09": "120",
+                             "5F36": "9F3704",
+                             "DF19": "99",
+                             "DF18": "99",
+                             "DF17": "00000000",
+                             "5F2A": "0840",
+                             "DF15": "30E09CF800",
+                             "DF25": "02",
+                             "DF14": "0010000000",
+                             "DF13": "FC60242800"
+                             }
+                            }
+                             ]
+          
+        },
+        "payloadType": "mobile-device"
+    }
+}

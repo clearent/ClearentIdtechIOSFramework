@@ -7,7 +7,6 @@
 //
 
 #import "ClearentDelegate.h"
-#import "IDTech/IDTUtility.h"
 
 static NSString *const TRACK2_DATA_EMV_TAG = @"57";
 static NSString *const TRACK2_DATA_CONTACTLESS_NON_CHIP_TAG = @"9F6B";
@@ -24,17 +23,26 @@ static NSString *const FAILED_TO_READ_CARD_ERROR_RESPONSE = @"Failed to read car
 
 @implementation ClearentDelegate
 
-- (void) init : (id <Clearent_Public_IDTech_VP3300_Delegate>) publicDelegate clearentBaseUrl:(NSString*)clearentBaseUrl publicKey:(NSString*)publicKey  {
-    self.publicDelegate = publicDelegate;
-    self.baseUrl = clearentBaseUrl;
-    self.publicKey = publicKey;
+- (instancetype) init : (id <Clearent_Public_IDTech_VP3300_Delegate>) publicDelegate clearentBaseUrl:(NSString*)clearentBaseUrl publicKey:(NSString*)publicKey  {
+    self = [super init];
+    if (self) {
+        self.publicDelegate = publicDelegate;
+        self.baseUrl = clearentBaseUrl;
+        self.publicKey = publicKey;
+        SEL configurationCallbackSelector = @selector(deviceMessage:);
+        self.clearentConfigurator = [[ClearentConfigurator alloc] init:self.baseUrl publicKey:self.publicKey callbackObject:self withSelector:configurationCallbackSelector sharedController:[IDT_VP3300 sharedController]];
+    }
+    return self;
 }
 
 - (void) lcdDisplay:(int)mode  lines:(NSArray*)lines {
     NSMutableArray *updatedArray = [[NSMutableArray alloc]initWithCapacity:1];
     if (lines != nil) {
         for (NSString* message in lines) {
-            if(message != nil && [message isEqualToString:@"DECLINED"]) {
+            if(message != nil && [message isEqualToString:@"TERMINATE"]) {
+                NSLog(@"AID not found or card could not be read. Fallback to swipe.");
+                [updatedArray addObject:@"USE MAGSTRIPE"];
+            } else if(message != nil && [message isEqualToString:@"DECLINED"]) {
                 NSLog(@"This is not really a decline. Clearent is creating a transaction token for later use.");
             } else {
                [updatedArray addObject:message];
@@ -62,11 +70,7 @@ static NSString *const FAILED_TO_READ_CARD_ERROR_RESPONSE = @"Failed to read car
     self.kernelVersion = [self getKernelVersion];
     [self.publicDelegate deviceConnected];
     [self deviceMessage:@"VIVOpay connected. Waiting for configuration to complete..."];
-    if(self.configured) {
-        [self deviceMessage:@"VIVOpay configured and ready"];
-    } else {
-        [self configure];
-    }
+    [self.clearentConfigurator configure:self.kernelVersion deviceSerialNumber:self.deviceSerialNumber];
 }
 
 - (NSString *) getFirmwareVersion {
@@ -96,78 +100,6 @@ static NSString *const FAILED_TO_READ_CARD_ERROR_RESPONSE = @"Failed to read car
         return result;
     } else{
         return @"VIVOpay Serial number not found";
-    }
-}
-
--(void) configure {
-    [self initClock];
-    self.configured = NO;
-    if(self.deviceSerialNumber  == nil) {
-        [self deviceMessage:@"Connect VIVOpay"];
-        return;
-    }
-    if(self.baseUrl == nil) {
-        [self deviceMessage:@"Configuration url is required for VIVOpay configuration"];
-        return;
-    }
-    NSString *trimmedDeviceSerialNumber = [self.deviceSerialNumber substringToIndex:10];
-    NSString *urlEncodedKernelVersion = [self.kernelVersion stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLHostAllowedCharacterSet]];
-    NSLog(@"urlEncodedKernelVersion: %@", urlEncodedKernelVersion);
-    
-    NSString *targetUrl = [NSString stringWithFormat:@"%@/%@/%@/%@", self.baseUrl, @"rest/v2/mobile/devices",  trimmedDeviceSerialNumber, urlEncodedKernelVersion];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    [request setHTTPMethod:@"GET"];
-    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
-    [request setValue:self.publicKey forHTTPHeaderField:@"public-key"];
-    [request setURL:[NSURL URLWithString:targetUrl]];
-    NSLog(@"config targetUrl: %@", targetUrl);
-    [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:
-      ^(NSData * _Nullable data,
-        NSURLResponse * _Nullable response,
-        NSError * _Nullable error) {
-          NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
-          NSString *responseStr = nil;
-          if(error != nil) {
-              [self deviceMessage:@"VIVOpay configuration failed"];
-          } else if(data != nil) {
-              responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-              if(200 == [httpResponse statusCode]) {
-                  NSData *data = [responseStr dataUsingEncoding:NSUTF8StringEncoding];
-                  NSError *error;
-                  NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data
-                                                                                 options:0
-                                                                                   error:&error];
-                  NSLog(@"config: %@", jsonDictionary);
-                  if (error) {
-                      [self deviceMessage:@"VIVOpay configuration failed"];
-                  } else {
-                      NSString *readerConfigurationMessage = [ClearentEmvConfigurator configure:jsonDictionary];
-                      NSLog(@"VIVOpay Emv Configuration Message: %@", readerConfigurationMessage);
-                      [self deviceMessage:readerConfigurationMessage];
-                      self.configured = YES;
-                  }
-              } else {
-                  [self deviceMessage:@"VIVOpay configuration failed"];
-              }
-          }
-          data = nil;
-          response = nil;
-          error = nil;
-      }] resume];
-}
-
--(void) initClock{
-    NSString *clockErrors = @"";
-    int dateRt = [ClearentClockConfigurator initClockDate];
-    if(dateRt != CLOCK_CONFIGURATION_SUCCESS) {
-        clockErrors = [NSString stringWithFormat:@"%@%@", clockErrors, [NSString stringWithFormat:@"%@,%@", @"Failed to configure VIVOpay clock date", [NSString stringWithFormat:@"%d",dateRt]]];
-    }
-    int timeRt = [ClearentClockConfigurator initClockTime];
-    if(timeRt != CLOCK_CONFIGURATION_SUCCESS) {
-        clockErrors = [NSString stringWithFormat:@"%@%@", clockErrors, [NSString stringWithFormat:@"%@,%@", @"Failed to configure VIVOpay clock time", [NSString stringWithFormat:@"%d",timeRt]]];
-    }
-    if(![clockErrors isEqualToString:@""]) {
-        [self deviceMessage:clockErrors];
     }
 }
 
@@ -233,10 +165,6 @@ static NSString *const FAILED_TO_READ_CARD_ERROR_RESPONSE = @"Failed to read car
         return;
     }
 
-    if (error == 60938) {
-        NSLog(@"Failed to read card. This was happening when trying to get visa contactless to work. Send msg back to delegate?");
-        return;
-    }
     //The mobile-jwt call should succeed or fail. We call the IDTech complete method every time.
     if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_APPROVED || emvData.resultCodeV2 == EMV_RESULT_CODE_V2_APPROVED_OFFLINE ) {
         return;

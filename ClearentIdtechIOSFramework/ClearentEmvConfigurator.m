@@ -15,13 +15,21 @@ static NSString *const ERROR_MSG = @"Failed to configure VIVOpay. Confirm intern
 
 @implementation ClearentEmvConfigurator
 
-+ (NSString*) configure:(NSDictionary*) clearentConfiguration {
+- (instancetype)initWithIdtechSharedController:(IDT_VP3300*) sharedController {
+    self = [super init];
+    if (self) {
+        _sharedController = sharedController;
+    }
+    return self;
+}
+
+- (NSString*) configure:(ClearentConfiguration*) clearentConfiguration {
     NSString *allErrors = @"";
     int majorTagsRt = self.configureMajorTags;
     if(majorTagsRt != EMV_CONFIGURATION_SUCCESS) {
         allErrors = [NSString stringWithFormat:@"%@%@", allErrors, [NSString stringWithFormat:@"%@,%@", ERROR_MSG, [NSString stringWithFormat:@"%d",majorTagsRt]]];
     }
-    if(clearentConfiguration != nil) {
+    if(clearentConfiguration != nil && clearentConfiguration.isValid) {
         int clearentConfigurationRt = [self configureUsingClearentConfiguration:clearentConfiguration];
         if(clearentConfigurationRt != EMV_CONFIGURATION_SUCCESS) {
             allErrors = [NSString stringWithFormat:@"%@%@", allErrors, [NSString stringWithFormat:@"%@,%@", ERROR_MSG, [NSString stringWithFormat:@"%d",clearentConfigurationRt]]];
@@ -35,64 +43,59 @@ static NSString *const ERROR_MSG = @"Failed to configure VIVOpay. Confirm intern
     return @"VIVOpay configured and ready";
 }
 
-+ (int) configureMajorTags {
+- (int) configureMajorTags {
     NSMutableDictionary *tags;
-    
-    [[IDT_VP3300 sharedController] emv_setTerminalMajorConfiguration:5];
-    
-    RETURN_CODE retrieveTerminalDataRt = [[IDT_VP3300 sharedController] emv_retrieveTerminalData:&tags];
+  
+    RETURN_CODE retrieveTerminalDataRt = [_sharedController emv_retrieveTerminalData:&tags];
     if (RETURN_CODE_DO_SUCCESS == retrieveTerminalDataRt) {
         [tags setObject:[IDTUtility hexToData:@"D0DC20D0C41E1400"] forKey:@"DFEE1E"];
         [tags setObject:[IDTUtility hexToData:EMV_DIP_ENTRY_MODE_TAG] forKey:IDTECH_EMV_ENTRY_MODE_EMV_TAG];
     } else{
         return MAJOR_TAGS_RETRIEVE_FAILED;
     }
-    RETURN_CODE setTerminalDateRt = [[IDT_VP3300 sharedController] emv_setTerminalData:tags];
+    RETURN_CODE setTerminalDateRt = [_sharedController emv_setTerminalData:tags];
     if (RETURN_CODE_DO_SUCCESS == setTerminalDateRt) {
         NSLog(@"Contact Major tags set");
     } else{
         return CONTACT_MAJOR_TAGS_UPDATE_FAILED;
     }
-    return EMV_CONFIGURATION_SUCCESS;
-}
-
-+ (int) configureUsingClearentConfiguration:(NSDictionary*) clearentConfiguration {
-    NSDictionary *payload = [clearentConfiguration objectForKey:@"payload"];
-    if(payload == nil) {
-        return NO_PAYLOAD;
-    }
-    NSDictionary *mobileDevice = [payload objectForKey:@"mobile-device"];
-    if(payload == nil) {
-        return NO_MOBILE_DEVICE;
-    }
-    NSDictionary *contactAids = [mobileDevice objectForKey:@"contact-aids"];
-    if(contactAids != nil) {
-        int contactAidsRt = [self configureContactAids:contactAids];
-        if(contactAidsRt != EMV_CONFIGURATION_SUCCESS) {
-            return contactAidsRt;
-        }
+    
+    int terminalMajorConfiguration = 2;
+    RETURN_CODE emvSetTerminalMajorConfigurationRt = [_sharedController emv_setTerminalMajorConfiguration:terminalMajorConfiguration];
+    if (RETURN_CODE_DO_SUCCESS == emvSetTerminalMajorConfigurationRt) {
+        NSLog(@"Contact Terminal Major Set to 5");
+    } else {
+        NSString *error =[_sharedController device_getResponseCodeString:emvSetTerminalMajorConfigurationRt];
+        NSLog(@"Failed to set terminal to 5 %@",[NSString stringWithFormat:@"%@", error]);
+        //return TERMINAL_MAJOR_5C_FAILED;
     }
     
-    NSDictionary *publicKeys = [mobileDevice objectForKey:@"ca-public-keys"];
-    if(publicKeys != nil) {
-        int publicKeysRt  = [self configureContactCapks:publicKeys];
-        if(publicKeysRt != EMV_CONFIGURATION_SUCCESS) {
-            return publicKeysRt;
-        }
+    return EMV_CONFIGURATION_SUCCESS;
+}
+
+- (int) configureUsingClearentConfiguration:(ClearentConfiguration*) clearentConfiguration {
+    int contactAidsRt = [self configureContactAids:clearentConfiguration.contactAids];
+    if(contactAidsRt != EMV_CONFIGURATION_SUCCESS) {
+        return contactAidsRt;
+    }
+    
+    int publicKeysRt  = [self configureContactCapks:clearentConfiguration.publicKeys];
+    if(publicKeysRt != EMV_CONFIGURATION_SUCCESS) {
+        return publicKeysRt;
     }
     return EMV_CONFIGURATION_SUCCESS;
 }
 
-+ (int) configureContactAids:(NSDictionary*) contactAids {
+- (int) configureContactAids:(NSDictionary*) contactAids {
     bool allSuccessful = true;
     for(NSDictionary *contactAid in contactAids) {
         NSString *name = [contactAid objectForKey:@"name"];
         NSDictionary *values = [contactAid objectForKey:@"aid-values"];
-        RETURN_CODE rt = [[IDT_VP3300 sharedController] emv_setApplicationData:name configData:values];
+        RETURN_CODE rt = [_sharedController emv_setApplicationData:name configData:values];
         if (RETURN_CODE_DO_SUCCESS == rt) {
             NSLog(@"contact aid loaded %@",[NSString stringWithFormat:@"%@", name]);
         } else{
-            NSString *error =[[IDT_VP3300 sharedController] device_getResponseCodeString:rt];
+            NSString *error =[_sharedController device_getResponseCodeString:rt];
             NSLog(@"contact aid failed to load %@",[NSString stringWithFormat:@"%@,%@", name, error]);
             allSuccessful = false;
         }
@@ -103,7 +106,7 @@ static NSString *const ERROR_MSG = @"Failed to configure VIVOpay. Confirm intern
     return EMV_CONFIGURATION_SUCCESS;
 }
 
-+ (int) configureContactCapks:(NSDictionary*) contactCapks {
+- (int) configureContactCapks:(NSDictionary*) contactCapks {
     bool allSuccessful = true;
     for(NSDictionary *contactCapk in contactCapks) {
         NSString *name = [contactCapk objectForKey:@"name"];
@@ -121,11 +124,11 @@ static NSString *const ERROR_MSG = @"Failed to configure VIVOpay. Confirm intern
         NSString* combined = [testKeyArray componentsJoinedByString:@""];
         
         NSData* capk = [IDTUtility hexToData:combined];
-        RETURN_CODE capkRt = [[IDT_VP3300 sharedController] emv_setCAPKFile:capk];
+        RETURN_CODE capkRt = [_sharedController emv_setCAPKFile:capk];
         if (RETURN_CODE_DO_SUCCESS == capkRt) {
             NSLog(@"contact capk loaded %@",[NSString stringWithFormat:@"%@", name]);
         } else{
-            NSString *error =[[IDT_VP3300 sharedController] device_getResponseCodeString:capkRt];
+            NSString *error =[_sharedController device_getResponseCodeString:capkRt];
             NSLog(@"contact capk failed to load %@",[NSString stringWithFormat:@"%@,%@", name, error]);
             allSuccessful = false;
         }

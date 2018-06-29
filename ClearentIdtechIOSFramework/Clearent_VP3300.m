@@ -9,14 +9,13 @@
 #import <Foundation/Foundation.h>
 #import "Clearent_VP3300.h"
 
-@implementation Clearent_VP3300
+@implementation Clearent_VP3300 
 
 - (void) init : (id <Clearent_Public_IDTech_VP3300_Delegate>) publicDelegate clearentBaseUrl:(NSString*)clearentBaseUrl publicKey:(NSString*)publicKey {
     NSLog(@"Set the delegate in the ID Tech solution to the ClearentDelegate, which will call the Public delegate when needed.");
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        self.clearentDelegate = [[ClearentDelegate alloc] init];
-        [self.clearentDelegate init:publicDelegate clearentBaseUrl:clearentBaseUrl publicKey:publicKey];
+        self.clearentDelegate = [[ClearentDelegate alloc] init:publicDelegate clearentBaseUrl:clearentBaseUrl publicKey:publicKey];
         [IDT_VP3300 sharedController].delegate = self.clearentDelegate;
         NSLog(@"Clearent_VP3300 initialized");
     });
