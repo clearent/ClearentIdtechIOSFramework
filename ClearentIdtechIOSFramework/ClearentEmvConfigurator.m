@@ -60,7 +60,7 @@ static NSString *const ERROR_MSG = @"Failed to configure VIVOpay. Confirm intern
         return CONTACT_MAJOR_TAGS_UPDATE_FAILED;
     }
     
-    int terminalMajorConfiguration = 2;
+    int terminalMajorConfiguration = 5;
     RETURN_CODE emvSetTerminalMajorConfigurationRt = [_sharedController emv_setTerminalMajorConfiguration:terminalMajorConfiguration];
     if (RETURN_CODE_DO_SUCCESS == emvSetTerminalMajorConfigurationRt) {
         NSLog(@"Contact Terminal Major Set to 5");
