@@ -42,7 +42,7 @@ Clearent_VP3300 *clearentVP3300;
 clearentVP3300 = [[Clearent_VP3300 alloc]  init];
 [clearentVP3300 init:self clearentBaseUrl:@"http://gateway-sb.clearent.net", @"the public key Clearent gave you"];
 
-5 - Implement the successfulTransactionToken method. This method returns a token which represents the credit card and the current transavtion request. It allows you to submit a payment transaction.
+5 - Implement the successfulTransactionToken method. This method returns a token which represents the credit card and the current transaction request. It allows you to submit a payment transaction.
 When a card is processed (swipe or insert/dip of card with an emv chip), the framework will call successfulTransactionToken method when tokenization is successful.
 
 -(void) successfulTransactionToken:(NSString*) jsonString {
