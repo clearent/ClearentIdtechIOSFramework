@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E728DB1E20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E728DB1D20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m */; };
+		E728DB4C20E687A6004C01E7 /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E728DB4B20E687A6004C01E7 /* libOCMock.a */; };
 		E7467546209F0A8E00BC8504 /* uniMag.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467534209F0A8C00BC8504 /* uniMag.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E7467547209F0A8E00BC8504 /* IDT_BTMag.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467535209F0A8C00BC8504 /* IDT_BTMag.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E7467548209F0A8E00BC8504 /* UniPay.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467536209F0A8C00BC8504 /* UniPay.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -75,6 +77,19 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E728DB1D20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentConfigFetcher_Tests.m; sourceTree = "<group>"; };
+		E728DB4420E685D7004C01E7 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCMock.framework; path = "../../OCMock 3.4.2/iOS framework/OCMock.framework"; sourceTree = "<group>"; };
+		E728DB4B20E687A6004C01E7 /* libOCMock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libOCMock.a; sourceTree = "<group>"; };
+		E728DB4E20E6888D004C01E7 /* OCMockObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMockObject.h; sourceTree = "<group>"; };
+		E728DB4F20E6888D004C01E7 /* OCMMacroState.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMMacroState.h; sourceTree = "<group>"; };
+		E728DB5020E6888D004C01E7 /* OCMock.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMock.h; sourceTree = "<group>"; };
+		E728DB5120E6888D004C01E7 /* NSNotificationCenter+OCMAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSNotificationCenter+OCMAdditions.h"; sourceTree = "<group>"; };
+		E728DB5220E6888D004C01E7 /* OCMFunctions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMFunctions.h; sourceTree = "<group>"; };
+		E728DB5320E6888D004C01E7 /* OCMStubRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMStubRecorder.h; sourceTree = "<group>"; };
+		E728DB5420E6888D004C01E7 /* OCMRecorder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMRecorder.h; sourceTree = "<group>"; };
+		E728DB5520E6888D004C01E7 /* OCMLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMLocation.h; sourceTree = "<group>"; };
+		E728DB5620E6888D004C01E7 /* OCMConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMConstraint.h; sourceTree = "<group>"; };
+		E728DB5720E6888D004C01E7 /* OCMArg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMArg.h; sourceTree = "<group>"; };
 		E737D9D820A05F1B00760CB8 /* ClearentDevice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentDevice.h; sourceTree = "<group>"; };
 		E7467534209F0A8C00BC8504 /* uniMag.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = uniMag.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/uniMag.h; sourceTree = "<group>"; };
 		E7467535209F0A8C00BC8504 /* IDT_BTMag.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDT_BTMag.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/IDT_BTMag.h; sourceTree = "<group>"; };
@@ -150,6 +165,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E728DB4C20E687A6004C01E7 /* libOCMock.a in Frameworks */,
 				E7CA496820E3CD660090CFFC /* IDTech.framework in Frameworks */,
 				E7CA495820E3C2230090CFFC /* ClearentIdtechIOSFramework.framework in Frameworks */,
 			);
@@ -158,9 +174,44 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		E728DB4920E686CA004C01E7 /* test */ = {
+			isa = PBXGroup;
+			children = (
+				E728DB4D20E6888D004C01E7 /* OCMock */,
+				E728DB4A20E686D0004C01E7 /* libraries */,
+			);
+			path = test;
+			sourceTree = "<group>";
+		};
+		E728DB4A20E686D0004C01E7 /* libraries */ = {
+			isa = PBXGroup;
+			children = (
+				E728DB4B20E687A6004C01E7 /* libOCMock.a */,
+			);
+			path = libraries;
+			sourceTree = "<group>";
+		};
+		E728DB4D20E6888D004C01E7 /* OCMock */ = {
+			isa = PBXGroup;
+			children = (
+				E728DB4E20E6888D004C01E7 /* OCMockObject.h */,
+				E728DB4F20E6888D004C01E7 /* OCMMacroState.h */,
+				E728DB5020E6888D004C01E7 /* OCMock.h */,
+				E728DB5120E6888D004C01E7 /* NSNotificationCenter+OCMAdditions.h */,
+				E728DB5220E6888D004C01E7 /* OCMFunctions.h */,
+				E728DB5320E6888D004C01E7 /* OCMStubRecorder.h */,
+				E728DB5420E6888D004C01E7 /* OCMRecorder.h */,
+				E728DB5520E6888D004C01E7 /* OCMLocation.h */,
+				E728DB5620E6888D004C01E7 /* OCMConstraint.h */,
+				E728DB5720E6888D004C01E7 /* OCMArg.h */,
+			);
+			path = OCMock;
+			sourceTree = "<group>";
+		};
 		E76504EA1FFC306100B345F6 = {
 			isa = PBXGroup;
 			children = (
+				E728DB4920E686CA004C01E7 /* test */,
 				E79BC82620B3676E0030FD8C /* Clearent_VP3300.h */,
 				E79BC82120B3658F0030FD8C /* IDT_VP3300.h */,
 				E7467539209F0A8C00BC8504 /* APDUData.h */,
@@ -228,6 +279,7 @@
 		E765050E1FFC30F000B345F6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E728DB4420E685D7004C01E7 /* OCMock.framework */,
 				E765051B1FFC314D00B345F6 /* CFNetwork.framework */,
 				E76505191FFC314300B345F6 /* AudioToolbox.framework */,
 				E76505171FFC313A00B345F6 /* AVFoundation.framework */,
@@ -247,6 +299,7 @@
 				E7CA496B20E504720090CFFC /* ClearentConfigNoContactAids.json */,
 				E7CA496D20E505380090CFFC /* ClearentConfigNoPublicKeys.json */,
 				E7CA496F20E5076D0090CFFC /* ClearentClockConfigurator_Tests.m */,
+				E728DB1D20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m */,
 			);
 			path = "ClearentIdtechIOSFramework-Tests";
 			sourceTree = "<group>";
@@ -412,6 +465,7 @@
 				E7CA497020E5076D0090CFFC /* ClearentClockConfigurator_Tests.m in Sources */,
 				E7CA495F20E3C2460090CFFC /* ClearentConfiguration_Tests.m in Sources */,
 				E7CA495620E3C2230090CFFC /* ClearentIdtechIOSFramework_Tests.m in Sources */,
+				E728DB1E20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -616,6 +670,14 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ClearentIdtechIOSFramework",
+					"$(SRCROOT)",
+					"$(SRCROOT)/test/OCMock",
+					"$(SRCROOT)/test/libraries",
+					"$(PROJECT_DIR)/test/libraries",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)",
+					"$(PROJECT_DIR)/test",
 				);
 				INFOPLIST_FILE = "ClearentIdtechIOSFramework-Tests/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
@@ -623,6 +685,16 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/test/libraries",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					XCTest,
+					"-ObjC",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.clearent.ClearentIdtechIOSFramework-Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -640,6 +712,14 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ClearentIdtechIOSFramework",
+					"$(SRCROOT)",
+					"$(SRCROOT)/test/OCMock",
+					"$(SRCROOT)/test/libraries",
+					"$(PROJECT_DIR)/test/libraries",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(SRCROOT)",
+					"$(PROJECT_DIR)/test",
 				);
 				INFOPLIST_FILE = "ClearentIdtechIOSFramework-Tests/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
@@ -647,6 +727,16 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/test/libraries",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-framework",
+					XCTest,
+					"-ObjC",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.clearent.ClearentIdtechIOSFramework-Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";

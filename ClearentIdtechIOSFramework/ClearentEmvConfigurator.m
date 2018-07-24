@@ -138,6 +138,7 @@ static NSString *const ERROR_MSG = @"Failed to configure VIVOpay. Confirm intern
     }
     return EMV_CONFIGURATION_SUCCESS;
 }
+
 @end
 
 

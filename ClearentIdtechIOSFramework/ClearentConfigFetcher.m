@@ -25,17 +25,15 @@ static NSString *const RELATIVE_URL = @"rest/v2/mobile/devices";
     return self;
 }
 
-- (void)fetchConfiguration: (ClearentConfigFetcherResponse)callback;
-{
+- (void)fetchConfiguration: (ClearentConfigFetcherResponse)callback {
     NSURLSession *session = [self session];
-    
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
-    [request setHTTPMethod:@"GET"];
-    [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
-    [request setValue:_publicKey  forHTTPHeaderField:@"public-key"];
-    [request setURL:[NSURL URLWithString:[self createTargetUrl]]];
-    
-    NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error){
+    NSMutableURLRequest *request = [self createNSMutableURLRequest];
+    NSURLSessionDataTask *task = [session dataTaskWithRequest:request completionHandler:[ClearentConfigFetcher getClearentConfigFetcherTaskCompletionHandler:(ClearentConfigFetcherResponse)callback]];
+    [task resume];
+}
+
++ (ClearentConfigFetcherTaskCompletionHandler) getClearentConfigFetcherTaskCompletionHandler:(ClearentConfigFetcherResponse)callback {
+    return ^(NSData *data, NSURLResponse *response, NSError *error) {
         NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
         NSString *responseStr = nil;
         if(error != nil) {
@@ -48,7 +46,6 @@ static NSString *const RELATIVE_URL = @"rest/v2/mobile/devices";
                 NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data
                                                                                options:0
                                                                                  error:&error];
-                NSLog(@"config: %@", jsonDictionary);
                 if (error) {
                     callback(nil);
                 } else {
@@ -58,12 +55,16 @@ static NSString *const RELATIVE_URL = @"rest/v2/mobile/devices";
                 callback(nil);
             }
         }
-        data = nil;
-        response = nil;
-        error = nil;
-        
-    }];
-    [task resume];
+    };
+}
+
+- (NSMutableURLRequest*) createNSMutableURLRequest {
+    NSMutableURLRequest *nSMutableURLRequest = [[NSMutableURLRequest alloc] init];
+    [nSMutableURLRequest setHTTPMethod:@"GET"];
+    [nSMutableURLRequest setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [nSMutableURLRequest setValue:_publicKey  forHTTPHeaderField:@"public-key"];
+    [nSMutableURLRequest setURL:[NSURL URLWithString:[self createTargetUrl]]];
+    return nSMutableURLRequest;
 }
 
 - (NSString*) createTargetUrl {

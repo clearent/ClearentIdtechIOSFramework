@@ -10,24 +10,21 @@
 #import "ClearentIdtechIOSFramework/ClearentIdtechIOSFramework.h"
 #import "ClearentClockConfigurator.h"
 
-
 @interface ClearentClockConfigurator_Tests : XCTestCase
 @property (nonatomic) ClearentClockConfigurator *clearentClockConfigurator;
+@property (nonatomic) IDT_VP3300 *sharedController;
 @end
 
 @implementation ClearentClockConfigurator_Tests
 
 - (void)setUp {
     [super setUp];
-    //TODO figure out how to mock the idtech singleton if we want to test the initClock method
      self.clearentClockConfigurator = [[ClearentClockConfigurator alloc] initWithIdtechSharedController:nil];
 }
 
 - (void)tearDown {
-    // Put teardown code here. This method is called after the invocation of each test method in the class.
     [super tearDown];
 }
-
 
 - (void) testShouldGetClockDateAsYYYYMMDD {
     NSDate *now = [NSDate date];

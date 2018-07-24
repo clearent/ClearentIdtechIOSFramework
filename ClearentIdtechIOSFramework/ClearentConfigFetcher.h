@@ -10,6 +10,7 @@
 #import "ClearentConfigurator.h"
 
 typedef void (^ClearentConfigFetcherResponse)(NSDictionary *json);
+typedef void (^ClearentConfigFetcherTaskCompletionHandler)(NSData *data, NSURLResponse *response, NSError *error);
 
 @interface ClearentConfigFetcher : NSObject
 
@@ -21,6 +22,8 @@ typedef void (^ClearentConfigFetcherResponse)(NSDictionary *json);
 
     - (id)init:(NSURLSession *)session baseUrl:(NSString*)baseUrl deviceSerialNumber:(NSString*) deviceSerialNumber kernelVersion:(NSString*) kernelVersion publicKey:(NSString*) publicKey;
     - (void)fetchConfiguration: (ClearentConfigFetcherResponse) callback;
+    - (NSMutableURLRequest*) createNSMutableURLRequest;
+    - (NSString*) createTargetUrl;
     
 @end
 
