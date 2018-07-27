@@ -181,7 +181,7 @@ static NSString *const FAILED_TO_READ_CARD_ERROR_RESPONSE = @"Failed to read car
     if(emvData.resultCodeV2 == EMV_RESULT_CODE_V2_APP_NO_MATCHING) {
         [self deviceMessage:@"FALLBACK TO SWIPE"];
         SEL startFallbackSwipeSelector = @selector(startFallbackSwipe);
-        [NSTimer scheduledTimerWithTimeInterval:10 target:self selector:startFallbackSwipeSelector userInfo:nil repeats:false];
+        [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:startFallbackSwipeSelector userInfo:nil repeats:false];
         return;
     }
    
