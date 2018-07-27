@@ -34,6 +34,7 @@ typedef enum {SWIPE=90} supportedNonEmvEntryMode;
     -(void) deviceConnected;
     - (void) deviceMessage:(NSString*)message;
     - (ClearentTransactionTokenRequest*) createClearentTransactionToken:(BOOL)emv encrypted:(BOOL)encrypted track2Data:(NSString*) track2Data;
+    - (void) startFallbackSwipe;
 
 @end
 

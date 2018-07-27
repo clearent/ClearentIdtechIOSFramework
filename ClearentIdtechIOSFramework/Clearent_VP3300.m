@@ -178,7 +178,8 @@
 }
 
 -(RETURN_CODE) emv_startTransaction:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline fallback:(BOOL)fallback {
-    return [[IDT_VP3300 sharedController] emv_startTransaction:amount amtOther:amtOther type:type timeout:timeout tags:tags forceOnline:forceOnline fallback:fallback];
+    RETURN_CODE emvStartRt =  [[IDT_VP3300 sharedController] emv_startTransaction:amount amtOther:amtOther type:type timeout:timeout tags:tags forceOnline:forceOnline fallback:fallback];
+    return emvStartRt;
 }
 
 -(RETURN_CODE) config_getSerialNumber:(NSString**)response {
@@ -311,7 +312,6 @@
 
 -(RETURN_CODE) device_startTransaction:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline  fallback:(BOOL)fallback {
     return [[IDT_VP3300 sharedController] device_startTransaction:amount amtOther:amtOther type:type timeout:timeout tags:tags forceOnline:forceOnline  fallback:fallback];
-    
 }
 
 -(RETURN_CODE) emv_callbackResponsePIN:(EMV_PIN_MODE_Types)mode KSN:(NSData*)KSN PIN:(NSData*)PIN {
@@ -333,6 +333,7 @@
 -(void) processBypassResponse:(NSData*)data {
     return [[IDT_VP3300 sharedController] processBypassResponse:data];
 }
+
 @end
 
 

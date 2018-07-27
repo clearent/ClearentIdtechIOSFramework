@@ -44,32 +44,25 @@ static NSString *const ERROR_MSG = @"Failed to configure VIVOpay. Confirm intern
 }
 
 - (int) configureMajorTags {
-    NSMutableDictionary *tags;
-  
-    RETURN_CODE retrieveTerminalDataRt = [_sharedController emv_retrieveTerminalData:&tags];
-    if (RETURN_CODE_DO_SUCCESS == retrieveTerminalDataRt) {
-        [tags setObject:[IDTUtility hexToData:@"D0DC20D0C41E1400"] forKey:@"DFEE1E"];
-        [tags setObject:[IDTUtility hexToData:EMV_DIP_ENTRY_MODE_TAG] forKey:IDTECH_EMV_ENTRY_MODE_EMV_TAG];
-    } else{
-        return MAJOR_TAGS_RETRIEVE_FAILED;
-    }
-    RETURN_CODE setTerminalDateRt = [_sharedController emv_setTerminalData:tags];
-    if (RETURN_CODE_DO_SUCCESS == setTerminalDateRt) {
-        NSLog(@"Contact Major tags set");
-    } else{
-        return CONTACT_MAJOR_TAGS_UPDATE_FAILED;
-    }
-    
     int terminalMajorConfiguration = 5;
+    
     RETURN_CODE emvSetTerminalMajorConfigurationRt = [_sharedController emv_setTerminalMajorConfiguration:terminalMajorConfiguration];
     if (RETURN_CODE_DO_SUCCESS == emvSetTerminalMajorConfigurationRt) {
         NSLog(@"Contact Terminal Major Set to 5");
     } else {
         NSString *error =[_sharedController device_getResponseCodeString:emvSetTerminalMajorConfigurationRt];
         NSLog(@"Failed to set terminal to 5 %@",[NSString stringWithFormat:@"%@", error]);
-        //return TERMINAL_MAJOR_5C_FAILED;
+        return TERMINAL_MAJOR_5C_FAILED;
     }
     
+    NSString *defaultTlvData = @"5f3601029f1a0208409f3501219f33036028c89f4005f000f0a0019f1e085465726d696e616c9f150212349f160f3030303030303030303030303030309f1c0838373635343332319f4e2231303732312057616c6b65722053742e20437970726573732c204341202c5553412edf260101df1008656e667265737a68df110100df270100dfee150101dfee160100dfee170105dfee180180dfee1e08d09c20d0c41e1400dfee1f0180dfee1b083030303130353030dfee20013cdfee21010adfee2203323c3c";
+    NSData *defaultTlvTags = [IDTUtility hexToData:defaultTlvData.uppercaseString];
+    RETURN_CODE setDefaultRt = [_sharedController emv_setTerminalData:[IDTUtility TLVtoDICT:defaultTlvTags]];
+    if (RETURN_CODE_DO_SUCCESS == setDefaultRt) {
+        NSLog(@"Emv Entry mode changed from 07 to 05");
+    } else{
+        return MAJOR_TAGS_RETRIEVE_FAILED;
+    }
     return EMV_CONFIGURATION_SUCCESS;
 }
 
