@@ -43,5 +43,10 @@
 	<string>Copyright © 2018 Clearent LLC. All rights reserved.</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+		<string>arm64</string>
+	</array>
 </dict>
 </plist>

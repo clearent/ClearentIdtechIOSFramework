@@ -142,6 +142,16 @@ static NSString *const FAILED_TO_READ_CARD_ERROR_RESPONSE = @"Failed to read car
     } else if (cardData.track2 != nil) {
         clearentTransactionTokenRequest = [self createClearentTransactionToken:false encrypted:false track2Data:cardData.track2.uppercaseString];
     }
+    
+    NSMutableDictionary *outgoingTags = [NSMutableDictionary new];
+    [self addRequiredTags: outgoingTags];
+    
+    NSData *tagsAsNSData = [IDTUtility DICTotTLV:outgoingTags];
+    NSString *tlvInHex = [IDTUtility dataToHexString:tagsAsNSData];
+    clearentTransactionTokenRequest.emv = false;
+    
+    clearentTransactionTokenRequest.tlv = tlvInHex.uppercaseString;
+    
     return clearentTransactionTokenRequest;
 }
 
@@ -283,9 +293,7 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         outgoingTags = [tags mutableCopy];
     } else {
         NSDictionary *transactionResultDictionary;
-        //remove 9F6E (causes chip card set errro on tsys side) and 91
-        //9F12 send in the request but not in tlv..blows up with MC.
-        NSData *tsysTags = [IDTUtility hexToData:@"82959A9B9C5F2A9F029F039F1A9F219F269F279F339F349F359F369F379F394F845F2D5F349F069F129F099F409F155F369F1B9F1E9F1C9F109F5B5657FF8106FF8105FFEE14FFEE06"];
+        NSData *tsysTags = [IDTUtility hexToData:@"82959A9B9C5F2A9F029F039F1A9F219F269F279F339F349F359F369F379F394F845F2D5F349F069F129F099F405F369F1E9F105657FF8106FF8105FFEE14FFEE06"];
         RETURN_CODE emvRetrieveTransactionResultRt = [[IDT_VP3300 sharedController] emv_retrieveTransactionResult:tsysTags retrievedTags:&transactionResultDictionary];
         if(RETURN_CODE_DO_SUCCESS == emvRetrieveTransactionResultRt) {
             outgoingTags = [transactionResultDictionary objectForKey:@"tags"];
@@ -316,7 +324,6 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     [self addRequiredTags: outgoingTags];
     clearentTransactionTokenRequest.applicationPreferredNameTag9F12 = [IDTUtility dataToString:[outgoingTags objectForKey:@"9F12"]];
     
-    //Remove any tags that would make the request fail in TSYS.
     [self removeInvalidTSYSTags: outgoingTags];
    
     tagsAsNSData = [IDTUtility DICTotTLV:outgoingTags];
@@ -334,22 +341,11 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
 
 - (void) addRequiredTags: (NSMutableDictionary*) outgoingTags {
     NSData *kernelInHex = [IDTUtility stringToData:self.kernelVersion];
-    
     [outgoingTags setObject:[IDTUtility stringToData:self.deviceSerialNumber] forKey:DEVICE_SERIAL_NUMBER_EMV_TAG];
     [outgoingTags setObject:kernelInHex forKey:KERNEL_VERSION_EMV_TAG];
-    
-    //TODO We need to identify the mid and mcc for this merchant.
-    [outgoingTags setObject:@"5999" forKey:@"9F15"];
-    [outgoingTags setObject:@"888000001516" forKey:@"9F16"];
-    
-    //added 6-11, removed from individual aid configuration
-    //remove for a mc test but we might need to put it back in for others...waiting to hear back from Blake.
-   // [outgoingTags setObject:@"9F3704" forKey:@"DF25"];
-    [outgoingTags setObject:@"00000000" forKey:@"9F1B"];
-    
-    //[retrievedResultTags setObject:@"54657374204d65726368616e74" forKey:@"9F4E"];
 }
 
+//Remove any tags that would make the request fail in TSYS.
 - (void) removeInvalidTSYSTags: (NSMutableDictionary*) outgoingTags {
     [outgoingTags removeObjectForKey:@"DFEF4D"];
     [outgoingTags removeObjectForKey:@"DFEF4C"];
@@ -364,6 +360,15 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     [outgoingTags removeObjectForKey:@"FFEE01"];
     [outgoingTags removeObjectForKey:@"DF8129"];
     [outgoingTags removeObjectForKey:@"9F12"];
+    
+    NSString *data9F6E = [IDTUtility dataToHexString:[outgoingTags objectForKey:@"9F6E"]];
+    if(data9F6E == nil || ([data9F6E isEqualToString:@""])) {
+        [outgoingTags removeObjectForKey:@"9F6E"];
+    }
+    NSString *data4F = [IDTUtility dataToHexString:[outgoingTags objectForKey:@"4F"]];
+    if(data4F == nil || ([data4F isEqualToString:@""])) {
+        [outgoingTags removeObjectForKey:@"4F"];
+    }
 }
 
 - (void) createTransactionToken:(ClearentTransactionTokenRequest*)clearentTransactionTokenRequest {

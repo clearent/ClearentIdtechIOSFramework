@@ -119,6 +119,8 @@
 		E76505171FFC313A00B345F6 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		E76505191FFC314300B345F6 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		E765051B1FFC314D00B345F6 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		E76E42EF21232FB600F83B41 /* ClearentIdtechMacFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentIdtechMacFramework.h; sourceTree = "<group>"; };
+		E76E42F021232FB600F83B41 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E77687462062B66300284FF4 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		E77C900D1FFFE38100C3E590 /* ClearentDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentDelegate.h; sourceTree = "<group>"; };
 		E77C90452000442200C3E590 /* ClearentTransactionTokenRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentTransactionTokenRequest.h; sourceTree = "<group>"; };
@@ -235,6 +237,7 @@
 				E77687462062B66300284FF4 /* .gitignore */,
 				E76504F61FFC306100B345F6 /* ClearentIdtechIOSFramework */,
 				E7CA495420E3C2230090CFFC /* ClearentIdtechIOSFramework-Tests */,
+				E76E42EE21232FB600F83B41 /* ClearentIdtechMacFramework */,
 				E76504F51FFC306100B345F6 /* Products */,
 				E765050E1FFC30F000B345F6 /* Frameworks */,
 			);
@@ -287,6 +290,15 @@
 				E76505131FFC312500B345F6 /* ExternalAccessory.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E76E42EE21232FB600F83B41 /* ClearentIdtechMacFramework */ = {
+			isa = PBXGroup;
+			children = (
+				E76E42EF21232FB600F83B41 /* ClearentIdtechMacFramework.h */,
+				E76E42F021232FB600F83B41 /* Info.plist */,
+			);
+			path = ClearentIdtechMacFramework;
 			sourceTree = "<group>";
 		};
 		E7CA495420E3C2230090CFFC /* ClearentIdtechIOSFramework-Tests */ = {
@@ -532,10 +544,11 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INSTALL_PATH = /Library/Frameworks;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = iphoneos;
+				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -587,10 +600,11 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INSTALL_PATH = /Library/Frameworks;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -612,19 +626,19 @@
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/ClearentIdtechIOSFramework/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.clearent.quest.ClearentIdtechIOSFrameworks;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = NO;
 				STRIP_INSTALLED_PRODUCT = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "arm64 armv7 armv7s";
+				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
 			};
 			name = Debug;
 		};
@@ -644,19 +658,19 @@
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/ClearentIdtechIOSFramework/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 11.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.clearent.quest.ClearentIdtechIOSFrameworks;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = NO;
 				STRIP_INSTALLED_PRODUCT = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "arm64 armv7 armv7s";
+				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
 			};
 			name = Release;
 		};
