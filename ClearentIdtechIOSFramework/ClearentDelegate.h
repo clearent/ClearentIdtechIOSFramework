@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import "ClearentPublicVP3300Delegate.h"
-#import "IDTech/IDT_VP3300.h"
 #import "ClearentTransactionTokenRequest.h"
 #import "ClearentConfigurator.h"
 
