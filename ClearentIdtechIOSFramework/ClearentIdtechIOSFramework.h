@@ -7,7 +7,6 @@
 //
 #import "ClearentIdtechIOSFramework/Clearent_VP3300.h"
 #import "ClearentIdtechIOSFramework/ClearentPublicVP3300Delegate.h"
-//#import "IDTech/IDTech.h"
-#import "IDTech/IDTCommon.h"
-//#import "IDTech/IDTUtility.h"
+#import "IDTech/IDTech.h"
+#import "IDTech/IDTUtility.h"
 
