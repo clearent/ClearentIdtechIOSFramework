@@ -42,13 +42,15 @@ Clearent_VP3300 *clearentVP3300;
 clearentVP3300 = [[Clearent_VP3300 alloc]  init];
 [clearentVP3300 init:self clearentBaseUrl:@"http://gateway-sb.clearent.net", @"the public key Clearent gave you"];
 
-5 - Implement the successfulTransactionToken method. This method returns a token which represents the credit card and the current transaction request. It allows you to submit a payment transaction.
+5 - Monitor for device readiness thru the isReady method of the delegate.
+
+6 - Implement the successfulTransactionToken method. This method returns a token which represents the credit card and the current transaction request. It allows you to submit a payment transaction.
 When a card is processed (swipe or insert/dip of card with an emv chip), the framework will call successfulTransactionToken method when tokenization is successful.
 
 -(void) successfulTransactionToken:(NSString*) jsonString {
   //This json contains the transaction token. See demo app for more details
 }
 
-6 - Monitor for errors by implementing the deviceMessage method.
+7 - Monitor for errors by implementing the deviceMessage method.
 
-7 - When you are ready to process the payment, do a POST against endpoint /rest/v2/mobile/transactions. See demo app for an example (https://github.com/clearent/IDTech_VP3300_Demo)
+8 - When you are ready to process the payment, do a POST against endpoint /rest/v2/mobile/transactions/sale. See demo app for an example (https://github.com/clearent/IDTech_VP3300_Demo)
