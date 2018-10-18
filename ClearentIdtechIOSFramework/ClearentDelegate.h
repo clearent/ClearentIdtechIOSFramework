@@ -10,7 +10,7 @@
 #import "ClearentPublicVP3300Delegate.h"
 #import "ClearentTransactionTokenRequest.h"
 #import "ClearentConfigurator.h"
-
+//EMV_DIP("EMV_DIP", "05"),
 typedef enum {FALLBACK_SWIPE=80, NONTECH_FALLBACK_SWIPE=95, CONTACTLESS_EMV=07, CONTACTLESS_MAGNETIC_SWIPE=91} supportedEmvEntryMode;
 typedef enum {SWIPE=90} supportedNonEmvEntryMode;
 
@@ -24,6 +24,8 @@ typedef enum {SWIPE=90} supportedNonEmvEntryMode;
     @property(nonatomic) NSString *publicKey;
     @property(nonatomic) id<Clearent_Public_IDTech_VP3300_Delegate> publicDelegate;
     @property(nonatomic) ClearentConfigurator *clearentConfigurator;
+
+    @property(nonatomic) int originalEntryMode;
 
     - (id) init: (id <Clearent_Public_IDTech_VP3300_Delegate>) publicDelegate clearentBaseUrl:(NSString*)clearentBaseUrl publicKey:(NSString*)publicKey ;
     - (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequest:(IDTEMVData*)emvData;

@@ -75,7 +75,7 @@ static NSString *const FAILED_TO_READ_CARD_ERROR_RESPONSE = @"Failed to read car
     self.deviceSerialNumber = [self getDeviceSerialNumber];
     self.kernelVersion = [self getKernelVersion];
     [self.publicDelegate deviceConnected];
-    [self deviceMessage:@"VIVOpay connected. Waiting for configuration to complete..."];
+    [self deviceMessage:@"Device connected. Waiting for configuration to complete..."];
     [self.clearentConfigurator configure:self.kernelVersion deviceSerialNumber:self.deviceSerialNumber];
 }
 
@@ -85,7 +85,7 @@ static NSString *const FAILED_TO_READ_CARD_ERROR_RESPONSE = @"Failed to read car
     if (RETURN_CODE_DO_SUCCESS == rt) {
         return result;
     } else{
-        return @"VIVOpay Firmware version not found";
+        return @"Device Firmware version not found";
     }
 }
 
@@ -95,7 +95,7 @@ static NSString *const FAILED_TO_READ_CARD_ERROR_RESPONSE = @"Failed to read car
     if (RETURN_CODE_DO_SUCCESS == rt) {
         return result;
     } else{
-        return @"VIVOpay Kernel Version Unknown";
+        return @"Device Kernel Version Unknown";
     }
 }
 
@@ -105,7 +105,7 @@ static NSString *const FAILED_TO_READ_CARD_ERROR_RESPONSE = @"Failed to read car
     if (RETURN_CODE_DO_SUCCESS == rt) {
         return result;
     } else{
-        return @"VIVOpay Serial number not found";
+        return @"Device Serial number not found";
     }
 }
 
@@ -113,13 +113,17 @@ static NSString *const FAILED_TO_READ_CARD_ERROR_RESPONSE = @"Failed to read car
     [self.publicDelegate deviceDisconnected];
 }
 
-- (void) deviceMessage:(NSString*)message {    
+- (void) deviceMessage:(NSString*)message {
+    if(message != nil && [message isEqualToString:@"Reader configured and ready"]) {
+        [self.publicDelegate isReady];
+        return;
+    }
     if(message != nil && [message isEqualToString:@"POWERING UNIPAY"]) {
-       [self.publicDelegate deviceMessage:@"Starting VIVOpay..."];
+       [self.publicDelegate deviceMessage:@"Powering up reader..."];
         return;
     }
     if(message != nil && [message isEqualToString:@"RETURN_CODE_LOW_VOLUME"]) {
-        [self.publicDelegate deviceMessage:@"VIVOpay failed to connect.Turn the headphones volume all the way up and reconnect."];
+        [self.publicDelegate deviceMessage:@"Device failed to connect.Turn the headphones volume all the way up and reconnect."];
         return;
     }
     [self.publicDelegate deviceMessage:message];
@@ -135,6 +139,29 @@ static NSString *const FAILED_TO_READ_CARD_ERROR_RESPONSE = @"Failed to read car
 }
 
 - (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequestForASwipe:(IDTMSRData*)cardData{
+    ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [[ClearentTransactionTokenRequest alloc] init];
+    if (cardData.encTrack2 != nil) {
+        NSString *encryptedTrack2Data = [[NSString alloc] initWithData:cardData.encTrack2
+                                                              encoding:NSUTF8StringEncoding];
+        clearentTransactionTokenRequest = [self createClearentTransactionToken:false encrypted:true track2Data:encryptedTrack2Data.uppercaseString];
+    } else if (cardData.track2 != nil) {
+        clearentTransactionTokenRequest = [self createClearentTransactionToken:false encrypted:false track2Data:cardData.track2.uppercaseString];
+    }
+
+    clearentTransactionTokenRequest.emv = false;
+    return clearentTransactionTokenRequest;
+}
+
+- (void) swipeMSRDataFallback:(IDTMSRData*)cardData{
+    if (cardData != nil && cardData.event == EVENT_MSR_CARD_DATA && (cardData.track2 != nil || cardData.encTrack2 != nil)) {
+        ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequestFallbackSwipe:cardData];
+        [self createTransactionToken:clearentTransactionTokenRequest];
+    } else {
+        [self deviceMessage:GENERIC_CARD_READ_ERROR_RESPONSE];
+    }
+}
+
+- (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequestFallbackSwipe:(IDTMSRData*)cardData{
     ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [[ClearentTransactionTokenRequest alloc] init];
     if (cardData.encTrack2 != nil) {
         NSString *encryptedTrack2Data = [[NSString alloc] initWithData:cardData.encTrack2
@@ -191,6 +218,9 @@ static NSString *const FAILED_TO_READ_CARD_ERROR_RESPONSE = @"Failed to read car
     
     if(emvData.resultCodeV2 == EMV_RESULT_CODE_V2_APP_NO_MATCHING) {
         [self deviceMessage:@"FALLBACK TO SWIPE"];
+        
+        _originalEntryMode = 81;
+        
         SEL startFallbackSwipeSelector = @selector(startFallbackSwipe);
         [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:startFallbackSwipeSelector userInfo:nil repeats:false];
         return;
@@ -229,7 +259,9 @@ static NSString *const FAILED_TO_READ_CARD_ERROR_RESPONSE = @"Failed to read car
     }
     
     if (emvData.cardData != nil && emvData.resultCodeV2 == EMV_RESULT_CODE_V2_MSR_SUCCESS) {
-        if(entryMode == SWIPE) {
+        if(_originalEntryMode == 81) {
+            [self swipeMSRDataFallback:emvData.cardData];
+        } else if(entryMode == SWIPE) {
             [self swipeMSRData:emvData.cardData];
         } else if(isSupportedEmvEntryMode(entryMode)) {
             ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequest:emvData];
@@ -241,6 +273,7 @@ static NSString *const FAILED_TO_READ_CARD_ERROR_RESPONSE = @"Failed to read car
         ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequest:emvData];
         [self createTransactionToken:clearentTransactionTokenRequest];
     }
+    _originalEntryMode = entryMode;
 }
 
 - (void) startFallbackSwipe {
@@ -294,13 +327,12 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         outgoingTags = [tags mutableCopy];
     } else {
         NSDictionary *transactionResultDictionary;
-        NSData *tsysTags = [IDTUtility hexToData:@"82959A9B9C5F2A9F029F039F1A9F219F269F279F339F349F359F369F379F394F845F2D5F349F069F129F099F405F369F1E9F105657FF8106FF8105FFEE14FFEE06"];
+        NSData *tsysTags = [IDTUtility hexToData:@"508E82959A9B9C5F2A9F029F039F1A9F219F269F279F339F349F359F369F379F394F845F2D5F349F069F129F099F405F369F1E9F105657FF8106FF8105FFEE14FFEE06"];
         RETURN_CODE emvRetrieveTransactionResultRt = [[IDT_VP3300 sharedController] emv_retrieveTransactionResult:tsysTags retrievedTags:&transactionResultDictionary];
         if(RETURN_CODE_DO_SUCCESS == emvRetrieveTransactionResultRt) {
             outgoingTags = [transactionResultDictionary objectForKey:@"tags"];
         } else {
-            tlvInHex = @"Failed to retrieve tlv from VIVOpay";
-            //TODO handle error?
+            tlvInHex = @"Failed to retrieve tlv from Device";
         }
     }
     //TODO Search for this data element(DFEF18) Track2 Data during MC contactless swipe
@@ -324,7 +356,9 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     
     [self addRequiredTags: outgoingTags];
     clearentTransactionTokenRequest.applicationPreferredNameTag9F12 = [IDTUtility dataToString:[outgoingTags objectForKey:@"9F12"]];
-    
+    if(clearentTransactionTokenRequest.applicationPreferredNameTag9F12 == nil || [clearentTransactionTokenRequest.applicationPreferredNameTag9F12 isEqualToString:@""]) {
+        clearentTransactionTokenRequest.applicationPreferredNameTag9F12 = [IDTUtility dataToString:[outgoingTags objectForKey:@"50"]];
+    }
     [self removeInvalidTSYSTags: outgoingTags];
    
     tagsAsNSData = [IDTUtility DICTotTLV:outgoingTags];

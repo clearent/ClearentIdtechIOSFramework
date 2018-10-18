@@ -25,15 +25,15 @@
 
 -(void) configure: (NSString*)kernelVersion  deviceSerialNumber:(NSString*) deviceSerialNumber {
     if(self.isConfigured) {
-        [self notify:@"VIVOpay configured and ready"];
+        [self notify:@"Device configured and ready"];
         return;
     }
     if(deviceSerialNumber  == nil) {
-        [self notify:@"Connect VIVOpay"];
+        [self notify:@"Connect device"];
         return;
     }
     if(self.baseUrl == nil) {
-        [self notify:@"Configuration url is required for VIVOpay configuration"];
+        [self notify:@"Configuration url is required for device configuration"];
         return;
     }
     [self initClock];
@@ -44,7 +44,7 @@
         if(json != nil) {
             [self configure:json];
         } else {
-            [self notify:@"VIVOpay failed to retrieve configuration"];
+            [self notify:@"Device failed to retrieve configuration"];
         }
     };
     
@@ -63,7 +63,7 @@
     ClearentClockConfigurator *clearentClockConfigurator = [[ClearentClockConfigurator alloc] initWithIdtechSharedController:_sharedController];
     int clockRt = [clearentClockConfigurator initClock];
     if(clockRt != CLOCK_CONFIGURATION_SUCCESS) {
-       [self notify:@"Failed to configure VIVOpay clock"];
+       [self notify:@"Failed to configure device clock"];
     }
 }
 

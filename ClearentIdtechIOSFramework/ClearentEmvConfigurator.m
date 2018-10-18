@@ -11,7 +11,7 @@
 
 static NSString *const EMV_DIP_ENTRY_MODE_TAG = @"05";
 static NSString *const IDTECH_EMV_ENTRY_MODE_EMV_TAG = @"DFEE17";
-static NSString *const ERROR_MSG = @"Failed to configure VIVOpay. Confirm internet access and try reconnecting. If this does not work contact support.";
+static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm internet access and try reconnecting. If this does not work contact support.";
 
 @implementation ClearentEmvConfigurator
 
@@ -35,12 +35,12 @@ static NSString *const ERROR_MSG = @"Failed to configure VIVOpay. Confirm intern
             allErrors = [NSString stringWithFormat:@"%@%@", allErrors, [NSString stringWithFormat:@"%@,%@", ERROR_MSG, [NSString stringWithFormat:@"%d",clearentConfigurationRt]]];
         }
     } else {
-        allErrors = [NSString stringWithFormat:@"%@%@", allErrors, [NSString stringWithFormat:@"%@,%@", ERROR_MSG, @"Skipped configuring VIVOpay because clearent configuration was not found"]];
+        allErrors = [NSString stringWithFormat:@"%@%@", allErrors, [NSString stringWithFormat:@"%@,%@", ERROR_MSG, @"Skipped configuring reader because clearent configuration was not found"]];
     }
     if(![allErrors isEqualToString:@""]) {
         return allErrors;
     }
-    return @"VIVOpay configured and ready";
+    return @"Reader configured and ready";
 }
 
 - (int) configureMajorTags {
