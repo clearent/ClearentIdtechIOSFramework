@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		E71E309521F7A0E3001C950A /* ClearentCard.m in Sources */ = {isa = PBXBuildFile; fileRef = E7B89E2C21F6A3A500078C73 /* ClearentCard.m */; };
+		E721ECE721F7483B0064163F /* ClearentManualEntryDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E7B89E2E21F6A56600078C73 /* ClearentManualEntryDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E721ECE821F7483B0064163F /* ClearentManualEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = E7B89E2F21F6A69300078C73 /* ClearentManualEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E721ECEA21F74B560064163F /* ClearentCard.h in Headers */ = {isa = PBXBuildFile; fileRef = E7B89E2B21F6A38200078C73 /* ClearentCard.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E728DB1E20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E728DB1D20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m */; };
 		E728DB4C20E687A6004C01E7 /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E728DB4B20E687A6004C01E7 /* libOCMock.a */; };
 		E7467546209F0A8E00BC8504 /* uniMag.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467534209F0A8C00BC8504 /* uniMag.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -44,6 +48,7 @@
 		E79BC82220B365900030FD8C /* IDT_VP3300.h in Headers */ = {isa = PBXBuildFile; fileRef = E79BC82120B3658F0030FD8C /* IDT_VP3300.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E79BC82520B366300030FD8C /* Clearent_VP3300.m in Sources */ = {isa = PBXBuildFile; fileRef = E79BC82420B366300030FD8C /* Clearent_VP3300.m */; };
 		E79BC82720B3676E0030FD8C /* Clearent_VP3300.h in Headers */ = {isa = PBXBuildFile; fileRef = E79BC82620B3676E0030FD8C /* Clearent_VP3300.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E7B89E3121F6A6A400078C73 /* ClearentManualEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = E7B89E3021F6A6A400078C73 /* ClearentManualEntry.m */; };
 		E7C54CD420A08755002CC355 /* ClearentDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = E737D9D820A05F1B00760CB8 /* ClearentDevice.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E7CA494220E171960090CFFC /* ClearentConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CA494120E171960090CFFC /* ClearentConfiguration.m */; };
 		E7CA494520E1753D0090CFFC /* ClearentConfigurator.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CA494420E1753D0090CFFC /* ClearentConfigurator.m */; };
@@ -129,6 +134,11 @@
 		E79BC82320B365F80030FD8C /* Clearent_VP3300.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Clearent_VP3300.h; sourceTree = "<group>"; };
 		E79BC82420B366300030FD8C /* Clearent_VP3300.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Clearent_VP3300.m; sourceTree = "<group>"; };
 		E79BC82620B3676E0030FD8C /* Clearent_VP3300.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Clearent_VP3300.h; path = ClearentIdtechIOSFramework/Clearent_VP3300.h; sourceTree = "<group>"; };
+		E7B89E2B21F6A38200078C73 /* ClearentCard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentCard.h; sourceTree = "<group>"; };
+		E7B89E2C21F6A3A500078C73 /* ClearentCard.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentCard.m; sourceTree = "<group>"; };
+		E7B89E2E21F6A56600078C73 /* ClearentManualEntryDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentManualEntryDelegate.h; sourceTree = "<group>"; };
+		E7B89E2F21F6A69300078C73 /* ClearentManualEntry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentManualEntry.h; sourceTree = "<group>"; };
+		E7B89E3021F6A6A400078C73 /* ClearentManualEntry.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentManualEntry.m; sourceTree = "<group>"; };
 		E7CA494020E171830090CFFC /* ClearentConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentConfiguration.h; sourceTree = "<group>"; };
 		E7CA494120E171960090CFFC /* ClearentConfiguration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentConfiguration.m; sourceTree = "<group>"; };
 		E7CA494320E173F00090CFFC /* ClearentConfigurator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentConfigurator.h; sourceTree = "<group>"; };
@@ -274,6 +284,11 @@
 				E7CA494420E1753D0090CFFC /* ClearentConfigurator.m */,
 				E7CA497320E578BC0090CFFC /* ClearentConfigFetcher.h */,
 				E7CA497420E579190090CFFC /* ClearentConfigFetcher.m */,
+				E7B89E2B21F6A38200078C73 /* ClearentCard.h */,
+				E7B89E2C21F6A3A500078C73 /* ClearentCard.m */,
+				E7B89E2E21F6A56600078C73 /* ClearentManualEntryDelegate.h */,
+				E7B89E2F21F6A69300078C73 /* ClearentManualEntry.h */,
+				E7B89E3021F6A6A400078C73 /* ClearentManualEntry.m */,
 			);
 			path = ClearentIdtechIOSFramework;
 			sourceTree = "<group>";
@@ -350,6 +365,9 @@
 				E79BC82720B3676E0030FD8C /* Clearent_VP3300.h in Headers */,
 				E7CA497620E58C910090CFFC /* ClearentConfigFetcher.h in Headers */,
 				E7467557209F0A8E00BC8504 /* IDT_Device.h in Headers */,
+				E721ECE721F7483B0064163F /* ClearentManualEntryDelegate.h in Headers */,
+				E721ECEA21F74B560064163F /* ClearentCard.h in Headers */,
+				E721ECE821F7483B0064163F /* ClearentManualEntry.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -464,6 +482,8 @@
 				E7CA494520E1753D0090CFFC /* ClearentConfigurator.m in Sources */,
 				E77C90482000442200C3E590 /* ClearentTransactionTokenRequest.m in Sources */,
 				E79A4D94204F14B000E4BBF6 /* ClearentDelegate.m in Sources */,
+				E71E309521F7A0E3001C950A /* ClearentCard.m in Sources */,
+				E7B89E3121F6A6A400078C73 /* ClearentManualEntry.m in Sources */,
 				E7CA497520E579190090CFFC /* ClearentConfigFetcher.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
