@@ -42,6 +42,7 @@ Clearent_VP3300 *clearentVP3300;
 4 - Initialize the object
 
 clearentVP3300 = [[Clearent_VP3300 alloc]  init];
+
 [clearentVP3300 init:self clearentBaseUrl:@"http://gateway-sb.clearent.net", @"the public key Clearent gave you"];
 
 5 - Monitor for device readiness thru the isReady method of the delegate.
@@ -70,6 +71,7 @@ ClearentManualEntry *clearentManualEntry;
 4 - Initialize the object
 
 clearentManualEntry = [[ClearentManualEntry alloc]  init];
+
 [clearentManualEntry init:self clearentBaseUrl:@"http://gateway-sb.clearent.net", @"the public key Clearent gave you"];
 
 5 - Implement the successfulTransactionToken method. If you have already implemented this for the IDTech Device solution you don't have to do anything extra.
