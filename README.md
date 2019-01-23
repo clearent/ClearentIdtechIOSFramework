@@ -27,7 +27,7 @@ Carthage was chosen to bring the Clearent framework into your project because of
 
 7 - Build your app. The Clearent Framework should be available for use.
 
-## Use the Clearent Framework
+## Use the Clearent Framework with an IDTech device
 
 1 - Add this to your ViewController.h  
 #import <ClearentIdtechIOSFramework/ClearentIdtechIOSFramework.h>
@@ -53,4 +53,27 @@ When a card is processed (swipe or insert/dip of card with an emv chip), the fra
 
 7 - Monitor for errors by implementing the deviceMessage method.
 
-8 - When you are ready to process the payment, do a POST against endpoint /rest/v2/mobile/transactions/sale. See demo app for an example (https://github.com/clearent/IDTech_VP3300_Demo)
+8 - When you are ready to process the payment, do a POST against endpoint /rest/v2/mobile/transactions/sale (for a sale). See demo app for an example (https://github.com/clearent/IDTech_VP3300_Demo)
+
+## Use the Clearent Framework to create a transaction token (JWT) for a manually entered card
+
+
+1 - Change your interface to adhere to the delegate ClearentManualEntryDelegate
+Ex -@interface ViewController : UIViewController<UIAlertViewDelegate,Clearent_Public_IDTech_VP3300_Delegate, UIActionSheetDelegate,MFMailComposeViewControllerDelegate>,ClearentManualEntryDelegate
+
+3 - Define the framework object you will interact with in ViewController.m.
+ClearentManualEntry *clearentManualEntry;
+
+4 - Initialize the object
+clearentManualEntry = [[ClearentManualEntry alloc]  init];
+[clearentManualEntry init:self clearentBaseUrl:@"http://gateway-sb.clearent.net", @"the public key Clearent gave you"];
+
+5 - Implement the successfulTransactionToken method. If you have already implemented this for the IDTech Device solution you don't have to do anything extra.
+
+-(void) successfulTransactionToken:(NSString*) jsonString {
+  //This json contains the transaction token. See demo app for more details
+}
+
+7 - Monitor for errors by implementing the handleManualEntryError method.
+
+8 - When you are ready to process the payment, do a POST against endpoint /rest/v2/mobile/transactions/sale (for a sale). See demo app for an example (https://github.com/clearent/IDTech_VP3300_Demo)
