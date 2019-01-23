@@ -36,9 +36,11 @@ Carthage was chosen to bring the Clearent framework into your project because of
 Ex -@interface ViewController : UIViewController<UIAlertViewDelegate,Clearent_Public_IDTech_VP3300_Delegate, UIActionSheetDelegate,MFMailComposeViewControllerDelegate>
 
 3 - Define the framework object you will interact with in ViewController.m.
+
 Clearent_VP3300 *clearentVP3300;
 
 4 - Initialize the object
+
 clearentVP3300 = [[Clearent_VP3300 alloc]  init];
 [clearentVP3300 init:self clearentBaseUrl:@"http://gateway-sb.clearent.net", @"the public key Clearent gave you"];
 
@@ -62,9 +64,11 @@ When a card is processed (swipe or insert/dip of card with an emv chip), the fra
 Ex -@interface ViewController : UIViewController<UIAlertViewDelegate,Clearent_Public_IDTech_VP3300_Delegate, UIActionSheetDelegate,MFMailComposeViewControllerDelegate>,ClearentManualEntryDelegate
 
 3 - Define the framework object you will interact with in ViewController.m.
+
 ClearentManualEntry *clearentManualEntry;
 
 4 - Initialize the object
+
 clearentManualEntry = [[ClearentManualEntry alloc]  init];
 [clearentManualEntry init:self clearentBaseUrl:@"http://gateway-sb.clearent.net", @"the public key Clearent gave you"];
 
