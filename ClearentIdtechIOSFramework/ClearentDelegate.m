@@ -133,6 +133,8 @@ static NSString *const FAILED_TO_READ_CARD_ERROR_RESPONSE = @"Failed to read car
     if (cardData != nil && cardData.event == EVENT_MSR_CARD_DATA && (cardData.track2 != nil || cardData.encTrack2 != nil)) {
         ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequestForASwipe:cardData];
         [self createTransactionToken:clearentTransactionTokenRequest];
+    } else if (cardData != nil && cardData.event == EVENT_MSR_TIMEOUT) {
+        [self deviceMessage:TIMEOUT_ERROR_RESPONSE];
     } else {
         [self deviceMessage:GENERIC_CARD_READ_ERROR_RESPONSE];
     }
@@ -156,6 +158,8 @@ static NSString *const FAILED_TO_READ_CARD_ERROR_RESPONSE = @"Failed to read car
     if (cardData != nil && cardData.event == EVENT_MSR_CARD_DATA && (cardData.track2 != nil || cardData.encTrack2 != nil)) {
         ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequestFallbackSwipe:cardData];
         [self createTransactionToken:clearentTransactionTokenRequest];
+    } else if (cardData != nil && cardData.event == EVENT_MSR_TIMEOUT) {
+        [self deviceMessage:TIMEOUT_ERROR_RESPONSE];
     } else {
         [self deviceMessage:GENERIC_CARD_READ_ERROR_RESPONSE];
     }
