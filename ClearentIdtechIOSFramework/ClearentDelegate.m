@@ -21,7 +21,7 @@ static NSString *const KERNEL_VERSION_EMV_TAG = @"DF79";
 static NSString *const GENERIC_CARD_READ_ERROR_RESPONSE = @"Card read error";
 static NSString *const CARD_OFFLINE_DECLINED = @"Card declined";
 static NSString *const FALLBACK_TO_SWIPE_REQUEST = @"FALLBACK_TO_SWIPE_REQUEST";
-static NSString *const TIMEOUT_ERROR_RESPONSE = @"TIMEOUT";
+static NSString *const TIMEOUT_ERROR_RESPONSE = @"TIME OUT";
 static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Transaction Token Failed";
 static NSString *const FAILED_TO_READ_CARD_ERROR_RESPONSE = @"Failed to read card";
 
