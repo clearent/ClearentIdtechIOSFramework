@@ -8,6 +8,10 @@
 
 #import "ClearentConfigurator.h"
 
+static NSString *const NSUSERDEFAULT_DEVICESERIALNUMBER = @"DeviceSerialNumber";
+static NSString *const NSUSERDEFAULT_READERCONFIGURED = @"ReaderConfigured";
+static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready";
+
 @implementation ClearentConfigurator
 
 - (instancetype) init: (NSString*)clearentBaseUrl publicKey:(NSString*)publicKey callbackObject:(id)callbackObject withSelector:(SEL)selector sharedController:(IDT_VP3300*) sharedController {
@@ -25,7 +29,7 @@
 
 -(void) configure: (NSString*)kernelVersion  deviceSerialNumber:(NSString*) deviceSerialNumber {
     if(self.isConfigured) {
-        [self notify:@"Device configured and ready"];
+        [self notify:READER_CONFIGURED_MESSAGE];
         return;
     }
     if(deviceSerialNumber  == nil) {
@@ -36,6 +40,16 @@
         [self notify:@"Configuration url is required for device configuration"];
         return;
     }
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *storedDeviceSerialNumber = [defaults objectForKey:NSUSERDEFAULT_DEVICESERIALNUMBER];
+    NSString *readerConfiguredFlag = [defaults objectForKey:NSUSERDEFAULT_READERCONFIGURED];
+    if(readerConfiguredFlag != nil && [readerConfiguredFlag isEqualToString:@"true"]) {
+        if(storedDeviceSerialNumber != nil && [storedDeviceSerialNumber isEqualToString:deviceSerialNumber]) {
+            [self notify:READER_CONFIGURED_MESSAGE];
+            return;
+        }
+    }
+    
     [self initClock];
 
     ClearentConfigFetcher *clearentConfigFetcher = [[ClearentConfigFetcher alloc] init:[NSURLSession sharedSession] baseUrl:self.baseUrl deviceSerialNumber:deviceSerialNumber kernelVersion:kernelVersion publicKey:self.publicKey];

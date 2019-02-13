@@ -48,5 +48,4 @@
 
 - (void) bypassData:(NSData*)data;//!<When bypass output is enabled, all data intended for the current device will be sent here .
 //!< @param data The data intended for the device
-
 @end

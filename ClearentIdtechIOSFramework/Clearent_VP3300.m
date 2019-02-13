@@ -334,6 +334,10 @@
     return [[IDT_VP3300 sharedController] processBypassResponse:data];
 }
 
+- (void) clearConfigurationCache {
+    [self.clearentDelegate clearConfigurationCache];
+}
+
 @end
 
 

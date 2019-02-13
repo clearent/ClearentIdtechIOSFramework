@@ -35,6 +35,11 @@ typedef enum {SWIPE=90} supportedNonEmvEntryMode;
     - (ClearentTransactionTokenRequest*) createClearentTransactionToken:(BOOL)emv encrypted:(BOOL)encrypted track2Data:(NSString*) track2Data;
     - (void) startFallbackSwipe;
 
+/**
+ The reader has an emv configuration applied each time connects. After a successful configuration the device serial number and a flag denoting the reader was configured is stored using NSUserDefaults. If there is a need to clear out this information, maybe to support a configuration change/future updates, call this method to clear out the cache.
+ */
+- (void) clearConfigurationCache;
+
 @end
 
 

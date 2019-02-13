@@ -25,6 +25,10 @@ static NSString *const TIMEOUT_ERROR_RESPONSE = @"TIME OUT";
 static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Transaction Token Failed";
 static NSString *const FAILED_TO_READ_CARD_ERROR_RESPONSE = @"Failed to read card";
 
+static NSString *const NSUSERDEFAULT_DEVICESERIALNUMBER = @"DeviceSerialNumber";
+static NSString *const NSUSERDEFAULT_READERCONFIGURED = @"ReaderConfigured";
+static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready";
+
 @implementation ClearentDelegate
 
 - (instancetype) init : (id <Clearent_Public_IDTech_VP3300_Delegate>) publicDelegate clearentBaseUrl:(NSString*)clearentBaseUrl publicKey:(NSString*)publicKey  {
@@ -103,7 +107,13 @@ static NSString *const FAILED_TO_READ_CARD_ERROR_RESPONSE = @"Failed to read car
     NSString *result;
     RETURN_CODE rt = [[IDT_VP3300 sharedController] config_getSerialNumber:&result];
     if (RETURN_CODE_DO_SUCCESS == rt) {
-        return result;
+        NSString *firstTenOfDeviceSerialNumber = nil;
+        if (result != nil && [result length] >= 10) {
+            firstTenOfDeviceSerialNumber = [result substringToIndex:10];
+        } else {
+            firstTenOfDeviceSerialNumber = result;
+        }
+        return firstTenOfDeviceSerialNumber;
     } else{
         return @"Device Serial number not found";
     }
@@ -114,7 +124,15 @@ static NSString *const FAILED_TO_READ_CARD_ERROR_RESPONSE = @"Failed to read car
 }
 
 - (void) deviceMessage:(NSString*)message {
-    if(message != nil && [message isEqualToString:@"Reader configured and ready"]) {
+    if(message != nil && [message isEqualToString:READER_CONFIGURED_MESSAGE]) {
+        NSString *firstTenOfDeviceSerialNumber = nil;
+        if (self.deviceSerialNumber != nil && [self.deviceSerialNumber length] >= 10) {
+            firstTenOfDeviceSerialNumber = [self.deviceSerialNumber substringToIndex:10];
+        } else {
+            firstTenOfDeviceSerialNumber = self.deviceSerialNumber;
+        }
+        [self updateConfigurationCache:firstTenOfDeviceSerialNumber readerConfiguredFlag:@"true"];
+    
         [self.publicDelegate isReady];
         return;
     }
@@ -494,6 +512,17 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     } else {
         [self deviceMessage:GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];    
     }
+}
+
+- (void) updateConfigurationCache:(NSString *) deviceSerialNumber readerConfiguredFlag:(NSString *) readerConfiguredFlag {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:deviceSerialNumber forKey:NSUSERDEFAULT_DEVICESERIALNUMBER];
+    [defaults setObject:readerConfiguredFlag forKey:NSUSERDEFAULT_READERCONFIGURED];
+    [defaults synchronize];
+}
+
+- (void) clearConfigurationCache {
+     [self updateConfigurationCache:nil readerConfiguredFlag:nil];
 }
 
 @end
