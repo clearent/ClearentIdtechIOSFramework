@@ -19,6 +19,8 @@ static NSString *const TAC_ONLINE = @"DF15";
 static NSString *const DEVICE_SERIAL_NUMBER_EMV_TAG = @"DF78";
 static NSString *const KERNEL_VERSION_EMV_TAG = @"DF79";
 static NSString *const GENERIC_CARD_READ_ERROR_RESPONSE = @"Card read error";
+static NSString *const USE_CHIP_READER = @"USE CHIP READER";
+static NSString *const CONTACTLESS_UNSUPPORTED = @"CONTACTLESS UNSUPPORTED";
 static NSString *const CARD_OFFLINE_DECLINED = @"Card declined";
 static NSString *const FALLBACK_TO_SWIPE_REQUEST = @"FALLBACK_TO_SWIPE_REQUEST";
 static NSString *const TIMEOUT_ERROR_RESPONSE = @"TIME OUT";
@@ -149,6 +151,12 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
 
 - (void) swipeMSRData:(IDTMSRData*)cardData{
     if (cardData != nil && cardData.event == EVENT_MSR_CARD_DATA && (cardData.track2 != nil || cardData.encTrack2 != nil)) {
+        //TODO wait for response from idtech. We might need to account for the first time swipe of chip reader not working
+        //consistently between the emv_startTransaction and the device_startTransaction
+        if(cardData.iccPresent) {
+            [self deviceMessage:USE_CHIP_READER];
+            return;
+        }
         ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequestForASwipe:cardData];
         [self createTransactionToken:clearentTransactionTokenRequest];
     } else if (cardData != nil && cardData.event == EVENT_MSR_TIMEOUT) {
@@ -263,7 +271,8 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
     }
 
     if (emvData.cardType == 1) {
-        NSLog(@"CONTACTLESS");
+        [self deviceMessage:CONTACTLESS_UNSUPPORTED];
+        return;
     }
 
     int entryMode = 0;
