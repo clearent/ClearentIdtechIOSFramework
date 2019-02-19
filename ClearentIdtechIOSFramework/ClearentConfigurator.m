@@ -28,10 +28,6 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
 }
 
 -(void) configure: (NSString*)kernelVersion  deviceSerialNumber:(NSString*) deviceSerialNumber {
-    if(self.isConfigured) {
-        [self notify:READER_CONFIGURED_MESSAGE];
-        return;
-    }
     if(deviceSerialNumber  == nil) {
         [self notify:@"Connect device"];
         return;
