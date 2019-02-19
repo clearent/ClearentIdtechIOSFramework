@@ -150,9 +150,8 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
 }
 
 - (void) swipeMSRData:(IDTMSRData*)cardData{
+
     if (cardData != nil && cardData.event == EVENT_MSR_CARD_DATA && (cardData.track2 != nil || cardData.encTrack2 != nil)) {
-        //TODO wait for response from idtech. We might need to account for the first time swipe of chip reader not working
-        //consistently between the emv_startTransaction and the device_startTransaction
         if(cardData.iccPresent) {
             [self deviceMessage:USE_CHIP_READER];
             return;
