@@ -7,5 +7,5 @@
 //
 #import "ClearentIdtechIOSFramework/Clearent_VP3300.h"
 #import "ClearentIdtechIOSFramework/ClearentManualEntry.h"
-#import "IDTech/IDTech.h"
+#import <IDTech/IDTech.h>
 

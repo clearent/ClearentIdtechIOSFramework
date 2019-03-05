@@ -7,7 +7,7 @@
 //.
 
 #import "ClearentDelegate.h"
-#import "IDTech/IDT_VP3300.h"
+#import <IDTech/IDT_VP3300.h>
 
 static NSString *const TRACK2_DATA_EMV_TAG = @"57";
 static NSString *const TRACK1_DATA_EMV_TAG = @"56";

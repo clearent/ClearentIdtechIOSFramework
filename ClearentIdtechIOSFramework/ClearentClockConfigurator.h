@@ -7,8 +7,8 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "IDTech/IDT_VP3300.h"
-#import "IDTech/IDTUtility.h"
+#import <IDTech/IDT_VP3300.h>
+#import <IDTech/IDTUtility.h>
 
 typedef enum{
     CLOCK_CONFIGURATION_SUCCESS,
