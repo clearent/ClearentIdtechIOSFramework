@@ -7,10 +7,14 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "ClearentClockConfigurator.h"
 #import "ClearentEmvConfigurator.h"
 #import "ClearentConfiguration.h"
 #import "ClearentConfigFetcher.h"
+
+typedef enum{
+    CLOCK_CONFIGURATION_SUCCESS,
+    CLOCK_FAILED,
+}CLOCK_CONFIGURATION_ERROR_CODE;
 
 @interface ClearentConfigurator : NSObject
 
@@ -29,5 +33,6 @@
     - (void) configure: (NSString*)kernelVersion deviceSerialNumber:(NSString*) deviceSerialNumber;
     - (void) configure: (NSDictionary*) jsonConfiguration;
     - (void) notify:(NSString*)message;
-
+    - (NSData*) getClockDateAsYYYYMMDD;
+    - (NSData*) getClockTimeAsHHMM;
 @end

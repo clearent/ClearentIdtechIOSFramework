@@ -30,10 +30,8 @@
 		E7467556209F0A8E00BC8504 /* IDTEMVData.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467544209F0A8D00BC8504 /* IDTEMVData.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E7467557209F0A8E00BC8504 /* IDT_Device.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467545209F0A8D00BC8504 /* IDT_Device.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E7594C1720A2609900E5995B /* ClearentIdtechIOSFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = E7D95F68209B96B4001C5871 /* ClearentIdtechIOSFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E75A5BE920DD1CD80035B911 /* ClearentClockConfigurator.m in Sources */ = {isa = PBXBuildFile; fileRef = E75A5BE820DD1CD80035B911 /* ClearentClockConfigurator.m */; };
 		E75A5BEC20DD20580035B911 /* ClearentEmvConfigurator.m in Sources */ = {isa = PBXBuildFile; fileRef = E75A5BEB20DD20580035B911 /* ClearentEmvConfigurator.m */; };
 		E75A5BEF20DD21BF0035B911 /* ClearentEmvConfigurator.h in Headers */ = {isa = PBXBuildFile; fileRef = E75A5BEA20DD1FF60035B911 /* ClearentEmvConfigurator.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E75A5BF020DD21C90035B911 /* ClearentClockConfigurator.h in Headers */ = {isa = PBXBuildFile; fileRef = E75A5BE720DD1CCC0035B911 /* ClearentClockConfigurator.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E75A5BF120DD21FE0035B911 /* ClearentPublicVP3300Delegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E75A5BEE20DD21800035B911 /* ClearentPublicVP3300Delegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E76505141FFC312500B345F6 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76505131FFC312500B345F6 /* ExternalAccessory.framework */; };
 		E76505161FFC313200B345F6 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76505151FFC313200B345F6 /* MediaPlayer.framework */; };
@@ -63,7 +61,6 @@
 		E7CA496A20E3CF7C0090CFFC /* ClearentConfiguration.json in Resources */ = {isa = PBXBuildFile; fileRef = E7CA496920E3CF7C0090CFFC /* ClearentConfiguration.json */; };
 		E7CA496C20E504720090CFFC /* ClearentConfigNoContactAids.json in Resources */ = {isa = PBXBuildFile; fileRef = E7CA496B20E504720090CFFC /* ClearentConfigNoContactAids.json */; };
 		E7CA496E20E505380090CFFC /* ClearentConfigNoPublicKeys.json in Resources */ = {isa = PBXBuildFile; fileRef = E7CA496D20E505380090CFFC /* ClearentConfigNoPublicKeys.json */; };
-		E7CA497020E5076D0090CFFC /* ClearentClockConfigurator_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CA496F20E5076D0090CFFC /* ClearentClockConfigurator_Tests.m */; };
 		E7CA497520E579190090CFFC /* ClearentConfigFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CA497420E579190090CFFC /* ClearentConfigFetcher.m */; };
 		E7CA497620E58C910090CFFC /* ClearentConfigFetcher.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA497320E578BC0090CFFC /* ClearentConfigFetcher.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E7D95F6C209B9F73001C5871 /* IDTech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7D95F6B209B9F73001C5871 /* IDTech.framework */; settings = {ATTRIBUTES = (Required, ); }; };
@@ -111,8 +108,6 @@
 		E7467543209F0A8D00BC8504 /* IDTech.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDTech.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/IDTech.h; sourceTree = "<group>"; };
 		E7467544209F0A8D00BC8504 /* IDTEMVData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDTEMVData.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/IDTEMVData.h; sourceTree = "<group>"; };
 		E7467545209F0A8D00BC8504 /* IDT_Device.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDT_Device.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/IDT_Device.h; sourceTree = "<group>"; };
-		E75A5BE720DD1CCC0035B911 /* ClearentClockConfigurator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentClockConfigurator.h; sourceTree = "<group>"; };
-		E75A5BE820DD1CD80035B911 /* ClearentClockConfigurator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentClockConfigurator.m; sourceTree = "<group>"; };
 		E75A5BEA20DD1FF60035B911 /* ClearentEmvConfigurator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentEmvConfigurator.h; sourceTree = "<group>"; };
 		E75A5BEB20DD20580035B911 /* ClearentEmvConfigurator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentEmvConfigurator.m; sourceTree = "<group>"; };
 		E75A5BEE20DD21800035B911 /* ClearentPublicVP3300Delegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentPublicVP3300Delegate.h; sourceTree = "<group>"; };
@@ -150,7 +145,6 @@
 		E7CA496920E3CF7C0090CFFC /* ClearentConfiguration.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ClearentConfiguration.json; sourceTree = "<group>"; };
 		E7CA496B20E504720090CFFC /* ClearentConfigNoContactAids.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ClearentConfigNoContactAids.json; sourceTree = "<group>"; };
 		E7CA496D20E505380090CFFC /* ClearentConfigNoPublicKeys.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ClearentConfigNoPublicKeys.json; sourceTree = "<group>"; };
-		E7CA496F20E5076D0090CFFC /* ClearentClockConfigurator_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentClockConfigurator_Tests.m; sourceTree = "<group>"; };
 		E7CA497320E578BC0090CFFC /* ClearentConfigFetcher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentConfigFetcher.h; sourceTree = "<group>"; };
 		E7CA497420E579190090CFFC /* ClearentConfigFetcher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentConfigFetcher.m; sourceTree = "<group>"; };
 		E7D95F68209B96B4001C5871 /* ClearentIdtechIOSFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentIdtechIOSFramework.h; sourceTree = "<group>"; };
@@ -273,8 +267,6 @@
 				E737D9D820A05F1B00760CB8 /* ClearentDevice.h */,
 				E79BC82320B365F80030FD8C /* Clearent_VP3300.h */,
 				E79BC82420B366300030FD8C /* Clearent_VP3300.m */,
-				E75A5BE720DD1CCC0035B911 /* ClearentClockConfigurator.h */,
-				E75A5BE820DD1CD80035B911 /* ClearentClockConfigurator.m */,
 				E75A5BEA20DD1FF60035B911 /* ClearentEmvConfigurator.h */,
 				E75A5BEB20DD20580035B911 /* ClearentEmvConfigurator.m */,
 				E75A5BEE20DD21800035B911 /* ClearentPublicVP3300Delegate.h */,
@@ -324,7 +316,6 @@
 				E7CA496920E3CF7C0090CFFC /* ClearentConfiguration.json */,
 				E7CA496B20E504720090CFFC /* ClearentConfigNoContactAids.json */,
 				E7CA496D20E505380090CFFC /* ClearentConfigNoPublicKeys.json */,
-				E7CA496F20E5076D0090CFFC /* ClearentClockConfigurator_Tests.m */,
 				E728DB1D20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m */,
 			);
 			path = "ClearentIdtechIOSFramework-Tests";
@@ -356,7 +347,6 @@
 				E7467555209F0A8E00BC8504 /* IDTech.h in Headers */,
 				E79BC82220B365900030FD8C /* IDT_VP3300.h in Headers */,
 				E7467556209F0A8E00BC8504 /* IDTEMVData.h in Headers */,
-				E75A5BF020DD21C90035B911 /* ClearentClockConfigurator.h in Headers */,
 				E75A5BF120DD21FE0035B911 /* ClearentPublicVP3300Delegate.h in Headers */,
 				E7C54CD420A08755002CC355 /* ClearentDevice.h in Headers */,
 				E7CA494720E192510090CFFC /* ClearentConfigurator.h in Headers */,
@@ -478,7 +468,6 @@
 				E7CA494220E171960090CFFC /* ClearentConfiguration.m in Sources */,
 				E79BC82520B366300030FD8C /* Clearent_VP3300.m in Sources */,
 				E75A5BEC20DD20580035B911 /* ClearentEmvConfigurator.m in Sources */,
-				E75A5BE920DD1CD80035B911 /* ClearentClockConfigurator.m in Sources */,
 				E7CA494520E1753D0090CFFC /* ClearentConfigurator.m in Sources */,
 				E77C90482000442200C3E590 /* ClearentTransactionTokenRequest.m in Sources */,
 				E79A4D94204F14B000E4BBF6 /* ClearentDelegate.m in Sources */,
@@ -492,7 +481,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E7CA497020E5076D0090CFFC /* ClearentClockConfigurator_Tests.m in Sources */,
 				E7CA495F20E3C2460090CFFC /* ClearentConfiguration_Tests.m in Sources */,
 				E7CA495620E3C2230090CFFC /* ClearentIdtechIOSFramework_Tests.m in Sources */,
 				E728DB1E20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m in Sources */,

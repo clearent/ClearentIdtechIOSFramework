@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ClearentEmvConfigurator.h"
-
+#import <IDTech/IDTUtility.h>
 static NSString *const EMV_DIP_ENTRY_MODE_TAG = @"05";
 static NSString *const IDTECH_EMV_ENTRY_MODE_EMV_TAG = @"DFEE17";
 static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm internet access and try reconnecting. If this does not work contact support.";

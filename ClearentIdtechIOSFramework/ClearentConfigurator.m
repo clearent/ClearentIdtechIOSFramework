@@ -7,7 +7,7 @@
 //
 
 #import "ClearentConfigurator.h"
-
+#import <IDTech/IDTUtility.h>
 static NSString *const NSUSERDEFAULT_DEVICESERIALNUMBER = @"DeviceSerialNumber";
 static NSString *const NSUSERDEFAULT_READERCONFIGURED = @"ReaderConfigured";
 static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready";
@@ -70,8 +70,7 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
 }
 
 -(void) initClock{
-    ClearentClockConfigurator *clearentClockConfigurator = [[ClearentClockConfigurator alloc] initWithIdtechSharedController:_sharedController];
-    int clockRt = [clearentClockConfigurator initClock];
+    int clockRt = [self initDateAndTime];
     if(clockRt != CLOCK_CONFIGURATION_SUCCESS) {
        [self notify:@"Failed to configure device clock"];
     }
@@ -81,4 +80,40 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
     [self.callbackObject performSelector:self.selector withObject:message];
 }
 
+- (int) initDateAndTime {
+    RETURN_CODE dateRt = [self initClockDate];
+    RETURN_CODE timeRt = [self initClockTime];
+    if (RETURN_CODE_DO_SUCCESS == dateRt && RETURN_CODE_DO_SUCCESS == timeRt) {
+        NSLog(@"Clock Initialized");
+    } else {
+        return CLOCK_FAILED;
+    }
+    return CLOCK_CONFIGURATION_SUCCESS;
+}
+
+- (int) initClockDate {
+    NSData *clockDate = [self getClockDateAsYYYYMMDD];
+    NSData *result;
+    return [_sharedController device_sendIDGCommand:0x25 subCommand:0x03 data:clockDate response:&result];
+}
+
+- (NSData*) getClockDateAsYYYYMMDD {
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    dateFormatter.dateFormat = @"yyyyMMdd";
+    NSString *dateString = [dateFormatter stringFromDate:[NSDate date]];
+    return [IDTUtility hexToData:dateString];
+}
+
+- (int) initClockTime {
+    NSData *timeDate = [self getClockTimeAsHHMM];
+    NSData *result;
+    return [_sharedController device_sendIDGCommand:0x25 subCommand:0x01 data:timeDate response:&result];
+}
+
+- (NSData*) getClockTimeAsHHMM {
+    NSDateFormatter *timeFormatter = [[NSDateFormatter alloc] init];
+    timeFormatter.dateFormat = @"HHMM";
+    NSString *timeString = [timeFormatter stringFromDate:[NSDate date]];
+    return [IDTUtility hexToData:timeString];
+}
 @end
