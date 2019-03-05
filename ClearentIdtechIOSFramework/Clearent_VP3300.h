@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import <MessageUI/MessageUI.h>
-#import <IDTech/IDTech.h>
 #import <AVFoundation/AVFoundation.h>
 #import "ClearentDelegate.h"
 #import "ClearentPublicVP3300Delegate.h"
