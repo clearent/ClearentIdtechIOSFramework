@@ -47,6 +47,7 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
     }
     
     [self initClock];
+    [self increaseStandByTime];
 
     ClearentConfigFetcher *clearentConfigFetcher = [[ClearentConfigFetcher alloc] init:[NSURLSession sharedSession] baseUrl:self.baseUrl deviceSerialNumber:deviceSerialNumber kernelVersion:kernelVersion publicKey:self.publicKey];
     
@@ -116,4 +117,15 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
     NSString *timeString = [timeFormatter stringFromDate:[NSDate date]];
     return [IDTUtility hexToData:timeString];
 }
+    
+-(void) increaseStandByTime{
+    NSData* response;
+    RETURN_CODE increaseStandByTimeRt = [[IDT_VP3300 sharedController] device_sendIDGCommand:0xF0 subCommand:0x00 data:[IDTUtility hexToData:@"053C"] response:&response];
+    if(RETURN_CODE_DO_SUCCESS != increaseStandByTimeRt) {
+        [self notify:@"Failed to increase stand by time to 60 seconds"];
+    } else {
+        NSLog(@"Stand by time increased to 60 seconds");
+    }
+}
+    
 @end
