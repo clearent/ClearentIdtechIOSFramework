@@ -41,6 +41,7 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
         self.publicKey = publicKey;
         SEL configurationCallbackSelector = @selector(deviceMessage:);
         self.clearentConfigurator = [[ClearentConfigurator alloc] init:self.baseUrl publicKey:self.publicKey callbackObject:self withSelector:configurationCallbackSelector sharedController:[IDT_VP3300 sharedController]];
+        self.autoConfiguration = true;
     }
     return self;
 }
@@ -81,8 +82,12 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
     self.deviceSerialNumber = [self getDeviceSerialNumber];
     self.kernelVersion = [self getKernelVersion];
     [self.publicDelegate deviceConnected];
-    [self deviceMessage:@"Device connected. Waiting for configuration to complete..."];
-    [self.clearentConfigurator configure:self.kernelVersion deviceSerialNumber:self.deviceSerialNumber];
+    if(self.autoConfiguration) {
+        [self deviceMessage:@"Device connected. Waiting for configuration to complete..."];
+        [self.clearentConfigurator configure:self.kernelVersion deviceSerialNumber:self.deviceSerialNumber];
+    } else {
+        [self deviceMessage:@"Device connected. Skipping auto configuration."];
+    }
 }
 
 - (NSString *) getFirmwareVersion {
@@ -532,6 +537,8 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
 - (void) clearConfigurationCache {
      [self updateConfigurationCache:nil readerConfiguredFlag:nil];
 }
+
+
 
 @end
 

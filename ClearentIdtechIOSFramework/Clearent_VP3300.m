@@ -338,6 +338,10 @@
     [self.clearentDelegate clearConfigurationCache];
 }
 
+- (void) setAutoConfiguration:(BOOL)enable {
+    [self.clearentDelegate setAutoConfiguration:enable];
+}
+
 @end
 
 

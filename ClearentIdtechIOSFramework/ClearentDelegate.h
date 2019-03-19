@@ -22,6 +22,7 @@ typedef enum {SWIPE=90} supportedNonEmvEntryMode;
     @property(nonatomic) NSString *kernelVersion;
     @property(nonatomic) NSString *baseUrl;
     @property(nonatomic) NSString *publicKey;
+    @property(nonatomic) BOOL autoConfiguration;
     @property(nonatomic) id<Clearent_Public_IDTech_VP3300_Delegate> publicDelegate;
     @property(nonatomic) ClearentConfigurator *clearentConfigurator;
 

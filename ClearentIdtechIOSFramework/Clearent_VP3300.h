@@ -1440,6 +1440,11 @@
  */
 - (void) clearConfigurationCache;
 
+/**
+ Enable/disable Clearent's configuration.
+ */
+- (void) setAutoConfiguration:(BOOL)enable;
+
 @end
 
 
