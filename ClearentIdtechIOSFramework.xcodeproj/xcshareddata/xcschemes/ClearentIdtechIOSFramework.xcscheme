@@ -42,7 +42,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E74B45B920BDA130001C02C0"
+               BlueprintIdentifier = "E7CA495220E3C2230090CFFC"
                BuildableName = "ClearentIdtechIOSFramework-Tests.xctest"
                BlueprintName = "ClearentIdtechIOSFramework-Tests"
                ReferencedContainer = "container:ClearentIdtechIOSFramework.xcodeproj">

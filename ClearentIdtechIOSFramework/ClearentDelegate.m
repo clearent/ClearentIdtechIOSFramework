@@ -7,8 +7,8 @@
 //.
 
 #import "ClearentDelegate.h"
-#import <IDTech/IDT_VP3300.h>
-#import <IDTech/IDTUtility.h>
+#import "ClearentConfigurator.h"
+#import "IDTech/IDTUtility.h"
 static NSString *const TRACK2_DATA_EMV_TAG = @"57";
 static NSString *const TRACK1_DATA_EMV_TAG = @"56";
 static NSString *const TRACK2_DATA_CONTACTLESS_NON_CHIP_TAG = @"9F6B";
@@ -33,6 +33,8 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
 
 @implementation ClearentDelegate
 
+  ClearentConfigurator *clearentConfigurator;
+
 - (instancetype) init : (id <Clearent_Public_IDTech_VP3300_Delegate>) publicDelegate clearentBaseUrl:(NSString*)clearentBaseUrl publicKey:(NSString*)publicKey  {
     self = [super init];
     if (self) {
@@ -40,7 +42,7 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
         self.baseUrl = clearentBaseUrl;
         self.publicKey = publicKey;
         SEL configurationCallbackSelector = @selector(deviceMessage:);
-        self.clearentConfigurator = [[ClearentConfigurator alloc] init:self.baseUrl publicKey:self.publicKey callbackObject:self withSelector:configurationCallbackSelector sharedController:[IDT_VP3300 sharedController]];
+        clearentConfigurator = [[ClearentConfigurator alloc] init:self.baseUrl publicKey:self.publicKey callbackObject:self withSelector:configurationCallbackSelector sharedController:[IDT_VP3300 sharedController]];
         self.autoConfiguration = true;
     }
     return self;
@@ -84,7 +86,7 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
     [self.publicDelegate deviceConnected];
     if(self.autoConfiguration) {
         [self deviceMessage:@"Device connected. Waiting for configuration to complete..."];
-        [self.clearentConfigurator configure:self.kernelVersion deviceSerialNumber:self.deviceSerialNumber];
+        [clearentConfigurator configure:self.kernelVersion deviceSerialNumber:self.deviceSerialNumber];
     } else {
         [self deviceMessage:@"Device connected. Skipping auto configuration."];
     }

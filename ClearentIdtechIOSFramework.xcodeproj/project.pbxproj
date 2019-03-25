@@ -13,25 +13,9 @@
 		E721ECEA21F74B560064163F /* ClearentCard.h in Headers */ = {isa = PBXBuildFile; fileRef = E7B89E2B21F6A38200078C73 /* ClearentCard.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E728DB1E20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E728DB1D20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m */; };
 		E728DB4C20E687A6004C01E7 /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E728DB4B20E687A6004C01E7 /* libOCMock.a */; };
-		E7467546209F0A8E00BC8504 /* uniMag.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467534209F0A8C00BC8504 /* uniMag.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E7467547209F0A8E00BC8504 /* IDT_BTMag.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467535209F0A8C00BC8504 /* IDT_BTMag.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E7467548209F0A8E00BC8504 /* UniPay.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467536209F0A8C00BC8504 /* UniPay.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E7467549209F0A8E00BC8504 /* IDT_BTPay.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467537209F0A8C00BC8504 /* IDT_BTPay.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E746754A209F0A8E00BC8504 /* IDT_UniPayI_V.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467538209F0A8C00BC8504 /* IDT_UniPayI_V.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E746754B209F0A8E00BC8504 /* APDUData.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467539209F0A8C00BC8504 /* APDUData.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E746754C209F0A8E00BC8504 /* APDUResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = E746753A209F0A8C00BC8504 /* APDUResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E746754E209F0A8E00BC8504 /* IDTMSRData.h in Headers */ = {isa = PBXBuildFile; fileRef = E746753C209F0A8D00BC8504 /* IDTMSRData.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E746754F209F0A8E00BC8504 /* IDT_UniPay.h in Headers */ = {isa = PBXBuildFile; fileRef = E746753D209F0A8D00BC8504 /* IDT_UniPay.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E7467550209F0A8E00BC8504 /* IDT_UniMag.h in Headers */ = {isa = PBXBuildFile; fileRef = E746753E209F0A8D00BC8504 /* IDT_UniMag.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E7467551209F0A8E00BC8504 /* IDTCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = E746753F209F0A8D00BC8504 /* IDTCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E7467553209F0A8E00BC8504 /* IDTUtility.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467541209F0A8D00BC8504 /* IDTUtility.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E7467554209F0A8E00BC8504 /* IDT_iMag.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467542209F0A8D00BC8504 /* IDT_iMag.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E7467555209F0A8E00BC8504 /* IDTech.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467543209F0A8D00BC8504 /* IDTech.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E7467556209F0A8E00BC8504 /* IDTEMVData.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467544209F0A8D00BC8504 /* IDTEMVData.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E7467557209F0A8E00BC8504 /* IDT_Device.h in Headers */ = {isa = PBXBuildFile; fileRef = E7467545209F0A8D00BC8504 /* IDT_Device.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E7594C1720A2609900E5995B /* ClearentIdtechIOSFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = E7D95F68209B96B4001C5871 /* ClearentIdtechIOSFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E75A5BEC20DD20580035B911 /* ClearentEmvConfigurator.m in Sources */ = {isa = PBXBuildFile; fileRef = E75A5BEB20DD20580035B911 /* ClearentEmvConfigurator.m */; };
-		E75A5BEF20DD21BF0035B911 /* ClearentEmvConfigurator.h in Headers */ = {isa = PBXBuildFile; fileRef = E75A5BEA20DD1FF60035B911 /* ClearentEmvConfigurator.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E75A5BEF20DD21BF0035B911 /* ClearentEmvConfigurator.h in Headers */ = {isa = PBXBuildFile; fileRef = E75A5BEA20DD1FF60035B911 /* ClearentEmvConfigurator.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		E75A5BF120DD21FE0035B911 /* ClearentPublicVP3300Delegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E75A5BEE20DD21800035B911 /* ClearentPublicVP3300Delegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E76505141FFC312500B345F6 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76505131FFC312500B345F6 /* ExternalAccessory.framework */; };
 		E76505161FFC313200B345F6 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76505151FFC313200B345F6 /* MediaPlayer.framework */; };
@@ -39,19 +23,35 @@
 		E765051A1FFC314300B345F6 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76505191FFC314300B345F6 /* AudioToolbox.framework */; };
 		E765051C1FFC314D00B345F6 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E765051B1FFC314D00B345F6 /* CFNetwork.framework */; };
 		E77687472062B66300284FF4 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = E77687462062B66300284FF4 /* .gitignore */; };
-		E77C900F1FFFE38100C3E590 /* ClearentDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E77C900D1FFFE38100C3E590 /* ClearentDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E77C90472000442200C3E590 /* ClearentTransactionTokenRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = E77C90452000442200C3E590 /* ClearentTransactionTokenRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E77C900F1FFFE38100C3E590 /* ClearentDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E77C900D1FFFE38100C3E590 /* ClearentDelegate.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		E77C90472000442200C3E590 /* ClearentTransactionTokenRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = E77C90452000442200C3E590 /* ClearentTransactionTokenRequest.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		E77C90482000442200C3E590 /* ClearentTransactionTokenRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = E77C90462000442200C3E590 /* ClearentTransactionTokenRequest.m */; };
+		E77DE80E2247ADA900C8AB02 /* Clearent_VP3300.h in Headers */ = {isa = PBXBuildFile; fileRef = E79BC82320B365F80030FD8C /* Clearent_VP3300.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E77DE8322247CB8500C8AB02 /* IDTech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7D95F6B209B9F73001C5871 /* IDTech.framework */; };
+		E77DE8352248148000C8AB02 /* APDUData.h in Headers */ = {isa = PBXBuildFile; fileRef = E77DE8342248148000C8AB02 /* APDUData.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E77DE8372248148700C8AB02 /* APDUResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = E77DE8362248148700C8AB02 /* APDUResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E77DE8392248148B00C8AB02 /* IDT_BTMag.h in Headers */ = {isa = PBXBuildFile; fileRef = E77DE8382248148B00C8AB02 /* IDT_BTMag.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E77DE83B2248148F00C8AB02 /* IDT_BTPay.h in Headers */ = {isa = PBXBuildFile; fileRef = E77DE83A2248148E00C8AB02 /* IDT_BTPay.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E77DE83D2248149400C8AB02 /* IDT_Device.h in Headers */ = {isa = PBXBuildFile; fileRef = E77DE83C2248149300C8AB02 /* IDT_Device.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E77DE83F224814B200C8AB02 /* IDT_iMag.h in Headers */ = {isa = PBXBuildFile; fileRef = E77DE83E224814B200C8AB02 /* IDT_iMag.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E77DE841224814B800C8AB02 /* IDT_UniMag.h in Headers */ = {isa = PBXBuildFile; fileRef = E77DE840224814B800C8AB02 /* IDT_UniMag.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E77DE844224814C000C8AB02 /* IDT_UniPay.h in Headers */ = {isa = PBXBuildFile; fileRef = E77DE843224814BF00C8AB02 /* IDT_UniPay.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E77DE846224814C500C8AB02 /* IDT_UniPayI_V.h in Headers */ = {isa = PBXBuildFile; fileRef = E77DE845224814C500C8AB02 /* IDT_UniPayI_V.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E77DE848224814C900C8AB02 /* IDT_VP3300.h in Headers */ = {isa = PBXBuildFile; fileRef = E77DE847224814C900C8AB02 /* IDT_VP3300.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E77DE84A224814CD00C8AB02 /* IDTCommon.h in Headers */ = {isa = PBXBuildFile; fileRef = E77DE849224814CD00C8AB02 /* IDTCommon.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E77DE84E224814EF00C8AB02 /* IDTEMVData.h in Headers */ = {isa = PBXBuildFile; fileRef = E77DE84D224814EE00C8AB02 /* IDTEMVData.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E77DE851224814F800C8AB02 /* IDTMSRData.h in Headers */ = {isa = PBXBuildFile; fileRef = E77DE850224814F700C8AB02 /* IDTMSRData.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E77DE853224814FD00C8AB02 /* IDTUtility.h in Headers */ = {isa = PBXBuildFile; fileRef = E77DE852224814FC00C8AB02 /* IDTUtility.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E77DE8552248150000C8AB02 /* uniMag.h in Headers */ = {isa = PBXBuildFile; fileRef = E77DE8542248150000C8AB02 /* uniMag.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E77DE8572248150400C8AB02 /* UniPay.h in Headers */ = {isa = PBXBuildFile; fileRef = E77DE8562248150400C8AB02 /* UniPay.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E77DE8582248162700C8AB02 /* IDTech.framework in Resources */ = {isa = PBXBuildFile; fileRef = E7D95F6B209B9F73001C5871 /* IDTech.framework */; };
 		E79A4D94204F14B000E4BBF6 /* ClearentDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E79A4D93204F14B000E4BBF6 /* ClearentDelegate.m */; };
-		E79BC82220B365900030FD8C /* IDT_VP3300.h in Headers */ = {isa = PBXBuildFile; fileRef = E79BC82120B3658F0030FD8C /* IDT_VP3300.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E79BC82520B366300030FD8C /* Clearent_VP3300.m in Sources */ = {isa = PBXBuildFile; fileRef = E79BC82420B366300030FD8C /* Clearent_VP3300.m */; };
-		E79BC82720B3676E0030FD8C /* Clearent_VP3300.h in Headers */ = {isa = PBXBuildFile; fileRef = E79BC82620B3676E0030FD8C /* Clearent_VP3300.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E7B89E3121F6A6A400078C73 /* ClearentManualEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = E7B89E3021F6A6A400078C73 /* ClearentManualEntry.m */; };
-		E7C54CD420A08755002CC355 /* ClearentDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = E737D9D820A05F1B00760CB8 /* ClearentDevice.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E7CA494220E171960090CFFC /* ClearentConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CA494120E171960090CFFC /* ClearentConfiguration.m */; };
 		E7CA494520E1753D0090CFFC /* ClearentConfigurator.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CA494420E1753D0090CFFC /* ClearentConfigurator.m */; };
-		E7CA494720E192510090CFFC /* ClearentConfigurator.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA494320E173F00090CFFC /* ClearentConfigurator.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E7CA494B20E27F380090CFFC /* ClearentConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA494020E171830090CFFC /* ClearentConfiguration.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E7CA494720E192510090CFFC /* ClearentConfigurator.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA494320E173F00090CFFC /* ClearentConfigurator.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		E7CA494B20E27F380090CFFC /* ClearentConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA494020E171830090CFFC /* ClearentConfiguration.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		E7CA495620E3C2230090CFFC /* ClearentIdtechIOSFramework_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CA495520E3C2230090CFFC /* ClearentIdtechIOSFramework_Tests.m */; };
 		E7CA495820E3C2230090CFFC /* ClearentIdtechIOSFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76504F41FFC306100B345F6 /* ClearentIdtechIOSFramework.framework */; };
 		E7CA495F20E3C2460090CFFC /* ClearentConfiguration_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CA495E20E3C2460090CFFC /* ClearentConfiguration_Tests.m */; };
@@ -62,8 +62,7 @@
 		E7CA496C20E504720090CFFC /* ClearentConfigNoContactAids.json in Resources */ = {isa = PBXBuildFile; fileRef = E7CA496B20E504720090CFFC /* ClearentConfigNoContactAids.json */; };
 		E7CA496E20E505380090CFFC /* ClearentConfigNoPublicKeys.json in Resources */ = {isa = PBXBuildFile; fileRef = E7CA496D20E505380090CFFC /* ClearentConfigNoPublicKeys.json */; };
 		E7CA497520E579190090CFFC /* ClearentConfigFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CA497420E579190090CFFC /* ClearentConfigFetcher.m */; };
-		E7CA497620E58C910090CFFC /* ClearentConfigFetcher.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA497320E578BC0090CFFC /* ClearentConfigFetcher.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E7D95F6C209B9F73001C5871 /* IDTech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E7D95F6B209B9F73001C5871 /* IDTech.framework */; settings = {ATTRIBUTES = (Required, ); }; };
+		E7CA497620E58C910090CFFC /* ClearentConfigFetcher.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA497320E578BC0090CFFC /* ClearentConfigFetcher.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		E7D95F6E209B9F82001C5871 /* IDTech.bundle in Resources */ = {isa = PBXBuildFile; fileRef = E7D95F6D209B9F82001C5871 /* IDTech.bundle */; };
 /* End PBXBuildFile section */
 
@@ -91,23 +90,6 @@
 		E728DB5520E6888D004C01E7 /* OCMLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMLocation.h; sourceTree = "<group>"; };
 		E728DB5620E6888D004C01E7 /* OCMConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMConstraint.h; sourceTree = "<group>"; };
 		E728DB5720E6888D004C01E7 /* OCMArg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMArg.h; sourceTree = "<group>"; };
-		E737D9D820A05F1B00760CB8 /* ClearentDevice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentDevice.h; sourceTree = "<group>"; };
-		E7467534209F0A8C00BC8504 /* uniMag.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = uniMag.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/uniMag.h; sourceTree = "<group>"; };
-		E7467535209F0A8C00BC8504 /* IDT_BTMag.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDT_BTMag.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/IDT_BTMag.h; sourceTree = "<group>"; };
-		E7467536209F0A8C00BC8504 /* UniPay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UniPay.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/UniPay.h; sourceTree = "<group>"; };
-		E7467537209F0A8C00BC8504 /* IDT_BTPay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDT_BTPay.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/IDT_BTPay.h; sourceTree = "<group>"; };
-		E7467538209F0A8C00BC8504 /* IDT_UniPayI_V.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDT_UniPayI_V.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/IDT_UniPayI_V.h; sourceTree = "<group>"; };
-		E7467539209F0A8C00BC8504 /* APDUData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = APDUData.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/APDUData.h; sourceTree = "<group>"; };
-		E746753A209F0A8C00BC8504 /* APDUResponse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = APDUResponse.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/APDUResponse.h; sourceTree = "<group>"; };
-		E746753C209F0A8D00BC8504 /* IDTMSRData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDTMSRData.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/IDTMSRData.h; sourceTree = "<group>"; };
-		E746753D209F0A8D00BC8504 /* IDT_UniPay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDT_UniPay.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/IDT_UniPay.h; sourceTree = "<group>"; };
-		E746753E209F0A8D00BC8504 /* IDT_UniMag.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDT_UniMag.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/IDT_UniMag.h; sourceTree = "<group>"; };
-		E746753F209F0A8D00BC8504 /* IDTCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDTCommon.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/IDTCommon.h; sourceTree = "<group>"; };
-		E7467541209F0A8D00BC8504 /* IDTUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDTUtility.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/IDTUtility.h; sourceTree = "<group>"; };
-		E7467542209F0A8D00BC8504 /* IDT_iMag.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDT_iMag.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/IDT_iMag.h; sourceTree = "<group>"; };
-		E7467543209F0A8D00BC8504 /* IDTech.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDTech.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/IDTech.h; sourceTree = "<group>"; };
-		E7467544209F0A8D00BC8504 /* IDTEMVData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDTEMVData.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/IDTEMVData.h; sourceTree = "<group>"; };
-		E7467545209F0A8D00BC8504 /* IDT_Device.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDT_Device.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/IDT_Device.h; sourceTree = "<group>"; };
 		E75A5BEA20DD1FF60035B911 /* ClearentEmvConfigurator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentEmvConfigurator.h; sourceTree = "<group>"; };
 		E75A5BEB20DD20580035B911 /* ClearentEmvConfigurator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentEmvConfigurator.m; sourceTree = "<group>"; };
 		E75A5BEE20DD21800035B911 /* ClearentPublicVP3300Delegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentPublicVP3300Delegate.h; sourceTree = "<group>"; };
@@ -124,11 +106,27 @@
 		E77C900D1FFFE38100C3E590 /* ClearentDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentDelegate.h; sourceTree = "<group>"; };
 		E77C90452000442200C3E590 /* ClearentTransactionTokenRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentTransactionTokenRequest.h; sourceTree = "<group>"; };
 		E77C90462000442200C3E590 /* ClearentTransactionTokenRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentTransactionTokenRequest.m; sourceTree = "<group>"; };
+		E77DE8342248148000C8AB02 /* APDUData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = APDUData.h; path = ClearentIdtechIOSFramework/IDTech.framework/Headers/APDUData.h; sourceTree = "<group>"; };
+		E77DE8362248148700C8AB02 /* APDUResponse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = APDUResponse.h; path = ClearentIdtechIOSFramework/IDTech.framework/Headers/APDUResponse.h; sourceTree = "<group>"; };
+		E77DE8382248148B00C8AB02 /* IDT_BTMag.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDT_BTMag.h; path = ClearentIdtechIOSFramework/IDTech.framework/Headers/IDT_BTMag.h; sourceTree = "<group>"; };
+		E77DE83A2248148E00C8AB02 /* IDT_BTPay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDT_BTPay.h; path = ClearentIdtechIOSFramework/IDTech.framework/Headers/IDT_BTPay.h; sourceTree = "<group>"; };
+		E77DE83C2248149300C8AB02 /* IDT_Device.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDT_Device.h; path = ClearentIdtechIOSFramework/IDTech.framework/Headers/IDT_Device.h; sourceTree = "<group>"; };
+		E77DE83E224814B200C8AB02 /* IDT_iMag.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDT_iMag.h; path = ClearentIdtechIOSFramework/IDTech.framework/Headers/IDT_iMag.h; sourceTree = "<group>"; };
+		E77DE840224814B800C8AB02 /* IDT_UniMag.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDT_UniMag.h; path = ClearentIdtechIOSFramework/IDTech.framework/Headers/IDT_UniMag.h; sourceTree = "<group>"; };
+		E77DE842224814BC00C8AB02 /* IDT_UniMag.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDT_UniMag.h; path = ClearentIdtechIOSFramework/IDTech.framework/Headers/IDT_UniMag.h; sourceTree = "<group>"; };
+		E77DE843224814BF00C8AB02 /* IDT_UniPay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDT_UniPay.h; path = ClearentIdtechIOSFramework/IDTech.framework/Headers/IDT_UniPay.h; sourceTree = "<group>"; };
+		E77DE845224814C500C8AB02 /* IDT_UniPayI_V.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDT_UniPayI_V.h; path = ClearentIdtechIOSFramework/IDTech.framework/Headers/IDT_UniPayI_V.h; sourceTree = "<group>"; };
+		E77DE847224814C900C8AB02 /* IDT_VP3300.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDT_VP3300.h; path = ClearentIdtechIOSFramework/IDTech.framework/Headers/IDT_VP3300.h; sourceTree = "<group>"; };
+		E77DE849224814CD00C8AB02 /* IDTCommon.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDTCommon.h; path = ClearentIdtechIOSFramework/IDTech.framework/Headers/IDTCommon.h; sourceTree = "<group>"; };
+		E77DE84D224814EE00C8AB02 /* IDTEMVData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDTEMVData.h; path = ClearentIdtechIOSFramework/IDTech.framework/Headers/IDTEMVData.h; sourceTree = "<group>"; };
+		E77DE84F224814F400C8AB02 /* IDTEMVData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDTEMVData.h; path = ClearentIdtechIOSFramework/IDTech.framework/Headers/IDTEMVData.h; sourceTree = "<group>"; };
+		E77DE850224814F700C8AB02 /* IDTMSRData.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDTMSRData.h; path = ClearentIdtechIOSFramework/IDTech.framework/Headers/IDTMSRData.h; sourceTree = "<group>"; };
+		E77DE852224814FC00C8AB02 /* IDTUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDTUtility.h; path = ClearentIdtechIOSFramework/IDTech.framework/Headers/IDTUtility.h; sourceTree = "<group>"; };
+		E77DE8542248150000C8AB02 /* uniMag.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = uniMag.h; path = ClearentIdtechIOSFramework/IDTech.framework/Headers/uniMag.h; sourceTree = "<group>"; };
+		E77DE8562248150400C8AB02 /* UniPay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UniPay.h; path = ClearentIdtechIOSFramework/IDTech.framework/Headers/UniPay.h; sourceTree = "<group>"; };
 		E79A4D93204F14B000E4BBF6 /* ClearentDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClearentDelegate.m; sourceTree = "<group>"; };
-		E79BC82120B3658F0030FD8C /* IDT_VP3300.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDT_VP3300.h; path = ClearentIdtechIOSFramework/IDTech.framework/Versions/A/Headers/IDT_VP3300.h; sourceTree = "<group>"; };
 		E79BC82320B365F80030FD8C /* Clearent_VP3300.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Clearent_VP3300.h; sourceTree = "<group>"; };
 		E79BC82420B366300030FD8C /* Clearent_VP3300.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Clearent_VP3300.m; sourceTree = "<group>"; };
-		E79BC82620B3676E0030FD8C /* Clearent_VP3300.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = Clearent_VP3300.h; path = ClearentIdtechIOSFramework/Clearent_VP3300.h; sourceTree = "<group>"; };
 		E7B89E2B21F6A38200078C73 /* ClearentCard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentCard.h; sourceTree = "<group>"; };
 		E7B89E2C21F6A3A500078C73 /* ClearentCard.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentCard.m; sourceTree = "<group>"; };
 		E7B89E2E21F6A56600078C73 /* ClearentManualEntryDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentManualEntryDelegate.h; sourceTree = "<group>"; };
@@ -157,12 +155,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E77DE8322247CB8500C8AB02 /* IDTech.framework in Frameworks */,
 				E765051C1FFC314D00B345F6 /* CFNetwork.framework in Frameworks */,
 				E765051A1FFC314300B345F6 /* AudioToolbox.framework in Frameworks */,
 				E76505181FFC313A00B345F6 /* AVFoundation.framework in Frameworks */,
 				E76505161FFC313200B345F6 /* MediaPlayer.framework in Frameworks */,
 				E76505141FFC312500B345F6 /* ExternalAccessory.framework in Frameworks */,
-				E7D95F6C209B9F73001C5871 /* IDTech.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -216,25 +214,25 @@
 		E76504EA1FFC306100B345F6 = {
 			isa = PBXGroup;
 			children = (
+				E77DE8562248150400C8AB02 /* UniPay.h */,
+				E77DE8542248150000C8AB02 /* uniMag.h */,
+				E77DE852224814FC00C8AB02 /* IDTUtility.h */,
+				E77DE850224814F700C8AB02 /* IDTMSRData.h */,
+				E77DE84D224814EE00C8AB02 /* IDTEMVData.h */,
+				E77DE84F224814F400C8AB02 /* IDTEMVData.h */,
+				E77DE849224814CD00C8AB02 /* IDTCommon.h */,
+				E77DE847224814C900C8AB02 /* IDT_VP3300.h */,
+				E77DE845224814C500C8AB02 /* IDT_UniPayI_V.h */,
+				E77DE843224814BF00C8AB02 /* IDT_UniPay.h */,
+				E77DE840224814B800C8AB02 /* IDT_UniMag.h */,
+				E77DE842224814BC00C8AB02 /* IDT_UniMag.h */,
+				E77DE83E224814B200C8AB02 /* IDT_iMag.h */,
+				E77DE83C2248149300C8AB02 /* IDT_Device.h */,
+				E77DE83A2248148E00C8AB02 /* IDT_BTPay.h */,
+				E77DE8382248148B00C8AB02 /* IDT_BTMag.h */,
+				E77DE8362248148700C8AB02 /* APDUResponse.h */,
+				E77DE8342248148000C8AB02 /* APDUData.h */,
 				E728DB4920E686CA004C01E7 /* test */,
-				E79BC82620B3676E0030FD8C /* Clearent_VP3300.h */,
-				E79BC82120B3658F0030FD8C /* IDT_VP3300.h */,
-				E7467539209F0A8C00BC8504 /* APDUData.h */,
-				E746753A209F0A8C00BC8504 /* APDUResponse.h */,
-				E7467535209F0A8C00BC8504 /* IDT_BTMag.h */,
-				E7467537209F0A8C00BC8504 /* IDT_BTPay.h */,
-				E7467545209F0A8D00BC8504 /* IDT_Device.h */,
-				E7467542209F0A8D00BC8504 /* IDT_iMag.h */,
-				E746753E209F0A8D00BC8504 /* IDT_UniMag.h */,
-				E746753D209F0A8D00BC8504 /* IDT_UniPay.h */,
-				E7467538209F0A8C00BC8504 /* IDT_UniPayI_V.h */,
-				E746753F209F0A8D00BC8504 /* IDTCommon.h */,
-				E7467543209F0A8D00BC8504 /* IDTech.h */,
-				E7467544209F0A8D00BC8504 /* IDTEMVData.h */,
-				E746753C209F0A8D00BC8504 /* IDTMSRData.h */,
-				E7467541209F0A8D00BC8504 /* IDTUtility.h */,
-				E7467534209F0A8C00BC8504 /* uniMag.h */,
-				E7467536209F0A8C00BC8504 /* UniPay.h */,
 				E7D95F6D209B9F82001C5871 /* IDTech.bundle */,
 				E7D95F6B209B9F73001C5871 /* IDTech.framework */,
 				E77687462062B66300284FF4 /* .gitignore */,
@@ -264,7 +262,6 @@
 				E79A4D93204F14B000E4BBF6 /* ClearentDelegate.m */,
 				E77C90452000442200C3E590 /* ClearentTransactionTokenRequest.h */,
 				E77C90462000442200C3E590 /* ClearentTransactionTokenRequest.m */,
-				E737D9D820A05F1B00760CB8 /* ClearentDevice.h */,
 				E79BC82320B365F80030FD8C /* Clearent_VP3300.h */,
 				E79BC82420B366300030FD8C /* Clearent_VP3300.m */,
 				E75A5BEA20DD1FF60035B911 /* ClearentEmvConfigurator.h */,
@@ -328,36 +325,34 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E77C900F1FFFE38100C3E590 /* ClearentDelegate.h in Headers */,
-				E77C90472000442200C3E590 /* ClearentTransactionTokenRequest.h in Headers */,
-				E7467546209F0A8E00BC8504 /* uniMag.h in Headers */,
-				E7467547209F0A8E00BC8504 /* IDT_BTMag.h in Headers */,
-				E7467548209F0A8E00BC8504 /* UniPay.h in Headers */,
 				E7594C1720A2609900E5995B /* ClearentIdtechIOSFramework.h in Headers */,
-				E7467549209F0A8E00BC8504 /* IDT_BTPay.h in Headers */,
-				E746754A209F0A8E00BC8504 /* IDT_UniPayI_V.h in Headers */,
-				E746754B209F0A8E00BC8504 /* APDUData.h in Headers */,
-				E746754C209F0A8E00BC8504 /* APDUResponse.h in Headers */,
-				E746754E209F0A8E00BC8504 /* IDTMSRData.h in Headers */,
-				E746754F209F0A8E00BC8504 /* IDT_UniPay.h in Headers */,
-				E7467550209F0A8E00BC8504 /* IDT_UniMag.h in Headers */,
-				E7467551209F0A8E00BC8504 /* IDTCommon.h in Headers */,
-				E7467553209F0A8E00BC8504 /* IDTUtility.h in Headers */,
-				E7467554209F0A8E00BC8504 /* IDT_iMag.h in Headers */,
-				E7467555209F0A8E00BC8504 /* IDTech.h in Headers */,
-				E79BC82220B365900030FD8C /* IDT_VP3300.h in Headers */,
-				E7467556209F0A8E00BC8504 /* IDTEMVData.h in Headers */,
 				E75A5BF120DD21FE0035B911 /* ClearentPublicVP3300Delegate.h in Headers */,
-				E7C54CD420A08755002CC355 /* ClearentDevice.h in Headers */,
-				E7CA494720E192510090CFFC /* ClearentConfigurator.h in Headers */,
-				E75A5BEF20DD21BF0035B911 /* ClearentEmvConfigurator.h in Headers */,
-				E7CA494B20E27F380090CFFC /* ClearentConfiguration.h in Headers */,
-				E79BC82720B3676E0030FD8C /* Clearent_VP3300.h in Headers */,
-				E7CA497620E58C910090CFFC /* ClearentConfigFetcher.h in Headers */,
-				E7467557209F0A8E00BC8504 /* IDT_Device.h in Headers */,
+				E77DE8352248148000C8AB02 /* APDUData.h in Headers */,
+				E77DE8372248148700C8AB02 /* APDUResponse.h in Headers */,
+				E77DE8392248148B00C8AB02 /* IDT_BTMag.h in Headers */,
 				E721ECE721F7483B0064163F /* ClearentManualEntryDelegate.h in Headers */,
+				E77DE83B2248148F00C8AB02 /* IDT_BTPay.h in Headers */,
+				E77DE83F224814B200C8AB02 /* IDT_iMag.h in Headers */,
+				E77DE841224814B800C8AB02 /* IDT_UniMag.h in Headers */,
+				E77DE83D2248149400C8AB02 /* IDT_Device.h in Headers */,
+				E77DE80E2247ADA900C8AB02 /* Clearent_VP3300.h in Headers */,
+				E77DE844224814C000C8AB02 /* IDT_UniPay.h in Headers */,
+				E77DE84A224814CD00C8AB02 /* IDTCommon.h in Headers */,
 				E721ECEA21F74B560064163F /* ClearentCard.h in Headers */,
+				E77DE851224814F800C8AB02 /* IDTMSRData.h in Headers */,
+				E77DE8552248150000C8AB02 /* uniMag.h in Headers */,
+				E77DE848224814C900C8AB02 /* IDT_VP3300.h in Headers */,
+				E77DE853224814FD00C8AB02 /* IDTUtility.h in Headers */,
+				E77DE8572248150400C8AB02 /* UniPay.h in Headers */,
+				E77DE84E224814EF00C8AB02 /* IDTEMVData.h in Headers */,
+				E77DE846224814C500C8AB02 /* IDT_UniPayI_V.h in Headers */,
 				E721ECE821F7483B0064163F /* ClearentManualEntry.h in Headers */,
+				E7CA497620E58C910090CFFC /* ClearentConfigFetcher.h in Headers */,
+				E77C90472000442200C3E590 /* ClearentTransactionTokenRequest.h in Headers */,
+				E77C900F1FFFE38100C3E590 /* ClearentDelegate.h in Headers */,
+				E75A5BEF20DD21BF0035B911 /* ClearentEmvConfigurator.h in Headers */,
+				E7CA494720E192510090CFFC /* ClearentConfigurator.h in Headers */,
+				E7CA494B20E27F380090CFFC /* ClearentConfiguration.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -441,6 +436,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E77DE8582248162700C8AB02 /* IDTech.framework in Resources */,
 				E7D95F6E209B9F82001C5871 /* IDTech.bundle in Resources */,
 				E77687472062B66300284FF4 /* .gitignore in Resources */,
 			);
@@ -551,6 +547,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INSTALL_PATH = /Library/Frameworks;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				MODULEMAP_FILE = "$(SRCROOT)/ClearentIdtechIOSFramework/ClearentIdtechIOSFramework.modulemap";
+				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = iphoneos;
@@ -607,6 +605,8 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INSTALL_PATH = /Library/Frameworks;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				MODULEMAP_FILE = "$(SRCROOT)/ClearentIdtechIOSFramework/ClearentIdtechIOSFramework.modulemap";
+				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
@@ -638,6 +638,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MODULEMAP_FILE = "";
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.clearent.quest.ClearentIdtechIOSFrameworks;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
@@ -670,6 +671,7 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
+				MODULEMAP_FILE = "";
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = com.clearent.quest.ClearentIdtechIOSFrameworks;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";

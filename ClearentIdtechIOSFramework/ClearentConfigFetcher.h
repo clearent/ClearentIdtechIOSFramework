@@ -21,8 +21,11 @@ typedef void (^ClearentConfigFetcherTaskCompletionHandler)(NSData *data, NSURLRe
     @property(nonatomic) NSString *kernelVersion;
 
     - (id)init:(NSURLSession *)session baseUrl:(NSString*)baseUrl deviceSerialNumber:(NSString*) deviceSerialNumber kernelVersion:(NSString*) kernelVersion publicKey:(NSString*) publicKey;
+
     - (void)fetchConfiguration: (ClearentConfigFetcherResponse) callback;
+
     - (NSMutableURLRequest*) createNSMutableURLRequest;
+
     - (NSString*) createTargetUrl;
     
 @end

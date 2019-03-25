@@ -30,6 +30,7 @@ typedef enum{
         callbackObject:(id)callbackObject
         withSelector:(SEL)selector
         sharedController:(IDT_VP3300*) sharedController;
+
     - (void) configure: (NSString*)kernelVersion deviceSerialNumber:(NSString*) deviceSerialNumber;
     - (void) configure: (NSDictionary*) jsonConfiguration;
     - (void) notify:(NSString*)message;
