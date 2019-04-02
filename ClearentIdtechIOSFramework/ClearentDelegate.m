@@ -10,6 +10,7 @@
 #import "ClearentConfigurator.h"
 #import "IDTech/IDTUtility.h"
 #import "ClearentUtils.h"
+
 static NSString *const TRACK2_DATA_EMV_TAG = @"57";
 static NSString *const TRACK1_DATA_EMV_TAG = @"56";
 static NSString *const TRACK2_DATA_CONTACTLESS_NON_CHIP_TAG = @"9F6B";
