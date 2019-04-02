@@ -44,7 +44,6 @@
 		E77DE853224814FD00C8AB02 /* IDTUtility.h in Headers */ = {isa = PBXBuildFile; fileRef = E77DE852224814FC00C8AB02 /* IDTUtility.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E77DE8552248150000C8AB02 /* uniMag.h in Headers */ = {isa = PBXBuildFile; fileRef = E77DE8542248150000C8AB02 /* uniMag.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E77DE8572248150400C8AB02 /* UniPay.h in Headers */ = {isa = PBXBuildFile; fileRef = E77DE8562248150400C8AB02 /* UniPay.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E77DE8582248162700C8AB02 /* IDTech.framework in Resources */ = {isa = PBXBuildFile; fileRef = E7D95F6B209B9F73001C5871 /* IDTech.framework */; };
 		E78E2E84224E847900943B14 /* ClearentUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E78E2E83224E847900943B14 /* ClearentUtils.m */; };
 		E79A4D94204F14B000E4BBF6 /* ClearentDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E79A4D93204F14B000E4BBF6 /* ClearentDelegate.m */; };
 		E79BC82520B366300030FD8C /* Clearent_VP3300.m in Sources */ = {isa = PBXBuildFile; fileRef = E79BC82420B366300030FD8C /* Clearent_VP3300.m */; };
@@ -446,7 +445,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E77DE8582248162700C8AB02 /* IDTech.framework in Resources */,
 				E7D95F6E209B9F82001C5871 /* IDTech.bundle in Resources */,
 				E77687472062B66300284FF4 /* .gitignore in Resources */,
 			);
