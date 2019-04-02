@@ -9,6 +9,7 @@
 #import "ClearentDelegate.h"
 #import "ClearentConfigurator.h"
 #import "IDTech/IDTUtility.h"
+#import "ClearentUtils.h"
 static NSString *const TRACK2_DATA_EMV_TAG = @"57";
 static NSString *const TRACK1_DATA_EMV_TAG = @"56";
 static NSString *const TRACK2_DATA_CONTACTLESS_NON_CHIP_TAG = @"9F6B";
@@ -60,6 +61,9 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
             } else if(message != nil && [message isEqualToString:@"APPROVED"]) {
                 NSLog(@"This is not really an approval. Clearent is creating a transaction token for later use.");
             } else {
+                if(message != nil) {
+                    NSLog([NSString stringWithFormat:@"%@:%@", @"lcdDisplay", message]);
+                }
                [updatedArray addObject:message];
             }
         }
@@ -88,7 +92,7 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
         [self deviceMessage:@"Device connected. Waiting for configuration to complete..."];
         [clearentConfigurator configure:self.kernelVersion deviceSerialNumber:self.deviceSerialNumber];
     } else {
-        [self deviceMessage:@"Device connected. Skipping auto configuration."];
+        [self deviceMessage:READER_CONFIGURED_MESSAGE];
     }
 }
 
@@ -133,6 +137,9 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
 }
 
 - (void) deviceMessage:(NSString*)message {
+    if(message != nil) {
+        NSLog([NSString stringWithFormat:@"%@:%@", @"deviceMessage", message]);
+    }
     if(message != nil && [message isEqualToString:READER_CONFIGURED_MESSAGE]) {
         NSString *firstTenOfDeviceSerialNumber = nil;
         if (self.deviceSerialNumber != nil && [self.deviceSerialNumber length] >= 10) {
@@ -463,6 +470,7 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     [request setHTTPMethod:@"POST"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [request setValue:[ClearentUtils createExchangeChainId:self.deviceSerialNumber] forHTTPHeaderField:@"exchangeChainId"];
     [request setValue:self.publicKey forHTTPHeaderField:@"public-key"];
     [request setURL:[NSURL URLWithString:targetUrl]];
     
@@ -534,9 +542,11 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     [defaults setObject:deviceSerialNumber forKey:NSUSERDEFAULT_DEVICESERIALNUMBER];
     [defaults setObject:readerConfiguredFlag forKey:NSUSERDEFAULT_READERCONFIGURED];
     [defaults synchronize];
+    NSLog(@"Updated the reader configuration cache");
 }
 
 - (void) clearConfigurationCache {
+    NSLog(@"Clear the reader configuration cache");
      [self updateConfigurationCache:nil readerConfiguredFlag:nil];
 }
 

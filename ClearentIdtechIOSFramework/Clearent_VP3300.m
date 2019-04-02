@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "Clearent_VP3300.h"
 #import "ClearentDelegate.h"
+
 @implementation Clearent_VP3300 
 
   ClearentDelegate *clearentDelegate;
@@ -20,6 +21,7 @@
         clearentDelegate = [[ClearentDelegate alloc] init:publicDelegate clearentBaseUrl:clearentBaseUrl publicKey:publicKey];
         [IDT_VP3300 sharedController].delegate = clearentDelegate;
         NSLog(@"Clearent_VP3300 initialized");
+
     });
 }
 

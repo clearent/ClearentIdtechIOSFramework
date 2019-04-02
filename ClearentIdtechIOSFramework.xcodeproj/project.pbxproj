@@ -45,6 +45,7 @@
 		E77DE8552248150000C8AB02 /* uniMag.h in Headers */ = {isa = PBXBuildFile; fileRef = E77DE8542248150000C8AB02 /* uniMag.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E77DE8572248150400C8AB02 /* UniPay.h in Headers */ = {isa = PBXBuildFile; fileRef = E77DE8562248150400C8AB02 /* UniPay.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E77DE8582248162700C8AB02 /* IDTech.framework in Resources */ = {isa = PBXBuildFile; fileRef = E7D95F6B209B9F73001C5871 /* IDTech.framework */; };
+		E78E2E84224E847900943B14 /* ClearentUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E78E2E83224E847900943B14 /* ClearentUtils.m */; };
 		E79A4D94204F14B000E4BBF6 /* ClearentDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E79A4D93204F14B000E4BBF6 /* ClearentDelegate.m */; };
 		E79BC82520B366300030FD8C /* Clearent_VP3300.m in Sources */ = {isa = PBXBuildFile; fileRef = E79BC82420B366300030FD8C /* Clearent_VP3300.m */; };
 		E7B89E3121F6A6A400078C73 /* ClearentManualEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = E7B89E3021F6A6A400078C73 /* ClearentManualEntry.m */; };
@@ -90,6 +91,8 @@
 		E728DB5520E6888D004C01E7 /* OCMLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMLocation.h; sourceTree = "<group>"; };
 		E728DB5620E6888D004C01E7 /* OCMConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMConstraint.h; sourceTree = "<group>"; };
 		E728DB5720E6888D004C01E7 /* OCMArg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMArg.h; sourceTree = "<group>"; };
+		E733E2412253C7730050CB31 /* CocoaLumberjack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaLumberjack.framework; path = Carthage/Build/iOS/CocoaLumberjack.framework; sourceTree = "<group>"; };
+		E733E2442253CF090050CB31 /* CocoaLumberjack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaLumberjack.framework; path = ClearentIdtechIOSFramework/CocoaLumberjack.framework; sourceTree = "<group>"; };
 		E75A5BEA20DD1FF60035B911 /* ClearentEmvConfigurator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentEmvConfigurator.h; sourceTree = "<group>"; };
 		E75A5BEB20DD20580035B911 /* ClearentEmvConfigurator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentEmvConfigurator.m; sourceTree = "<group>"; };
 		E75A5BEE20DD21800035B911 /* ClearentPublicVP3300Delegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentPublicVP3300Delegate.h; sourceTree = "<group>"; };
@@ -124,6 +127,8 @@
 		E77DE852224814FC00C8AB02 /* IDTUtility.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = IDTUtility.h; path = ClearentIdtechIOSFramework/IDTech.framework/Headers/IDTUtility.h; sourceTree = "<group>"; };
 		E77DE8542248150000C8AB02 /* uniMag.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = uniMag.h; path = ClearentIdtechIOSFramework/IDTech.framework/Headers/uniMag.h; sourceTree = "<group>"; };
 		E77DE8562248150400C8AB02 /* UniPay.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = UniPay.h; path = ClearentIdtechIOSFramework/IDTech.framework/Headers/UniPay.h; sourceTree = "<group>"; };
+		E78E2E82224E842F00943B14 /* ClearentUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentUtils.h; sourceTree = "<group>"; };
+		E78E2E83224E847900943B14 /* ClearentUtils.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentUtils.m; sourceTree = "<group>"; };
 		E79A4D93204F14B000E4BBF6 /* ClearentDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClearentDelegate.m; sourceTree = "<group>"; };
 		E79BC82320B365F80030FD8C /* Clearent_VP3300.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Clearent_VP3300.h; sourceTree = "<group>"; };
 		E79BC82420B366300030FD8C /* Clearent_VP3300.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Clearent_VP3300.m; sourceTree = "<group>"; };
@@ -278,6 +283,8 @@
 				E7B89E2E21F6A56600078C73 /* ClearentManualEntryDelegate.h */,
 				E7B89E2F21F6A69300078C73 /* ClearentManualEntry.h */,
 				E7B89E3021F6A6A400078C73 /* ClearentManualEntry.m */,
+				E78E2E82224E842F00943B14 /* ClearentUtils.h */,
+				E78E2E83224E847900943B14 /* ClearentUtils.m */,
 			);
 			path = ClearentIdtechIOSFramework;
 			sourceTree = "<group>";
@@ -285,6 +292,8 @@
 		E765050E1FFC30F000B345F6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				E733E2412253C7730050CB31 /* CocoaLumberjack.framework */,
+				E733E2442253CF090050CB31 /* CocoaLumberjack.framework */,
 				E728DB4420E685D7004C01E7 /* OCMock.framework */,
 				E765051B1FFC314D00B345F6 /* CFNetwork.framework */,
 				E76505191FFC314300B345F6 /* AudioToolbox.framework */,
@@ -401,7 +410,7 @@
 		E76504EB1FFC306100B345F6 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0930;
+				LastUpgradeCheck = 1020;
 				ORGANIZATIONNAME = "Clearent, L.L.C.";
 				TargetAttributes = {
 					E76504F31FFC306100B345F6 = {
@@ -419,6 +428,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				Base,
 			);
 			mainGroup = E76504EA1FFC306100B345F6;
 			productRefGroup = E76504F51FFC306100B345F6 /* Products */;
@@ -461,6 +471,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E78E2E84224E847900943B14 /* ClearentUtils.m in Sources */,
 				E7CA494220E171960090CFFC /* ClearentConfiguration.m in Sources */,
 				E79BC82520B366300030FD8C /* Clearent_VP3300.m in Sources */,
 				E75A5BEC20DD20580035B911 /* ClearentEmvConfigurator.m in Sources */,
@@ -550,7 +561,7 @@
 				MODULEMAP_FILE = "$(SRCROOT)/ClearentIdtechIOSFramework/ClearentIdtechIOSFramework.modulemap";
 				MODULEMAP_PRIVATE_FILE = "";
 				MTL_ENABLE_DEBUG_INFO = YES;
-				ONLY_ACTIVE_ARCH = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -629,6 +640,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ClearentIdtechIOSFramework",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/ClearentIdtechIOSFramework/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -662,6 +674,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ClearentIdtechIOSFramework",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/ClearentIdtechIOSFramework/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
