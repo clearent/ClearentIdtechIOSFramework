@@ -12,7 +12,7 @@ Carthage was chosen to bring the Clearent framework into your project because of
 
 3 - Add a Cartfile to your project (at root). Point to Clearent's private github repository for this framework by adding the following to your Cartfile
 
-    github "clearent/ClearentIdtechIOSFramework" == 1.0.0
+    github "clearent/ClearentIdtechIOSFramework" == 1.0.25
 
 4 - Run this command from your project's root folder. This command will pull down a copy of the Clearent Framework and build it locally under Carthage/Build.
 
