@@ -9,19 +9,24 @@
 #import <Foundation/Foundation.h>
 #import "Clearent_VP3300.h"
 #import "ClearentDelegate.h"
+#import "Teleport.h"
 
 @implementation Clearent_VP3300 
 
   ClearentDelegate *clearentDelegate;
 
 - (void) init : (id <Clearent_Public_IDTech_VP3300_Delegate>) publicDelegate clearentBaseUrl:(NSString*)clearentBaseUrl publicKey:(NSString*)publicKey {
-    NSLog(@"Set the delegate in the ID Tech solution to the ClearentDelegate, which will call the Public delegate when needed.");
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         clearentDelegate = [[ClearentDelegate alloc] init:publicDelegate clearentBaseUrl:clearentBaseUrl publicKey:publicKey];
         [IDT_VP3300 sharedController].delegate = clearentDelegate;
-        NSLog(@"Clearent_VP3300 initialized");
-
+        
+        //Using Variant of Teleport-NSLog -> https://github.com/kennethjiang/Teleport-NSLog
+        //Disabled intercept of logging in favor of adding our own logs to a rotating file solution.
+        //When reaping occurs, we send the logs to Clearent.
+        TELEPORT_DEBUG = YES;
+        [Teleport startWithForwarder:
+         [SimpleHttpForwarder forwarderWithAggregatorUrl:clearentBaseUrl publicKey:publicKey]];
     });
 }
 

@@ -11,8 +11,25 @@
 		E721ECE721F7483B0064163F /* ClearentManualEntryDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E7B89E2E21F6A56600078C73 /* ClearentManualEntryDelegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E721ECE821F7483B0064163F /* ClearentManualEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = E7B89E2F21F6A69300078C73 /* ClearentManualEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E721ECEA21F74B560064163F /* ClearentCard.h in Headers */ = {isa = PBXBuildFile; fileRef = E7B89E2B21F6A38200078C73 /* ClearentCard.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E726A0382258B5B400F3E8B7 /* ClearentCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E726A0372258B5B400F3E8B7 /* ClearentCache.m */; };
 		E728DB1E20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E728DB1D20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m */; };
 		E728DB4C20E687A6004C01E7 /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E728DB4B20E687A6004C01E7 /* libOCMock.a */; };
+		E75891EE225522AB00288032 /* ClearentLoggingRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = E75891DE225522AB00288032 /* ClearentLoggingRequest.h */; };
+		E75891EF225522AB00288032 /* LogRotator.m in Sources */ = {isa = PBXBuildFile; fileRef = E75891DF225522AB00288032 /* LogRotator.m */; };
+		E75891F0225522AB00288032 /* Singleton.h in Headers */ = {isa = PBXBuildFile; fileRef = E75891E0225522AB00288032 /* Singleton.h */; };
+		E75891F1225522AB00288032 /* ClearentLogging.h in Headers */ = {isa = PBXBuildFile; fileRef = E75891E1225522AB00288032 /* ClearentLogging.h */; };
+		E75891F2225522AB00288032 /* TeleportUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = E75891E2225522AB00288032 /* TeleportUtils.h */; };
+		E75891F3225522AB00288032 /* LogReaper.m in Sources */ = {isa = PBXBuildFile; fileRef = E75891E3225522AB00288032 /* LogReaper.m */; };
+		E75891F4225522AB00288032 /* Teleport.h in Headers */ = {isa = PBXBuildFile; fileRef = E75891E4225522AB00288032 /* Teleport.h */; };
+		E75891F5225522AB00288032 /* SimpleHttpForwarder.h in Headers */ = {isa = PBXBuildFile; fileRef = E75891E6225522AB00288032 /* SimpleHttpForwarder.h */; };
+		E75891F6225522AB00288032 /* SimpleHttpForwarder.m in Sources */ = {isa = PBXBuildFile; fileRef = E75891E7225522AB00288032 /* SimpleHttpForwarder.m */; };
+		E75891F7225522AB00288032 /* ClearentLoggingRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = E75891E8225522AB00288032 /* ClearentLoggingRequest.m */; };
+		E75891F8225522AB00288032 /* LogRotator.h in Headers */ = {isa = PBXBuildFile; fileRef = E75891E9225522AB00288032 /* LogRotator.h */; };
+		E75891F9225522AB00288032 /* Teleport.m in Sources */ = {isa = PBXBuildFile; fileRef = E75891EA225522AB00288032 /* Teleport.m */; };
+		E75891FA225522AB00288032 /* LogReaper.h in Headers */ = {isa = PBXBuildFile; fileRef = E75891EB225522AB00288032 /* LogReaper.h */; };
+		E75891FB225522AB00288032 /* TeleportUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E75891EC225522AB00288032 /* TeleportUtils.m */; };
+		E75891FC225522AB00288032 /* ClearentLogging.m in Sources */ = {isa = PBXBuildFile; fileRef = E75891ED225522AB00288032 /* ClearentLogging.m */; };
+		E75892002257874100288032 /* LogAdder.m in Sources */ = {isa = PBXBuildFile; fileRef = E75891FF2257874100288032 /* LogAdder.m */; };
 		E7594C1720A2609900E5995B /* ClearentIdtechIOSFramework.h in Headers */ = {isa = PBXBuildFile; fileRef = E7D95F68209B96B4001C5871 /* ClearentIdtechIOSFramework.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E75A5BEC20DD20580035B911 /* ClearentEmvConfigurator.m in Sources */ = {isa = PBXBuildFile; fileRef = E75A5BEB20DD20580035B911 /* ClearentEmvConfigurator.m */; };
 		E75A5BEF20DD21BF0035B911 /* ClearentEmvConfigurator.h in Headers */ = {isa = PBXBuildFile; fileRef = E75A5BEA20DD1FF60035B911 /* ClearentEmvConfigurator.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -77,6 +94,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		E726A0362258B5A400F3E8B7 /* ClearentCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentCache.h; sourceTree = "<group>"; };
+		E726A0372258B5B400F3E8B7 /* ClearentCache.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentCache.m; sourceTree = "<group>"; };
 		E728DB1D20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentConfigFetcher_Tests.m; sourceTree = "<group>"; };
 		E728DB4420E685D7004C01E7 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OCMock.framework; path = "../../OCMock 3.4.2/iOS framework/OCMock.framework"; sourceTree = "<group>"; };
 		E728DB4B20E687A6004C01E7 /* libOCMock.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libOCMock.a; sourceTree = "<group>"; };
@@ -92,6 +111,23 @@
 		E728DB5720E6888D004C01E7 /* OCMArg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMArg.h; sourceTree = "<group>"; };
 		E733E2412253C7730050CB31 /* CocoaLumberjack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaLumberjack.framework; path = Carthage/Build/iOS/CocoaLumberjack.framework; sourceTree = "<group>"; };
 		E733E2442253CF090050CB31 /* CocoaLumberjack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaLumberjack.framework; path = ClearentIdtechIOSFramework/CocoaLumberjack.framework; sourceTree = "<group>"; };
+		E75891DE225522AB00288032 /* ClearentLoggingRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClearentLoggingRequest.h; sourceTree = "<group>"; };
+		E75891DF225522AB00288032 /* LogRotator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogRotator.m; sourceTree = "<group>"; };
+		E75891E0225522AB00288032 /* Singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Singleton.h; sourceTree = "<group>"; };
+		E75891E1225522AB00288032 /* ClearentLogging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClearentLogging.h; sourceTree = "<group>"; };
+		E75891E2225522AB00288032 /* TeleportUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TeleportUtils.h; sourceTree = "<group>"; };
+		E75891E3225522AB00288032 /* LogReaper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogReaper.m; sourceTree = "<group>"; };
+		E75891E4225522AB00288032 /* Teleport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Teleport.h; sourceTree = "<group>"; };
+		E75891E6225522AB00288032 /* SimpleHttpForwarder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SimpleHttpForwarder.h; sourceTree = "<group>"; };
+		E75891E7225522AB00288032 /* SimpleHttpForwarder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SimpleHttpForwarder.m; sourceTree = "<group>"; };
+		E75891E8225522AB00288032 /* ClearentLoggingRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClearentLoggingRequest.m; sourceTree = "<group>"; };
+		E75891E9225522AB00288032 /* LogRotator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogRotator.h; sourceTree = "<group>"; };
+		E75891EA225522AB00288032 /* Teleport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Teleport.m; sourceTree = "<group>"; };
+		E75891EB225522AB00288032 /* LogReaper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogReaper.h; sourceTree = "<group>"; };
+		E75891EC225522AB00288032 /* TeleportUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TeleportUtils.m; sourceTree = "<group>"; };
+		E75891ED225522AB00288032 /* ClearentLogging.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClearentLogging.m; sourceTree = "<group>"; };
+		E75891FE2257872100288032 /* LogAdder.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LogAdder.h; sourceTree = "<group>"; };
+		E75891FF2257874100288032 /* LogAdder.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LogAdder.m; sourceTree = "<group>"; };
 		E75A5BEA20DD1FF60035B911 /* ClearentEmvConfigurator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentEmvConfigurator.h; sourceTree = "<group>"; };
 		E75A5BEB20DD20580035B911 /* ClearentEmvConfigurator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentEmvConfigurator.m; sourceTree = "<group>"; };
 		E75A5BEE20DD21800035B911 /* ClearentPublicVP3300Delegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentPublicVP3300Delegate.h; sourceTree = "<group>"; };
@@ -215,6 +251,38 @@
 			path = OCMock;
 			sourceTree = "<group>";
 		};
+		E75891DD225522AB00288032 /* Logging */ = {
+			isa = PBXGroup;
+			children = (
+				E75891DE225522AB00288032 /* ClearentLoggingRequest.h */,
+				E75891DF225522AB00288032 /* LogRotator.m */,
+				E75891E0225522AB00288032 /* Singleton.h */,
+				E75891E1225522AB00288032 /* ClearentLogging.h */,
+				E75891E2225522AB00288032 /* TeleportUtils.h */,
+				E75891E3225522AB00288032 /* LogReaper.m */,
+				E75891E4225522AB00288032 /* Teleport.h */,
+				E75891E5225522AB00288032 /* Forwarders */,
+				E75891E8225522AB00288032 /* ClearentLoggingRequest.m */,
+				E75891E9225522AB00288032 /* LogRotator.h */,
+				E75891EA225522AB00288032 /* Teleport.m */,
+				E75891EB225522AB00288032 /* LogReaper.h */,
+				E75891EC225522AB00288032 /* TeleportUtils.m */,
+				E75891ED225522AB00288032 /* ClearentLogging.m */,
+				E75891FE2257872100288032 /* LogAdder.h */,
+				E75891FF2257874100288032 /* LogAdder.m */,
+			);
+			path = Logging;
+			sourceTree = "<group>";
+		};
+		E75891E5225522AB00288032 /* Forwarders */ = {
+			isa = PBXGroup;
+			children = (
+				E75891E6225522AB00288032 /* SimpleHttpForwarder.h */,
+				E75891E7225522AB00288032 /* SimpleHttpForwarder.m */,
+			);
+			path = Forwarders;
+			sourceTree = "<group>";
+		};
 		E76504EA1FFC306100B345F6 = {
 			isa = PBXGroup;
 			children = (
@@ -260,6 +328,7 @@
 		E76504F61FFC306100B345F6 /* ClearentIdtechIOSFramework */ = {
 			isa = PBXGroup;
 			children = (
+				E75891DD225522AB00288032 /* Logging */,
 				E7D95F68209B96B4001C5871 /* ClearentIdtechIOSFramework.h */,
 				E76504F81FFC306100B345F6 /* Info.plist */,
 				E77C900D1FFFE38100C3E590 /* ClearentDelegate.h */,
@@ -284,6 +353,8 @@
 				E7B89E3021F6A6A400078C73 /* ClearentManualEntry.m */,
 				E78E2E82224E842F00943B14 /* ClearentUtils.h */,
 				E78E2E83224E847900943B14 /* ClearentUtils.m */,
+				E726A0362258B5A400F3E8B7 /* ClearentCache.h */,
+				E726A0372258B5B400F3E8B7 /* ClearentCache.m */,
 			);
 			path = ClearentIdtechIOSFramework;
 			sourceTree = "<group>";
@@ -333,11 +404,14 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E75891F8225522AB00288032 /* LogRotator.h in Headers */,
 				E7594C1720A2609900E5995B /* ClearentIdtechIOSFramework.h in Headers */,
 				E75A5BF120DD21FE0035B911 /* ClearentPublicVP3300Delegate.h in Headers */,
 				E77DE8352248148000C8AB02 /* APDUData.h in Headers */,
+				E75891F4225522AB00288032 /* Teleport.h in Headers */,
 				E77DE8372248148700C8AB02 /* APDUResponse.h in Headers */,
 				E77DE8392248148B00C8AB02 /* IDT_BTMag.h in Headers */,
+				E75891F2225522AB00288032 /* TeleportUtils.h in Headers */,
 				E721ECE721F7483B0064163F /* ClearentManualEntryDelegate.h in Headers */,
 				E77DE83B2248148F00C8AB02 /* IDT_BTPay.h in Headers */,
 				E77DE83F224814B200C8AB02 /* IDT_iMag.h in Headers */,
@@ -349,13 +423,18 @@
 				E721ECEA21F74B560064163F /* ClearentCard.h in Headers */,
 				E77DE851224814F800C8AB02 /* IDTMSRData.h in Headers */,
 				E77DE8552248150000C8AB02 /* uniMag.h in Headers */,
+				E75891F1225522AB00288032 /* ClearentLogging.h in Headers */,
 				E77DE848224814C900C8AB02 /* IDT_VP3300.h in Headers */,
 				E77DE853224814FD00C8AB02 /* IDTUtility.h in Headers */,
 				E77DE8572248150400C8AB02 /* UniPay.h in Headers */,
+				E75891EE225522AB00288032 /* ClearentLoggingRequest.h in Headers */,
 				E77DE84E224814EF00C8AB02 /* IDTEMVData.h in Headers */,
 				E77DE846224814C500C8AB02 /* IDT_UniPayI_V.h in Headers */,
+				E75891F5225522AB00288032 /* SimpleHttpForwarder.h in Headers */,
 				E721ECE821F7483B0064163F /* ClearentManualEntry.h in Headers */,
 				E7CA497620E58C910090CFFC /* ClearentConfigFetcher.h in Headers */,
+				E75891F0225522AB00288032 /* Singleton.h in Headers */,
+				E75891FA225522AB00288032 /* LogReaper.h in Headers */,
 				E77C90472000442200C3E590 /* ClearentTransactionTokenRequest.h in Headers */,
 				E77C900F1FFFE38100C3E590 /* ClearentDelegate.h in Headers */,
 				E75A5BEF20DD21BF0035B911 /* ClearentEmvConfigurator.h in Headers */,
@@ -472,8 +551,17 @@
 				E78E2E84224E847900943B14 /* ClearentUtils.m in Sources */,
 				E7CA494220E171960090CFFC /* ClearentConfiguration.m in Sources */,
 				E79BC82520B366300030FD8C /* Clearent_VP3300.m in Sources */,
+				E75891F3225522AB00288032 /* LogReaper.m in Sources */,
+				E75891EF225522AB00288032 /* LogRotator.m in Sources */,
+				E75891FC225522AB00288032 /* ClearentLogging.m in Sources */,
+				E75891F7225522AB00288032 /* ClearentLoggingRequest.m in Sources */,
 				E75A5BEC20DD20580035B911 /* ClearentEmvConfigurator.m in Sources */,
+				E75891F9225522AB00288032 /* Teleport.m in Sources */,
+				E75892002257874100288032 /* LogAdder.m in Sources */,
+				E75891F6225522AB00288032 /* SimpleHttpForwarder.m in Sources */,
 				E7CA494520E1753D0090CFFC /* ClearentConfigurator.m in Sources */,
+				E726A0382258B5B400F3E8B7 /* ClearentCache.m in Sources */,
+				E75891FB225522AB00288032 /* TeleportUtils.m in Sources */,
 				E77C90482000442200C3E590 /* ClearentTransactionTokenRequest.m in Sources */,
 				E79A4D94204F14B000E4BBF6 /* ClearentDelegate.m in Sources */,
 				E71E309521F7A0E3001C950A /* ClearentCard.m in Sources */,

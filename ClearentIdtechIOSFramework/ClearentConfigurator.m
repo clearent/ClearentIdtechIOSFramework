@@ -8,6 +8,8 @@
 
 #import "ClearentConfigurator.h"
 #import <IDTech/IDTUtility.h>
+#import "Teleport.h"
+
 static NSString *const NSUSERDEFAULT_DEVICESERIALNUMBER = @"DeviceSerialNumber";
 static NSString *const NSUSERDEFAULT_READERCONFIGURED = @"ReaderConfigured";
 static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready";
@@ -29,11 +31,11 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
 
 -(void) configure: (NSString*)kernelVersion  deviceSerialNumber:(NSString*) deviceSerialNumber {
     if(deviceSerialNumber  == nil) {
-        [self notify:@"Connect device"];
+        [self notifyInfo:@"Connect device"];
         return;
     }
     if(self.baseUrl == nil) {
-        [self notify:@"Configuration url is required for device configuration"];
+        [self notifyInfo:@"Configuration url is required for device configuration"];
         return;
     }
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -41,7 +43,7 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
     NSString *readerConfiguredFlag = [defaults objectForKey:NSUSERDEFAULT_READERCONFIGURED];
     if(readerConfiguredFlag != nil && [readerConfiguredFlag isEqualToString:@"true"]) {
         if(storedDeviceSerialNumber != nil && [storedDeviceSerialNumber isEqualToString:deviceSerialNumber]) {
-            [self notify:READER_CONFIGURED_MESSAGE];
+            [self notifyInfo:READER_CONFIGURED_MESSAGE];
             return;
         }
     }
@@ -53,9 +55,10 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
     
     ClearentConfigFetcherResponse clearentConfigFetcherResponse = ^(NSDictionary *json) {
         if(json != nil) {
+            [self notifyInfo:@"Retrieved configuration"];
             [self configure:json];
         } else {
-            [self notify:@"Device failed to retrieve configuration"];
+            [self notifyError:@"Device failed to retrieve configuration"];
         }
     };
     
@@ -66,18 +69,24 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
     ClearentConfiguration *clearentConfiguration = [[ClearentConfiguration alloc] initWithJson:jsonConfiguration];
     ClearentEmvConfigurator *clearentEmvConfigurator = [[ClearentEmvConfigurator alloc] initWithIdtechSharedController:self->_sharedController];
     NSString *readerConfigurationMessage = [clearentEmvConfigurator configure:clearentConfiguration];
-    [self notify:readerConfigurationMessage];
+    [self notifyInfo:readerConfigurationMessage];
     self.configured = YES;
 }
 
 -(void) initClock{
     int clockRt = [self initDateAndTime];
     if(clockRt != CLOCK_CONFIGURATION_SUCCESS) {
-       [self notify:@"Failed to configure device clock"];
+       [self notifyError:@"Failed to configure device clock"];
     }
 }
 
-- (void) notify:(NSString*)message {
+- (void) notifyInfo:(NSString*)message {
+    [Teleport logInfo:message];
+    [self.callbackObject performSelector:self.selector withObject:message];
+}
+
+- (void) notifyError:(NSString*)message {
+    [Teleport logError:message];
     [self.callbackObject performSelector:self.selector withObject:message];
 }
 
@@ -85,7 +94,7 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
     RETURN_CODE dateRt = [self initClockDate];
     RETURN_CODE timeRt = [self initClockTime];
     if (RETURN_CODE_DO_SUCCESS == dateRt && RETURN_CODE_DO_SUCCESS == timeRt) {
-        NSLog(@"Clock Initialized");
+        [Teleport logInfo:@"Clock Initialized"];
     } else {
         return CLOCK_FAILED;
     }
@@ -122,9 +131,9 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
     NSData* response;
     RETURN_CODE increaseStandByTimeRt = [[IDT_VP3300 sharedController] device_sendIDGCommand:0xF0 subCommand:0x00 data:[IDTUtility hexToData:@"053C"] response:&response];
     if(RETURN_CODE_DO_SUCCESS != increaseStandByTimeRt) {
-        [self notify:@"Failed to increase stand by time to 60 seconds"];
+        [self notifyError:@"Failed to increase stand by time to 60 seconds"];
     } else {
-        NSLog(@"Stand by time increased to 60 seconds");
+        [Teleport logInfo:@"Stand by time increased to 60 seconds"];
     }
 }
     

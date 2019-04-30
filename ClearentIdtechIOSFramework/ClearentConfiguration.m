@@ -10,7 +10,6 @@
 
 @implementation ClearentConfiguration
 
-
 - (instancetype) initWithJson: (NSDictionary*) rawJson {
     self = [super init];
     if (self) {

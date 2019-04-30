@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ClearentManualEntry.h"
+#import "Teleport.h"
 
 static NSString *const GENERIC_ERROR_RESPONSE = @"Fail to create transaction token for manual entry";
 static NSString *const CARD_REQUIRED = @"Card number required";
@@ -21,13 +22,13 @@ static NSString *const EXPIRATION_DATE_REQUIRED = @"Expiration date required";
             self.clearentManualEntryDelegate = clearentManualEntryDelegate;
             self.publicKey = publicKey;
             self.clearentBaseUrl = clearentBaseUrl;
-            NSLog(@"ClearentManualEntry initialized");
         }
         return self;
     }
 
     - (void) handleManualEntryError:(NSString*)message {
-           [self.clearentManualEntryDelegate handleManualEntryError:message];
+        [Teleport logError:message];
+        [self.clearentManualEntryDelegate handleManualEntryError:message];
     }
     
     - (void) createTransactionToken:(ClearentCard*)clearentCard {
@@ -40,12 +41,12 @@ static NSString *const EXPIRATION_DATE_REQUIRED = @"Expiration date required";
                return;
            }
            NSString *targetUrl = [NSString stringWithFormat:@"%@/%@", self.clearentBaseUrl, @"rest/v2/mobilejwt/manual"];
-           NSLog(@"targetUrl: %@", targetUrl);
            NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
            NSError *error;
            NSData *postData = [NSJSONSerialization dataWithJSONObject:clearentCard.asDictionary options:0 error:&error];
            
            if (error) {
+               [Teleport logError:@"Failed to serialize card data"];
                [self handleManualEntryError:GENERIC_ERROR_RESPONSE];
                return;
            }

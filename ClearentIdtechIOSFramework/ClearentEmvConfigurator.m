@@ -9,6 +9,8 @@
 #import <Foundation/Foundation.h>
 #import "ClearentEmvConfigurator.h"
 #import <IDTech/IDTUtility.h>
+#import "Teleport.h"
+
 static NSString *const EMV_DIP_ENTRY_MODE_TAG = @"05";
 static NSString *const IDTECH_EMV_ENTRY_MODE_EMV_TAG = @"DFEE17";
 static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm internet access and try reconnecting. If this does not work contact support.";
@@ -40,6 +42,7 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
     if(![allErrors isEqualToString:@""]) {
         return allErrors;
     }
+    [Teleport logInfo:@"Configuration done"];
     return @"Reader configured and ready";
 }
 
@@ -48,9 +51,11 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
     
     RETURN_CODE emvSetTerminalMajorConfigurationRt = [_sharedController emv_setTerminalMajorConfiguration:terminalMajorConfiguration];
     if (RETURN_CODE_DO_SUCCESS == emvSetTerminalMajorConfigurationRt) {
+        [Teleport logInfo:@"Contact Terminal Major Set to 5"];
         NSLog(@"Contact Terminal Major Set to 5");
     } else {
         NSString *error =[_sharedController device_getResponseCodeString:emvSetTerminalMajorConfigurationRt];
+        [Teleport logError:[NSString stringWithFormat:@"Failed to set terminal to 5 %@", error]];
         NSLog(@"Failed to set terminal to 5 %@",[NSString stringWithFormat:@"%@", error]);
         return TERMINAL_MAJOR_5C_FAILED;
     }
@@ -59,8 +64,9 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
     NSData *defaultTlvTags = [IDTUtility hexToData:defaultTlvData.uppercaseString];
     RETURN_CODE setDefaultRt = [_sharedController emv_setTerminalData:[IDTUtility TLVtoDICT:defaultTlvTags]];
     if (RETURN_CODE_DO_SUCCESS == setDefaultRt) {
-        NSLog(@"Emv Entry mode changed from 07 to 05");
+        [Teleport logInfo:@"Emv Entry mode changed from 07 to 05"];
     } else{
+        [Teleport logError:@"Failed to retrieve major tags"];
         return MAJOR_TAGS_RETRIEVE_FAILED;
     }
     return EMV_CONFIGURATION_SUCCESS;
@@ -86,9 +92,11 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
         NSDictionary *values = [contactAid objectForKey:@"aid-values"];
         RETURN_CODE rt = [_sharedController emv_setApplicationData:name configData:values];
         if (RETURN_CODE_DO_SUCCESS == rt) {
+            [Teleport logInfo:[NSString stringWithFormat:@"contact aid loaded %@", name]];
             NSLog(@"contact aid loaded %@",[NSString stringWithFormat:@"%@", name]);
         } else{
             NSString *error =[_sharedController device_getResponseCodeString:rt];
+            [Teleport logError:[NSString stringWithFormat:@"contact aid failed to load %@,%@", name, error]];
             NSLog(@"contact aid failed to load %@",[NSString stringWithFormat:@"%@,%@", name, error]);
             allSuccessful = false;
         }
@@ -119,9 +127,11 @@ static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm interne
         NSData* capk = [IDTUtility hexToData:combined];
         RETURN_CODE capkRt = [_sharedController emv_setCAPKFile:capk];
         if (RETURN_CODE_DO_SUCCESS == capkRt) {
+            [Teleport logInfo:[NSString stringWithFormat:@"contact capk loaded %@", name]];
             NSLog(@"contact capk loaded %@",[NSString stringWithFormat:@"%@", name]);
         } else{
             NSString *error =[_sharedController device_getResponseCodeString:capkRt];
+            [Teleport logError:[NSString stringWithFormat:@"contact capk failed to load %@,%@", name, error]];
             NSLog(@"contact capk failed to load %@",[NSString stringWithFormat:@"%@,%@", name, error]);
             allSuccessful = false;
         }

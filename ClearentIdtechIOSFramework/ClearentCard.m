@@ -13,16 +13,16 @@
 - (NSDictionary*) asDictionary {
     NSDictionary* dict;
     if(self.softwareType == nil) {
-        self.softwareType = @"ClearentIdTechIOSFramework";
+        self.softwareType = @"ClearentIdtechIOSFramework";
     }
     if(self.softwareTypeVersion == nil) {
         self.softwareTypeVersion = @"v1";
     }
     
     if(self.csc != nil) {
-        dict = @{@"card":self.card,@"exp-date":self.expirationDateMMYY,@"csc":self.csc,@"softare-type":self.softwareType,@"software-type-version":self.softwareTypeVersion};
+        dict = @{@"card":self.card,@"exp-date":self.expirationDateMMYY,@"csc":self.csc,@"software-type":self.softwareType,@"software-type-version":self.softwareTypeVersion};
     } else {
-        dict = @{@"card":self.card,@"exp-date":self.expirationDateMMYY,@"softare-type":self.softwareType,@"software-type-version":self.softwareTypeVersion};
+        dict = @{@"card":self.card,@"exp-date":self.expirationDateMMYY,@"software-type":self.softwareType,@"software-type-version":self.softwareTypeVersion};
     }
     return dict;
 }
@@ -33,5 +33,6 @@
     return [[NSString alloc] initWithData:data
                                  encoding:NSUTF8StringEncoding];
 }
+
 @end
 

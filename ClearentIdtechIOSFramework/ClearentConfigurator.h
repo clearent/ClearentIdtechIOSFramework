@@ -33,7 +33,8 @@ typedef enum{
 
     - (void) configure: (NSString*)kernelVersion deviceSerialNumber:(NSString*) deviceSerialNumber;
     - (void) configure: (NSDictionary*) jsonConfiguration;
-    - (void) notify:(NSString*)message;
+    - (void) notifyInfo:(NSString*)message;
+    - (void) notifyError:(NSString*)message;
     - (NSData*) getClockDateAsYYYYMMDD;
     - (NSData*) getClockTimeAsHHMM;
 @end

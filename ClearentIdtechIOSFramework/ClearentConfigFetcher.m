@@ -7,6 +7,7 @@
 //
 
 #import "ClearentConfigFetcher.h"
+#import "ClearentUtils.h"
 
 static NSString *const RELATIVE_URL = @"rest/v2/mobile/devices";
 
@@ -63,6 +64,7 @@ static NSString *const RELATIVE_URL = @"rest/v2/mobile/devices";
     [nSMutableURLRequest setHTTPMethod:@"GET"];
     [nSMutableURLRequest setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     [nSMutableURLRequest setValue:_publicKey  forHTTPHeaderField:@"public-key"];
+    [nSMutableURLRequest setValue:[ClearentUtils createExchangeChainId:_deviceSerialNumber] forHTTPHeaderField:@"exchangeChainId"];
     [nSMutableURLRequest setURL:[NSURL URLWithString:[self createTargetUrl]]];
     return nSMutableURLRequest;
 }

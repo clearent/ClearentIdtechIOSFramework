@@ -10,6 +10,8 @@
 #import "ClearentConfigurator.h"
 #import "IDTech/IDTUtility.h"
 #import "ClearentUtils.h"
+#import "Teleport.h"
+#import "ClearentCache.h"
 
 static NSString *const TRACK2_DATA_EMV_TAG = @"57";
 static NSString *const TRACK1_DATA_EMV_TAG = @"56";
@@ -29,8 +31,6 @@ static NSString *const TIMEOUT_ERROR_RESPONSE = @"TIME OUT";
 static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Transaction Token Failed";
 static NSString *const FAILED_TO_READ_CARD_ERROR_RESPONSE = @"Failed to read card";
 
-static NSString *const NSUSERDEFAULT_DEVICESERIALNUMBER = @"DeviceSerialNumber";
-static NSString *const NSUSERDEFAULT_READERCONFIGURED = @"ReaderConfigured";
 static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready";
 
 @implementation ClearentDelegate
@@ -55,7 +55,7 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
     if (lines != nil) {
         for (NSString* message in lines) {
             if(message != nil && [message isEqualToString:@"TERMINATE"]) {
-                NSLog(@"IDTech framework terminated the request.");
+                [Teleport logError:@"IDTech framework terminated the request."];
                 [self deviceMessage:@"TERMINATE"];
             } else if(message != nil && [message isEqualToString:@"DECLINED"]) {
                 NSLog(@"This is not really a decline. Clearent is creating a transaction token for later use.");
@@ -63,7 +63,7 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
                 NSLog(@"This is not really an approval. Clearent is creating a transaction token for later use.");
             } else {
                 if(message != nil) {
-                    NSLog([NSString stringWithFormat:@"%@:%@", @"lcdDisplay", message]);
+                    [Teleport logInfo:message];
                 }
                [updatedArray addObject:message];
             }
@@ -103,6 +103,7 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
     if (RETURN_CODE_DO_SUCCESS == rt) {
         return result;
     } else{
+        [Teleport logError:@"Device Firmware version not found"];
         return @"Device Firmware version not found";
     }
 }
@@ -113,6 +114,7 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
     if (RETURN_CODE_DO_SUCCESS == rt) {
         return result;
     } else{
+        [Teleport logError:@"Device Kernel Version Unknown"];
         return @"Device Kernel Version Unknown";
     }
 }
@@ -129,7 +131,8 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
         }
         return firstTenOfDeviceSerialNumber;
     } else{
-        return @"Device Serial number not found";
+        [Teleport logError:@"Failed to get device serial number using config_getSerialNumber"];
+        return @"9999999999";
     }
 }
 
@@ -139,7 +142,7 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
 
 - (void) deviceMessage:(NSString*)message {
     if(message != nil) {
-        NSLog([NSString stringWithFormat:@"%@:%@", @"deviceMessage", message]);
+        [Teleport logInfo:[NSString stringWithFormat:@"%@:%@", @"deviceMessage", message]];
     }
     if(message != nil && [message isEqualToString:READER_CONFIGURED_MESSAGE]) {
         NSString *firstTenOfDeviceSerialNumber = nil;
@@ -148,13 +151,13 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
         } else {
             firstTenOfDeviceSerialNumber = self.deviceSerialNumber;
         }
-        [self updateConfigurationCache:firstTenOfDeviceSerialNumber readerConfiguredFlag:@"true"];
-    
+        [ClearentCache updateConfigurationCache:firstTenOfDeviceSerialNumber readerConfiguredFlag:@"true"];
+        [Teleport logInfo:@"Communicate to client app the reader is ready for use"];
         [self.publicDelegate isReady];
         return;
     }
     if(message != nil && [message isEqualToString:@"POWERING UNIPAY"]) {
-       [self.publicDelegate deviceMessage:@"Powering up reader..."];
+        [self.publicDelegate deviceMessage:@"Powering up reader..."];
         return;
     }
     if(message != nil && [message isEqualToString:@"RETURN_CODE_LOW_VOLUME"]) {
@@ -239,12 +242,6 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
 }
 
 - (void) emvTransactionData:(IDTEMVData*)emvData errorCode:(int)error{
-
-    NSLog(@"EMV Transaction Data Response: = %@",[[IDT_VP3300 sharedController] device_getResponseCodeString:error]);
-    
-    if (emvData.resultCodeV2 != EMV_RESULT_CODE_V2_NO_RESPONSE) {
-        NSLog(@"emvData.resultCodeV2: = %@",[NSString stringWithFormat:@"EMV_RESULT_CODE_V2_response = %2X",emvData.resultCodeV2]);
-    }
     
     if (emvData == nil) {
         return;
@@ -297,10 +294,8 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
     }
 
     if(entryMode == 0) {
-        NSLog(@"No entryMode defined");
+        [Teleport logError:@"No entryMode defined"];
         return;
-    } else {
-        NSLog(@"entryMode: %d", entryMode);
     }
     
     if (emvData.cardData != nil && emvData.resultCodeV2 == EMV_RESULT_CODE_V2_MSR_SUCCESS) {
@@ -377,6 +372,7 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         if(RETURN_CODE_DO_SUCCESS == emvRetrieveTransactionResultRt) {
             outgoingTags = [transactionResultDictionary objectForKey:@"tags"];
         } else {
+            [Teleport logError:@"Failed to retrieve tlv from Device"];
             tlvInHex = @"Failed to retrieve tlv from Device";
         }
     }
@@ -388,12 +384,13 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     } else {
         NSDictionary *ff8105 = [IDTUtility TLVtoDICT_HEX_ASCII:[tags objectForKey:@"FF8105"]];
         if(ff8105 != nil) {
+            [Teleport logInfo:@"ff8105 found"];
             NSString *track2Data9F6B = [ff8105 objectForKey:TRACK2_DATA_CONTACTLESS_NON_CHIP_TAG];
             if(track2Data9F6B != nil && !([track2Data9F6B isEqualToString:@""])) {
-                NSLog(@"Use the track 2 data from tag 9F6B");
+                [Teleport logInfo:@"Use the track 2 data from tag 9F6B"];
                 clearentTransactionTokenRequest.track2Data = track2Data9F6B.uppercaseString;
             } else {
-                NSLog(@"Mobile SDK failed to read Track2Data");
+                [Teleport logError:@"Mobile SDK failed to read Track2Data"];
                 clearentTransactionTokenRequest.track2Data = @"Mobile SDK failed to read Track2Data";
             }
         }
@@ -457,7 +454,6 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         return;
     }
     NSString *targetUrl = [NSString stringWithFormat:@"%@/%@", self.baseUrl, @"rest/v2/mobilejwt"];
-    NSLog(@"targetUrl: %@", targetUrl);
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     NSError *error;
     NSData *postData = [NSJSONSerialization dataWithJSONObject:clearentTransactionTokenRequest.asDictionary options:0 error:&error];
@@ -466,6 +462,8 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         [self deviceMessage:GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
         return;
     }
+    
+    [Teleport logInfo:@"Call Clearent to produce transaction token"];
     
     [request setHTTPBody:postData];
     [request setHTTPMethod:@"POST"];
@@ -532,26 +530,16 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     }
     NSString *responseCode = [jsonDictionary objectForKey:@"code"];
     if([responseCode isEqualToString:@"200"]) {
+        [Teleport logInfo:@"Successful transaction token communicated to client app"];
         [self.publicDelegate successfulTransactionToken:response];
     } else {
         [self deviceMessage:GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];    
     }
 }
 
-- (void) updateConfigurationCache:(NSString *) deviceSerialNumber readerConfiguredFlag:(NSString *) readerConfiguredFlag {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:deviceSerialNumber forKey:NSUSERDEFAULT_DEVICESERIALNUMBER];
-    [defaults setObject:readerConfiguredFlag forKey:NSUSERDEFAULT_READERCONFIGURED];
-    [defaults synchronize];
-    NSLog(@"Updated the reader configuration cache");
-}
-
 - (void) clearConfigurationCache {
-    NSLog(@"Clear the reader configuration cache");
-     [self updateConfigurationCache:nil readerConfiguredFlag:nil];
+     [ClearentCache clearConfigurationCache];
 }
-
-
 
 @end
 
