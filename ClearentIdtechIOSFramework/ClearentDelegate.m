@@ -152,7 +152,7 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
             firstTenOfDeviceSerialNumber = self.deviceSerialNumber;
         }
         [ClearentCache updateConfigurationCache:firstTenOfDeviceSerialNumber readerConfiguredFlag:@"true"];
-        [Teleport logInfo:@"Communicate to client app the reader is ready for use"];
+        [Teleport logInfo:@"Framework notified reader is ready"];
         [self.publicDelegate isReady];
         return;
     }
