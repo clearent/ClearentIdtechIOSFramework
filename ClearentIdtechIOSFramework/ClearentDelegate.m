@@ -288,9 +288,13 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
 
     int entryMode = 0;
     if (emvData.unencryptedTags != nil) {
-        entryMode = getEntryMode([[emvData.unencryptedTags objectForKey:@"9F39"] description]);
-    } else if (emvData.encryptedTags != nil) {
-        entryMode = getEntryMode([[emvData.encryptedTags objectForKey:@"9F39"] description]);
+        NSData *entrymodedata = [emvData.unencryptedTags objectForKey:@"9F39"];
+        if(entrymodedata != nil) {
+            NSString *entrymodeString = [IDTUtility dataToHexString:entrymodedata];
+            if(entrymodeString != nil) {
+                entryMode = entrymodeString.intValue;
+            }
+        }
     }
 
     if(entryMode == 0) {

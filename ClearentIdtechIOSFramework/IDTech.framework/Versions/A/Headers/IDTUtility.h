@@ -39,5 +39,6 @@
 +(NSDictionary*) combineDictionaries:(NSDictionary*)source dest:(NSDictionary*)dest overwrite:(BOOL)overwrite;
 +(void)pause:(float)sec;
 +(NSDictionary*) processTLVUnencrypted:(NSData*)param;
++(NSDictionary*) processTLVUnencryptedStringValue:(NSData*)param;
 +(NSString*) dtv:(double)amt;
 @end

@@ -1,5 +1,5 @@
 //
-//  IDT_VP3600.h
+//  IDT_VP8800.h
 //  IDTech
 //
 //  Created by Randy Palermo on 10/29/14.
@@ -10,8 +10,8 @@
 #import "IDTMSRData.h"
 #import "IDT_Device.h"
 
-/** Protocol methods established for IDT_VP3600 class  **/
-@protocol IDT_VP3600_Delegate <NSObject>
+/** Protocol methods established for IDT_VP8800 class  **/
+@protocol IDT_VP8800_Delegate <NSObject>
 @optional
 -(void) deviceConnected; //!<Fires when device connects.  If a connection is established before the delegate is established (no delegate to send initial connection notification to), this method will fire upon establishing the delegate.
 -(void) deviceDisconnected; //!<Fires when device disconnects.
@@ -26,6 +26,27 @@
 
 - (void) deviceMessage:(NSString*)message;//!<Receives messages from the framework
 //!< @param message String message transmitted by framework
+
+
+/**
+ PIN Request
+ During an EMV transaction, this delegate will receive data that is a request to collect a PIN
+ 
+ @param mode PIN Mode:
+ - EMV_PIN_MODE_CANCEL = 0X00,
+ - EMV_PIN_MODE_ONLINE_PIN_DUKPT = 0X01,
+ - EMV_PIN_MODE_ONLINE_PIN_MKSK = 0X02,
+ - EMV_PIN_MODE_OFFLINE_PIN = 0X03
+ @param key Either DUKPT or SESSION, depending on mode. If offline plaintext, value is nil
+ @param PAN PAN for calculating PINBlock
+ @param startTO Timeout value to start PIN entry
+ @param intervalTO Timeout value between key presses
+ @param language "EN"=English, "ES"=Spanish, "ZH"=Chinese, "FR"=French
+ 
+ */
+
+- (void) pinRequest:(EMV_PIN_MODE_Types)mode  key:(NSData*)key  PAN:(NSData*)PAN startTO:(int)startTO intervalTO:(int)intervalTO language:(NSString*)language;
+
 
 
 /**
@@ -85,16 +106,21 @@
  */
 - (void) emvTransactionData:(IDTEMVData*)emvData errorCode:(int)error;
 
+- (void) gen2Data:(NSData*)tlv;//!<Receives Gen2 TLV data.
+//!< @param tlv TLV data from gen2 event
+
+
+
 @end
 
 /**
- Class to drive the IDT_VP3600 device
+ Class to drive the IDT_VP8800 device
  */
-@interface IDT_VP3600 : NSObject<IDT_Device_Delegate>{
-    id<IDT_VP3600_Delegate> delegate;
+@interface IDT_VP8800 : NSObject<IDT_Device_Delegate>{
+    id<IDT_VP8800_Delegate> delegate;
 }
 
-@property(strong) id<IDT_VP3600_Delegate> delegate;  //!<- Reference to IDT_VP3600_Delegate.
+@property(strong) id<IDT_VP8800_Delegate> delegate;  //!<- Reference to IDT_VP8800_Delegate.
 
 
 
@@ -110,11 +136,11 @@
 /**
  * Singleton Instance
  *
- Establishes an singleton instance of IDT_VP3600 class.
+ Establishes an singleton instance of IDT_VP8800 class.
  
- @return  Instance of IDT_VP3600
+ @return  Instance of IDT_VP8800
  */
-+(IDT_VP3600*) sharedController;
++(IDT_VP8800*) sharedController;
 
 /**
  *Close Device
@@ -127,7 +153,7 @@
 /**
  Cancels Transaction request (all interfaces, CTLS/MSR/INSERT).
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3600::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
  */
 
 -(RETURN_CODE) ctls_cancelTransaction;
@@ -137,7 +163,7 @@
 /**
  Cancels Transaction request (all interfaces, CTLS/MSR/INSERT).
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3600::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
  */
 
 -(RETURN_CODE) emv_cancelTransaction;
@@ -147,7 +173,7 @@
 /**
  Cancels Transaction request (all interfaces, CTLS/MSR/INSERT).
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3600::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
  */
 
 -(RETURN_CODE) device_cancelTransaction;
@@ -161,7 +187,7 @@
  @param group Configuration Group
  @param response Group TLV returned as a dictionary
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3600::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
  
  
  */
@@ -205,7 +231,7 @@
  Removes all the CAPK for CTLS
  
  * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3600::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
 
  */
 -(RETURN_CODE) ctls_removeAllCAPK;
@@ -217,7 +243,7 @@
  
  @param AID Name of ApplicationID as Hex String (example "A0000000031010") Must be between 5 and 16 bytes
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3600::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
  
  */
 -(RETURN_CODE) ctls_removeApplicationData:(NSString*)AID;
@@ -229,7 +255,7 @@
  
  @param capk 6 byte CAPK =  5 bytes RID + 1 byte INDEX
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3600::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
  
  */
 -(RETURN_CODE)  ctls_removeCAPK:(NSData*)capk;
@@ -241,7 +267,7 @@
  
  @param group Configuration Group
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3600::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
  
  */
 -(RETURN_CODE)  ctls_removeConfigurationGroup:(int)group;
@@ -254,7 +280,7 @@
  
  @param response  array of AID name as NSData*
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3600::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
  
  */
 -(RETURN_CODE) ctls_retrieveAIDList:(NSArray**)response;
@@ -267,7 +293,7 @@
  @param AID Name of ApplicationID as Hex String (example "A0000000031010"). Must be between 5 and 16 bytes
  @param response  The TLV elements of the requested AID
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3600::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
  */
 -(RETURN_CODE)  ctls_retrieveApplicationData:(NSString*)AID response:(NSDictionary**)response;
 
@@ -286,7 +312,7 @@
  - Public Key Exponent: Actually, the real length of the exponent is either one byte or 3 bytes. It can have two values: 3 (Format is 0x00 00 00 03), or  65537 (Format is 0x00 01 00 01)
  - Modulus Length: LenL LenH Indicated the length of the next field.
  - Modulus: This is the modulus field of the public key. Its length is specified in the field above.
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3600::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
  */
 -(RETURN_CODE)  ctls_retrieveCAPK:(NSData*)capk key:(NSData**)key;
 
@@ -298,7 +324,7 @@
  
  @param keys NSArray of NSData CAPK name  (RID + Index)
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3600::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
  */
 -(RETURN_CODE)  ctls_retrieveCAPKList:(NSArray**)keys;
 
@@ -310,7 +336,7 @@
  
  @param tlv Response returned as a TLV
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3600::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
  
  
  */
@@ -328,7 +354,7 @@
  Example valid TLV, for Group #2, AID a0000000035010:
  "DFEE2D01029f0607a0000000051010DFEE4B0101DFEE2E0110DFEE4D0114DFEE4C0106"
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3600::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
  
  */
 -(RETURN_CODE)  ctls_setApplicationData:(NSData*)tlv;
@@ -363,7 +389,7 @@
  A second tag must exist
  
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3600::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
  
  */
 -(RETURN_CODE) ctls_setConfigurationGroup:(NSData*)tlv;
@@ -379,7 +405,7 @@
  
  @param tlv TerminalData configuration data
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3600::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
  
  */
 -(RETURN_CODE) ctls_setTerminalData:(NSData*)tlv;
@@ -399,9 +425,9 @@
  @param type Transaction type (tag value 9C).
  @param timeout Timeout value in seconds.
  @param tags Any other tags to be included in the request.
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3600::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
  *
- * NOTE ON INTERFACE SELECTION: For the VP3600, tag DFEF37 is used to determine which interfaces to use for the transaction:
+ * NOTE ON INTERFACE SELECTION: For the VP8800, tag DFEF37 is used to determine which interfaces to use for the transaction:
   - 01 = MSR Only
   - 02 = CTLS Only
   - 03 = MSR + CTLS
@@ -459,9 +485,9 @@
  *  - - Bit 4-8 : RFU
  *
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3600::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
  *
- * NOTE ON INTERFACE SELECTION: For the VP3600, tag DFEF37 is used to determine which interfaces to use for the transaction:
+ * NOTE ON INTERFACE SELECTION: For the VP8800, tag DFEF37 is used to determine which interfaces to use for the transaction:
  - 01 = MSR Only
  - 02 = CTLS Only
  - 03 = MSR + CTLS
@@ -503,9 +529,13 @@
 
 /**
  * Begins searching for Bluetooth Low Energy devices in range
- - VP3600
+ - VP8800
  *
- * @param identifier This will only connect to a device with this calculated UUID identifier.  If nil is passed, it will connect to the first devices with the default friendly name (IDT_VP3600::device_getBLEFriendlyName / IDT_VP3600::device_setBLEFriendlyName)
+ * This method will UNPAIR and DISCONNECT from any current PAIRED and CONNECTED devices before starting a new BLE Device Search.  This function is for PAIRING a new Device and
+ * connecting to it.  Once a device is PAIRED/CONNECTED, the search will terminate.  If a paired devices becomes disconnected (out of range, power cycle), the BLE search will automatically
+ * start again to reconnect to the devices once available
+ *
+ * @param identifier This will only connect to a device with this calculated UUID identifier.  If nil is passed, it will connect to the first devices with the default friendly name (IDT_VP8800::device_getBLEFriendlyName / IDT_VP8800::device_setBLEFriendlyName)
  *
  * @return bool  If successful, polling has started
  *
@@ -545,7 +575,7 @@
 
 /**
  * Stops searching for Bluetooth Low Energy devices in range
- - VP3600
+ - VP8800
  *
  *
  * @return bool  If successful, polling was in progress and has stopped. If unsuccessful, BLE Device Search was not in progress.
@@ -556,7 +586,7 @@
 
 /**
  * Returns the UUID of the connected BLE device
- - VP3600
+ - VP8800
  *
  * @return NSUUID  UUID of the connected BLE device.  Returns nil if no BLE device connected.
  *
@@ -564,7 +594,13 @@
 -(NSUUID*) device_connectedBLEDevice;
 
 
-
+/**
+ * Disconnect from BLE -
+ *
+ * Will disconnect from existing BLE connection. You can now set another BLE Friendly Name to attach to another device.
+ *
+ */
+-(void) device_disconnectBLE;
 
 /**
  * Get Transaction Results
@@ -600,7 +636,7 @@
  
  @code
  typedef enum{
- IDT_DEVICE_VP3600_IOS = 16
+ IDT_DEVICE_VP8800_IOS = 16
  }IDT_DEVICE_Types;
  
  @endcode
@@ -623,11 +659,39 @@
 -(RETURN_CODE) device_sendIDGCommand:(unsigned char)command subCommand:(unsigned char)subCommand data:(NSData*)data response:(NSData**)response;
 
 
+/**
+ * Send NEO IDG Command
+ Send a NEO IDG ViVOtech 3.0 command
+ *
+ * @param command  One byte command as per NEO IDG Reference Guide
+ * @param subCommand  One byte sub-command as per NEO IDG Reference Guide
+ * @param data  Command data (if applicable)
+ * @param response  Returns next Command response
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniMagIII::device_getResponseCodeString:()
+ 
+ *
+ */
+-(RETURN_CODE) device_sendIDGCommandV3:(unsigned char)command subCommand:(unsigned char)subCommand data:(NSData*)data response:(NSData**)response;
+
+
+/**
+ * Send 2nd Gen Command
+ *
+ Informs SDK to format command for EMV Gen2 Device Communication
+ 
+ @param tlv  TLV Command
+ @param response  TLV Response
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:())
+ 
+ */
+-(RETURN_CODE) device_sendGen2Cmd:(NSData*)tlv response:(NSData**)response;
 
 /**
  * Set Pass Through
  
- Sets Pass-Through mode on VP3600
+ Sets Pass-Through mode on VP8800
  *
  @param enablePassThrough  TRUE = Pass through enabled
  
@@ -819,6 +883,7 @@
  This will REMOVE the an AID configuration file and all the tlv data associated with that AID.
  
  @param AID Name of ApplicationID in ASCII, example "A0000000031020".  Must be between 5 and 16 characters
+ If null or empty string is passed, it will remove ALL application data
  
  * @return RETURN_CODE:
  - 0x0000: Success: no error - RETURN_CODE_DO_SUCCESS
@@ -975,29 +1040,7 @@
  */
 -(RETURN_CODE) emv_retrieveApplicationData:(NSString*)AID response:(NSDictionary**)responseAID;
 
-/**
- * Retrieve Certificate Authority Public Key
- *
- Retrieves the CAPK as specified by the RID/Index  passed as a parameter in the CAKey structure.  The CAPK will be in the response parameter
- 
- @param rid The RID of the key to retrieve
- @param index The Index of the key to retrieve
- @param response Response returned as a CAKey
- 
- * @return RETURN_CODE:
- - 0x0000: Success: no error - RETURN_CODE_DO_SUCCESS
- - 0x0001: Disconnect: no response from reader - RETURN_CODE_ERR_DISCONNECT
- - 0x0002: Invalid Response: invalid response data - RETURN_CODE_ERR_CMD_RESPONSE
- - 0x0003: Timeout: time out for task or CMD - RETURN_CODE_ERR_TIMEDOUT
- - 0x0004: Invalid Parameter: wrong parameter - RETURN_CODE_ERR_INVALID_PARAMETER
- - 0x0005: MSR Busy: SDK is doing MSR or ICC task - RETURN_CODE_SDK_BUSY_MSR
- - 0x0006: PINPad Busy:  SDK is doing PINPad task - RETURN_CODE_SDK_BUSY_PINPAD
- - 0x0007: Unknown:  Unknown error - RETURN_CODE_ERR_OTHER
- - 0x0100 through 0xFFFF refer to IDT_UniPayII::device_getResponseCodeString:()
- 
- 
- */
--(RETURN_CODE) emv_retrieveCAPK:(NSString*)rid index:(NSString*)index response:(CAKey**)response;
+
 
 
 /**
@@ -1175,26 +1218,7 @@
  */
 -(RETURN_CODE) emv_setApplicationData:(NSString*)aidName configData:(NSDictionary*)data;
 
-/**
- * Set Certificate Authority Public Key
- *
- Sets the CAPK as specified by the CAKey structure
- 
- @param key CAKey containing the RID, Index, and key data to set
- 
- * @return RETURN_CODE:
- - 0x0000: Success: no error - RETURN_CODE_DO_SUCCESS
- - 0x0001: Disconnect: no response from reader - RETURN_CODE_ERR_DISCONNECT
- - 0x0002: Invalid Response: invalid response data - RETURN_CODE_ERR_CMD_RESPONSE
- - 0x0003: Timeout: time out for task or CMD - RETURN_CODE_ERR_TIMEDOUT
- - 0x0004: Invalid Parameter: wrong parameter - RETURN_CODE_ERR_INVALID_PARAMETER
- - 0x0005: MSR Busy: SDK is doing MSR or ICC task - RETURN_CODE_SDK_BUSY_MSR
- - 0x0006: PINPad Busy:  SDK is doing PINPad task - RETURN_CODE_SDK_BUSY_PINPAD
- - 0x0007: Unknown:  Unknown error - RETURN_CODE_ERR_OTHER
- - 0x0100 through 0xFFFF refer to IDT_UniPayII::device_getResponseCodeString:()
- 
- */
--(RETURN_CODE) emv_setCAPK:(CAKey)key;
+
 
 /**
  * Set Certificate Authority Public Key
@@ -1302,7 +1326,7 @@
  The tags will be returned in the emvTransactionData delegate protocol.
  
  
- By default, auto authorize is ENABLED.  If auto authorize is DISABLED, this function will complete with a return of EMV_RESULT_CODE_START_TRANSACTION_SUCCESS to emvTransactionData delegate protocol, and then IDT_VP3600::emv_authenticateTransaction() must be executed.  If auto authorize is ENABLED (default), IDT_VP3600::emv_authenticateTransaction() will automatically be executed after receiving the result EMV_RESULT_CODE_START_TRANSACTION_SUCCESS.  The auto authorize can be enabled/disabled with IDT_VP3600::emv_disableAutoAuthenticateTransaction:()
+ By default, auto authorize is ENABLED.  If auto authorize is DISABLED, this function will complete with a return of EMV_RESULT_CODE_START_TRANSACTION_SUCCESS to emvTransactionData delegate protocol, and then IDT_VP8800::emv_authenticateTransaction() must be executed.  If auto authorize is ENABLED (default), IDT_VP8800::emv_authenticateTransaction() will automatically be executed after receiving the result EMV_RESULT_CODE_START_TRANSACTION_SUCCESS.  The auto authorize can be enabled/disabled with IDT_VP8800::emv_disableAutoAuthenticateTransaction:()
  
  @param amount Transaction amount value  (tag value 9F02)
  @param amtOther Other amount value, if any  (tag value 9F03)
@@ -1320,7 +1344,7 @@
  * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
  
  *
- * NOTE ON INTERFACE SELECTION: For the VP3600, tag DFEF37 is used to determine which interfaces to use for the transaction:
+ * NOTE ON INTERFACE SELECTION: For the VP8800, tag DFEF37 is used to determine which interfaces to use for the transaction:
  - 01 = MSR Only
  - 02 = CTLS Only
  - 03 = MSR + CTLS
@@ -1340,7 +1364,7 @@
  *
  * @param response  Returns Serial Number
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3600::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
  
  *
  */
@@ -1355,7 +1379,7 @@
  @param dataAPDU  APDU data packet
  @param response Unencrypted/encrypted parsed APDU response
  *
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3600::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
  
  
  */
@@ -1368,7 +1392,7 @@
  
  @param readerStatus Pointer that will return with the ICCReaderStatus results.
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3600::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
  
  @code
  ICCReaderStatus* readerStatus;
@@ -1437,7 +1461,7 @@
  
  Cancels Transaction request (all interfaces, CTLS/MSR/INSERT).
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3600::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
  */
 
 -(RETURN_CODE) msr_cancelMSRSwipe;
@@ -1449,7 +1473,7 @@
  Enables CLTS and MSR, waiting for swipe or tap to occur. Returns IDTEMVData to deviceDelegate::emvTransactionData:() 
  
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP3600::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
  
  
  */
@@ -1464,30 +1488,20 @@
 
 
 /**
- * Start A Transaction Request
+ * Start a  Transaction Request
  *
- Authorizes the EMV, CTLS, or MSR transaction
+ Authorizes the CTLS transaction for an CTLS card
  
- 
- For a contact ICC EMV transaction, by default auto authorize is ENABLED.  If auto authorize is DISABLED, this function will complete with a return of EMV_RESULT_CODE_START_TRANSACTION_SUCCESS to emvTransactionData delegate protocol, and then IDT_UniPayII::emv_authenticateTransaction() must be executed.  If auto authorize is ENABLED (default), IDT_UniPayII::emv_authenticateTransaction() will automatically be executed after receiving the result EMV_RESULT_CODE_START_TRANSACTION_SUCCESS.  The auto authorize can be enabled/disabled with IDT_VP3600::emv_disableAutoAuthenticateTransaction:()
+ The tags will be returned in the callback routine.
  
  @param amount Transaction amount value  (tag value 9F02)
- @param amtOther Other amount value, if any  (tag value 9F03)
+ @param exponent Number of characters after decimile point
  @param type Transaction type (tag value 9C).
  @param timeout Timeout value in seconds.
- @param tags Any other tags to be included in the request.  Passed as NSData.  Example, tag 9F0C with amount 0x000000000100 would be 0x9F0C06000000000100
- If tags 9F02 (amount),9F03 (other amount), or 9C (transaction type) are included, they will take priority over these values supplied as individual parameters to this method.
- Tag DFEE1A can be used to specify tags to be returned in response, in addition to the default tags. Example DFEE1A049F029F03 will return tags 9F02 and 9F03 with the response
- 
- @param forceOnline TRUE = do not allow offline approval,  FALSE = allow ICC to approve offline if terminal capable
- @param autoAuthenticate Will automatically execute Authenticate Transacation after start transaction returns successful
- @param fallback Indicate if it supports fallback to MSR
- 
- 
- * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
- 
+ @param tags Any other tags to be included in the request.
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
  *
- * NOTE ON INTERFACE SELECTION: For the VP3600, tag DFEF37 is used to determine which interfaces to use for the transaction:
+ * NOTE ON INTERFACE SELECTION: For the VP8800, tag DFEF37 is used to determine which interfaces to use for the transaction:
  - 01 = MSR Only
  - 02 = CTLS Only
  - 03 = MSR + CTLS
@@ -1497,10 +1511,12 @@
  - 07 = EMV + MSR + CLTS.
  This API method will automatically send DFEF37 with a value of 07 if this tag is not provided.
  *
- 
- 
+ * USE tag DFEF3C for fallback support and timeout waiting for insertion
+ * byte 1: = fallback support  01 = YES, 00 = NO
+ * byte 2-3 = timeout in BCD.  Example 60 seconds is 0060
+ *
  */
--(RETURN_CODE) device_startTransaction:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline  fallback:(BOOL)fallback;
+-(RETURN_CODE) device_startTransaction:(double)amount type:(int)type timeout:(int)timeout tags:(NSData*)tags;
 
 /**
  * Capture Function Key
@@ -1550,7 +1566,22 @@
  */
 -(RETURN_CODE) pin_capturePin:(int)type PAN:(NSString*)PAN minPIN:(int)minPIN maxPIN:(int)maxPIN message:(NSString*)message;
 
-
+/**
+ * Set BluetoothParameters
+ 
+ Sets the name and password for the BLE module.
+ 
+ Sending nil to all three parameters resets the default password to 123456
+ *
+ * @param name  Device name, 1-25 characters
+ * @param oldPW  Old password, as a six character string, example "123456"
+ * @param newPW  New password, as a six character string, example "654321"
+ 
+ * @return RETURN_CODE:  Values can be parsed with device_getResponseCodeString
+ 
+ *
+ */
+-(RETURN_CODE) config_setBluetoothParameters:(NSString*)name oldPW:(NSString*)oldPW newPW:(NSString*)newPW;
 
 /**
  * FeliCa Authentication
@@ -1574,13 +1605,14 @@
  Reads up to 3 blocks with MAC Generation.  FeliCa Authentication must be performed first
  
   NOTE: The reader must be in Pass Through Mode for FeliCa commands to work.
- 
- @param blockList Block to read. Each block in blockList = 2 bytes of data.  Maximum 3 block requests (6 bytes of data)
+
+ @param numBlocks Number of blocks
+ @param blockList Block to read. Each block in blockList   Maximum 3 block requests
  @param blocks  Blocks read.  Each block 16 bytes.
  * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
  
  */
--(RETURN_CODE) felica_readWithMac:(NSData*)blockList blocks:(NSData**)blocks;
+-(RETURN_CODE) felica_readWithMac:(int)numBlocks blockList:(NSData*)blockList blocks:(NSData**)blocks;
 
 
 /**
@@ -1606,12 +1638,13 @@
   NOTE: The reader must be in Pass Through Mode for FeliCa commands to work.
  
  @param serviceCode Service Code List. Each service code in Service Code List = 2 bytes of data
- @param blockList Blocks to read. Each block in blockList = 2 bytes of data.  Maximum 4 block requests (8 bytes of data)
+ @param numBlocks Number of blocks
+ @param blockList Blocks to read. Maximum 4 block requests
  @param blocks  Blocks read.  Each block 16 bytes.
  * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
  
  */
--(RETURN_CODE) felica_read:(NSData*)serviceCode blockList:(NSData*)blockList blocks:(NSData**)blocks;
+-(RETURN_CODE) felica_read:(NSData*)serviceCode numBlocks:(int)numBlocks blockList:(NSData*)blockList blocks:(NSData**)blocks;
 
 
 /**
@@ -1622,42 +1655,28 @@
   NOTE: The reader must be in Pass Through Mode for FeliCa commands to work.
  
  @param serviceCode Service Code list.  Each service code must be be 2 bytes
- @param blockList Block list.  Must be 3 bytes
+ @param blockList Block list.
  @param data  Block to write.  Must be 16 bytes.
  @param statusFlag  Status flag response as explained in FeliCA Lite-S User's Manual, Section 4.5
  * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
  
  */
--(RETURN_CODE) felica_write:(NSData*)serviceCode blockList:(NSData*)blockList data:(NSData*)data statusFlag:(NSData**)statusFlag;
-
-/**
- * FeliCa Poll for Card
- *
- Polls for a Felica Card
- 
-  NOTE: The reader must be in Pass Through Mode for FeliCa commands to work.
- 
- @param systemCode System Code.  Must be 2 bytes
- @param response  Poll response as explained in FeliCA Lite-S User's Manual
- * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
- 
- */
--(RETURN_CODE) felica_poll:(NSData*)systemCode response:(NSData**)response;
+-(RETURN_CODE) felica_write:(NSData*)serviceCode  blockList:(NSData*)blockList data:(NSData*)data statusFlag:(NSData**)statusFlag;
 
 
 /**
- * FeliCa Request Service
+ * FeliCa NFC Commands
  *
- Request Service for a Felica Card
+ Perform functions a Felica Card
  
   NOTE: The reader must be in Pass Through Mode for FeliCa commands to work.
  
- @param nodeCode Node Code List.  Each node 1 byte
+ @param request Request as explained in IDTech NEO IDG Guide
  @param response  Response as explained in FeliCA Lite-S User's Manual
  * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
  
  */
--(RETURN_CODE) felica_requestService:(NSData*)nodeCode response:(NSData**)response;
+-(RETURN_CODE) felica_nfcCommand:(NSData*)request response:(NSData**)response;
 
 /**
  * Capture Amount Input

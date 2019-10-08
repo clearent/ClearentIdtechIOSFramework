@@ -50,6 +50,11 @@
 
 - (void) lcdDisplay:(int)mode  lines:(NSArray*)lines;
 
+- (void) gen2Data:(NSData*)tlv;//!<Receives Gen2 TLV data.
+//!< @param tlv TLV data from gen2 event
+
+
+
 /**
  PIN Request
  During an EMV transaction, this delegate will receive data that is a request to collect a PIN
@@ -333,6 +338,21 @@
  
  */
 -(RETURN_CODE)  ctls_retrieveTerminalData:(NSData**)tlv;
+
+
+/**
+ * Send 2nd Gen Command
+ *
+ Informs SDK to format command for EMV Gen2 Device Communication
+ 
+ @param tlv  TLV Command
+ @param response  TLV Response
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:())
+ 
+ */
+-(RETURN_CODE) device_sendGen2Cmd:(NSData*)tlv response:(NSData**)response;
+
 
 /**
  * Set Application Data by AID
@@ -647,6 +667,21 @@
  *
  */
 -(RETURN_CODE) device_sendIDGCommand:(unsigned char)command subCommand:(unsigned char)subCommand data:(NSData*)data response:(NSData**)response;
+
+/**
+ * Send NEO IDG Command
+ Send a NEO IDG ViVOtech 3.0 command
+ *
+ * @param command  One byte command as per NEO IDG Reference Guide
+ * @param subCommand  One byte sub-command as per NEO IDG Reference Guide
+ * @param data  Command data (if applicable)
+ * @param response  Returns next Command response
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniMagIII::device_getResponseCodeString:()
+ 
+ *
+ */
+-(RETURN_CODE) device_sendIDGCommandV3:(unsigned char)command subCommand:(unsigned char)subCommand data:(NSData*)data response:(NSData**)response;
 
 /**
  * Set Volume To Audio Reader

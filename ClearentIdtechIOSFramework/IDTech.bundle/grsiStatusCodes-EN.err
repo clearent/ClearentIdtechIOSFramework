@@ -80,6 +80,21 @@ EE27	Not sending commands in correct index message index (ILM)
 EE28	Time out or next expected message not received (ILM)
 EE29	ILM languages not available for viewing (ILM)
 EE2A	Other language not supported (ILM)
+EE41	Unknown Error from SAM
+EE42	Invalid data detected by SAM
+EE43	Incomplete data detected by SAM
+EE44	Reserved
+EE45	Invalid key hash algorithm
+EE46	Invalid key encryption algorithm
+EE47	Invalid modulus length
+EE48	Invalid exponent
+EE49	Key already exists
+EE4A	No space for new RID
+EE4B	Key not found
+EE4C	Crypto not responding
+EE4D	Crypto communication error
+EE4E	Module-specific error for Key Manager
+EE4F	All key slots are full (maximum number of keys has been installed)
 EE50	Auto-Switch OK
 EE51	Auto-Switch failed
 EE60	Data not exist
