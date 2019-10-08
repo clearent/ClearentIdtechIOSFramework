@@ -64,11 +64,11 @@ When a card is processed (swipe or insert/dip of card with an emv chip), the fra
 
 -(RETURN_CODE) device_startTransaction:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline  fallback:(BOOL)fallback;
 
-2 - Interact with reader - If you are using bluetooth make sure you've pressed the button on the reader. The bluetooth reader should have a blue led flashing quickly. This means it's connected and can communicate with the reader. The framework will callback in the deviceMessage with some messages that are indicate what is going on. If you see a message similar to 'Insert,swipe or, tap', that means to go ahead and have the card interact with the reader.
+2 - Interact with reader - If you are using bluetooth make sure you've pressed the button on the reader. The bluetooth reader should have a blue led flashing quickly. This means it's connected and can communicate with the reader. The framework will callback in the deviceMessage with messages that indicate what is happening between the framework and the reader. If you see a message similar to 'Insert, swipe or, tap', that means the reader is ready for card interaction.
 
 3 - Success - If you get a callback to the successfulTransactionToken it means the card was reader successfully and translated to a transaction token.
 
-4 - Failure - The framework will send messages back that indicate failure. ex - TERMINATE, 'Card read error'. When this happens, you can call the device_cancelTransaction method to cancel the current transaction and then attempt again. If the problem persists it is recommended you key in the card and use the manual entry process.
+4 - Failure - The framework will send messages back that indicate failure. ex - TERMINATE, 'Card read error'. When this happens, you can call the device_cancelTransaction method to cancel the current transaction and attempt again. If the problem persists it is recommended you key in the card and use the manual entry process.
 
 ## Use the Clearent Framework to create a transaction token (JWT) for a manually entered card
 
