@@ -129,7 +129,7 @@ typedef struct {
 +(void) disableAudioDetection;
 +(NSString*) SDK_version;
 +(UniPay*) start:(id<UniPay_Delegate>)del;
-+(void) resetSharedController;
+//+(void) resetSharedController;
 // troubleshooting
 +(void) enableLogging:(BOOL) enable;
 +(UniPay*) sharedController;
