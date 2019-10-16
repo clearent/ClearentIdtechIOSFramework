@@ -381,7 +381,16 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         }
     }
     //TODO Search for this data element(DFEF18) Track2 Data during MC contactless swipe
-    NSString *track2Data57 = [IDTUtility dataToHexString:[tags objectForKey:TRACK2_DATA_EMV_TAG]];
+    NSString *track2Data57;
+    if([[tags objectForKey:TRACK2_DATA_EMV_TAG] isKindOfClass:[NSString class]]) {
+        NSLog(@"57 is a string");
+        track2Data57 = [tags objectForKey:TRACK2_DATA_EMV_TAG];
+    } else {
+        NSLog(@"57 is not a string. use idtech utility to convert");
+        track2Data57 = [IDTUtility dataToHexString:[tags objectForKey:TRACK2_DATA_EMV_TAG]];
+    }
+    
+    
     if(track2Data57 != nil && !([track2Data57 isEqualToString:@""])) {
         clearentTransactionTokenRequest.track2Data = track2Data57.uppercaseString;
         [outgoingTags setObject:track2Data57 forKey:TRACK2_DATA_EMV_TAG];

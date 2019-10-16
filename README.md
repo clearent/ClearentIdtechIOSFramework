@@ -122,3 +122,5 @@ When the Clearent framework applies the emv configuration to the reader it is us
 1.0.26.3 - discovered another ios13 fix. It's recommended that both audio jack users and bluetooth users upgrade.
 
 Idtech introduced a new message that comes back in the callback. They modified the device_startTransaction to return a swipe/tap/insert display message, and modified ctls_startTransaction to return a tap/swipe message. This might impact your solution if you are coding off of these messages.
+
+1.0.26.4 - Fixed an issue where the framework was not handling the card data correctly when the user has been presented with the 'USE MAGSTRIPE' message after an invalid insert. The result was an NSInvalidArgumentException being thrown.
