@@ -1,18 +1,18 @@
 # Clearent IDTech IOS Framework
 
-This is an IOS Framework that works with the IDTech framework to handle credit card data for IDTECH VIVOpay reader.
+This IOS Framework works with the IDTech framework allowing you to handle credit card data form an IDTECH VIVOpay reader (VP3300).
 
-Carthage was chosen to bring the Clearent framework into your project because of its flexibility.  Reference Carthage documentation here [Carthage](https://github.com/Carthage/Carthage).
+## Dependency Management.
 
-## Build the framework, build your app.
+You can use our [Clearent Cocoapod](https://github.com/clearent/CocoaPods) or [Carthage](https://github.com/Carthage/Carthage).
 
-### Use Carthage ###
+### Carthage ###
 
 1 - Install Carthage if you have not done so. ex - brew install carthage.
 
 2 - Add your github credentials to XCode.
 
-3 - Add a Cartfile to your project (at root). Point to Clearent's private github repository for this framework by adding the following to your Cartfile
+3 - Add a Cartfile to your project (at root). Point to Clearent's github repository for this framework by adding the following to your Cartfile
 
     github "clearent/ClearentIdtechIOSFramework" == 1.0.26.4
 
@@ -28,10 +28,6 @@ Carthage was chosen to bring the Clearent framework into your project because of
     From the Clearent framework, drag and drop its corresponding dSYM file.
 
 7 - Build your app. The Clearent Framework should be available for use.
-
-### Use CocoaPod ###
-
-[Clearent Cocoapod](https://github.com/clearent/CocoaPods)
 
 ## Use the Clearent Framework with an IDTech device - the code
 
@@ -51,7 +47,7 @@ clearentVP3300 = [[Clearent_VP3300 alloc]  init];
 
 [clearentVP3300 init:self clearentBaseUrl:@"http://gateway-sb.clearent.net", @"the public key Clearent gave you"];
 
-5 - Monitor for device readiness thru the isReady method of the delegate.
+5 - Monitor for device readiness thru the isReady method of the delegate. You can also use the isConnected method of the Clearent_VP3300 object to verify the framework is still connected to the reader.
 
 6 - Implement the successfulTransactionToken method. This method returns a token which represents the credit card and the current transaction request. It allows you to submit a payment transaction.
 When a card is processed (swipe or insert/dip of card with an emv chip), the framework will call successfulTransactionToken method when tokenization is successful.
@@ -60,9 +56,10 @@ When a card is processed (swipe or insert/dip of card with an emv chip), the fra
   //This json contains the transaction token. See demo app for more details
 }
 
-7 - Monitor for errors by implementing the deviceMessage method.
+7 - Monitor for errors by implementing the deviceMessage and lcdDisplay methods. When you see the message INSERT/SWIPE it means
+you should interact with the reader.
 
-8 - When you are ready to process the payment, do a POST against endpoint /rest/v2/mobile/transactions/sale (for a sale). See demo app for an example (https://github.com/clearent/IDTech_VP3300_Demo)
+8 - When you are ready to process the payment, do a POST against endpoint /rest/v2/mobile/transactions/sale (for a sale). See demo app for an example [Clearent IDTech VP3300 iOS Demo]](https://github.com/clearent/IDTech_VP3300_Demo)
 
 ## Basic User Flow
 
@@ -77,7 +74,6 @@ When a card is processed (swipe or insert/dip of card with an emv chip), the fra
 4 - Failure - The framework will send messages back that indicate failure. ex - TERMINATE, 'Card read error'. When this happens, you can call the device_cancelTransaction method to cancel the current transaction and attempt again. If the problem persists it is recommended you key in the card and use the manual entry process.
 
 ## Use the Clearent Framework to create a transaction token (JWT) for a manually entered card
-
 
 1 - Change your interface to adhere to the delegate ClearentManualEntryDelegate
 Ex -@interface ViewController : UIViewController<UIAlertViewDelegate,Clearent_Public_IDTech_VP3300_Delegate, UIActionSheetDelegate,MFMailComposeViewControllerDelegate>,ClearentManualEntryDelegate
