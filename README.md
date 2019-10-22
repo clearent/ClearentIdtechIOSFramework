@@ -59,7 +59,7 @@ When a card is processed (swipe or insert/dip of card with an emv chip), the fra
 7 - Monitor for errors by implementing the deviceMessage and lcdDisplay methods. When you see the message INSERT/SWIPE it means
 you should interact with the reader.
 
-8 - When you are ready to process the payment, do a POST against endpoint /rest/v2/mobile/transactions/sale (for a sale). See demo app for an example [Clearent IDTech VP3300 iOS Demo]](https://github.com/clearent/IDTech_VP3300_Demo)
+8 - When you are ready to process the payment, do a POST against endpoint /rest/v2/mobile/transactions/sale (for a sale). See demo app for an example [Clearent IDTech VP3300 iOS Demo](https://github.com/clearent/IDTech_VP3300_Demo)
 
 ## Basic User Flow
 
