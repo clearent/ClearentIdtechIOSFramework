@@ -1,4 +1,4 @@
-# Clearent IDTech IOS Framework
+# Clearent IDTech IOS Framework /play butts
 
 This IOS Framework works with the IDTech framework allowing you to handle credit card data form an IDTECH VIVOpay reader (VP3300).
 
