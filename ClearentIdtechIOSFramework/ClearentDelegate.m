@@ -81,7 +81,7 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
     self = [super init];
     if (self) {
         self.publicDelegate = publicDelegate;
-        
+
         self.baseUrl = clearentBaseUrl;
         self.publicKey = publicKey;
         SEL configurationCallbackSelector = @selector(deviceMessage:);
@@ -161,7 +161,7 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
     self.deviceSerialNumber = [self getDeviceSerialNumber];
     self.kernelVersion = [self getKernelVersion];
     [self.publicDelegate deviceConnected];
-    
+
     [self deviceMessage:@"Device connected. Waiting for configuration to complete..."];
     [_clearentConfigurator configure:self.kernelVersion deviceSerialNumber:self.deviceSerialNumber autoConfiguration:self.autoConfiguration contactlessAutoConfiguration:self.contactlessAutoConfiguration];
 }
@@ -263,7 +263,7 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
     if(message != nil) {
         [Teleport logInfo:[NSString stringWithFormat:@"%@:%@", @"deviceMessage", message]];
     }
-    
+
     if(message != nil && [message isEqualToString:READER_CONFIGURED_MESSAGE]) {
         [Teleport logInfo:@"Framework notified reader is ready"];
         [self.publicDelegate isReady];
@@ -271,7 +271,7 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
         [self resetBluetoothSearch];
         return;
     }
-    
+
     if(message != nil && [message isEqualToString:@"POWERING UNIPAY"]) {
         [self.publicDelegate deviceMessage:@"Powering up reader..."];
         return;
@@ -280,14 +280,14 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
         [self.publicDelegate deviceMessage:@"Device failed to connect.Turn the headphones volume all the way up and reconnect."];
         return;
     }
-   
+
     if(message != nil && ([message isEqualToString:TIMEOUT_ERROR_RESPONSE2] ||[message isEqualToString:TIMEOUT_ERROR_RESPONSE] ||[message isEqualToString:UNABLE_TO_GO_ONLINE] || [message isEqualToString:MSD_CONTACTLESS_UNSUPPORTED])) {
         RETURN_CODE cancelTransactionRt = [[IDT_VP3300 sharedController] device_cancelTransaction];
         if (RETURN_CODE_DO_SUCCESS == cancelTransactionRt) {
             [Teleport logInfo:@"deviceMessage: Cancelled transaction for timeout, msd, or connectivity issues"];
         }
     }
-    
+
     if(message != nil && [message containsString:@"BLE DEVICE FOUND"] && _defaultBluetoothFriendlyName != nil && [message containsString:_defaultBluetoothFriendlyName]) {
 //            NSArray *components = [message componentsSeparatedByString:@"("];
 //            NSArray *uuidComponents = [components.lastObject componentsSeparatedByString:@")"];
@@ -304,19 +304,19 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
     if(contactlessError == nil || [contactlessError isEqualToString:@""] || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_NONE]) {
         return;
     }
-    
+
     RETURN_CODE cancelTransactionRt = [[IDT_VP3300 sharedController] device_cancelTransaction];
     if (RETURN_CODE_DO_SUCCESS == cancelTransactionRt) {
         NSLog(@"Cancel Transaction Succeeded");
     } else {
          NSLog(@"Cancel Transaction failed. Do we need this ?");
     }
-    
+
     if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_COLLISION_ERROR]) {
         [self.publicDelegate deviceMessage:@"PRESENT ONE CARD ONLY"];
         return;
     }
-    
+
     NSString *errorMessage;
     if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_CARD_BLOCKED]) {
         [self.publicDelegate deviceMessage:@"CARD BLOCKED"];
@@ -359,14 +359,14 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
         [self.publicDelegate deviceMessage:DEVICE_NOT_CONNECTED];
         return;
     }
-    
+
     NSString *fullErrorMessage;
     if(errorMessage != nil && ![errorMessage isEqualToString:@""]) {
         fullErrorMessage = [NSString stringWithFormat:@"% @%@ %@", @"TAP FAILED. ", errorMessage, @". INSERT/SWIPE"];
     } else {
         fullErrorMessage = @"TAP FAILED. INSERT/SWIPE";
     }
-    
+
     RETURN_CODE emvStartRt;
     emvStartRt =  [[IDT_VP3300 sharedController] emv_startTransaction:self.clearentPaymentRequest.amount amtOther:self.clearentPaymentRequest.amtOther type:self.clearentPaymentRequest.type timeout:self.clearentPaymentRequest.timeout tags:self.clearentPaymentRequest.tags forceOnline:self.clearentPaymentRequest.forceOnline fallback:self.clearentPaymentRequest.fallback];
     if(RETURN_CODE_OK_NEXT_COMMAND == emvStartRt || RETURN_CODE_DO_SUCCESS == emvStartRt) {
@@ -384,12 +384,12 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
         [self.publicDelegate deviceMessage:DEVICE_NOT_CONNECTED];
         return;
     }
-    
+
     [Teleport logInfo:@"retryContactless:device_startTransaction"];
-    
+
     RETURN_CODE emvStartRt;
     emvStartRt =  [[IDT_VP3300 sharedController] device_startTransaction:self.clearentPaymentRequest.amount amtOther:self.clearentPaymentRequest.amtOther type:self.clearentPaymentRequest.type timeout:20 tags:self.clearentPaymentRequest.tags forceOnline:self.clearentPaymentRequest.forceOnline fallback:self.clearentPaymentRequest.fallback];
-    
+
     if(RETURN_CODE_OK_NEXT_COMMAND == emvStartRt || RETURN_CODE_DO_SUCCESS == emvStartRt) {
         [self.publicDelegate deviceMessage:CONTACTLESS_RETRY_MESSAGE];
     } else {
@@ -443,7 +443,7 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
     } else if (cardData != nil && cardData.event == EVENT_MSR_TIMEOUT) {
         [self deviceMessage:TIMEOUT_ERROR_RESPONSE];
     } else {
-        
+
         NSData *result;
         RETURN_CODE device_sendIDGCommandRt = [[IDT_VP3300 sharedController] device_sendIDGCommand:0x01 subCommand:0x05 data:[IDTUtility hexToData:@"1905"] response:&result];
         if (RETURN_CODE_DO_SUCCESS == device_sendIDGCommandRt) {
@@ -451,10 +451,10 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
          } else{
            [self deviceMessage:@"fail"];
         }
-        
-    
 
-        
+
+
+
        [self deviceMessage:GENERIC_CARD_READ_ERROR_RESPONSE];
     }
 }
@@ -502,32 +502,32 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
     NSString *tlvInHexWith9F39 = [NSString stringWithFormat:@"%@%@", tlvInHex, @"9F390195"];
     clearentTransactionTokenRequest.emv = false;
     clearentTransactionTokenRequest.tlv = tlvInHexWith9F39.uppercaseString;
-    
+
     return clearentTransactionTokenRequest;
 }
 
 - (void) emvTransactionData:(IDTEMVData*)emvData errorCode:(int)error{
 
     [Teleport logInfo:[NSString stringWithFormat:@"EMV Transaction Data Response: = %@",[[IDT_VP3300 sharedController] device_getResponseCodeString:error]]];
-    
+
     if([self isEmvErrorHandled:emvData error:error]) {
         return;
     }
-    
+
     int entryMode = [self getEntryMode: emvData];
-   
+
     if(entryMode == 0 && emvData.cardType != 1) {
         [Teleport logError:@"No entryMode defined"];
         return;
     }
-    
+
     if (emvData.cardType == 1 && entryMode == CONTACTLESS_MAGNETIC_SWIPE) {
         [self deviceMessage:MSD_CONTACTLESS_UNSUPPORTED];
         return;
     }
 
     [self convertIDTechCardToClearentTransactionToken:emvData entryMode:entryMode];
-   
+
     _originalEntryMode = entryMode;
 }
 
@@ -547,11 +547,11 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
 
 - (BOOL) isEmvErrorHandled:  (IDTEMVData*)emvData error:(int)error {
     BOOL emvErrorHandled = NO;
-    
+
     if (emvData != nil && emvData.cardType != 1 && emvData.resultCodeV2 != EMV_RESULT_CODE_V2_NO_RESPONSE) {
        [Teleport logInfo:[NSString stringWithFormat:@"EMV_RESULT_CODE_V2_response = %2X",emvData.resultCodeV2]];
     }
-    
+
     if (error == 8) {
         emvErrorHandled = YES;
         [self deviceMessage:TIMEOUT_ERROR_RESPONSE];
@@ -588,9 +588,9 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
      } else if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_START_TRANS_SUCCESS) {
          emvErrorHandled = YES;
      }
-    
+
     return emvErrorHandled;
-    
+
 }
 
 - (void) convertIDTechCardToClearentTransactionToken: (IDTEMVData*)emvData entryMode:(int) entryMode {
@@ -649,13 +649,13 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
  */
 - (BOOL) isContactlessError: (NSString*) ffee1fFirstByte {
     BOOL contactlessError = NO;
-       
+
     if(ffee1fFirstByte != nil && ![ffee1fFirstByte isEqualToString:@""]) {
         if(![ffee1fFirstByte isEqualToString:CONTACTLESS_ERROR_CODE_NONE] && ![ffee1fFirstByte isEqualToString:CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED]) {
             contactlessError = YES;
         }
     }
-    
+
     return contactlessError;
 }
 
@@ -691,7 +691,7 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     NSData *tagsAsNSData;
     NSString *tlvInHex;
     NSString *track2Data57;
-    
+
     if(emvData.cardData != nil) {
         if(emvData.cardData.encTrack2 != nil) {
             clearentTransactionTokenRequest.encrypted = true;
@@ -721,7 +721,7 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         clearentTransactionTokenRequest.encrypted = false;
         track2Data57 = [IDTUtility dataToHexString:[emvData.unencryptedTags objectForKey:TRACK2_DATA_EMV_TAG]];
     }
-    
+
     if(track2Data57 != nil && !([track2Data57 isEqualToString:@""])) {
         clearentTransactionTokenRequest.track2Data = track2Data57.uppercaseString;
     } else if (emvData.cardType == 1) {//contactless
@@ -745,23 +745,23 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
                 clearentTransactionTokenRequest.track2Data = encryptedTrack2.uppercaseString;
             }
         }
-    
+
         NSData* ff8105Data = [emvData.unencryptedTags objectForKey:@"FF8105"];
         [self addFromFF81XX: clearentTransactionTokenRequest ff81XX:ff8105Data tags:outgoingTags];
-    
+
         NSData* ff8106Data = [emvData.unencryptedTags objectForKey:@"FF8106"];
         [self addFromFF81XX: clearentTransactionTokenRequest ff81XX:ff8106Data tags:outgoingTags];
     }
-    
+
     [self addRequiredTags: outgoingTags];
     [self addApplicationPreferredName:clearentTransactionTokenRequest tags:outgoingTags];
-    
+
     [self removeInvalidTSYSTags: outgoingTags];
-    
+
     if (emvData.cardType == 1) {
         [self removeInvalidContactlessTags:outgoingTags];
         [self updateTransactionTimeTags:outgoingTags];
-        
+
         //commented this out during EMV Phase 1 contactless certification. Why did we do it in the first place ?
 //        NSString *data9F53 = [IDTUtility dataToHexString:[outgoingTags objectForKey:@"9F53"]];
 //        if(data9F53 != nil) {
@@ -769,25 +769,25 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
 //            [outgoingTags setObject:@"2010000000009000" forKey:@"9F53"];
 //        }
     }
-    
+
     NSString *deviceSerialNumber = [self deviceSerialNumber];
     if(deviceSerialNumber != nil && [deviceSerialNumber length] > 8) {
         [outgoingTags removeObjectForKey:@"9F1E"];
         NSString *lastEightOfDeviceSerialNumber = [deviceSerialNumber substringFromIndex:[deviceSerialNumber length] - 8];
         [outgoingTags setObject:[IDTUtility stringToData:lastEightOfDeviceSerialNumber] forKey:@"9F1E"];
     }
-    
+
     if(outgoingTags != nil) {
         tagsAsNSData = [IDTUtility DICTotTLV:outgoingTags];
         tlvInHex = [IDTUtility dataToHexString:tagsAsNSData];
         clearentTransactionTokenRequest.tlv = tlvInHex.uppercaseString;
     }
-    
+
     clearentTransactionTokenRequest.emv = true;
     clearentTransactionTokenRequest.kernelVersion = [self kernelVersion];
     clearentTransactionTokenRequest.deviceSerialNumber = [self deviceSerialNumber];
     clearentTransactionTokenRequest.firmwareVersion = [self firmwareVersion];
-    
+
     return clearentTransactionTokenRequest;
 }
 
@@ -825,7 +825,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
         NSDictionary*_unencTags = [tags objectForKey:@"tags"];
         NSDictionary*_encTags = [tags objectForKey:@"encrypted"];
         NSDictionary*_maskedTags = [tags objectForKey:@"masked"];
-        
+
         if(_unencTags != nil) {
             [outgoingTags addEntriesFromDictionary:_unencTags];
             [self addApplicationPreferredName:clearentTransactionTokenRequest tags:_unencTags];
@@ -921,12 +921,12 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     [outgoingTags removeObjectForKey:@"DF8115"];
     [outgoingTags removeObjectForKey:@"9F12"];
     [outgoingTags removeObjectForKey:@"FFEE1F"];
-   
+
     NSString *dataDF8129 = [IDTUtility dataToHexString:[outgoingTags objectForKey:@"DF8129"]];
     if(dataDF8129 != nil) {
         [outgoingTags removeObjectForKey:@"DF8129"];
     }
-    
+
     NSString *data9F6E = [IDTUtility dataToHexString:[outgoingTags objectForKey:@"9F6E"]];
     if(data9F6E == nil || ([data9F6E isEqualToString:@""])) {
         [outgoingTags removeObjectForKey:@"9F6E"];
@@ -957,12 +957,12 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     [outgoingTags removeObjectForKey:@"9F5D"];
     [outgoingTags removeObjectForKey:@"9F6C"];//visa unknown in tsys
     [outgoingTags removeObjectForKey:@"9F6D"];//mastercard unknown in tsys
-    
+
     NSString *data9F7C = [IDTUtility dataToHexString:[outgoingTags objectForKey:@"9F7C"]];
     if(data9F7C == nil || ([data9F7C isEqualToString:@""]) || ([data9F7C isEqualToString:@"0000000000000000000000000000000000000000"])) {
         [outgoingTags removeObjectForKey:@"9F7C"];
     }
-    
+
 }
 
 - (void) updateTransactionTimeTags: (NSMutableDictionary*) outgoingTags {
@@ -983,14 +983,14 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     NSError *error;
     NSData *postData = [NSJSONSerialization dataWithJSONObject:clearentTransactionTokenRequest.asDictionary options:0 error:&error];
-    
+
     if (error) {
         [self deviceMessage:GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
         return;
     }
     [self deviceMessage:TRANSLATING_CARD_TO_TOKEN];
     [Teleport logInfo:@"Call Clearent to produce transaction token"];
-    
+
     [request setHTTPBody:postData];
     [request setHTTPMethod:@"POST"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
@@ -999,7 +999,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     [request setValue:self.publicKey forHTTPHeaderField:@"public-key"];
     [request setURL:[NSURL URLWithString:targetUrl]];
     //[request setTimeoutInterval:30];
-    
+
     [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:
       ^(NSData * _Nullable data,
         NSURLResponse * _Nullable response,
@@ -1060,7 +1060,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
         [self deviceMessage:SUCCESSFUL_TOKENIZATION_MESSAGE];
         [self.publicDelegate successfulTransactionToken:response];
     } else {
-        [self deviceMessage:GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];    
+        [self deviceMessage:GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
     }
 }
 
@@ -1070,31 +1070,31 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
 
 - (void) sendDeclineReceipt:(IDTEMVData*)emvData {
     [self deviceMessage:@"DECLINED"];
-    
+
     if(self.clearentPaymentRequest == nil || self.clearentPaymentRequest.emailAddress == nil) {
         [Teleport logError:@"Did not send the offline decline receipt because the email address was not provided"];
         return;
     }
-    
+
     ClearentOfflineDeclineReceipt *clearentOfflineDeclineReceipt = [self map:[self createClearentTransactionTokenRequest:emvData]];
     if(self.clearentPaymentRequest != nil) {
         NSString* formattedAmount = [NSString stringWithFormat:@"%.02f", self.clearentPaymentRequest.amount];
         clearentOfflineDeclineReceipt.amount = formattedAmount;
     }
     [self clearCurrentRequest];
-    
+
     NSString *targetUrl = [NSString stringWithFormat:@"%@/%@", self.baseUrl, @"rest/v2/mobilejwt/decline-receipt"];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     NSError *error;
     NSData *postData = [NSJSONSerialization dataWithJSONObject:clearentOfflineDeclineReceipt.asDictionary options:0 error:&error];
-   
+
     if (error) {
         [self deviceMessage:GENERIC_DECLINE_RECEIPT_ERROR_RESPONSE];
         return;
     }
-    
+
     [Teleport logInfo:@"Call Clearent to send a decline receipt"];
-    
+
     [request setHTTPBody:postData];
     [request setHTTPMethod:@"POST"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
@@ -1103,7 +1103,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     [request setValue:self.publicKey forHTTPHeaderField:@"public-key"];
     [request setURL:[NSURL URLWithString:targetUrl]];
     //[request setTimeoutInterval:20];
-    
+
     [[[NSURLSession sharedSession] dataTaskWithRequest:request completionHandler:
       ^(NSData * _Nullable data,
         NSURLResponse * _Nullable response,
@@ -1196,4 +1196,3 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
 }
 
 @end
-
