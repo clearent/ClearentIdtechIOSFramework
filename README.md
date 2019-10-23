@@ -29,7 +29,7 @@ You can use our [Clearent Cocoapod](https://github.com/clearent/CocoaPods) or [C
 
 :seven: Build your app. The Clearent Framework should be available for use.
 
-## Use the Clearent Framework with an IDTech device - the code
+## Use the Clearent Framework with an IDTech device - Objective C
 
 :one: Add this to your ViewController.h  
 #import <ClearentIdtechIOSFramework/ClearentIdtechIOSFramework.h>
@@ -108,6 +108,12 @@ By default Clearent will apply an emv configuration to your device. This configu
 
 When the Clearent framework applies the emv configuration to the reader it is using IDTech's framework for communication. This process can take up to a couple of minutes and also has its own unique failures that need to be managed (with possible retry logic). The Clearent framework has some retry capability to account for these failures (example bluetooth connectivity) but only attempts a limited number of times. It's up to the client app to account for this initial user experience. Once the reader has been configured the device serial number is cached so the framework knows not to configure again. If you want to avoid hitting this one time delay during a transaction flow you can advise the merchant to perform an initial connection with the reader, maybe at the time they pull the reader out of the box or some time prior to running transactions.
 
+
+# Go Live Checklist
+
+- [ ] Finish Clearent Integration Certification
+- [ ] Change base url from https://gateway-sb.clearent.net to https://gateway.clearent.net
+- [ ] Change public key from one you used for sandbox to the one provided for production
 
 # Release Notes
 
