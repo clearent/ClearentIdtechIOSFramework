@@ -111,11 +111,11 @@ When the Clearent framework applies the emv configuration to the reader it is us
 
 # Go Live Checklist
 
-- [] Finish Clearent Integration Certification
-- [] Change base url from https://gateway-sb.clearent.net to https://gateway.clearent.net
-- [] Change public key from sandbox to production
-- [] Switch Clearent api keys from sandbox to production
-- [] Confirm Clearent api keys are used server side only and not embedded in your app.
+- [ ] Finish Clearent Integration Certification
+- [ ] Change base url from https://gateway-sb.clearent.net to https://gateway.clearent.net
+- [ ] Change public key from sandbox to production
+- [ ] Switch Clearent api keys from sandbox to production
+- [ ] Confirm Clearent api keys are used server side only and not embedded in your app.
 
 # Release Notes
 
