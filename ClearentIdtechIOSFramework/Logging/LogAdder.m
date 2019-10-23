@@ -38,7 +38,7 @@ static NSString *const CREATED_DATE_FORMAT = @"yyyy-MM-dd-HH-mm-ss-SSS-zzz";
     [dateFormat setDateFormat:CREATED_DATE_FORMAT];
     NSDate *now = [[NSDate alloc] init];
     NSString *createdDate = [dateFormat stringFromDate:now];
-    return [NSString stringWithFormat:@"%@booger%@booger%@", level, message, createdDate];
+    return [NSString stringWithFormat:@"%@clrnt%@clrnt%@", level, message, createdDate];
 }
 
 @end

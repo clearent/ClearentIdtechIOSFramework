@@ -14,6 +14,12 @@
     @property(nonatomic) NSDictionary *rawJson;
     @property(nonatomic) NSDictionary *contactAids;
     @property(nonatomic) NSDictionary *publicKeys;
+    @property(nonatomic) NSDictionary *contactlessPublicKeys;
+    @property(nonatomic) BOOL autoConfiguration;
+    @property(nonatomic) BOOL contactlessAutoConfiguration;
+    @property(nonatomic) NSDictionary *contactlessGroups;
+    @property(nonatomic) NSArray *contactlessSupportedAids;
+    @property(nonatomic) NSDictionary *contactlessAids;
 
     - (id) initWithJson: (NSDictionary*) rawJson;
 

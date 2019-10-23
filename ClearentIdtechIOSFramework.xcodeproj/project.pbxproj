@@ -14,6 +14,7 @@
 		E726A0382258B5B400F3E8B7 /* ClearentCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E726A0372258B5B400F3E8B7 /* ClearentCache.m */; };
 		E728DB1E20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E728DB1D20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m */; };
 		E728DB4C20E687A6004C01E7 /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E728DB4B20E687A6004C01E7 /* libOCMock.a */; };
+		E746CB612358983200C41DF1 /* PaymentRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = E746CB602358983200C41DF1 /* PaymentRequest.m */; };
 		E75891EE225522AB00288032 /* ClearentLoggingRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = E75891DE225522AB00288032 /* ClearentLoggingRequest.h */; };
 		E75891EF225522AB00288032 /* LogRotator.m in Sources */ = {isa = PBXBuildFile; fileRef = E75891DF225522AB00288032 /* LogRotator.m */; };
 		E75891F0225522AB00288032 /* Singleton.h in Headers */ = {isa = PBXBuildFile; fileRef = E75891E0225522AB00288032 /* Singleton.h */; };
@@ -34,11 +35,15 @@
 		E75A5BEC20DD20580035B911 /* ClearentEmvConfigurator.m in Sources */ = {isa = PBXBuildFile; fileRef = E75A5BEB20DD20580035B911 /* ClearentEmvConfigurator.m */; };
 		E75A5BEF20DD21BF0035B911 /* ClearentEmvConfigurator.h in Headers */ = {isa = PBXBuildFile; fileRef = E75A5BEA20DD1FF60035B911 /* ClearentEmvConfigurator.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		E75A5BF120DD21FE0035B911 /* ClearentPublicVP3300Delegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E75A5BEE20DD21800035B911 /* ClearentPublicVP3300Delegate.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		E764E7722303182C0029B753 /* ClearentOfflineDeclineReceipt.m in Sources */ = {isa = PBXBuildFile; fileRef = E764E7712303182C0029B753 /* ClearentOfflineDeclineReceipt.m */; };
+		E764E77323031B650029B753 /* ClearentOfflineDeclineReceipt.h in Headers */ = {isa = PBXBuildFile; fileRef = E764E770230317CD0029B753 /* ClearentOfflineDeclineReceipt.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		E764E77423031B740029B753 /* ClearentPaymentRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = E764E76F23030E970029B753 /* ClearentPaymentRequest.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E76505141FFC312500B345F6 /* ExternalAccessory.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76505131FFC312500B345F6 /* ExternalAccessory.framework */; };
 		E76505161FFC313200B345F6 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76505151FFC313200B345F6 /* MediaPlayer.framework */; };
 		E76505181FFC313A00B345F6 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76505171FFC313A00B345F6 /* AVFoundation.framework */; };
 		E765051A1FFC314300B345F6 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76505191FFC314300B345F6 /* AudioToolbox.framework */; };
 		E765051C1FFC314D00B345F6 /* CFNetwork.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E765051B1FFC314D00B345F6 /* CFNetwork.framework */; };
+		E76B5DCF2344D22000ACCA5E /* ClearentVP3300Configuration.h in Headers */ = {isa = PBXBuildFile; fileRef = E76B5DCA2344C5D800ACCA5E /* ClearentVP3300Configuration.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E77687472062B66300284FF4 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = E77687462062B66300284FF4 /* .gitignore */; };
 		E77C900F1FFFE38100C3E590 /* ClearentDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = E77C900D1FFFE38100C3E590 /* ClearentDelegate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		E77C90472000442200C3E590 /* ClearentTransactionTokenRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = E77C90452000442200C3E590 /* ClearentTransactionTokenRequest.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -64,6 +69,7 @@
 		E78E2E84224E847900943B14 /* ClearentUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = E78E2E83224E847900943B14 /* ClearentUtils.m */; };
 		E79A4D94204F14B000E4BBF6 /* ClearentDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = E79A4D93204F14B000E4BBF6 /* ClearentDelegate.m */; };
 		E79BC82520B366300030FD8C /* Clearent_VP3300.m in Sources */ = {isa = PBXBuildFile; fileRef = E79BC82420B366300030FD8C /* Clearent_VP3300.m */; };
+		E7A8BFA023311EE500FEBF48 /* ClearentContactlessConfigurator.m in Sources */ = {isa = PBXBuildFile; fileRef = E7A8BF9F23311EE500FEBF48 /* ClearentContactlessConfigurator.m */; };
 		E7B89E3121F6A6A400078C73 /* ClearentManualEntry.m in Sources */ = {isa = PBXBuildFile; fileRef = E7B89E3021F6A6A400078C73 /* ClearentManualEntry.m */; };
 		E7CA494220E171960090CFFC /* ClearentConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CA494120E171960090CFFC /* ClearentConfiguration.m */; };
 		E7CA494520E1753D0090CFFC /* ClearentConfigurator.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CA494420E1753D0090CFFC /* ClearentConfigurator.m */; };
@@ -111,6 +117,8 @@
 		E728DB5720E6888D004C01E7 /* OCMArg.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OCMArg.h; sourceTree = "<group>"; };
 		E733E2412253C7730050CB31 /* CocoaLumberjack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaLumberjack.framework; path = Carthage/Build/iOS/CocoaLumberjack.framework; sourceTree = "<group>"; };
 		E733E2442253CF090050CB31 /* CocoaLumberjack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaLumberjack.framework; path = ClearentIdtechIOSFramework/CocoaLumberjack.framework; sourceTree = "<group>"; };
+		E746CB5F235896EC00C41DF1 /* PaymentRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PaymentRequest.h; sourceTree = "<group>"; };
+		E746CB602358983200C41DF1 /* PaymentRequest.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = PaymentRequest.m; sourceTree = "<group>"; };
 		E75891DE225522AB00288032 /* ClearentLoggingRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClearentLoggingRequest.h; sourceTree = "<group>"; };
 		E75891DF225522AB00288032 /* LogRotator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LogRotator.m; sourceTree = "<group>"; };
 		E75891E0225522AB00288032 /* Singleton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Singleton.h; sourceTree = "<group>"; };
@@ -131,6 +139,9 @@
 		E75A5BEA20DD1FF60035B911 /* ClearentEmvConfigurator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentEmvConfigurator.h; sourceTree = "<group>"; };
 		E75A5BEB20DD20580035B911 /* ClearentEmvConfigurator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentEmvConfigurator.m; sourceTree = "<group>"; };
 		E75A5BEE20DD21800035B911 /* ClearentPublicVP3300Delegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentPublicVP3300Delegate.h; sourceTree = "<group>"; };
+		E764E76F23030E970029B753 /* ClearentPaymentRequest.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentPaymentRequest.h; sourceTree = "<group>"; };
+		E764E770230317CD0029B753 /* ClearentOfflineDeclineReceipt.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentOfflineDeclineReceipt.h; sourceTree = "<group>"; };
+		E764E7712303182C0029B753 /* ClearentOfflineDeclineReceipt.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentOfflineDeclineReceipt.m; sourceTree = "<group>"; };
 		E76504F41FFC306100B345F6 /* ClearentIdtechIOSFramework.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ClearentIdtechIOSFramework.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E76504F81FFC306100B345F6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E76505131FFC312500B345F6 /* ExternalAccessory.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ExternalAccessory.framework; path = System/Library/Frameworks/ExternalAccessory.framework; sourceTree = SDKROOT; };
@@ -138,6 +149,7 @@
 		E76505171FFC313A00B345F6 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		E76505191FFC314300B345F6 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		E765051B1FFC314D00B345F6 /* CFNetwork.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CFNetwork.framework; path = System/Library/Frameworks/CFNetwork.framework; sourceTree = SDKROOT; };
+		E76B5DCA2344C5D800ACCA5E /* ClearentVP3300Configuration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentVP3300Configuration.h; sourceTree = "<group>"; };
 		E76E42EF21232FB600F83B41 /* ClearentIdtechMacFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentIdtechMacFramework.h; sourceTree = "<group>"; };
 		E76E42F021232FB600F83B41 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E77687462062B66300284FF4 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
@@ -167,6 +179,8 @@
 		E79A4D93204F14B000E4BBF6 /* ClearentDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClearentDelegate.m; sourceTree = "<group>"; };
 		E79BC82320B365F80030FD8C /* Clearent_VP3300.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Clearent_VP3300.h; sourceTree = "<group>"; };
 		E79BC82420B366300030FD8C /* Clearent_VP3300.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Clearent_VP3300.m; sourceTree = "<group>"; };
+		E7A8BF9E23311ECD00FEBF48 /* ClearentContactlessConfigurator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentContactlessConfigurator.h; sourceTree = "<group>"; };
+		E7A8BF9F23311EE500FEBF48 /* ClearentContactlessConfigurator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentContactlessConfigurator.m; sourceTree = "<group>"; };
 		E7B89E2B21F6A38200078C73 /* ClearentCard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentCard.h; sourceTree = "<group>"; };
 		E7B89E2C21F6A3A500078C73 /* ClearentCard.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentCard.m; sourceTree = "<group>"; };
 		E7B89E2E21F6A56600078C73 /* ClearentManualEntryDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentManualEntryDelegate.h; sourceTree = "<group>"; };
@@ -355,6 +369,14 @@
 				E78E2E83224E847900943B14 /* ClearentUtils.m */,
 				E726A0362258B5A400F3E8B7 /* ClearentCache.h */,
 				E726A0372258B5B400F3E8B7 /* ClearentCache.m */,
+				E764E76F23030E970029B753 /* ClearentPaymentRequest.h */,
+				E764E770230317CD0029B753 /* ClearentOfflineDeclineReceipt.h */,
+				E764E7712303182C0029B753 /* ClearentOfflineDeclineReceipt.m */,
+				E7A8BF9E23311ECD00FEBF48 /* ClearentContactlessConfigurator.h */,
+				E7A8BF9F23311EE500FEBF48 /* ClearentContactlessConfigurator.m */,
+				E76B5DCA2344C5D800ACCA5E /* ClearentVP3300Configuration.h */,
+				E746CB5F235896EC00C41DF1 /* PaymentRequest.h */,
+				E746CB602358983200C41DF1 /* PaymentRequest.m */,
 			);
 			path = ClearentIdtechIOSFramework;
 			sourceTree = "<group>";
@@ -419,7 +441,9 @@
 				E77DE83D2248149400C8AB02 /* IDT_Device.h in Headers */,
 				E77DE80E2247ADA900C8AB02 /* Clearent_VP3300.h in Headers */,
 				E77DE844224814C000C8AB02 /* IDT_UniPay.h in Headers */,
+				E764E77423031B740029B753 /* ClearentPaymentRequest.h in Headers */,
 				E77DE84A224814CD00C8AB02 /* IDTCommon.h in Headers */,
+				E76B5DCF2344D22000ACCA5E /* ClearentVP3300Configuration.h in Headers */,
 				E721ECEA21F74B560064163F /* ClearentCard.h in Headers */,
 				E77DE851224814F800C8AB02 /* IDTMSRData.h in Headers */,
 				E77DE8552248150000C8AB02 /* uniMag.h in Headers */,
@@ -427,6 +451,7 @@
 				E77DE848224814C900C8AB02 /* IDT_VP3300.h in Headers */,
 				E77DE853224814FD00C8AB02 /* IDTUtility.h in Headers */,
 				E77DE8572248150400C8AB02 /* UniPay.h in Headers */,
+				E764E77323031B650029B753 /* ClearentOfflineDeclineReceipt.h in Headers */,
 				E75891EE225522AB00288032 /* ClearentLoggingRequest.h in Headers */,
 				E77DE84E224814EF00C8AB02 /* IDTEMVData.h in Headers */,
 				E77DE846224814C500C8AB02 /* IDT_UniPayI_V.h in Headers */,
@@ -551,6 +576,9 @@
 				E78E2E84224E847900943B14 /* ClearentUtils.m in Sources */,
 				E7CA494220E171960090CFFC /* ClearentConfiguration.m in Sources */,
 				E79BC82520B366300030FD8C /* Clearent_VP3300.m in Sources */,
+				E7A8BFA023311EE500FEBF48 /* ClearentContactlessConfigurator.m in Sources */,
+				E746CB612358983200C41DF1 /* PaymentRequest.m in Sources */,
+				E764E7722303182C0029B753 /* ClearentOfflineDeclineReceipt.m in Sources */,
 				E75891F3225522AB00288032 /* LogReaper.m in Sources */,
 				E75891EF225522AB00288032 /* LogRotator.m in Sources */,
 				E75891FC225522AB00288032 /* ClearentLogging.m in Sources */,
@@ -738,7 +766,7 @@
 				);
 				MODULEMAP_FILE = "";
 				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.clearent.quest.ClearentIdtechIOSFrameworks;
+				PRODUCT_BUNDLE_IDENTIFIER = com.clearent.quest.ClearentIdtechIOSFramework;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = NO;
 				STRIP_INSTALLED_PRODUCT = NO;
@@ -772,7 +800,7 @@
 				);
 				MODULEMAP_FILE = "";
 				ONLY_ACTIVE_ARCH = NO;
-				PRODUCT_BUNDLE_IDENTIFIER = com.clearent.quest.ClearentIdtechIOSFrameworks;
+				PRODUCT_BUNDLE_IDENTIFIER = com.clearent.quest.ClearentIdtechIOSFramework;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = NO;
 				STRIP_INSTALLED_PRODUCT = NO;

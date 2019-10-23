@@ -22,7 +22,6 @@ typedef enum{
     @property(nonatomic) NSString *publicKey;
     @property(nonatomic) SEL selector;
     @property(nonatomic) id callbackObject;
-    @property (assign, getter=isConfigured) BOOL configured;
     @property (nonatomic) IDT_VP3300 *sharedController;
 
     - (id) init : (NSString*)clearentBaseUrl
@@ -31,8 +30,8 @@ typedef enum{
         withSelector:(SEL)selector
         sharedController:(IDT_VP3300*) sharedController;
 
-    - (void) configure: (NSString*)kernelVersion deviceSerialNumber:(NSString*) deviceSerialNumber;
-    - (void) configure: (NSDictionary*) jsonConfiguration;
+    -(void) configure: (NSString*)kernelVersion  deviceSerialNumber:(NSString*) deviceSerialNumber autoConfiguration:(BOOL) autoConfiguration contactlessAutoConfiguration:(BOOL)contactlessAutoConfiguration;
+    - (void) configure: (NSDictionary*) jsonConfiguration autoConfiguration:(BOOL) autoConfiguration contactlessAutoConfiguration:(BOOL) contactlessAutoConfiguration deviceSerialNumber:(NSString*) deviceSerialNumber;
     - (void) notifyInfo:(NSString*)message;
     - (void) notifyError:(NSString*)message;
     - (NSData*) getClockDateAsYYYYMMDD;

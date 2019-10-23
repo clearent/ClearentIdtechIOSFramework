@@ -3,10 +3,11 @@
 #import "ClearentLoggingRequest.h"
 #import "ClearentLogging.h"
 #import "ClearentUtils.h"
+#import "ClearentCache.h"
 
 static NSString *const LOG_RELATIVE_URL = @"rest/v2/mobile/log";
 static NSString *const END_OF_LINE_INDICATOR = @"endofline";
-static NSString *const LINE_DELIMITER = @"booger";
+static NSString *const LINE_DELIMITER = @"clrnt";
 
 @interface SimpleHttpForwarder()
 @end
@@ -43,7 +44,7 @@ static NSString *const LINE_DELIMITER = @"booger";
 -(ClearentLoggingRequest*) parseData:(NSData*) responseData
 {
     ClearentLoggingRequest *clearentLoggingRequest = [[ClearentLoggingRequest alloc] init];
-    clearentLoggingRequest.deviceSerialNumber = [ClearentUtils getStoredDeviceSerialNumber];
+    clearentLoggingRequest.deviceSerialNumber = [ClearentCache getStoredDeviceSerialNumber];
     
     NSString *stringFromData = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
     NSArray *logLines = [stringFromData componentsSeparatedByString:END_OF_LINE_INDICATOR];

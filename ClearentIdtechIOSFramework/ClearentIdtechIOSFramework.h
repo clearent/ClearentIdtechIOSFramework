@@ -12,7 +12,8 @@
 #import "ClearentIdtechIOSFramework/ClearentManualEntryDelegate.h"
 #import "ClearentIdtechIOSFramework/ClearentCard.h"
 #import "ClearentIdtechIOSFramework/ClearentManualEntry.h"
-
+#import "ClearentIdtechIOSFramework/ClearentPaymentRequest.h"
+#import "ClearentIdtechIOSFramework/ClearentVP3300Configuration.h"
 #import "IDT_VP3300.h"
 #import "IDTCommon.h"
 #import "IDTUtility.h"

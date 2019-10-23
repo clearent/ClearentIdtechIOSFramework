@@ -11,8 +11,6 @@
 #import <sys/utsname.h>
 #import "Teleport.h"
 
-static NSString *const NSUSERDEFAULT_DEVICESERIALNUMBER = @"DeviceSerialNumber";
-static NSString *const NSUSERDEFAULT_READERCONFIGURED = @"ReaderConfigured";
 static NSString *const DEVICESERIALNUMBER_STANDIN = @"9999999999";
 static NSString *const SDK_VERSION = @"1.0.26";
 static NSString *const DATE_FORMAT = @"yyyy-MM-dd-HH-mm-ss-SSS-zzz";
@@ -32,24 +30,6 @@ static NSString *const DEFAULT_EMBEDDED_VALUE = @"LOG";
         return [NSString stringWithFormat:@"%@-%@-%@", PLATFORM, embeddedValue, dateTime];
     }
 }
-
-+ (NSString *) getStoredDeviceSerialNumber {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *storedDeviceSerialNumber = [defaults objectForKey:NSUSERDEFAULT_DEVICESERIALNUMBER];
-    if(storedDeviceSerialNumber == nil) {
-        storedDeviceSerialNumber = DEVICESERIALNUMBER_STANDIN;
-    }
-    return storedDeviceSerialNumber;
-}
-
-+ (void) updateConfigurationCache:(NSString *) deviceSerialNumber readerConfiguredFlag:(NSString *) readerConfiguredFlag {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    [defaults setObject:deviceSerialNumber forKey:NSUSERDEFAULT_DEVICESERIALNUMBER];
-    [defaults setObject:readerConfiguredFlag forKey:NSUSERDEFAULT_READERCONFIGURED];
-    [defaults synchronize];
-    [Teleport logInfo:@"Updated the reader configuration cache"];
-}
-
 
 + (NSString*) deviceName {
     struct utsname systemInfo;

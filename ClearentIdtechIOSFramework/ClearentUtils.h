@@ -10,8 +10,6 @@
 @interface ClearentUtils : NSObject
 
 + (NSString*) createExchangeChainId:(NSString *)embeddedValue;
-+ (NSString *) getStoredDeviceSerialNumber;
-+ (void) updateConfigurationCache:(NSString *) deviceSerialNumber readerConfiguredFlag:(NSString *) readerConfiguredFlag;
 + (NSString*) deviceName;
 + (NSString*) osVersion;
 + (NSString*) sdkVersion;

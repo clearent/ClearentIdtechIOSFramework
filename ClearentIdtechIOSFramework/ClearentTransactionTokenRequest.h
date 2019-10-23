@@ -17,7 +17,9 @@
     @property(nonatomic) NSString *deviceSerialNumber;
     @property(nonatomic) NSString *kernelVersion;
     @property(nonatomic) NSString *track2Data;
-   @property(nonatomic) NSString *applicationPreferredNameTag9F12;
+    @property(nonatomic) NSString *maskedTrack2Data;
+    @property(nonatomic) NSString *ksn;
+    @property(nonatomic) NSString *applicationPreferredNameTag9F12;
 
     - (NSString*) asJson;
     - (NSDictionary*) asDictionary;

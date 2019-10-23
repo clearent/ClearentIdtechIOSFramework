@@ -93,6 +93,11 @@
  
  */
 
+- (void) gen2Data:(NSData*)tlv;//!<Receives Gen2 TLV data.
+//!< @param tlv TLV data from gen2 event
+
+
+
 - (void) pinRequest:(EMV_PIN_MODE_Types)mode  key:(NSData*)key  PAN:(NSData*)PAN startTO:(int)startTO intervalTO:(int)intervalTO language:(NSString*)language;
 
 
@@ -204,8 +209,8 @@
 ;
 @property(strong) id<IDT_Device_Delegate> delegate;  //!<- Reference to IDT_Device_Delegate.
 @property(strong) id<IDT_Device_Delegate> delegate2;  //!<- Reference to IDT_Device_Delegate.
-@property(strong) id<IDT_Device_Delegate> bypassDelegate;  //!<- Reference to IDT_Device_Delegate.
-
+	@property(strong) id<IDT_Device_Delegate> bypassDelegate;  //!<- Reference to IDT_Device_Delegate.
+@property int bleRetryCount;
 
 
 /**
@@ -233,6 +238,12 @@
  @param bypass TRUE = bypass output
  */
 +(void) bypassOutput:(bool)bypass;
+
+/**
+ Sets the flag to bypass checking SDK Status.
+ @param bypass TRUE = bypass checking
+ */
++(void) bypassEventCheck:(bool)bypass;
 
 
 /**
@@ -277,7 +288,23 @@
  */
 -(id)init;
 
+/**
+ Disable Audio Detection.
+ For BLE implementations.  Removes monitoring headphone jack for audio devices.
+ */
++(void) disableAudioDetection;
 
+/**
+ Set BLE Service Scan Filter.
+ 
+ When searching for BLE devices, this will limit the service search to the provided service ID's
+ 
+ Example data format:
+ NSArray<CBUUID *> *filter = [[NSArray alloc] initWithObjects:[CBUUID UUIDWithString:@"1820"], nil];
+ 
+ @param filter The array of services to filter for
+ */
+-(void) setServiceScanFilter:(NSArray<CBUUID *> *) filter;
 
 /**
  Process Bypass Response.
@@ -364,6 +391,24 @@
  *
  */
 -(void) setBLEFriendlyName:(NSString*)friendlyName;
+
+
+/**
+ * Set BluetoothParameters
+ 
+ Sets the name and password for the BLE module.
+ 
+ Sending nil to all three parameters resets the default password to 123456
+ *
+ * @param name  Device name, 1-25 characters
+ * @param oldPW  Old password, as a six character string, example "123456"
+ * @param newPW  New password, as a six character string, example "654321"
+ 
+ * @return RETURN_CODE:  Values can be parsed with device_getResponseCodeString
+ 
+ *
+ */
+-(RETURN_CODE) config_setBluetoothParameters:(NSString*)name oldPW:(NSString*)oldPW newPW:(NSString*)newPW;
 
 /**
  * Stops searching for Bluetooth Low Energy devices in range
@@ -5136,6 +5181,20 @@ Returns the connection status of the requested device
  */
 -(RETURN_CODE) sendIDGCommand:(unsigned char)command subCommand:(unsigned char)subCommand data:(NSData*)data response:(NSData**)response;
 
+/**
+ * Send NEO IDG Command
+ Send a NEO IDG ViVOtech 3.0 command
+ *
+ * @param command  One byte command as per NEO IDG Reference Guide
+ * @param subCommand  One byte sub-command as per NEO IDG Reference Guide
+ * @param data  Command data (if applicable)
+ * @param response  Returns next Command response
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniMagIII::device_getResponseCodeString:()
+ 
+ *
+ */
+-(RETURN_CODE) sendIDGCommandV3:(unsigned char)command subCommand:(unsigned char)subCommand data:(NSData*)data response:(NSData**)response;
 
 /**
  * Device Is Connected
@@ -5371,6 +5430,13 @@ Returns the connection status of the requested device
 -(NSData*) grsiP2Command:(unsigned char)command statusCode:(unsigned char)status data:(NSData*)d1;
 
 /**
+ * VP3300 Command
+ *
+ Reserved for system use
+ */
+-(NSData*) grsiP3Command:(unsigned char)command statusCode:(unsigned char)status data:(NSData*)d1;
+
+/**
  * Set Pass Through
  
  Sets Pass-Through mode on VP3300 
@@ -5448,6 +5514,18 @@ Returns the connection status of the requested device
  */
 -(void) setEncryptedUniPay:(BOOL)isEncrypted;
 
+/**
+ * Send 2nd Gen Command
+ *
+ Informs SDK to format command for EMV Gen2 Device Communication
+ 
+ @param tlv  TLV Command
+ @param response  TLV Response
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_Device::device_getResponseCodeString:())
+
+ */
+-(RETURN_CODE) device_sendGen2Cmd:(NSData*)tlv response:(NSData**)response;
 
 /**
  * Loads the ICC DUKPT Key
@@ -5856,5 +5934,10 @@ Returns the connection status of the requested device
  
  */
 -(RETURN_CODE) felica_nfcCommand:(NSData*)request response:(NSData**)response;
+
+-(void) notifyDataReceived: (NSData*) RevData;
++(bool) dataHasPrefix:(NSData*)data str:(NSString*)str;
+
++(bool) dataEquals:(NSData*)data str:(NSString*)str;
 
 @end

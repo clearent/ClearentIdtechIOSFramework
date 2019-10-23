@@ -29,7 +29,7 @@
         va_start(args, format);
         contents = [[NSString alloc] initWithFormat:format arguments:args];
         va_end(args);
-        fprintf(out, "%s - %s\n", [timeString UTF8String], [contents UTF8String]);
+        //fprintf(out, "%s - %s\n", [timeString UTF8String], [contents UTF8String]);
         
     }
 

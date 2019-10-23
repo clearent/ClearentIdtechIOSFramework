@@ -250,7 +250,8 @@ typedef enum{
     IDT_DEVICE_BTMAG_OSX_USB,
     IDT_DEVICE_UNIPAYI_V_IOS,
     IDT_DEVICE_UNIPAYI_V_OSX_USB,
-    IDT_DEVICE_NEO2_IOS
+    IDT_DEVICE_NEO2_IOS,
+	IDT_DEVICE_VP8800_IOS
 
 
 }IDT_DEVICE_Types;
@@ -287,7 +288,46 @@ typedef enum{
 }UNIMAG_COMMAND_Types;
 
 typedef enum {
-    RETURN_CODE_DO_SUCCESS = 0,             //!< no error, beginning task
+	RETURN_CODE_DO_SUCCESS = 0,             //!< no error, beginning task
+	RETURN_CODE_ERR_DISCONNECT_,         //!< no response from reader
+	RETURN_CODE_ERR_CMD_RESPONSE_,       //!< invalid response data
+	RETURN_CODE_ERR_TIMEDOUT_,           //!< time out for task or CMD
+	RETURN_CODE_ERR_INVALID_PARAMETER_,  //!< wrong parameter
+	RETURN_CODE_SDK_BUSY_MSR_,           //!< SDK is doing MSR or ICC task
+	RETURN_CODE_SDK_BUSY_PINPAD_,        //!< SDK is doing PINPad task
+	RETURN_CODE_SDK_BUSY_CTLS_,        //!< SDK is doing CTLS task
+	RETURN_CODE_SDK_BUSY_EMV_,        //!< SDK is doing EMV task
+	RETURN_CODE_ERR_OTHER_,              //!< SDK is doing Other task
+	RETURN_CODE_FAILED_,                 //!< err response or data
+	RETURN_CODE_NOT_ATTACHED_,           //!< no reader attached
+	RETURN_CODE_MONO_AUDIO_,           //!< mono audio is enabled
+	RETURN_CODE_CONNECTED_,           //!< did connection
+	RETURN_CODE_LOW_VOLUME_,           //!< audio volume is too low
+	RETURN_CODE_CANCELED_,           //!< task or CMD be canceled
+	RETURN_CODE_INVALID_STR_,           //!< UF wrong string format
+	RETURN_CODE_NO_FILE_,           //!< UF file not found
+	RETURN_CODE_INVALID_FILE_,           //!< UF wrong file format
+	RETURN_CODE_HOST_UNREACHABLE_,           //!< Attempt to contact online host failed
+	RETURN_CODE_RKI_FAILURE_,           //!< Attempt to perform RKI failed
+	RETURN_CODE_MISSING_DLL_,           //!< DLL is missing for the target device
+	RETURN_CODE_BLOCK_TRANSFER_SUCCESS_,           //!< The current block of the  file was transferred successfully
+	RETURN_CODE_SDK_BUSY_FIRMWARE_UPDATE_,           //!< The SDK Busy doing firmware update
+	RETURN_CODE_APPLYING_FIRMWARE_UPDATE_,           //!< Applying the firmware update downloaded to memory.
+	RETURN_CODE_NO_DATA_AVAILABLE_,           //!< No data available.
+	RETURN_CODE_SDK_BUSY_FILE_TRANSFER_,           //!< The SDK Busy doing File Transfer.
+	RETURN_CODE_APPLYING_FILE_TRANSFER_,           //!< Applying the File Transfer.
+	RETURN_CODE_FILE_TRANSFER_SUCCESSFUL_,           //!< File Transfer Successful.
+	RETURN_CODE_NO_DRIVE_SPACE_,           //!< Not enough space available on drive.
+	RETURN_CODE_ENTERING_BOOTLOADER_MODE_,           //!< Entering bootloader mode.
+	RETURN_CODE_FW_STARTING_UPDATE_,           //!< Starting firmware update.
+	RETURN_CODE_FW_PCI_MISMATCH_,           //!< FW PCI Version Mismatch.
+	RETURN_CODE_FW_BLOCK_MISMATCH_,           //!< FW Block transfer size mismatch.
+	RETURN_CODE_DEVICE_FINALIZING_TRANSACTION_,           //!< Device is busy finalizing transaction.
+	RETURN_CODE_SDK_BUSY_RKI_UPDATE_,           //!< The SDK Busy doing RKI update
+	RETURN_CODE_BAD_MSR_SWIPE_,          //!< Bad MSR Swipe
+	RETURN_CODE_FINANCIAL_CARD_NOT_ALLOWED_,          //!< Financial card not allowed
+	RETURN_CODE_SDK_BUSY_GET_EVENT_,        //!< SDK is waiting for input event
+	RETURN_CODE_UNSUPPORTED_COMMAND_,        //!< SDK is waiting for input event
     RETURN_CODE_ERR_DISCONNECT = 0xFF01,         //!< no response from reader
     RETURN_CODE_ERR_CMD_RESPONSE = 0xFF02,       //!< invalid response data
     RETURN_CODE_ERR_TIMEDOUT = 0xFF03,           //!< time out for task or CMD
@@ -378,21 +418,21 @@ typedef enum {
     RETURN_CODE_NEO_TIMEOUT_ILM = 0xEE28,      //!<Time out or next expected message not received (ILM)
     RETURN_CODE_NEO_ILM_NOT_AVAILABLE = 0xEE29,      //!<ILM languages not available for viewing (ILM)
     RETURN_CODE_NEO_OTHER_LANG_NOT_SUPPORTED = 0xEE2A,      //!<Other language not supported (ILM)
-    RETURN_CODE_NEO_KEY_ERROR_41 = 0xEE41,      //!<Module-specific errors for Key Manager
-    RETURN_CODE_NEO_KEY_ERROR_42 = 0xEE42,      //!<Module-specific errors for Key Manager
-    RETURN_CODE_NEO_KEY_ERROR_43 = 0xEE43,      //!<Module-specific errors for Key Manager
-    RETURN_CODE_NEO_KEY_ERROR_44 = 0xEE44,      //!<Module-specific errors for Key Manager
-    RETURN_CODE_NEO_KEY_ERROR_45 = 0xEE45,      //!<Module-specific errors for Key Manager
-    RETURN_CODE_NEO_KEY_ERROR_46 = 0xEE46,      //!<Module-specific errors for Key Manager
-    RETURN_CODE_NEO_KEY_ERROR_47 = 0xEE47,      //!<Module-specific errors for Key Manager
-    RETURN_CODE_NEO_KEY_ERROR_48 = 0xEE48,      //!<Module-specific errors for Key Manager
-    RETURN_CODE_NEO_KEY_ERROR_49 = 0xEE49,      //!<Module-specific errors for Key Manager
-    RETURN_CODE_NEO_KEY_ERROR_4A = 0xEE4A,      //!<Module-specific errors for Key Manager
-    RETURN_CODE_NEO_KEY_ERROR_4B = 0xEE4B,      //!<Module-specific errors for Key Manager
-    RETURN_CODE_NEO_KEY_ERROR_4C = 0xEE4C,      //!<Module-specific errors for Key Manager
-    RETURN_CODE_NEO_KEY_ERROR_4D = 0xEE4D,      //!<Module-specific errors for Key Manager
-    RETURN_CODE_NEO_KEY_ERROR_4E = 0xEE4E,      //!<Module-specific errors for Key Manager
-    RETURN_CODE_NEO_KEY_ERROR_4F = 0xEE4F,      //!<Module-specific errors for Key Manager
+	RETURN_CODE_UNKNOWN_ERROR_FROM_SAM = 0XEE41, //!< Unknown Error from SAM
+	RETURN_CODE_INVALID_DATA_DETECTED_BY_SAM = 0XEE42, //!< Invalid data detected by SAM
+	RETURN_CODE_INCOMPLETE_DATA_DETECTED_BY_SAM = 0XEE43, //!< Incomplete data detected by SAM
+	RETURN_CODE_RESERVED = 0XEE44, //!< Reserved
+	RETURN_CODE_INVALID_KEY_HASH_ALGORITHM = 0XEE45, //!< Invalid key hash algorithm
+	RETURN_CODE_INVALID_KEY_ENCRYPTION_ALRORITHM = 0XEE46, //!< Invalid key encryption algorithm
+	RETURN_CODE_INVALID_MODULUS_LENGTH = 0XEE47, //!< Invalid modulus length
+	RETURN_CODE_INVALID_EXPONENT = 0XEE48, //!< Invalid exponent
+	RETURN_CODE_KEY_ALREADY_EXISTS = 0XEE49, //!< Key already exists
+	RETURN_CODE_NO_SPACE_FOR_NEW_RID = 0XEE4A, //!< No space for new RID
+	RETURN_CODE_KEY_NOT_FOUND = 0XEE4B, //!< Key not found
+	RETURN_CODE_CRYPTO_NOT_RESPONDING = 0XEE4C, //!< Crypto not responding
+	RETURN_CODE_CRYPTO_COMMUNICATION_ERROR = 0XEE4D, //!< Crypto communication error
+	RETURN_CODE_P2_KEY_MANAGER_ERROR_4E = 0XEE4E, //!< Module-specific error for Key Manager
+	RETURN_CODE_ALL_KEY_SLOTS_FULL = 0XEE4F, //!< All key slots are full (maximum number of keys has been installed)
     RETURN_CODE_NEO_AUTO_SWITCH_OK = 0xEE50,      //!Auto-Switch OK
     RETURN_CODE_NEO_AUTO_SWITCH_FAILED = 0xEE51,      //!Auto-Switch failed
     RETURN_CODE_DATA_DOES_NOT_EXIST = 0xEE60,      //!Data not exist

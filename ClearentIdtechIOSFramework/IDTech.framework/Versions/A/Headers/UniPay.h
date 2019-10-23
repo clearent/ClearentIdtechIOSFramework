@@ -126,9 +126,10 @@ typedef struct {
 @property(strong) id<UniPay_Delegate> delegate;
 //version
 +(void) isKeyLoad:(BOOL)keyload;
++(void) disableAudioDetection;
 +(NSString*) SDK_version;
 +(UniPay*) start:(id<UniPay_Delegate>)del;
-+(void) resetSharedController;
+//+(void) resetSharedController;
 // troubleshooting
 +(void) enableLogging:(BOOL) enable;
 +(UniPay*) sharedController;

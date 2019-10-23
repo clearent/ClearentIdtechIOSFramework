@@ -41,6 +41,11 @@
     if(self.publicKeys == nil) {
         return;
     }
+    self.contactlessPublicKeys = [mobileDevice objectForKey:@"contactless-ca-public-keys"];
+    self.contactlessGroups = [mobileDevice objectForKey:@"idtech-contactless-groups"];
+    self.contactlessSupportedAids = [mobileDevice objectForKey:@"idtech-contactless-supported-aids"];
+    self.contactlessAids = [mobileDevice objectForKey:@"idtech-contactless-aids"];
+    
     self.valid = YES;
 }
 

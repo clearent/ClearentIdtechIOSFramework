@@ -227,6 +227,21 @@
 -(RETURN_CODE) device_sendIDGCommand:(unsigned char)command subCommand:(unsigned char)subCommand data:(NSData*)data response:(NSData**)response;
 
 /**
+ * Send NEO IDG Command
+ Send a NEO IDG ViVOtech 3.0 command
+ *
+ * @param command  One byte command as per NEO IDG Reference Guide
+ * @param subCommand  One byte sub-command as per NEO IDG Reference Guide
+ * @param data  Command data (if applicable)
+ * @param response  Returns next Command response
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniMagIII::device_getResponseCodeString:()
+ 
+ *
+ */
+-(RETURN_CODE) device_sendIDGCommandV3:(unsigned char)command subCommand:(unsigned char)subCommand data:(NSData*)data response:(NSData**)response;
+
+/**
  * Set Volume To Audio Reader
  
  *

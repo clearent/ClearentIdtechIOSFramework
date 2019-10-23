@@ -29,6 +29,27 @@
 
 
 /**
+ PIN Request
+ During an EMV transaction, this delegate will receive data that is a request to collect a PIN
+ 
+ @param mode PIN Mode:
+ - EMV_PIN_MODE_CANCEL = 0X00,
+ - EMV_PIN_MODE_ONLINE_PIN_DUKPT = 0X01,
+ - EMV_PIN_MODE_ONLINE_PIN_MKSK = 0X02,
+ - EMV_PIN_MODE_OFFLINE_PIN = 0X03
+ @param key Either DUKPT or SESSION, depending on mode. If offline plaintext, value is nil
+ @param PAN PAN for calculating PINBlock
+ @param startTO Timeout value to start PIN entry
+ @param intervalTO Timeout value between key presses
+ @param language "EN"=English, "ES"=Spanish, "ZH"=Chinese, "FR"=French
+ 
+ */
+
+- (void) pinRequest:(EMV_PIN_MODE_Types)mode  key:(NSData*)key  PAN:(NSData*)PAN startTO:(int)startTO intervalTO:(int)intervalTO language:(NSString*)language;
+
+
+
+/**
  Pinpad data delegate protocol
  
  Receives data from pinpad methods
@@ -632,6 +653,33 @@
  */
 -(RETURN_CODE) device_sendIDGCommand:(unsigned char)command subCommand:(unsigned char)subCommand data:(NSData*)data response:(NSData**)response;
 
+
+/**
+ * Send NEO IDG Command
+ Send a NEO IDG ViVOtech 3.0 command
+ *
+ * @param command  One byte command as per NEO IDG Reference Guide
+ * @param subCommand  One byte sub-command as per NEO IDG Reference Guide
+ * @param data  Command data (if applicable)
+ * @param response  Returns next Command response
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniMagIII::device_getResponseCodeString:()
+ 
+ *
+ */
+-(RETURN_CODE) device_sendIDGCommandV3:(unsigned char)command subCommand:(unsigned char)subCommand data:(NSData*)data response:(NSData**)response;
+
+/**
+ Set BLE Service Scan Filter.
+ 
+ When searching for BLE devices, this will limit the service search to the provided service ID's
+ 
+ Example data format:
+ NSArray<CBUUID *> *filter = [[NSArray alloc] initWithObjects:[CBUUID UUIDWithString:@"1820"], nil];
+ 
+ @param filter The array of services to filter for
+ */
+-(void) setServiceScanFilter:(NSArray<CBUUID *> *) filter;
 
 
 /**
@@ -1462,7 +1510,7 @@
  * byte 2-3 = timeout in BCD.  Example 60 seconds is 0060
  *
  */
--(RETURN_CODE) device_startTransaction:(double)amount type:(int)type timeout:(int)timeout tags:(NSMutableDictionary *)tags;
+-(RETURN_CODE) device_startTransaction:(double)amount type:(int)type timeout:(int)timeout tags:(NSData*)tags;
 
 /**
  * Capture Function Key
@@ -1512,7 +1560,22 @@
  */
 -(RETURN_CODE) pin_capturePin:(int)type PAN:(NSString*)PAN minPIN:(int)minPIN maxPIN:(int)maxPIN message:(NSString*)message;
 
-
+/**
+ * Set BluetoothParameters
+ 
+ Sets the name and password for the BLE module.
+ 
+ Sending nil to all three parameters resets the default password to 123456
+ *
+ * @param name  Device name, 1-25 characters
+ * @param oldPW  Old password, as a six character string, example "123456"
+ * @param newPW  New password, as a six character string, example "654321"
+ 
+ * @return RETURN_CODE:  Values can be parsed with device_getResponseCodeString
+ 
+ *
+ */
+-(RETURN_CODE) config_setBluetoothParameters:(NSString*)name oldPW:(NSString*)oldPW newPW:(NSString*)newPW;
 
 /**
  * FeliCa Authentication
