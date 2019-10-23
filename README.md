@@ -8,26 +8,26 @@ You can use our [Clearent Cocoapod](https://github.com/clearent/CocoaPods) or [C
 
 ### Carthage ###
 
-1 - Install Carthage if you have not done so. ex - brew install carthage.
+:1: - Install Carthage if you have not done so. ex - brew install carthage.
 
-2 - Add your github credentials to XCode.
+:2: - Add your github credentials to XCode.
 
-3 - Add a Cartfile to your project (at root). Point to Clearent's github repository for this framework by adding the following to your Cartfile
+:3: - Add a Cartfile to your project (at root). Point to Clearent's github repository for this framework by adding the following to your Cartfile
 
     github "clearent/ClearentIdtechIOSFramework" == 1.0.26.4
 
-4 - Run this command from your project's root folder. This command will pull down a copy of the Clearent Framework and build it locally under Carthage/Build.
+:4: - Run this command from your project's root folder. This command will pull down a copy of the Clearent Framework and build it locally under Carthage/Build.
 
     carthage update
 
-5 - On your application targets’ General settings tab, in the Embedded Binaries section, drag and drop the Clearent Framework from the Carthage/Build folder.
+:5: - On your application targets’ General settings tab, in the Embedded Binaries section, drag and drop the Clearent Framework from the Carthage/Build folder.
 
-6 - Additionally, you'll need to copy debug symbols for debugging and crash reporting on OS X.
+:6: - Additionally, you'll need to copy debug symbols for debugging and crash reporting on OS X.
     On your application target’s Build Phases settings tab, click the + icon and choose New Copy Files Phase.
     Click the Destination drop-down menu and select Products Directory.
     From the Clearent framework, drag and drop its corresponding dSYM file.
 
-7 - Build your app. The Clearent Framework should be available for use.
+:7: - Build your app. The Clearent Framework should be available for use.
 
 ## Use the Clearent Framework with an IDTech device - the code
 
