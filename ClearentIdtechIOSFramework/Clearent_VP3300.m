@@ -73,11 +73,16 @@
 -(RETURN_CODE) ctls_startTransaction {
     [self clearCurrentRequest];
     RETURN_CODE ctlsStartRt;
-    if(![clearentDelegate isDeviceConfigured]) {
+    if(![[IDT_VP3300 sharedController] isConnected]) {
+        [Teleport logInfo:@"ctls_startTransaction no vars. Tried to start transaction but disconnected"];
+        [clearentDelegate deviceMessage:DEVICE_NOT_CONNECTED];
+        ctlsStartRt = RETURN_CODE_ERR_DISCONNECT;
+    } else if(![clearentDelegate isDeviceConfigured]) {
+        [Teleport logInfo:@"ctls_startTransaction no vars. Tried to start transaction but reader is not configured"];
         [clearentDelegate deviceMessage:READER_IS_NOT_CONFIGURED];
         ctlsStartRt = RETURN_CODE_EMV_FAILED;
     } else {
-         [Teleport logInfo:@"ctls_startTransaction"];
+        [Teleport logInfo:@"ctls_startTransaction no vars"];
         ctlsStartRt =   [[IDT_VP3300 sharedController] ctls_startTransaction];
     }
     return ctlsStartRt;
@@ -223,20 +228,18 @@
 -(RETURN_CODE) emv_startTransaction:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline fallback:(BOOL)fallback {
     [self clearCurrentRequest];
     RETURN_CODE emvStartRt;
-    if(![clearentDelegate isDeviceConfigured]) {
+    if(![[IDT_VP3300 sharedController] isConnected]) {
+        [Teleport logInfo:@"emv_startTransaction. Tried to start transaction but disconnected"];
+        [clearentDelegate deviceMessage:DEVICE_NOT_CONNECTED];
+        emvStartRt = RETURN_CODE_ERR_DISCONNECT;
+    } else if(![clearentDelegate isDeviceConfigured]) {
+        [Teleport logInfo:@"emv_startTransaction. Tried to start transaction but reader is not configured"];
         [clearentDelegate deviceMessage:READER_IS_NOT_CONFIGURED];
         emvStartRt = RETURN_CODE_EMV_FAILED;
     } else {
-        
-        //it was determined that for our solution this method needed to be called. This is the idtech's default but just in case
-        //the developer decides to set it to true we need to set it back to false, otherwise our solution does not work.
         [[IDT_VP3300 sharedController] emv_disableAutoAuthenticateTransaction:FALSE];
-        
         [Teleport logInfo:@"emv_startTransaction"];
         emvStartRt =  [[IDT_VP3300 sharedController] emv_startTransaction:amount amtOther:amtOther type:type timeout:timeout tags:tags forceOnline:forceOnline fallback:fallback];
-    }
-    if(RETURN_CODE_OK_NEXT_COMMAND == emvStartRt) {
-        [clearentDelegate deviceMessage:@"Transaction next"];
     }
     return emvStartRt;
 }
@@ -338,7 +341,12 @@
 -(RETURN_CODE) ctls_startTransaction:(double)amount type:(int)type timeout:(int)timeout tags:(NSMutableDictionary *)tags {
     [self clearCurrentRequest];
     RETURN_CODE ctlsStartRt;
-    if(![clearentDelegate isDeviceConfigured]) {
+    if(![[IDT_VP3300 sharedController] isConnected]) {
+        [Teleport logInfo:@"ctls_startTransaction. Tried to start transaction but disconnected"];
+        [clearentDelegate deviceMessage:DEVICE_NOT_CONNECTED];
+        ctlsStartRt = RETURN_CODE_ERR_DISCONNECT;
+    } else if(![clearentDelegate isDeviceConfigured]) {
+        [Teleport logInfo:@"ctls_startTransaction. Tried to start transaction but reader is not configured"];
         [clearentDelegate deviceMessage:READER_IS_NOT_CONFIGURED];
         ctlsStartRt = RETURN_CODE_EMV_FAILED;
     } else {
@@ -383,10 +391,13 @@
 }
 
 -(RETURN_CODE) device_startTransaction:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline  fallback:(BOOL)fallback {
+    
     [self clearCurrentRequest];
     
     PaymentRequest *paymentRequest = [self createPaymentRequest:amount amtOther:amtOther type:type timeout:timeout tags:tags forceOnline:forceOnline  fallback:fallback ];
+    
     [clearentDelegate setClearentPaymentRequest:paymentRequest];
+    
     return [self device_startTransaction:paymentRequest];
 }
 
@@ -402,7 +413,6 @@
     paymentRequest.forceOnline = forceOnline;
     return paymentRequest;
 }
-
 
 -(RETURN_CODE) emv_callbackResponsePIN:(EMV_PIN_MODE_Types)mode KSN:(NSData*)KSN PIN:(NSData*)PIN {
     return [[IDT_VP3300 sharedController] emv_callbackResponsePIN:(EMV_PIN_MODE_Types)mode KSN:KSN PIN:PIN];
@@ -442,13 +452,13 @@
 }
 
 -(RETURN_CODE) device_startTransaction:(id<ClearentPaymentRequest>) clearentPaymentRequest {
-    
     RETURN_CODE deviceStartRt;
-//    if(![[IDT_VP3300 sharedController] isConnected]) {
-//        [clearentDelegate deviceMessage:DEVICE_NOT_CONNECTED];
-//        deviceStartRt = RETURN_CODE_ERR_DISCONNECT;
-    //} else if(![clearentDelegate isDeviceConfigured]) {
-    if(![clearentDelegate isDeviceConfigured]) {
+    if(![[IDT_VP3300 sharedController] isConnected]) {
+        [Teleport logInfo:@"device_startTransaction. Tried to start transaction but disconnected"];
+        [clearentDelegate deviceMessage:DEVICE_NOT_CONNECTED];
+        deviceStartRt = RETURN_CODE_ERR_DISCONNECT;
+    } else if(![clearentDelegate isDeviceConfigured]) {
+        [Teleport logInfo:@"device_startTransaction. Tried to start transaction but reader is not configured"];
         [clearentDelegate deviceMessage:READER_IS_NOT_CONFIGURED];
         deviceStartRt = RETURN_CODE_EMV_FAILED;
         RETURN_CODE cancelTransactionRt = [[IDT_VP3300 sharedController] device_cancelTransaction];
@@ -456,101 +466,32 @@
             [clearentDelegate deviceMessage:@"Transaction cancelled"];
         }
     } else {
-        //it was determined that for our solution this method needed to be called. This is the idtech's default but just in case
-        //the developer decides to set it to true we need to set it back to false, otherwise our solution does not work.
-        
-        //RETURN_CODE_SDK_BUSY_MSR_
-         [NSThread sleepForTimeInterval:0.5f];
-        
+        [NSThread sleepForTimeInterval:0.5f];
         [[IDT_VP3300 sharedController] emv_disableAutoAuthenticateTransaction:FALSE];
-        
-        [Teleport logInfo:@"device_startTransaction with clearent payment obj"];
         [clearentDelegate setClearentPaymentRequest:clearentPaymentRequest];
         [self resetInvalidDeviceData];
         
-      //  [self workaroundCardSeatedIssue: clearentPaymentRequest];
-        
         deviceStartRt = [[IDT_VP3300 sharedController] device_startTransaction:clearentPaymentRequest.amount amtOther:clearentPaymentRequest.amtOther type:clearentPaymentRequest.type timeout:clearentPaymentRequest.timeout tags:clearentPaymentRequest.tags forceOnline:clearentPaymentRequest.forceOnline  fallback:clearentPaymentRequest.fallback];
 
-        if(RETURN_CODE_DO_SUCCESS != deviceStartRt || RETURN_CODE_OK_NEXT_COMMAND != deviceStartRt) {
-            if([[IDT_VP3300 sharedController] isConnected]) {
-                [clearentDelegate deviceMessage:@"Transaction failed to start. Retrying..."];
-                [NSThread sleepForTimeInterval:0.5f];
-                RETURN_CODE cancelTransactionRt = [[IDT_VP3300 sharedController] device_cancelTransaction];
+        if(RETURN_CODE_OK_NEXT_COMMAND == deviceStartRt || RETURN_CODE_DO_SUCCESS == deviceStartRt) {
+            [Teleport logInfo:@"device_startTransaction successful on first try"];
+        } else if([[IDT_VP3300 sharedController] isConnected]) {
+            [NSThread sleepForTimeInterval:0.5f];
             
-                deviceStartRt = [[IDT_VP3300 sharedController] device_startTransaction:clearentPaymentRequest.amount amtOther:clearentPaymentRequest.amtOther type:clearentPaymentRequest.type timeout:clearentPaymentRequest.timeout tags:clearentPaymentRequest.tags forceOnline:clearentPaymentRequest.forceOnline  fallback:clearentPaymentRequest.fallback];
-                
-                if (RETURN_CODE_DO_SUCCESS != deviceStartRt) {
-                    [clearentDelegate deviceMessage:@"Retry failed. Cancel Transaction and try again"];
-                }
+            RETURN_CODE cancelTransactionRt = [[IDT_VP3300 sharedController] device_cancelTransaction];
+            
+            deviceStartRt = [[IDT_VP3300 sharedController] device_startTransaction:clearentPaymentRequest.amount amtOther:clearentPaymentRequest.amtOther type:clearentPaymentRequest.type timeout:clearentPaymentRequest.timeout tags:clearentPaymentRequest.tags forceOnline:clearentPaymentRequest.forceOnline  fallback:clearentPaymentRequest.fallback];
+            
+            if(RETURN_CODE_OK_NEXT_COMMAND == deviceStartRt || RETURN_CODE_DO_SUCCESS == deviceStartRt) {
+                [Teleport logInfo:@"device_startTransaction successful on second try"];
             } else {
-                [clearentDelegate deviceMessage:DEVICE_NOT_CONNECTED];
+                 [Teleport logInfo:@"device_startTransaction failed on second try"];
             }
+        } else {
+            [clearentDelegate deviceMessage:DEVICE_NOT_CONNECTED];
         }
-        
     }
     return deviceStartRt;
-}
-
-//It appears the idtech firmware has a flag that indicates a card is seated in the reader. This breaks idtech's device_startTransaction which is meant to support
-//contactless, dip, and swipe. If we don't attempt to get the cardSeated changed to false the contactless feature is disabled.
-//If Idtech fixes the issue then the worst overhead this method will have is asking the reader for the icc reader status.
-
-//todo if the card is inserted this logic might contribute to an issue with audio jack readers
-
-- (void) workaroundCardSeatedIssue:(id<ClearentPaymentRequest>) clearentPaymentRequest {
-    
-       if(![[IDT_VP3300 sharedController] isConnected]) {
-            [Teleport logInfo:@"workaroundCardSeatedIssue:Reader is disconnected"];
-           return;
-       }
-    
-       ICCReaderStatus* response;
-       RETURN_CODE icc_getICCReaderStatusRt = [[IDT_VP3300 sharedController] icc_getICCReaderStatus:&response];
-    
-       if(RETURN_CODE_DO_SUCCESS != icc_getICCReaderStatusRt) {
-           [Teleport logInfo:@"workaroundCardSeatedIssue:Failed to retrieve the icc reader status"];
-           if(response == nil) {
-               [Teleport logInfo:@"workaroundCardSeatedIssue:No icc reader status response"];
-               return;
-           }
-       }
-          
-       if(response->cardPresent) {
-          [Teleport logInfo:@"workaroundCardSeatedIssue:Skip the workaround for the contactless card seated issue. icc reader status is cardPresent"];
-           return;
-       }
-    
-       if(response->cardSeated) {
-           [Teleport logInfo:@"workaroundCardSeatedIssue:Card is Seated. Start the device transaction and then cancel it"];
-           RETURN_CODE device_startTransactionRt = [[IDT_VP3300 sharedController] device_startTransaction:clearentPaymentRequest.amount amtOther:clearentPaymentRequest.amtOther type:clearentPaymentRequest.type timeout:clearentPaymentRequest.timeout tags:clearentPaymentRequest.tags forceOnline:clearentPaymentRequest.forceOnline  fallback:clearentPaymentRequest.fallback];
-           if(RETURN_CODE_OK_NEXT_COMMAND == device_startTransactionRt) {
-               [clearentDelegate deviceMessage:@"Transaction next"];
-           }
-           if (RETURN_CODE_DO_SUCCESS == device_startTransactionRt) {
-               [NSThread sleepForTimeInterval:0.2f];
-               [Teleport logInfo:@"workaroundCardSeatedIssue:Cancel the transaction"];
-               RETURN_CODE cancelTransactionRt = [[IDT_VP3300 sharedController] device_cancelTransaction];
-               if (RETURN_CODE_DO_SUCCESS == cancelTransactionRt) {
-                   [Teleport logInfo:@"workaroundCardSeatedIssue:transaction cancelled"];
-                   ICCReaderStatus* icc_getICCReaderStatusResponse;
-                   RETURN_CODE icc_getICCReaderStatusRt2 = [[IDT_VP3300 sharedController] icc_getICCReaderStatus:&icc_getICCReaderStatusResponse];
-                   if(icc_getICCReaderStatusResponse != nil) {
-                       if(icc_getICCReaderStatusResponse->cardSeated) {
-                           [Teleport logInfo:@"workaroundCardSeatedIssue:Card is still seated"];
-                       } else {
-                          [Teleport logInfo:@"workaroundCardSeatedIssue:Card not seated"];
-                       }
-                    }
-               } else {
-                   [Teleport logInfo:@"workaroundCardSeatedIssue:Cancel transaction failed"];
-               }
-           } else {
-               [Teleport logInfo:@"workaroundCardSeatedIssue:Start transaction failed"];
-           }
-       } else {
-           [Teleport logInfo:@"workaroundCardSeatedIssue: Card is unseated. No need for workaround"];
-       }
 }
 
 - (void) clearCurrentRequest{
@@ -588,8 +529,8 @@
         if(device_enableBLEDeviceSearchReturnCode) {
             [clearentDelegate deviceMessage:@"Bluetooth scan started. Press button"];
         } else {
-            [clearentDelegate deviceMessage:@"Bluetooth scan primer failed"];
-            [Teleport logInfo:@"Bluetooth scan primer failed"];
+            [clearentDelegate deviceMessage:@"Bluetooth scan failed"];
+            [Teleport logInfo:@"Bluetooth scan failed"];
         }
     }
 }

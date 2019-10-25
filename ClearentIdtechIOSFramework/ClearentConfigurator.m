@@ -15,6 +15,7 @@
 static NSString *const ERROR_MSG = @"Failed to configure reader. Confirm internet access and try reconnecting. If this does not work contact support.";
 static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready";
 static NSString *const DEVICESERIALNUMBER_STANDIN = @"9999999999";
+static NSString *const IDTECH_EMV_ENTRY_MODE_EMV_TAG = @"DFEE17";
 
 @implementation ClearentConfigurator
 
@@ -46,6 +47,10 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
     }
     
     [self initClock];
+    
+    if(autoConfiguration) {
+        [self invalidateConfigurationCacheWhenMisconfigured];
+    }
 
     //we use the cache to stop configurating every time they connect. If they want to override the cache they can use the clearConfigurationCache & clearContactlessConfigurationCache
     //in Clearent_VP3300.
@@ -70,6 +75,7 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
     if(!autoConfiguration) {
         [Teleport logInfo:@"Skipping emv contact configuration"];
     }
+    
     if(!contactlessAutoConfiguration) {
         [Teleport logInfo:@"Skipping contactless configuration"];
     }
@@ -89,6 +95,38 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
     [self increaseStandByTime];
     
     [self fetchConfiguration:autoConfiguration contactlessAutoConfiguration:contactlessAutoConfiguration deviceSerialNumber:deviceSerialNumber kernelVersion:kernelVersion];
+}
+
+/*
+ Previous release was allowing partial configuration of readers. This release does not. 
+ */
+- (void) invalidateConfigurationCacheWhenMisconfigured {
+    NSDictionary *terminalData;
+    RETURN_CODE emv_retrieveTerminalDataRt = [[IDT_VP3300 sharedController]  emv_retrieveTerminalData:&terminalData];
+    if (RETURN_CODE_DO_SUCCESS == emv_retrieveTerminalDataRt) {
+        NSString *idtechCustomDefaultEntryModeTag = [IDTUtility dataToHexString:[terminalData objectForKey:IDTECH_EMV_ENTRY_MODE_EMV_TAG]];
+        if(idtechCustomDefaultEntryModeTag != nil && [idtechCustomDefaultEntryModeTag isEqualToString:@"07"]) {
+            [Teleport logInfo:@"IDTech default emv entry mode is contactless, not contact"];
+            [ClearentCache clearConfigurationCache];
+            [ClearentCache clearContactlessConfigurationCache];
+            [self notifyInfo:@"Auto configuration enabled. Please wait for this configuration to complete."];
+            return;
+        }
+    } else {
+         [Teleport logInfo:@"Failed to inspect terminal Data to confirm default entry mode is 05"];
+    }
+    
+    NSUInteger *terminalMajorConfiguration = 0;
+    [[IDT_VP3300 sharedController] emv_getTerminalMajorConfiguration:&terminalMajorConfiguration];
+    int terminalMajorConfigurationInt = (int)terminalMajorConfiguration;
+    if (terminalMajorConfigurationInt == 5) {
+        [Teleport logInfo:@"Terminal Major Configuration is 5"];
+    } else {
+        [Teleport logInfo:@"Terminal Major Configuration is not 5"];
+        [ClearentCache clearConfigurationCache];
+        [ClearentCache clearContactlessConfigurationCache];
+        [self notifyInfo:@"Auto configuration enabled. Please wait for this configuration to complete."];
+    }
 }
 
 - (void)fetchConfiguration:(BOOL)autoConfiguration contactlessAutoConfiguration:(BOOL)contactlessAutoConfiguration deviceSerialNumber:(NSString *)deviceSerialNumber kernelVersion:(NSString *)kernelVersion {
@@ -135,9 +173,46 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
         if(contactlessAutoConfiguration) {
             [ClearentCache updateContactlessFlagCache:@"true"];
         }
+        //[self tagTheReaderWithConfigurationInfo: deviceSerialNumber];
     }
 }
 
+- (void) tagTheReaderWithConfigurationInfo: (NSString*) deviceSerialNumber {
+    if(![_sharedController isConnected]) {
+        return;
+    }
+    
+    if(deviceSerialNumber != nil && [deviceSerialNumber isEqualToString:DEVICESERIALNUMBER_STANDIN]) {
+        [Teleport logInfo:@"Not tag the reader if device serial number is all nines"];
+        return;
+    }
+    
+    NSDictionary* terminalData;
+    RETURN_CODE emv_retrieveTerminalDataRt = [_sharedController emv_retrieveTerminalData:&terminalData];
+    if (RETURN_CODE_DO_SUCCESS == emv_retrieveTerminalDataRt) {
+        [terminalData setValue:[IDTUtility stringToData:@"Clearent"] forKey:@"DFED20"];
+        
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        dateFormatter.dateFormat = @"yymmdd";
+        NSString *dateString = [dateFormatter stringFromDate:[NSDate date]];
+        
+        [terminalData setValue:[IDTUtility stringToData:dateString]  forKey:@"DFED21"];
+        
+        NSString *configurationVersion = [NSString stringWithFormat:@"ios v1.0.26.5 %@", deviceSerialNumber];
+        
+        [terminalData setValue:[IDTUtility stringToData:configurationVersion] forKey:@"DFED22"];
+        
+        RETURN_CODE emv_setTerminalDataRt = [_sharedController emv_setTerminalData:terminalData];
+        if (RETURN_CODE_DO_SUCCESS == emv_setTerminalDataRt) {
+            [Teleport logInfo:[NSString stringWithFormat:@"Reader has been tagged %@", configurationVersion]];
+        } else{
+            [Teleport logError:[NSString stringWithFormat:@"Failed to tag reader %@", configurationVersion]];
+        }
+    } else {
+        [Teleport logInfo:[NSString stringWithFormat:@"failed to tag reder for device serial number %@", deviceSerialNumber]];
+    }
+       
+}
 - (ClearentConfiguration*) createClearentConfiguration:(BOOL)autoConfiguration contactlessAutoConfiguration:(BOOL)contactlessAutoConfiguration jsonConfiguration:(NSDictionary *)jsonConfiguration {
     ClearentConfiguration *clearentConfiguration = [[ClearentConfiguration alloc] initWithJson:jsonConfiguration];
     clearentConfiguration.autoConfiguration = autoConfiguration;
@@ -187,19 +262,19 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
 //        [self notifyError:[NSString stringWithFormat:@"Contactless Configuration - Remove Unsupported Application Ids Failed %@", [ClearentContactlessConfigurator  getReturnCodeDisplayName: contactlessConfigurationReturnCode]]];
 //        return contactlessConfigurationReturnCode;
 //    }
-    [self notifyInfo:@"Contactless Configuration - Add Groups (2 of 4)"];
+    [self notifyInfo:@"Contactless Configuration - Add Groups (1 of 3)"];
     contactlessConfigurationReturnCode = [_clearentContactlessConfigurator configureGroups:clearentConfiguration.contactlessGroups sharedController:sharedController];
     if(contactlessConfigurationReturnCode != CONTACTLESS_CONFIGURATION_SUCCESS) {
          [self notifyError:[NSString stringWithFormat:@"Contactless Configuration - Add groups Failed %@", [ClearentContactlessConfigurator  getReturnCodeDisplayName: contactlessConfigurationReturnCode]]];
         return contactlessConfigurationReturnCode;
     }
-    [self notifyInfo:@"Contactless Configuration - Add Application Ids (3 of 4)"];
+    [self notifyInfo:@"Contactless Configuration - Add Application Ids (2 of 3)"];
     contactlessConfigurationReturnCode = [_clearentContactlessConfigurator configureAids:clearentConfiguration.contactlessAids sharedController:sharedController];
     if(contactlessConfigurationReturnCode != CONTACTLESS_CONFIGURATION_SUCCESS) {
         [self notifyError:[NSString stringWithFormat:@"Contactless Configuration - Add Application Ids Failed %@", [ClearentContactlessConfigurator  getReturnCodeDisplayName: contactlessConfigurationReturnCode]]];
         return contactlessConfigurationReturnCode;
     }
-     [self notifyInfo:@"Contactless Configuration - Add Public Keys (4 of 4)"];
+     [self notifyInfo:@"Contactless Configuration - Add Public Keys (3 of 3)"];
     contactlessConfigurationReturnCode = [_clearentContactlessConfigurator configureCapks:clearentConfiguration.contactlessPublicKeys sharedController:sharedController];
     if(contactlessConfigurationReturnCode != CONTACTLESS_CONFIGURATION_SUCCESS) {
         [self notifyError:[NSString stringWithFormat:@"Contactless Configuration - Add Public Keys Failed %@", [ClearentContactlessConfigurator  getReturnCodeDisplayName: contactlessConfigurationReturnCode]]];
