@@ -198,7 +198,7 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
         
         [terminalData setValue:[IDTUtility stringToData:dateString]  forKey:@"DFED21"];
         
-        NSString *configurationVersion = [NSString stringWithFormat:@"ios v1.0.26.5 %@", deviceSerialNumber];
+        NSString *configurationVersion = [NSString stringWithFormat:@"ios v1.1.0 %@", deviceSerialNumber];
         
         [terminalData setValue:[IDTUtility stringToData:configurationVersion] forKey:@"DFED22"];
         
