@@ -83,7 +83,7 @@ static const char* const TP_LOG_REAPING_QUEUE_NAME = "com.clearent.LogReaping";
         return;
     }
 
-    NSString *oldestFile = [[sortedFiles objectAtIndex:0] objectForKey:@"path"];
+    NSString *oldestFile = [(NSDictionary*)[sortedFiles objectAtIndex:0] objectForKey:@"path"];
     // when the oldest file is current log file, nothing to reap
     //Not true for us. We want to reap every time.
 //    if ([oldestFile isEqualToString:[_logRotator currentLogFilePath]])
@@ -150,9 +150,9 @@ static const char* const TP_LOG_REAPING_QUEUE_NAME = "com.clearent.LogReaping";
     
     // Sort using a block - order inverted as we want latest date first
     NSArray* sortedFiles = [filesAndProperties sortedArrayUsingComparator:
-                            ^(id path1, id path2)
+                            ^(NSDictionary* path1, NSDictionary* path2)
                             {
-                                return [[path1 objectForKey:@"lastModDate"] compare:
+                                return [(NSDate*)[path1 objectForKey:@"lastModDate"] compare:
                                                            [path2 objectForKey:@"lastModDate"]];
                             }];
     

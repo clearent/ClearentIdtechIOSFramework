@@ -6,9 +6,9 @@
 //  Copyright © 2019 Clearent, L.L.C. All rights reserved.
 //
 
-#import <ClearentIdtechIOSFramework/ClearentPaymentRequest.h>
+#import "ClearentPaymentRequest.h"
 
-@interface PaymentRequest: NSObject <ClearentPaymentRequest>
+@interface ClearentPayment: NSObject <ClearentPaymentRequest>
 @property (nonatomic) double amount;
 @property (nonatomic) double amtOther;
 @property (nonatomic) int type;

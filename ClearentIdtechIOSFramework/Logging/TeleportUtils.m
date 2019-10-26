@@ -22,8 +22,8 @@
         
         NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
         [dateFormat setDateFormat:@"HH:mm:ss:SSS"];
-        NSDate *now = [[NSDate alloc] init];
-        NSString* timeString = [dateFormat stringFromDate:now];
+        //NSDate *now = [[NSDate alloc] init];
+        //NSString* timeString = [dateFormat stringFromDate:now];
         NSString *contents;
         va_list args;
         va_start(args, format);

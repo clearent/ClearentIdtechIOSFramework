@@ -13,7 +13,7 @@
 #import "ClearentPublicVP3300Delegate.h"
 #import "ClearentPaymentRequest.h"
 #import "ClearentVP3300Configuration.h"
-#import "IDT_VP3300.h"
+#import <IDTech/IDT_VP3300.h>
 
 /**
  * Interact with this object as a singleton. Provide a delegate that adheres to the Clearent_Public_IDTech_VP3300_Delegate protocol will allow the framework to send messages to you.
@@ -325,7 +325,6 @@
  The tags will be returned in the callback routine.
  
  @param amount Transaction amount value  (tag value 9F02)
- @param exponent Number of characters after decimile point
  @param type Transaction type (tag value 9C).
  @param timeout Timeout value in seconds.
  @param tags Any other tags to be included in the request.
@@ -1171,7 +1170,7 @@
  *
  Sets the CAPK as specified by the CAKey raw format
  
- @param key CAKey format:
+ @param file CAKey format:
  [5 bytes RID][1 byte Index][1 byte Hash Algorithm][1 byte Encryption Algorithm][20 bytes HashValue][4 bytes Public Key Exponent][2 bytes Modulus Length][Variable bytes Modulus]
  Where:
  - Hash Algorithm: The only algorithm supported is SHA-1.The value is set to 0x01

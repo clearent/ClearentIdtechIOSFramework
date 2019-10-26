@@ -8,12 +8,15 @@
 
 #import "ClearentDelegate.h"
 #import "ClearentConfigurator.h"
-#import "IDTech/IDTUtility.h"
+#import <IDTech/IDTUtility.h>
 #import "ClearentUtils.h"
 #import "Teleport.h"
 #import "ClearentCache.h"
 #import "ClearentOfflineDeclineReceipt.h"
-#import "PaymentRequest.h"
+#import "ClearentPayment.h"
+
+int getEntryMode (NSString* rawEntryMode);
+BOOL isSupportedEmvEntryMode (int entryMode);
 
 static NSString *const TRACK2_DATA_EMV_TAG = @"57";
 static NSString *const TRACK1_DATA_EMV_TAG = @"56";
@@ -87,7 +90,7 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
         _clearentConfigurator = [[ClearentConfigurator alloc] init:self.baseUrl publicKey:self.publicKey callbackObject:self withSelector:configurationCallbackSelector sharedController:[IDT_VP3300 sharedController]];
         self.autoConfiguration = true;
         self.contactlessAutoConfiguration = false;
-        self.clearentPaymentRequest = nil;
+        self.clearentPayment = nil;
         self.configured = NO;
         self.contactless = NO;
         self.bluetoothDeviceID = nil;
@@ -105,7 +108,7 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
         self.publicDelegate = publicDelegate;
         self.autoConfiguration = clearentVP3300Configuration.contactAutoConfiguration;
         self.contactlessAutoConfiguration = clearentVP3300Configuration.contactlessAutoConfiguration;
-        self.clearentPaymentRequest = nil;
+        self.clearentPayment = nil;
         self.configured = NO;
         self.contactless = clearentVP3300Configuration.contactless;
         SEL configurationCallbackSelector = @selector(deviceMessage:);
@@ -367,13 +370,13 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
 
     NSString *fullErrorMessage;
     if(errorMessage != nil && ![errorMessage isEqualToString:@""]) {
-        fullErrorMessage = [NSString stringWithFormat:@"% @%@ %@", @"TAP FAILED. ", errorMessage, @". INSERT/SWIPE"];
+        fullErrorMessage = [NSString stringWithFormat:@"%@%@%@", @"TAP FAILED. ", errorMessage, @". INSERT/SWIPE"];
     } else {
         fullErrorMessage = @"TAP FAILED. INSERT/SWIPE";
     }
 
     RETURN_CODE emvStartRt;
-    emvStartRt =  [[IDT_VP3300 sharedController] emv_startTransaction:self.clearentPaymentRequest.amount amtOther:self.clearentPaymentRequest.amtOther type:self.clearentPaymentRequest.type timeout:self.clearentPaymentRequest.timeout tags:self.clearentPaymentRequest.tags forceOnline:self.clearentPaymentRequest.forceOnline fallback:self.clearentPaymentRequest.fallback];
+    emvStartRt =  [[IDT_VP3300 sharedController] emv_startTransaction:self.clearentPayment.amount amtOther:self.clearentPayment.amtOther type:self.clearentPayment.type timeout:self.clearentPayment.timeout tags:self.clearentPayment.tags forceOnline:self.clearentPayment.forceOnline fallback:self.clearentPayment.fallback];
     if(RETURN_CODE_OK_NEXT_COMMAND == emvStartRt || RETURN_CODE_DO_SUCCESS == emvStartRt) {
         [self.publicDelegate deviceMessage:fullErrorMessage];
     } else {
@@ -393,13 +396,13 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
     [Teleport logInfo:@"retryContactless:device_startTransaction"];
 
     RETURN_CODE emvStartRt;
-    emvStartRt =  [[IDT_VP3300 sharedController] device_startTransaction:self.clearentPaymentRequest.amount amtOther:self.clearentPaymentRequest.amtOther type:self.clearentPaymentRequest.type timeout:20 tags:self.clearentPaymentRequest.tags forceOnline:self.clearentPaymentRequest.forceOnline fallback:self.clearentPaymentRequest.fallback];
+    emvStartRt =  [[IDT_VP3300 sharedController] device_startTransaction:self.clearentPayment.amount amtOther:self.clearentPayment.amtOther type:self.clearentPayment.type timeout:20 tags:self.clearentPayment.tags forceOnline:self.clearentPayment.forceOnline fallback:self.clearentPayment.fallback];
 
     if(RETURN_CODE_OK_NEXT_COMMAND == emvStartRt || RETURN_CODE_DO_SUCCESS == emvStartRt) {
         [self.publicDelegate deviceMessage:CONTACTLESS_RETRY_MESSAGE];
     } else {
         [NSThread sleepForTimeInterval:0.2f];
-        emvStartRt =  [[IDT_VP3300 sharedController] device_startTransaction:self.clearentPaymentRequest.amount amtOther:self.clearentPaymentRequest.amtOther type:self.clearentPaymentRequest.type timeout:20 tags:self.clearentPaymentRequest.tags forceOnline:self.clearentPaymentRequest.forceOnline fallback:self.clearentPaymentRequest.fallback];
+        emvStartRt =  [[IDT_VP3300 sharedController] device_startTransaction:self.clearentPayment.amount amtOther:self.clearentPayment.amtOther type:self.clearentPayment.type timeout:20 tags:self.clearentPayment.tags forceOnline:self.clearentPayment.forceOnline fallback:self.clearentPayment.fallback];
         if(RETURN_CODE_OK_NEXT_COMMAND == emvStartRt || RETURN_CODE_DO_SUCCESS == emvStartRt) {
             [self.publicDelegate deviceMessage:CONTACTLESS_RETRY_MESSAGE];
         } else {
@@ -621,7 +624,7 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
         }
     } @catch (NSException *exception) {
         NSString *errorMessage = [NSString stringWithFormat:@"[Error] - %@ %@", exception.name, exception.reason];
-        NSLog(errorMessage);
+        NSLog( @"%@", errorMessage );
         [Teleport logInfo:[NSString stringWithFormat:@"convertIDTechCardToClearentTransactionToken: Possible Programming Error %@", errorMessage]];
     }
 }
@@ -1076,14 +1079,14 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
 - (void) sendDeclineReceipt:(IDTEMVData*)emvData {
     [self deviceMessage:@"DECLINED"];
 
-    if(self.clearentPaymentRequest == nil || self.clearentPaymentRequest.emailAddress == nil) {
+    if(self.clearentPayment == nil || self.clearentPayment.emailAddress == nil) {
         [Teleport logError:@"Did not send the offline decline receipt because the email address was not provided"];
         return;
     }
 
     ClearentOfflineDeclineReceipt *clearentOfflineDeclineReceipt = [self map:[self createClearentTransactionTokenRequest:emvData]];
-    if(self.clearentPaymentRequest != nil) {
-        NSString* formattedAmount = [NSString stringWithFormat:@"%.02f", self.clearentPaymentRequest.amount];
+    if(self.clearentPayment != nil) {
+        NSString* formattedAmount = [NSString stringWithFormat:@"%.02f", self.clearentPayment.amount];
         clearentOfflineDeclineReceipt.amount = formattedAmount;
     }
     [self clearCurrentRequest];
@@ -1143,7 +1146,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     clearentOfflineDeclineReceipt.firmwareVersion = clearentTransactionTokenRequest.firmwareVersion;
     clearentOfflineDeclineReceipt.tlv = clearentTransactionTokenRequest.tlv;
     clearentOfflineDeclineReceipt.kernelVersion = clearentTransactionTokenRequest.kernelVersion;
-    clearentOfflineDeclineReceipt.emailAddress = self.clearentPaymentRequest.emailAddress;
+    clearentOfflineDeclineReceipt.emailAddress = self.clearentPayment.emailAddress;
     return clearentOfflineDeclineReceipt;
 }
 
@@ -1186,7 +1189,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
 }
 
 - (void) clearCurrentRequest{
-    [self setClearentPaymentRequest:nil];
+    [self setClearentPayment:nil];
 }
 
 - (void) clearContactlessConfigurationCache {

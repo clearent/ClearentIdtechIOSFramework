@@ -6,9 +6,9 @@
 //  Copyright © 2019 Clearent, L.L.C. All rights reserved.
 //
 
-#import "PaymentRequest.h"
+#import "ClearentPayment.h"
 
-@implementation PaymentRequest
+@implementation ClearentPayment
 
 
 @end

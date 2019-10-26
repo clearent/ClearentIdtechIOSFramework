@@ -298,12 +298,18 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
 
 - (void) notifyInfo:(NSString*)message {
     [Teleport logInfo:message];
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Warc-performSelector-leaks"
     [self.callbackObject performSelector:self.selector withObject:message];
+    #pragma GCC diagnostic pop
 }
 
 - (void) notifyError:(NSString*)message {
     [Teleport logError:message];
+    #pragma GCC diagnostic push
+    #pragma GCC diagnostic ignored "-Warc-performSelector-leaks"
     [self.callbackObject performSelector:self.selector withObject:message];
+     #pragma GCC diagnostic pop
 }
 
 - (int) initDateAndTime {

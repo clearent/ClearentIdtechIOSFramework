@@ -7,10 +7,10 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <IDTech/IDT_VP3300.h>
 #import "ClearentPublicVP3300Delegate.h"
 #import "ClearentTransactionTokenRequest.h"
 #import "ClearentPaymentRequest.h"
-#import "IDTech/IDT_VP3300.h"
 #import "ClearentVP3300Configuration.h"
 
 //EMV_DIP("EMV_DIP", "05"),
@@ -35,7 +35,7 @@ typedef enum {SWIPE=90} supportedNonEmvEntryMode;
     @property(nonatomic) NSString *bluetoothDeviceID;
     @property(nonatomic) BOOL bluetoothSearchInProgress;
 
-    @property(nonatomic) id<ClearentPaymentRequest> clearentPaymentRequest;
+    @property(nonatomic) id<ClearentPaymentRequest> clearentPayment;
     @property(nonatomic) id<ClearentVP3300Configuration> clearentVP3300Configuration;
 
     @property (assign, getter=isConfigured) BOOL configured;
