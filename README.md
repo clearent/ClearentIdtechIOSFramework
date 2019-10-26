@@ -1,3 +1,6 @@
+<html>
+
+<body>
 # Clearent IDTech iOS Framework :iphone: :credit_card:
 
 <ul id="campfire-sounds">
@@ -150,3 +153,5 @@ When the Clearent framework applies the emv configuration to the reader it is us
 - [ ] Switch Clearent api keys from sandbox to production
 - [ ] Confirm Clearent api keys are used server side only and not embedded in your app.
 - [ ] :shipit:
+</body>
+</html>
