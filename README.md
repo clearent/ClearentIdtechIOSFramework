@@ -2,6 +2,8 @@
 
 This IOS Framework works with the IDTech framework allowing you to handle credit card data form an IDTECH VIVOpay reader (VP3300).
 
+:eyes: :arrow_right: [Release Notes](docs/RELEASE_NOTES.md)
+
 We are working on a [Swift](https://github.com/clearent/IDTechSwiftDemo) demo. Currently it shows you can connect with a bluetooth and get the transaction token back.
 
 ## Dependency Management.
@@ -67,7 +69,9 @@ you should interact with the reader.
 
 :one: Start a transaction. The framework exposes 3 methods for starting a transaction - emv_startTransaction (dip and swipe), ctls_startTransaction (contactless only), and device_startTransaction. If you will never support contactless use emv_startTransaction. If you plan on supporting contactless we recommend the device_startTransaction method since it supports contactless, dip, and swipe.
 
+```
 -(RETURN_CODE) device_startTransaction:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline  fallback:(BOOL)fallback;
+```
 
 :two: Interact with reader - If you are using bluetooth make sure you've pressed the button on the reader. The bluetooth reader should have a blue led flashing quickly. This means it's connected and can communicate with the reader. The framework will callback in the deviceMessage with messages that indicate what is happening between the framework and the reader. If you see a message similar to 'Insert, swipe or, tap', that means the reader is ready for card interaction.
 
@@ -82,19 +86,25 @@ Ex -@interface ViewController : UIViewController<UIAlertViewDelegate,Clearent_Pu
 
 :two: Define the framework object you will interact with in ViewController.m.
 
+```
 ClearentManualEntry *clearentManualEntry;
+```
 
 :three: Initialize the object
 
+```
 clearentManualEntry = [[ClearentManualEntry alloc]  init];
 
 [clearentManualEntry init:self clearentBaseUrl:@"http://gateway-sb.clearent.net", @"the public key Clearent gave you"];
+```
 
 :four: Implement the successfulTransactionToken method. If you have already implemented this for the IDTech Device solution you don't have to do anything extra.
 
+```
 -(void) successfulTransactionToken:(NSString*) jsonString {
   //This json contains the transaction token. See demo app for more details
 }
+```
 
 :five: Monitor for errors by implementing the handleManualEntryError method.
 
@@ -104,7 +114,9 @@ clearentManualEntry = [[ClearentManualEntry alloc]  init];
 
 By default Clearent will apply an emv configuration to your device. This configuration was determined by going through a certification process. The configuration can also be applied before the device is shipped to you. When this happens, you should disable the configuration feature. To do this, call this method on the Clearent_VP3300 object.
 
+```
 - (void) setAutoConfiguration:(BOOL)enable;
+```
 
 ## User experience when emv configuration is being applied.
 
@@ -118,5 +130,3 @@ When the Clearent framework applies the emv configuration to the reader it is us
 - [ ] Change public key from sandbox to production
 - [ ] Switch Clearent api keys from sandbox to production
 - [ ] Confirm Clearent api keys are used server side only and not embedded in your app.
-
-[Release Notes](docs/RELEASE_NOTES.md)
