@@ -91,7 +91,7 @@ you should interact with the reader.
 
 :four: Failure - The framework will send messages back that indicate failure. ex - TERMINATE, 'Card read error'. When this happens, you can call the device_cancelTransaction method to cancel the current transaction and attempt again. If the problem persists it is recommended you key in the card and use the manual entry process.
 
-## Use the Clearent Framework to create a transaction token (JWT) for a manually entered card
+## Use the Clearent Framework to create a transaction token (JWT) for a manually entered card - Objective C
 
 :one: Change your interface to adhere to the delegate ClearentManualEntryDelegate
 
