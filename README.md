@@ -2,7 +2,9 @@
 
 # IDTech iOS Framework :iphone: :credit_card:
 
-This IOS Framework works with the IDTech framework allowing you to handle credit card data form an IDTECH VIVOpay reader (VP3300).
+This iOS Framework works with the IDTech framework allowing you to handle credit card data form an IDTech VIVOpay reader (VP3300). The audio jack and bluetooth versions are supported.
+
+Visit the [Clearent Mobile API Docs](http://api.clearent.com/swagger.html#!/Quest_API_Integration/Mobile_Transactions_using_SDKs) to see how to run a mobile sale using our Rest endpoints.
 
 :eyes: :arrow_right: [Release Notes](docs/RELEASE_NOTES.md)
 
