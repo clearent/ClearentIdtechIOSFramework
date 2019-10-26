@@ -1,4 +1,4 @@
-![Screenshot](docs/clearent_logo.jpg)
+![Screenshot](clearent_logo.jpg)
 
 # Release Notes
 
