@@ -1,3 +1,4 @@
+<img src="file:///clearent_logo.jpg" alt="Clearent Logo" width="250" height="50">
 # Clearent IDTech iOS Framework :iphone: :credit_card:
 
 This IOS Framework works with the IDTech framework allowing you to handle credit card data form an IDTECH VIVOpay reader (VP3300).
