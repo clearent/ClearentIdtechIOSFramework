@@ -140,7 +140,7 @@ Idtech introduced a new message that comes back in the callback. They modified t
 :new: 1.1.0-beta - Contactless support, various fixes.
 1.1.0-beta
 
-## Contactless ##
+### Contactless ###
 
 * Added emv contactless reader support. MSD contactless was not a part of certification and is not supported. EMV Contactless Cards (with the network symbol) and cards in an Apple Wallet should work.
 
@@ -176,7 +176,7 @@ Idtech introduced a new message that comes back in the callback. They modified t
    clearentVP3300 = [[Clearent_VP3300 alloc] initWithConfig:self  clearentVP3300Configuration:clearentVP3300Config];
 ```
 
-## Auto Configuration ##
+### Auto Configuration ###
 
 * Added some small delays and retry logic to the auto configuration process.
 
@@ -198,7 +198,7 @@ ClearentVP3300Config *clearentVP3300Config = [[ClearentVP3300Config alloc] init]
 clearentVP3300Config.contactAutoConfiguration = false;
 ```
 
-## Various fixes ##
+### Various fixes ###
 
 * Fixed Clearent_VP3300 initializer Swift issue
 
@@ -208,7 +208,7 @@ clearentVP3300Config.contactAutoConfiguration = false;
 
 * Removed references to the idtech headers, bundle, and framework. The project still has references for compile purposes but the build will not have any IdTech.
 
-## Known Issues & different behavior ##
+### Known Issues & different behavior ###
 
 * The idtech framework is calling back with a new message when you start a transaction using the device_startTransaction method. "PLEASE SWIPE, TAP,OR INSERT"
 
