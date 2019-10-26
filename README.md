@@ -145,4 +145,4 @@ When the Clearent framework applies the emv configuration to the reader it is us
 - [ ] Change public key from sandbox to production
 - [ ] Switch Clearent api keys from sandbox to production
 - [ ] Confirm Clearent api keys are used server side only and not embedded in your app.
-- [ ] :shipit: sax: ":city_sunset::saxophone::notes:"
+- [ ] :shipit: :city_sunset: :saxophone: :notes:
