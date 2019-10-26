@@ -1,4 +1,8 @@
-# Clearent IDTech IOS Framework :iphone: :credit_card:
+# Clearent IDTech iOS Framework :iphone: :credit_card:
+
+<ul id="campfire-sounds">
+  <li><a href="#" class="play">► </a><div data-sound="sax" class="">/play sax</div></li>
+</ul>
 
 This IOS Framework works with the IDTech framework allowing you to handle credit card data form an IDTECH VIVOpay reader (VP3300).
 
@@ -18,7 +22,7 @@ You can use our [Clearent Cocoapod](https://github.com/clearent/CocoaPods) or [C
 
 :three: Add a Cartfile to your project (at root). Point to Clearent's github repository for this framework by adding the following to your Cartfile
 
-    github "clearent/ClearentIdtechIOSFramework" == 1.0.26.4
+    github "clearent/ClearentIdtechIOSFramework" == 1.1.0-beta
 
 :four: Run this command from your project's root folder. This command will pull down a copy of the Clearent Framework and build it locally under Carthage/Build.
 
