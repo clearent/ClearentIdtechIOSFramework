@@ -5,6 +5,7 @@
 1.0.26.1 - New static methods to call before instantiating the Clearent_VP3300 object to avoid the microphone permission prompt. Use only if you exclusively use bluetooth readers.
 
 ```
+objective-c
 [IDT_VP3300 disableAudioDetection];
 
 [IDT_Device disableAudioDetection];
@@ -33,6 +34,7 @@ Idtech introduced a new message that comes back in the callback. They modified t
 * Added methods allowing you to control the contactless configuration.
 
 ```
+objective-c
    Clearent_VP3300 clearentVP3300 = [[Clearent_VP3300 alloc] init:self  clearentBaseUrl:baseUrl publicKey:publicKey];
 
    //If you have already configured contactless and need to clear the cache that stops the framework from performing configuration every time the reader connects.
@@ -70,6 +72,7 @@ idtech defaults to 07, which is contactless. If this has not been set to 05 and 
 If you are receiving pre configured readers you should disable contact auto configuration so it never runs.
 
 ```
+objective-c
 [clearentVP3300 setAutoConfiguration:false];
 
 or using the new initWithConfig

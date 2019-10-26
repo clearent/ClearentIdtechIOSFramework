@@ -36,29 +36,43 @@ You can use our [Clearent Cocoapod](https://github.com/clearent/CocoaPods) or [C
 ## Use the Clearent Framework with an IDTech device - Objective C
 
 :one: Add this to your ViewController.h  
+```
+objective-c
 #import <ClearentIdtechIOSFramework/ClearentIdtechIOSFramework.h>
+```
 
 :two: Change your interface to adhere to the Clearent public delegate (Clearent_Public_IDTech_VP3300_Delegate)
-Ex -@interface ViewController : UIViewController<UIAlertViewDelegate,Clearent_Public_IDTech_VP3300_Delegate, UIActionSheetDelegate,MFMailComposeViewControllerDelegate>
+```
+objective-c
+@interface ViewController : UIViewController<UIAlertViewDelegate,Clearent_Public_IDTech_VP3300_Delegate, UIActionSheetDelegate,MFMailComposeViewControllerDelegate>
+```
 
 :three: Define the framework object you will interact with in ViewController.m.
 
+```
+objective-c
 Clearent_VP3300 *clearentVP3300;
+```
 
 :four: Initialize the object
-
+```
+objective-c
 clearentVP3300 = [[Clearent_VP3300 alloc]  init];
 
 [clearentVP3300 init:self clearentBaseUrl:@"http://gateway-sb.clearent.net", @"the public key Clearent gave you"];
+```
 
 :five: Monitor for device readiness thru the isReady method of the delegate. You can also use the isConnected method of the Clearent_VP3300 object to verify the framework is still connected to the reader.
 
 :six: Implement the successfulTransactionToken method. This method returns a token which represents the credit card and the current transaction request. It allows you to submit a payment transaction.
 When a card is processed (swipe or insert/dip of card with an emv chip), the framework will call successfulTransactionToken method when tokenization is successful.
 
+```
+objective-c
 -(void) successfulTransactionToken:(NSString*) jsonString {
   //This json contains the transaction token. See demo app for more details
 }
+```
 
 :seven: Monitor for errors by implementing the deviceMessage and lcdDisplay methods. When you see the message INSERT/SWIPE it means
 you should interact with the reader.
@@ -70,6 +84,7 @@ you should interact with the reader.
 :one: Start a transaction. The framework exposes 3 methods for starting a transaction - emv_startTransaction (dip and swipe), ctls_startTransaction (contactless only), and device_startTransaction. If you will never support contactless use emv_startTransaction. If you plan on supporting contactless we recommend the device_startTransaction method since it supports contactless, dip, and swipe.
 
 ```
+objective-c
 -(RETURN_CODE) device_startTransaction:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline  fallback:(BOOL)fallback;
 ```
 
@@ -82,17 +97,23 @@ you should interact with the reader.
 ## Use the Clearent Framework to create a transaction token (JWT) for a manually entered card
 
 :one: Change your interface to adhere to the delegate ClearentManualEntryDelegate
-Ex -@interface ViewController : UIViewController<UIAlertViewDelegate,Clearent_Public_IDTech_VP3300_Delegate, UIActionSheetDelegate,MFMailComposeViewControllerDelegate>,ClearentManualEntryDelegate
+
+```
+objective-c
+@interface ViewController : UIViewController<UIAlertViewDelegate,Clearent_Public_IDTech_VP3300_Delegate, UIActionSheetDelegate,MFMailComposeViewControllerDelegate>,ClearentManualEntryDelegate
+```
 
 :two: Define the framework object you will interact with in ViewController.m.
 
 ```
+objective-c
 ClearentManualEntry *clearentManualEntry;
 ```
 
 :three: Initialize the object
 
 ```
+objective-c
 clearentManualEntry = [[ClearentManualEntry alloc]  init];
 
 [clearentManualEntry init:self clearentBaseUrl:@"http://gateway-sb.clearent.net", @"the public key Clearent gave you"];
@@ -101,6 +122,7 @@ clearentManualEntry = [[ClearentManualEntry alloc]  init];
 :four: Implement the successfulTransactionToken method. If you have already implemented this for the IDTech Device solution you don't have to do anything extra.
 
 ```
+objective-c
 -(void) successfulTransactionToken:(NSString*) jsonString {
   //This json contains the transaction token. See demo app for more details
 }
@@ -115,6 +137,7 @@ clearentManualEntry = [[ClearentManualEntry alloc]  init];
 By default Clearent will apply an emv configuration to your device. This configuration was determined by going through a certification process. The configuration can also be applied before the device is shipped to you. When this happens, you should disable the configuration feature. To do this, call this method on the Clearent_VP3300 object.
 
 ```
+objective-c
 - (void) setAutoConfiguration:(BOOL)enable;
 ```
 
