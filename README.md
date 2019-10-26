@@ -137,7 +137,7 @@ objective-c
 By default Clearent will apply an emv configuration to your device. This configuration was determined by going through a certification process. The configuration can also be applied before the device is shipped to you. When this happens, you should disable the configuration feature. To do this, call this method on the Clearent_VP3300 object.
 
 ```
-objective-c
+smalltalk
 - (void) setAutoConfiguration:(BOOL)enable;
 ```
 
