@@ -1,7 +1,3 @@
-<html>
-
-<body>
-
 # Clearent IDTech iOS Framework :iphone: :credit_card:
 
 This IOS Framework works with the IDTech framework allowing you to handle credit card data form an IDTECH VIVOpay reader (VP3300).
@@ -149,13 +145,4 @@ When the Clearent framework applies the emv configuration to the reader it is us
 - [ ] Change public key from sandbox to production
 - [ ] Switch Clearent api keys from sandbox to production
 - [ ] Confirm Clearent api keys are used server side only and not embedded in your app.
-- [ ] :shipit:
-
-<ul id="campfire-sounds">
-  <li><a href="#" class="play">► </a><div data-sound="sax" class="">/play sax</div></li>
-</ul>
-
-#campfire-sounds / play sax
-
-</body>
-</html>
+- [ ] :shipit: sax: ":city_sunset::saxophone::notes:"
