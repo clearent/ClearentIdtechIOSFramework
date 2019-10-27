@@ -102,7 +102,7 @@ you should interact with the reader.
 
 * If a bluetooth reader is used, you can monitor for a connection using this method.
 
-```smalltalk
+```objective-c
 [clearentVP3300 isConnected];
 ```
 
