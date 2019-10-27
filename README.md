@@ -2,11 +2,11 @@
 
 # IDTech iOS Framework :iphone: :credit_card:
 
-## Overview (See [Clearent IDTech iOS Demo](https://github.com/clearent/IDTech_VP3300_Demo) for more details)
+## Overview (See [Demo](https://github.com/clearent/IDTech_VP3300_Demo) for more details)
 
 Our iOS Framework works with the IDTech framework allowing you to handle credit card data from an IDTech VIVOpay reader (VP3300). The audio jack and bluetooth versions are supported.
 
-The design is similar to the IDTech design so you can reference IDTech's documentation. The big difference is the methods exposed by the IDTech framework's delegate that would return credit card data to you is now handled by the Clearent framework. The Clearent solution implements the emvTransactionData and swipeMSRData IDTech methods on your behalf. Instead of working directly with the card data, the card data is sent to Clearent. Clearent will issue a 'Transaction Token' (aka, JWT) for each card read. The Transaction Token is sent back thru the delagate, allowing you to present it when you want to run a sale (using a Clearent endpoint (/rest/v2/mobile/transactions/sale).
+The design is similar to the IDTech design so you can reference IDTech's documentation. The big difference is the methods exposed by the IDTech framework's delegate that would return credit card data to you is now handled by the Clearent framework. The Clearent solution implements the emvTransactionData and swipeMSRData IDTech methods on your behalf. Instead of working directly with the card data, the card data is sent to Clearent. Clearent will issue a 'Transaction Token' (aka, JWT) for each card read. The Transaction Token is sent back thru the delegate, allowing you to present it when you want to run a sale.
 
 Visit the [Clearent Mobile API Docs](http://api.clearent.com/swagger.html#!/Quest_API_Integration/Mobile_Transactions_using_SDKs) to see how to run a mobile sale using our Rest endpoints.
 
@@ -94,7 +94,7 @@ you should interact with the reader.
 ```
 * When you see the device is connected you call this method to finish setting the connection.
 
-```smalltalk
+```objective-c
 [clearentVP3300 device_connectToAudioReader];
 ```
 
