@@ -205,7 +205,7 @@ Independent of the contactless configuration is a flag to enable the use of cont
 * Some times when the card and the reader interact an error will happen that does not allow contactless. When this happens the framework will cancel the transaction and start a new contact/swipe transaction. Contactless will be disabled and a message will be retuned to "INSERT/SWIPE".
 
 * If you have already configured contactless and need to clear the cache that stops the framework from performing configuration every time the reader connects.
-```smalltalk
+```objective-c
    [clearentVP3300 clearContactlessConfigurationCache];
 ```
 
