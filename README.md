@@ -181,6 +181,18 @@ By default Clearent will apply an emv configuration to your device. This configu
 - (void) setAutoConfiguration:(BOOL)enable;
 ```
 
+## The Transaction Token (JWT)
+
+ The successfulTransactionToken callback will get a message in JSON. It contains safe data about the card as well as the transaction token/JWT.
+
+  * cvm - the card holder verification method
+
+  * last-four - last four of the credit card number
+
+  * track-data-hash - a hash representing the track data. This can be used as a unique id of the transaction.
+
+  * jwt - This is the transaction token/JWT you will pass to use as a header when you perform a payment transaction.
+
 ## User experience when emv configuration is being applied.
 
 When the Clearent framework applies the emv configuration to the reader it is using IDTech's framework for communication. This process can take up to a couple of minutes and also has its own unique failures that need to be managed (with possible retry logic). The Clearent framework has some retry capability to account for these failures (example bluetooth connectivity) but only attempts a limited number of times. It's up to the client app to account for this initial user experience. Once the reader has been configured the device serial number is cached so the framework knows not to configure again. If you want to avoid hitting this one time delay during a transaction flow you can advise the merchant to perform an initial connection with the reader, maybe at the time they pull the reader out of the box or some time prior to running transactions.
