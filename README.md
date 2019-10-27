@@ -190,7 +190,7 @@ By default the framework will not apply the contactless emv configuration to you
 - (void) setContactlessConfiguration:(BOOL)enable;
 ```
 
-Independent of the contactless configuration is a flag to enable the use of contactless. By default the framework will throw the same error it did in the previous version.
+Independent of the contactless configuration is a flag to enable the use of contactless. By default the framework will throw the same error it did in the previous version until contactless is enabled.
 
 ```objective-c
 [clearentVP3300 setContactless:true];
