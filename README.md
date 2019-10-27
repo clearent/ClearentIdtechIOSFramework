@@ -2,7 +2,11 @@
 
 # IDTech iOS Framework :iphone: :credit_card:
 
-Our iOS Framework works with the IDTech framework allowing you to handle credit card data form an IDTech VIVOpay reader (VP3300). The audio jack and bluetooth versions are supported.
+## Overview (See [Clearent IDTech iOS Demo](https://github.com/clearent/IDTech_VP3300_Demo) for more details)
+
+Our iOS Framework works with the IDTech framework allowing you to handle credit card data from an IDTech VIVOpay reader (VP3300). The audio jack and bluetooth versions are supported.
+
+The design is similar to the IDTech design so you can reference IDTech's documentation. The big difference is the methods exposed by the IDTech framework's delegate that would return credit card data to you is now handled by the Clearent framework. The Clearent solution implements the emvTransactionData and swipeMSRData IDTech methods on your behalf. Instead of working directly with the card data, the card data is sent to Clearent. Clearent will issue a 'Transaction Token' (aka, JWT) for each card read. The Transaction Token is sent back thru the delagate, allowing you to present it when you want to run a sale (using a Clearent endpoint (/rest/v2/mobile/transactions/sale).
 
 Visit the [Clearent Mobile API Docs](http://api.clearent.com/swagger.html#!/Quest_API_Integration/Mobile_Transactions_using_SDKs) to see how to run a mobile sale using our Rest endpoints.
 
@@ -79,7 +83,47 @@ When a card is processed (swipe or insert/dip of card with an emv chip), the fra
 :seven: Monitor for errors by implementing the deviceMessage and lcdDisplay methods. When you see the message INSERT/SWIPE it means
 you should interact with the reader.
 
-:eight: When you are ready to process the payment, do a POST against endpoint /rest/v2/mobile/transactions/sale (for a sale). See demo app for an example [Clearent IDTech VP3300 iOS Demo](https://github.com/clearent/IDTech_VP3300_Demo)
+:eight: When you are ready to process the payment, do a POST against endpoint /rest/v2/mobile/transactions/sale (for a sale).
+
+## Audio Jack Connectivity
+
+* If an audio jack reader is connected to the iPad/iPhone you can monitor for the connection using a method you implement for the public delegate.
+
+```smalltalk
+- (void) plugStatusChange:(BOOL)deviceInserted;
+```
+* When you see the device is connected you call this method to finish setting the connection.
+
+```smalltalk
+[clearentVP3300 device_connectToAudioReader];
+```
+
+## Bluetooth Connectivity
+
+* If a bluetooth reader is used, you can monitor for a connection using this method.
+
+```smalltalk
+[clearentVP3300 isConnected];
+```
+
+* You can use the framework to start scanning for a specific device or to do a general scan for any device that has the prefix of 'IDTECH-VP3300-'.
+
+```smalltalk
+[clearentVP3300 device_enableBLEDeviceSearch:val];
+```
+
+* Messages will be returned from this method you implemented for the public delegate. The returned message will contain 'BLE DEVICE FOUND' followed by the name.
+
+```smalltalk
+- (void) deviceMessage:(NSString*)message
+```
+* A quick flashing blue LED means the bluetooth reader is connected. A transaction can now be started.
+
+* Slow blinking blue LED means the reader is on and listening for anyone to connect to.
+
+* Am amber colored LED during a connection attempt means the reader is low on power. Charge the reader for at least 30 minutes.
+
+* If you plug the reader in to a power source you can still use it over bluetooth but the connection, once established, will remain connected (and generally will be more reliable).
 
 ## Basic User Flow
 
