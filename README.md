@@ -10,9 +10,9 @@ The design is similar to the IDTech design so you can reference IDTech's documen
 
 Visit the [Clearent Mobile API Docs](http://api.clearent.com/swagger.html#!/Quest_API_Integration/Mobile_Transactions_using_SDKs) to see how to run a mobile sale using our Rest endpoints.
 
-:eyes: :arrow_right: [Release Notes](docs/RELEASE_NOTES.md)
-
 We are working on a [Swift](https://github.com/clearent/IDTechSwiftDemo) demo. Currently it shows you can connect with a bluetooth and get the transaction token back.
+
+## :eyes:[Release Notes](docs/RELEASE_NOTES.md)
 
 ## Dependency Management.
 
