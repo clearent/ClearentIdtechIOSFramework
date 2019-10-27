@@ -12,7 +12,9 @@ Visit the [Clearent Mobile API Docs](http://api.clearent.com/swagger.html#!/Ques
 
 We are working on a [Swift](https://github.com/clearent/IDTechSwiftDemo) demo. Currently it shows you can connect with a bluetooth and get the transaction token back.
 
-## :eyes:[Release Notes](docs/RELEASE_NOTES.md)
+## Release Notes
+
+[Release Notes](docs/RELEASE_NOTES.md) :eyes:
 
 ## Dependency Management.
 
