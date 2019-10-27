@@ -62,7 +62,7 @@ Clearent_VP3300 *clearentVP3300;
 ```smalltalk
 clearentVP3300 = [[Clearent_VP3300 alloc]  init];
 
-[clearentVP3300 init:self clearentBaseUrl:@"http://gateway-sb.clearent.net", @"the public key Clearent gave you"];
+[clearentVP3300 init:self clearentBaseUrl:@"https://gateway-sb.clearent.net", @"the public key Clearent gave you"];
 ```
 
 :five: Monitor for device readiness thru the isReady method of the delegate. You can also use the isConnected method of the Clearent_VP3300 object to verify the framework is still connected to the reader.
@@ -114,7 +114,7 @@ ClearentManualEntry *clearentManualEntry;
 ```smalltalk
 clearentManualEntry = [[ClearentManualEntry alloc]  init];
 
-[clearentManualEntry init:self clearentBaseUrl:@"http://gateway-sb.clearent.net", @"the public key Clearent gave you"];
+[clearentManualEntry init:self clearentBaseUrl:@"https://gateway-sb.clearent.net", @"the public key Clearent gave you"];
 ```
 
 :four: Implement the successfulTransactionToken method. If you have already implemented this for the IDTech Device solution you don't have to do anything extra.
