@@ -209,7 +209,7 @@ Independent of the contactless configuration is a flag to enable the use of cont
    [clearentVP3300 clearContactlessConfigurationCache];
 ```
 
-* New helper method to configure everything at once. This method also gives you the ability to disable our remote logging (recommended for to quiet down debugging only).
+* New helper method to configure everything at once. This method also gives you the ability to disable our remote logging (recommended for debug only).
 
 ```smalltalk
    ClearentVP3300Config *clearentVP3300Config = [[ClearentVP3300Config alloc] init];
