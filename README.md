@@ -182,6 +182,46 @@ By default Clearent will apply an emv configuration to your device. This configu
 ```smalltalk
 - (void) setAutoConfiguration:(BOOL)enable;
 ```
+## Enabling contactless
+
+By default the framework will not apply the contactless emv configuration to your device. This configuration was determined by going through a certification process. The configuration can also be applied before the device is shipped to you. When this happens, you should disable the configuration feature. To do this, call this method on the Clearent_VP3300 object. If you are not using a pre configured reader you can pass true to enable configuration.
+
+```smalltalk
+- (void) setContactlessConfiguration:(BOOL)enable;
+```
+
+Independent of the contactless configuration is a flag to enable the use of contactless. By default the framework will throw the same error it did in the previous version.
+
+```objective-c
+[clearentVP3300 setContactless:true];
+```
+
+## Contactless
+
+* EMV Contactless cards , which have the wifi/network symbol on them, are supported. Cards put into an Apple Wallet are also supported. Cards that use the MSD Contactless standard are not supported.
+
+* If a tap is attempted and the reader has trouble reading the card because it was not in the NFC field long enough, the framework will handle this error and start up a new transaction. This retry loop will send back a message of 'RETRY TAP' until either it's successful or the transaction is cancelled or timed out.
+
+* Some times when the card and the reader interact an error will happen that does not allow contactless. When this happens the framework will cancel the transaction and start a new contact/swipe transaction. Contactless will be disabled and a message will be retuned to "INSERT/SWIPE".
+
+* If you have already configured contactless and need to clear the cache that stops the framework from performing configuration every time the reader connects.
+```smalltalk
+   [clearentVP3300 clearContactlessConfigurationCache];
+```
+
+* New helper method to configure everything at once. This method also gives you the ability to disable our remote logging (recommended for to quiet down debugging only).
+
+```smalltalk
+   ClearentVP3300Config *clearentVP3300Config = [[ClearentVP3300Config alloc] init];
+   clearentVP3300Config.clearentBaseUrl = baseUrl;
+   clearentVP3300Config.publicKey = publicKey;
+   clearentVP3300Config.contactAutoConfiguration = false;
+   clearentVP3300Config.contactlessAutoConfiguration = false;
+   clearentVP3300Config.contactless = true;
+   clearentVP3300Config.disableRemoteLogging = true;
+
+   clearentVP3300 = [[Clearent_VP3300 alloc] initWithConfig:self  clearentVP3300Configuration:clearentVP3300Config];
+```
 
 ## The Transaction Token (JWT)
 
@@ -193,7 +233,7 @@ By default Clearent will apply an emv configuration to your device. This configu
 
   * track-data-hash - a hash representing the track data. This can be used as a unique id of the transaction.
 
-  * jwt - This is the transaction token/JWT you will pass to use as a header when you perform a payment transaction.
+  * jwt - This is the transaction token/JWT you will pass to us as a header when you perform a payment transaction.
 
 ## User experience when emv configuration is being applied.
 
