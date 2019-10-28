@@ -206,6 +206,8 @@ Independent of the contactless configuration is a flag to enable the use of cont
 
 * Some times when the card and the reader interact an error will happen that does not allow contactless. When this happens the framework will cancel the transaction and start a new contact/swipe transaction. Contactless will be disabled allowing you to interact with the reader without fear of triggering the contactless read. You will be prompted with a message to "INSERT/SWIPE".
 
+* There are times where the contactless interaction does not work (see [Known Issues](https://github.com/clearent/ClearentIdtechIOSFramework/blob/master/docs/RELEASE_NOTES.md#known-issues--different-behavior)). When this happens you can insert the contactless card *first*, then start the transaction.
+
 * If you have already configured contactless and need to clear the cache that stops the framework from performing configuration every time the reader connects.
 ```objective-c
    [clearentVP3300 clearContactlessConfigurationCache];
