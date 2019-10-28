@@ -2,7 +2,7 @@
 
 # IDTech iOS Framework :iphone: :credit_card:
 
-Hi ! If you've stumbled across our GitHub and want to know what Clearent can do for you (spoiler alert, we do payments) go [here](https://developer.clearent.com/) to learn more. Or skip all that, get a sandbox key [here](https://developer.clearent.com/get-started/), and get online with us today. #wesupportdevs :bowtie:. 
+Hi ! If you've stumbled across our GitHub and want to know what Clearent can do for you (spoiler alert, we do payments) go [here](https://developer.clearent.com/) to learn more. Or skip all that, get a sandbox key [here](https://developer.clearent.com/get-started/), and get online with us today. #wesupportdevs :bowtie:.
 
 ## Overview (See [Demo](https://github.com/clearent/IDTech_VP3300_Demo) for more details)
 
@@ -186,7 +186,7 @@ By default Clearent will apply an emv configuration to your device. This configu
 ```
 ## Enabling contactless
 
-By default the framework will not apply the contactless emv configuration to your device. This configuration was determined by going through a certification process. The configuration can also be applied before the device is shipped to you. When this happens, you should disable the configuration feature. To do this, call this method on the Clearent_VP3300 object. If you are not using a pre configured reader you can pass true to enable configuration.
+By default the framework will not apply the contactless emv configuration to your device. So no action needs to be taken for pre configured readers. If you are not using a pre configured reader you can pass true to enable configuration. When the reader is successfully configured a flag is set in the application's memory so it remembers not to apply the configuration on subsequent connections.
 
 ```smalltalk
 - (void) setContactlessConfiguration:(BOOL)enable;
@@ -204,7 +204,7 @@ Independent of the contactless configuration is a flag to enable the use of cont
 
 * If a tap is attempted and the reader has trouble reading the card because it was not in the NFC field long enough, the framework will handle this error and start up a new transaction. This retry loop will send back a message of 'RETRY TAP' until either it's successful or the transaction is cancelled or timed out.
 
-* Some times when the card and the reader interact an error will happen that does not allow contactless. When this happens the framework will cancel the transaction and start a new contact/swipe transaction. Contactless will be disabled and a message will be retuned to "INSERT/SWIPE".
+* Some times when the card and the reader interact an error will happen that does not allow contactless. When this happens the framework will cancel the transaction and start a new contact/swipe transaction. Contactless will be disabled allowing you to interact with the reader without fear of triggering the contactless read. You will be prompted with a message to "INSERT/SWIPE".
 
 * If you have already configured contactless and need to clear the cache that stops the framework from performing configuration every time the reader connects.
 ```objective-c
