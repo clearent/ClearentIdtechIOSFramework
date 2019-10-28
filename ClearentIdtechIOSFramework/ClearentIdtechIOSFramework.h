@@ -17,4 +17,4 @@
 #import "ClearentVP3300Config.h"
 #import "ClearentPayment.h"
 
-#import <IDTech/IDTech.h>
+@import IDTech
