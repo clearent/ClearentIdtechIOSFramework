@@ -6,7 +6,7 @@
 //  Copyright © 2018 Clearent, L.L.C. All rights reserved.
 //
 #import <Foundation/Foundation.h>
-#import <IDTech/IDT_VP3300.h>
+#import "IDT_VP3300.h"
 #import "ClearentConfiguration.h"
 
 typedef enum{

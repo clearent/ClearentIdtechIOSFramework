@@ -13,7 +13,7 @@
 #import "ClearentPublicVP3300Delegate.h"
 #import "ClearentPaymentRequest.h"
 #import "ClearentVP3300Configuration.h"
-#import <IDTech/IDT_VP3300.h>
+#import "IDT_VP3300.h"
 
 /**
  * Interact with this object as a singleton. Provide a delegate that adheres to the Clearent_Public_IDTech_VP3300_Delegate protocol will allow the framework to send messages to you.
