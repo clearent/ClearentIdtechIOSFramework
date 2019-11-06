@@ -59,7 +59,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(Teleport)
 + (void) logInfo:(NSString*) logMessage {
     if(TELEPORT_ENABLED) {
         Teleport *instance = [Teleport sharedInstance];
-        [instance logInfo:logMessage];
+        [instance logInfo:[NSString stringWithFormat:@" %@", logMessage]];
     }
 }
 
@@ -75,7 +75,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(Teleport)
 + (void) logError:(NSString*) logMessage {
     if(TELEPORT_ENABLED) {
         Teleport *instance = [Teleport sharedInstance];
-        [instance logError:logMessage];
+        [instance logError:[NSString stringWithFormat:@"💩💩💩 %@%@", logMessage, @" 💩💩💩"]];
     }
 }
 

@@ -109,7 +109,11 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
         self.autoConfiguration = clearentVP3300Configuration.contactAutoConfiguration;
         self.contactlessAutoConfiguration = clearentVP3300Configuration.contactlessAutoConfiguration;
         self.clearentPayment = nil;
-        self.configured = NO;
+        if(!self.autoConfiguration && !self.contactlessAutoConfiguration) {
+            self.configured = YES;
+        } else {
+            self.configured = NO;
+        }
         self.contactless = clearentVP3300Configuration.contactless;
         SEL configurationCallbackSelector = @selector(deviceMessage:);
         _clearentConfigurator = [[ClearentConfigurator alloc] init:self.baseUrl publicKey:self.publicKey callbackObject:self withSelector:configurationCallbackSelector sharedController:[IDT_VP3300 sharedController]];
@@ -230,12 +234,12 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
     if (deviceSerialNumber == nil) {
         //Sometimes the initial communication with the reader is unstable so we can't get the device serial number the first time...try one more time.
         [NSThread sleepForTimeInterval:0.5f];
-        [Teleport logInfo:@"Initial attempt to get device serial number failed. Try again"];
+        [Teleport logError:@"Initial attempt to get device serial number failed. Try again"];
         deviceSerialNumber = [self getDeviceSerialNumberFromReader ];
         if (deviceSerialNumber != nil) {
             [Teleport logInfo:@"Second attempt to get device serial number was successful"];
         } else {
-            [Teleport logInfo:@"Second attempt to get device serial number failed"];
+            [Teleport logError:@"Second attempt to get device serial number failed"];
         }
     }
     if(deviceSerialNumber != nil) {
@@ -273,6 +277,7 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
     }
 
     if(message != nil && [message isEqualToString:READER_CONFIGURED_MESSAGE]) {
+        [Teleport logInfo:@"💚💚READER READY💚💚"];
         [Teleport logInfo:@"Framework notified reader is ready"];
         [self.publicDelegate isReady];
         self.configured = YES;
@@ -510,7 +515,7 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
 }
 
 - (void) emvTransactionData:(IDTEMVData*)emvData errorCode:(int)error{
-
+  
     [Teleport logInfo:[NSString stringWithFormat:@"EMV Transaction Data Response: = %@",[[IDT_VP3300 sharedController] device_getResponseCodeString:error]]];
 
     if([self isEmvErrorHandled:emvData error:error]) {
@@ -525,6 +530,7 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
     }
 
     if (emvData.cardType == 1 && entryMode == CONTACTLESS_MAGNETIC_SWIPE) {
+        [Teleport logInfo:@"🙅🙅MSD CONTACTLESS NOT SUPPORTED🙅🙅"];
         [self deviceMessage:MSD_CONTACTLESS_UNSUPPORTED];
         return;
     }
@@ -931,6 +937,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     [outgoingTags removeObjectForKey:@"DF8115"];
     [outgoingTags removeObjectForKey:@"9F12"];
     [outgoingTags removeObjectForKey:@"FFEE1F"];
+    [outgoingTags removeObjectForKey:@"DF8001"];
 
     NSString *dataDF8129 = [IDTUtility dataToHexString:[outgoingTags objectForKey:@"DF8129"]];
     if(dataDF8129 != nil) {
@@ -1064,6 +1071,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     }
     NSString *responseCode = [jsonDictionary objectForKey:@"code"];
     if([responseCode isEqualToString:@"200"]) {
+        [Teleport logInfo:@"😀😀💳💳CARD IS NOW TOKEN💳💳😀😀"];
         [Teleport logInfo:@"Successful transaction token communicated to client app"];
         [self deviceMessage:SUCCESSFUL_TOKENIZATION_MESSAGE];
         [self.publicDelegate successfulTransactionToken:response];
@@ -1198,6 +1206,10 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
 
 - (BOOL) isDeviceConfigured {
     if(self.configured) {
+        return YES;
+    }
+    //they could set after initialization. Consider the reader configured if turned off.
+    if(!self.autoConfiguration && !self.contactlessAutoConfiguration) {
         return YES;
     }
     return [ClearentCache isDeviceConfigured:self.autoConfiguration contactlessAutoConfiguration:self.contactlessAutoConfiguration deviceSerialNumber:self.deviceSerialNumber];

@@ -6,7 +6,6 @@
 //  Copyright © 2018 Clearent, L.L.C. All rights reserved.
 //.
 
-#import <Foundation/Foundation.h>
 #import "Clearent_VP3300.h"
 #import "ClearentDelegate.h"
 #import "Teleport.h"
@@ -471,6 +470,7 @@
         [clearentDelegate setClearentPayment:clearentPaymentRequest];
         [self resetInvalidDeviceData];
         
+        [self workaroundCardSeatedIssue:clearentPaymentRequest.amount amtOther:clearentPaymentRequest.amtOther type:clearentPaymentRequest.type timeout:clearentPaymentRequest.timeout tags:clearentPaymentRequest.tags forceOnline:clearentPaymentRequest.forceOnline  fallback:clearentPaymentRequest.fallback];
         deviceStartRt = [[IDT_VP3300 sharedController] device_startTransaction:clearentPaymentRequest.amount amtOther:clearentPaymentRequest.amtOther type:clearentPaymentRequest.type timeout:clearentPaymentRequest.timeout tags:clearentPaymentRequest.tags forceOnline:clearentPaymentRequest.forceOnline  fallback:clearentPaymentRequest.fallback];
 
         if(RETURN_CODE_OK_NEXT_COMMAND == deviceStartRt || RETURN_CODE_DO_SUCCESS == deviceStartRt) {
@@ -492,6 +492,62 @@
         }
     }
     return deviceStartRt;
+}
+
+//It appears the idtech firmware has a flag that indicates a card is seated in the reader. This breaks idtech's device_startTransaction which is meant to support
+//contactless, dip, and swipe. If we don't attempt to get the cardSeated changed to false the contactless feature is disabled.
+//If Idtech fixes the issue then the worst overhead this method will have is asking the reader for the icc reader status.
+- (void) workaroundCardSeatedIssue:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline  fallback:(BOOL)fallback {
+    
+       NSString *firmwareVersion = [clearentDelegate getFirmwareVersion];
+       if(firmwareVersion != nil && ([firmwareVersion isEqualToString:@"VP3300 Bluetooth NEO v1.01.090"]
+          || [firmwareVersion isEqualToString:@"VP3300 Audio Jack NEO v1.01.055"]
+          || [firmwareVersion isEqualToString:@"VP3300 Audio Jack NEO v1.01.064"])) {
+           [Teleport logInfo:[NSString stringWithFormat:@"workaroundCardSeatedIssue:Performing card seated workaround for firmware version - %@", firmwareVersion]];
+       } else {
+            [Teleport logInfo:[NSString stringWithFormat:@"workaroundCardSeatedIssue: Skip card seated workaround for firmware version - %@", firmwareVersion]];
+            return;
+       }
+       ICCReaderStatus* response;
+       RETURN_CODE icc_getICCReaderStatusRt = [[IDT_VP3300 sharedController] icc_getICCReaderStatus:&response];
+       if(RETURN_CODE_DO_SUCCESS != icc_getICCReaderStatusRt) {
+           [Teleport logInfo:@"workaroundCardSeatedIssue:Failed to retrieve the icc reader status"];
+           if(response == nil) {
+               [Teleport logInfo:@"workaroundCardSeatedIssue:No icc reader status response"];
+               return;
+           }
+       }
+       if(response->cardPresent) {
+          [Teleport logInfo:@"workaroundCardSeatedIssue:Skip the workaround for the contactless card seated issue. icc reader status is cardPresent"];
+           return;
+       }
+       if(response->cardSeated) {
+           [Teleport logInfo:@"workaroundCardSeatedIssue:Card is Seated. Start the device transaction and then cancel it"];
+           RETURN_CODE device_startTransactionRt = [[IDT_VP3300 sharedController] device_startTransaction:amount amtOther:amtOther type:type timeout:timeout tags:tags forceOnline:forceOnline  fallback:fallback];
+           if(RETURN_CODE_OK_NEXT_COMMAND == device_startTransactionRt || RETURN_CODE_DO_SUCCESS == device_startTransactionRt) {
+               [NSThread sleepForTimeInterval:0.2f];
+               [Teleport logInfo:@"workaroundCardSeatedIssue:Cancel the transaction"];
+               RETURN_CODE cancelTransactionRt = [[IDT_VP3300 sharedController] device_cancelTransaction];
+               if (RETURN_CODE_DO_SUCCESS == cancelTransactionRt) {
+                   [Teleport logInfo:@"workaroundCardSeatedIssue:transaction cancelled"];
+                   ICCReaderStatus* icc_getICCReaderStatusResponse;
+                   RETURN_CODE icc_getICCReaderStatusRt2 = [[IDT_VP3300 sharedController] icc_getICCReaderStatus:&icc_getICCReaderStatusResponse];
+                   if(icc_getICCReaderStatusResponse != nil) {
+                       if(icc_getICCReaderStatusResponse->cardSeated) {
+                           [Teleport logInfo:@"workaroundCardSeatedIssue:Card is still seated"];
+                       } else {
+                          [Teleport logInfo:@"workaroundCardSeatedIssue:Card not seated"];
+                       }
+                    }
+               } else {
+                   [Teleport logInfo:@"workaroundCardSeatedIssue:Cancel transaction failed"];
+               }
+           } else {
+               [Teleport logInfo:@"workaroundCardSeatedIssue:Start transaction failed"];
+           }
+       } else {
+           [Teleport logInfo:@"workaroundCardSeatedIssue: Card is unseated. No need for workaround"];
+       }
 }
 
 - (void) clearCurrentRequest{
