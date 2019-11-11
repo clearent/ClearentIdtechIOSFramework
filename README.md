@@ -198,6 +198,18 @@ Independent of the contactless configuration is a flag to enable the use of cont
 [clearentVP3300 setContactless:true];
 ```
 
+If you need the ability to apply contactless configuration after you have initialized the Clearent_VP3300 object you can use this method after you have enabled contactless configuration with the setContactlessConfiguration method.
+
+```objective-c
+[clearentVP3300 applyConfiguration];
+```
+
+If you want to check to see if the reader has already had contactless configuration applied to it use this methods
+
+```objective-c
+[clearentVP3300 isContactlessConfigured];
+```
+
 ## Contactless
 
 * EMV Contactless cards , which have the wifi/network symbol on them, are supported. Cards put into an Apple Wallet are also supported. Cards that use the MSD Contactless standard are not supported.
