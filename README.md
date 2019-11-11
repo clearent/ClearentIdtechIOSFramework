@@ -204,7 +204,7 @@ If you need the ability to apply contactless configuration after you have initia
 [clearentVP3300 applyClearentConfiguration];
 ```
 
-If you want to check to see if the reader has already had contactless configuration applied to it use this methods
+If you want to check to see if the reader has already had contactless configuration applied to it use this method.
 
 ```objective-c
 [clearentVP3300 isContactlessConfigured];
