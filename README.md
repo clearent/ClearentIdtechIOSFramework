@@ -201,7 +201,7 @@ Independent of the contactless configuration is a flag to enable the use of cont
 If you need the ability to apply contactless configuration after you have initialized the Clearent_VP3300 object you can use this method after you have enabled contactless configuration with the setContactlessConfiguration method.
 
 ```objective-c
-[clearentVP3300 applyConfiguration];
+[clearentVP3300 applyClearentConfiguration];
 ```
 
 If you want to check to see if the reader has already had contactless configuration applied to it use this methods
