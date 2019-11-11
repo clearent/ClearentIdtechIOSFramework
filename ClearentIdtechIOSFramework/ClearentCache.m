@@ -69,6 +69,11 @@ static NSString *const DEVICESERIALNUMBER_STANDIN = @"9999999999";
 }
 
 + (BOOL) isDeviceConfigured:(BOOL)autoConfiguration contactlessAutoConfiguration:(BOOL)contactlessAutoConfiguration deviceSerialNumber:(NSString *)deviceSerialNumber {
+    
+    if(!autoConfiguration && !contactlessAutoConfiguration) {
+         return YES;
+    }
+    
     NSString *storedDeviceSerialNumber = [ClearentCache getStoredDeviceSerialNumber];
     NSString *readerConfiguredFlag = [ClearentCache getReaderConfiguredFlag];
     NSString *readerContactlessConfiguredFlag = [ClearentCache getReaderContactlessConfiguredFlag];
@@ -82,7 +87,13 @@ static NSString *const DEVICESERIALNUMBER_STANDIN = @"9999999999";
     } else if(autoConfiguration && !contactlessAutoConfiguration) {
         if(storedDeviceSerialNumber != nil && [storedDeviceSerialNumber isEqualToString:deviceSerialNumber]) {
             if(readerConfiguredFlag != nil && [readerConfiguredFlag isEqualToString:@"true"]) {
-                return true;
+                return YES;
+            }
+        }
+    } else if(!autoConfiguration && contactlessAutoConfiguration) {
+        if(storedDeviceSerialNumber != nil && [storedDeviceSerialNumber isEqualToString:deviceSerialNumber]) {
+            if(readerContactlessConfiguredFlag != nil && [readerContactlessConfiguredFlag isEqualToString:@"true"]) {
+                return YES;
             }
         }
     }

@@ -1513,6 +1513,18 @@ Filter out all service ids except for 1820, which is what IDTech readers use.
  */
 -(void) startBluetoothScan:(NSString*)friendlyName;
 
+/**
+If you did not instruct the framework to do any configuration when you initialized the vp3300 object, you can use the set methods to pick which configuration you want applied, then call this method to apply the configuration. The emv/contact configuration usually takes up to a minute and the contactless takes about 45 seconds.
+    */
+
+-(void) applyClearentConfiguration;
+
+
+/**
+ Inspects the reader configuration to determine if contactless configuration has been applied. Must be connected to reader.
+ If you get RETURN_CODE_DO_SUCCESS back then contactless has been configured. RETURN_CODE_ERR_DISCONNECT means the reader is not connected.
+ */
+-(RETURN_CODE) isContactlessConfigured;
 
 @end
 

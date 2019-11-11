@@ -112,6 +112,14 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
             [self notifyInfo:@"Auto configuration enabled. Please wait for this configuration to complete."];
             return;
         }
+        NSString *terminalCapabilities = [IDTUtility dataToHexString:[terminalData objectForKey:@"9F33"]];
+        if(terminalCapabilities != nil && ![terminalCapabilities isEqualToString:@"6028C8"]) {
+            [Teleport logInfo:@"IDTech terminal capabilities should 6028C8"];
+            [ClearentCache clearConfigurationCache];
+            [ClearentCache clearContactlessConfigurationCache];
+            [self notifyInfo:@"Auto configuration enabled. Please wait for this configuration to complete."];
+            return;
+        }
     } else {
          [Teleport logInfo:@"Failed to inspect terminal Data to confirm default entry mode is 05"];
     }
@@ -160,6 +168,7 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
             contactReady = false;
         }
     }
+    
     if(clearentConfiguration.contactlessAutoConfiguration) {
         CONTACTLESS_CONFIGURATION_RETURN_CODE configureContactlessReturnCode = [self configureContactless:clearentConfiguration sharedController:_sharedController];
         if(configureContactlessReturnCode != CONTACTLESS_CONFIGURATION_SUCCESS) {
@@ -169,6 +178,7 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
     
     if(contactReady && contactlessReady) {
         [self notifyInfo:configurationMessage];
+        [Teleport logInfo:@"🍻🍻🍻🍻🍻 READER CONFIGURED BY IOS FRAMEWORK 🍻🍻🍻🍻🍻"];
         [self cacheConfiguredReader: deviceSerialNumber];
         if(contactlessAutoConfiguration) {
             [ClearentCache updateContactlessFlagCache:@"true"];

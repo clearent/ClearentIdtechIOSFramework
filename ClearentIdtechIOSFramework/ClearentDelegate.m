@@ -125,7 +125,13 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
     NSMutableArray *updatedArray = [[NSMutableArray alloc]initWithCapacity:1];
     if (lines != nil) {
         for (NSString* message in lines) {
-            if(message != nil && [message isEqualToString:@"TERMINATED"]) {
+            if(message != nil && !self.contactless && [message isEqualToString:@"PLEASE SWIPE,"]) {
+                [Teleport logError:@"contactless is not enabled. Switch PLEASE SWIPE to old message"];
+                [updatedArray addObject:@"INSERT/SWIPE"];
+            } else  if(message != nil && !self.contactless && [message isEqualToString:@"TAP, OR INSERT"]) {
+                [Teleport logError:@"contactless is not enabled. Switch TAP OR INSERT to old message"];
+                [updatedArray addObject:@"CARD"];
+            } else if(message != nil && [message isEqualToString:@"TERMINATED"]) {
                 [self clearCurrentRequest];
                 [Teleport logError:@"IDTech framework terminated the request."];
                 [self deviceMessage:@"TERMINATED"];
@@ -168,6 +174,10 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
     self.kernelVersion = [self getKernelVersion];
     [self.publicDelegate deviceConnected];
 
+    [self applyClearentConfiguration];
+}
+
+-(void) applyClearentConfiguration {
     [self deviceMessage:@"Device connected. Waiting for configuration to complete..."];
     [_clearentConfigurator configure:self.kernelVersion deviceSerialNumber:self.deviceSerialNumber autoConfiguration:self.autoConfiguration contactlessAutoConfiguration:self.contactlessAutoConfiguration];
 }
@@ -455,17 +465,108 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
     } else if (cardData != nil && cardData.event == EVENT_MSR_TIMEOUT) {
         [self deviceMessage:TIMEOUT_ERROR_RESPONSE];
     } else {
-//TODO idtech is working on something that might allow us to use this command
-//        NSData *result;
-//        RETURN_CODE device_sendIDGCommandRt = [[IDT_VP3300 sharedController] device_sendIDGCommand:0x01 subCommand:0x05 data:[IDTUtility hexToData:@"1905"] response:&result];
-//        if (RETURN_CODE_DO_SUCCESS == device_sendIDGCommandRt) {
-//           [self deviceMessage:@"got something"];
-//         } else{
-//           [self deviceMessage:@"fail"];
-//        }
        [self deviceMessage:GENERIC_CARD_READ_ERROR_RESPONSE];
     }
 }
+
+//- (void) gen2Data:(NSData*)tlv{
+//    [self deviceMessage:@"gen2 data ?"];
+//}
+//
+//-(void) dismissAllAlertViews {
+//    [self deviceMessage:@"dismissAllAlertViews?"];
+//}
+//
+//-(void) showAlertView:(NSString*)msg {
+//    [self deviceMessage:@"showAlertView ?"];
+//    [self deviceMessage:msg];
+//}
+//
+//- (void) ctlsEvent:(Byte)event scheme:(Byte)scheme  data:(Byte)data {
+//    [Teleport logInfo:[NSString stringWithFormat:@"Event Scheme = %i",(int)scheme]];
+//
+//    switch (event) {
+//        case 0x01:
+//        {
+//        [Teleport logInfo:[NSString stringWithFormat:@"LED Event = %i",(int)data]];
+//                  switch (data)
+//                            {
+//                                case 0x00:
+//                                    [self deviceMessage:@"LED0 OFF"];
+//                                    break;
+//                                case 0x10:
+//                                    [self deviceMessage:@"LED1 OFF"];
+//                                    break;
+//                                case 0x20:
+//                                    [self deviceMessage:@"LED2 OFF"];
+//                                    break;
+//                                case 0x30:
+//                                    [self deviceMessage:@"LED3 OFF"];
+//                                    break;
+//                                case 0xF0:
+//                                    [self deviceMessage:@"ALL OFF"];
+//                                    break;
+//                                case 0x01:
+//                                    [self deviceMessage:@"LED0 ON"];
+//                                    break;
+//                                case 0x11:
+//                                    [self deviceMessage:@"LED1 ON"];
+//                                    break;
+//                                case 0x21:
+//                                    [self deviceMessage:@"LED2 ON"];
+//                                    break;
+//                                case 0x31:
+//                                    [self deviceMessage:@"LED3 ON"];
+//                                    break;
+//                                case 0xF1:
+//                                    [self deviceMessage:@"ALL ON"];
+//                                    break;
+//                            }
+//                            break;
+//                 }
+//            case 0x02:
+//               {
+//            [Teleport logInfo:[NSString stringWithFormat:@"Buzzer Event = %i",(int)data]];
+//            switch (data)
+//                                {
+//                                    case 0x10:
+//                                        [self deviceMessage:@"Short Beep No Change "];
+//                                        break;
+//                                    case 0x11:
+//                                        [self deviceMessage:@"Short Beep No Change"];
+//                                        break;
+//                                    case 0x12:
+//                                        [self deviceMessage:@"Double Short Beep"];
+//                                        break;
+//                                    case 0x13:
+//                                        [self deviceMessage:@"Triple Short Beep"];
+//                                        break;
+//                                    case 0x20:
+//                                        [self deviceMessage:@"200ms Beep"];
+//                                        break;
+//                                    case 0x21:
+//                                        [self deviceMessage:@"400ms Beep"];
+//                                        break;
+//                                    case 0x22:
+//                                        [self deviceMessage:@"600ms Beep"];
+//                                        break;
+//                                }
+//                                break;
+//               }
+//            case 0x03:
+//        {
+//            [Teleport logInfo:[NSString stringWithFormat:@"LCD Event = %i",(int)data]];
+//            NSString* line1=nil;
+//            NSString* line2=nil;
+//            [IDTUtility retrieveCTLSMessage:scheme lang:0 messageID:data line1:&line1 line2:&line2];
+//            [self deviceMessage:line1];
+//            [self deviceMessage:line2];
+//            break;
+//        }
+//        default:
+//            break;
+//    }
+//}
 
 - (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequestForASwipe:(IDTMSRData*)cardData{
     ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [[ClearentTransactionTokenRequest alloc] init];
@@ -770,11 +871,10 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     [self addApplicationPreferredName:clearentTransactionTokenRequest tags:outgoingTags];
 
     [self removeInvalidTSYSTags: outgoingTags];
-
+    [self updateTransactionTimeTags:outgoingTags];
+    
     if (emvData.cardType == 1) {
         [self removeInvalidContactlessTags:outgoingTags];
-        [self updateTransactionTimeTags:outgoingTags];
-
         //commented this out during EMV Phase 1 contactless certification. Why did we do it in the first place ?
 //        NSString *data9F53 = [IDTUtility dataToHexString:[outgoingTags objectForKey:@"9F53"]];
 //        if(data9F53 != nil) {
@@ -900,10 +1000,13 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
 }
 
 - (NSString*) getTimeAsHHMMSSInHex {
-    NSDateFormatter *timeFormatter = [[NSDateFormatter alloc] init];
-    timeFormatter.dateFormat = @"HHMMSS";
-    NSString *timeString = [timeFormatter stringFromDate:[NSDate date]];
-    return timeString;
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateStyle:NSDateFormatterFullStyle];
+    [formatter setTimeStyle:NSDateFormatterFullStyle];
+    [formatter setDateFormat:@"HHMMSS"];
+    NSDate *currentDate = [NSDate date];
+    NSString *timeString2 = [formatter stringFromDate:currentDate];
+    return timeString2;
 }
 
 - (void) addRequiredTags: (NSMutableDictionary*) outgoingTags {
@@ -987,6 +1090,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     [outgoingTags setObject:[self getClockDateAsYYMMDDInHex] forKey:@"9A"];
     [outgoingTags removeObjectForKey:@"9F21"];
     [outgoingTags setObject:[self getTimeAsHHMMSSInHex] forKey:@"9F21"];
+
 }
 
 - (void) createTransactionToken:(ClearentTransactionTokenRequest*)clearentTransactionTokenRequest {

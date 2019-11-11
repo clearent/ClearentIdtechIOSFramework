@@ -20,34 +20,39 @@ typedef enum {SWIPE=90} supportedNonEmvEntryMode;
 
 @interface ClearentDelegate : NSObject<IDT_VP3300_Delegate>
 
-    @property(nonatomic) NSString *firmwareVersion;
-    @property(nonatomic) NSString *deviceSerialNumber;
-    @property(nonatomic) NSString *kernelVersion;
-    @property(nonatomic) NSString *baseUrl;
-    @property(nonatomic) NSString *publicKey;
-    @property(nonatomic) BOOL autoConfiguration;
-    @property(nonatomic) BOOL contactless;
-    @property(nonatomic) BOOL contactlessAutoConfiguration;
-    @property(nonatomic) id<Clearent_Public_IDTech_VP3300_Delegate> publicDelegate;
-    @property(nonatomic) int originalEntryMode;
+@property(nonatomic) NSString *firmwareVersion;
+@property(nonatomic) NSString *deviceSerialNumber;
+@property(nonatomic) NSString *kernelVersion;
+@property(nonatomic) NSString *baseUrl;
+@property(nonatomic) NSString *publicKey;
+@property(nonatomic) BOOL autoConfiguration;
+@property(nonatomic) BOOL contactless;
+@property(nonatomic) BOOL contactlessAutoConfiguration;
+@property(nonatomic) id<Clearent_Public_IDTech_VP3300_Delegate> publicDelegate;
+@property(nonatomic) int originalEntryMode;
 
-    @property(nonatomic) NSString *defaultBluetoothFriendlyName;
-    @property(nonatomic) NSString *bluetoothDeviceID;
-    @property(nonatomic) BOOL bluetoothSearchInProgress;
+@property(nonatomic) NSString *defaultBluetoothFriendlyName;
+@property(nonatomic) NSString *bluetoothDeviceID;
+@property(nonatomic) BOOL bluetoothSearchInProgress;
 
-    @property(nonatomic) id<ClearentPaymentRequest> clearentPayment;
-    @property(nonatomic) id<ClearentVP3300Configuration> clearentVP3300Configuration;
+@property(nonatomic) id<ClearentPaymentRequest> clearentPayment;
+@property(nonatomic) id<ClearentVP3300Configuration> clearentVP3300Configuration;
 
-    @property (assign, getter=isConfigured) BOOL configured;
+@property (assign, getter=isConfigured) BOOL configured;
 
-    - (id) init: (id <Clearent_Public_IDTech_VP3300_Delegate>) publicDelegate clearentBaseUrl:(NSString*)clearentBaseUrl publicKey:(NSString*)publicKey ;
-    - (id) initWithConfig : (id <Clearent_Public_IDTech_VP3300_Delegate>)publicDelegate clearentVP3300Configuration:(id <ClearentVP3300Configuration>) clearentVP3300Configuration;
+- (id) init: (id <Clearent_Public_IDTech_VP3300_Delegate>) publicDelegate clearentBaseUrl:(NSString*)clearentBaseUrl publicKey:(NSString*)publicKey ;
 
-    - (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequest:(IDTEMVData*)emvData;
-    - (void) createTransactionToken:(ClearentTransactionTokenRequest*)clearentTransactionTokenRequest;
-    -(void) deviceConnected;
-    - (void) deviceMessage:(NSString*)message;
-    - (void) startFallbackSwipe;
+- (id) initWithConfig : (id <Clearent_Public_IDTech_VP3300_Delegate>)publicDelegate clearentVP3300Configuration:(id <ClearentVP3300Configuration>) clearentVP3300Configuration;
+
+- (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequest:(IDTEMVData*)emvData;
+
+- (void) createTransactionToken:(ClearentTransactionTokenRequest*)clearentTransactionTokenRequest;
+
+-(void) deviceConnected;
+
+- (void) deviceMessage:(NSString*)message;
+
+- (void) startFallbackSwipe;
 
 /**
  The reader has an emv configuration applied each time connects. After a successful configuration the device serial number and a flag denoting the reader was configured is stored using NSUserDefaults. If there is a need to clear out this information, maybe to support a configuration change/future updates, call this method to clear out the cache.
@@ -68,6 +73,8 @@ typedef enum {SWIPE=90} supportedNonEmvEntryMode;
 - (BOOL) isDeviceConfigured;
 
 - (void) resetBluetoothSearch;
+
+- (void) applyClearentConfiguration;
 
 @end
 

@@ -16,6 +16,7 @@
   static NSString *const READER_IS_NOT_CONFIGURED = @"Cannot run transaction. Reader is not configured.";
   static NSString *const DEVICE_NOT_CONNECTED = @"Device is not connected";
   static NSString *const BLUETOOTH_FRIENDLY_NAME_REQUIRED = @"Bluetooth friendly name required";
+  static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready";
 
   ClearentDelegate *clearentDelegate;
 
@@ -471,24 +472,45 @@
         [self resetInvalidDeviceData];
         
         [self workaroundCardSeatedIssue:clearentPaymentRequest.amount amtOther:clearentPaymentRequest.amtOther type:clearentPaymentRequest.type timeout:clearentPaymentRequest.timeout tags:clearentPaymentRequest.tags forceOnline:clearentPaymentRequest.forceOnline  fallback:clearentPaymentRequest.fallback];
+        
         deviceStartRt = [[IDT_VP3300 sharedController] device_startTransaction:clearentPaymentRequest.amount amtOther:clearentPaymentRequest.amtOther type:clearentPaymentRequest.type timeout:clearentPaymentRequest.timeout tags:clearentPaymentRequest.tags forceOnline:clearentPaymentRequest.forceOnline  fallback:clearentPaymentRequest.fallback];
 
         if(RETURN_CODE_OK_NEXT_COMMAND == deviceStartRt || RETURN_CODE_DO_SUCCESS == deviceStartRt) {
             [Teleport logInfo:@"device_startTransaction successful on first try"];
-        } else if([[IDT_VP3300 sharedController] isConnected]) {
-            [NSThread sleepForTimeInterval:0.5f];
-            
-            [[IDT_VP3300 sharedController] device_cancelTransaction];
-            
-            deviceStartRt = [[IDT_VP3300 sharedController] device_startTransaction:clearentPaymentRequest.amount amtOther:clearentPaymentRequest.amtOther type:clearentPaymentRequest.type timeout:clearentPaymentRequest.timeout tags:clearentPaymentRequest.tags forceOnline:clearentPaymentRequest.forceOnline  fallback:clearentPaymentRequest.fallback];
-            
-            if(RETURN_CODE_OK_NEXT_COMMAND == deviceStartRt || RETURN_CODE_DO_SUCCESS == deviceStartRt) {
-                [Teleport logInfo:@"device_startTransaction successful on second try"];
-            } else {
-                 [Teleport logInfo:@"device_startTransaction failed on second try"];
-            }
+        } else if(RETURN_CODE_ERR_INVALID_PARAMETER_ == deviceStartRt || RETURN_CODE_ERR_INVALID_PARAMETER == deviceStartRt) {
+            [Teleport logInfo:@"device_startTransaction failed. bad parameters"];
+        } else if(RETURN_CODE_ERR_DISCONNECT == deviceStartRt || RETURN_CODE_ERR_DISCONNECT_ == deviceStartRt) {
+            [Teleport logInfo:@"device_startTransaction failed. disconnected on first try"];
+        } else if(RETURN_CODE_NEO_TIMEOUT == deviceStartRt || RETURN_CODE_ERR_TIMEDOUT == deviceStartRt || RETURN_CODE_ERR_TIMEDOUT_ == deviceStartRt) {
+            NSLog(@"device_startTransaction failed on first try. possible state - If the reader if OFF, but SDK thinks it still is connected. execute device_disconnectBLE (so SDK gets in sync with disconnected status), and then attempt to reconnect and retry tranasaction");
+            [Teleport logInfo:@"device_startTransaction failed on first try. possible state - If the reader if OFF, but SDK thinks it still is connected."];
         } else {
-            [clearentDelegate deviceMessage:DEVICE_NOT_CONNECTED];
+            for (int i = 1; i <= 5; i++) {
+                 if([[IDT_VP3300 sharedController] isConnected]) {
+                    [Teleport logInfo:[NSString stringWithFormat:@"Try to start transaction. Retry counter %d", i]];
+                    [NSThread sleepForTimeInterval:0.5f];
+                               
+                    [[IDT_VP3300 sharedController] device_cancelTransaction];
+                               
+                    deviceStartRt = [[IDT_VP3300 sharedController] device_startTransaction:clearentPaymentRequest.amount amtOther:clearentPaymentRequest.amtOther type:clearentPaymentRequest.type timeout:clearentPaymentRequest.timeout tags:clearentPaymentRequest.tags forceOnline:clearentPaymentRequest.forceOnline  fallback:clearentPaymentRequest.fallback];
+                               
+                    if(RETURN_CODE_OK_NEXT_COMMAND == deviceStartRt || RETURN_CODE_DO_SUCCESS == deviceStartRt) {
+                        [Teleport logInfo:[NSString stringWithFormat:@"Start transaction successful. Retry counter %d", i]];
+                        break;
+                    } else if(RETURN_CODE_ERR_DISCONNECT == deviceStartRt || RETURN_CODE_ERR_DISCONNECT_ == deviceStartRt) {
+                        [Teleport logInfo:@"device_startTransaction. In retry loop, tried to start transaction but disconnected"];
+                        [clearentDelegate deviceMessage:DEVICE_NOT_CONNECTED];
+                        break;
+                    } else {
+                        NSString *errorResponse = [[IDT_VP3300 sharedController] device_getResponseCodeString:deviceStartRt];
+                        [Teleport logInfo:[NSString stringWithFormat:@"Start transaction failed. Retry counter %d%@", i, errorResponse]];
+                    }
+                } else {
+                    [Teleport logInfo:[NSString stringWithFormat:@"Device is disconnected. Retry counter %d", i]];
+                    [clearentDelegate deviceMessage:DEVICE_NOT_CONNECTED];
+                    break;
+                }
+            }
         }
     }
     return deviceStartRt;
@@ -589,6 +611,53 @@
             [Teleport logInfo:@"Bluetooth scan failed"];
         }
     }
+}
+
+-(void) applyClearentConfiguration {
+    if (clearentDelegate.autoConfiguration) {
+        [clearentDelegate clearConfigurationCache];
+    }
+    if (clearentDelegate.contactlessAutoConfiguration) {
+        [clearentDelegate clearContactlessConfigurationCache];
+    }
+    [Teleport logInfo:@"applyClearentConfiguration:Manual configuration requested"];
+    if (clearentDelegate.autoConfiguration || clearentDelegate.contactlessAutoConfiguration) {
+        clearentDelegate.configured = false;
+         [Teleport logInfo:@"applyClearentConfiguration:configuration has been enabled. clear cache and reset configuration flag"];
+    }
+    
+    if(![clearentDelegate isDeviceConfigured]) {
+         [Teleport logInfo:@"applyClearentConfiguration:called"];
+        [clearentDelegate applyClearentConfiguration];
+    } else {
+        [Teleport logInfo:@"applyClearentConfiguration:did not apply configuration because the reader is still considered configured. setting configuration flag to true"];
+        [clearentDelegate deviceMessage:READER_CONFIGURED_MESSAGE];
+        [clearentDelegate setConfigured:true];
+    }
+}
+
+/*
+ We need a way to determine if the reader has had contactless configuration applied. The best
+ we can do without actually having tags we can insert in the reader is to inspect a key part of the configuration, the capks. They are applied last when the framework configures the reader. The configuration we have TPG applying does not have contactless CAPKs.
+ The only 'flaw' in this is if the merchant uses a reader that had no TPG or Clearent configuration applied.
+ It is possible to have default contactless configuration coming from IDTech.
+ */
+-(RETURN_CODE) isContactlessConfigured {
+    RETURN_CODE returnCode;
+    if(![[IDT_VP3300 sharedController] isConnected]) {
+        [Teleport logInfo:@"isContactlessConfigured. Reader disconnected"];
+        returnCode = RETURN_CODE_ERR_DISCONNECT;
+    } else {
+        NSArray *result;
+        returnCode = [[IDT_VP3300 sharedController]  ctls_retrieveCAPKList:&result];
+        if (RETURN_CODE_DO_SUCCESS == returnCode) {
+            [Teleport logInfo:[NSString stringWithFormat:@"isContactlessConfigured Contactless CAPK List:\n%@", result.description]];
+        } else {
+             [Teleport logInfo:[NSString stringWithFormat:@"isContactlessConfigured Contactless CAPK Error Response: = %@",[[IDT_VP3300 sharedController] device_getResponseCodeString:returnCode]]];
+        }
+    }
+   
+    return returnCode;
 }
 
 @end
