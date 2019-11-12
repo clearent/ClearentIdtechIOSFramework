@@ -20,7 +20,9 @@ Idtech introduced a new message that comes back in the callback. They modified t
 
 1.0.26.4 - Fixed an issue where the framework was not handling the card data correctly when the user has been presented with the 'USE MAGSTRIPE' message after an invalid insert. The result was an NSInvalidArgumentException being thrown.
 
-:new: 1.1.0-beta - Contactless support, various fixes. :eyes: Uses IDTech framework version v1.01.157
+:new: 1.1.7-beta - Contactless support, various fixes. :eyes: Uses IDTech framework version v1.01.157
+
+1.1.7-beta latest change is to disable auto configuration by default. Fixed an issue with the isContactlessConfigured method.
 
 ### Contactless ###
 
