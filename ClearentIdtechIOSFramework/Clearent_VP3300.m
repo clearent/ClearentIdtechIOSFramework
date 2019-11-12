@@ -635,25 +635,31 @@
         [clearentDelegate setConfigured:true];
     }
 }
-
-/*
- We need a way to determine if the reader has had contactless configuration applied. The best
- we can do without actually having tags we can insert in the reader is to inspect a key part of the configuration, the capks. They are applied last when the framework configures the reader. The configuration we have TPG applying does not have contactless CAPKs.
- The only 'flaw' in this is if the merchant uses a reader that had no TPG or Clearent configuration applied.
- It is possible to have default contactless configuration coming from IDTech.
+/**
+ RETURN_CODE_NO_DATA_AVAILABLE_ when not found
  */
 -(RETURN_CODE) isContactlessConfigured {
+    NSLog(@"isContactlessConfigured");
     RETURN_CODE returnCode;
     if(![[IDT_VP3300 sharedController] isConnected]) {
         [Teleport logInfo:@"isContactlessConfigured. Reader disconnected"];
         returnCode = RETURN_CODE_ERR_DISCONNECT;
     } else {
-        NSArray *result;
-        returnCode = [[IDT_VP3300 sharedController]  ctls_retrieveCAPKList:&result];
+        NSLog(@"isContactlessConfigured2");
+        NSDictionary *result;
+        returnCode = [[IDT_VP3300 sharedController]  ctls_getConfigurationGroup:1 response:&result];
+        NSLog(@"isContactlessConfigured3");
         if (RETURN_CODE_DO_SUCCESS == returnCode) {
-            [Teleport logInfo:[NSString stringWithFormat:@"isContactlessConfigured Contactless CAPK List:\n%@", result.description]];
+             NSLog(@"success");
+            if(result == nil || result.count == 0) {
+                NSLog(@"empty dictionary");
+                returnCode = RETURN_CODE_NO_DATA_AVAILABLE_;
+            }
+            [Teleport logInfo:[NSString stringWithFormat:@"isContactlessConfigured Group 1 not found:\n%@", result.description]];
         } else {
-             [Teleport logInfo:[NSString stringWithFormat:@"isContactlessConfigured Contactless CAPK Error Response: = %@",[[IDT_VP3300 sharedController] device_getResponseCodeString:returnCode]]];
+              NSLog(@"fail");
+                        returnCode = RETURN_CODE_NO_DATA_AVAILABLE_;
+             [Teleport logInfo:[NSString stringWithFormat:@"isContactlessConfigured Group 1 error Response: = %@",[[IDT_VP3300 sharedController] device_getResponseCodeString:returnCode]]];
         }
     }
    
