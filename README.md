@@ -179,11 +179,18 @@ clearentManualEntry = [[ClearentManualEntry alloc]  init];
 
 ## Disabling emv configuration when using a preconfigured reader
 
-By default Clearent will apply an emv configuration to your device. This configuration was determined by going through a certification process. The configuration can also be applied before the device is shipped to you. When this happens, you should disable the configuration feature. To do this, call this method on the Clearent_VP3300 object.
+By default Clearent will not apply (as of 1.1.8-beta) an emv configuration to your device. This configuration was determined by going through a certification process. The configuration can also be applied before the device is shipped to you. When this happens, you should disable the configuration feature. To do this, call this method on the Clearent_VP3300 object.
 
 ```smalltalk
 - (void) setAutoConfiguration:(BOOL)enable;
 ```
+
+If you want to check to see if the reader has already had configuration applied to it use this method (added 1.1.8-beta). When we configure a reader we alter the 9F4E tag to include 50 as a hex value (P for preconfigured).
+
+```objective-c
+[clearentVP3300 isPreconfigured];
+```
+
 ## Enabling contactless
 
 By default the framework will not apply the contactless emv configuration to your device. So no action needs to be taken for pre configured readers. If you are not using a pre configured reader you can pass true to enable configuration. When the reader is successfully configured a flag is set in the application's memory so it remembers not to apply the configuration on subsequent connections.

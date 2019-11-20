@@ -20,9 +20,16 @@ Idtech introduced a new message that comes back in the callback. They modified t
 
 1.0.26.4 - Fixed an issue where the framework was not handling the card data correctly when the user has been presented with the 'USE MAGSTRIPE' message after an invalid insert. The result was an NSInvalidArgumentException being thrown.
 
-:new: 1.1.7-beta - Contactless support, various fixes. :eyes: Uses IDTech framework version v1.01.157
+1.1.7-beta - Contactless support, various fixes. :eyes: Uses IDTech framework version v1.01.157
 
 1.1.7-beta latest change is to disable auto configuration by default. Fixed an issue with the isContactlessConfigured method.
+
+:new: 1.1.8-beta
+
+* added isPreconfigured method so you can check if the reader was preconfigured and decide whether or not to enable our configuration feature.
+* When a card is read and the reader rejects the chip the framework will now send back a message instructing the user to watch for the green led light because the transaction is being switched over to a swipe. The framework will start up a swipe transaction.
+* fixed an issue with the device serial number not being sent during remote logging on initial connections.
+* removed some NSLogs.
 
 ### Contactless ###
 
