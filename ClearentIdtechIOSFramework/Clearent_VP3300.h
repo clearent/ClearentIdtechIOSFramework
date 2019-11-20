@@ -1526,6 +1526,12 @@ If you did not instruct the framework to do any configuration when you initializ
  */
 -(RETURN_CODE) isContactlessConfigured;
 
+/**
+ Inspects the reader configuration to determine if the reader has been preconfigured. Must be connected to reader.
+ If you get RETURN_CODE_DO_SUCCESS back then contactless has been configured. RETURN_CODE_ERR_DISCONNECT means the reader is not connected. RETURN_CODE_NO_DATA_AVAILABLE_ is returned when not configured
+ */
+-(RETURN_CODE) isReaderPreconfigured;
+
 @end
 
 

@@ -44,7 +44,7 @@ static NSString *const LINE_DELIMITER = @"clrnt";
 -(ClearentLoggingRequest*) parseData:(NSData*) responseData
 {
     ClearentLoggingRequest *clearentLoggingRequest = [[ClearentLoggingRequest alloc] init];
-    clearentLoggingRequest.deviceSerialNumber = [ClearentCache getStoredDeviceSerialNumber];
+    clearentLoggingRequest.deviceSerialNumber = [ClearentCache getCurrentDeviceSerialNumber];
     
     NSString *stringFromData = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
     NSArray *logLines = [stringFromData componentsSeparatedByString:END_OF_LINE_INDICATOR];

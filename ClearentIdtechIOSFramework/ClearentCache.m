@@ -16,6 +16,7 @@ static NSString *const NSUSERDEFAULT_READERCONFIGURED = @"ReaderConfigured";
 static NSString *const NSUSERDEFAULT_CONTACTLESSCONFIGURED = @"ReaderContactlessConfigured";
 
 static NSString *const DEVICESERIALNUMBER_STANDIN = @"9999999999";
+static NSString *const CURRENT_DEVICESERIALNUMBER = @"CurrentDeviceSerialNumber";
 
 @implementation ClearentCache
 
@@ -98,6 +99,24 @@ static NSString *const DEVICESERIALNUMBER_STANDIN = @"9999999999";
         }
     }
     return NO;
+}
+
++ (NSString *) getCurrentDeviceSerialNumber {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    NSString *currentDeviceSerialNumber = [defaults objectForKey:CURRENT_DEVICESERIALNUMBER];
+    if(currentDeviceSerialNumber == nil) {
+        currentDeviceSerialNumber = DEVICESERIALNUMBER_STANDIN;
+    }
+    return currentDeviceSerialNumber;
+}
+
++ (void) cacheCurrentDeviceSerialNumber:(NSString *) currentDeviceSerialNumber {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    if(currentDeviceSerialNumber == nil) {
+        currentDeviceSerialNumber = DEVICESERIALNUMBER_STANDIN;
+    }
+    [defaults setObject:currentDeviceSerialNumber forKey:CURRENT_DEVICESERIALNUMBER];
+    [defaults synchronize];
 }
 
 @end

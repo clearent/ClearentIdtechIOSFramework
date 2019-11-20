@@ -18,4 +18,6 @@
 + (void) clearConfigurationCache;
 + (void) clearContactlessConfigurationCache;
 + (BOOL) isDeviceConfigured:(BOOL)autoConfiguration contactlessAutoConfiguration:(BOOL)contactlessAutoConfiguration deviceSerialNumber:(NSString *)deviceSerialNumber;
++ (NSString *) getCurrentDeviceSerialNumber;
++ (void) cacheCurrentDeviceSerialNumber:(NSString *) currentDeviceSerialNumber;
 @end

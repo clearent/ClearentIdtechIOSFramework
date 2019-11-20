@@ -10,6 +10,7 @@
 #import "ClearentDelegate.h"
 #import "Teleport.h"
 #import "ClearentPayment.h"
+#import <IDTech/IDTUtility.h>
 
 @implementation Clearent_VP3300 
 
@@ -17,6 +18,8 @@
   static NSString *const DEVICE_NOT_CONNECTED = @"Device is not connected";
   static NSString *const BLUETOOTH_FRIENDLY_NAME_REQUIRED = @"Bluetooth friendly name required";
   static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready";
+  static NSString *const READER_CONFIGURED_FLAG_LETTER_P_IN_HEX = @"50";
+  static NSString *const MERCHANT_NAME_AND_LOCATION_HIJACKED_AS_PRECONFIGURED_FLAG  = @"9F4E";
 
   ClearentDelegate *clearentDelegate;
 
@@ -639,27 +642,53 @@
  RETURN_CODE_NO_DATA_AVAILABLE_ when not found
  */
 -(RETURN_CODE) isContactlessConfigured {
-    NSLog(@"isContactlessConfigured");
-    RETURN_CODE returnCode;
+    RETURN_CODE returnCode = RETURN_CODE_DO_SUCCESS;
     if(![[IDT_VP3300 sharedController] isConnected]) {
         [Teleport logInfo:@"isContactlessConfigured. Reader disconnected"];
         returnCode = RETURN_CODE_ERR_DISCONNECT;
     } else {
-        NSLog(@"isContactlessConfigured2");
         NSDictionary *result;
         returnCode = [[IDT_VP3300 sharedController]  ctls_getConfigurationGroup:1 response:&result];
-        NSLog(@"isContactlessConfigured3");
         if (RETURN_CODE_DO_SUCCESS == returnCode) {
-             NSLog(@"success");
             if(result == nil || result.count == 0) {
-                NSLog(@"empty dictionary");
+                [Teleport logInfo:[NSString stringWithFormat:@"isContactlessConfigured Group 1 not found:\n%@", result.description]];
+                returnCode = RETURN_CODE_NO_DATA_AVAILABLE_;
+            } 
+        } else {
+             returnCode = RETURN_CODE_NO_DATA_AVAILABLE_;
+             [Teleport logInfo:[NSString stringWithFormat:@"isContactlessConfigured Group 1 error Response: = %@",[[IDT_VP3300 sharedController] device_getResponseCodeString:returnCode]]];
+        }
+    }
+   
+    return returnCode;
+}
+
+/**
+ RETURN_CODE_NO_DATA_AVAILABLE_ when not found
+ */
+-(RETURN_CODE) isReaderPreconfigured {
+    RETURN_CODE returnCode = RETURN_CODE_DO_SUCCESS;
+    if(![[IDT_VP3300 sharedController] isConnected]) {
+        [Teleport logInfo:@"isReaderPreconfigured. Reader disconnected"];
+        returnCode = RETURN_CODE_ERR_DISCONNECT;
+    } else {
+        NSDictionary *terminalData;
+        returnCode = [[IDT_VP3300 sharedController]  emv_retrieveTerminalData:&terminalData];
+        if (RETURN_CODE_DO_SUCCESS == returnCode) {
+            NSString *merchantNameAndLocationHijackedAsConfiguredFlag = [IDTUtility dataToHexString:[terminalData objectForKey:MERCHANT_NAME_AND_LOCATION_HIJACKED_AS_PRECONFIGURED_FLAG]];
+            if(merchantNameAndLocationHijackedAsConfiguredFlag != nil && [merchantNameAndLocationHijackedAsConfiguredFlag isEqualToString:READER_CONFIGURED_FLAG_LETTER_P_IN_HEX]) {
+                [Teleport logInfo:@"🤩 🤩 🤩 🤩 🤩 IDTECH READER IS PRECONFIGURED 🤩 🤩 🤩 🤩 🤩"];
+            } else {
+                if(merchantNameAndLocationHijackedAsConfiguredFlag != nil) {
+                    [Teleport logInfo:[NSString stringWithFormat:@"isReaderPreconfigured 9f4e value is: %@", merchantNameAndLocationHijackedAsConfiguredFlag]];
+                } else {
+                    [Teleport logInfo:[NSString stringWithFormat:@"isReaderPreconfigured No 9F4E tag found"]];
+                }
                 returnCode = RETURN_CODE_NO_DATA_AVAILABLE_;
             }
-            [Teleport logInfo:[NSString stringWithFormat:@"isContactlessConfigured Group 1 not found:\n%@", result.description]];
         } else {
-              NSLog(@"fail");
-                        returnCode = RETURN_CODE_NO_DATA_AVAILABLE_;
-             [Teleport logInfo:[NSString stringWithFormat:@"isContactlessConfigured Group 1 error Response: = %@",[[IDT_VP3300 sharedController] device_getResponseCodeString:returnCode]]];
+            [Teleport logInfo:[NSString stringWithFormat:@"isReaderPreconfigured Failed to get 9F4E tag : = %@",[[IDT_VP3300 sharedController] device_getResponseCodeString:returnCode]]];
+            returnCode = RETURN_CODE_NO_DATA_AVAILABLE_;
         }
     }
    

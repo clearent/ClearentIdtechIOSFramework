@@ -253,6 +253,7 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
         }
     }
     if(deviceSerialNumber != nil) {
+        [ClearentCache cacheCurrentDeviceSerialNumber:deviceSerialNumber];
         return deviceSerialNumber;
     }
     [Teleport logError:@"Failed to get device serial number using config_getSerialNumber. Using all nines placeholder"];
@@ -456,10 +457,11 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
 
 - (void) swipeMSRData:(IDTMSRData*)cardData{
     if (cardData != nil && cardData.event == EVENT_MSR_CARD_DATA && (cardData.track2 != nil || cardData.encTrack2 != nil)) {
-        if(cardData.iccPresent) {
-            [self deviceMessage:USE_CHIP_READER];
-            return;
-        }
+        //see if we can get the fallback working for bad chip read scenario
+//        if(cardData.iccPresent) {
+//            [self deviceMessage:USE_CHIP_READER];
+//            return;
+//        }
         ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequestForASwipe:cardData];
         [self createTransactionToken:clearentTransactionTokenRequest];
     } else if (cardData != nil && cardData.event == EVENT_MSR_TIMEOUT) {
@@ -577,7 +579,8 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
         clearentTransactionTokenRequest.ksn = [IDTUtility dataToHexString:cardData.KSN].uppercaseString;
     } else if (cardData.track2 != nil) {
         clearentTransactionTokenRequest.encrypted = false;
-        clearentTransactionTokenRequest.maskedTrack2Data = cardData.track2;
+        //TODO where can we get masked data ?
+      //  clearentTransactionTokenRequest.maskedTrack2Data = cardData.track2;
         clearentTransactionTokenRequest.track2Data = cardData.track2.uppercaseString;
     }
     clearentTransactionTokenRequest.kernelVersion = [self kernelVersion];
@@ -687,9 +690,15 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
         [self deviceMessage:GENERIC_CARD_READ_ERROR_RESPONSE];
     } else if(emvData.resultCodeV2 == EMV_RESULT_CODE_V2_APP_NO_MATCHING) {
          _originalEntryMode = 81;
+         [self deviceMessage:@"CHIP NOT RECOGNIZED, PULL CARD OUT, WAIT FOR GREEN LED, TRY SWIPE"];
          SEL startFallbackSwipeSelector = @selector(startFallbackSwipe);
-         [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:startFallbackSwipeSelector userInfo:nil repeats:false];
+         [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:startFallbackSwipeSelector userInfo:nil repeats:false];
          emvErrorHandled = YES;
+    } else if(emvData.resultCodeV2 == EMV_RESULT_CODE_V2_CARD_REJECTED) {
+         [self deviceMessage:@"BAD CHIP, PULL CARD OUT, WAIT FOR GREEN LED, TRY SWIPE"];
+        SEL startFallbackSwipeSelector = @selector(startFallbackSwipe);
+        [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:startFallbackSwipeSelector userInfo:nil repeats:false];
+        emvErrorHandled = YES;
      } else if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_TIME_OUT) {
          emvErrorHandled = YES;
          [self deviceMessage:TIMEOUT_ERROR_RESPONSE];
@@ -775,12 +784,16 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
 }
 
 - (void) startFallbackSwipe {
-    [self deviceMessage:@"FALLBACK TO SWIPE"];
+    RETURN_CODE cancelTransactionRt = [[IDT_VP3300 sharedController] device_cancelTransaction];
+    if (RETURN_CODE_DO_SUCCESS == cancelTransactionRt) {
+        [Teleport logInfo:@"deviceMessage: Cancelled transaction before starting fallback swipe"];
+    }
     RETURN_CODE startMSRSwipeRt = [[IDT_VP3300 sharedController] msr_startMSRSwipe];
-    if (RETURN_CODE_DO_SUCCESS == startMSRSwipeRt) {
-       [self deviceMessage:@"FALLBACK TO SWIPE start success"];
-     } else{
-       [self deviceMessage:@"FALLBACK TO SWIPE start failed"];
+    if (RETURN_CODE_DO_SUCCESS == startMSRSwipeRt || RETURN_CODE_OK_NEXT_COMMAND == startMSRSwipeRt) {
+        [Teleport logInfo:@"deviceMessage: start fallback swipe succeeded "];
+    } else {
+        [Teleport logInfo:@"deviceMessage: start fallback swipe failed "];
+        [self deviceMessage:@"FAILED TO START SWIPE. TRY AGAIN BUT THIS TIME PULL CARD OUT WHEN INSTRUCTED"];
     }
 }
 
@@ -1098,6 +1111,10 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
         [self deviceMessage:FAILED_TO_READ_CARD_ERROR_RESPONSE];
         return;
     }
+    
+    //Complete the transaction as soon as possible so the idtech framework does not resend the current transaction.
+    [[IDT_VP3300 sharedController] emv_completeOnlineEMVTransaction:false hostResponseTags:nil];
+    
     NSString *targetUrl = [NSString stringWithFormat:@"%@/%@", self.baseUrl, @"rest/v2/mobilejwt"];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     NSError *error;
@@ -1131,10 +1148,8 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
           } else if(data != nil) {
               responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
               if(200 == [httpResponse statusCode]) {
-                  [[IDT_VP3300 sharedController] emv_completeOnlineEMVTransaction:false hostResponseTags:nil];
                   [self handleResponse:responseStr];
               } else {
-                  [[IDT_VP3300 sharedController] emv_completeOnlineEMVTransaction:false hostResponseTags:nil];
                   [self handleError:responseStr];
               }
           }
