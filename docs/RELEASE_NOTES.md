@@ -105,3 +105,5 @@ clearentVP3300Config.contactAutoConfiguration = false;
 
 * Some times when you attempt contactless the reader sends back a generic response. When this happens the framework doesn't know whether to keep retrying the tap or fallback to a contact/swipe.
 A 'Card read error' is returned. A new transaction will need to be tried.
+
+* There was an issue related to how the reader was behaving when you pressed the button after it was disconnected for a while. The firmware was incorrectly determining that a card was inserted or not. This made logic in the idtech framework think a card was inserted and as a result would not enable contactless mode. A firmware fix was made (bluetooth version 151). To avoid forcing everyone to upgrade their firmware we put a workaround in that starts up the transaction and immediately cancels it, then starts up the transaction again. This somehow resets the firmware switch that is having a problem so when the new transaction is started contactless mode is also enabled. The fallout from this is you might get a second callback message sent instructing you to PLEASE SWIPE, TAP, OR INSERT, or the INSERT/SWIPE message.
