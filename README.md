@@ -219,7 +219,30 @@ If you want to check to see if the reader has already had contactless configurat
 
 ## Contactless
 
+* The amount field is required in order to fully support all scenarios we discovered during our certification process. If an amount is not provided, then large
+amounts risk being declined.
+
+* If an email address is available, provide it. In an event of an offline decline the customer will receive an offline decline receipt (email only).
+
+* A new method has been created which allows you to pass in the email address when starting a transaction.
+
+```smalltalk
+ClearentPayment *clearentPayment = [[ClearentPayment alloc] init];
+   [clearentPayment setAmount:amount];
+   clearentPayment.amtOther = 0;
+   clearentPayment.type = 0;
+   clearentPayment.timeout = 30;
+   clearentPayment.tags = nil;
+   clearentPayment.emailAddress = txtReceiptEmailAddress.text;
+   clearentPayment.fallback = true;
+   clearentPayment.forceOnline = false;
+
+   RETURN_CODE rt = [clearentVP3300 device_startTransaction:clearentPayment];
+```   
+
 * EMV Contactless cards , which have the wifi/network symbol on them, are supported. Cards put into an Apple Wallet are also supported. Cards that use the MSD Contactless standard are not supported.
+
+:exclamation: The virtualized Apple Card is not supported.
 
 * If a tap is attempted and the reader has trouble reading the card because it was not in the NFC field long enough, the framework will handle this error and start up a new transaction. This retry loop will send back a message of 'RETRY TAP' until either it's successful or the transaction is cancelled or timed out.
 

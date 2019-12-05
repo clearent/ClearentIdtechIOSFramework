@@ -521,7 +521,7 @@
 
 //It appears the idtech firmware has a flag that indicates a card is seated in the reader. This breaks idtech's device_startTransaction which is meant to support
 //contactless, dip, and swipe. If we don't attempt to get the cardSeated changed to false the contactless feature is disabled.
-//If Idtech fixes the issue then the worst overhead this method will have is asking the reader for the icc reader status.
+//IdTech has fixed this issue with new firmware but we need to keep this in place until everyone is upgraded
 - (void) workaroundCardSeatedIssue:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline  fallback:(BOOL)fallback {
     
        NSString *firmwareVersion = [clearentDelegate getFirmwareVersion];

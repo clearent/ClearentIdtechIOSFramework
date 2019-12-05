@@ -22,6 +22,11 @@ static NSString *const TRACK2_DATA_EMV_TAG = @"57";
 static NSString *const TRACK1_DATA_EMV_TAG = @"56";
 static NSString *const ENTRY_MODE_EMV_TAG = @"9F39";
 static NSString *const TRACK2_DATA_CONTACTLESS_NON_CHIP_TAG = @"9F6B";
+static NSString *const MASTERCARD_GROUP_FF8105_TAG = @"FF8105";
+static NSString *const MASTERCARD_GROUP_FF8106_TAG = @"FF8106";
+static NSString *const IDTECH_DFEF4D_CIPHERTEXT_TAG = @"DFEF4D";
+
+static NSString *const KSN_TAG = @"FFEE12";
 static NSString *const TAC_DEFAULT = @"DF13";
 static NSString *const TAC_DENIAL = @"DF14";
 static NSString *const TAC_ONLINE = @"DF15";
@@ -817,68 +822,42 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     NSMutableDictionary *outgoingTags = [self createDefaultOutgoingTags:emvData];
     NSData *tagsAsNSData;
     NSString *tlvInHex;
-    NSString *track2Data57;
-
+    clearentTransactionTokenRequest.encrypted = false;
+    
     if(emvData.cardData != nil) {
-        if(emvData.cardData.encTrack2 != nil) {
-            clearentTransactionTokenRequest.encrypted = true;
-            track2Data57 = [IDTUtility dataToHexString:emvData.cardData.encTrack2];
-            clearentTransactionTokenRequest.maskedTrack2Data = emvData.cardData.track2;
-            clearentTransactionTokenRequest.ksn = [IDTUtility dataToHexString:emvData.cardData.KSN].uppercaseString;
-        } else if(emvData.cardData.track2 != nil) {
-            clearentTransactionTokenRequest.encrypted = false;
-            track2Data57 = emvData.cardData.track2;
-        }
+        [self addCardData:clearentTransactionTokenRequest iDTEMVData:emvData];
     } else if(isEncryptedTransaction(emvData.encryptedTags)) {
-        clearentTransactionTokenRequest.encrypted = true;
-        track2Data57 = [IDTUtility dataToHexString:[emvData.encryptedTags objectForKey:TRACK2_DATA_EMV_TAG]];
-        clearentTransactionTokenRequest.maskedTrack2Data = [IDTUtility dataToHexString:[emvData.maskedTags objectForKey:TRACK2_DATA_EMV_TAG]].uppercaseString;
-        NSString *ksn = [IDTUtility dataToHexString:emvData.KSN].uppercaseString;
-        if(ksn != nil && !([ksn isEqualToString:@""])) {
-            clearentTransactionTokenRequest.ksn = [ksn uppercaseString];
-            clearentTransactionTokenRequest.encrypted = true;
-        } else {
-            ksn = [IDTUtility dataToHexString:[emvData.unencryptedTags objectForKey:@"FFEE12"]];
-            if(ksn != nil && !([ksn isEqualToString:@""])) {
-                clearentTransactionTokenRequest.ksn = [ksn uppercaseString];
-                clearentTransactionTokenRequest.encrypted = true;
-            }
-        }
-    } else {
-        clearentTransactionTokenRequest.encrypted = false;
-        track2Data57 = [IDTUtility dataToHexString:[emvData.unencryptedTags objectForKey:TRACK2_DATA_EMV_TAG]];
-    }
-
-    if(track2Data57 != nil && !([track2Data57 isEqualToString:@""])) {
-        clearentTransactionTokenRequest.track2Data = track2Data57.uppercaseString;
-    } else if (emvData.cardType == 1) {//contactless
-        if(isEncryptedTransaction(emvData.encryptedTags)) {
-            NSDictionary *ff8105 = [IDTUtility TLVtoDICT_HEX_ASCII:[emvData.encryptedTags objectForKey:@"FF8105"]];
-            if(ff8105 != nil) {
-                [Teleport logInfo:@"ff8105 found in encryptedTags"];
-                NSString *track2Data9F6B = [ff8105 objectForKey:TRACK2_DATA_CONTACTLESS_NON_CHIP_TAG];
-                if(track2Data9F6B != nil && !([track2Data9F6B isEqualToString:@""])) {
-                    clearentTransactionTokenRequest.track2Data = track2Data9F6B.uppercaseString;
-                }
-            }
-        } else {
-            NSString *encryptedTrack2 = [IDTUtility dataToHexString:[emvData.unencryptedTags objectForKey:@"DFEF4D"]];
-            NSString *ksn = [IDTUtility dataToHexString:[emvData.unencryptedTags objectForKey:@"FFEE12"]];
-            if(ksn != nil && !([ksn isEqualToString:@""])) {
-                clearentTransactionTokenRequest.ksn = [ksn uppercaseString];
-                clearentTransactionTokenRequest.encrypted = true;
-            }
-            if(encryptedTrack2 != nil && !([encryptedTrack2 isEqualToString:@""])) {
+        [self addTrack2Data: clearentTransactionTokenRequest tags:emvData.encryptedTags];
+        if(clearentTransactionTokenRequest.track2Data == nil) {
+           NSString *encryptedTrack2 = [IDTUtility dataToHexString:[emvData.encryptedTags objectForKey:IDTECH_DFEF4D_CIPHERTEXT_TAG]];
+           if(encryptedTrack2 != nil && !([encryptedTrack2 isEqualToString:@""])) {
                 clearentTransactionTokenRequest.track2Data = encryptedTrack2.uppercaseString;
-            }
+           }
         }
-
-        NSData* ff8105Data = [emvData.unencryptedTags objectForKey:@"FF8105"];
-        [self addFromFF81XX: clearentTransactionTokenRequest ff81XX:ff8105Data tags:outgoingTags];
-
-        NSData* ff8106Data = [emvData.unencryptedTags objectForKey:@"FF8106"];
-        [self addFromFF81XX: clearentTransactionTokenRequest ff81XX:ff8106Data tags:outgoingTags];
+        [self addTrack2Data: clearentTransactionTokenRequest tags:emvData.unencryptedTags];
+        [self addMaskedData: clearentTransactionTokenRequest maskedTags:emvData.maskedTags];
+    } else {
+        [self addTrack2Data: clearentTransactionTokenRequest tags:emvData.unencryptedTags];
+        [self addMaskedData: clearentTransactionTokenRequest maskedTags:emvData.maskedTags];
     }
+
+    [self addKSN:clearentTransactionTokenRequest iDTEMVData:emvData];
+    
+    if (emvData.cardType == 1) {//contactless
+        if(isEncryptedTransaction(emvData.encryptedTags)) {
+            NSData* ff8105Data = [emvData.encryptedTags objectForKey:MASTERCARD_GROUP_FF8105_TAG];
+            [self addFromFF81XX: clearentTransactionTokenRequest ff81XX:ff8105Data tags:outgoingTags];
+
+            NSData* ff8106Data = [emvData.encryptedTags objectForKey:MASTERCARD_GROUP_FF8106_TAG];
+            [self addFromFF81XX: clearentTransactionTokenRequest ff81XX:ff8106Data tags:outgoingTags];
+        }
+    }
+    
+    NSData* ff8105Data = [emvData.unencryptedTags objectForKey:MASTERCARD_GROUP_FF8105_TAG];
+    [self addFromFF81XX: clearentTransactionTokenRequest ff81XX:ff8105Data tags:outgoingTags];
+
+    NSData* ff8106Data = [emvData.unencryptedTags objectForKey:MASTERCARD_GROUP_FF8106_TAG];
+    [self addFromFF81XX: clearentTransactionTokenRequest ff81XX:ff8106Data tags:outgoingTags];
 
     [self addRequiredTags: outgoingTags];
     [self addApplicationPreferredName:clearentTransactionTokenRequest tags:outgoingTags];
@@ -945,6 +924,32 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     return true;
 }
 
+- (void) addCardData: (ClearentTransactionTokenRequest*) clearentTransactionTokenRequest iDTEMVData:(IDTEMVData*)iDTEMVData {
+    if(iDTEMVData.cardData.encTrack2 != nil) {
+        clearentTransactionTokenRequest.encrypted = true;
+        clearentTransactionTokenRequest.track2Data = [IDTUtility dataToHexString:iDTEMVData.cardData.encTrack2];
+        clearentTransactionTokenRequest.maskedTrack2Data = iDTEMVData.cardData.track2;
+        clearentTransactionTokenRequest.ksn = [IDTUtility dataToHexString:iDTEMVData.cardData.KSN].uppercaseString;
+    } else if(iDTEMVData.cardData.track2 != nil) {
+        clearentTransactionTokenRequest.encrypted = false;
+        clearentTransactionTokenRequest.track2Data = iDTEMVData.cardData.track2;
+    }
+}
+
+- (void) addKSN: (ClearentTransactionTokenRequest*) clearentTransactionTokenRequest iDTEMVData:(IDTEMVData*)iDTEMVData {
+    NSString *ksn;
+    if(iDTEMVData.KSN != nil) {
+        ksn = [IDTUtility dataToHexString:iDTEMVData.KSN].uppercaseString;
+    }
+    if(ksn == nil) {
+        ksn = [IDTUtility dataToHexString:[iDTEMVData.unencryptedTags objectForKey:KSN_TAG]];
+    }
+    if(ksn != nil && !([ksn isEqualToString:@""])) {
+        clearentTransactionTokenRequest.ksn = [ksn uppercaseString];
+        clearentTransactionTokenRequest.encrypted = true;
+    }
+}
+
 - (void) addFromFF81XX: (ClearentTransactionTokenRequest*) clearentTransactionTokenRequest ff81XX:(NSData*) ff81XX tags:(NSMutableDictionary*) outgoingTags {
     if (ff81XX != nil && ff81XX.length > 1) {
         NSDictionary* tags = [IDTUtility processTLV:ff81XX];
@@ -957,19 +962,31 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
             [self addApplicationPreferredName:clearentTransactionTokenRequest tags:_unencTags];
         }
         [self addMaskedData: clearentTransactionTokenRequest maskedTags:_maskedTags];
-        [self addEncryptedData: clearentTransactionTokenRequest encryptedTags:_encTags];
+        [self addTrack2Data: clearentTransactionTokenRequest tags:_encTags];
+        if(_unencTags != nil) {
+            [self addTrack2Data: clearentTransactionTokenRequest tags:_unencTags];
+        }
     }
 }
 
-- (void) addEncryptedData: (ClearentTransactionTokenRequest*) clearentTransactionTokenRequest encryptedTags:(NSDictionary*) encryptedTags {
-    if(encryptedTags != nil && clearentTransactionTokenRequest.track2Data == nil) {
-        NSString *track2Data57 = [encryptedTags objectForKey:@"57"];
-        if(track2Data57 != nil && !([track2Data57 isEqualToString:@""])) {
-            clearentTransactionTokenRequest.track2Data = track2Data57.uppercaseString;
-        } else {
-            NSString *track2Data56 = [encryptedTags objectForKey:@"56"];
-            if(track2Data56 != nil && !([track2Data56 isEqualToString:@""])) {
-                clearentTransactionTokenRequest.track2Data = track2Data56.uppercaseString;
+- (void) addTrack2Data: (ClearentTransactionTokenRequest*) clearentTransactionTokenRequest tags:(NSDictionary*) tags {
+    if(clearentTransactionTokenRequest.track2Data == nil && tags != nil && [tags count] > 0) {
+        
+        NSData *track2Data = [tags objectForKey:TRACK2_DATA_EMV_TAG];
+    
+        if(track2Data == nil) {
+            track2Data = [tags objectForKey:TRACK1_DATA_EMV_TAG];
+        }
+        
+        if(track2Data == nil) {
+            track2Data = [tags objectForKey:TRACK2_DATA_CONTACTLESS_NON_CHIP_TAG];
+        }
+        
+        if(track2Data != nil) {
+            if([track2Data isKindOfClass:[NSString class]]) {
+                clearentTransactionTokenRequest.track2Data = [IDTUtility dataToString:track2Data];
+            } else {
+                clearentTransactionTokenRequest.track2Data = [IDTUtility dataToHexString:track2Data];
             }
         }
     }
@@ -977,13 +994,11 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
 
 - (void) addMaskedData: (ClearentTransactionTokenRequest*) clearentTransactionTokenRequest maskedTags:(NSDictionary*) maskedTags {
     if (maskedTags != nil && clearentTransactionTokenRequest.maskedTrack2Data == nil) {
-        NSString *maskedTrack2DataFrom57 = [IDTUtility dataToHexString:[maskedTags objectForKey:@"57"]];
-        //Which one should we be using all the time ? dataToHexString solves a mastercard issue but amex and discover worked with dataToString
-        //NSString *maskedTrack2DataFrom57 = [IDTUtility dataToString:[maskedTags objectForKey:@"57"]];
+        NSString *maskedTrack2DataFrom57 = [IDTUtility dataToHexString:[maskedTags objectForKey:TRACK2_DATA_EMV_TAG]];
         if(maskedTrack2DataFrom57 != nil && !([maskedTrack2DataFrom57 isEqualToString:@""])) {
             clearentTransactionTokenRequest.maskedTrack2Data = maskedTrack2DataFrom57.uppercaseString;
         } else {
-            NSString *maskedTrack2DataFrom56 = [IDTUtility dataToHexString:[maskedTags objectForKey:@"56"]];
+            NSString *maskedTrack2DataFrom56 = [IDTUtility dataToHexString:[maskedTags objectForKey:TRACK1_DATA_EMV_TAG]];
             if(maskedTrack2DataFrom56 != nil && !([maskedTrack2DataFrom56 isEqualToString:@""])) {
                 clearentTransactionTokenRequest.maskedTrack2Data = maskedTrack2DataFrom56.uppercaseString;
             }

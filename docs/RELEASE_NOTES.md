@@ -24,12 +24,18 @@ Idtech introduced a new message that comes back in the callback. They modified t
 
 1.1.7-beta latest change is to disable auto configuration by default. Fixed an issue with the isContactlessConfigured method.
 
-:new: 1.1.8-beta
+1.1.8-beta
 
 * added isPreconfigured method so you can check if the reader was preconfigured and decide whether or not to enable our configuration feature.
 * When a card is read and the reader rejects the chip the framework will now send back a message instructing the user to watch for the green led light because the transaction is being switched over to a swipe. The framework will start up a swipe transaction.
 * fixed an issue with the device serial number not being sent during remote logging on initial connections.
 * removed some NSLogs.
+
+:new: 1.1.9-beta
+
+* Added a new method called isReaderPreconfigured which allows you to check if a reader has been preconfigured so you can make the decision early on to disable configuration or not. (tag 9F4E with a value of 0x50 means its preconfigured)
+
+* Fix an issue with mapping card data on unencrypted readers.
 
 ### Contactless ###
 
