@@ -99,9 +99,40 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
 
 - (CONFIGURATION_ERROR_CODE) configureContactCapks:(NSDictionary*) contactCapks {
     
+    bool allSuccessful = true;
+    
+    NSArray *capkList;
+    RETURN_CODE emv_retrieveCAPKListRt = [[IDT_VP3300 sharedController]  emv_retrieveCAPKList:&capkList];
+    if (RETURN_CODE_DO_SUCCESS == emv_retrieveCAPKListRt) {
+        NSLog(@"Successfully retrieved list of configured contact capk");
+        [Teleport logInfo:[NSString stringWithFormat:@"Successfully removed all currently configured contact capk"]];
+        for(NSString *nameAndKeyIndex in capkList) {
+            NSString *name = [nameAndKeyIndex substringToIndex:[nameAndKeyIndex length] - 2];
+            NSString *keyIndex = [nameAndKeyIndex substringFromIndex: [nameAndKeyIndex length] - 2];
+            NSLog(@"contact capk name %@",[NSString stringWithFormat:@"%@", name]);
+            NSLog(@"contact capk keyindex %@",[NSString stringWithFormat:@"%@", keyIndex]);
+            RETURN_CODE emv_removeCAPKRt = [[IDT_VP3300 sharedController]  emv_removeCAPK:name index:keyIndex];
+            if (RETURN_CODE_DO_SUCCESS == emv_removeCAPKRt) {
+                NSLog(@"contact capk removed %@",[NSString stringWithFormat:@"%@", nameAndKeyIndex]);
+                [Teleport logInfo:[NSString stringWithFormat:@"contact capk removed %@", nameAndKeyIndex]];
+            } else {
+                NSLog(@"contact capk not removed %@",[NSString stringWithFormat:@"%@", nameAndKeyIndex]);
+                [Teleport logInfo:[NSString stringWithFormat:@"contact capk not removed %@", nameAndKeyIndex]];
+                allSuccessful = false;
+            }
+        }
+    } else{
+        NSLog(@"Failed to get list of contact capk");
+        [Teleport logInfo:[NSString stringWithFormat:@"Failed to get list of contact capk"]];
+        allSuccessful = false;
+    }
+    
+    if(!allSuccessful) {
+        return CONTACT_CAPKS_FAILED;
+    }
+    
     CONFIGURATION_ERROR_CODE configureContactCapksReturnCode = EMV_CONFIGURATION_SUCCESS;
     
-    bool allSuccessful = true;
     for(NSDictionary *contactCapk in contactCapks) {
         NSString *name = [contactCapk objectForKey:@"name"];
         NSString *rid = [contactCapk objectForKey:@"rid"];
@@ -125,7 +156,6 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
         if (RETURN_CODE_DO_SUCCESS == capkRt) {
             [Teleport logInfo:[NSString stringWithFormat:@"contact capk loaded %@", name]];
             NSLog(@"contact capk loaded %@",[NSString stringWithFormat:@"%@", name]);
-            [Teleport logInfo:[NSString stringWithFormat:@"contact capk loaded  %@", name]];
         } else{
             NSString *error =[_sharedController device_getResponseCodeString:capkRt];
             [Teleport logError:[NSString stringWithFormat:@"contact capk failed to load %@,%@", name, error]];

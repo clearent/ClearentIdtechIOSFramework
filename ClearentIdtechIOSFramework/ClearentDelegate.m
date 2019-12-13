@@ -127,6 +127,29 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
 }
 
 - (void) lcdDisplay:(int)mode  lines:(NSArray*)lines {
+    
+    switch (mode) {
+        case 0x10:
+            [Teleport logInfo:@"prompt 10"];
+            break;
+        case 0x03:
+            [Teleport logInfo:@"prompt 3"];
+            break;
+        case 0x01:
+            [Teleport logInfo:@"prompt 1"];
+            break;
+        case 0x02:
+            [Teleport logInfo:@"prompt 2"];
+            break;
+        case 0x08:{
+            [[IDT_VP3300 sharedController] emv_callbackResponseLCD:mode selection:1];
+            return;
+        }
+            break;
+        default:
+            break;
+    }
+    
     NSMutableArray *updatedArray = [[NSMutableArray alloc]initWithCapacity:1];
     if (lines != nil) {
         for (NSString* message in lines) {
@@ -584,8 +607,6 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
         clearentTransactionTokenRequest.ksn = [IDTUtility dataToHexString:cardData.KSN].uppercaseString;
     } else if (cardData.track2 != nil) {
         clearentTransactionTokenRequest.encrypted = false;
-        //TODO where can we get masked data ?
-      //  clearentTransactionTokenRequest.maskedTrack2Data = cardData.track2;
         clearentTransactionTokenRequest.track2Data = cardData.track2.uppercaseString;
     }
     clearentTransactionTokenRequest.kernelVersion = [self kernelVersion];
@@ -875,13 +896,15 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
 //        }
     }
 
-    NSString *deviceSerialNumber = [self deviceSerialNumber];
-    if(deviceSerialNumber != nil && [deviceSerialNumber length] > 8) {
-        [outgoingTags removeObjectForKey:@"9F1E"];
-        NSString *lastEightOfDeviceSerialNumber = [deviceSerialNumber substringFromIndex:[deviceSerialNumber length] - 8];
-        [outgoingTags setObject:[IDTUtility stringToData:lastEightOfDeviceSerialNumber] forKey:@"9F1E"];
+    if(clearentTransactionTokenRequest.deviceSerialNumber == nil) {
+        NSString *deviceSerialNumber = [self deviceSerialNumber];
+        if(deviceSerialNumber != nil && [deviceSerialNumber length] > 8) {
+            [outgoingTags removeObjectForKey:@"9F1E"];
+            NSString *lastEightOfDeviceSerialNumber = [deviceSerialNumber substringFromIndex:[deviceSerialNumber length] - 8];
+            [outgoingTags setObject:[IDTUtility stringToData:lastEightOfDeviceSerialNumber] forKey:@"9F1E"];
+        }
     }
-
+    
     if(outgoingTags != nil) {
         tagsAsNSData = [IDTUtility DICTotTLV:outgoingTags];
         tlvInHex = [IDTUtility dataToHexString:tagsAsNSData];
@@ -933,6 +956,10 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     } else if(iDTEMVData.cardData.track2 != nil) {
         clearentTransactionTokenRequest.encrypted = false;
         clearentTransactionTokenRequest.track2Data = iDTEMVData.cardData.track2;
+    }
+    if(iDTEMVData.cardData != nil && iDTEMVData.cardData.RSN != nil) {
+        [Teleport logInfo:[NSString stringWithFormat:@"Reader Serial Number %@",iDTEMVData.cardData.RSN]];
+        clearentTransactionTokenRequest.deviceSerialNumber = iDTEMVData.cardData.RSN;
     }
 }
 
@@ -1128,7 +1155,12 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     }
     
     //Complete the transaction as soon as possible so the idtech framework does not resend the current transaction.
-    [[IDT_VP3300 sharedController] emv_completeOnlineEMVTransaction:false hostResponseTags:nil];
+    RETURN_CODE emv_completeOnlineEMVTransactionRt = [[IDT_VP3300 sharedController] emv_completeOnlineEMVTransaction:false hostResponseTags:nil];
+    if(RETURN_CODE_OK_NEXT_COMMAND == emv_completeOnlineEMVTransactionRt || RETURN_CODE_DO_SUCCESS == emv_completeOnlineEMVTransactionRt) {
+        [Teleport logInfo:@"Request IDTech to Complete Transaction Successful IDTECH_TRANSACTION_COMPLETED"];
+    } else {
+        [Teleport logInfo:@"Request IDTech to Complete Transaction Failed IDTECH_TRANSACTION_COMPLETED"];
+    }
     
     NSString *targetUrl = [NSString stringWithFormat:@"%@/%@", self.baseUrl, @"rest/v2/mobilejwt"];
     NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];

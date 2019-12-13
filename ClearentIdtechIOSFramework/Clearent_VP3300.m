@@ -85,7 +85,7 @@
         [clearentDelegate deviceMessage:READER_IS_NOT_CONFIGURED];
         ctlsStartRt = RETURN_CODE_EMV_FAILED;
     } else {
-        [Teleport logInfo:@"ctls_startTransaction no vars"];
+        [Teleport logInfo:@"device_startTransaction no vars TRANSACTION_STARTED"];
         ctlsStartRt =   [[IDT_VP3300 sharedController] ctls_startTransaction];
     }
     return ctlsStartRt;
@@ -241,7 +241,7 @@
         emvStartRt = RETURN_CODE_EMV_FAILED;
     } else {
         [[IDT_VP3300 sharedController] emv_disableAutoAuthenticateTransaction:FALSE];
-        [Teleport logInfo:@"emv_startTransaction"];
+        [Teleport logInfo:@"emv_startTransaction TRANSACTION_STARTED"];
         emvStartRt =  [[IDT_VP3300 sharedController] emv_startTransaction:amount amtOther:amtOther type:type timeout:timeout tags:tags forceOnline:forceOnline fallback:fallback];
     }
     return emvStartRt;
@@ -353,7 +353,7 @@
         [clearentDelegate deviceMessage:READER_IS_NOT_CONFIGURED];
         ctlsStartRt = RETURN_CODE_EMV_FAILED;
     } else {
-         [Teleport logInfo:@"ctls_startTransaction with vars"];
+         [Teleport logInfo:@"ctls_startTransaction with vars TRANSACTION_STARTED"];
         ctlsStartRt =  [[IDT_VP3300 sharedController] ctls_startTransaction:amount type:type timeout:timeout tags:tags];
     }
     return ctlsStartRt;
@@ -469,6 +469,9 @@
             [clearentDelegate deviceMessage:@"Transaction cancelled"];
         }
     } else {
+        
+        [Teleport logInfo:@"device_startTransaction TRANSACTION_STARTED"];
+        
         [NSThread sleepForTimeInterval:0.5f];
         [[IDT_VP3300 sharedController] emv_disableAutoAuthenticateTransaction:FALSE];
         [clearentDelegate setClearentPayment:clearentPaymentRequest];

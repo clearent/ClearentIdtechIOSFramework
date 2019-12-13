@@ -121,6 +121,8 @@ static NSString *const CONTACTLESS_CONFIGURED_MESSAGE = @"Reader configured for 
     if (RETURN_CODE_DO_SUCCESS == removeCapkRt) {
         NSLog(@"Successfully removed all currently configured contactless capk");
         [Teleport logInfo:[NSString stringWithFormat:@"Successfully removed all currently configured contactless capk"]];
+    } else {
+        return CONTACTLESS_CAPKS_FAILED;
     }
     
     bool allSuccessful = true;
