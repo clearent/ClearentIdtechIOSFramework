@@ -229,7 +229,13 @@
 }
 
 -(RETURN_CODE) emv_startTransaction:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline fallback:(BOOL)fallback {
+    
     [self clearCurrentRequest];
+    
+    ClearentPayment *clearentPayment = [self createPaymentRequest:amount amtOther:amtOther type:type timeout:timeout tags:tags forceOnline:forceOnline  fallback:fallback ];
+    
+    [clearentDelegate setClearentPayment:clearentPayment];
+    
     RETURN_CODE emvStartRt;
     if(![[IDT_VP3300 sharedController] isConnected]) {
         [Teleport logInfo:@"emv_startTransaction. Tried to start transaction but disconnected"];
@@ -343,6 +349,10 @@
 
 -(RETURN_CODE) ctls_startTransaction:(double)amount type:(int)type timeout:(int)timeout tags:(NSMutableDictionary *)tags {
     [self clearCurrentRequest];
+    
+    ClearentPayment *clearentPayment = [self createPaymentRequest:amount amtOther:0 type:type timeout:timeout tags:tags forceOnline:false  fallback:true ];
+    [clearentDelegate setClearentPayment:clearentPayment];
+    
     RETURN_CODE ctlsStartRt;
     if(![[IDT_VP3300 sharedController] isConnected]) {
         [Teleport logInfo:@"ctls_startTransaction. Tried to start transaction but disconnected"];
@@ -579,7 +589,7 @@
 }
 
 - (void) clearCurrentRequest{
-    [clearentDelegate setClearentPayment:nil];
+    [clearentDelegate clearCurrentRequest];
 }
 
 //Sometimes our initial call to the reader requesting information fails. We still need to allow the system to continue on since this data is not considered critical to

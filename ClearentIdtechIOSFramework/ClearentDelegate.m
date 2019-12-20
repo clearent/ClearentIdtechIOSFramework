@@ -60,7 +60,7 @@ static NSString *const UNABLE_TO_GO_ONLINE = @"UNABLE TO GO ONLINE";
 static NSString *const GENERIC_CONTACTLESS_FAILED = @"TAP FAILED";
 static NSString *const CONTACTLESS_FALLBACK_MESSAGE = @"TAP FAILED. INSERT/SWIPE";
 static NSString *const CONTACTLESS_RETRY_MESSAGE = @"RETRY TAP";
-
+static NSString *const CHIP_FOUND_ON_SWIPE = @"CARD HAS CHIP. TRY INSERT";
 static NSString *const CONTACTLESS_ERROR_CODE_TAG = @"FFEE1F";
 static NSString *const CONTACTLESS_ERROR_CODE_NONE = @"00";
 static NSString *const CONTACTLESS_ERROR_CODE_GO_TO_CONTACT_INTERFACE = @"02";
@@ -79,10 +79,17 @@ static NSString *const CONTACTLESS_ERROR_CODE_CARD_MISSING_CA_PUBLIC_KEY = @"50"
 static NSString *const CONTACTLESS_ERROR_CODE_CARD_FAILED_TO_RECOVER_ISSUER_PUBLIC_KEY = @"51";
 static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @"55";
 
+/// <#Description#>
 @implementation ClearentDelegate
 
-  ClearentConfigurator *_clearentConfigurator;
-  id<ClearentVP3300Configuration> _clearentVP3300Configuration;
+ClearentConfigurator *_clearentConfigurator;
+id<ClearentVP3300Configuration> _clearentVP3300Configuration;
+
+BOOL previousSwipeWasCardWithChip = NO;
+BOOL userToldToUseMagStripe = NO;
+BOOL userToldToUseChipReader = NO;
+BOOL contactlessIsProcessing = NO;
+
 
 - (instancetype) init : (id <Clearent_Public_IDTech_VP3300_Delegate>) publicDelegate clearentBaseUrl:(NSString*)clearentBaseUrl publicKey:(NSString*)publicKey  {
     self = [super init];
@@ -160,16 +167,29 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
                 [Teleport logError:@"contactless is not enabled. Switch TAP OR INSERT to old message"];
                 [updatedArray addObject:@"CARD"];
             } else if(message != nil && [message isEqualToString:@"TERMINATED"]) {
-                [self clearCurrentRequest];
                 [Teleport logError:@"IDTech framework terminated the request."];
                 [self deviceMessage:@"TERMINATED"];
             }  else if(message != nil && [message isEqualToString:@"TERMINATE"]) {
-                [self clearCurrentRequest];
                 [Teleport logError:@"IDTech framework terminated the request."];
                 [self deviceMessage:@"TERMINATE"];
+            }  else if(message != nil && [message isEqualToString:@"USE MAGSTRIPE"]) {
+                userToldToUseMagStripe = YES;
+                [Teleport logError:@"IDTech framework USE MAGSTRIPE."];
+                [self deviceMessage:message];
+            } else if(message != nil && [message isEqualToString:@"CARD"] && (userToldToUseMagStripe || userToldToUseChipReader)) {
+                 [Teleport logError:@"do not show CARD message to help with messaging of restarts of the transaction"];
+            } else if(message != nil && [message isEqualToString:@"INSERT/SWIPE"] && (userToldToUseMagStripe || userToldToUseChipReader)) {
+                [Teleport logError:@"do not show INSERT/SWIPE message to help with messaging of restarts of the transaction"];
+            } else if(message != nil && [message isEqualToString:@"USE CHIP READER"]) {
+                userToldToUseChipReader = YES;
+                if(!userToldToUseMagStripe) {
+                    [self deviceMessage:CHIP_FOUND_ON_SWIPE];
+                    [Teleport logError:@"Clearent is handling the use chip reader message."];
+                } else {
+                    [Teleport logError:@"User told to use magstripe even though use chip reader message came back."];
+                }
             } else if(message != nil && [message isEqualToString:@"DECLINED"]) {
                 NSLog(@"This is not really a decline. Clearent is creating a transaction token for later use.");
-                [self clearCurrentRequest];
             } else if(message != nil && [message isEqualToString:@"APPROVED"]) {
                 NSLog(@"This is not really an approval. Clearent is creating a transaction token for later use.");
             } else {
@@ -224,7 +244,6 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
 - (void) resetInvalidDeviceData {
     [self resetDeviceSerialNumber];
     [self resetFirmwareVersion];
-    [self resetKernelVersion];
 }
 
 - (void) resetFirmwareVersion {
@@ -241,19 +260,12 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
     }
 }
 
-- (void) resetKernelVersion {
-    if(self.kernelVersion == nil || [self.kernelVersion isEqualToString:INVALID_KERNEL_VERSION]) {
-         [Teleport logInfo:@"Try to fix invalid kernel version"];
-        self.kernelVersion = [self getKernelVersion];
-    }
-}
-
 - (NSString *) getKernelVersion {
     NSString *result;
     RETURN_CODE rt = [[IDT_VP3300 sharedController] emv_getEMVL2Version:&result];
     if (RETURN_CODE_DO_SUCCESS == rt) {
         NSString *kernelVersion;
-        if(result != nil && [kernelVersion isEqualToString:KERNEL_BASE_VERSION]) {
+        if(result != nil && [result isEqualToString:KERNEL_BASE_VERSION]) {
             if([result containsString:KERNEL_VERSION_INCREMENTAL]) {
                 kernelVersion = result;
             } else {
@@ -262,8 +274,8 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
         }
         return result;
     } else{
-        [Teleport logError:INVALID_KERNEL_VERSION];
-        return INVALID_KERNEL_VERSION;
+        [Teleport logError:@"Failed to get kernel version. Use default"];
+        return [NSString stringWithFormat:@"%@%@", KERNEL_BASE_VERSION, KERNEL_VERSION_INCREMENTAL];
     }
 }
 
@@ -440,13 +452,13 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
     [Teleport logInfo:@"retryContactless:device_startTransaction"];
 
     RETURN_CODE emvStartRt;
-    emvStartRt =  [[IDT_VP3300 sharedController] device_startTransaction:self.clearentPayment.amount amtOther:self.clearentPayment.amtOther type:self.clearentPayment.type timeout:20 tags:self.clearentPayment.tags forceOnline:self.clearentPayment.forceOnline fallback:self.clearentPayment.fallback];
+    emvStartRt =  [[IDT_VP3300 sharedController] device_startTransaction:self.clearentPayment.amount amtOther:self.clearentPayment.amtOther type:self.clearentPayment.type timeout:self.clearentPayment.timeout tags:self.clearentPayment.tags forceOnline:self.clearentPayment.forceOnline fallback:self.clearentPayment.fallback];
 
     if(RETURN_CODE_OK_NEXT_COMMAND == emvStartRt || RETURN_CODE_DO_SUCCESS == emvStartRt) {
         [self.publicDelegate deviceMessage:CONTACTLESS_RETRY_MESSAGE];
     } else {
         [NSThread sleepForTimeInterval:0.2f];
-        emvStartRt =  [[IDT_VP3300 sharedController] device_startTransaction:self.clearentPayment.amount amtOther:self.clearentPayment.amtOther type:self.clearentPayment.type timeout:20 tags:self.clearentPayment.tags forceOnline:self.clearentPayment.forceOnline fallback:self.clearentPayment.fallback];
+        emvStartRt =  [[IDT_VP3300 sharedController] device_startTransaction:self.clearentPayment.amount amtOther:self.clearentPayment.amtOther type:self.clearentPayment.type timeout:self.clearentPayment.timeout tags:self.clearentPayment.tags forceOnline:self.clearentPayment.forceOnline fallback:self.clearentPayment.fallback];
         if(RETURN_CODE_OK_NEXT_COMMAND == emvStartRt || RETURN_CODE_DO_SUCCESS == emvStartRt) {
             [self.publicDelegate deviceMessage:CONTACTLESS_RETRY_MESSAGE];
         } else {
@@ -454,6 +466,84 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
             [Teleport logInfo:logErrorMessage];
             [self.publicDelegate deviceMessage:GENERIC_CONTACTLESS_FAILED];
         }
+    }
+}
+
+-(void) restartSwipeIn2In1Mode:(IDTMSRData*) cardData {
+    [NSThread sleepForTimeInterval:0.3f];
+    if(![[IDT_VP3300 sharedController] isConnected]) {
+        [self.publicDelegate deviceMessage:DEVICE_NOT_CONNECTED];
+        return;
+    }
+
+    RETURN_CODE cancelTransactionRt = [[IDT_VP3300 sharedController] device_cancelTransaction];
+    if (RETURN_CODE_DO_SUCCESS == cancelTransactionRt) {
+        [Teleport logInfo:@"restartSwipeIn2In1Mode: Cancelled transaction before restarting in 2 in 1 mode"];
+    }
+
+    [Teleport logInfo:@"restartSwipeIn2In1Mode:emv_startTransaction"];
+
+    RETURN_CODE emvStartRt;
+    emvStartRt =  [[IDT_VP3300 sharedController] emv_startTransaction:self.clearentPayment.amount amtOther:self.clearentPayment.amtOther type:self.clearentPayment.type timeout:self.clearentPayment.timeout tags:self.clearentPayment.tags forceOnline:self.clearentPayment.forceOnline fallback:self.clearentPayment.fallback];
+
+    if(RETURN_CODE_OK_NEXT_COMMAND == emvStartRt || RETURN_CODE_DO_SUCCESS == emvStartRt) {
+        [self sendSwipeErrorMessage:cardData];
+    } else {
+        [Teleport logInfo:@"restartSwipeIn2In1Mode:try emv_startTransaction one more time after initial failure"];
+        [NSThread sleepForTimeInterval:0.2f];
+        emvStartRt =  [[IDT_VP3300 sharedController] emv_startTransaction:self.clearentPayment.amount amtOther:self.clearentPayment.amtOther type:self.clearentPayment.type timeout:self.clearentPayment.timeout tags:self.clearentPayment.tags forceOnline:self.clearentPayment.forceOnline fallback:self.clearentPayment.fallback];
+        if(RETURN_CODE_OK_NEXT_COMMAND == emvStartRt || RETURN_CODE_DO_SUCCESS == emvStartRt) {
+            [self sendSwipeErrorMessage:cardData];
+        } else {
+            NSString *logErrorMessage =[NSString stringWithFormat:@"restartSwipeIn2In1Mode %@",[[IDT_VP3300 sharedController] device_getResponseCodeString:emvStartRt]];
+            [Teleport logInfo:logErrorMessage];
+            [self.publicDelegate deviceMessage:GENERIC_CARD_READ_ERROR_RESPONSE];
+        }
+    }
+}
+
+-(void) restartSwipeOnly:(IDTMSRData*) cardData {
+    [NSThread sleepForTimeInterval:0.3f];
+    if(![[IDT_VP3300 sharedController] isConnected]) {
+        [self.publicDelegate deviceMessage:DEVICE_NOT_CONNECTED];
+        return;
+    }
+
+    RETURN_CODE cancelTransactionRt = [[IDT_VP3300 sharedController] device_cancelTransaction];
+    if (RETURN_CODE_DO_SUCCESS == cancelTransactionRt) {
+        [Teleport logInfo:@"restartSwipeOnly: Cancelled transaction before restarting in 2 in 1 mode"];
+    }
+
+    [Teleport logInfo:@"restartSwipeOnly:msrSwipe"];
+
+    RETURN_CODE msr_startMSRSwipeRt = [[IDT_VP3300 sharedController] msr_startMSRSwipe];
+
+    if(RETURN_CODE_OK_NEXT_COMMAND == msr_startMSRSwipeRt || RETURN_CODE_DO_SUCCESS == msr_startMSRSwipeRt) {
+        [self sendSwipeErrorMessage:cardData];
+    } else {
+        [Teleport logInfo:@"restartSwipeOnly:try msr_startMSRSwipe one more time after initial failure"];
+        [NSThread sleepForTimeInterval:0.2f];
+        msr_startMSRSwipeRt = [[IDT_VP3300 sharedController] msr_startMSRSwipe];
+        if(RETURN_CODE_OK_NEXT_COMMAND == msr_startMSRSwipeRt || RETURN_CODE_DO_SUCCESS == msr_startMSRSwipeRt) {
+            [self sendSwipeErrorMessage:cardData];
+        } else {
+            NSString *logErrorMessage =[NSString stringWithFormat:@"restartSwipeOnly %@",[[IDT_VP3300 sharedController] device_getResponseCodeString:msr_startMSRSwipeRt]];
+            [Teleport logInfo:logErrorMessage];
+            [self.publicDelegate deviceMessage:GENERIC_CARD_READ_ERROR_RESPONSE];
+        }
+    }
+}
+
+- (void) sendSwipeErrorMessage:(IDTMSRData*) cardData {
+    if(!userToldToUseChipReader && cardData != nil && cardData.iccPresent) {
+        [self deviceMessage:CHIP_FOUND_ON_SWIPE];
+        userToldToUseChipReader = true;
+    } else if (cardData != nil && cardData.event == EVENT_MSR_DATA_ERROR) {
+        [self deviceMessage:@"FAILED TO READ CARD. TRY INSERT/SWIPE"];
+    } else if(userToldToUseMagStripe) {
+        [self deviceMessage:@"USE MAGSTRIPE"];
+    } else if((cardData != nil && cardData.iccPresent) || previousSwipeWasCardWithChip || userToldToUseChipReader) {
+        [self.publicDelegate deviceMessage:CHIP_FOUND_ON_SWIPE];
     }
 }
 
@@ -485,40 +575,57 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
 
 - (void) swipeMSRData:(IDTMSRData*)cardData{
     if (cardData != nil && cardData.event == EVENT_MSR_CARD_DATA && (cardData.track2 != nil || cardData.encTrack2 != nil)) {
-        //see if we can get the fallback working for bad chip read scenario
-//        if(cardData.iccPresent) {
-//            [self deviceMessage:USE_CHIP_READER];
-//            return;
-//        }
-        ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequestForASwipe:cardData];
-        [self createTransactionToken:clearentTransactionTokenRequest];
+        if(cardData.iccPresent && !previousSwipeWasCardWithChip && _originalEntryMode != 81 && !userToldToUseMagStripe) {
+            [self restartSwipeIn2In1Mode:cardData];
+            previousSwipeWasCardWithChip = YES;
+            return;
+        }
+        if(previousSwipeWasCardWithChip) {
+            [self swipeMSRDataFallback:cardData];
+        } else {
+            ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequestForASwipe:cardData];
+            if(clearentTransactionTokenRequest == nil || clearentTransactionTokenRequest.track2Data == nil || [clearentTransactionTokenRequest.track2Data isEqualToString:@""]) {
+                [self restartSwipeIn2In1Mode:cardData];
+            } else {
+                [self createTransactionToken:clearentTransactionTokenRequest];
+            }
+        }
+    } else if (cardData != nil && cardData.event == EVENT_MSR_DATA_ERROR) {
+        [self restartSwipeIn2In1Mode:cardData];
     } else if (cardData != nil && cardData.event == EVENT_MSR_TIMEOUT) {
         [self deviceMessage:TIMEOUT_ERROR_RESPONSE];
+    } else if(userToldToUseMagStripe) {
+        [self restartSwipeOnly:cardData];
     } else {
-       [self deviceMessage:GENERIC_CARD_READ_ERROR_RESPONSE];
+        [self restartSwipeIn2In1Mode:cardData];
     }
 }
 
 //- (void) gen2Data:(NSData*)tlv{
-//    [self deviceMessage:@"gen2 data ?"];
+//   //Is this needed?
 //}
 //
+//
 //-(void) dismissAllAlertViews {
-//    [self deviceMessage:@"dismissAllAlertViews?"];
+//   //Is this needed?
 //}
 //
 //-(void) showAlertView:(NSString*)msg {
-//    [self deviceMessage:@"showAlertView ?"];
-//    [self deviceMessage:msg];
+////Is this needed?
 //}
-//
+
+/// <#Description#>
+/// @param event <#event description#>
+/// @param scheme <#scheme description#>
+/// @param data <#data description#>
 //- (void) ctlsEvent:(Byte)event scheme:(Byte)scheme  data:(Byte)data {
+//    NSLog([NSString stringWithFormat:@"Event Scheme = %i",(int)scheme]);
 //    [Teleport logInfo:[NSString stringWithFormat:@"Event Scheme = %i",(int)scheme]];
-//
+//    NSLog([NSString stringWithFormat:[NSString stringWithFormat:@"EVERY Event = %i",(int)data]]);
 //    switch (event) {
 //        case 0x01:
 //        {
-//        [Teleport logInfo:[NSString stringWithFormat:@"LED Event = %i",(int)data]];
+//        [Teleport logInfo:[NSString stringWithFormat:@"EVENT 01!!!! LED Event = %i",(int)data]];
 //                  switch (data)
 //                            {
 //                                case 0x00:
@@ -585,14 +692,43 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
 //               }
 //            case 0x03:
 //        {
+//             NSLog([NSString stringWithFormat:@"LCD Event = %i",(int)data]);
 //            [Teleport logInfo:[NSString stringWithFormat:@"LCD Event = %i",(int)data]];
 //            NSString* line1=nil;
 //            NSString* line2=nil;
 //            [IDTUtility retrieveCTLSMessage:scheme lang:0 messageID:data line1:&line1 line2:&line2];
 //            [self deviceMessage:line1];
-//            [self deviceMessage:line2];
+//            if(line1 != nil &&
+//                ![line1 isEqualToString:@""]
+//                && [line1 isEqualToString:@"Processing"]) {
+//                contactlessIsProcessing  = YES;
+//            }
+//                    
 //            break;
 //        }
+//            case 0x04:
+//            case 0x05:
+//            case 0x06:
+//            case 0x07:
+//            case 0x08:
+//            case 0x09:
+//            case 0x10:
+//            case 0x11:
+//                {
+//                     NSLog([NSString stringWithFormat:@"OTHERS LCD Event = %i",(int)data]);
+//                    [Teleport logInfo:[NSString stringWithFormat:@"LCD Event = %i",(int)data]];
+//                    NSString* line1=nil;
+//                    NSString* line2=nil;
+//                    [IDTUtility retrieveCTLSMessage:scheme lang:0 messageID:data line1:&line1 line2:&line2];
+//                    [self deviceMessage:line1];
+//                    if(line1 != nil &&
+//                        ![line1 isEqualToString:@""]
+//                        && [line1 isEqualToString:@"Try Another Interface"]) {
+//                        contactlessIsProcessing  = YES;
+//                    }
+//                            
+//                    break;
+//                }
 //        default:
 //            break;
 //    }
@@ -622,7 +758,15 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
 - (void) swipeMSRDataFallback:(IDTMSRData*)cardData{
     if (cardData != nil && cardData.event == EVENT_MSR_CARD_DATA && (cardData.track2 != nil || cardData.encTrack2 != nil)) {
         ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequestFallbackSwipe:cardData];
-        [self createTransactionToken:clearentTransactionTokenRequest];
+        if(clearentTransactionTokenRequest == nil || clearentTransactionTokenRequest.track2Data == nil || [clearentTransactionTokenRequest.track2Data isEqualToString:@""]) {
+            if(userToldToUseMagStripe) {
+                [self restartSwipeOnly:cardData];
+            } else {
+                [self restartSwipeIn2In1Mode:cardData];
+            }
+        } else {
+            [self createTransactionToken:clearentTransactionTokenRequest];
+        }
     } else if (cardData != nil && cardData.event == EVENT_MSR_TIMEOUT) {
         [self deviceMessage:TIMEOUT_ERROR_RESPONSE];
     } else {
@@ -637,7 +781,11 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
     [self addRequiredTags: outgoingTags];
     NSData *tagsAsNSData = [IDTUtility DICTotTLV:outgoingTags];
     NSString *tlvInHex = [IDTUtility dataToHexString:tagsAsNSData];
-    NSString *tlvInHexWith9F39 = [NSString stringWithFormat:@"%@%@", tlvInHex, @"9F390195"];
+    int entryMode = _originalEntryMode;
+    if(_originalEntryMode == 0 && (previousSwipeWasCardWithChip || userToldToUseMagStripe)) {
+        entryMode = 80;
+    }
+    NSString *tlvInHexWith9F39 = [NSString stringWithFormat:@"%@%@%d", tlvInHex, @"9F3901",entryMode];
     clearentTransactionTokenRequest.emv = false;
     clearentTransactionTokenRequest.tlv = tlvInHexWith9F39.uppercaseString;
 
@@ -664,7 +812,7 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
         [self deviceMessage:MSD_CONTACTLESS_UNSUPPORTED];
         return;
     }
-
+    
     [self convertIDTechCardToClearentTransactionToken:emvData entryMode:entryMode];
 
     _originalEntryMode = entryMode;
@@ -735,21 +883,37 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
      } else if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_DECLINED) {
          [Teleport logInfo:@"ignoring IDTECH authorization decline"];
          emvErrorHandled = YES;
-     }
-
+     } else if (emvData.cardData != nil && emvData.resultCodeV2 == EMV_RESULT_CODE_V2_MSR_SUCCESS) {
+           if(emvData.cardData.encTrack2 == nil || emvData.cardData.track2 == nil) {
+               if(userToldToUseMagStripe) {
+                   [self restartSwipeOnly:emvData.cardData];
+               } else {
+                   [self restartSwipeIn2In1Mode:emvData.cardData];
+               }
+               emvErrorHandled = YES;
+           } else if(!userToldToUseMagStripe && emvData.cardData.iccPresent && !previousSwipeWasCardWithChip && _originalEntryMode != 81) {
+               previousSwipeWasCardWithChip = YES;
+               [self restartSwipeIn2In1Mode:emvData.cardData];
+               emvErrorHandled = YES;
+           }
+      }
+    
     return emvErrorHandled;
-
 }
 
 - (void) convertIDTechCardToClearentTransactionToken: (IDTEMVData*)emvData entryMode:(int) entryMode {
     @try {
         if (emvData.cardData != nil && emvData.resultCodeV2 == EMV_RESULT_CODE_V2_MSR_SUCCESS) {
-            if(_originalEntryMode == 81) {
+            if(_originalEntryMode == 81 || previousSwipeWasCardWithChip || userToldToUseChipReader) {
                 [self swipeMSRDataFallback:emvData.cardData];
             } else if(entryMode == SWIPE) {
                 [self swipeMSRData:emvData.cardData];
             } else if(isSupportedEmvEntryMode(entryMode)) {
                 ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequest:emvData];
+                if(clearentTransactionTokenRequest == nil || clearentTransactionTokenRequest.track2Data == nil || [clearentTransactionTokenRequest.track2Data isEqualToString:@""]) {
+                       [self restartSwipeIn2In1Mode:emvData.cardData];
+                       return;
+                }
                 [self createTransactionToken:clearentTransactionTokenRequest];
             } else {
                 [self deviceMessage:GENERIC_CARD_READ_ERROR_RESPONSE];
@@ -762,7 +926,7 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
                 [self createTransactionToken:clearentTransactionTokenRequest];
             }
         } else {
-            NSLog(@"ignoring message in emvTransactionData");
+            [Teleport logInfo:[NSString stringWithFormat:@"convertIDTechCardToClearentTransactionToken: pass through. this means our error handler probably missed something"]];
         }
     } @catch (NSException *exception) {
         NSString *errorMessage = [NSString stringWithFormat:@"[Error] - %@ %@", exception.name, exception.reason];
@@ -1066,13 +1230,17 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
 
 - (void) addRequiredTags: (NSMutableDictionary*) outgoingTags {
     NSData *kernelInHex;
-    if(self.kernelVersion == nil || [self.kernelVersion isEqualToString:INVALID_KERNEL_VERSION]) {
-         kernelInHex = [IDTUtility stringToData:self.kernelVersion];
+    if(self.kernelVersion != nil) {
+        kernelInHex = [IDTUtility stringToData:self.kernelVersion];
     } else {
         NSString *kernelWithRevision = [NSString stringWithFormat:@"%@%@", KERNEL_BASE_VERSION, KERNEL_VERSION_INCREMENTAL];
         kernelInHex = [IDTUtility stringToData:kernelWithRevision];
     }
-    [outgoingTags setObject:[IDTUtility stringToData:[self deviceSerialNumber]] forKey:DEVICE_SERIAL_NUMBER_EMV_TAG];
+    if([self deviceSerialNumber] != nil) {
+        [outgoingTags setObject:[IDTUtility stringToData:[self deviceSerialNumber]] forKey:DEVICE_SERIAL_NUMBER_EMV_TAG];
+    } else {
+        [outgoingTags setObject:[IDTUtility stringToData:@"9999999999"] forKey:DEVICE_SERIAL_NUMBER_EMV_TAG];
+    }
     [outgoingTags setObject:kernelInHex forKey:KERNEL_VERSION_EMV_TAG];
 }
 
@@ -1223,6 +1391,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
         } else {
            [self deviceMessage:GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
         }
+        [self clearCurrentRequest];
     }
 }
 
@@ -1240,6 +1409,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
         [Teleport logInfo:@"😀😀💳💳CARD IS NOW TOKEN💳💳😀😀"];
         [Teleport logInfo:@"Successful transaction token communicated to client app"];
         [self deviceMessage:SUCCESSFUL_TOKENIZATION_MESSAGE];
+        [self clearCurrentRequest];
         [self.publicDelegate successfulTransactionToken:response];
     } else {
         [self deviceMessage:GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
@@ -1364,6 +1534,11 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
 
 - (void) clearCurrentRequest{
     [self setClearentPayment:nil];
+    _originalEntryMode = 0;
+    previousSwipeWasCardWithChip = NO;
+    userToldToUseMagStripe = NO;
+    userToldToUseChipReader = NO;
+    contactlessIsProcessing = NO;
 }
 
 - (void) clearContactlessConfigurationCache {
