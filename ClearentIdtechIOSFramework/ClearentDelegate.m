@@ -884,7 +884,7 @@ BOOL contactlessIsProcessing = NO;
          [Teleport logInfo:@"ignoring IDTECH authorization decline"];
          emvErrorHandled = YES;
      } else if (emvData.cardData != nil && emvData.resultCodeV2 == EMV_RESULT_CODE_V2_MSR_SUCCESS) {
-           if(emvData.cardData.encTrack2 == nil || emvData.cardData.track2 == nil) {
+           if(emvData.cardData.encTrack2 == nil && emvData.cardData.track2 == nil) {
                if(userToldToUseMagStripe) {
                    [self restartSwipeOnly:emvData.cardData];
                } else {
