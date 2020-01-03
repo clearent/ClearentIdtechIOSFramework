@@ -31,11 +31,21 @@ Idtech introduced a new message that comes back in the callback. They modified t
 * fixed an issue with the device serial number not being sent during remote logging on initial connections.
 * removed some NSLogs.
 
-:new: 1.1.9-beta
+1.1.9-beta
 
 * Added a new method called isReaderPreconfigured which allows you to check if a reader has been preconfigured so you can make the decision early on to disable configuration or not. (tag 9F4E with a value of 0x50 means its preconfigured)
 
 * Fix an issue with mapping card data on unencrypted readers.
+
+1.1.10-beta
+
+* Swallowed a language prompt message since the readers have been configured not to prompt.
+
+:new: 1.1.11-beta
+
+* added a method so the Client app can contribute to our remote logging solution and aid in support calls.
+
+- (void) addRemoteLogRequest:(NSString*) clientSoftwareVersion message:(NSString*) message;
 
 ### Contactless ###
 
