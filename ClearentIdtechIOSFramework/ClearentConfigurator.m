@@ -109,7 +109,7 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
             [Teleport logInfo:@"IDTech default emv entry mode is contactless, not contact"];
             [ClearentCache clearConfigurationCache];
             [ClearentCache clearContactlessConfigurationCache];
-            [self notifyInfo:@"Auto configuration enabled. Please wait for this configuration to complete."];
+            [self notifyInfo:@"INVALID READER CONFIGURATION. APPLYING ONE TIME UPDATE. PLEASE WAIT (DO NOT DISCONNECT OR CANCEL TRANSACTION"];
             return;
         }
         NSString *terminalCapabilities = [IDTUtility dataToHexString:[terminalData objectForKey:@"9F33"]];
@@ -117,7 +117,7 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
             [Teleport logInfo:@"IDTech terminal capabilities should 6028C8"];
             [ClearentCache clearConfigurationCache];
             [ClearentCache clearContactlessConfigurationCache];
-            [self notifyInfo:@"Auto configuration enabled. Please wait for this configuration to complete."];
+            [self notifyInfo:@"INVALID READER CONFIGURATION. APPLYING ONE TIME UPDATE. PLEASE WAIT (DO NOT DISCONNECT OR CANCEL TRANSACTION"];
             return;
         }
     } else {
@@ -133,7 +133,7 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
         [Teleport logInfo:@"Terminal Major Configuration is not 5"];
         [ClearentCache clearConfigurationCache];
         [ClearentCache clearContactlessConfigurationCache];
-        [self notifyInfo:@"Auto configuration enabled. Please wait for this configuration to complete."];
+        [self notifyInfo:@"INVALID READER CONFIGURATION. APPLYING ONE TIME UPDATE. PLEASE WAIT (DO NOT DISCONNECT OR CANCEL TRANSACTION"];
     }
 }
 

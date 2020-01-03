@@ -708,6 +708,13 @@
     return returnCode;
 }
 
+
+- (void) addRemoteLogRequest:(NSString*) clientSoftwareVersion message:(NSString*) message {
+    if(clientSoftwareVersion != nil && message != nil) {
+        [Teleport logInfo:[NSString stringWithFormat:@"CLIENT:%@:%@",clientSoftwareVersion, message]];
+    }
+}
+
 @end
 
 

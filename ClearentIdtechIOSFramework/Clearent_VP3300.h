@@ -1571,6 +1571,13 @@ If you did not instruct the framework to do any configuration when you initializ
 //- (void) gen2Data:(NSData*)tlv;//!<Receives Gen2 TLV data.
 //!< @param tlv TLV data from gen2 event
 
+/**
+ * The Clearent solution includes remote logging to aid in support calls. If you want to contribute to these logs pass us
+ * some identification, preferably the name and version of your solution, and a brief log message.
+ */
+- (void) addRemoteLogRequest:(NSString*) clientSoftwareVersion message:(NSString*) message;
+
+
 @end
 
 
