@@ -16,6 +16,7 @@
 
   static NSString *const READER_IS_NOT_CONFIGURED = @"Cannot run transaction. Reader is not configured.";
   static NSString *const DEVICE_NOT_CONNECTED = @"Device is not connected";
+  static NSString *const PRESS_BUTTON_ON_READER = @"PRESS BUTTON ON READER";
   static NSString *const BLUETOOTH_FRIENDLY_NAME_REQUIRED = @"Bluetooth friendly name required";
   static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready";
   static NSString *const READER_CONFIGURED_FLAG_LETTER_P_IN_HEX = @"50";
@@ -466,6 +467,7 @@
 
 -(RETURN_CODE) device_startTransaction:(id<ClearentPaymentRequest>) clearentPaymentRequest {
     RETURN_CODE deviceStartRt;
+    
     if(![[IDT_VP3300 sharedController] isConnected]) {
         [Teleport logInfo:@"device_startTransaction. Tried to start transaction but disconnected"];
         [clearentDelegate deviceMessage:DEVICE_NOT_CONNECTED];
@@ -495,37 +497,37 @@
             [Teleport logInfo:@"device_startTransaction successful on first try"];
         } else if(RETURN_CODE_ERR_INVALID_PARAMETER_ == deviceStartRt || RETURN_CODE_ERR_INVALID_PARAMETER == deviceStartRt) {
             [Teleport logInfo:@"device_startTransaction failed. bad parameters"];
-        } else if(RETURN_CODE_ERR_DISCONNECT == deviceStartRt || RETURN_CODE_ERR_DISCONNECT_ == deviceStartRt) {
-            [Teleport logInfo:@"device_startTransaction failed. disconnected on first try"];
-        } else if(RETURN_CODE_NEO_TIMEOUT == deviceStartRt || RETURN_CODE_ERR_TIMEDOUT == deviceStartRt || RETURN_CODE_ERR_TIMEDOUT_ == deviceStartRt) {
-            NSLog(@"device_startTransaction failed on first try. possible state - If the reader if OFF, but SDK thinks it still is connected. execute device_disconnectBLE (so SDK gets in sync with disconnected status), and then attempt to reconnect and retry tranasaction");
-            [Teleport logInfo:@"device_startTransaction failed on first try. possible state - If the reader if OFF, but SDK thinks it still is connected."];
+        } else if(RETURN_CODE_MONO_AUDIO_ == deviceStartRt) {
+            [Teleport logInfo:@"device_startTransaction failed to start. Possible unrecoverable error. Use reader reset button"];
         } else {
-            for (int i = 1; i <= 5; i++) {
-                 if([[IDT_VP3300 sharedController] isConnected]) {
+            for (int i = 1; i <= 3; i++) {
+                
                     [Teleport logInfo:[NSString stringWithFormat:@"Try to start transaction. Retry counter %d", i]];
-                    [NSThread sleepForTimeInterval:0.5f];
-                               
-                    [[IDT_VP3300 sharedController] device_cancelTransaction];
+                     
+                    [NSThread sleepForTimeInterval:1.0f];
                                
                     deviceStartRt = [[IDT_VP3300 sharedController] device_startTransaction:clearentPaymentRequest.amount amtOther:clearentPaymentRequest.amtOther type:clearentPaymentRequest.type timeout:clearentPaymentRequest.timeout tags:clearentPaymentRequest.tags forceOnline:clearentPaymentRequest.forceOnline  fallback:clearentPaymentRequest.fallback];
-                               
-                    if(RETURN_CODE_OK_NEXT_COMMAND == deviceStartRt || RETURN_CODE_DO_SUCCESS == deviceStartRt) {
-                        [Teleport logInfo:[NSString stringWithFormat:@"Start transaction successful. Retry counter %d", i]];
-                        break;
-                    } else if(RETURN_CODE_ERR_DISCONNECT == deviceStartRt || RETURN_CODE_ERR_DISCONNECT_ == deviceStartRt) {
-                        [Teleport logInfo:@"device_startTransaction. In retry loop, tried to start transaction but disconnected"];
-                        [clearentDelegate deviceMessage:DEVICE_NOT_CONNECTED];
-                        break;
+                     
+                     if(RETURN_CODE_OK_NEXT_COMMAND == deviceStartRt || RETURN_CODE_DO_SUCCESS == deviceStartRt) {
+                         [Teleport logInfo:[NSString stringWithFormat:@"Start transaction successful. Retry counter %d", i]];
+                         break;
+                     } else if(RETURN_CODE_SDK_BUSY_MSR_ == deviceStartRt || RETURN_CODE_SDK_BUSY_CTLS_ == deviceStartRt || RETURN_CODE_SDK_BUSY_EMV_ == deviceStartRt || RETURN_CODE_SDK_BUSY_MSR == deviceStartRt || RETURN_CODE_SDK_BUSY_CTLS == deviceStartRt || RETURN_CODE_SDK_BUSY_CMD == deviceStartRt) {
+                         int deviceStartTransactionReturnCode = [[IDT_VP3300 sharedController] device_cancelTransaction];
+                         if(RETURN_CODE_DO_SUCCESS == deviceStartTransactionReturnCode) {
+                              [Teleport logInfo:@"device_startTransaction Canceled an existing transaction."];
+                         }
+                     } else if(RETURN_CODE_ERR_DISCONNECT == deviceStartRt || RETURN_CODE_ERR_DISCONNECT_ == deviceStartRt) {
+                         [Teleport logInfo:@"device_startTransaction failed. disconnected on first try"];
+                         [clearentDelegate deviceMessage:DEVICE_NOT_CONNECTED];
+                         break;
+                     } else if(RETURN_CODE_NEO_TIMEOUT == deviceStartRt || RETURN_CODE_ERR_TIMEDOUT == deviceStartRt || RETURN_CODE_ERR_TIMEDOUT_ == deviceStartRt) {
+                          [Teleport logInfo:@"device_startTransaction failed on first try. possible state - If the reader if OFF, but SDK thinks it still is connected."];
+                         break;
                     } else {
                         NSString *errorResponse = [[IDT_VP3300 sharedController] device_getResponseCodeString:deviceStartRt];
                         [Teleport logInfo:[NSString stringWithFormat:@"Start transaction failed. Retry counter %d%@", i, errorResponse]];
+                        break;
                     }
-                } else {
-                    [Teleport logInfo:[NSString stringWithFormat:@"Device is disconnected. Retry counter %d", i]];
-                    [clearentDelegate deviceMessage:DEVICE_NOT_CONNECTED];
-                    break;
-                }
             }
         }
     }

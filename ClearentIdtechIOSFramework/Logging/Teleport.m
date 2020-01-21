@@ -58,8 +58,10 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(Teleport)
 
 + (void) logInfo:(NSString*) logMessage {
     if(TELEPORT_ENABLED) {
-        Teleport *instance = [Teleport sharedInstance];
-        [instance logInfo:[NSString stringWithFormat:@" %@", logMessage]];
+        if(logMessage != nil) {
+            Teleport *instance = [Teleport sharedInstance];
+            [instance logInfo:[NSString stringWithFormat:@" %@", logMessage]];
+        }
     }
 }
 
@@ -68,14 +70,18 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(Teleport)
         if ([_logRotator currentLogFilePath] == nil) {
             [_logRotator rotate];
         }
-        [LogAdder logInfo:logMessage currentLogFilePath:[_logRotator currentLogFilePath]];
+        if(logMessage != nil) {
+            [LogAdder logInfo:logMessage currentLogFilePath:[_logRotator currentLogFilePath]];
+        }
     }
 }
 
 + (void) logError:(NSString*) logMessage {
     if(TELEPORT_ENABLED) {
-        Teleport *instance = [Teleport sharedInstance];
-        [instance logError:[NSString stringWithFormat:@"💩💩💩 %@%@", logMessage, @" 💩💩💩"]];
+        if(logMessage != nil) {
+            Teleport *instance = [Teleport sharedInstance];
+            [instance logError:[NSString stringWithFormat:@"💩💩💩 %@%@", logMessage, @" 💩💩💩"]];
+        }
     }
 }
 
@@ -84,7 +90,9 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(Teleport)
         if ([_logRotator currentLogFilePath] == nil) {
             [_logRotator rotate];
         }
-        [LogAdder logError:logMessage currentLogFilePath:[_logRotator currentLogFilePath]];
+        if(logMessage != nil) {
+            [LogAdder logError:logMessage currentLogFilePath:[_logRotator currentLogFilePath]];
+        }
     }
 }
 
