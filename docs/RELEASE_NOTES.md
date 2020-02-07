@@ -41,11 +41,17 @@ Idtech introduced a new message that comes back in the callback. They modified t
 
 * Swallowed a language prompt message since the readers have been configured not to prompt.
 
-:new: 1.1.11-beta
+1.1.11-beta
 
 * added a method so the Client app can contribute to our remote logging solution and aid in support calls.
 
 - (void) addRemoteLogRequest:(NSString*) clientSoftwareVersion message:(NSString*) message;
+
+1.1.12-beta
+
+* added defensive checks to make sure a part of remote logging does not crash.
+
+:new: 1.1.12 Official Release
 
 ### Contactless ###
 
