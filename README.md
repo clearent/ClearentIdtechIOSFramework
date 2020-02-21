@@ -30,7 +30,7 @@ You can use our [Clearent Cocoapod](https://github.com/clearent/CocoaPods) or [C
 
 :three: Add a Cartfile to your project (at root). Point to Clearent's github repository for this framework by adding the following to your Cartfile
 
-    github "clearent/ClearentIdtechIOSFramework" "1.1.7-beta"
+    github "clearent/ClearentIdtechIOSFramework" "1.1.12"
 
 :four: Run this command from your project's root folder. This command will pull down a copy of the Clearent Framework and build it locally under Carthage/Build.
 
