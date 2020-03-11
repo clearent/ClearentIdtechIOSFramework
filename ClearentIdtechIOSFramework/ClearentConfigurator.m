@@ -48,10 +48,6 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
     
     [self initClock];
     
-    if(autoConfiguration) {
-        [self invalidateConfigurationCacheWhenMisconfigured];
-    }
-
     //we use the cache to stop configurating every time they connect. If they want to override the cache they can use the clearConfigurationCache & clearContactlessConfigurationCache
     //in Clearent_VP3300.
      NSString *storedDeviceSerialNumber = [ClearentCache getStoredDeviceSerialNumber];
@@ -95,46 +91,6 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
     [self increaseStandByTime];
     
     [self fetchConfiguration:autoConfiguration contactlessAutoConfiguration:contactlessAutoConfiguration deviceSerialNumber:deviceSerialNumber kernelVersion:kernelVersion];
-}
-
-/*
- Previous release was allowing partial configuration of readers. This release does not. 
- */
-- (void) invalidateConfigurationCacheWhenMisconfigured {
-    NSDictionary *terminalData;
-    RETURN_CODE emv_retrieveTerminalDataRt = [[IDT_VP3300 sharedController]  emv_retrieveTerminalData:&terminalData];
-    if (RETURN_CODE_DO_SUCCESS == emv_retrieveTerminalDataRt) {
-        NSString *idtechCustomDefaultEntryModeTag = [IDTUtility dataToHexString:[terminalData objectForKey:IDTECH_EMV_ENTRY_MODE_EMV_TAG]];
-        if(idtechCustomDefaultEntryModeTag != nil && [idtechCustomDefaultEntryModeTag isEqualToString:@"07"]) {
-            [Teleport logInfo:@"IDTech default emv entry mode is contactless, not contact"];
-            [ClearentCache clearConfigurationCache];
-            [ClearentCache clearContactlessConfigurationCache];
-            [self notifyInfo:@"INVALID READER CONFIGURATION. APPLYING ONE TIME UPDATE. PLEASE WAIT (DO NOT DISCONNECT OR CANCEL TRANSACTION"];
-            return;
-        }
-        NSString *terminalCapabilities = [IDTUtility dataToHexString:[terminalData objectForKey:@"9F33"]];
-        if(terminalCapabilities != nil && ![terminalCapabilities isEqualToString:@"6028C8"]) {
-            [Teleport logInfo:@"IDTech terminal capabilities should 6028C8"];
-            [ClearentCache clearConfigurationCache];
-            [ClearentCache clearContactlessConfigurationCache];
-            [self notifyInfo:@"INVALID READER CONFIGURATION. APPLYING ONE TIME UPDATE. PLEASE WAIT (DO NOT DISCONNECT OR CANCEL TRANSACTION"];
-            return;
-        }
-    } else {
-         [Teleport logInfo:@"Failed to inspect terminal Data to confirm default entry mode is 05"];
-    }
-    
-    NSUInteger *terminalMajorConfiguration = 0;
-    [[IDT_VP3300 sharedController] emv_getTerminalMajorConfiguration:&terminalMajorConfiguration];
-    int terminalMajorConfigurationInt = (int)terminalMajorConfiguration;
-    if (terminalMajorConfigurationInt == 5) {
-        [Teleport logInfo:@"Terminal Major Configuration is 5"];
-    } else {
-        [Teleport logInfo:@"Terminal Major Configuration is not 5"];
-        [ClearentCache clearConfigurationCache];
-        [ClearentCache clearContactlessConfigurationCache];
-        [self notifyInfo:@"INVALID READER CONFIGURATION. APPLYING ONE TIME UPDATE. PLEASE WAIT (DO NOT DISCONNECT OR CANCEL TRANSACTION"];
-    }
 }
 
 - (void)fetchConfiguration:(BOOL)autoConfiguration contactlessAutoConfiguration:(BOOL)contactlessAutoConfiguration deviceSerialNumber:(NSString *)deviceSerialNumber kernelVersion:(NSString *)kernelVersion {
