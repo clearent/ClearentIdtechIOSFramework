@@ -124,6 +124,7 @@ typedef struct {
 }
 
 @property(strong) id<UniPay_Delegate> delegate;
+
 //version
 +(void) isKeyLoad:(BOOL)keyload;
 +(void) disableAudioDetection;
@@ -141,6 +142,7 @@ typedef struct {
 -(void) stopConnection;
 //connect
 -(BOOL) cmut_isReaderConnected;
+-(void) setReaderAttached:(BOOL)attached;
 -(RDStatus) cmut_StartConnect_Task;
 -(RDStatus) cmut_CancelConnect_Task;
 -(RDStatus) startUniPay:(BOOL)start;
@@ -148,6 +150,7 @@ typedef struct {
 -(void) setDisconnect;
 -(void) setConnect;
 -(BOOL) isNoWait;
++(void) removeCommandDelay;
 -(void) noWaitNextCommand:(BOOL)wait;
 -(RDResult) comn_GetFirmVersion;
 -(RDResult) comn_GetSerialNumber;

@@ -26,14 +26,14 @@ static const char* const TP_LOG_REAPING_QUEUE_NAME = "com.clearent.LogReaping";
 
 @implementation LogReaper
 
-- (id)init
+- (id) init
 {
     [NSException raise:@"Only initWithLogRotator is allowed" format:@"Hello Apple, can you give us a better way of preventing wrong init methods being called?"];
     return nil;
 
 }
 
-- (id) initWithLogRotator:(LogRotator *)logRotator AndForwarder:(SimpleHttpForwarder *)forwarder
+- (id) initWithLogRotator: (LogRotator *) logRotator AndForwarder: (SimpleHttpForwarder *) forwarder
 {
     if((self = [super init]))
     {
@@ -50,7 +50,7 @@ static const char* const TP_LOG_REAPING_QUEUE_NAME = "com.clearent.LogReaping";
 }
 
 
-- (void)startLogReaping
+- (void) startLogReaping
 {
     _timer = dispatch_source_create(DISPATCH_SOURCE_TYPE_TIMER,
                                     0, 0, _logReapingQueue);
@@ -66,7 +66,7 @@ static const char* const TP_LOG_REAPING_QUEUE_NAME = "com.clearent.LogReaping";
     }
 }
 
-- (void)reap
+- (void) reap
 {
     [TeleportUtils teleportDebug:@"Log reaping woke up"];
 
@@ -117,7 +117,7 @@ static const char* const TP_LOG_REAPING_QUEUE_NAME = "com.clearent.LogReaping";
 }
 
 //This is reusable method which takes folder path and returns sorted file list
--(NSArray*)getSortedFilesWithSuffix:(NSString *)suffix fromFolder:(NSString*)folderPath
+-(NSArray*) getSortedFilesWithSuffix: (NSString *) suffix fromFolder: (NSString*) folderPath
 {
     NSError *error = nil;
     NSArray* filesArray = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:folderPath error:&error];

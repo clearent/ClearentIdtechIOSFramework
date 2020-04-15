@@ -12,6 +12,10 @@
 #import "ClearentTransactionTokenRequest.h"
 #import "ClearentPaymentRequest.h"
 #import "ClearentVP3300Configuration.h"
+#import "ClearentConnection.h"
+#import "ClearentFeedback.h"
+#import "ClearentBluetoothDevice.h"
+#import "ClearentDeviceConnector.h"
 
 //EMV_DIP("EMV_DIP", "05"),
 typedef enum {FALLBACK_SWIPE=80, NONTECH_FALLBACK_SWIPE=95, CONTACTLESS_EMV=07, CONTACTLESS_MAGNETIC_SWIPE=91} supportedEmvEntryMode;
@@ -30,18 +34,26 @@ typedef enum {SWIPE=90} supportedNonEmvEntryMode;
 @property(nonatomic) id<Clearent_Public_IDTech_VP3300_Delegate> publicDelegate;
 @property(nonatomic) int originalEntryMode;
 
-@property(nonatomic) NSString *defaultBluetoothFriendlyName;
-@property(nonatomic) NSString *bluetoothDeviceID;
-@property(nonatomic) BOOL bluetoothSearchInProgress;
+@property(nonatomic) BOOL isRunningTransaction;
 
 @property(nonatomic) id<ClearentPaymentRequest> clearentPayment;
 @property(nonatomic) id<ClearentVP3300Configuration> clearentVP3300Configuration;
+@property(nonatomic) ClearentConnection *clearentConnection;
+@property(nonatomic) BOOL runStoredPaymentAfterConnecting;
 
 @property (assign, getter=isConfigured) BOOL configured;
 
-- (id) init: (id <Clearent_Public_IDTech_VP3300_Delegate>) publicDelegate clearentBaseUrl:(NSString*)clearentBaseUrl publicKey:(NSString*)publicKey ;
+@property(nonatomic) SEL runTransactionSelector;
+@property(nonatomic) id callbackObject;
+@property (nonatomic,strong) NSDictionary *feedbackValues;
+@property (nonatomic,strong) ClearentDeviceConnector *clearentDeviceConnector;
 
-- (id) initWithConfig : (id <Clearent_Public_IDTech_VP3300_Delegate>)publicDelegate clearentVP3300Configuration:(id <ClearentVP3300Configuration>) clearentVP3300Configuration;
+- (id) init: (id <Clearent_Public_IDTech_VP3300_Delegate>) publicDelegate clearentBaseUrl:(NSString*)clearentBaseUrl publicKey:(NSString*)publicKey idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance ;
+
+- (id) initWithConfig : (id <Clearent_Public_IDTech_VP3300_Delegate>)publicDelegate clearentVP3300Configuration:(id <ClearentVP3300Configuration>) clearentVP3300Configuration idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance ;
+
+
+- (id) initWithPaymentCallback : (id <Clearent_Public_IDTech_VP3300_Delegate>)publicDelegate clearentVP3300Configuration:(id <ClearentVP3300Configuration>) clearentVP3300Configuration callbackObject:(id)callbackObject withSelector:(SEL)runTransactionSelector idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance ;
 
 - (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequest:(IDTEMVData*)emvData;
 
@@ -50,6 +62,8 @@ typedef enum {SWIPE=90} supportedNonEmvEntryMode;
 -(void) deviceConnected;
 
 - (void) deviceMessage:(NSString*)message;
+
+- (void) feedback:(ClearentFeedback*)clearentFeedback;
 
 - (void) startFallbackSwipe;
 
@@ -71,11 +85,13 @@ typedef enum {SWIPE=90} supportedNonEmvEntryMode;
 
 - (BOOL) isDeviceConfigured;
 
-- (void) resetBluetoothSearch;
-
 - (void) applyClearentConfiguration;
 
 - (void) clearCurrentRequest;
+
+- (void) sendBluetoothDevices;
+
+- (void) sendFeedback:(NSString*) message;
 
 @end
 

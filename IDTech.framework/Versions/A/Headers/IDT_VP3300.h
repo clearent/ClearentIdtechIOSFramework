@@ -33,6 +33,40 @@
 //!< @param data The data intended for the device
 
 
+/**
+ Contactless Event
+ During a Contactless transaction, if events are enabled, they will be sent to this protocol,
+ 
+ @param event Event Type:
+ - 01 = LED Event
+ - 02 = Buzzer Event
+ - 03 = LCD Message
+ @param scheme LCD Message Scheme
+ @param data Data
+	- When Event Type 01:
+	-- 0x00 = LED0 off
+	-- 0x10 = LED1 off
+ 	-- 0x20 = LED2 off
+ 	-- 0x30 = LED3 off
+ 	-- 0xF0 = ALL off
+	-- 0x01 = LED0 on
+	-- 0x11 = LED1 on
+ 	-- 0x21 = LED2 on
+ 	-- 0x31 = LED3 on
+ 	-- 0xF1 = ALL on
+ 	- When Event Type 02:
+ 	-- 0x10 = Short Beep No Change
+ 	-- 0x11 = Short Beep No Change
+ 	-- 0x12 = Double Short Beep
+ 	-- 0x13 = Triple Short Beep
+ 	-- 0x20 = 200ms Beep
+ 	-- 0x21 = 400ms Beep
+ 	-- 0x22 = 600ms Beep
+ 	- When Event Type 03:
+ 	-- Message ID (please refer to table in NEO Reference Guide)
+ */
+
+- (void) ctlsEvent:(Byte)event scheme:(Byte)scheme  data:(Byte)data;
 
 
 /**
@@ -1575,5 +1609,27 @@
  */
 -(RETURN_CODE) device_startTransaction:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline  fallback:(BOOL)fallback;
 
+/**
+* Set Reader Attached
+*
+Forces the device to reader attached state.
+ @param attached TRUE = attached, FALSE = not attached
+*/
+-(void) setReaderAttached:(BOOL)attached;
+
+/**
+* Create Fast EMV Data
+*
+*  At the completion of a Fast EMV Transaction, after the final card decision is returned
+*  and the IDTEMVData object is provided, sending that emvData object to this
+*  method will populate return string data that represents the Fast EMV
+*  data that would be returned from and IDTech FastEMV over KB protocol
+*
+* @param emvData The IDTEMVData object populated with card data.
+*
+* @return Fast EMV String data
+*
+*/
++ (NSString*) createFastEMVData:(IDTEMVData*)emvData;
 
 @end

@@ -36,4 +36,6 @@ typedef enum{
     - (void) notifyError:(NSString*)message;
     - (NSData*) getClockDateAsYYYYMMDD;
     - (NSData*) getClockTimeAsHHMM;
+    -(void) initClock;
+    -(void) cacheConfiguredReader: (NSString*) deviceSerialNumber;
 @end

@@ -572,6 +572,14 @@
  */
 -(void) device_setBLEFriendlyName:(NSString*)friendlyName;
 
+/**
+ * Set BLE Friendly Name
+ *
+ *
+ * @param friendlyName  Sets the default friendly name to be used when discovering any BLE devices. SDK will mount
+ *
+ */
+-(void) device_setBLEFriendlyNamePrefix:(NSString*)friendlyName;
 
 /**
  * Stops searching for Bluetooth Low Energy devices in range
@@ -1655,28 +1663,75 @@
   NOTE: The reader must be in Pass Through Mode for FeliCa commands to work.
  
  @param serviceCode Service Code list.  Each service code must be be 2 bytes
+ @param blockCount Block Count
  @param blockList Block list.
  @param data  Block to write.  Must be 16 bytes.
  @param statusFlag  Status flag response as explained in FeliCA Lite-S User's Manual, Section 4.5
  * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
  
  */
--(RETURN_CODE) felica_write:(NSData*)serviceCode  blockList:(NSData*)blockList data:(NSData*)data statusFlag:(NSData**)statusFlag;
+-(RETURN_CODE) felica_write:(NSData*)serviceCode blockCount:(int)blockCount  blockList:(NSData*)blockList data:(NSData*)data statusFlag:(NSData**)statusFlag;
 
 
 /**
- * FeliCa NFC Commands
+ * FeliCa Poll Card
  *
- Perform functions a Felica Card
+ Perform functions a Felica Card Poll
  
   NOTE: The reader must be in Pass Through Mode for FeliCa commands to work.
  
- @param request Request as explained in IDTech NEO IDG Guide
+ @param systemCode System Code
  @param response  Response as explained in FeliCA Lite-S User's Manual
  * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
  
  */
--(RETURN_CODE) felica_nfcCommand:(NSData*)request response:(NSData**)response;
+-(RETURN_CODE) ctls_nfcCommand:(NSData*)systemCode response:(NSData**)response;
+
+
+        /**
+         * NFC Command
+         *
+            This command uses nfcCmdPkt[0] in command data field to implement different functions.
+            This command should be used in Pass-Through mode and command with “Poll for a NFC Tag”
+            data should be used first. Command with other data can only be used once the “Poll for
+            a NFC Tag” command has indicated that a NFC tag is present.
+ 
+         @param nfcCmdPkt System Code
+            - Poll for NFC Tag:  nfcCmdPkt[0] = 0xff, nfcCmdPkt[1] = timeout value (in seconds)
+            - Tag1 Static Get All Data:  nfcCmdPkt[0] = 0x11
+            - Tag1 Static Read a Byte:  nfcCmdPkt[0] = 0x12, nfcCmdPkt[1] = Address of Data
+            - Tag1 Static Write a Byte:  nfcCmdPkt[0] = 0x13 nfcCmdPkt[1] = Address of Data,  nfcCmdPkt[2] = Data to be written
+            - Tag1 Static Write a Byte NE:  nfcCmdPkt[0] = 0x14, nfcCmdPkt[1] = Address of Data,  nfcCmdPkt[2] = Data to be written
+            - Tag1 Dynamic Read a Segment:  nfcCmdPkt[0] = 0x15, nfcCmdPkt[1] = Address of Segment
+            - Tag1 Dynamic Read 8 Bytes:  nfcCmdPkt[0] = 0x16, nfcCmdPkt[1] = Address of Data
+            - Tag1 Dynamic Write 8 Bytes:  nfcCmdPkt[0] = 0x17, nfcCmdPkt[1] = Address of Data,  nfcCmdPkt[2]~nfcCmdPkt[9] = Data to be written
+            - Tag1 Dynamic Write 8 Bytes NE:  nfcCmdPkt[0] = 0x18, nfcCmdPkt[1] = Address of Data,  nfcCmdPkt[2]~nfcCmdPkt[9] = Data to be written
+            - Tag2 Read Data (16 bytes):  nfcCmdPkt[0] = 0x21, nfcCmdPkt[1] = Address of Data
+            - Tag2 Write Data (4 bytes):  nfcCmdPkt[0] = 0x22, nfcCmdPkt[1] = Address of Data,  nfcCmdPkt[2]~nfcCmdPkt[5] = Data to be written
+            - Tag2 Select Sect:  nfcCmdPkt[0] = 0x23, nfcCmdPkt[1] = Sect number
+            - Tag3 Read Data:
+                -- nfcCmdPkt[0] = 0x41,
+                -- nfcCmdPkt[1] = Number of services, value n
+                -- nfcCmdPkt[2]~nfcCmdPkt[2n+1]: Service code list
+                -- nfcCmdPkt[2n+2]: Number of blocks, value m.
+                -- nfcCmdPkt[2n+3....]: Block list, length is 2m~3m
+            - Tag3 Write Data:
+                -- nfcCmdPkt[0] = 0x41,
+                -- nfcCmdPkt[1] = Number of services, value n
+                -- nfcCmdPkt[2]~nfcCmdPkt[2n+1]: Service code list
+                -- nfcCmdPkt[2n+2]: Number of blocks, value m.
+                -- nfcCmdPkt[2n+3....]: Block list, length is 2m~3m
+                -- nfcCmdPkt[...]: Block data, length is 16m
+            - Tag4 Command:  nfcCmdPkt[0] = 0x81, nfcCmdPkt[1]~nfcCmdPkt[n]:data
+
+
+         @param response  Response as explained in FeliCA Lite-S User's Manual
+         @param ip IP Address of target device (optional)
+        * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+ 
+        */
+-(RETURN_CODE) felica_requestService:(NSData*)nodeCode response:(NSData**)response;
+
 
 /**
  * Capture Amount Input
@@ -1719,5 +1774,19 @@
  */
 -(RETURN_CODE) pin_captureNumericInput:(bool)mask minPIN:(int)minPIN maxPIN:(int)maxPIN message:(NSString*)message signature:(NSData*)signature;
 
+/**
+* Create Fast EMV Data
+*
+*  At the completion of a Fast EMV Transaction, after the final card decision is returned
+*  and the IDTEMVData object is provided, sending that emvData object to this
+*  method will populate return string data that represents the Fast EMV
+*  data that would be returned from and IDTech FastEMV over KB protocol
+*
+* @param emvData The IDTEMVData object populated with card data.
+*
+* @return Fast EMV String data
+*
+*/
++ (NSString*) createFastEMVData:(IDTEMVData*)emvData;
 
 @end

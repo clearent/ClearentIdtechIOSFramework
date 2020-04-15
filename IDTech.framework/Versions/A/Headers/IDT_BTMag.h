@@ -182,4 +182,19 @@ typedef enum{
 
 -(void) close;
 
+/**
+* Create Fast EMV Data
+*
+*  At the completion of a Fast EMV Transaction, after the final card decision is returned
+*  and the IDTEMVData object is provided, sending that emvData object to this
+*  method will populate return string data that represents the Fast EMV
+*  data that would be returned from and IDTech FastEMV over KB protocol
+*
+* @param emvData The IDTEMVData object populated with card data.
+*
+* @return Fast EMV String data
+*
+*/
++ (NSString*) createFastEMVData:(IDTEMVData*)emvData;
+
 @end

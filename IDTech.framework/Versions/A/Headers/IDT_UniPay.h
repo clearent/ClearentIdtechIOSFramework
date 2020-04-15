@@ -925,5 +925,12 @@
  */
 -(void) attemptConnect;
 
+/**
+* Set Reader Attached
+*
+Forces the device to reader attached state.
+ @param attached TRUE = attached, FALSE = not attached
+*/
+-(void) setReaderAttached:(BOOL)attached;
 
 @end

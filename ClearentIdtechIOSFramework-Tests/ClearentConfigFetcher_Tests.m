@@ -7,7 +7,7 @@
 //
 
 #import <XCTest/XCTest.h>
-#import "ClearentConfigFetcher.h"
+#import <ClearentIdtechIOSFramework/ClearentConfigFetcher.h>
 #import <OCMock/OCMock.h>
 
 @interface ClearentConfigFetcher_Tests : XCTestCase
@@ -23,7 +23,7 @@
 - (void)tearDown {
     [super tearDown];
 }
-
+//
 //- (void)useOHHTTPStubsToMockNetworkCall {
 //
 //    NSDictionary *sampleJson = [self getSampleJson:@"ClearentConfiguration"];

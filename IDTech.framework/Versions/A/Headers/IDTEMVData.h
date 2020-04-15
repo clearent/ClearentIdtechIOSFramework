@@ -129,7 +129,6 @@
     NSDictionary* maskedTags; //!< Encrypted EMV Tags.  Key = tag name (NSString), Object = tag value (NSData)
     NSData* KSN; //!< Key Serial Number for encrypted EMV tags
     IDTMSRData* cardData; //!< Card data returned from fallback or non-icc swipe during emv transaction
-
     
 }
 

@@ -20,4 +20,9 @@
 + (BOOL) isDeviceConfigured:(BOOL)autoConfiguration contactlessAutoConfiguration:(BOOL)contactlessAutoConfiguration deviceSerialNumber:(NSString *)deviceSerialNumber;
 + (NSString *) getCurrentDeviceSerialNumber;
 + (void) cacheCurrentDeviceSerialNumber:(NSString *) currentDeviceSerialNumber;
+
++ (void) cacheLastUsedBluetoothDevice:(NSString*) bluetoothDeviceId bluetoothFriendlyName:(NSString *) bluetoothFriendlyName;
+
++ (NSString *) getLastUsedBluetoothDeviceId;
++ (NSString *) getLastUsedBluetoothFriendlyName;
 @end

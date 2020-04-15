@@ -20,6 +20,20 @@
                ReferencedContainer = "container:ClearentIdtechIOSFramework.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "E7CA495220E3C2230090CFFC"
+               BuildableName = "ClearentIdtechIOSFramework-Tests.xctest"
+               BlueprintName = "ClearentIdtechIOSFramework-Tests"
+               ReferencedContainer = "container:ClearentIdtechIOSFramework.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -37,16 +51,6 @@
          </BuildableReference>
       </MacroExpansion>
       <Testables>
-         <TestableReference
-            skipped = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E76504FC1FFC306100B345F6"
-               BuildableName = "ClearentIdtechIOSFrameworkTests.xctest"
-               BlueprintName = "ClearentIdtechIOSFrameworkTests"
-               ReferencedContainer = "container:ClearentIdtechIOSFramework.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
          <TestableReference
             skipped = "NO">
             <BuildableReference

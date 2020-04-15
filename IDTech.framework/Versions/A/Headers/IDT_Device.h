@@ -76,6 +76,43 @@
 
 - (void) lcdDisplay:(int)mode  lines:(NSArray*)lines;
 
+
+/**
+ Contactless Event
+ During a Contactless transaction, if events are enabled, they will be sent to this protocol,
+ 
+ @param event Event Type:
+ - 01 = LED Event
+ - 02 = Buzzer Event
+ - 03 = LCD Message
+ @param scheme LCD Message Scheme
+ @param data Data
+	- When Event Type 01:
+	-- 0x00 = LED0 off
+	-- 0x10 = LED1 off
+ 	-- 0x20 = LED2 off
+ 	-- 0x30 = LED3 off
+ 	-- 0xF0 = ALL off
+	-- 0x01 = LED0 on
+	-- 0x11 = LED1 on
+ 	-- 0x21 = LED2 on
+ 	-- 0x31 = LED3 on
+ 	-- 0xF1 = ALL on
+ 	- When Event Type 02:
+ 	-- 0x10 = Short Beep No Change
+ 	-- 0x11 = Short Beep No Change
+ 	-- 0x12 = Double Short Beep
+ 	-- 0x13 = Triple Short Beep
+ 	-- 0x20 = 200ms Beep
+ 	-- 0x21 = 400ms Beep
+ 	-- 0x22 = 600ms Beep
+ 	- When Event Type 03:
+ 	-- Message ID (please refer to table in NEO Reference Guide)
+ */
+
+- (void) ctlsEvent:(Byte)event scheme:(Byte)scheme  data:(Byte)data;
+
+
 /**
  PIN Request
  During an EMV transaction, this delegate will receive data that is a request to collect a PIN
@@ -93,12 +130,12 @@
  
  */
 
+- (void) pinRequest:(EMV_PIN_MODE_Types)mode  key:(NSData*)key  PAN:(NSData*)PAN startTO:(int)startTO intervalTO:(int)intervalTO language:(NSString*)language;
+
+
+
 - (void) gen2Data:(NSData*)tlv;//!<Receives Gen2 TLV data.
 //!< @param tlv TLV data from gen2 event
-
-
-
-- (void) pinRequest:(EMV_PIN_MODE_Types)mode  key:(NSData*)key  PAN:(NSData*)PAN startTO:(int)startTO intervalTO:(int)intervalTO language:(NSString*)language;
 
 
 /**
@@ -147,6 +184,9 @@
  
  */
 - (void) emvTransactionData:(IDTEMVData*)emvData errorCode:(int)error;
+
+
+
 
 
 /**
@@ -239,6 +279,13 @@
  */
 +(void) bypassOutput:(bool)bypass;
 
+
+/**
+ Outputs MSR swipe data in tag DFEE23.
+ @param keep TRUE = DFEE23 is output, FALSE = Parsed as MSR data
+ */
++(void) keepDFEE23:(bool)keep;
+
 /**
  Sets the flag to bypass checking SDK Status.
  @param bypass TRUE = bypass checking
@@ -277,8 +324,26 @@
  @endcode
  
 
+ 
+ 
  */
 +(void) setDeviceType:(IDT_DEVICE_Types)deviceType;
+
+/**
+* Create Fast EMV Data
+*
+*  At the completion of a Fast EMV Transaction, after the final card decision is returned
+*  and the IDTEMVData object is provided, sending that emvData object to this
+*  method will populate return string data that represents the Fast EMV
+*  data that would be returned from and IDTech FastEMV over KB protocol
+*
+* @param emvData The IDTEMVData object populated with card data.
+*
+* @return Fast EMV String data
+*
+*/
++ (NSString*) createFastEMVData:(IDTEMVData*)emvData;
+
 
 /**
  Initialize class.
@@ -293,6 +358,12 @@
  For BLE implementations.  Removes monitoring headphone jack for audio devices.
  */
 +(void) disableAudioDetection;
+
+/**
+Remove Command Delay.
+For Audio Jack implementations.  Removes delay between playing and reading audio waves.
+*/
++(void) removeCommandDelay;
 
 /**
  Set BLE Service Scan Filter.
@@ -5909,35 +5980,50 @@ Returns the connection status of the requested device
  *
  Writes a block
  
- NOTE: The reader must be in Pass Through Mode for FeliCa commands to work.
- 
- @param serviceCode Service Code list.  Each service code must be be 2 bytes
- @param blockList Block list.
- @param data  Block to write.  Must be 16 bytes.
- @param statusFlag  Status flag response as explained in FeliCA Lite-S User's Manual, Section 4.5
- * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
- 
- */
--(RETURN_CODE) felica_write:(NSData*)serviceCode  blockList:(NSData*)blockList data:(NSData*)data statusFlag:(NSData**)statusFlag;
+  @param serviceCode Service Code list.  Each service code must be be 2 bytes
+  @param blockCount Block Count
+  @param blockList Block list.
+  @param data  Block to write.  Must be 16 bytes.
+  @param statusFlag  Status flag response as explained in FeliCA Lite-S User's Manual, Section 4.5
+  * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+  
+  */
+ -(RETURN_CODE) felica_write:(NSData*)serviceCode blockCount:(int)blockCount  blockList:(NSData*)blockList data:(NSData*)data statusFlag:(NSData**)statusFlag;
 
 
 /**
- * FeliCa NFC Commands
- *
- Perform functions a Felica Card
+* FeliCa Poll Card
+*
+Perform functions a Felica Card Poll
  
  NOTE: The reader must be in Pass Through Mode for FeliCa commands to work.
  
- @param request Request as explained in IDTech NEO IDG Guide
+ @param systemCode System Code
  @param response  Response as explained in FeliCA Lite-S User's Manual
  * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
  
  */
--(RETURN_CODE) felica_nfcCommand:(NSData*)request response:(NSData**)response;
+-(RETURN_CODE) ctls_nfcCommand:(NSData*)systemCode response:(NSData**)response;
+
+
+/**
+ * FeliCa Request Service
+ *
+ Perform functions a Felica Request Service
+ 
+  NOTE: The reader must be in Pass Through Mode for FeliCa commands to work.
+ 
+ @param nodeCode Node Code
+ @param response  Response as explained in FeliCA Lite-S User's Manual
+ * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+ 
+ */
+-(RETURN_CODE) felica_requestService:(NSData*)nodeCode response:(NSData**)response;
 
 -(void) notifyDataReceived: (NSData*) RevData;
 +(bool) dataHasPrefix:(NSData*)data str:(NSString*)str;
 
 +(bool) dataEquals:(NSData*)data str:(NSString*)str;
+-(void) setReaderAttached:(BOOL)attached;
 
 @end

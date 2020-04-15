@@ -11,27 +11,31 @@
 #import "Teleport.h"
 #import "ClearentPayment.h"
 #import <IDTech/IDTUtility.h>
+#import "ClearentCache.h"
+#import "ClearentDeviceConnector.h"
+#import "ClearentTransactions.h"
 
 @implementation Clearent_VP3300 
 
   static NSString *const READER_IS_NOT_CONFIGURED = @"Cannot run transaction. Reader is not configured.";
   static NSString *const DEVICE_NOT_CONNECTED = @"Device is not connected";
-  static NSString *const PRESS_BUTTON_ON_READER = @"PRESS BUTTON ON READER";
+  static NSString *const UNPLUG_AUDIO_JACK_BEFORE_CONNECTING_TO_BLUETOOTH = @"UNPLUG AUDIO JACK BEFORE CONNECTING TO BLUETOOTH";
   static NSString *const BLUETOOTH_FRIENDLY_NAME_REQUIRED = @"Bluetooth friendly name required";
   static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready";
   static NSString *const READER_CONFIGURED_FLAG_LETTER_P_IN_HEX = @"50";
   static NSString *const MERCHANT_NAME_AND_LOCATION_HIJACKED_AS_PRECONFIGURED_FLAG  = @"9F4E";
+  static NSString *const REQUIRED_TRANSACTION_REQUEST_RESPONSE = @"PAYMENT REQUEST AND CONNECTION REQUIRED";
 
   ClearentDelegate *clearentDelegate;
+  ClearentDeviceConnector *clearentDeviceConnector;
+  ClearentTransactions *clearentTransactions;
 
 - (instancetype) init : (id <Clearent_Public_IDTech_VP3300_Delegate>) publicDelegate clearentBaseUrl:(NSString*)clearentBaseUrl publicKey:(NSString*)publicKey {
     self = [super init];
     if (self) {
-        clearentDelegate = [[ClearentDelegate alloc] init:publicDelegate clearentBaseUrl:clearentBaseUrl publicKey:publicKey];
+        clearentDelegate = [[ClearentDelegate alloc] init:publicDelegate clearentBaseUrl:clearentBaseUrl publicKey:publicKey idTechSharedInstance: [IDT_VP3300 sharedController]];
+        clearentTransactions = [[ClearentTransactions alloc] init:clearentDelegate clearentVP3300:self];
         [IDT_VP3300 sharedController].delegate = clearentDelegate;
-        //Using Variant of Teleport-NSLog -> https://github.com/kennethjiang/Teleport-NSLog
-        //Disabled intercept of logging in favor of adding our own logs to a rotating file solution.
-        //When reaping occurs, we send the logs to Clearent.
         TELEPORT_DEBUG = YES;
         [Teleport startWithForwarder:
         [SimpleHttpForwarder forwarderWithAggregatorUrl:clearentBaseUrl publicKey:publicKey]];
@@ -42,12 +46,34 @@
 - (instancetype) initWithConfig : (id <Clearent_Public_IDTech_VP3300_Delegate>)publicDelegate clearentVP3300Configuration:(id <ClearentVP3300Configuration>) clearentVP3300Configuration {
     self = [super init];
     if (self) {
-        clearentDelegate = [[ClearentDelegate alloc] initWithConfig:publicDelegate clearentVP3300Configuration:clearentVP3300Configuration];
+        clearentDelegate = [[ClearentDelegate alloc] initWithConfig:publicDelegate clearentVP3300Configuration:clearentVP3300Configuration  idTechSharedInstance: [IDT_VP3300 sharedController]];
+        clearentTransactions = [[ClearentTransactions alloc] init:clearentDelegate clearentVP3300:self];
         [IDT_VP3300 sharedController].delegate = clearentDelegate;
         if(!clearentVP3300Configuration.disableRemoteLogging) {
-        //Using Variant of Teleport-NSLog -> https://github.com/kennethjiang/Teleport-NSLog
-        //Disabled intercept of logging in favor of adding our own logs to a rotating file solution.
-        //When reaping occurs, we send the logs to Clearent.
+            TELEPORT_DEBUG = YES;
+            [Teleport startWithForwarder:
+            [SimpleHttpForwarder forwarderWithAggregatorUrl:clearentVP3300Configuration.clearentBaseUrl publicKey:clearentVP3300Configuration.publicKey]];
+        }
+    }
+    return self;
+}
+
+- (instancetype) initWithConnectionHandling : (id <Clearent_Public_IDTech_VP3300_Delegate>)publicDelegate clearentVP3300Configuration:(id <ClearentVP3300Configuration>) clearentVP3300Configuration  {
+    self = [super init];
+    if (self) {
+        SEL runTransactionSelector = NSSelectorFromString(@"runTransaction");
+        if ([self respondsToSelector:runTransactionSelector]) {
+            clearentDelegate.runTransactionSelector = runTransactionSelector;
+        }
+        clearentDelegate = [[ClearentDelegate alloc] initWithPaymentCallback:publicDelegate clearentVP3300Configuration:clearentVP3300Configuration callbackObject:self withSelector:runTransactionSelector idTechSharedInstance: [IDT_VP3300 sharedController]];
+        
+        clearentDeviceConnector = [[ClearentDeviceConnector alloc] init:clearentDelegate clearentVP3300:self];
+        [clearentDelegate setClearentDeviceConnector:clearentDeviceConnector];
+        clearentTransactions = [[ClearentTransactions alloc] init:clearentDelegate clearentVP3300:self];
+
+        [IDT_VP3300 sharedController].delegate = clearentDelegate;
+        
+        if(!clearentVP3300Configuration.disableRemoteLogging) {
             TELEPORT_DEBUG = YES;
             [Teleport startWithForwarder:
             [SimpleHttpForwarder forwarderWithAggregatorUrl:clearentVP3300Configuration.clearentBaseUrl publicKey:clearentVP3300Configuration.publicKey]];
@@ -75,21 +101,7 @@
 }
 
 -(RETURN_CODE) ctls_startTransaction {
-    [self clearCurrentRequest];
-    RETURN_CODE ctlsStartRt;
-    if(![[IDT_VP3300 sharedController] isConnected]) {
-        [Teleport logInfo:@"ctls_startTransaction no vars. Tried to start transaction but disconnected"];
-        [clearentDelegate deviceMessage:DEVICE_NOT_CONNECTED];
-        ctlsStartRt = RETURN_CODE_ERR_DISCONNECT;
-    } else if(![clearentDelegate isDeviceConfigured]) {
-        [Teleport logInfo:@"ctls_startTransaction no vars. Tried to start transaction but reader is not configured"];
-        [clearentDelegate deviceMessage:READER_IS_NOT_CONFIGURED];
-        ctlsStartRt = RETURN_CODE_EMV_FAILED;
-    } else {
-        [Teleport logInfo:@"device_startTransaction no vars TRANSACTION_STARTED"];
-        ctlsStartRt =   [[IDT_VP3300 sharedController] ctls_startTransaction];
-    }
-    return ctlsStartRt;
+    return [clearentTransactions ctls_startTransaction];
 }
 
 -(RETURN_CODE) device_cancelConnectToAudioReader {
@@ -230,28 +242,11 @@
 }
 
 -(RETURN_CODE) emv_startTransaction:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline fallback:(BOOL)fallback {
-    
-    [self clearCurrentRequest];
-    
-    ClearentPayment *clearentPayment = [self createPaymentRequest:amount amtOther:amtOther type:type timeout:timeout tags:tags forceOnline:forceOnline  fallback:fallback ];
-    
-    [clearentDelegate setClearentPayment:clearentPayment];
-    
-    RETURN_CODE emvStartRt;
-    if(![[IDT_VP3300 sharedController] isConnected]) {
-        [Teleport logInfo:@"emv_startTransaction. Tried to start transaction but disconnected"];
-        [clearentDelegate deviceMessage:DEVICE_NOT_CONNECTED];
-        emvStartRt = RETURN_CODE_ERR_DISCONNECT;
-    } else if(![clearentDelegate isDeviceConfigured]) {
-        [Teleport logInfo:@"emv_startTransaction. Tried to start transaction but reader is not configured"];
-        [clearentDelegate deviceMessage:READER_IS_NOT_CONFIGURED];
-        emvStartRt = RETURN_CODE_EMV_FAILED;
-    } else {
-        [[IDT_VP3300 sharedController] emv_disableAutoAuthenticateTransaction:FALSE];
-        [Teleport logInfo:@"emv_startTransaction TRANSACTION_STARTED"];
-        emvStartRt =  [[IDT_VP3300 sharedController] emv_startTransaction:amount amtOther:amtOther type:type timeout:timeout tags:tags forceOnline:forceOnline fallback:fallback];
-    }
-    return emvStartRt;
+    return [clearentTransactions emv_startTransaction:amount amtOther:amtOther type:type timeout:timeout tags:tags forceOnline:forceOnline fallback:fallback];
+}
+
+-(RETURN_CODE) emv_startTransaction:(id<ClearentPaymentRequest>) clearentPaymentRequest {
+    return [clearentTransactions emv_startTransaction:clearentPaymentRequest];
 }
 
 -(RETURN_CODE) config_getSerialNumber:(NSString* __autoreleasing *)response {
@@ -349,30 +344,11 @@
 }
 
 -(RETURN_CODE) ctls_startTransaction:(double)amount type:(int)type timeout:(int)timeout tags:(NSMutableDictionary *)tags {
-    [self clearCurrentRequest];
-    
-    ClearentPayment *clearentPayment = [self createPaymentRequest:amount amtOther:0 type:type timeout:timeout tags:tags forceOnline:false  fallback:true ];
-    [clearentDelegate setClearentPayment:clearentPayment];
-    
-    RETURN_CODE ctlsStartRt;
-    if(![[IDT_VP3300 sharedController] isConnected]) {
-        [Teleport logInfo:@"ctls_startTransaction. Tried to start transaction but disconnected"];
-        [clearentDelegate deviceMessage:DEVICE_NOT_CONNECTED];
-        ctlsStartRt = RETURN_CODE_ERR_DISCONNECT;
-    } else if(![clearentDelegate isDeviceConfigured]) {
-        [Teleport logInfo:@"ctls_startTransaction. Tried to start transaction but reader is not configured"];
-        [clearentDelegate deviceMessage:READER_IS_NOT_CONFIGURED];
-        ctlsStartRt = RETURN_CODE_EMV_FAILED;
-    } else {
-         [Teleport logInfo:@"ctls_startTransaction with vars TRANSACTION_STARTED"];
-        ctlsStartRt =  [[IDT_VP3300 sharedController] ctls_startTransaction:amount type:type timeout:timeout tags:tags];
-    }
-    return ctlsStartRt;
+    return [clearentTransactions ctls_startTransaction:amount type:type timeout:timeout tags:tags];
 }
 
 -(RETURN_CODE) device_cancelTransaction {
-    [self clearCurrentRequest];
-    return [[IDT_VP3300 sharedController] device_cancelTransaction];
+    return [clearentTransactions device_cancelTransaction];
 }
 
 -(void) device_disconnectBLE {
@@ -405,27 +381,7 @@
 }
 
 -(RETURN_CODE) device_startTransaction:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline  fallback:(BOOL)fallback {
-    
-    [self clearCurrentRequest];
-    
-    ClearentPayment *clearentPayment = [self createPaymentRequest:amount amtOther:amtOther type:type timeout:timeout tags:tags forceOnline:forceOnline  fallback:fallback ];
-    
-    [clearentDelegate setClearentPayment:clearentPayment];
-    
-    return [self device_startTransaction:clearentPayment];
-}
-
-- (ClearentPayment*) createPaymentRequest:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline  fallback:(BOOL)fallback {
-    ClearentPayment *paymentRequest = [[ClearentPayment alloc] init];
-    [paymentRequest setAmount:amount];
-    paymentRequest.amtOther = amtOther;
-    paymentRequest.type = type;
-    paymentRequest.timeout = timeout;
-    paymentRequest.tags = tags;
-    paymentRequest.emailAddress = nil;
-    paymentRequest.fallback = fallback;
-    paymentRequest.forceOnline = forceOnline;
-    return paymentRequest;
+    return [clearentTransactions device_startTransaction:amount amtOther:amtOther type:type timeout:timeout tags:tags forceOnline:forceOnline fallback:fallback];
 }
 
 -(RETURN_CODE) emv_callbackResponsePIN:(EMV_PIN_MODE_Types)mode KSN:(NSData*)KSN PIN:(NSData*)PIN {
@@ -433,8 +389,7 @@
 }
 
 -(RETURN_CODE) emv_cancelTransaction {
-    [self clearCurrentRequest];
-    return [[IDT_VP3300 sharedController] emv_cancelTransaction];
+    return [clearentTransactions emv_cancelTransaction];
 }
 
 -(RETURN_CODE) emv_getTerminalMajorConfiguration:(NSUInteger**)configuration {
@@ -465,129 +420,16 @@
      [clearentDelegate setContactlessAutoConfiguration:enable];
 }
 
--(RETURN_CODE) device_startTransaction:(id<ClearentPaymentRequest>) clearentPaymentRequest {
-    RETURN_CODE deviceStartRt;
-    
-    if(![[IDT_VP3300 sharedController] isConnected]) {
-        [Teleport logInfo:@"device_startTransaction. Tried to start transaction but disconnected"];
-        [clearentDelegate deviceMessage:DEVICE_NOT_CONNECTED];
-        deviceStartRt = RETURN_CODE_ERR_DISCONNECT;
-    } else if(![clearentDelegate isDeviceConfigured]) {
-        [Teleport logInfo:@"device_startTransaction. Tried to start transaction but reader is not configured"];
-        [clearentDelegate deviceMessage:READER_IS_NOT_CONFIGURED];
-        deviceStartRt = RETURN_CODE_EMV_FAILED;
-        RETURN_CODE cancelTransactionRt = [[IDT_VP3300 sharedController] device_cancelTransaction];
-        if (RETURN_CODE_DO_SUCCESS == cancelTransactionRt) {
-            [clearentDelegate deviceMessage:@"Transaction cancelled"];
-        }
-    } else {
-        
-        [Teleport logInfo:@"device_startTransaction TRANSACTION_STARTED"];
-        
-        [NSThread sleepForTimeInterval:0.5f];
-        [[IDT_VP3300 sharedController] emv_disableAutoAuthenticateTransaction:FALSE];
-        [clearentDelegate setClearentPayment:clearentPaymentRequest];
-        [self resetInvalidDeviceData];
-        
-        [self workaroundCardSeatedIssue:clearentPaymentRequest.amount amtOther:clearentPaymentRequest.amtOther type:clearentPaymentRequest.type timeout:clearentPaymentRequest.timeout tags:clearentPaymentRequest.tags forceOnline:clearentPaymentRequest.forceOnline  fallback:clearentPaymentRequest.fallback];
-        
-        deviceStartRt = [[IDT_VP3300 sharedController] device_startTransaction:clearentPaymentRequest.amount amtOther:clearentPaymentRequest.amtOther type:clearentPaymentRequest.type timeout:clearentPaymentRequest.timeout tags:clearentPaymentRequest.tags forceOnline:clearentPaymentRequest.forceOnline  fallback:clearentPaymentRequest.fallback];
-
-        if(RETURN_CODE_OK_NEXT_COMMAND == deviceStartRt || RETURN_CODE_DO_SUCCESS == deviceStartRt) {
-            [Teleport logInfo:@"device_startTransaction successful on first try"];
-        } else if(RETURN_CODE_ERR_INVALID_PARAMETER_ == deviceStartRt || RETURN_CODE_ERR_INVALID_PARAMETER == deviceStartRt) {
-            [Teleport logInfo:@"device_startTransaction failed. bad parameters"];
-        } else if(RETURN_CODE_MONO_AUDIO_ == deviceStartRt) {
-            [Teleport logInfo:@"device_startTransaction failed to start. Possible unrecoverable error. Use reader reset button"];
-        } else {
-            for (int i = 1; i <= 3; i++) {
-                
-                    [Teleport logInfo:[NSString stringWithFormat:@"Try to start transaction. Retry counter %d", i]];
-                     
-                    [NSThread sleepForTimeInterval:1.0f];
-                               
-                    deviceStartRt = [[IDT_VP3300 sharedController] device_startTransaction:clearentPaymentRequest.amount amtOther:clearentPaymentRequest.amtOther type:clearentPaymentRequest.type timeout:clearentPaymentRequest.timeout tags:clearentPaymentRequest.tags forceOnline:clearentPaymentRequest.forceOnline  fallback:clearentPaymentRequest.fallback];
-                     
-                     if(RETURN_CODE_OK_NEXT_COMMAND == deviceStartRt || RETURN_CODE_DO_SUCCESS == deviceStartRt) {
-                         [Teleport logInfo:[NSString stringWithFormat:@"Start transaction successful. Retry counter %d", i]];
-                         break;
-                     } else if(RETURN_CODE_SDK_BUSY_MSR_ == deviceStartRt || RETURN_CODE_SDK_BUSY_CTLS_ == deviceStartRt || RETURN_CODE_SDK_BUSY_EMV_ == deviceStartRt || RETURN_CODE_SDK_BUSY_MSR == deviceStartRt || RETURN_CODE_SDK_BUSY_CTLS == deviceStartRt || RETURN_CODE_SDK_BUSY_CMD == deviceStartRt) {
-                         int deviceStartTransactionReturnCode = [[IDT_VP3300 sharedController] device_cancelTransaction];
-                         if(RETURN_CODE_DO_SUCCESS == deviceStartTransactionReturnCode) {
-                              [Teleport logInfo:@"device_startTransaction Canceled an existing transaction."];
-                         }
-                     } else if(RETURN_CODE_ERR_DISCONNECT == deviceStartRt || RETURN_CODE_ERR_DISCONNECT_ == deviceStartRt) {
-                         [Teleport logInfo:@"device_startTransaction failed. disconnected on first try"];
-                         [clearentDelegate deviceMessage:DEVICE_NOT_CONNECTED];
-                         break;
-                     } else if(RETURN_CODE_NEO_TIMEOUT == deviceStartRt || RETURN_CODE_ERR_TIMEDOUT == deviceStartRt || RETURN_CODE_ERR_TIMEDOUT_ == deviceStartRt) {
-                          [Teleport logInfo:@"device_startTransaction failed on first try. possible state - If the reader if OFF, but SDK thinks it still is connected."];
-                         break;
-                    } else {
-                        NSString *errorResponse = [[IDT_VP3300 sharedController] device_getResponseCodeString:deviceStartRt];
-                        [Teleport logInfo:[NSString stringWithFormat:@"Start transaction failed. Retry counter %d%@", i, errorResponse]];
-                        break;
-                    }
-            }
-        }
-    }
-    return deviceStartRt;
+- (ClearentResponse*) startTransaction:(id<ClearentPaymentRequest>) clearentPaymentRequest clearentConnection:(ClearentConnection*) clearentConnection {
+    return [clearentTransactions startTransaction:clearentPaymentRequest clearentConnection:clearentConnection];
 }
 
-//It appears the idtech firmware has a flag that indicates a card is seated in the reader. This breaks idtech's device_startTransaction which is meant to support
-//contactless, dip, and swipe. If we don't attempt to get the cardSeated changed to false the contactless feature is disabled.
-//IdTech has fixed this issue with new firmware but we need to keep this in place until everyone is upgraded
-- (void) workaroundCardSeatedIssue:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline  fallback:(BOOL)fallback {
-    
-       NSString *firmwareVersion = [clearentDelegate getFirmwareVersion];
-       if(firmwareVersion != nil && ([firmwareVersion isEqualToString:@"VP3300 Bluetooth NEO v1.01.090"]
-          || [firmwareVersion isEqualToString:@"VP3300 Audio Jack NEO v1.01.055"]
-          || [firmwareVersion isEqualToString:@"VP3300 Audio Jack NEO v1.01.064"])) {
-           [Teleport logInfo:[NSString stringWithFormat:@"workaroundCardSeatedIssue:Performing card seated workaround for firmware version - %@", firmwareVersion]];
-       } else {
-            [Teleport logInfo:[NSString stringWithFormat:@"workaroundCardSeatedIssue: Skip card seated workaround for firmware version - %@", firmwareVersion]];
-            return;
-       }
-       ICCReaderStatus* response;
-       RETURN_CODE icc_getICCReaderStatusRt = [[IDT_VP3300 sharedController] icc_getICCReaderStatus:&response];
-       if(RETURN_CODE_DO_SUCCESS != icc_getICCReaderStatusRt) {
-           [Teleport logInfo:@"workaroundCardSeatedIssue:Failed to retrieve the icc reader status"];
-           if(response == nil) {
-               [Teleport logInfo:@"workaroundCardSeatedIssue:No icc reader status response"];
-               return;
-           }
-       }
-       if(response->cardPresent) {
-          [Teleport logInfo:@"workaroundCardSeatedIssue:Skip the workaround for the contactless card seated issue. icc reader status is cardPresent"];
-           return;
-       }
-       if(response->cardSeated) {
-           [Teleport logInfo:@"workaroundCardSeatedIssue:Card is Seated. Start the device transaction and then cancel it"];
-           RETURN_CODE device_startTransactionRt = [[IDT_VP3300 sharedController] device_startTransaction:amount amtOther:amtOther type:type timeout:timeout tags:tags forceOnline:forceOnline  fallback:fallback];
-           if(RETURN_CODE_OK_NEXT_COMMAND == device_startTransactionRt || RETURN_CODE_DO_SUCCESS == device_startTransactionRt) {
-               [NSThread sleepForTimeInterval:0.2f];
-               [Teleport logInfo:@"workaroundCardSeatedIssue:Cancel the transaction"];
-               RETURN_CODE cancelTransactionRt = [[IDT_VP3300 sharedController] device_cancelTransaction];
-               if (RETURN_CODE_DO_SUCCESS == cancelTransactionRt) {
-                   [Teleport logInfo:@"workaroundCardSeatedIssue:transaction cancelled"];
-                   ICCReaderStatus* icc_getICCReaderStatusResponse;
-                   RETURN_CODE icc_getICCReaderStatusRt2 = [[IDT_VP3300 sharedController] icc_getICCReaderStatus:&icc_getICCReaderStatusResponse];
-                   if(icc_getICCReaderStatusResponse != nil) {
-                       if(icc_getICCReaderStatusResponse->cardSeated) {
-                           [Teleport logInfo:@"workaroundCardSeatedIssue:Card is still seated"];
-                       } else {
-                          [Teleport logInfo:@"workaroundCardSeatedIssue:Card not seated"];
-                       }
-                    }
-               } else {
-                   [Teleport logInfo:@"workaroundCardSeatedIssue:Cancel transaction failed"];
-               }
-           } else {
-               [Teleport logInfo:@"workaroundCardSeatedIssue:Start transaction failed"];
-           }
-       } else {
-           [Teleport logInfo:@"workaroundCardSeatedIssue: Card is unseated. No need for workaround"];
-       }
+-(void) runTransaction {
+    [clearentTransactions runTransaction];
+}
+         
+-(RETURN_CODE) device_startTransaction:(id<ClearentPaymentRequest>) clearentPaymentRequest {
+    return [clearentTransactions device_startTransaction:clearentPaymentRequest];
 }
 
 - (void) clearCurrentRequest{
@@ -613,25 +455,8 @@
     [self setServiceScanFilter:filter];
 }
 
--(void) startBluetoothScan:(NSString*) friendlyName {
-    [clearentDelegate resetBluetoothSearch];
-    if (friendlyName == nil || friendlyName.length == 0) {
-        [clearentDelegate deviceMessage:BLUETOOTH_FRIENDLY_NAME_REQUIRED];
-    } else {
-        [clearentDelegate setDefaultBluetoothFriendlyName:friendlyName];
-        [self device_setBLEFriendlyName:friendlyName];
-        NSUUID* val = nil;
-        bool device_enableBLEDeviceSearchReturnCode = [self device_enableBLEDeviceSearch:val];
-        if(device_enableBLEDeviceSearchReturnCode) {
-            [clearentDelegate deviceMessage:@"Bluetooth scan started. Press button"];
-        } else {
-            [clearentDelegate deviceMessage:@"Bluetooth scan failed"];
-            [Teleport logInfo:@"Bluetooth scan failed"];
-        }
-    }
-}
-
 -(void) applyClearentConfiguration {
+    clearentDelegate.configured = NO;
     if (clearentDelegate.autoConfiguration) {
         [clearentDelegate clearConfigurationCache];
     }
@@ -716,6 +541,18 @@
         [Teleport logInfo:[NSString stringWithFormat:@"CLIENT:%@:%@",clientSoftwareVersion, message]];
     }
 }
+
+-(void) startConnection:(ClearentConnection*) clearentConnection {
+    [clearentDeviceConnector startConnection:clearentConnection];
+}
+
+//- (void) adjustBluetoothAdvertisingInterval {
+//    [self performSelector:@selector(adjustit) withObject:nil afterDelay:5.0];
+//}
+
+//- (void) adjustit {
+//    [clearentDeviceConnector adjustBluetoothAdvertisingInterval];
+//}
 
 @end
 

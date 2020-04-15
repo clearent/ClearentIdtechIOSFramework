@@ -21,6 +21,30 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		4B074F3C2447173200868E21 /* ClearentConfigFetcher_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E728DB1D20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m */; };
+		4B074F3E244717E500868E21 /* ClearentConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA494020E171830090CFFC /* ClearentConfiguration.h */; };
+		4B074F3F244717EE00868E21 /* ClearentConfigFetcher.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA497320E578BC0090CFFC /* ClearentConfigFetcher.h */; };
+		4B074F4324471AB500868E21 /* ClearentConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA494020E171830090CFFC /* ClearentConfiguration.h */; };
+		4B074F4424471AC100868E21 /* ClearentConfigFetcher.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA497320E578BC0090CFFC /* ClearentConfigFetcher.h */; };
+		4B074F4524471B0E00868E21 /* ClearentConfigurator.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA494320E173F00090CFFC /* ClearentConfigurator.h */; };
+		4B074F4724471B7900868E21 /* ClearentBluetoothDevice_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B074F4624471B7900868E21 /* ClearentBluetoothDevice_Tests.m */; };
+		4B074F4924471F2700868E21 /* ClearentConnection_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B074F4824471F2700868E21 /* ClearentConnection_Tests.m */; };
+		4B074F4B2447313900868E21 /* ClearentDeviceConnector_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B074F4A2447313900868E21 /* ClearentDeviceConnector_Tests.m */; };
+		4B074F4E24474FD100868E21 /* TestPublicDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B074F4D24474FD100868E21 /* TestPublicDelegate.m */; };
+		4B32C08B2432560600CCF9B9 /* ClearentResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B32C08A2432560600CCF9B9 /* ClearentResponse.m */; };
+		4B32C08E2432586500CCF9B9 /* ClearentConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B32C08D2432586500CCF9B9 /* ClearentConnection.m */; };
+		4B32C0912432677F00CCF9B9 /* ClearentTransactionToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B32C0902432677F00CCF9B9 /* ClearentTransactionToken.m */; };
+		4B32C092243355F800CCF9B9 /* ClearentTransactionToken.h in Headers */ = {isa = PBXBuildFile; fileRef = 4B32C08F2432676D00CCF9B9 /* ClearentTransactionToken.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4B32C093243355FB00CCF9B9 /* ClearentConnection.h in Headers */ = {isa = PBXBuildFile; fileRef = 4B32C08C2432584F00CCF9B9 /* ClearentConnection.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4B32C094243355FE00CCF9B9 /* ClearentResponse.h in Headers */ = {isa = PBXBuildFile; fileRef = 4B32C0892432540D00CCF9B9 /* ClearentResponse.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4B32C0952433560200CCF9B9 /* ClearentFeedback.h in Headers */ = {isa = PBXBuildFile; fileRef = 4B907F89242E7D420029C21E /* ClearentFeedback.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4B32C09824335D5500CCF9B9 /* ClearentBluetoothDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B32C09724335D5500CCF9B9 /* ClearentBluetoothDevice.m */; };
+		4B32C09924335E2200CCF9B9 /* ClearentBluetoothDevice.h in Headers */ = {isa = PBXBuildFile; fileRef = 4B32C09624335D4000CCF9B9 /* ClearentBluetoothDevice.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4B32C09F2436287700CCF9B9 /* ClearentDeviceConnector.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B32C09E2436287600CCF9B9 /* ClearentDeviceConnector.m */; };
+		4B32C0A22436612900CCF9B9 /* ClearentTransactions.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B32C0A12436612900CCF9B9 /* ClearentTransactions.m */; };
+		4B32C0BF243FB9D500CCF9B9 /* ClearentConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CA494120E171960090CFFC /* ClearentConfiguration.m */; };
+		4B32C0C0243FB9DF00CCF9B9 /* ClearentConfigFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CA497420E579190090CFFC /* ClearentConfigFetcher.m */; };
+		4B907F8B242E7FAA0029C21E /* ClearentFeedback.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B907F8A242E7FAA0029C21E /* ClearentFeedback.m */; };
 		E702E56523647D6B0032ED8D /* IDTech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E760460523645A61006CFB78 /* IDTech.framework */; };
 		E702E5702364835B0032ED8D /* ClearentVP3300Config.m in Sources */ = {isa = PBXBuildFile; fileRef = E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */; };
 		E702E572236488630032ED8D /* ClearentPayment.h in Headers */ = {isa = PBXBuildFile; fileRef = E746CB5F235896EC00C41DF1 /* ClearentPayment.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -30,7 +54,6 @@
 		E721ECE821F7483B0064163F /* ClearentManualEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = E7B89E2F21F6A69300078C73 /* ClearentManualEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E721ECEA21F74B560064163F /* ClearentCard.h in Headers */ = {isa = PBXBuildFile; fileRef = E7B89E2B21F6A38200078C73 /* ClearentCard.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E726A0382258B5B400F3E8B7 /* ClearentCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E726A0372258B5B400F3E8B7 /* ClearentCache.m */; };
-		E728DB1E20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E728DB1D20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m */; };
 		E728DB4C20E687A6004C01E7 /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E728DB4B20E687A6004C01E7 /* libOCMock.a */; };
 		E746CB612358983200C41DF1 /* ClearentPayment.m in Sources */ = {isa = PBXBuildFile; fileRef = E746CB602358983200C41DF1 /* ClearentPayment.m */; };
 		E75891EE225522AB00288032 /* ClearentLoggingRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = E75891DE225522AB00288032 /* ClearentLoggingRequest.h */; };
@@ -93,7 +116,6 @@
 		E7CA494220E171960090CFFC /* ClearentConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CA494120E171960090CFFC /* ClearentConfiguration.m */; };
 		E7CA494520E1753D0090CFFC /* ClearentConfigurator.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CA494420E1753D0090CFFC /* ClearentConfigurator.m */; };
 		E7CA494720E192510090CFFC /* ClearentConfigurator.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA494320E173F00090CFFC /* ClearentConfigurator.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		E7CA494B20E27F380090CFFC /* ClearentConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA494020E171830090CFFC /* ClearentConfiguration.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		E7CA495620E3C2230090CFFC /* ClearentIdtechIOSFramework_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CA495520E3C2230090CFFC /* ClearentIdtechIOSFramework_Tests.m */; };
 		E7CA495820E3C2230090CFFC /* ClearentIdtechIOSFramework.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E76504F41FFC306100B345F6 /* ClearentIdtechIOSFramework.framework */; };
 		E7CA495F20E3C2460090CFFC /* ClearentConfiguration_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CA495E20E3C2460090CFFC /* ClearentConfiguration_Tests.m */; };
@@ -101,7 +123,6 @@
 		E7CA496C20E504720090CFFC /* ClearentConfigNoContactAids.json in Resources */ = {isa = PBXBuildFile; fileRef = E7CA496B20E504720090CFFC /* ClearentConfigNoContactAids.json */; };
 		E7CA496E20E505380090CFFC /* ClearentConfigNoPublicKeys.json in Resources */ = {isa = PBXBuildFile; fileRef = E7CA496D20E505380090CFFC /* ClearentConfigNoPublicKeys.json */; };
 		E7CA497520E579190090CFFC /* ClearentConfigFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CA497420E579190090CFFC /* ClearentConfigFetcher.m */; };
-		E7CA497620E58C910090CFFC /* ClearentConfigFetcher.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA497320E578BC0090CFFC /* ClearentConfigFetcher.h */; settings = {ATTRIBUTES = (Private, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -115,6 +136,25 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4B074F4624471B7900868E21 /* ClearentBluetoothDevice_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentBluetoothDevice_Tests.m; sourceTree = "<group>"; };
+		4B074F4824471F2700868E21 /* ClearentConnection_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentConnection_Tests.m; sourceTree = "<group>"; };
+		4B074F4A2447313900868E21 /* ClearentDeviceConnector_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentDeviceConnector_Tests.m; sourceTree = "<group>"; };
+		4B074F4C24474FB800868E21 /* TestPublicDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestPublicDelegate.h; sourceTree = "<group>"; };
+		4B074F4D24474FD100868E21 /* TestPublicDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestPublicDelegate.m; sourceTree = "<group>"; };
+		4B32C0892432540D00CCF9B9 /* ClearentResponse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentResponse.h; sourceTree = "<group>"; };
+		4B32C08A2432560600CCF9B9 /* ClearentResponse.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentResponse.m; sourceTree = "<group>"; };
+		4B32C08C2432584F00CCF9B9 /* ClearentConnection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentConnection.h; sourceTree = "<group>"; };
+		4B32C08D2432586500CCF9B9 /* ClearentConnection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentConnection.m; sourceTree = "<group>"; };
+		4B32C08F2432676D00CCF9B9 /* ClearentTransactionToken.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentTransactionToken.h; sourceTree = "<group>"; };
+		4B32C0902432677F00CCF9B9 /* ClearentTransactionToken.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentTransactionToken.m; sourceTree = "<group>"; };
+		4B32C09624335D4000CCF9B9 /* ClearentBluetoothDevice.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentBluetoothDevice.h; sourceTree = "<group>"; };
+		4B32C09724335D5500CCF9B9 /* ClearentBluetoothDevice.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentBluetoothDevice.m; sourceTree = "<group>"; };
+		4B32C09D2436286700CCF9B9 /* ClearentDeviceConnector.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentDeviceConnector.h; sourceTree = "<group>"; };
+		4B32C09E2436287600CCF9B9 /* ClearentDeviceConnector.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentDeviceConnector.m; sourceTree = "<group>"; };
+		4B32C0A02436611500CCF9B9 /* ClearentTransactions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentTransactions.h; sourceTree = "<group>"; };
+		4B32C0A12436612900CCF9B9 /* ClearentTransactions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentTransactions.m; sourceTree = "<group>"; };
+		4B907F89242E7D420029C21E /* ClearentFeedback.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentFeedback.h; sourceTree = "<group>"; };
+		4B907F8A242E7FAA0029C21E /* ClearentFeedback.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentFeedback.m; sourceTree = "<group>"; };
 		E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentVP3300Config.m; sourceTree = "<group>"; };
 		E702E571236485280032ED8D /* ClearentVP3300Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentVP3300Config.h; sourceTree = "<group>"; };
 		E726A0362258B5A400F3E8B7 /* ClearentCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentCache.h; sourceTree = "<group>"; };
@@ -206,18 +246,18 @@
 		E7B89E2E21F6A56600078C73 /* ClearentManualEntryDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentManualEntryDelegate.h; sourceTree = "<group>"; };
 		E7B89E2F21F6A69300078C73 /* ClearentManualEntry.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentManualEntry.h; sourceTree = "<group>"; };
 		E7B89E3021F6A6A400078C73 /* ClearentManualEntry.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentManualEntry.m; sourceTree = "<group>"; };
-		E7CA494020E171830090CFFC /* ClearentConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentConfiguration.h; sourceTree = "<group>"; };
+		E7CA494020E171830090CFFC /* ClearentConfiguration.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ClearentConfiguration.h; path = ClearentIdtechIOSFramework/ClearentConfiguration.h; sourceTree = SOURCE_ROOT; };
 		E7CA494120E171960090CFFC /* ClearentConfiguration.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentConfiguration.m; sourceTree = "<group>"; };
 		E7CA494320E173F00090CFFC /* ClearentConfigurator.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentConfigurator.h; sourceTree = "<group>"; };
 		E7CA494420E1753D0090CFFC /* ClearentConfigurator.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentConfigurator.m; sourceTree = "<group>"; };
 		E7CA495320E3C2230090CFFC /* ClearentIdtechIOSFramework-Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ClearentIdtechIOSFramework-Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		E7CA495520E3C2230090CFFC /* ClearentIdtechIOSFramework_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentIdtechIOSFramework_Tests.m; sourceTree = "<group>"; };
 		E7CA495720E3C2230090CFFC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		E7CA495E20E3C2460090CFFC /* ClearentConfiguration_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentConfiguration_Tests.m; sourceTree = "<group>"; };
+		E7CA495E20E3C2460090CFFC /* ClearentConfiguration_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = ClearentConfiguration_Tests.m; path = "ClearentIdtechIOSFramework-Tests/ClearentConfiguration_Tests.m"; sourceTree = SOURCE_ROOT; };
 		E7CA496920E3CF7C0090CFFC /* ClearentConfiguration.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ClearentConfiguration.json; sourceTree = "<group>"; };
 		E7CA496B20E504720090CFFC /* ClearentConfigNoContactAids.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ClearentConfigNoContactAids.json; sourceTree = "<group>"; };
 		E7CA496D20E505380090CFFC /* ClearentConfigNoPublicKeys.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ClearentConfigNoPublicKeys.json; sourceTree = "<group>"; };
-		E7CA497320E578BC0090CFFC /* ClearentConfigFetcher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentConfigFetcher.h; sourceTree = "<group>"; };
+		E7CA497320E578BC0090CFFC /* ClearentConfigFetcher.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = ClearentConfigFetcher.h; path = ClearentIdtechIOSFramework/ClearentConfigFetcher.h; sourceTree = SOURCE_ROOT; };
 		E7CA497420E579190090CFFC /* ClearentConfigFetcher.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentConfigFetcher.m; sourceTree = "<group>"; };
 		E7D95F68209B96B4001C5871 /* ClearentIdtechIOSFramework.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentIdtechIOSFramework.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -397,6 +437,20 @@
 				E746CB602358983200C41DF1 /* ClearentPayment.m */,
 				E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */,
 				E702E571236485280032ED8D /* ClearentVP3300Config.h */,
+				4B907F89242E7D420029C21E /* ClearentFeedback.h */,
+				4B907F8A242E7FAA0029C21E /* ClearentFeedback.m */,
+				4B32C0892432540D00CCF9B9 /* ClearentResponse.h */,
+				4B32C08A2432560600CCF9B9 /* ClearentResponse.m */,
+				4B32C08C2432584F00CCF9B9 /* ClearentConnection.h */,
+				4B32C08D2432586500CCF9B9 /* ClearentConnection.m */,
+				4B32C08F2432676D00CCF9B9 /* ClearentTransactionToken.h */,
+				4B32C0902432677F00CCF9B9 /* ClearentTransactionToken.m */,
+				4B32C09624335D4000CCF9B9 /* ClearentBluetoothDevice.h */,
+				4B32C09724335D5500CCF9B9 /* ClearentBluetoothDevice.m */,
+				4B32C09D2436286700CCF9B9 /* ClearentDeviceConnector.h */,
+				4B32C09E2436287600CCF9B9 /* ClearentDeviceConnector.m */,
+				4B32C0A02436611500CCF9B9 /* ClearentTransactions.h */,
+				4B32C0A12436612900CCF9B9 /* ClearentTransactions.m */,
 			);
 			path = ClearentIdtechIOSFramework;
 			sourceTree = "<group>";
@@ -435,6 +489,11 @@
 				E7CA496B20E504720090CFFC /* ClearentConfigNoContactAids.json */,
 				E7CA496D20E505380090CFFC /* ClearentConfigNoPublicKeys.json */,
 				E728DB1D20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m */,
+				4B074F4624471B7900868E21 /* ClearentBluetoothDevice_Tests.m */,
+				4B074F4824471F2700868E21 /* ClearentConnection_Tests.m */,
+				4B074F4A2447313900868E21 /* ClearentDeviceConnector_Tests.m */,
+				4B074F4C24474FB800868E21 /* TestPublicDelegate.h */,
+				4B074F4D24474FD100868E21 /* TestPublicDelegate.m */,
 			);
 			path = "ClearentIdtechIOSFramework-Tests";
 			sourceTree = "<group>";
@@ -442,6 +501,16 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		4B32C0A7243FB09200CCF9B9 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				4B074F4524471B0E00868E21 /* ClearentConfigurator.h in Headers */,
+				4B074F4424471AC100868E21 /* ClearentConfigFetcher.h in Headers */,
+				4B074F4324471AB500868E21 /* ClearentConfiguration.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E76504F11FFC306100B345F6 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -465,8 +534,13 @@
 				E77C098C23685C5D0041402B /* IDTCommon.h in Headers */,
 				E75891F2225522AB00288032 /* TeleportUtils.h in Headers */,
 				E77C099323685C6A0041402B /* IDTUtility.h in Headers */,
+				4B32C0952433560200CCF9B9 /* ClearentFeedback.h in Headers */,
+				4B32C09924335E2200CCF9B9 /* ClearentBluetoothDevice.h in Headers */,
 				E77C099523685C710041402B /* uniMag.h in Headers */,
+				4B32C094243355FE00CCF9B9 /* ClearentResponse.h in Headers */,
 				E77C099023685C660041402B /* IDTMSRData.h in Headers */,
+				4B32C093243355FB00CCF9B9 /* ClearentConnection.h in Headers */,
+				4B32C092243355F800CCF9B9 /* ClearentTransactionToken.h in Headers */,
 				E77C098E23685C600041402B /* IDTEMVData.h in Headers */,
 				E77C099723685C730041402B /* UniPay.h in Headers */,
 				E702E572236488630032ED8D /* ClearentPayment.h in Headers */,
@@ -474,6 +548,8 @@
 				E721ECE721F7483B0064163F /* ClearentManualEntryDelegate.h in Headers */,
 				E77DE80E2247ADA900C8AB02 /* Clearent_VP3300.h in Headers */,
 				E764E77423031B740029B753 /* ClearentPaymentRequest.h in Headers */,
+				4B074F3E244717E500868E21 /* ClearentConfiguration.h in Headers */,
+				4B074F3F244717EE00868E21 /* ClearentConfigFetcher.h in Headers */,
 				E76B5DCF2344D22000ACCA5E /* ClearentVP3300Configuration.h in Headers */,
 				E721ECEA21F74B560064163F /* ClearentCard.h in Headers */,
 				E75891F1225522AB00288032 /* ClearentLogging.h in Headers */,
@@ -481,14 +557,12 @@
 				E75891EE225522AB00288032 /* ClearentLoggingRequest.h in Headers */,
 				E75891F5225522AB00288032 /* SimpleHttpForwarder.h in Headers */,
 				E721ECE821F7483B0064163F /* ClearentManualEntry.h in Headers */,
-				E7CA497620E58C910090CFFC /* ClearentConfigFetcher.h in Headers */,
 				E75891F0225522AB00288032 /* Singleton.h in Headers */,
 				E75891FA225522AB00288032 /* LogReaper.h in Headers */,
 				E77C90472000442200C3E590 /* ClearentTransactionTokenRequest.h in Headers */,
 				E77C900F1FFFE38100C3E590 /* ClearentDelegate.h in Headers */,
 				E75A5BEF20DD21BF0035B911 /* ClearentEmvConfigurator.h in Headers */,
 				E7CA494720E192510090CFFC /* ClearentConfigurator.h in Headers */,
-				E7CA494B20E27F380090CFFC /* ClearentConfiguration.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -517,6 +591,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = E7CA495B20E3C2230090CFFC /* Build configuration list for PBXNativeTarget "ClearentIdtechIOSFramework-Tests" */;
 			buildPhases = (
+				4B32C0A7243FB09200CCF9B9 /* Headers */,
 				E7CA494F20E3C2230090CFFC /* Sources */,
 				E7CA495020E3C2230090CFFC /* Frameworks */,
 				E7CA495120E3C2230090CFFC /* Resources */,
@@ -618,12 +693,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B907F8B242E7FAA0029C21E /* ClearentFeedback.m in Sources */,
+				4B32C08E2432586500CCF9B9 /* ClearentConnection.m in Sources */,
 				E78E2E84224E847900943B14 /* ClearentUtils.m in Sources */,
+				4B32C09F2436287700CCF9B9 /* ClearentDeviceConnector.m in Sources */,
 				E7CA494220E171960090CFFC /* ClearentConfiguration.m in Sources */,
 				E79BC82520B366300030FD8C /* Clearent_VP3300.m in Sources */,
 				E7A8BFA023311EE500FEBF48 /* ClearentContactlessConfigurator.m in Sources */,
 				E746CB612358983200C41DF1 /* ClearentPayment.m in Sources */,
+				4B32C0A22436612900CCF9B9 /* ClearentTransactions.m in Sources */,
 				E764E7722303182C0029B753 /* ClearentOfflineDeclineReceipt.m in Sources */,
+				4B32C09824335D5500CCF9B9 /* ClearentBluetoothDevice.m in Sources */,
 				E75891F3225522AB00288032 /* LogReaper.m in Sources */,
 				E702E5702364835B0032ED8D /* ClearentVP3300Config.m in Sources */,
 				E75891EF225522AB00288032 /* LogRotator.m in Sources */,
@@ -633,9 +713,11 @@
 				E75891F9225522AB00288032 /* Teleport.m in Sources */,
 				E75892002257874100288032 /* LogAdder.m in Sources */,
 				E75891F6225522AB00288032 /* SimpleHttpForwarder.m in Sources */,
+				4B32C0912432677F00CCF9B9 /* ClearentTransactionToken.m in Sources */,
 				E7CA494520E1753D0090CFFC /* ClearentConfigurator.m in Sources */,
 				E726A0382258B5B400F3E8B7 /* ClearentCache.m in Sources */,
 				E75891FB225522AB00288032 /* TeleportUtils.m in Sources */,
+				4B32C08B2432560600CCF9B9 /* ClearentResponse.m in Sources */,
 				E77C90482000442200C3E590 /* ClearentTransactionTokenRequest.m in Sources */,
 				E79A4D94204F14B000E4BBF6 /* ClearentDelegate.m in Sources */,
 				E71E309521F7A0E3001C950A /* ClearentCard.m in Sources */,
@@ -648,9 +730,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4B074F4724471B7900868E21 /* ClearentBluetoothDevice_Tests.m in Sources */,
+				4B074F3C2447173200868E21 /* ClearentConfigFetcher_Tests.m in Sources */,
+				4B32C0BF243FB9D500CCF9B9 /* ClearentConfiguration.m in Sources */,
 				E7CA495F20E3C2460090CFFC /* ClearentConfiguration_Tests.m in Sources */,
+				4B074F4E24474FD100868E21 /* TestPublicDelegate.m in Sources */,
 				E7CA495620E3C2230090CFFC /* ClearentIdtechIOSFramework_Tests.m in Sources */,
-				E728DB1E20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m in Sources */,
+				4B074F4B2447313900868E21 /* ClearentDeviceConnector_Tests.m in Sources */,
+				4B32C0C0243FB9DF00CCF9B9 /* ClearentConfigFetcher.m in Sources */,
+				4B074F4924471F2700868E21 /* ClearentConnection_Tests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -840,7 +928,7 @@
 				SKIP_INSTALL = NO;
 				STRIP_INSTALLED_PRODUCT = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
+				VALID_ARCHS = "arm64 armv7 armv7s i386";
 			};
 			name = Debug;
 		};
@@ -876,7 +964,7 @@
 				SKIP_INSTALL = NO;
 				STRIP_INSTALLED_PRODUCT = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
+				VALID_ARCHS = "arm64 armv7 armv7s";
 			};
 			name = Release;
 		};

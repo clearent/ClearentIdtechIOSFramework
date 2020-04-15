@@ -102,7 +102,7 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
     bool allSuccessful = true;
     
     NSArray *capkList;
-    RETURN_CODE emv_retrieveCAPKListRt = [[IDT_VP3300 sharedController]  emv_retrieveCAPKList:&capkList];
+    RETURN_CODE emv_retrieveCAPKListRt = [_sharedController  emv_retrieveCAPKList:&capkList];
     if (RETURN_CODE_DO_SUCCESS == emv_retrieveCAPKListRt) {
         NSLog(@"Successfully retrieved list of configured contact capk");
         [Teleport logInfo:[NSString stringWithFormat:@"Successfully removed all currently configured contact capk"]];
@@ -111,7 +111,7 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
             NSString *keyIndex = [nameAndKeyIndex substringFromIndex: [nameAndKeyIndex length] - 2];
             NSLog(@"contact capk name %@",[NSString stringWithFormat:@"%@", name]);
             NSLog(@"contact capk keyindex %@",[NSString stringWithFormat:@"%@", keyIndex]);
-            RETURN_CODE emv_removeCAPKRt = [[IDT_VP3300 sharedController]  emv_removeCAPK:name index:keyIndex];
+            RETURN_CODE emv_removeCAPKRt = [_sharedController  emv_removeCAPK:name index:keyIndex];
             if (RETURN_CODE_DO_SUCCESS == emv_removeCAPKRt) {
                 NSLog(@"contact capk removed %@",[NSString stringWithFormat:@"%@", nameAndKeyIndex]);
                 [Teleport logInfo:[NSString stringWithFormat:@"contact capk removed %@", nameAndKeyIndex]];

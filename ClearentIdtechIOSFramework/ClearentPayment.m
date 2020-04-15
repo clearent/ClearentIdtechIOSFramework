@@ -10,6 +10,26 @@
 
 @implementation ClearentPayment
 
+static int const DEFAULT_TRANSACTION_TIMEOUT = 30;
+
+- (instancetype) initSale {
+    
+    self = [super init];
+    
+    if (self) {
+        
+        self.amount = 0;
+        self.amtOther = 0;
+        self.type = 0;
+        self.timeout = DEFAULT_TRANSACTION_TIMEOUT;
+        self.tags = nil;
+        self.emailAddress = nil;
+        self.fallback = true;
+        self.forceOnline = false;
+    }
+    
+    return self;
+}
 
 @end
 

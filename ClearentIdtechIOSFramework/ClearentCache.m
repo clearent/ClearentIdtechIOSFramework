@@ -11,6 +11,8 @@
 #import "ClearentCache.h"
 #import "Teleport.h"
 
+static NSString *const NSUSERDEFAULT_LAST_USED_BLUETOOTH_DEVICEID = @"LastUsedBluetoothDeviceId";
+static NSString *const NSUSERDEFAULT_LAST_USED_BLUETOOTH_FRIENDLYNAME = @"LastUsedBluetoothFriendlyName";
 static NSString *const NSUSERDEFAULT_DEVICESERIALNUMBER = @"DeviceSerialNumber";
 static NSString *const NSUSERDEFAULT_READERCONFIGURED = @"ReaderConfigured";
 static NSString *const NSUSERDEFAULT_CONTACTLESSCONFIGURED = @"ReaderContactlessConfigured";
@@ -42,7 +44,6 @@ static NSString *const CURRENT_DEVICESERIALNUMBER = @"CurrentDeviceSerialNumber"
 + (void) updateContactlessFlagCache:(NSString *) readerContactlessConfiguredFlag {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:readerContactlessConfiguredFlag forKey:NSUSERDEFAULT_CONTACTLESSCONFIGURED];
-    [defaults synchronize];
     [Teleport logInfo:@"Updated the contactless configuration flag cache"];
 }
 //todo scenario...contactless is the only thing configured but the device was switched
@@ -50,7 +51,6 @@ static NSString *const CURRENT_DEVICESERIALNUMBER = @"CurrentDeviceSerialNumber"
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:deviceSerialNumber forKey:NSUSERDEFAULT_DEVICESERIALNUMBER];
     [defaults setObject:readerConfiguredFlag forKey:NSUSERDEFAULT_READERCONFIGURED];
-    [defaults synchronize];
     [Teleport logInfo:[NSString stringWithFormat:@"Updated the reader configuration cache. Device Serial Number is %@. Configured flag is %@", deviceSerialNumber, readerConfiguredFlag]];
 }
 
@@ -58,14 +58,12 @@ static NSString *const CURRENT_DEVICESERIALNUMBER = @"CurrentDeviceSerialNumber"
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:nil forKey:NSUSERDEFAULT_DEVICESERIALNUMBER];
     [defaults setObject:nil forKey:NSUSERDEFAULT_READERCONFIGURED];
-    [defaults synchronize];
     [Teleport logInfo:@"Clearing configuration cache"];
 }
 
 + (void) clearContactlessConfigurationCache {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:nil forKey:NSUSERDEFAULT_CONTACTLESSCONFIGURED];
-    [defaults synchronize];
     [Teleport logInfo:@"Clearing contactless configuration cache"];
 }
 
@@ -116,8 +114,24 @@ static NSString *const CURRENT_DEVICESERIALNUMBER = @"CurrentDeviceSerialNumber"
         currentDeviceSerialNumber = DEVICESERIALNUMBER_STANDIN;
     }
     [defaults setObject:currentDeviceSerialNumber forKey:CURRENT_DEVICESERIALNUMBER];
-    [defaults synchronize];
 }
+
++ (void) cacheLastUsedBluetoothDevice:(NSString*) bluetoothDeviceId bluetoothFriendlyName:(NSString *) bluetoothFriendlyName; {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:bluetoothDeviceId forKey:NSUSERDEFAULT_LAST_USED_BLUETOOTH_DEVICEID];
+    [defaults setObject:bluetoothFriendlyName forKey:NSUSERDEFAULT_LAST_USED_BLUETOOTH_FRIENDLYNAME];
+}
+
++ (NSString *) getLastUsedBluetoothDeviceId {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    return [defaults objectForKey:NSUSERDEFAULT_LAST_USED_BLUETOOTH_DEVICEID];
+}
+
++ (NSString *) getLastUsedBluetoothFriendlyName {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    return [defaults objectForKey:NSUSERDEFAULT_LAST_USED_BLUETOOTH_FRIENDLYNAME];
+}
+
 
 @end
 

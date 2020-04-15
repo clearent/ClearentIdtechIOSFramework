@@ -257,7 +257,7 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
         [NSThread sleepForTimeInterval:0.5f];
          int clockRetryRt = [self initDateAndTime];
          if(clockRetryRt != CLOCK_CONFIGURATION_SUCCESS) {
-             [self notifyError:@"Failed to configure device clock"];
+             [Teleport logInfo:@"Failed to configure device clock"];
          }
     }
 }
@@ -319,7 +319,7 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
     NSData* response;
     RETURN_CODE increaseStandByTimeRt = [[IDT_VP3300 sharedController] device_sendIDGCommand:0xF0 subCommand:0x00 data:[IDTUtility hexToData:@"05FF"] response:&response];
     if(RETURN_CODE_DO_SUCCESS != increaseStandByTimeRt) {
-        [self notifyError:@"Failed to increase stand by time to 255 seconds"];
+        [Teleport logInfo:@"Failed to increase stand by time to 255 seconds"];
     } else {
         [Teleport logInfo:@"Stand by time increased to 255 seconds"];
     }
