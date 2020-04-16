@@ -18,7 +18,7 @@
 
 @implementation ClearentDeviceConnector
 
-static NSString *const CONNECTION_TYPE_REQUIRED = @"Connection type required";
+static NSString *const CONNECTION_TYPE_REQUIRED = @"CONNECTION TYPE REQUIRED";
 static NSString *const BLUETOOTH_SEARCH_IN_PROGRESS  = @"SEARCHING BLUETOOTH";
 static NSString *const BLUETOOTH_NOT_CONNECTED  = @"BLUETOOTH NOT CONNECTED";
 static NSString *const CONNECTION_PROPERTIES_REQUIRED = @"CONNECTION PROPERTIES REQUIRED";
@@ -71,7 +71,7 @@ NSTimer *bluetoothSearchDisableTimer;
     
 }
 
-- (void) startConnection:(ClearentConnection*) clearentConnection {
+- (void) startConnection: (ClearentConnection*) clearentConnection {
     
     if(clearentConnection == nil) {
         [_clearentDelegate deviceMessage:CONNECTION_PROPERTIES_REQUIRED];
@@ -85,42 +85,70 @@ NSTimer *bluetoothSearchDisableTimer;
     
     [self resetConnection];
     
-    [[IDT_VP3300 sharedController] device_setBLEFriendlyName:nil];
+    [_clearentDelegate.idTechSharedInstance device_setBLEFriendlyName:nil];
     
-    [self disconnect:clearentConnection];
+    [self disconnectBluetoothOnChangedState:clearentConnection];
     
     if(![_clearentVP3300 isConnected]) {
         if(clearentConnection.connectionType == AUDIO_JACK) {
-            if([_clearentVP3300 device_isAudioReaderConnected]) {
-                [_clearentDelegate deviceMessage:@"AUDIO JACK CONNECTED"];
-            } else {
-                [_clearentDelegate deviceMessage:@"AUDIO JACK NOT CONNECTED"];
-            }
+            [self communicateAudioJackState];
         } else if(clearentConnection.connectionType == BLUETOOTH) {
             [self startBluetoothSearch: clearentConnection];
         }
     } else {
-        if(clearentConnection.connectionType == BLUETOOTH) {
-            NSString *logMessage = [NSString stringWithFormat:@"CONNECTED : %@", [_clearentVP3300 device_getBLEFriendlyName]];
-            [self sendBluetoothFeedback:logMessage];
-        } else {
-            [_clearentDelegate deviceMessage:@"AUDIO JACK CONNECTED"];
-        }
+        [self communicateConnectionState:clearentConnection];
     }
 }
 
-- (void) disconnect:(ClearentConnection*) clearentConnection  {
+- (void) communicateConnectionState:(ClearentConnection*) clearentConnection {
+    
+    if(clearentConnection.connectionType == BLUETOOTH) {
+        NSString *bleFriendlyName = [_clearentVP3300 device_getBLEFriendlyName];
+        if(bleFriendlyName != nil) {
+            NSString *logMessage = [NSString stringWithFormat:@"CONNECTED : %@", bleFriendlyName];
+            [self sendBluetoothFeedback:logMessage];
+        } else {
+            [self sendBluetoothFeedback:@"CONNECTED"];
+        }
+    } else {
+        [self communicateAudioJackState];
+    }
+    
+}
+
+- (void) communicateAudioJackState {
+    
+    if([_clearentVP3300 device_isAudioReaderConnected]) {
+        [_clearentDelegate deviceMessage:@"AUDIO JACK CONNECTED"];
+    } else {
+        [_clearentDelegate deviceMessage:@"AUDIO JACK NOT CONNECTED"];
+    }
+    
+}
+
+- (void) disconnectBluetoothOnChangedState:(ClearentConnection*) clearentConnection  {
     
     if([_clearentVP3300 device_isAudioReaderConnected] && clearentConnection.connectionType == AUDIO_JACK) {
+        
         [Teleport logInfo:@"disconnectBluetooth AUDIO JACK ALREADY CONNECTED"];
+        
     } else if([_clearentVP3300 isConnected]
-       && [self isNewConnectionRequest:clearentConnection] && _clearentDelegate.clearentConnection.connectionType == BLUETOOTH) {
+              && [self isNewConnectionRequest:_clearentDelegate.clearentConnection connectionRequest: clearentConnection]
+              && (clearentConnection.connectionType == BLUETOOTH || _clearentDelegate.clearentConnection.connectionType == BLUETOOTH)) {
+        
         [Teleport logInfo:@"disconnectBluetooth. Device is connected but a new connection request is provided. Disconnect bluetooth"];
-        [Teleport logInfo:@"disconnectBluetooth CLEAR SAVED BLUETOOTH DEVICE FROM CACHE"];
+        
         [self disconnectBluetooth];
+        
+        if(![_clearentVP3300 device_isAudioReaderConnected] && clearentConnection.connectionType == AUDIO_JACK) {
+            [self sendBluetoothFeedback:DISCONNECTING_BLUETOOTH_PLUGIN_AUDIO_JACK];
+        }
+        
     } else if([_clearentVP3300 isConnected] && _previousConnectionFailed) {
+        
         [Teleport logInfo:@"disconnectBluetooth. the framework says it's connected but previous attempt to connect failed. FORCE A DISCONNECT"];
         [self disconnectBluetooth];
+        
     }
 }
 
@@ -192,55 +220,17 @@ NSTimer *bluetoothSearchDisableTimer;
 //    return advIntHex;
 //}
 
-//TODO equality ?
-- (BOOL) isNewConnectionRequest:(ClearentConnection*) clearentConnection {
-    if(_clearentDelegate.clearentConnection == nil) {
-        return YES;
-    } else if(_clearentDelegate.clearentConnection.searchBluetooth) {
-        return YES;
-    } else if(clearentConnection.connectionType == BLUETOOTH) {
-        if(clearentConnection.lastFiveDigitsOfDeviceSerialNumber != nil
-           && ![clearentConnection.lastFiveDigitsOfDeviceSerialNumber isEqualToString:@""]
-           && (_clearentDelegate.clearentConnection.lastFiveDigitsOfDeviceSerialNumber == nil
-           || ![_clearentDelegate.clearentConnection.lastFiveDigitsOfDeviceSerialNumber isEqualToString:clearentConnection.lastFiveDigitsOfDeviceSerialNumber])) {
-            return YES;
-        } else if(clearentConnection.fullFriendlyName != nil
-                  && ![clearentConnection.fullFriendlyName isEqualToString:@""]
-                  && (_clearentDelegate.clearentConnection.fullFriendlyName == nil
-                  || ![_clearentDelegate.clearentConnection.fullFriendlyName isEqualToString:clearentConnection.fullFriendlyName])) {
-            return YES;
-        } else if(_clearentDelegate.clearentConnection.lastFiveDigitsOfDeviceSerialNumber != nil
-                  && ![_clearentDelegate.clearentConnection.lastFiveDigitsOfDeviceSerialNumber isEqualToString:@""]
-                  && clearentConnection.fullFriendlyName != nil
-                  && ![clearentConnection.fullFriendlyName isEqualToString:@""]) {
-            return YES;
-        } else if(_clearentDelegate.clearentConnection.fullFriendlyName != nil
-                  && ![_clearentDelegate.clearentConnection.fullFriendlyName isEqualToString:@""]
-                  && clearentConnection.lastFiveDigitsOfDeviceSerialNumber != nil
-                  && ![clearentConnection.lastFiveDigitsOfDeviceSerialNumber isEqualToString:@""]) {
-            return YES;
-        } else if(_clearentDelegate.clearentConnection.connectionType != clearentConnection.connectionType) {
-            return YES;
-        } else if(_clearentDelegate.clearentConnection.connectToFirstBluetoothFound != clearentConnection.connectToFirstBluetoothFound) {
-            return YES;
-        } else if(_clearentDelegate.clearentConnection.bluetoothMaximumScanInSeconds != clearentConnection.bluetoothMaximumScanInSeconds) {
-            return YES;
-        }
-    } else if (_clearentDelegate.clearentConnection.connectionType != clearentConnection.connectionType) {
-        
-        if ([_clearentVP3300 isConnected]
-        && _clearentDelegate.clearentConnection.connectionType == BLUETOOTH) {
-           [Teleport logInfo:@"disconnectBluetooth. Still connected to bluetooth but wants to connect to audio jack. Disconnecting bluetooth"];
-           [self sendBluetoothFeedback:DISCONNECTING_BLUETOOTH_PLUGIN_AUDIO_JACK];
-           return YES;
-        }
-        return YES;
+
+- (BOOL) isNewConnectionRequest:(ClearentConnection*) currentConnection connectionRequest:(ClearentConnection*) connectionRequest {
+    
+    if([ClearentConnection isNewConnectionRequest:currentConnection connectionRequest:connectionRequest]) {
+         return YES;
     }
     
     return FALSE;
 }
 
-- (void) startBluetoothSearch:(ClearentConnection*) clearentConnection {
+- (void) startBluetoothSearch: (ClearentConnection*) clearentConnection {
     
     if(clearentConnection == nil) {
         [_clearentDelegate deviceMessage:CONNECTION_PROPERTIES_REQUIRED];
@@ -266,33 +256,54 @@ NSTimer *bluetoothSearchDisableTimer;
         
         [self updateConnection:clearentConnection];
         
-        NSString *lastUsedBluetoothDeviceId = [ClearentCache getLastUsedBluetoothDeviceId];
-        
-        [self disableBluetoothSearchInFuture:clearentConnection];
-        
-        if(clearentConnection.searchBluetooth) {
-            [self startBlindBluetoothSearch];
-        } else if(lastUsedBluetoothDeviceId != nil && ![lastUsedBluetoothDeviceId isEqualToString:@""]) {
-            [self startBluetoothSearchWithUUID:lastUsedBluetoothDeviceId];
-        } else if(clearentConnection.bluetoothDeviceId != nil && ![clearentConnection.bluetoothDeviceId isEqualToString:@""]) {
-            [self startBluetoothSearchWithUUID:clearentConnection.bluetoothDeviceId];
-        } else if(clearentConnection.lastFiveDigitsOfDeviceSerialNumber != nil && ![clearentConnection.lastFiveDigitsOfDeviceSerialNumber isEqualToString:@""]) {
-            NSString *fullIdTechFriendlyName = [ClearentConnection createFullIdTechFriendlyName:clearentConnection.lastFiveDigitsOfDeviceSerialNumber];
-            [self startBluetoothSearchWithFullFriendlyName:fullIdTechFriendlyName ];
-        } else if(clearentConnection.fullFriendlyName != nil && ![clearentConnection.fullFriendlyName isEqualToString:@""]) {
-            [self startBluetoothSearchWithFullFriendlyName:clearentConnection.fullFriendlyName ];
-        } else {
-            [self startBlindBluetoothSearch];
-        }
+        [self pickBluetoothSearchAndStart:clearentConnection];
         
     } else {
         
-        if(clearentConnection.connectionType == BLUETOOTH) {
-            [self sendBluetoothFeedback:CONNECTION_TYPE_REQUIRED];
-        } else {
-            [_clearentDelegate deviceMessage:CONNECTION_TYPE_REQUIRED];
-        }
+        [self communicateConnectionType:clearentConnection.connectionType];
         
+    }
+}
+
+- (void) pickBluetoothSearchAndStart : (ClearentConnection*) clearentConnection {
+
+    NSString *lastUsedBluetoothDeviceId = [ClearentCache getLastUsedBluetoothDeviceId];
+    
+    [self disableBluetoothSearchInFuture:clearentConnection];
+    
+    if(clearentConnection.searchBluetooth) {
+        
+        [self startBlindBluetoothSearch];
+        
+    } else if(lastUsedBluetoothDeviceId != nil && ![lastUsedBluetoothDeviceId isEqualToString:@""]) {
+        
+        [self startBluetoothSearchWithUUID:lastUsedBluetoothDeviceId];
+        
+    } else if(clearentConnection.bluetoothDeviceId != nil && ![clearentConnection.bluetoothDeviceId isEqualToString:@""]) {
+        
+        [self startBluetoothSearchWithUUID:clearentConnection.bluetoothDeviceId];
+        
+    } else if(clearentConnection.lastFiveDigitsOfDeviceSerialNumber != nil && ![clearentConnection.lastFiveDigitsOfDeviceSerialNumber isEqualToString:@""]) {
+        
+        NSString *fullIdTechFriendlyName = [ClearentConnection createFullIdTechFriendlyName:clearentConnection.lastFiveDigitsOfDeviceSerialNumber];
+        [self startBluetoothSearchWithFullFriendlyName:fullIdTechFriendlyName];
+        
+    } else if(clearentConnection.fullFriendlyName != nil && ![clearentConnection.fullFriendlyName isEqualToString:@""]) {
+        
+        [self startBluetoothSearchWithFullFriendlyName:clearentConnection.fullFriendlyName ];
+        
+    } else {
+        
+        [self startBlindBluetoothSearch];
+        
+    }
+}
+
+- (void) communicateConnectionType: (CONNECTION_TYPE) connectionType {
+    if(connectionType == BLUETOOTH) {
+        [self sendBluetoothFeedback:CONNECTION_TYPE_REQUIRED];
+    } else {
+        [_clearentDelegate deviceMessage:CONNECTION_TYPE_REQUIRED];
     }
 }
 
@@ -328,46 +339,69 @@ NSTimer *bluetoothSearchDisableTimer;
         NSString *lastUsedDeviceId = [ClearentCache getLastUsedBluetoothDeviceId];
     
         if(lastUsedFriendlyName != nil) {
+            
             if(clearentConnection.searchBluetooth) {
+                
                 [self clearSavedBluetoothCache];
+                
             } else if ([clearentConnection isDeviceKnown]) {
+                
                 if(lastUsedDeviceId != nil && clearentConnection.bluetoothDeviceId != nil
                    && ![clearentConnection.bluetoothDeviceId isEqualToString:@""]
                    && [clearentConnection.bluetoothDeviceId isEqualToString:lastUsedDeviceId]) {
+                    
                       [Teleport logInfo:@"BLUETOOTH DEVICE ID MATCHES SAVED DEVICE UUID"];
+                    
                 } else if(clearentConnection.fullFriendlyName != nil
                    && ![clearentConnection.fullFriendlyName isEqualToString:@""]
                    && [clearentConnection.fullFriendlyName isEqualToString:lastUsedFriendlyName]) {
+                    
                       [Teleport logInfo:@"BLUETOOTH FRIENDLY NAME MATCHES SAVED FRIENDLY NAME"];
+                    
                 } else if(clearentConnection.lastFiveDigitsOfDeviceSerialNumber != nil
                     && ![clearentConnection.lastFiveDigitsOfDeviceSerialNumber isEqualToString:@""]
                     && [lastUsedFriendlyName containsString:clearentConnection.lastFiveDigitsOfDeviceSerialNumber]) {
+                    
                        [Teleport logInfo:@"SAVED BLUETOOTH FRIENDLY NAME CONTAINS PROVIDED LAST 5 DIGITS OF DSN"];
+                    
                 } else {
+                    
                     [self clearSavedBluetoothCache];
+                    
                 }
+                
             } else if(!clearentConnection.connectToFirstBluetoothFound) {
+                
                   [self clearSavedBluetoothCache];
+                
             }
+            
         }
+        
     }
+    
 }
 
-
 - (void) clearSavedBluetoothCache {
+    
     [Teleport logInfo:@"clearSavedDeviceId CLEAR SAVED BLUETOOTH DEVICE FROM CACHE"];
     
     [ClearentCache cacheLastUsedBluetoothDevice:nil bluetoothFriendlyName:nil];
+    
     [self setInvalidSearchFriendlyName];
         
     if([_clearentVP3300 isConnected]) {
-        [Teleport logInfo:@"clearSavedDeviceId. Device is connected but connection request is different than saved bluetooth device. Disconnect bluetooth"];
+        
+        [Teleport logInfo:@"clearSavedBluetoothCache. Disconnect bluetooth"];
         [_clearentVP3300 device_disconnectBLE];
         [NSThread sleepForTimeInterval:0.5f];
+        
     }
+    
 }
 
 - (void) disconnectBluetooth {
+    
     [ClearentCache cacheLastUsedBluetoothDevice:nil bluetoothFriendlyName:nil];
     [_clearentVP3300 device_disconnectBLE];
     [NSThread sleepForTimeInterval:0.5f];
@@ -376,7 +410,14 @@ NSTimer *bluetoothSearchDisableTimer;
 
 -(void) disableBluetoothSearchAfterPeriod:(int) bluetoothMaximumScanInSeconds {
     
+    if (bluetoothSearchDisableTimer != nil) {
+        [bluetoothSearchDisableTimer invalidate];
+        bluetoothSearchDisableTimer = nil;
+        [NSThread sleepForTimeInterval:0.2f];
+    }
+    
     bluetoothSearchDisableTimer = [NSTimer scheduledTimerWithTimeInterval:bluetoothMaximumScanInSeconds target:self selector:@selector(disableBluetoothSearch:) userInfo:nil repeats:false];
+    
 }
 
 -(void) disableBluetoothSearch:(id) sender {
@@ -462,37 +503,23 @@ NSTimer *bluetoothSearchDisableTimer;
 //Readers are broadcasting but no devices come back in idtech callback. Forcing a disconnect and searching again
 //fixes this. Just trying once should reset whatever the Idtech framework is doing.
 - (void) retryBluetoothWhenNoDevicesFound {
+    
     if(!_retriedBluetoothWhenNoDevicesFound) {
+        
         [_clearentVP3300 device_disconnectBLE];
-       // [self setInvalidSearchFriendlyName];
         [NSThread sleepForTimeInterval:0.5f];
         _foundDeviceWaitingToConnect = false;
         [self startConnection:_clearentDelegate.clearentConnection];
+        
     }
+    
     _retriedBluetoothWhenNoDevicesFound = true;
-}
-
-- (NSString*) getFirstBluetoothDeviceIdNotConnected {
-    if(_bluetoothDevices != nil) {
-        for (ClearentBluetoothDevice* clearentBluetoothDevice in _bluetoothDevices) {
-            if(!clearentBluetoothDevice.connected) {
-                [Teleport logInfo:[NSString stringWithFormat:@"Unconnected bluetooth Device Found %@", clearentBluetoothDevice.friendlyName]];
-                return clearentBluetoothDevice.deviceId;
-            }
-        }
-    }
-    return nil;
-}
-
-
-- (void) disableBluetoothSearchTimer {
-    if(bluetoothSearchDisableTimer != nil) {
-        [bluetoothSearchDisableTimer fire];
-    }
+    
 }
 
 - (void) handleBluetoothDeviceFound:(NSString*) bluetoothDeviceFoundMessage {
-        
+
+    
     if(_foundDeviceWaitingToConnect) {
         return;
     }
@@ -530,6 +557,16 @@ NSTimer *bluetoothSearchDisableTimer;
         
         [self recordFoundDeviceWaitingToConnect];
         
+        [self recordFoundBluetoothDevice:_searchingBluetoothfriendlyName deviceId:_searchingBluetoothDeviceId];
+       
+    } else if(_clearentDelegate.clearentConnection != nil
+              && _clearentDelegate.clearentConnection.fullFriendlyName != nil
+              && [_searchingBluetoothfriendlyName isEqualToString:_clearentDelegate.clearentConnection.fullFriendlyName]) {
+           
+        [Teleport logInfo:[NSString stringWithFormat:@"Bluetooth friendly name found %@",_searchingBluetoothfriendlyName]];
+               
+        [self recordFoundDeviceWaitingToConnect];
+            
         [self recordFoundBluetoothDevice:_searchingBluetoothfriendlyName deviceId:_searchingBluetoothDeviceId];
         
     } else if([bluetoothDeviceFoundMessage containsString:@"IDTECH"]) {
@@ -621,14 +658,14 @@ NSTimer *bluetoothSearchDisableTimer;
 
 - (void) recordBluetoothDeviceAsConnected {
     
-    if([[IDT_VP3300 sharedController] isConnected] && _connectingWithBluetoothDeviceId != nil && _connectingWithBluetoothfriendlyName != nil) {
+    if([_clearentDelegate.idTechSharedInstance isConnected] && _connectingWithBluetoothDeviceId != nil && _connectingWithBluetoothfriendlyName != nil) {
         
         bool found = false;
         
         for (ClearentBluetoothDevice* clearentBluetoothDevice in _bluetoothDevices) {
             if([clearentBluetoothDevice.friendlyName isEqualToString:_connectingWithBluetoothfriendlyName]) {
                 
-                NSUUID *connectedNSUUID = [[IDT_VP3300 sharedController] device_connectedBLEDevice];
+                NSUUID *connectedNSUUID = [_clearentDelegate.idTechSharedInstance device_connectedBLEDevice];
                 
                 if(connectedNSUUID != nil) {
                     NSString *uuid = [connectedNSUUID UUIDString];
@@ -654,31 +691,6 @@ NSTimer *bluetoothSearchDisableTimer;
     }
     
     return false;
-}
-
-- (void) startBluetoothSearchWithScannedDevice:(NSString *) uuid bluetoothFriendlyName:(NSString*) bluetoothFriendlyName {
-    
-    if (self.bluetoothSearchInProgress && _connectingWithBluetoothDeviceId != nil && [_connectingWithBluetoothDeviceId isEqualToString:uuid]) {
-        return;
-    }
-
-    self.connectingWithBluetoothfriendlyName = bluetoothFriendlyName;
-    self.connectingWithBluetoothDeviceId = uuid;
-    self.bluetoothSearchInProgress = TRUE;
-    
-    NSUUID *val = nil;
-    if (uuid.length > 0) {
-        val = [[NSUUID alloc] initWithUUIDString:uuid];
-    } else {
-        [_clearentVP3300 device_setBLEFriendlyName:self.connectingWithBluetoothfriendlyName];
-    }
-    
-    bool device_enableBLEDeviceSearchReturnCode = [_clearentVP3300 device_enableBLEDeviceSearch:val];
-    
-    if(!device_enableBLEDeviceSearchReturnCode) {
-        [Teleport logInfo:@"BLUETOOTH SCAN FAILED USING DISCOVERED DEVICE ID"];
-    }
-    
 }
 
 - (void) startBluetoothSearchWithUUID:(NSString *) uuid {

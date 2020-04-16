@@ -177,7 +177,7 @@ static NSString *const PAYMENT_REQUEST_NOT_FOUND = @"PAYMENT REQUEST NOT FOUND";
             clearentResponse = [self createStillConnectedToAudioJackResponse];
         } else if(clearentConnection.connectionType == AUDIO_JACK && [_clearentVP3300 device_isAudioReaderConnected]) {
             clearentResponse = [self startTransactionByReaderInterfaceMode:clearentPaymentRequest clearentConnection:clearentConnection];
-        } else if([_clearentVP3300 isConnected] && ![_clearentDelegate.clearentDeviceConnector isNewConnectionRequest:clearentConnection]) {
+        } else if([_clearentVP3300 isConnected] && ![_clearentDelegate.clearentDeviceConnector isNewConnectionRequest:_clearentDelegate.clearentConnection connectionRequest:clearentConnection]) {
             clearentResponse = [self startTransactionByReaderInterfaceMode:clearentPaymentRequest clearentConnection:clearentConnection];
         } else {
             clearentResponse = [self startTransactionAfterConnection:clearentConnection];

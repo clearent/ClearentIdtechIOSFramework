@@ -15,11 +15,11 @@
 
 @implementation ClearentConnection_Tests
 
-- (void)setUp {
+- (void) setUp {
     // Put setup code here. This method is called before the invocation of each test method in the class.
 }
 
-- (void)tearDown {
+- (void) tearDown {
     // Put teardown code here. This method is called after the invocation of each test method in the class.
 }
 
@@ -116,10 +116,8 @@
     XCTAssertEqualObjects(@"deviceUUID", clearentConnection.bluetoothDeviceId);
     
     NSString *logMessage = [clearentConnection createLogMessage];
-    XCTAssertEqualObjects(@" Connection properties lastFiveDigitsOfDeviceSerialNumber:none bluetoothMaximumScanInSeconds:10 connectionType:bluetooth connectToFirstBluetoothFound:FALSE readerInterfaceMode:unknown fullFriendlyName:none searchBluetooth:FALSE bluetoothDeviceId:provided", logMessage);
+    XCTAssertEqualObjects(@" Connection properties lastFiveDigitsOfDeviceSerialNumber:none bluetoothMaximumScanInSeconds:10 connectionType:bluetooth connectToFirstBluetoothFound:FALSE readerInterfaceMode:unknown fullFriendlyName:none searchBluetooth:FALSE bluetoothDeviceId:deviceUUID", logMessage);
 }
-
-
 
 
 - (void) testInitWithAudiojack {
@@ -182,6 +180,93 @@
 
 - (void) testCreateIDTechFormattedFriendlyname {
     XCTAssertEqualObjects(@"IDTECH-VP3300-12345", [ClearentConnection createFullIdTechFriendlyName:@"12345"]);
+}
+
+- (void) testNewConnectionRequestWhenLast5isDifferent {
+    
+    ClearentConnection *currentConnection = [[ClearentConnection alloc] initBluetoothWithLast5:@"12345"];
+    ClearentConnection *connectionRequest = [[ClearentConnection alloc] initBluetoothWithLast5:@"55555"];
+    XCTAssertTrue([ClearentConnection isNewConnectionRequest:currentConnection connectionRequest:connectionRequest]);
+    
+    connectionRequest.lastFiveDigitsOfDeviceSerialNumber = @"12345";
+    XCTAssertFalse([ClearentConnection isNewConnectionRequest:currentConnection connectionRequest:connectionRequest]);
+    
+}
+
+- (void) testNewConnectionRequestWhenFriendlyNameisDifferent {
+    
+    ClearentConnection *currentConnection = [[ClearentConnection alloc] initBluetoothWithFriendlyName:@"friendlyname1"];
+    ClearentConnection *connectionRequest = [[ClearentConnection alloc] initBluetoothWithFriendlyName:@"friendlyname2"];
+    XCTAssertTrue([ClearentConnection isNewConnectionRequest:currentConnection connectionRequest:connectionRequest]);
+    
+    connectionRequest.fullFriendlyName = @"friendlyname1";
+    XCTAssertFalse([ClearentConnection isNewConnectionRequest:currentConnection connectionRequest:connectionRequest]);
+    
+}
+
+- (void) testNewConnectionRequestWhenDeviceUUIDisDifferent {
+    
+    ClearentConnection *currentConnection = [[ClearentConnection alloc] initBluetoothWithDeviceUUID:@"deviceUUID1"];
+    ClearentConnection *connectionRequest = [[ClearentConnection alloc] initBluetoothWithDeviceUUID:@"deviceUUID2"];
+    XCTAssertTrue([ClearentConnection isNewConnectionRequest:currentConnection connectionRequest:connectionRequest]);
+    
+    connectionRequest.bluetoothDeviceId = @"deviceUUID1";
+    XCTAssertFalse([ClearentConnection isNewConnectionRequest:currentConnection connectionRequest:connectionRequest]);
+    
+}
+
+- (void) testNewConnectionRequestWhenConnectionTypeIsDifferent {
+    
+    ClearentConnection *currentConnection = [[ClearentConnection alloc] initBluetoothFirstConnect];
+    ClearentConnection *connectionRequest = [[ClearentConnection alloc] initBluetoothFirstConnect];
+    connectionRequest.connectionType = AUDIO_JACK;
+    XCTAssertTrue([ClearentConnection isNewConnectionRequest:currentConnection connectionRequest:connectionRequest]);
+    
+}
+
+- (void) testNewConnectionRequestWhenBluetoothMaximumScanTimeIsDifferent {
+    
+    ClearentConnection *currentConnection = [[ClearentConnection alloc] initBluetoothFirstConnect];
+    ClearentConnection *connectionRequest = [[ClearentConnection alloc] initBluetoothFirstConnect];
+    connectionRequest.bluetoothMaximumScanInSeconds = 50;
+    XCTAssertTrue([ClearentConnection isNewConnectionRequest:currentConnection connectionRequest:connectionRequest]);
+    
+}
+
+- (void) testNewConnectionRequestWhenReaderInterfaceModeIsDifferent {
+    
+    ClearentConnection *currentConnection = [[ClearentConnection alloc] initBluetoothFirstConnect];
+    ClearentConnection *connectionRequest = [[ClearentConnection alloc] initBluetoothFirstConnect];
+    connectionRequest.readerInterfaceMode = READER_INTERFACE_2_IN_1;
+    XCTAssertTrue([ClearentConnection isNewConnectionRequest:currentConnection connectionRequest:connectionRequest]);
+    
+}
+
+- (void) testNewConnectionRequestWhenBluetoothSearchIsEnabled {
+    
+    ClearentConnection *currentConnection = [[ClearentConnection alloc] initBluetoothFirstConnect];
+    ClearentConnection *connectionRequest = [[ClearentConnection alloc] initBluetoothFirstConnect];
+    connectionRequest.searchBluetooth = true;
+    XCTAssertTrue([ClearentConnection isNewConnectionRequest:currentConnection connectionRequest:connectionRequest]);
+    
+}
+
+
+- (void) testNewConnectionRequestWhenBluetoothFirstConnectIsDifferent {
+    
+    ClearentConnection *currentConnection = [[ClearentConnection alloc] initBluetoothFirstConnect];
+    ClearentConnection *connectionRequest = [[ClearentConnection alloc] initBluetoothFirstConnect];
+    connectionRequest.connectToFirstBluetoothFound = false;
+    XCTAssertTrue([ClearentConnection isNewConnectionRequest:currentConnection connectionRequest:connectionRequest]);
+    
+}
+
+- (void) testNewConnectionRequestWhenBluetoothSearchChangedToFindByDeviceUUID {
+    
+    ClearentConnection *currentConnection = [[ClearentConnection alloc] initBluetoothSearch];
+    ClearentConnection *connectionRequest = [[ClearentConnection alloc] initBluetoothWithDeviceUUID:@"deviceUUID"];
+    XCTAssertTrue([ClearentConnection isNewConnectionRequest:currentConnection connectionRequest:connectionRequest]);
+    
 }
 
 @end

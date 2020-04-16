@@ -11,6 +11,7 @@
 @class ClearentDelegate;
 @class Clearent_VP3300;
 @class ClearentBluetoothDevice;
+#import "IDT_VP3300.h"
 
 #import <Foundation/Foundation.h>
 
@@ -21,7 +22,6 @@
 - (void) resetConnection;
 - (void) resetBluetoothAfterConnected;
 - (void) startConnection:(ClearentConnection*) clearentConnection;
-- (BOOL) isNewConnectionRequest:(ClearentConnection*) clearentConnection;
 - (BOOL) previousConnectionFailed;
 - (BOOL) retriedBluetoothWhenNoDevicesFound;
 - (BOOL) tryConnectWithSavedDeviceId;
@@ -37,6 +37,7 @@
 - (void) handleBluetoothDeviceFound:(NSString*) bluetoothDeviceFoundMessage;
 - (void) resetBluetoothSearch;
 - (void) recordBluetoothDeviceAsConnected;
+- (void) recordFoundBluetoothDevice: (NSString*) friendlyName deviceId:(NSString*) deviceId;
 - (void) clearSavedDeviceId: (ClearentConnection*) clearentConnection;
 //- (void) adjustBluetoothAdvertisingInterval;
 
@@ -63,12 +64,21 @@
 
 - (void) resetConnection;
 - (void) resetBluetoothAfterConnected;
+- (void) recordFoundBluetoothDevice: (NSString*) friendlyName deviceId:(NSString*) deviceId;
 - (void) startConnection:(ClearentConnection*) clearentConnection;
-- (BOOL) isNewConnectionRequest:(ClearentConnection*) clearentConnection;
+- (BOOL) isNewConnectionRequest:(ClearentConnection*) currentConnection connectionRequest:(ClearentConnection*) connectionRequest;
 - (void) handleBluetoothDeviceFound:(NSString*) bluetoothDeviceFoundMessage;
 - (void) resetBluetoothSearch;
 - (void) recordBluetoothDeviceAsConnected;
 - (void) clearSavedDeviceId: (ClearentConnection*) clearentConnection;
 //- (void) adjustBluetoothAdvertisingInterval;
+
+- (void) startBluetoothSearchWithUUID:(NSString *) uuid;
+- (void) startBluetoothSearchWithFullFriendlyName:(NSString*) fullFriendlyName;
+- (void) startBlindBluetoothSearch;
+
+- (NSString*) extractDeviceIdFromIdTechBLEDeviceFoundMessage: (NSString*) idTechBLEDeviceFoundMessage;
+- (NSString*) extractFriendlyNameFromIdTechBLEDeviceFoundMessage: (NSString*) idTechBLEDeviceFoundMessage;
+
 
 @end

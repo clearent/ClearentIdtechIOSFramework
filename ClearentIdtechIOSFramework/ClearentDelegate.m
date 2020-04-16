@@ -96,7 +96,6 @@ static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @
 
 ClearentConfigurator *_clearentConfigurator;
 id<ClearentVP3300Configuration> _clearentVP3300Configuration;
-IDT_VP3300 *_idTechSharedInstance;
 
 BOOL previousSwipeWasCardWithChip = NO;
 BOOL userToldToUseMagStripe = NO;
@@ -107,7 +106,7 @@ BOOL contactlessIsProcessing = NO;
     self = [super init];
     if (self) {
         self.publicDelegate = publicDelegate;
-        _idTechSharedInstance = idTechSharedInstance;
+        self.idTechSharedInstance = idTechSharedInstance;
         self.baseUrl = clearentBaseUrl;
         self.publicKey = publicKey;
         SEL configurationCallbackSelector = @selector(deviceMessage:);
@@ -492,6 +491,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 }
 
 - (void) sendFeedback:(NSString*) message {
+    
     if(message != nil && ![message isEqualToString:@""]
        && ![message isEqualToString:@"TAP, OR INSERT"]
        && ![message isEqualToString:@"CARD"]
@@ -509,6 +509,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         [self updateFeedbackType:clearentFeedback];
         [self feedback:clearentFeedback];
     }
+    
 }
 
 - (void) updateFeedbackType: (ClearentFeedback*) clearentFeedback {

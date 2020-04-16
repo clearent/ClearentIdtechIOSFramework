@@ -151,7 +151,7 @@ static NSString *const IDTECH_FRIENDLY_NAME_PREFIX = @"IDTECH-VP3300-";
         if(self.bluetoothDeviceId == nil) {
             bluetoothDeviceId = @"none";
         } else {
-            bluetoothDeviceId = @"provided";
+            bluetoothDeviceId = self.bluetoothDeviceId;
         }
         
         bluetoothMaximumScanInSeconds = [NSString stringWithFormat:@"%i", self.bluetoothMaximumScanInSeconds];
@@ -213,6 +213,23 @@ static NSString *const IDTECH_FRIENDLY_NAME_PREFIX = @"IDTECH-VP3300-";
     }
     
     return NO;
+}
+
++ (BOOL) isNewConnectionRequest:(ClearentConnection*) currentConnection connectionRequest:(ClearentConnection*) connectionRequest {
+    if(currentConnection == nil || connectionRequest == nil ) {
+        return YES;
+    } else if(currentConnection.searchBluetooth) {
+        return YES;
+    }
+    
+    NSString *currentConnectionStr = [currentConnection createLogMessage];
+    NSString *newConnectionStr = [connectionRequest createLogMessage];
+    
+    if (![currentConnectionStr isEqualToString:newConnectionStr]) {
+        return YES;
+    }
+    
+    return FALSE;
 }
 
 @end

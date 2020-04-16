@@ -67,7 +67,7 @@
         }
         clearentDelegate = [[ClearentDelegate alloc] initWithPaymentCallback:publicDelegate clearentVP3300Configuration:clearentVP3300Configuration callbackObject:self withSelector:runTransactionSelector idTechSharedInstance: [IDT_VP3300 sharedController]];
         
-        clearentDeviceConnector = [[ClearentDeviceConnector alloc] init:clearentDelegate clearentVP3300:self];
+        clearentDeviceConnector = [[ClearentDeviceConnector alloc] init:clearentDelegate clearentVP3300:self ];
         [clearentDelegate setClearentDeviceConnector:clearentDeviceConnector];
         clearentTransactions = [[ClearentTransactions alloc] init:clearentDelegate clearentVP3300:self];
 
@@ -356,7 +356,7 @@
 }
 
 -(bool) device_enableBLEDeviceSearch:(NSUUID*)identifier {
-    [self setServiceScanFilterWithService1820];
+   // [self setServiceScanFilterWithService1820];
     return [[IDT_VP3300 sharedController] device_enableBLEDeviceSearch:identifier];
 }
 

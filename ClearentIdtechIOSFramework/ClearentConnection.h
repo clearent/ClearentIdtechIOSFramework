@@ -75,4 +75,6 @@ typedef NS_ENUM(NSUInteger, READER_INTERFACE_MODE) {
 - (instancetype) initBluetoothWithFriendlyName: (NSString*) fullFriendlyName;
 - (instancetype) initBluetoothWithDeviceUUID: (NSString*) deviceUUID;
 
++ (BOOL) isNewConnectionRequest:(ClearentConnection*) currentConnection connectionRequest:(ClearentConnection*) clearentConnection;
+
 @end
