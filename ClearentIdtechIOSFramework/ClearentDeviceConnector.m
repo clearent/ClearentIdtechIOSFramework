@@ -402,7 +402,6 @@ NSTimer *bluetoothSearchDisableTimer;
 
 - (void) disconnectBluetooth {
     
-    [ClearentCache cacheLastUsedBluetoothDevice:nil bluetoothFriendlyName:nil];
     [_clearentVP3300 device_disconnectBLE];
     [NSThread sleepForTimeInterval:0.5f];
     

@@ -352,6 +352,7 @@
 }
 
 -(void) device_disconnectBLE {
+    [ClearentCache cacheLastUsedBluetoothDevice:nil bluetoothFriendlyName:nil];
     return [[IDT_VP3300 sharedController] device_disconnectBLE];
 }
 

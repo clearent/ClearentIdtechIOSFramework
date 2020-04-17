@@ -7,6 +7,7 @@
 //
 
 #import "ClearentConnection.h"
+#import "ClearentCache.h"
 
 @implementation ClearentConnection
 
@@ -216,10 +217,17 @@ static NSString *const IDTECH_FRIENDLY_NAME_PREFIX = @"IDTECH-VP3300-";
 }
 
 + (BOOL) isNewConnectionRequest:(ClearentConnection*) currentConnection connectionRequest:(ClearentConnection*) connectionRequest {
+    
     if(currentConnection == nil || connectionRequest == nil ) {
         return YES;
     } else if(currentConnection.searchBluetooth) {
         return YES;
+    }
+    
+    NSString *storedDeviceId = [ClearentCache getLastUsedBluetoothDeviceId];
+    
+    if(connectionRequest.bluetoothDeviceId != nil && storedDeviceId != nil && [storedDeviceId isEqualToString:connectionRequest.bluetoothDeviceId]) {
+        return NO;
     }
     
     NSString *currentConnectionStr = [currentConnection createLogMessage];
