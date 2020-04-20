@@ -31,7 +31,6 @@
 - (NSString*) connectingWithBluetoothfriendlyName;
 - (NSString*) connectingWithBluetoothDeviceId;
 - (NSString*) searchingBluetoothDeviceId;
-- (BOOL) bluetoothSearchInProgress;
 - (BOOL) waitingForAudioJackInsert;
 - (NSMutableArray<ClearentBluetoothDevice*>*) bluetoothDevices;
 - (void) handleBluetoothDeviceFound:(NSString*) bluetoothDeviceFoundMessage;
@@ -56,7 +55,6 @@
 @property(nonatomic) NSString *connectingWithBluetoothfriendlyName;
 @property(nonatomic) NSString *connectingWithBluetoothDeviceId;
 @property(nonatomic) NSString *searchingBluetoothDeviceId;
-@property(nonatomic) BOOL bluetoothSearchInProgress;
 @property(nonatomic) BOOL waitingForAudioJackInsert;
 @property(nonatomic) NSMutableArray<ClearentBluetoothDevice*> *bluetoothDevices;
 

@@ -351,7 +351,7 @@
 }
 
 -(bool) device_enableBLEDeviceSearch:(NSUUID*)identifier {
-   // [self setServiceScanFilterWithService1820];
+    [self setServiceScanFilterWithService1820];
     return [[IDT_VP3300 sharedController] device_enableBLEDeviceSearch:identifier];
 }
 

@@ -636,7 +636,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     } else if (cardData != nil && cardData.event == EVENT_MSR_DATA_ERROR) {
         [self deviceMessage:CLEARENT_USER_ACTION_SWIPE_FAIL_TRY_INSERT_OR_SWIPE];
     } else if(userToldToUseMagStripe) {
-        [self deviceMessage:CLEARENT_USER_ACTION_USE_MAGSTRIPE_MESSAGE];
+        [self deviceMessage:CLEARENT_USE_MAGSTRIPE];
     } else if((cardData != nil && cardData.iccPresent) || previousSwipeWasCardWithChip || userToldToUseChipReader) {
         [self.publicDelegate deviceMessage:CLEARENT_CHIP_FOUND_ON_SWIPE];
     }

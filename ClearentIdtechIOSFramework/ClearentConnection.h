@@ -13,12 +13,13 @@ typedef NS_ENUM(NSUInteger, CLEARENT_CONNECTION_TYPE) {
     CLEARENT_AUDIO_JACK = 1
 };
 
-typedef enum {
-    CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT = 0,
-    CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_319_MS = 1,
-    CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_760_MS = 2,
-    CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_1280_MS = 3
-} CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL;
+//typedef enum {
+//    CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT = 0,
+//    CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_60_MS = 1,
+//    CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_319_MS = 2,
+//    CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_760_MS = 3,
+//    CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_1280_MS = 4
+//} CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL;
 
 typedef NS_ENUM(NSUInteger, CLEARENT_READER_INTERFACE_MODE) {
     CLEARENT_READER_INTERFACE_3_IN_1 = 0,
@@ -37,9 +38,8 @@ typedef NS_ENUM(NSUInteger, CLEARENT_READER_INTERFACE_MODE) {
 - (CLEARENT_READER_INTERFACE_MODE*) readerInterfaceMode;
 - (NSString*) createLogMessage;
 - (BOOL) isDeviceKnown;
-- (CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL*) bluetoothAdvertisingInterval;
+//- (CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL*) bluetoothAdvertisingInterval;
 
-- (instancetype) initBluetooth;
 - (instancetype) initAudioJack;
 - (instancetype) initBluetoothSearch;
 - (instancetype) initBluetoothSearchWithMaxScanTime: (int) bluetoothMaximumScanInSeconds;
@@ -60,13 +60,12 @@ typedef NS_ENUM(NSUInteger, CLEARENT_READER_INTERFACE_MODE) {
 @property (nonatomic) BOOL searchBluetooth;
 @property (nonatomic) CLEARENT_CONNECTION_TYPE connectionType;
 @property (nonatomic) CLEARENT_READER_INTERFACE_MODE readerInterfaceMode;
-@property (nonatomic) CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL bluetoothAdvertisingInterval;
+//@property (nonatomic) CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL bluetoothAdvertisingInterval;
 
 - (NSString*) createLogMessage;
 - (BOOL) isDeviceKnown;
 + (NSString*) createFullIdTechFriendlyName:(NSString*) lastFiveDigitsOfDeviceSerialNumber;
 
-- (instancetype) initBluetooth;
 - (instancetype) initAudioJack;
 - (instancetype) initBluetoothSearch;
 - (instancetype) initBluetoothSearchWithMaxScanTime: (int) bluetoothMaximumScanInSeconds;

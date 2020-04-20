@@ -18,15 +18,6 @@
 
 @implementation ClearentDeviceConnector
 
-static NSString *const CONNECTION_TYPE_REQUIRED = @"CONNECTION TYPE REQUIRED";
-static NSString *const BLUETOOTH_SEARCH_IN_PROGRESS  = @"SEARCHING BLUETOOTH";
-static NSString *const BLUETOOTH_NOT_CONNECTED  = @"BLUETOOTH NOT CONNECTED";
-static NSString *const CONNECTION_PROPERTIES_REQUIRED = @"CONNECTION PROPERTIES REQUIRED";
-static NSString *const NEW_BLUETOOTH_CONNECTION_REQUESTED = @"NEW BLUETOOTH CONNECTION REQUESTED. DISCONNECT CURRENT BLUETOOTH";
-static NSString *const DISCONNECTING_BLUETOOTH_PLUGIN_AUDIO_JACK = @"DISCONNECTING BLUETOOTH. PLUG IN AUDIO JACK";
-static NSString *const USER_ACTION_PRESS_BUTTON_MESSAGE = @"PRESS BUTTON ON READER";
-static NSString *const PLUGIN_AUDIO_JACK = @"PLUGIN AUDIO JACK";
-static NSString *const INVALID_FIRMWARE_VERSION = @"Device Firmware version not found";
 static NSString *const INVALID_FRIENDLY_NAME = @"INVALID_FRIENDLY_NAME";
 
 NSTimer *bluetoothSearchDisableTimer;
@@ -41,7 +32,6 @@ NSTimer *bluetoothSearchDisableTimer;
         _previousConnectionFailed = false;
         _retriedBluetoothWhenNoDevicesFound = false;
         _tryConnectWithSavedDeviceId = false;
-        _bluetoothSearchInProgress = false;
         _bluetoothDevices = [[NSMutableArray<ClearentBluetoothDevice> alloc] init];
     }
     
@@ -58,7 +48,6 @@ NSTimer *bluetoothSearchDisableTimer;
 
 - (void) resetBluetoothAfterConnected {
     
-    _bluetoothSearchInProgress = false;
     _tryConnectWithSavedDeviceId = false;
     _previousConnectionFailed = false;
     _retriedBluetoothWhenNoDevicesFound = false;
@@ -74,7 +63,7 @@ NSTimer *bluetoothSearchDisableTimer;
 - (void) startConnection: (ClearentConnection*) clearentConnection {
     
     if(clearentConnection == nil) {
-        [_clearentDelegate deviceMessage:CONNECTION_PROPERTIES_REQUIRED];
+        [_clearentDelegate deviceMessage:CLEARENT_CONNECTION_PROPERTIES_REQUIRED];
         return;
     }
     
@@ -141,7 +130,7 @@ NSTimer *bluetoothSearchDisableTimer;
         [self disconnectBluetooth];
         
         if(![_clearentVP3300 device_isAudioReaderConnected] && clearentConnection.connectionType == CLEARENT_AUDIO_JACK) {
-            [self sendBluetoothFeedback:DISCONNECTING_BLUETOOTH_PLUGIN_AUDIO_JACK];
+            [self sendBluetoothFeedback:CLEARENT_DISCONNECTING_BLUETOOTH_PLUGIN_AUDIO_JACK];
         }
         
     } else if([_clearentVP3300 isConnected] && _previousConnectionFailed) {
@@ -233,7 +222,7 @@ NSTimer *bluetoothSearchDisableTimer;
 - (void) startBluetoothSearch: (ClearentConnection*) clearentConnection {
     
     if(clearentConnection == nil) {
-        [_clearentDelegate deviceMessage:CONNECTION_PROPERTIES_REQUIRED];
+        [_clearentDelegate deviceMessage:CLEARENT_CONNECTION_PROPERTIES_REQUIRED];
         return;
     }
     
@@ -245,11 +234,8 @@ NSTimer *bluetoothSearchDisableTimer;
         return;
     }
     
-    if(_bluetoothSearchInProgress) {
-        [self sendBluetoothFeedback:BLUETOOTH_SEARCH_IN_PROGRESS];
-        return;
-    }
-    
+    [self sendBluetoothFeedback:CLEARENT_BLUETOOTH_SEARCH];
+     
     [_bluetoothDevices removeAllObjects];
    
     if(clearentConnection.connectionType == CLEARENT_BLUETOOTH) {
@@ -301,9 +287,9 @@ NSTimer *bluetoothSearchDisableTimer;
 
 - (void) communicateConnectionType: (CLEARENT_CONNECTION_TYPE) connectionType {
     if(connectionType == CLEARENT_BLUETOOTH) {
-        [self sendBluetoothFeedback:CONNECTION_TYPE_REQUIRED];
+        [self sendBluetoothFeedback:CLEARENT_CONNECTION_TYPE_REQUIRED];
     } else {
-        [_clearentDelegate deviceMessage:CONNECTION_TYPE_REQUIRED];
+        [_clearentDelegate deviceMessage:CLEARENT_CONNECTION_TYPE_REQUIRED];
     }
 }
 
@@ -434,8 +420,6 @@ NSTimer *bluetoothSearchDisableTimer;
     if(_bluetoothDevices != nil) {
         size = [_bluetoothDevices count];
     }
-    
-    _bluetoothSearchInProgress = false;
         
     BOOL sendBluetoothDeviceList = false;
     
@@ -455,7 +439,7 @@ NSTimer *bluetoothSearchDisableTimer;
             if(!_clearentDelegate.clearentConnection.connectToFirstBluetoothFound) {
                 [Teleport logInfo:@"disableBluetoothSearch retriedBluetoothWhenNoDevicesFound. Report only."];
             } else {
-                [self sendBluetoothFeedback:BLUETOOTH_NOT_CONNECTED];
+                [self sendBluetoothFeedback:CLEARENT_BLUETOOTH_DISCONNECTED];
             }
         } else  {
             if(!_tryConnectWithSavedDeviceId) {
@@ -609,7 +593,6 @@ NSTimer *bluetoothSearchDisableTimer;
 
 - (void) resetBluetoothSearch {
     
-    self.bluetoothSearchInProgress = FALSE;
     
 }
 
