@@ -555,6 +555,10 @@
 //    [clearentDeviceConnector adjustBluetoothAdvertisingInterval];
 //}
 
+- (void) clearBluetoothDeviceCache {
+    [ClearentCache cacheLastUsedBluetoothDevice:nil bluetoothFriendlyName:nil];
+}
+
 @end
 
 

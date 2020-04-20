@@ -7,8 +7,8 @@
       buildImplicitDependencies = "YES">
       <BuildActionEntries>
          <BuildActionEntry
-            buildForTesting = "NO"
-            buildForRunning = "NO"
+            buildForTesting = "YES"
+            buildForRunning = "YES"
             buildForProfiling = "NO"
             buildForArchiving = "NO"
             buildForAnalyzing = "NO">
@@ -47,6 +47,15 @@
       savedToolIdentifier = ""
       useCustomWorkingDirectory = "NO"
       debugDocumentVersioning = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "E7CA495220E3C2230090CFFC"
+            BuildableName = "ClearentIdtechIOSFramework-Tests.xctest"
+            BlueprintName = "ClearentIdtechIOSFramework-Tests"
+            ReferencedContainer = "container:ClearentIdtechIOSFramework.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
    </ProfileAction>
    <AnalyzeAction
       buildConfiguration = "Debug">

@@ -1494,17 +1494,11 @@ __deprecated_msg("use initWithConnectionHandling method instead.");
 
 
 /**
-* Start A Transaction by passing in a payment request. This is the the '3 in 1' mode method, enabling all reader interfaces (tap,dip,and swipe).
+* Start A Transaction by passing in a payment request.
 *
 Works just like the deprecated device_startTransaction method except now you can provide a connection object instructing the framework to connect to a bluetooth device or an audio jack reader. This includes an optional email address that can be used in the event of an offline decline to send a receipt (an emv certification requirement).
-
-When this method is used the idtech framework will always turn on contactless first. if it identifies contactless it tries to process in that mode. If you instead insert the card it will process as a dip. if you swipe with a card with a chip the transaction will terminate and you will get an error saying to try chip first. if chip fails you will get indication to perform a
-fallback swipe.
-
-If you have an issue with processing a contactless card, and you are using this method, you can get around the contactless check by first inserting the chip card. The idtech framework will
-ignore contactless and try to process the chip.
-
-* @return ClearentResponse:  Containts details about starting transaction
+ 
+* @return ClearentResponse:  Contains details about starting transaction. Feedback will also be echoed back to user thru the feedback delegate method.
 
 */
 -(ClearentResponse*) startTransaction:(id<ClearentPaymentRequest>) clearentPaymentRequest clearentConnection:(ClearentConnection*) clearentConnection;
@@ -1604,6 +1598,14 @@ If you did not instruct the framework to do any configuration when you initializ
 -(void) startConnection:(ClearentConnection*) clearentConnection;
 
 //- (void) adjustBluetoothAdvertisingInterval;
+
+
+
+/**
+ * When using the startTransaction method that allows you to pass in a ClearentConnection, the framework will save off the bluetooth device id of the last device it connected with. With each subsequent call to the startTransaction
+ * the framework is aware the connection request could change and will clear out the stored bluetooth device id when appropriate. But, in case it does not, here is a method you can use to clear it out.
+ */
+- (void) clearBluetoothDeviceCache;
 
 @end
 

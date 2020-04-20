@@ -31,6 +31,7 @@
 - (RETURN_CODE) device_startTransaction:(id<ClearentPaymentRequest>) clearentPaymentRequest;
 - (void) runTransaction;
 - (BOOL) retriedTransactionAfterDisconnect;
+- (ClearentResponse*) handleStartTransactionResult: (RETURN_CODE) startTransactionReturnCode;
 
 @end
 
@@ -52,6 +53,7 @@
 - (RETURN_CODE) emv_cancelTransaction;
 - (RETURN_CODE) device_startTransaction:(id<ClearentPaymentRequest>) clearentPaymentRequest;
 - (void) runTransaction;
+- (ClearentResponse*) handleStartTransactionResult: (RETURN_CODE) startTransactionReturnCode;
 
 
 @end
