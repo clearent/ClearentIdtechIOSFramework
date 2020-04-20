@@ -25,9 +25,9 @@
 
 - (void) testInitWithBluetoothFirstConnect {
     ClearentConnection *clearentConnection = [[ClearentConnection alloc] initBluetoothFirstConnect];
-    XCTAssertTrue(BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT == clearentConnection.bluetoothAdvertisingInterval);
-    XCTAssertTrue(READER_INTERFACE_3_IN_1 == clearentConnection.readerInterfaceMode);
-    XCTAssertTrue(BLUETOOTH == clearentConnection.connectionType);
+    XCTAssertTrue(CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT == clearentConnection.bluetoothAdvertisingInterval);
+    XCTAssertTrue(CLEARENT_READER_INTERFACE_3_IN_1 == clearentConnection.readerInterfaceMode);
+    XCTAssertTrue(CLEARENT_BLUETOOTH == clearentConnection.connectionType);
     XCTAssertTrue(clearentConnection.connectToFirstBluetoothFound);
     XCTAssertFalse(clearentConnection.searchBluetooth);
     XCTAssertTrue(10 == clearentConnection.bluetoothMaximumScanInSeconds);
@@ -43,9 +43,9 @@
 
 - (void) testInitWithBluetoothSearch {
     ClearentConnection *clearentConnection = [[ClearentConnection alloc] initBluetoothSearch];
-    XCTAssertTrue(BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT == clearentConnection.bluetoothAdvertisingInterval);
-    XCTAssertTrue(READER_INTERFACE_3_IN_1 == clearentConnection.readerInterfaceMode);
-    XCTAssertTrue(BLUETOOTH == clearentConnection.connectionType);
+    XCTAssertTrue(CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT == clearentConnection.bluetoothAdvertisingInterval);
+    XCTAssertTrue(CLEARENT_READER_INTERFACE_3_IN_1 == clearentConnection.readerInterfaceMode);
+    XCTAssertTrue(CLEARENT_BLUETOOTH == clearentConnection.connectionType);
     XCTAssertFalse(clearentConnection.connectToFirstBluetoothFound);
     XCTAssertTrue(clearentConnection.searchBluetooth);
     XCTAssertTrue(10 == clearentConnection.bluetoothMaximumScanInSeconds);
@@ -59,9 +59,9 @@
 
 - (void) testInitWithBluetoothSearchWithMaxScanTime {
     ClearentConnection *clearentConnection = [[ClearentConnection alloc] initBluetoothSearchWithMaxScanTime:15];
-    XCTAssertTrue(BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT == clearentConnection.bluetoothAdvertisingInterval);
-    XCTAssertTrue(READER_INTERFACE_3_IN_1 == clearentConnection.readerInterfaceMode);
-    XCTAssertTrue(BLUETOOTH == clearentConnection.connectionType);
+    XCTAssertTrue(CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT == clearentConnection.bluetoothAdvertisingInterval);
+    XCTAssertTrue(CLEARENT_READER_INTERFACE_3_IN_1 == clearentConnection.readerInterfaceMode);
+    XCTAssertTrue(CLEARENT_BLUETOOTH == clearentConnection.connectionType);
     XCTAssertFalse(clearentConnection.connectToFirstBluetoothFound);
     XCTAssertTrue(clearentConnection.searchBluetooth);
     XCTAssertTrue(15 == clearentConnection.bluetoothMaximumScanInSeconds);
@@ -75,9 +75,9 @@
 
 - (void) testInitBluetoothWithLast5 {
     ClearentConnection *clearentConnection = [[ClearentConnection alloc] initBluetoothWithLast5:@"12345"];
-    XCTAssertTrue(BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT == clearentConnection.bluetoothAdvertisingInterval);
-    XCTAssertTrue(READER_INTERFACE_3_IN_1 == clearentConnection.readerInterfaceMode);
-    XCTAssertTrue(BLUETOOTH == clearentConnection.connectionType);
+    XCTAssertTrue(CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT == clearentConnection.bluetoothAdvertisingInterval);
+    XCTAssertTrue(CLEARENT_READER_INTERFACE_3_IN_1 == clearentConnection.readerInterfaceMode);
+    XCTAssertTrue(CLEARENT_BLUETOOTH == clearentConnection.connectionType);
     XCTAssertFalse(clearentConnection.connectToFirstBluetoothFound);
     XCTAssertFalse(clearentConnection.searchBluetooth);
     XCTAssertTrue(10 == clearentConnection.bluetoothMaximumScanInSeconds);
@@ -91,9 +91,9 @@
 
 - (void) testInitBluetoothWithFriendlyName {
     ClearentConnection *clearentConnection = [[ClearentConnection alloc] initBluetoothWithFriendlyName:@"friendlyname"];
-    XCTAssertTrue(BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT == clearentConnection.bluetoothAdvertisingInterval);
-    XCTAssertTrue(READER_INTERFACE_3_IN_1 == clearentConnection.readerInterfaceMode);
-    XCTAssertTrue(BLUETOOTH == clearentConnection.connectionType);
+    XCTAssertTrue(CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT == clearentConnection.bluetoothAdvertisingInterval);
+    XCTAssertTrue(CLEARENT_READER_INTERFACE_3_IN_1 == clearentConnection.readerInterfaceMode);
+    XCTAssertTrue(CLEARENT_BLUETOOTH == clearentConnection.connectionType);
     XCTAssertFalse(clearentConnection.connectToFirstBluetoothFound);
     XCTAssertFalse(clearentConnection.searchBluetooth);
     XCTAssertTrue(10 == clearentConnection.bluetoothMaximumScanInSeconds);
@@ -106,9 +106,9 @@
 
 - (void) testInitBluetoothWithDeviceUUID {
     ClearentConnection *clearentConnection = [[ClearentConnection alloc] initBluetoothWithDeviceUUID:@"deviceUUID"];
-    XCTAssertTrue(BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT == clearentConnection.bluetoothAdvertisingInterval);
-    XCTAssertTrue(READER_INTERFACE_3_IN_1 == clearentConnection.readerInterfaceMode);
-    XCTAssertTrue(BLUETOOTH == clearentConnection.connectionType);
+    XCTAssertTrue(CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT == clearentConnection.bluetoothAdvertisingInterval);
+    XCTAssertTrue(CLEARENT_READER_INTERFACE_3_IN_1 == clearentConnection.readerInterfaceMode);
+    XCTAssertTrue(CLEARENT_BLUETOOTH == clearentConnection.connectionType);
     XCTAssertFalse(clearentConnection.connectToFirstBluetoothFound);
     XCTAssertFalse(clearentConnection.searchBluetooth);
     XCTAssertTrue(10 == clearentConnection.bluetoothMaximumScanInSeconds);
@@ -123,8 +123,8 @@
 - (void) testInitWithAudiojack {
     ClearentConnection *clearentConnection = [[ClearentConnection alloc] initAudioJack];
     XCTAssertTrue(0 == clearentConnection.bluetoothAdvertisingInterval);
-    XCTAssertTrue(READER_INTERFACE_3_IN_1 == clearentConnection.readerInterfaceMode);
-    XCTAssertTrue(AUDIO_JACK == clearentConnection.connectionType);
+    XCTAssertTrue(CLEARENT_READER_INTERFACE_3_IN_1 == clearentConnection.readerInterfaceMode);
+    XCTAssertTrue(CLEARENT_AUDIO_JACK == clearentConnection.connectionType);
     XCTAssertFalse(clearentConnection.connectToFirstBluetoothFound);
     XCTAssertFalse(clearentConnection.searchBluetooth);
     XCTAssertTrue(0 == clearentConnection.bluetoothMaximumScanInSeconds);
@@ -219,7 +219,7 @@
     
     ClearentConnection *currentConnection = [[ClearentConnection alloc] initBluetoothFirstConnect];
     ClearentConnection *connectionRequest = [[ClearentConnection alloc] initBluetoothFirstConnect];
-    connectionRequest.connectionType = AUDIO_JACK;
+    connectionRequest.connectionType = CLEARENT_AUDIO_JACK;
     XCTAssertTrue([ClearentConnection isNewConnectionRequest:currentConnection connectionRequest:connectionRequest]);
     
 }
@@ -237,7 +237,7 @@
     
     ClearentConnection *currentConnection = [[ClearentConnection alloc] initBluetoothFirstConnect];
     ClearentConnection *connectionRequest = [[ClearentConnection alloc] initBluetoothFirstConnect];
-    connectionRequest.readerInterfaceMode = READER_INTERFACE_2_IN_1;
+    connectionRequest.readerInterfaceMode = CLEARENT_READER_INTERFACE_2_IN_1;
     XCTAssertTrue([ClearentConnection isNewConnectionRequest:currentConnection connectionRequest:connectionRequest]);
     
 }

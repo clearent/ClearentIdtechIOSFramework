@@ -17,14 +17,8 @@
 
 @implementation Clearent_VP3300 
 
-  static NSString *const READER_IS_NOT_CONFIGURED = @"Cannot run transaction. Reader is not configured.";
-  static NSString *const DEVICE_NOT_CONNECTED = @"Device is not connected";
-  static NSString *const UNPLUG_AUDIO_JACK_BEFORE_CONNECTING_TO_BLUETOOTH = @"UNPLUG AUDIO JACK BEFORE CONNECTING TO BLUETOOTH";
-  static NSString *const BLUETOOTH_FRIENDLY_NAME_REQUIRED = @"Bluetooth friendly name required";
-  static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready";
   static NSString *const READER_CONFIGURED_FLAG_LETTER_P_IN_HEX = @"50";
   static NSString *const MERCHANT_NAME_AND_LOCATION_HIJACKED_AS_PRECONFIGURED_FLAG  = @"9F4E";
-  static NSString *const REQUIRED_TRANSACTION_REQUEST_RESPONSE = @"PAYMENT REQUEST AND CONNECTION REQUIRED";
 
   ClearentDelegate *clearentDelegate;
   ClearentDeviceConnector *clearentDeviceConnector;
@@ -475,7 +469,7 @@
         [clearentDelegate applyClearentConfiguration];
     } else {
         [Teleport logInfo:@"applyClearentConfiguration:did not apply configuration because the reader is still considered configured. setting configuration flag to true"];
-        [clearentDelegate deviceMessage:READER_CONFIGURED_MESSAGE];
+        [clearentDelegate deviceMessage:CLEARENT_READER_CONFIGURED_MESSAGE];
         [clearentDelegate setConfigured:true];
     }
 }

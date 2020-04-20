@@ -78,8 +78,8 @@ NSTimer *bluetoothSearchDisableTimer;
         return;
     }
     
-    if(clearentConnection.connectionType == AUDIO_JACK && ![_clearentVP3300 device_isAudioReaderConnected]) {
-        [_clearentDelegate deviceMessage:@"AUDIO JACK NOT CONNECTED"];
+    if(clearentConnection.connectionType == CLEARENT_AUDIO_JACK && ![_clearentVP3300 device_isAudioReaderConnected]) {
+        [_clearentDelegate deviceMessage:CLEARENT_AUDIO_JACK_DISCONNECTED];
         return;
     }
     
@@ -90,9 +90,9 @@ NSTimer *bluetoothSearchDisableTimer;
     [self disconnectBluetoothOnChangedState:clearentConnection];
     
     if(![_clearentVP3300 isConnected]) {
-        if(clearentConnection.connectionType == AUDIO_JACK) {
+        if(clearentConnection.connectionType == CLEARENT_AUDIO_JACK) {
             [self communicateAudioJackState];
-        } else if(clearentConnection.connectionType == BLUETOOTH) {
+        } else if(clearentConnection.connectionType == CLEARENT_BLUETOOTH) {
             [self startBluetoothSearch: clearentConnection];
         }
     } else {
@@ -102,7 +102,7 @@ NSTimer *bluetoothSearchDisableTimer;
 
 - (void) communicateConnectionState:(ClearentConnection*) clearentConnection {
     
-    if(clearentConnection.connectionType == BLUETOOTH) {
+    if(clearentConnection.connectionType == CLEARENT_BLUETOOTH) {
         NSString *bleFriendlyName = [_clearentVP3300 device_getBLEFriendlyName];
         if(bleFriendlyName != nil) {
             NSString *logMessage = [NSString stringWithFormat:@"CONNECTED : %@", bleFriendlyName];
@@ -119,28 +119,28 @@ NSTimer *bluetoothSearchDisableTimer;
 - (void) communicateAudioJackState {
     
     if([_clearentVP3300 device_isAudioReaderConnected]) {
-        [_clearentDelegate deviceMessage:@"AUDIO JACK CONNECTED"];
+        [_clearentDelegate deviceMessage:CLEARENT_AUDIO_JACK_CONNECTED];
     } else {
-        [_clearentDelegate deviceMessage:@"AUDIO JACK NOT CONNECTED"];
+        [_clearentDelegate deviceMessage:CLEARENT_AUDIO_JACK_DISCONNECTED];
     }
     
 }
 
 - (void) disconnectBluetoothOnChangedState:(ClearentConnection*) clearentConnection  {
     
-    if([_clearentVP3300 device_isAudioReaderConnected] && clearentConnection.connectionType == AUDIO_JACK) {
+    if([_clearentVP3300 device_isAudioReaderConnected] && clearentConnection.connectionType == CLEARENT_AUDIO_JACK) {
         
         [Teleport logInfo:@"disconnectBluetooth AUDIO JACK ALREADY CONNECTED"];
         
     } else if([_clearentVP3300 isConnected]
               && [self isNewConnectionRequest:_clearentDelegate.clearentConnection connectionRequest: clearentConnection]
-              && (clearentConnection.connectionType == BLUETOOTH || _clearentDelegate.clearentConnection.connectionType == BLUETOOTH)) {
+              && (clearentConnection.connectionType == CLEARENT_BLUETOOTH || _clearentDelegate.clearentConnection.connectionType == CLEARENT_BLUETOOTH)) {
         
         [Teleport logInfo:@"disconnectBluetooth. Device is connected but a new connection request is provided. Disconnect bluetooth"];
         
         [self disconnectBluetooth];
         
-        if(![_clearentVP3300 device_isAudioReaderConnected] && clearentConnection.connectionType == AUDIO_JACK) {
+        if(![_clearentVP3300 device_isAudioReaderConnected] && clearentConnection.connectionType == CLEARENT_AUDIO_JACK) {
             [self sendBluetoothFeedback:DISCONNECTING_BLUETOOTH_PLUGIN_AUDIO_JACK];
         }
         
@@ -239,7 +239,7 @@ NSTimer *bluetoothSearchDisableTimer;
     
     if([_clearentVP3300 isConnected] && !clearentConnection.searchBluetooth) {
         NSString *logMessage = [NSString stringWithFormat:@"CONNECTED : %@", [_clearentVP3300 device_getBLEFriendlyName]];
-        if(clearentConnection.connectionType == BLUETOOTH) {
+        if(clearentConnection.connectionType == CLEARENT_BLUETOOTH) {
             [self sendBluetoothFeedback:logMessage];
         }
         return;
@@ -252,7 +252,7 @@ NSTimer *bluetoothSearchDisableTimer;
     
     [_bluetoothDevices removeAllObjects];
    
-    if(clearentConnection.connectionType == BLUETOOTH) {
+    if(clearentConnection.connectionType == CLEARENT_BLUETOOTH) {
         
         [self updateConnection:clearentConnection];
         
@@ -299,8 +299,8 @@ NSTimer *bluetoothSearchDisableTimer;
     }
 }
 
-- (void) communicateConnectionType: (CONNECTION_TYPE) connectionType {
-    if(connectionType == BLUETOOTH) {
+- (void) communicateConnectionType: (CLEARENT_CONNECTION_TYPE) connectionType {
+    if(connectionType == CLEARENT_BLUETOOTH) {
         [self sendBluetoothFeedback:CONNECTION_TYPE_REQUIRED];
     } else {
         [_clearentDelegate deviceMessage:CONNECTION_TYPE_REQUIRED];
@@ -333,7 +333,7 @@ NSTimer *bluetoothSearchDisableTimer;
 
 - (void) clearSavedDeviceId: (ClearentConnection*) clearentConnection {
     
-    if(clearentConnection != nil && clearentConnection.connectionType == BLUETOOTH) {
+    if(clearentConnection != nil && clearentConnection.connectionType == CLEARENT_BLUETOOTH) {
         
         NSString *lastUsedFriendlyName = [ClearentCache getLastUsedBluetoothFriendlyName];
         NSString *lastUsedDeviceId = [ClearentCache getLastUsedBluetoothDeviceId];

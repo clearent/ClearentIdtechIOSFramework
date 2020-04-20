@@ -20,10 +20,10 @@ static NSString *const IDTECH_FRIENDLY_NAME_PREFIX = @"IDTECH-VP3300-";
     self = [super init];
     if (self) {
         
-        self.connectionType = BLUETOOTH;
-        self.readerInterfaceMode = READER_INTERFACE_3_IN_1;
+        self.connectionType = CLEARENT_BLUETOOTH;
+        self.readerInterfaceMode = CLEARENT_READER_INTERFACE_3_IN_1;
         self.bluetoothMaximumScanInSeconds = DEFAULT_BLUETOOTH_SEARCH_MAXIMUM_SCAN_TIME_IN_SECONDS;
-        self.bluetoothAdvertisingInterval = BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT;
+        self.bluetoothAdvertisingInterval = CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT;
         self.connectToFirstBluetoothFound = false;
         self.searchBluetooth = true;
         self.lastFiveDigitsOfDeviceSerialNumber = nil;
@@ -45,10 +45,10 @@ static NSString *const IDTECH_FRIENDLY_NAME_PREFIX = @"IDTECH-VP3300-";
     self = [super init];
     if (self) {
         
-        self.connectionType = BLUETOOTH;
-        self.readerInterfaceMode = READER_INTERFACE_3_IN_1;
+        self.connectionType = CLEARENT_BLUETOOTH;
+        self.readerInterfaceMode = CLEARENT_READER_INTERFACE_3_IN_1;
         self.bluetoothMaximumScanInSeconds = DEFAULT_BLUETOOTH_MAXIMUM_SCAN_TIME_IN_SECONDS;
-        self.bluetoothAdvertisingInterval = BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT;
+        self.bluetoothAdvertisingInterval = CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT;
         self.connectToFirstBluetoothFound = true;
         self.searchBluetooth = false;
         self.lastFiveDigitsOfDeviceSerialNumber = nil;
@@ -62,10 +62,10 @@ static NSString *const IDTECH_FRIENDLY_NAME_PREFIX = @"IDTECH-VP3300-";
     self = [super init];
     if (self) {
         
-        self.connectionType = BLUETOOTH;
-        self.readerInterfaceMode = READER_INTERFACE_3_IN_1;
+        self.connectionType = CLEARENT_BLUETOOTH;
+        self.readerInterfaceMode = CLEARENT_READER_INTERFACE_3_IN_1;
         self.bluetoothMaximumScanInSeconds = DEFAULT_BLUETOOTH_MAXIMUM_SCAN_TIME_IN_SECONDS;
-        self.bluetoothAdvertisingInterval = BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT;
+        self.bluetoothAdvertisingInterval = CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT;
         self.connectToFirstBluetoothFound = false;
         self.searchBluetooth = false;
         self.lastFiveDigitsOfDeviceSerialNumber = lastFiveDigitsOfDeviceSerialNumber;
@@ -79,10 +79,10 @@ static NSString *const IDTECH_FRIENDLY_NAME_PREFIX = @"IDTECH-VP3300-";
     self = [super init];
     if (self) {
         
-        self.connectionType = BLUETOOTH;
-        self.readerInterfaceMode = READER_INTERFACE_3_IN_1;
+        self.connectionType = CLEARENT_BLUETOOTH;
+        self.readerInterfaceMode = CLEARENT_READER_INTERFACE_3_IN_1;
         self.bluetoothMaximumScanInSeconds = DEFAULT_BLUETOOTH_MAXIMUM_SCAN_TIME_IN_SECONDS;
-        self.bluetoothAdvertisingInterval = BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT;
+        self.bluetoothAdvertisingInterval = CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT;
         self.connectToFirstBluetoothFound = false;
         self.searchBluetooth = false;
         self.lastFiveDigitsOfDeviceSerialNumber = nil;
@@ -96,10 +96,10 @@ static NSString *const IDTECH_FRIENDLY_NAME_PREFIX = @"IDTECH-VP3300-";
     self = [super init];
     if (self) {
         
-        self.connectionType = BLUETOOTH;
-        self.readerInterfaceMode = READER_INTERFACE_3_IN_1;
+        self.connectionType = CLEARENT_BLUETOOTH;
+        self.readerInterfaceMode = CLEARENT_READER_INTERFACE_3_IN_1;
         self.bluetoothMaximumScanInSeconds = DEFAULT_BLUETOOTH_MAXIMUM_SCAN_TIME_IN_SECONDS;
-        self.bluetoothAdvertisingInterval = BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT;
+        self.bluetoothAdvertisingInterval = CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT;
         self.connectToFirstBluetoothFound = false;
         self.searchBluetooth = false;
         self.lastFiveDigitsOfDeviceSerialNumber = nil;
@@ -114,8 +114,8 @@ static NSString *const IDTECH_FRIENDLY_NAME_PREFIX = @"IDTECH-VP3300-";
     self = [super init];
     if (self) {
         
-        self.connectionType = AUDIO_JACK;
-        self.readerInterfaceMode = READER_INTERFACE_3_IN_1;
+        self.connectionType = CLEARENT_AUDIO_JACK;
+        self.readerInterfaceMode = CLEARENT_READER_INTERFACE_3_IN_1;
         
     }
     return self;
@@ -157,9 +157,9 @@ static NSString *const IDTECH_FRIENDLY_NAME_PREFIX = @"IDTECH-VP3300-";
         
         bluetoothMaximumScanInSeconds = [NSString stringWithFormat:@"%i", self.bluetoothMaximumScanInSeconds];
             
-        if(self.connectionType == BLUETOOTH) {
+        if(self.connectionType == CLEARENT_BLUETOOTH) {
             connectionType = @"bluetooth";
-        } else if(self.connectionType == AUDIO_JACK) {
+        } else if(self.connectionType == CLEARENT_AUDIO_JACK) {
             connectionType = @"audio jack";
         } else {
             connectionType = @"unknown";
@@ -177,9 +177,9 @@ static NSString *const IDTECH_FRIENDLY_NAME_PREFIX = @"IDTECH-VP3300-";
             searchBluetooth = @"FALSE";
         }
         
-        if(self.readerInterfaceMode == READER_INTERFACE_3_IN_1) {
+        if(self.readerInterfaceMode == CLEARENT_READER_INTERFACE_3_IN_1) {
             readerInterfaceMode = @"3 in 1";
-        } if(self.readerInterfaceMode == READER_INTERFACE_2_IN_1) {
+        } if(self.readerInterfaceMode == CLEARENT_READER_INTERFACE_2_IN_1) {
             readerInterfaceMode = @"2 in 1";
         } else {
             readerInterfaceMode = @"unknown";

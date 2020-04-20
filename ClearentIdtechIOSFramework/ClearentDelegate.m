@@ -33,46 +33,11 @@ static NSString *const TAC_DENIAL = @"DF14";
 static NSString *const TAC_ONLINE = @"DF15";
 static NSString *const DEVICE_SERIAL_NUMBER_EMV_TAG = @"DF78";
 static NSString *const KERNEL_VERSION_EMV_TAG = @"DF79";
-static NSString *const GENERIC_CARD_READ_ERROR_RESPONSE = @"Card read error";
-static NSString *const USE_CHIP_READER = @"USE CHIP READER";
-static NSString *const CVM_UNSUPPORTED = @"CVM Unsupported. Insert card with chip first, then start transaction. Or try swipe.";
-static NSString *const CONTACTLESS_UNSUPPORTED = @"Contactless not supported. Insert card with chip first, then start transaction.";
-static NSString *const MSD_CONTACTLESS_UNSUPPORTED = @"This type (MSD) of contactless is not supported. Insert card with chip first, then start transaction.";
 
-static NSString *const USER_ACTION_SWIPE_FAIL_TRY_INSERT_OR_SWIPE = @"FAILED TO READ CARD. TRY INSERT/SWIPE";
-static NSString *const BLUETOOTH_CONNECTED = @"BLUETOOTH CONNECTED";
-static NSString *const PLUGIN_AUDIO_JACK = @"PLUGIN AUDIO JACK";
-static NSString *const NEW_BLUETOOTH_CONNECTION_REQUESTED = @"NEW BLUETOOTH CONNECTION REQUESTED. DISCONNECT CURRENT BLUETOOTH";
-static NSString *const DISCONNECTING_BLUETOOTH_PLUGIN_AUDIO_JACK = @"DISCONNECTING BLUETOOTH. PLUG IN AUDIO JACK";
-static NSString *const UNPLUG_AUDIO_JACK_BEFORE_CONNECTING_TO_BLUETOOTH = @"UNPLUG AUDIO JACK BEFORE CONNECTING TO BLUETOOTH";
-static NSString *const USER_ACTION_PRESS_BUTTON_MESSAGE = @"PRESS BUTTON ON READER";
-static NSString *const USER_ACTION_3_IN_1_MESSAGE = @"PLEASE SWIPE, TAP, OR INSERT";
-static NSString *const USER_ACTION_2_IN_1_MESSAGE = @"INSERT/SWIPE CARD";
-static NSString *const USER_ACTION_USE_MAGSTRIPE_MESSAGE = @"USE MAGSTRIPE";
-static NSString *const CARD_OFFLINE_DECLINED = @"Card declined";
-static NSString *const FALLBACK_TO_SWIPE_REQUEST = @"FALLBACK_TO_SWIPE_REQUEST";
-static NSString *const TIMEOUT_ERROR_RESPONSE = @"TIME OUT";
-static NSString *const TIMEOUT_ERROR_RESPONSE2 = @"TIMEOUT";
-static NSString *const GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE = @"Create Transaction Token Failed";
-static NSString *const GENERIC_DECLINE_RECEIPT_ERROR_RESPONSE = @"Sending Declined Receipt Failed";
-static NSString *const SUCCESSFUL_TOKENIZATION_MESSAGE = @"CARD READ OK, REMOVE CARD";
-static NSString *const TRANSLATING_CARD_TO_TOKEN = @"READING CARD";
-static NSString *const SUCCESSFUL_DECLINE_RECEIPT_MESSAGE = @"DECLINED RECEIPT SENT, REMOVE CARD";
-static NSString *const FAILED_TO_READ_CARD_ERROR_RESPONSE = @"Failed to read card";
-static NSString *const INVALID_FIRMWARE_VERSION = @"Device Firmware version not found";
-static NSString *const INVALID_KERNEL_VERSION = @"Device Kernel Version Unknown";
 static NSString *const DEVICE_SERIAL_NUMBER_PLACEHOLDER = @"9999999999";
 static NSString *const KERNEL_BASE_VERSION = @"EMV Common L2 V1.10";
 static NSString *const KERNEL_VERSION_INCREMENTAL = @".037";
-static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready";
 
-static NSString *const DEVICE_NOT_CONNECTED = @"Device is not connected";
-
-static NSString *const UNABLE_TO_GO_ONLINE = @"UNABLE TO GO ONLINE";
-static NSString *const GENERIC_CONTACTLESS_FAILED = @"TAP FAILED";
-static NSString *const CONTACTLESS_FALLBACK_MESSAGE = @"TAP FAILED. INSERT/SWIPE";
-static NSString *const CONTACTLESS_RETRY_MESSAGE = @"RETRY TAP";
-static NSString *const CHIP_FOUND_ON_SWIPE = @"CARD HAS CHIP. TRY INSERT";
 static NSString *const CONTACTLESS_ERROR_CODE_TAG = @"FFEE1F";
 static NSString *const CONTACTLESS_ERROR_CODE_NONE = @"00";
 static NSString *const CONTACTLESS_ERROR_CODE_GO_TO_CONTACT_INTERFACE = @"02";
@@ -149,35 +114,6 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     if (self) {
         _runTransactionSelector = runTransactionSelector;
         _callbackObject = callbackObject;
-        
-        static dispatch_once_t onceToken;
-        dispatch_once(&onceToken, ^{
-            self.feedbackValues = @{
-              USER_ACTION_PRESS_BUTTON_MESSAGE: [NSNumber numberWithInt:FEEDBACK_USER_ACTION],
-              SUCCESSFUL_TOKENIZATION_MESSAGE: [NSNumber numberWithInt:FEEDBACK_USER_ACTION],
-              USER_ACTION_3_IN_1_MESSAGE: [NSNumber numberWithInt:FEEDBACK_USER_ACTION],
-              USER_ACTION_2_IN_1_MESSAGE: [NSNumber numberWithInt:FEEDBACK_USER_ACTION],
-              TRANSLATING_CARD_TO_TOKEN: [NSNumber numberWithInt:FEEDBACK_INFO],
-              USER_ACTION_USE_MAGSTRIPE_MESSAGE: [NSNumber numberWithInt:FEEDBACK_USER_ACTION],
-              USE_CHIP_READER: [NSNumber numberWithInt:FEEDBACK_USER_ACTION],
-              CHIP_FOUND_ON_SWIPE: [NSNumber numberWithInt:FEEDBACK_USER_ACTION],
-              CVM_UNSUPPORTED: [NSNumber numberWithInt:FEEDBACK_USER_ACTION],
-              CONTACTLESS_UNSUPPORTED: [NSNumber numberWithInt:FEEDBACK_USER_ACTION],
-              MSD_CONTACTLESS_UNSUPPORTED: [NSNumber numberWithInt:FEEDBACK_USER_ACTION],
-              SUCCESSFUL_DECLINE_RECEIPT_MESSAGE: [NSNumber numberWithInt:FEEDBACK_USER_ACTION],
-              CONTACTLESS_FALLBACK_MESSAGE: [NSNumber numberWithInt:FEEDBACK_USER_ACTION],
-              CONTACTLESS_RETRY_MESSAGE: [NSNumber numberWithInt:FEEDBACK_USER_ACTION],
-              UNABLE_TO_GO_ONLINE: [NSNumber numberWithInt:FEEDBACK_INFO],
-              @"PLEASE WAIT...": [NSNumber numberWithInt:FEEDBACK_USER_ACTION],
-              @"PROCESSING...": [NSNumber numberWithInt:FEEDBACK_INFO],
-              @"AUTHORIZING...": [NSNumber numberWithInt:FEEDBACK_INFO],
-              UNPLUG_AUDIO_JACK_BEFORE_CONNECTING_TO_BLUETOOTH: [NSNumber numberWithInt:FEEDBACK_USER_ACTION],
-              DISCONNECTING_BLUETOOTH_PLUGIN_AUDIO_JACK: [NSNumber numberWithInt:FEEDBACK_USER_ACTION],
-              NEW_BLUETOOTH_CONNECTION_REQUESTED: [NSNumber numberWithInt:FEEDBACK_INFO],
-              PLUGIN_AUDIO_JACK: [NSNumber numberWithInt:FEEDBACK_USER_ACTION],
-              USER_ACTION_SWIPE_FAIL_TRY_INSERT_OR_SWIPE: [NSNumber numberWithInt:FEEDBACK_USER_ACTION],
-              };
-        });
     }
     return self;
 }
@@ -214,20 +150,20 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
                 if(!self.contactless && [message isEqualToString:@"PLEASE SWIPE,"]) {
                     [Teleport logError:@"contactless is not enabled. Switch PLEASE SWIPE to old message"];
                     [updatedArray addObject:@"INSERT/SWIPE"];
-                    [self sendFeedback:USER_ACTION_2_IN_1_MESSAGE];
+                    [self sendFeedback:CLEARENT_USER_ACTION_2_IN_1_MESSAGE];
                 } else  if(!self.contactless && [message isEqualToString:@"TAP, OR INSERT"]) {
                     [Teleport logError:@"contactless is not enabled. Switch TAP OR INSERT to old message"];
                     [updatedArray addObject:@"CARD"];
                 } else if([message isEqualToString:@"TERMINATED"]) {
                     [Teleport logError:@"IDTech framework terminated the request."];
-                    [self deviceMessage:@"TERMINATED"];
+                    [self deviceMessage:CLEARENT_TRANSACTION_TERMINATED];
                 }  else if([message isEqualToString:@"TERMINATE"]) {
                     [Teleport logError:@"IDTech framework terminated the request."];
-                    [self deviceMessage:@"TERMINATE"];
+                    [self deviceMessage:CLEARENT_TRANSACTION_TERMINATE];
                 }  else if([message isEqualToString:@"USE MAGSTRIPE"]) {
                     userToldToUseMagStripe = YES;
                     [Teleport logError:@"IDTech framework USE MAGSTRIPE."];
-                    [self deviceMessage:message];
+                    [self deviceMessage:CLEARENT_USE_MAGSTRIPE];
                 } else if([message isEqualToString:@"CARD"] && (userToldToUseMagStripe || userToldToUseChipReader)) {
                      [Teleport logError:@"do not show CARD message to help with messaging of restarts of the transaction"];
                 } else if([message isEqualToString:@"INSERT/SWIPE"] && (userToldToUseMagStripe || userToldToUseChipReader)) {
@@ -235,7 +171,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
                 } else if([message isEqualToString:@"USE CHIP READER"]) {
                     userToldToUseChipReader = YES;
                     if(!userToldToUseMagStripe) {
-                        [self deviceMessage:CHIP_FOUND_ON_SWIPE];
+                        [self deviceMessage:CLEARENT_CHIP_FOUND_ON_SWIPE];
                         [Teleport logInfo:@"Clearent is handling the use chip reader message."];
                     } else {
                         [Teleport logError:@"User told to use magstripe even though use chip reader message came back."];
@@ -265,16 +201,16 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 - (void) plugStatusChange: (BOOL) deviceInserted {
     
     if (deviceInserted) {
-        [self deviceMessage:@"AUDIO JACK ATTACHED"];
+        [self deviceMessage:CLEARENT_AUDIO_JACK_ATTACHED];
         
         if ([[AVAudioSession sharedInstance] outputVolume] < 1.0) {
-            [self deviceMessage:@"AUDIO JACK LOW VOLUME. TURN UP VOLUME AND RECONNECT."];
+            [self deviceMessage:CLEARENT_AUDIO_JACK_LOW_VOLUME];
         } else{
-            [self deviceMessage:@"CONNECTING AUDIO JACK"];
+            [self deviceMessage:CLEARENT_CONNECTING_AUDIO_JACK];
             [_idTechSharedInstance device_connectToAudioReader];
         }
     } else {
-        [self deviceMessage:@"AUDIO JACK REMOVED"];
+        [self deviceMessage:CLEARENT_AUDIO_JACK_REMOVED];
     }
     
     [self.publicDelegate plugStatusChange:deviceInserted];
@@ -287,17 +223,20 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 -(void) deviceConnected {
     
     if(self.clearentConnection != nil) {
-        if(self.clearentConnection.connectionType == BLUETOOTH) {
-            [self deviceMessage:@"BLUETOOTH CONNECTED"];
+        
+        if(self.clearentConnection.connectionType == CLEARENT_BLUETOOTH) {
+            [self deviceMessage:CLEARENT_BLUETOOTH_CONNECTED];
             [_clearentDeviceConnector recordBluetoothDeviceAsConnected];
             [self sendBluetoothDevices];
             [_clearentDeviceConnector resetBluetoothAfterConnected];
         }
+        
         [Teleport logInfo:[NSString stringWithFormat:@"%@%@", @"connected ", [self.clearentConnection createLogMessage]]];
+        
     }
     
     if([_idTechSharedInstance device_isAudioReaderConnected]) {
-        [self deviceMessage:@"AUDIO JACK CONNECTED"];
+        [self deviceMessage:CLEARENT_AUDIO_JACK_CONNECTED];
     }
     
     [self setReaderProfile];
@@ -305,7 +244,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     
     if(!self.autoConfiguration && !self.contactlessAutoConfiguration) {
         [self setupReaderOnConnect];
-        [self deviceMessage:READER_CONFIGURED_MESSAGE];
+        [self deviceMessage:CLEARENT_READER_CONFIGURED_MESSAGE];
     } else {
         [self applyClearentConfiguration];
     }
@@ -322,7 +261,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 }
 
 -(void) applyClearentConfiguration {
-    [self deviceMessage:@"Device connected. Waiting for configuration to complete..."];
+    [self deviceMessage:CLEARENT_DEVICE_CONNECTED_WAITING_FOR_CONFIG];
     [_clearentConfigurator configure:self.kernelVersion deviceSerialNumber:self.deviceSerialNumber autoConfiguration:self.autoConfiguration contactlessAutoConfiguration:self.contactlessAutoConfiguration];
 }
 
@@ -338,11 +277,11 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
             found = true;
             break;
         } else {
-            [Teleport logError:INVALID_FIRMWARE_VERSION];
+            [Teleport logError:CLEARENT_INVALID_FIRMWARE_VERSION];
         }
     }
     if(!found) {
-        firmwareVersion = INVALID_FIRMWARE_VERSION;
+        firmwareVersion = CLEARENT_INVALID_FIRMWARE_VERSION;
     }
     return firmwareVersion;
 }
@@ -353,7 +292,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 }
 
 - (void) resetFirmwareVersion {
-    if(self.firmwareVersion == nil || [self.firmwareVersion isEqualToString:INVALID_FIRMWARE_VERSION]) {
+    if(self.firmwareVersion == nil || [self.firmwareVersion isEqualToString:CLEARENT_INVALID_FIRMWARE_VERSION]) {
        [Teleport logInfo:@"Try to fix invalid firmware version"];
        self.firmwareVersion= [self getFirmwareVersion];
     }
@@ -427,13 +366,13 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     
     if(self.clearentConnection != nil) {
         
-        if (self.clearentConnection.connectionType == BLUETOOTH && (self.clearentConnection.connectToFirstBluetoothFound || [self.clearentConnection isDeviceKnown])) {
-            [self deviceMessage:@"BLUETOOTH DISCONNECTED"];
-        } else if (self.clearentConnection.connectionType == AUDIO_JACK) {
-            [self deviceMessage:@"AUDIO JACK DISCONNECTED"];
+        if (self.clearentConnection.connectionType == CLEARENT_BLUETOOTH && (self.clearentConnection.connectToFirstBluetoothFound || [self.clearentConnection isDeviceKnown])) {
+            [self deviceMessage:CLEARENT_BLUETOOTH_DISCONNECTED];
+        } else if (self.clearentConnection.connectionType == CLEARENT_AUDIO_JACK) {
+            [self deviceMessage:CLEARENT_AUDIO_JACK_DISCONNECTED];
         }
         
-        if (self.clearentConnection.connectionType == BLUETOOTH) {
+        if (self.clearentConnection.connectionType == CLEARENT_BLUETOOTH) {
             [self sendBluetoothDevices];
         }
         
@@ -442,7 +381,9 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     }
         
     [Teleport logInfo:[NSString stringWithFormat:@"Device disconnected"]];
+    
     [self.publicDelegate deviceDisconnected];
+    
 }
 
 - (void) deviceMessage:(NSString*)message {
@@ -451,7 +392,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         [Teleport logInfo:[NSString stringWithFormat:@"%@:%@", @"deviceMessage", message]];
     }
 
-    if(message != nil && [message isEqualToString:READER_CONFIGURED_MESSAGE]) {
+    if(message != nil && [message isEqualToString:CLEARENT_READER_CONFIGURED_MESSAGE]) {
         [Teleport logInfo:@"💚💚READER READY💚💚"];
         [Teleport logInfo:@"Framework notified reader is ready"];
         self.configured = YES;
@@ -470,16 +411,16 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     }
     
     if(message != nil && [message isEqualToString:@"POWERING UNIPAY"]) {
-        [self.publicDelegate deviceMessage:@"Powering up reader..."];
+        [self.publicDelegate deviceMessage:CLEARENT_POWERING_UP];
         return;
     }
     
     if(message != nil && [message isEqualToString:@"RETURN_CODE_LOW_VOLUME"]) {
-        [self.publicDelegate deviceMessage:@"Device failed to connect.Turn the headphones volume all the way up and reconnect."];
+        [self.publicDelegate deviceMessage:CLEARENT_AUDIO_JACK_LOW_VOLUME];
         return;
     }
 
-    if(message != nil && ([message isEqualToString:TIMEOUT_ERROR_RESPONSE2] || [message isEqualToString:TIMEOUT_ERROR_RESPONSE] ||[message isEqualToString:UNABLE_TO_GO_ONLINE] || [message isEqualToString:MSD_CONTACTLESS_UNSUPPORTED])) {
+    if(message != nil && ([message isEqualToString:CLEARENT_TIMEOUT_ERROR_RESPONSE2] || [message isEqualToString:CLEARENT_TIMEOUT_ERROR_RESPONSE] ||[message isEqualToString:CLEARENT_UNABLE_TO_GO_ONLINE] || [message isEqualToString:CLEARENT_MSD_CONTACTLESS_UNSUPPORTED])) {
         RETURN_CODE cancelTransactionRt = [_idTechSharedInstance device_cancelTransaction];
         if (RETURN_CODE_DO_SUCCESS == cancelTransactionRt) {
             [Teleport logInfo:@"deviceMessage: Cancelled transaction for timeout, msd, or connectivity issues"];
@@ -495,48 +436,15 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 }
 
 - (void) sendFeedback:(NSString*) message {
-    
-    if(message != nil && ![message isEqualToString:@""]
-       && ![message isEqualToString:@"TAP, OR INSERT"]
-       && ![message isEqualToString:@"CARD"]
-       && ![message containsString:@"Bluetooth LE is turned on"]) {
         
-        NSString *feedbackMessage;
-        
-        if([message isEqualToString:@"INSERT/SWIPE"]) {
-            feedbackMessage = USER_ACTION_2_IN_1_MESSAGE;
-        } else if([message isEqualToString:@"PLEASE SWIPE,"]) {
-            feedbackMessage = USER_ACTION_3_IN_1_MESSAGE;
-        } else {
-            feedbackMessage = message;
-        }
-        
-        ClearentFeedback *clearentFeedback = [[ClearentFeedback alloc] init];
-        clearentFeedback.message = feedbackMessage;
-        
-        [self updateFeedbackType:clearentFeedback];
-        
+    ClearentFeedback *clearentFeedback = [ClearentFeedback createFeedback:message];
+
+    if(clearentFeedback.message != nil && ![clearentFeedback.message isEqualToString:@""]) {
+       
         [self feedback:clearentFeedback];
         
     }
     
-}
-
-- (void) updateFeedbackType: (ClearentFeedback*) clearentFeedback {
-
-    if(_feedbackValues != nil && [_feedbackValues count] > 0) {
-        int feedbackMessageType = [[_feedbackValues valueForKey:clearentFeedback.message] intValue];
-        if(feedbackMessageType == 0) {
-            clearentFeedback.feedBackMessageType = FEEDBACK_USER_ACTION;
-            clearentFeedback.returnCode = 0;
-        } else if(feedbackMessageType == 1) {
-            clearentFeedback.feedBackMessageType = FEEDBACK_INFO;
-            clearentFeedback.returnCode = 0;
-        }
-    } else {
-        clearentFeedback.feedBackMessageType = FEEDBACK_INFO;
-        clearentFeedback.returnCode = 0;
-    }
 }
 
 - (void) feedback:(ClearentFeedback*)clearentFeedback {
@@ -558,17 +466,17 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     }
 
     if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_COLLISION_ERROR]) {
-        [self.publicDelegate deviceMessage:@"PRESENT ONE CARD ONLY"];
+        [self.publicDelegate deviceMessage:CLEARENT_TAP_PRESENT_ONE_CARD_ONLY];
         return;
     }
 
     NSString *errorMessage;
     if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_CARD_BLOCKED]) {
-        [self.publicDelegate deviceMessage:@"CARD BLOCKED"];
+        [self.publicDelegate deviceMessage:CLEARENT_CARD_BLOCKED];
     } else if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_CARD_EXPIRED]) {
-        [self.publicDelegate deviceMessage:@"CARD EXPIRED"];
+        [self.publicDelegate deviceMessage:CLEARENT_CARD_EXPIRED];
     } else if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_CARD_UNSUPPORTED]) {
-        [self.publicDelegate deviceMessage:@"CARD UNSUPPORTED"];
+        [self.publicDelegate deviceMessage:CLEARENT_CARD_UNSUPPORTED];
     } else if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_CARD_DID_NOT_RESPOND]) {
         [self retryContactless];
         return;
@@ -590,7 +498,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     } else if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_GO_TO_MAGSTRIPE_INTERFACE]) {
         [Teleport logError:@"handleContactlessError: go to magstripe interface"];
     } else if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_AMOUNT_OVER_MAXIMUM_LIMIT]) {
-        [self.publicDelegate deviceMessage:@"AMOUNT IS OVER MAXIMUM LIMIT ALLOWED FOR TAP."];
+        [self.publicDelegate deviceMessage:CLEARENT_TAP_OVER_MAX_AMOUNT];
     } else {
         errorMessage = @"";
     }
@@ -604,7 +512,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     [NSThread sleepForTimeInterval:0.3f];
     
     if(![_idTechSharedInstance isConnected]) {
-        [self.publicDelegate deviceMessage:DEVICE_NOT_CONNECTED];
+        [self.publicDelegate deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
         return;
     }
 
@@ -613,7 +521,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     if(errorMessage != nil && ![errorMessage isEqualToString:@""]) {
         fullErrorMessage = [NSString stringWithFormat:@"%@%@%@", @"TAP FAILED. ", errorMessage, @". INSERT/SWIPE"];
     } else {
-        fullErrorMessage = @"TAP FAILED. INSERT/SWIPE";
+        fullErrorMessage = CLEARENT_TAP_FAILED_INSERT_SWIPE;
     }
 
     RETURN_CODE emvStartRt =  [_idTechSharedInstance emv_startTransaction:self.clearentPayment.amount amtOther:self.clearentPayment.amtOther type:self.clearentPayment.type timeout:self.clearentPayment.timeout tags:self.clearentPayment.tags forceOnline:self.clearentPayment.forceOnline fallback:self.clearentPayment.fallback];
@@ -623,14 +531,14 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     } else {
         NSString *logErrorMessage =[NSString stringWithFormat:@"startContactlessFallbackToContact %@%@",[_idTechSharedInstance device_getResponseCodeString:emvStartRt], fullErrorMessage];
         [Teleport logInfo:logErrorMessage];
-        [self.publicDelegate deviceMessage:@"TAP FAILED. INSERT CHIP CARD FIRST BEFORE TRYING AGAIN. IF PHONE TRY AGAIN OR ASK FOR CARD."];
+        [self.publicDelegate deviceMessage:CLEARENT_TAP_FAILED_INSERT_CARD_FIRST];
     }
 }
 
 -(void) retryContactless {
     [NSThread sleepForTimeInterval:0.3f];
     if(![_idTechSharedInstance isConnected]) {
-        [self.publicDelegate deviceMessage:DEVICE_NOT_CONNECTED];
+        [self.publicDelegate deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
         return;
     }
 
@@ -640,16 +548,16 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     emvStartRt =  [_idTechSharedInstance device_startTransaction:self.clearentPayment.amount amtOther:self.clearentPayment.amtOther type:self.clearentPayment.type timeout:self.clearentPayment.timeout tags:self.clearentPayment.tags forceOnline:self.clearentPayment.forceOnline fallback:self.clearentPayment.fallback];
 
     if(RETURN_CODE_OK_NEXT_COMMAND == emvStartRt || RETURN_CODE_DO_SUCCESS == emvStartRt) {
-        [self.publicDelegate deviceMessage:CONTACTLESS_RETRY_MESSAGE];
+        [self.publicDelegate deviceMessage:CLEARENT_CONTACTLESS_RETRY_MESSAGE];
     } else {
         [NSThread sleepForTimeInterval:0.2f];
         emvStartRt =  [_idTechSharedInstance device_startTransaction:self.clearentPayment.amount amtOther:self.clearentPayment.amtOther type:self.clearentPayment.type timeout:self.clearentPayment.timeout tags:self.clearentPayment.tags forceOnline:self.clearentPayment.forceOnline fallback:self.clearentPayment.fallback];
         if(RETURN_CODE_OK_NEXT_COMMAND == emvStartRt || RETURN_CODE_DO_SUCCESS == emvStartRt) {
-            [self.publicDelegate deviceMessage:CONTACTLESS_RETRY_MESSAGE];
+            [self.publicDelegate deviceMessage:CLEARENT_CONTACTLESS_RETRY_MESSAGE];
         } else {
             NSString *logErrorMessage =[NSString stringWithFormat:@"retryContactless %@",[_idTechSharedInstance device_getResponseCodeString:emvStartRt]];
             [Teleport logInfo:logErrorMessage];
-            [self.publicDelegate deviceMessage:GENERIC_CONTACTLESS_FAILED];
+            [self.publicDelegate deviceMessage:CLEARENT_GENERIC_CONTACTLESS_FAILED];
         }
     }
 }
@@ -658,7 +566,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     
     [NSThread sleepForTimeInterval:0.3f];
     if(![_idTechSharedInstance isConnected]) {
-        [self.publicDelegate deviceMessage:DEVICE_NOT_CONNECTED];
+        [self.publicDelegate deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
         return;
     }
 
@@ -683,7 +591,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         } else {
             NSString *logErrorMessage =[NSString stringWithFormat:@"restartSwipeIn2In1Mode %@",[_idTechSharedInstance device_getResponseCodeString:emvStartRt]];
             [Teleport logInfo:logErrorMessage];
-            [self.publicDelegate deviceMessage:GENERIC_CARD_READ_ERROR_RESPONSE];
+            [self.publicDelegate deviceMessage:CLEARENT_GENERIC_CARD_READ_ERROR_RESPONSE];
         }
     }
     
@@ -692,7 +600,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 -(void) restartSwipeOnly:(IDTMSRData*) cardData {
     [NSThread sleepForTimeInterval:0.3f];
     if(![_idTechSharedInstance isConnected]) {
-        [self.publicDelegate deviceMessage:DEVICE_NOT_CONNECTED];
+        [self.publicDelegate deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
         return;
     }
 
@@ -716,21 +624,21 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         } else {
             NSString *logErrorMessage =[NSString stringWithFormat:@"restartSwipeOnly %@",[_idTechSharedInstance device_getResponseCodeString:msr_startMSRSwipeRt]];
             [Teleport logInfo:logErrorMessage];
-            [self.publicDelegate deviceMessage:GENERIC_CARD_READ_ERROR_RESPONSE];
+            [self.publicDelegate deviceMessage:CLEARENT_GENERIC_CARD_READ_ERROR_RESPONSE];
         }
     }
 }
 
 - (void) sendSwipeErrorMessage:(IDTMSRData*) cardData {
     if(!userToldToUseChipReader && cardData != nil && cardData.iccPresent) {
-        [self deviceMessage:CHIP_FOUND_ON_SWIPE];
+        [self deviceMessage:CLEARENT_CHIP_FOUND_ON_SWIPE];
         userToldToUseChipReader = true;
     } else if (cardData != nil && cardData.event == EVENT_MSR_DATA_ERROR) {
-        [self deviceMessage:USER_ACTION_SWIPE_FAIL_TRY_INSERT_OR_SWIPE];
+        [self deviceMessage:CLEARENT_USER_ACTION_SWIPE_FAIL_TRY_INSERT_OR_SWIPE];
     } else if(userToldToUseMagStripe) {
-        [self deviceMessage:USER_ACTION_USE_MAGSTRIPE_MESSAGE];
+        [self deviceMessage:CLEARENT_USER_ACTION_USE_MAGSTRIPE_MESSAGE];
     } else if((cardData != nil && cardData.iccPresent) || previousSwipeWasCardWithChip || userToldToUseChipReader) {
-        [self.publicDelegate deviceMessage:CHIP_FOUND_ON_SWIPE];
+        [self.publicDelegate deviceMessage:CLEARENT_CHIP_FOUND_ON_SWIPE];
     }
 }
 
@@ -754,7 +662,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     } else if (cardData != nil && cardData.event == EVENT_MSR_DATA_ERROR) {
         [self restartSwipeIn2In1Mode:cardData];
     } else if (cardData != nil && cardData.event == EVENT_MSR_TIMEOUT) {
-        [self deviceMessage:TIMEOUT_ERROR_RESPONSE];
+        [self deviceMessage:CLEARENT_TIMEOUT_ERROR_RESPONSE];
     } else if(userToldToUseMagStripe) {
         [self restartSwipeOnly:cardData];
     } else {
@@ -929,9 +837,9 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
             [self createTransactionToken:clearentTransactionTokenRequest];
         }
     } else if (cardData != nil && cardData.event == EVENT_MSR_TIMEOUT) {
-        [self deviceMessage:TIMEOUT_ERROR_RESPONSE];
+        [self deviceMessage:CLEARENT_TIMEOUT_ERROR_RESPONSE];
     } else {
-        [self deviceMessage:GENERIC_CARD_READ_ERROR_RESPONSE];
+        [self deviceMessage:CLEARENT_GENERIC_CARD_READ_ERROR_RESPONSE];
         return;
     }
 }
@@ -970,7 +878,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 
     if (emvData.cardType == 1 && entryMode == CONTACTLESS_MAGNETIC_SWIPE) {
         [Teleport logInfo:@"🙅🙅MSD CONTACTLESS NOT SUPPORTED🙅🙅"];
-        [self deviceMessage:MSD_CONTACTLESS_UNSUPPORTED];
+        [self deviceMessage:CLEARENT_MSD_CONTACTLESS_UNSUPPORTED];
         return;
     }
     
@@ -1002,12 +910,12 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 
     if (error == 8) {
         emvErrorHandled = YES;
-        [self deviceMessage:TIMEOUT_ERROR_RESPONSE];
+        [self deviceMessage:CLEARENT_TIMEOUT_ERROR_RESPONSE];
     } else if(emvData == nil) {
         emvErrorHandled = YES;
     } else if (emvData.cardType == 1 && !self.contactless) {
         emvErrorHandled = YES;
-        [self deviceMessage:CONTACTLESS_UNSUPPORTED];
+        [self deviceMessage:CLEARENT_CONTACTLESS_UNSUPPORTED];
     } else if(emvData != nil && emvData.cardType == 1) {
         NSString* contactlessErrorCodeData = [self getContactlessErrorCode: emvData.unencryptedTags];
         if([self isContactlessError: contactlessErrorCodeData]) {
@@ -1016,27 +924,27 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         }
     } else if (emvData.cardType == 1 && emvData.resultCodeV2 == EMV_RESULT_CODE_V2_CVM_CODE_IS_NOT_SUPPORTED) {
         emvErrorHandled = YES;
-        [self deviceMessage:CVM_UNSUPPORTED];
+        [self deviceMessage:CLEARENT_CVM_UNSUPPORTED];
     } else if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_DECLINED_OFFLINE) {
         emvErrorHandled = YES;
-        [self deviceMessage:CARD_OFFLINE_DECLINED];
+        [self deviceMessage:CLEARENT_CARD_OFFLINE_DECLINED];
     } else if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_MSR_CARD_ERROR) {
         emvErrorHandled = YES;
-        [self deviceMessage:GENERIC_CARD_READ_ERROR_RESPONSE];
+        [self deviceMessage:CLEARENT_GENERIC_CARD_READ_ERROR_RESPONSE];
     } else if(emvData.resultCodeV2 == EMV_RESULT_CODE_V2_APP_NO_MATCHING) {
          _originalEntryMode = 81;
-         [self deviceMessage:@"CHIP NOT RECOGNIZED, PULL CARD OUT, WAIT FOR GREEN LED, TRY SWIPE"];
+         [self deviceMessage:CLEARENT_CHIP_UNRECOGNIZED];
          SEL startFallbackSwipeSelector = @selector(startFallbackSwipe);
          [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:startFallbackSwipeSelector userInfo:nil repeats:false];
          emvErrorHandled = YES;
     } else if(emvData.resultCodeV2 == EMV_RESULT_CODE_V2_CARD_REJECTED) {
-         [self deviceMessage:@"BAD CHIP, PULL CARD OUT, WAIT FOR GREEN LED, TRY SWIPE"];
+         [self deviceMessage:CLEARENT_BAD_CHIP];
         SEL startFallbackSwipeSelector = @selector(startFallbackSwipe);
         [NSTimer scheduledTimerWithTimeInterval:5 target:self selector:startFallbackSwipeSelector userInfo:nil repeats:false];
         emvErrorHandled = YES;
      } else if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_TIME_OUT) {
          emvErrorHandled = YES;
-         [self deviceMessage:TIMEOUT_ERROR_RESPONSE];
+         [self deviceMessage:CLEARENT_TIMEOUT_ERROR_RESPONSE];
      } else if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_APPROVED || emvData.resultCodeV2 == EMV_RESULT_CODE_V2_APPROVED_OFFLINE ) {
          emvErrorHandled = YES;
      } else if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_START_TRANS_SUCCESS) {
@@ -1077,12 +985,12 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
                 }
                 [self createTransactionToken:clearentTransactionTokenRequest];
             } else {
-                [self deviceMessage:GENERIC_CARD_READ_ERROR_RESPONSE];
+                [self deviceMessage:CLEARENT_GENERIC_CARD_READ_ERROR_RESPONSE];
             }
         } else if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_GO_ONLINE || (entryMode == NONTECH_FALLBACK_SWIPE || emvData.cardType == 1)) {
             ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequest:emvData];
             if(emvData.cardType == 1 && clearentTransactionTokenRequest.track2Data == nil) {
-                [self deviceMessage:GENERIC_CONTACTLESS_FAILED];
+                [self deviceMessage:CLEARENT_GENERIC_CONTACTLESS_FAILED];
             } else {
                 [self createTransactionToken:clearentTransactionTokenRequest];
             }
@@ -1144,7 +1052,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         [Teleport logInfo:@"deviceMessage: start fallback swipe succeeded "];
     } else {
         [Teleport logInfo:@"deviceMessage: start fallback swipe failed "];
-        [self deviceMessage:@"FAILED TO START SWIPE. TRY AGAIN BUT THIS TIME PULL CARD OUT WHEN INSTRUCTED"];
+        [self deviceMessage:CLEARENT_PULLED_CARD_OUT_EARLY];
     }
 }
 
@@ -1485,7 +1393,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     }
 
     if(clearentTransactionTokenRequest == nil || clearentTransactionTokenRequest.track2Data == nil || [clearentTransactionTokenRequest.track2Data isEqualToString:@""]) {
-        [self deviceMessage:FAILED_TO_READ_CARD_ERROR_RESPONSE];
+        [self deviceMessage:CLEARENT_FAILED_TO_READ_CARD_ERROR_RESPONSE];
         return;
     }
     
@@ -1495,11 +1403,11 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     NSData *postData = [NSJSONSerialization dataWithJSONObject:clearentTransactionTokenRequest.asDictionary options:0 error:&error];
 
     if (error) {
-        [self deviceMessage:GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
+        [self deviceMessage:CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
         return;
     }
     
-    [self deviceMessage:TRANSLATING_CARD_TO_TOKEN];
+    [self deviceMessage:CLEARENT_TRANSLATING_CARD_TO_TOKEN];
     [Teleport logInfo:@"Call Clearent to produce transaction token"];
 
     [request setHTTPBody:postData];
@@ -1518,7 +1426,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
           NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
           NSString *responseStr = nil;
           if(error != nil) {
-              [self deviceMessage:UNABLE_TO_GO_ONLINE];
+              [self deviceMessage:CLEARENT_UNABLE_TO_GO_ONLINE];
               [Teleport logInfo:error.description];
           } else if(data != nil) {
               responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -1541,15 +1449,15 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
                                                                    options:0
                                                                      error:&error];
     if (error) {
-        [self deviceMessage:GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
+        [self deviceMessage:CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
     } else {
         NSDictionary *payloadDictionary = [jsonDictionary objectForKey:@"payload"];
         NSDictionary *errorDictionary = [payloadDictionary objectForKey:@"error"];
         NSString *errorMessage = [errorDictionary objectForKey:@"error-message"];
         if(errorMessage != nil) {
-             [self deviceMessage:[NSString stringWithFormat:@"%@. %@.", GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE, errorMessage]];
+             [self deviceMessage:[NSString stringWithFormat:@"%@. %@.", CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE, errorMessage]];
         } else {
-           [self deviceMessage:GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
+           [self deviceMessage:CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
         }
         [self clearCurrentRequest];
     }
@@ -1562,19 +1470,19 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
                                                                    options:0
                                                                      error:&error];
     if (error) {
-        [self deviceMessage:GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
+        [self deviceMessage:CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
     }
     NSString *responseCode = [jsonDictionary objectForKey:@"code"];
     if([responseCode isEqualToString:@"200"]) {
         [Teleport logInfo:@"😀😀💳💳CARD IS NOW TOKEN💳💳😀😀"];
         [Teleport logInfo:@"Successful transaction token communicated to client app"];
-        [self deviceMessage:SUCCESSFUL_TOKENIZATION_MESSAGE];
+        [self deviceMessage:CLEARENT_SUCCESSFUL_TOKENIZATION_MESSAGE];
         [self clearCurrentRequest];
         [self.publicDelegate successfulTransactionToken:response];
         ClearentTransactionToken *clearentTransactionToken = [[ClearentTransactionToken alloc] initWithJson:response];
         [self.publicDelegate successTransactionToken:clearentTransactionToken];
     } else {
-        [self deviceMessage:GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
+        [self deviceMessage:CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
     }
 }
 
@@ -1603,7 +1511,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     NSData *postData = [NSJSONSerialization dataWithJSONObject:clearentOfflineDeclineReceipt.asDictionary options:0 error:&error];
 
     if (error) {
-        [self deviceMessage:GENERIC_DECLINE_RECEIPT_ERROR_RESPONSE];
+        [self deviceMessage:CLEARENT_GENERIC_DECLINE_RECEIPT_ERROR_RESPONSE];
         return;
     }
 
@@ -1625,7 +1533,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
           NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
           NSString *responseStr = nil;
           if(error != nil) {
-              [self deviceMessage:@"UNABLE TO GO ONLINE, FAILED TO SEND DECLINED RECEIPT"];
+              [self deviceMessage:CLEARENT_FAILED_TO_SEND_DECLINE_RECEIPT];
               [Teleport logInfo:error.description];
               [_idTechSharedInstance emv_completeOnlineEMVTransaction:false hostResponseTags:nil];
           } else if(data != nil) {
@@ -1663,15 +1571,15 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
                                                                    options:0
                                                                      error:&error];
     if (error) {
-        [self deviceMessage:GENERIC_DECLINE_RECEIPT_ERROR_RESPONSE];
+        [self deviceMessage:CLEARENT_GENERIC_DECLINE_RECEIPT_ERROR_RESPONSE];
     } else {
         NSDictionary *payloadDictionary = [jsonDictionary objectForKey:@"payload"];
         NSDictionary *errorDictionary = [payloadDictionary objectForKey:@"error"];
         NSString *errorMessage = [errorDictionary objectForKey:@"error-message"];
         if(errorMessage != nil) {
-            [self deviceMessage:[NSString stringWithFormat:@"%@. %@.", GENERIC_DECLINE_RECEIPT_ERROR_RESPONSE, errorMessage]];
+            [self deviceMessage:[NSString stringWithFormat:@"%@. %@.", CLEARENT_GENERIC_DECLINE_RECEIPT_ERROR_RESPONSE, errorMessage]];
         } else {
-            [self deviceMessage:GENERIC_DECLINE_RECEIPT_ERROR_RESPONSE];
+            [self deviceMessage:CLEARENT_GENERIC_DECLINE_RECEIPT_ERROR_RESPONSE];
         }
     }
 }
@@ -1683,14 +1591,14 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
                                                                    options:0
                                                                      error:&error];
     if (error) {
-        [self deviceMessage:GENERIC_DECLINE_RECEIPT_ERROR_RESPONSE];
+        [self deviceMessage:CLEARENT_GENERIC_DECLINE_RECEIPT_ERROR_RESPONSE];
     }
     NSString *responseCode = [jsonDictionary objectForKey:@"code"];
     if([responseCode isEqualToString:@"200"]) {
         [Teleport logInfo:@"Successful declined receipt communicated to client app"];
-        [self deviceMessage:SUCCESSFUL_DECLINE_RECEIPT_MESSAGE];
+        [self deviceMessage:CLEARENT_SUCCESSFUL_DECLINE_RECEIPT_MESSAGE];
     } else {
-        [self deviceMessage:GENERIC_DECLINE_RECEIPT_ERROR_RESPONSE];
+        [self deviceMessage:CLEARENT_GENERIC_DECLINE_RECEIPT_ERROR_RESPONSE];
     }
 }
 
@@ -1703,7 +1611,6 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     userToldToUseMagStripe = NO;
     userToldToUseChipReader = NO;
     contactlessIsProcessing = NO;
-    _isRunningTransaction = false;
 }
 
 - (void) clearContactlessConfigurationCache {

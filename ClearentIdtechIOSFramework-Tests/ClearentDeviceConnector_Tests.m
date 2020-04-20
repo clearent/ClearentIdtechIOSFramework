@@ -57,8 +57,10 @@ SEL mockRunTransactionSelector;
 }
 
 - (void) tearDown {
+    
     [self.mockClearentVP3300 stopMocking];
     [self.mockIDTechSharedInstance stopMocking];
+    
 }
 
 - (void) testStartConnectionWithFirstConnect {
@@ -72,7 +74,7 @@ SEL mockRunTransactionSelector;
     [_clearentDeviceConnector startConnection:clearentConnection];
     
     XCTAssertNotNil(_testPublicDelegate.clearentFeedback);
-    XCTAssertTrue(_testPublicDelegate.clearentFeedback.feedBackMessageType == FEEDBACK_BLUETOOTH);
+    XCTAssertTrue(_testPublicDelegate.clearentFeedback.feedBackMessageType == CLEARENT_FEEDBACK_BLUETOOTH);
     XCTAssertEqualObjects(@"CONNECTED : friendlyName", _testPublicDelegate.clearentFeedback.message);
     
 }
@@ -88,8 +90,8 @@ SEL mockRunTransactionSelector;
     [_clearentDeviceConnector startConnection:clearentConnection];
     
     XCTAssertNotNil(_testPublicDelegate.clearentFeedback);
-    XCTAssertTrue(_testPublicDelegate.clearentFeedback.feedBackMessageType == FEEDBACK_INFO);
-    XCTAssertEqualObjects(@"AUDIO JACK NOT CONNECTED", _testPublicDelegate.clearentFeedback.message);
+    XCTAssertTrue(_testPublicDelegate.clearentFeedback.feedBackMessageType == CLEARENT_FEEDBACK_INFO);
+    XCTAssertEqualObjects(@"AUDIO JACK DISCONNECTED", _testPublicDelegate.clearentFeedback.message);
     
 }
 
@@ -105,7 +107,7 @@ SEL mockRunTransactionSelector;
     
     [_clearentDeviceConnector startConnection:clearentConnection];
     
-    XCTAssertEqualObjects(@"AUDIO JACK NOT CONNECTED", _testPublicDelegate.message);
+    XCTAssertEqualObjects(@"AUDIO JACK DISCONNECTED", _testPublicDelegate.message);
    
 }
 

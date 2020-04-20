@@ -34,8 +34,6 @@ typedef enum {SWIPE=90} supportedNonEmvEntryMode;
 @property(nonatomic) id<Clearent_Public_IDTech_VP3300_Delegate> publicDelegate;
 @property(nonatomic) int originalEntryMode;
 
-@property(nonatomic) BOOL isRunningTransaction;
-
 @property(nonatomic) id<ClearentPaymentRequest> clearentPayment;
 @property(nonatomic) id<ClearentVP3300Configuration> clearentVP3300Configuration;
 @property(nonatomic) ClearentConnection *clearentConnection;
@@ -45,7 +43,6 @@ typedef enum {SWIPE=90} supportedNonEmvEntryMode;
 
 @property(nonatomic) SEL runTransactionSelector;
 @property(nonatomic) id callbackObject;
-@property (nonatomic,strong) NSDictionary *feedbackValues;
 @property (nonatomic,strong) ClearentDeviceConnector *clearentDeviceConnector;
 @property (nonatomic,strong) IDT_VP3300 *idTechSharedInstance;
 

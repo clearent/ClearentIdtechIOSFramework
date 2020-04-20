@@ -17,19 +17,6 @@
 
 @implementation ClearentTransactions
 
-static NSString *const DISABLE_CONFIGURATION_TO_RUN_TRANSACTION = @"DISABLE CONFIGURATION REQUEST TO RUN TRANSACTION";
-static NSString *const READER_IS_NOT_CONFIGURED = @"Cannot run transaction. Reader is not configured.";
-static NSString *const DEVICE_NOT_CONNECTED = @"DEVICE NOT CONNECTED";
-static NSString *const UNPLUG_AUDIO_JACK_BEFORE_CONNECTING_TO_BLUETOOTH = @"UNPLUG AUDIO JACK BEFORE CONNECTING TO BLUETOOTH";
-static NSString *const USER_ACTION_PRESS_BUTTON_MESSAGE = @"PRESS BUTTON ON READER";
-static NSString *const PLUGIN_AUDIO_JACK = @"PLUGIN AUDIO JACK";
-static NSString *const REQUIRED_TRANSACTION_REQUEST_RESPONSE = @"PAYMENT REQUEST AND CONNECTION REQUIRED";
-static NSString *const RESPONSE_TRANSACTION_STARTED = @"TRANSACTION STARTED";
-static NSString *const RESPONSE_RETRY_TRANSACTION = @"Retrying transaction";
-static NSString *const RESPONSE_TRANSACTION_FAILED = @"TRANSACTION FAILED";
-static NSString *const RESPONSE_INVALID_TRANSACTION = @"INVALID TRANSACTION";
-static NSString *const PAYMENT_REQUEST_NOT_FOUND = @"PAYMENT REQUEST NOT FOUND";
-
 - (instancetype) init: (ClearentDelegate*)clearentDelegate clearentVP3300:(Clearent_VP3300*) clearentVP3300 {
     
     self = [super init];
@@ -48,14 +35,14 @@ static NSString *const PAYMENT_REQUEST_NOT_FOUND = @"PAYMENT REQUEST NOT FOUND";
     if(_clearentDelegate.clearentPayment != nil) {
         ClearentResponse *clearentResponse = [self startTransactionByReaderInterfaceMode:_clearentDelegate.clearentPayment clearentConnection:_clearentDelegate.clearentConnection];
     } else {
-        [_clearentDelegate deviceMessage:PAYMENT_REQUEST_NOT_FOUND];
+        [_clearentDelegate deviceMessage:CLEARENT_PAYMENT_REQUEST_NOT_FOUND];
     }
     
 }
 
-- (RETURN_CODE) startTransactionByReaderInterfaceMode: (READER_INTERFACE_MODE) readerInterfaceMode {
+- (RETURN_CODE) startTransactionByReaderInterfaceMode: (CLEARENT_READER_INTERFACE_MODE) readerInterfaceMode {
     
-    if(_clearentDelegate.clearentConnection.readerInterfaceMode == READER_INTERFACE_2_IN_1) {
+    if(_clearentDelegate.clearentConnection.readerInterfaceMode == CLEARENT_READER_INTERFACE_2_IN_1) {
         return [self emv_startTransaction:_clearentDelegate.clearentPayment];
     } else {
         return [self device_startTransaction:_clearentDelegate.clearentPayment];
@@ -66,7 +53,7 @@ static NSString *const PAYMENT_REQUEST_NOT_FOUND = @"PAYMENT REQUEST NOT FOUND";
 -(RETURN_CODE) emv_startTransaction:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline fallback:(BOOL)fallback {
     
     if([self isConfigurationRequested]) {
-        [_clearentDelegate deviceMessage:DISABLE_CONFIGURATION_TO_RUN_TRANSACTION];
+        [_clearentDelegate deviceMessage:CLEARENT_DISABLE_CONFIGURATION_TO_RUN_TRANSACTION];
         return RETURN_CODE_CANNOT_START_CONTACT_EMV;
     }
 
@@ -81,13 +68,13 @@ static NSString *const PAYMENT_REQUEST_NOT_FOUND = @"PAYMENT REQUEST NOT FOUND";
     if(![_clearentDelegate.idTechSharedInstance isConnected]) {
         
         [Teleport logInfo:@"emv_startTransaction. Tried to start transaction but disconnected"];
-        [_clearentDelegate deviceMessage:DEVICE_NOT_CONNECTED];
+        [_clearentDelegate deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
         emvStartRt = RETURN_CODE_ERR_DISCONNECT;
         
     } else if(![_clearentDelegate isDeviceConfigured]) {
         
         [Teleport logInfo:@"emv_startTransaction. Tried to start transaction but reader is not configured"];
-        [_clearentDelegate deviceMessage:READER_IS_NOT_CONFIGURED];
+        [_clearentDelegate deviceMessage:CLEARENT_READER_IS_NOT_CONFIGURED];
         emvStartRt = RETURN_CODE_EMV_FAILED;
         
     } else {
@@ -105,7 +92,7 @@ static NSString *const PAYMENT_REQUEST_NOT_FOUND = @"PAYMENT REQUEST NOT FOUND";
 - (RETURN_CODE) ctls_startTransaction:(double)amount type:(int)type timeout:(int)timeout tags:(NSMutableDictionary *)tags {
     
     if([self isConfigurationRequested]) {
-        [_clearentDelegate deviceMessage:DISABLE_CONFIGURATION_TO_RUN_TRANSACTION];
+        [_clearentDelegate deviceMessage:CLEARENT_DISABLE_CONFIGURATION_TO_RUN_TRANSACTION];
         return RETURN_CODE_CANNOT_START_CONTACT_EMV;
     }
     
@@ -120,13 +107,13 @@ static NSString *const PAYMENT_REQUEST_NOT_FOUND = @"PAYMENT REQUEST NOT FOUND";
     if(![_clearentDelegate.idTechSharedInstance isConnected]) {
         
         [Teleport logInfo:@"ctls_startTransaction. Tried to start transaction but disconnected"];
-        [_clearentDelegate deviceMessage:DEVICE_NOT_CONNECTED];
+        [_clearentDelegate deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
         ctlsStartRt = RETURN_CODE_ERR_DISCONNECT;
         
     } else if(![_clearentDelegate isDeviceConfigured]) {
         
         [Teleport logInfo:@"ctls_startTransaction. Tried to start transaction but reader is not configured"];
-        [_clearentDelegate deviceMessage:READER_IS_NOT_CONFIGURED];
+        [_clearentDelegate deviceMessage:CLEARENT_READER_IS_NOT_CONFIGURED];
         ctlsStartRt = RETURN_CODE_EMV_FAILED;
         
     } else {
@@ -156,7 +143,7 @@ static NSString *const PAYMENT_REQUEST_NOT_FOUND = @"PAYMENT REQUEST NOT FOUND";
     
     if([self isConfigurationRequested]) {
         
-        [_clearentDelegate deviceMessage:DISABLE_CONFIGURATION_TO_RUN_TRANSACTION];
+        [_clearentDelegate deviceMessage:CLEARENT_DISABLE_CONFIGURATION_TO_RUN_TRANSACTION];
         
         ctlsStartRt = RETURN_CODE_CANNOT_START_CONTACT_EMV;
         
@@ -164,7 +151,7 @@ static NSString *const PAYMENT_REQUEST_NOT_FOUND = @"PAYMENT REQUEST NOT FOUND";
         
         [Teleport logInfo:@"ctls_startTransaction no vars. Tried to start transaction but disconnected"];
         
-        [_clearentDelegate deviceMessage:DEVICE_NOT_CONNECTED];
+        [_clearentDelegate deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
         
         ctlsStartRt = RETURN_CODE_ERR_DISCONNECT;
         
@@ -172,7 +159,7 @@ static NSString *const PAYMENT_REQUEST_NOT_FOUND = @"PAYMENT REQUEST NOT FOUND";
         
         [Teleport logInfo:@"ctls_startTransaction no vars. Tried to start transaction but reader is not configured"];
         
-        [_clearentDelegate deviceMessage:READER_IS_NOT_CONFIGURED];
+        [_clearentDelegate deviceMessage:CLEARENT_READER_IS_NOT_CONFIGURED];
         
         ctlsStartRt = RETURN_CODE_EMV_FAILED;
         
@@ -196,7 +183,7 @@ static NSString *const PAYMENT_REQUEST_NOT_FOUND = @"PAYMENT REQUEST NOT FOUND";
         
         [Teleport logInfo:@"emv_startTransaction. Tried to start transaction but disconnected"];
         
-        [_clearentDelegate deviceMessage:DEVICE_NOT_CONNECTED];
+        [_clearentDelegate deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
         
         emvStartRt = RETURN_CODE_ERR_DISCONNECT;
         
@@ -204,7 +191,7 @@ static NSString *const PAYMENT_REQUEST_NOT_FOUND = @"PAYMENT REQUEST NOT FOUND";
         
         [Teleport logInfo:@"emv_startTransaction. Tried to start transaction but reader is not configured"];
         
-        [_clearentDelegate deviceMessage:READER_IS_NOT_CONFIGURED];
+        [_clearentDelegate deviceMessage:CLEARENT_READER_IS_NOT_CONFIGURED];
         
         emvStartRt = RETURN_CODE_EMV_FAILED;
         
@@ -227,31 +214,48 @@ static NSString *const PAYMENT_REQUEST_NOT_FOUND = @"PAYMENT REQUEST NOT FOUND";
     ClearentResponse *clearentResponse;
    
     if(clearentPaymentRequest == nil || clearentConnection == nil) {
+        
         clearentResponse = [self createRequiredTransactionRequestResponse];
+        
     } if([self isConfigurationRequested]) {
+        
         clearentResponse = [self createConfigurationRequestResponse];
+        
     } else {
         
         [self resetTransaction];
-        [self updateConfiguration:clearentConnection];
-        [_clearentDelegate setClearentPayment:clearentPaymentRequest];
-        _clearentDelegate.isRunningTransaction = true;
         
-        if(clearentConnection.connectionType == AUDIO_JACK && ![_clearentVP3300 device_isAudioReaderConnected]) {
+        [self updateConfiguration:clearentConnection];
+        
+        [_clearentDelegate setClearentPayment:clearentPaymentRequest];
+        
+        if(clearentConnection.connectionType == CLEARENT_AUDIO_JACK && ![_clearentVP3300 device_isAudioReaderConnected]) {
+            
             clearentResponse = [self createAudioJackNotConnectedResponse];
-        } else if([_clearentVP3300 device_isAudioReaderConnected] && clearentConnection.connectionType == BLUETOOTH) {
+            
+        } else if([_clearentVP3300 device_isAudioReaderConnected] && clearentConnection.connectionType == CLEARENT_BLUETOOTH) {
+            
             clearentResponse = [self createStillConnectedToAudioJackResponse];
-        } else if(clearentConnection.connectionType == AUDIO_JACK && [_clearentVP3300 device_isAudioReaderConnected]) {
+            
+        } else if(clearentConnection.connectionType == CLEARENT_AUDIO_JACK && [_clearentVP3300 device_isAudioReaderConnected]) {
+            
             clearentResponse = [self startTransactionByReaderInterfaceMode:clearentPaymentRequest clearentConnection:clearentConnection];
+            
         } else if([_clearentVP3300 isConnected] && ![_clearentDelegate.clearentDeviceConnector isNewConnectionRequest:_clearentDelegate.clearentConnection connectionRequest:clearentConnection]) {
+            
             clearentResponse = [self startTransactionByReaderInterfaceMode:clearentPaymentRequest clearentConnection:clearentConnection];
+            
         } else {
+            
             clearentResponse = [self startTransactionAfterConnection:clearentConnection];
+            
         }
     }
     
     if(clearentResponse.responseType == RESPONSE_FAIL) {
+        
         [_clearentDelegate deviceMessage:clearentResponse.response];
+        
     }
     
     return clearentResponse;
@@ -260,8 +264,11 @@ static NSString *const PAYMENT_REQUEST_NOT_FOUND = @"PAYMENT REQUEST NOT FOUND";
 - (RETURN_CODE) device_startTransaction:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline  fallback:(BOOL)fallback {
     
     if([self isConfigurationRequested]) {
-        [_clearentDelegate deviceMessage:DISABLE_CONFIGURATION_TO_RUN_TRANSACTION];
+        
+        [_clearentDelegate deviceMessage:CLEARENT_DISABLE_CONFIGURATION_TO_RUN_TRANSACTION];
+        
         return RETURN_CODE_CANNOT_START_CONTACT_EMV;
+        
     }
     
     [self clearCurrentRequest];
@@ -273,9 +280,10 @@ static NSString *const PAYMENT_REQUEST_NOT_FOUND = @"PAYMENT REQUEST NOT FOUND";
     return [self device_startTransaction:clearentPayment];
 }
 
+//- If the reader if OFF, but SDK thinks it still is connected, you will get a RETURN_CODE_NEO_TIMEOUT, RETURN_CODE_ERR_TIMEDOUT, RETURN_CODE_ERR_TIMEDOUT_
+//RESOLUTION:  execute device_disconnectBLE (so SDK gets in sync with disconnected status), and then attempt to reconnect.  If you can reconnect, try transaction again.  If you can't reconnect, report disconnected error to customer.
 - (BOOL) isConnectionError: (RETURN_CODE) idTechReturnCode {
-    //- If the reader if OFF, but SDK thinks it still is connected, you will get a RETURN_CODE_NEO_TIMEOUT, RETURN_CODE_ERR_TIMEDOUT, RETURN_CODE_ERR_TIMEDOUT_
-    //RESOLUTION:  execute device_disconnectBLE (so SDK gets in sync with disconnected status), and then attempt to reconnect.  If you can reconnect, try transaction again.  If you can't reconnect, report disconnected error to customer.
+    
     if(idTechReturnCode == RETURN_CODE_NEO_TIMEOUT
        || idTechReturnCode == RETURN_CODE_ERR_TIMEDOUT
        || idTechReturnCode == RETURN_CODE_ERR_TIMEDOUT_
@@ -286,10 +294,11 @@ static NSString *const PAYMENT_REQUEST_NOT_FOUND = @"PAYMENT REQUEST NOT FOUND";
     return NO;
 }
 
+//- if device is not connected, and the SDK knows it is not connected, you will get back a RETURN_CODE_ERR_DISCONNECT, RETURN_CODE_ERR_DISCONNECT_,
+   //RESOLUTION:  Attempt to reconnect.  If you can reconnect, try transaction again.  If you can't reconnect, report disconnected error to customer.
+   //
 - (BOOL) isDisconnected: (RETURN_CODE) idTechReturnCode {
-    //- if device is not connected, and the SDK knows it is not connected, you will get back a RETURN_CODE_ERR_DISCONNECT, RETURN_CODE_ERR_DISCONNECT_,
-    //RESOLUTION:  Attempt to reconnect.  If you can reconnect, try transaction again.  If you can't reconnect, report disconnected error to customer.
-    //
+    
     if(idTechReturnCode == RETURN_CODE_ERR_DISCONNECT
        || idTechReturnCode == RETURN_CODE_ERR_DISCONNECT_) {
         return YES;
@@ -298,10 +307,11 @@ static NSString *const PAYMENT_REQUEST_NOT_FOUND = @"PAYMENT REQUEST NOT FOUND";
     return NO;
 }
 
+//- If the SDK believes there was a previous transasction already in progress that didn't finish yet, you will get back RETURN_CODE_SDK_BUSY_MSR_, RETURN_CODE_SDK_BUSY_CTLS_, RETURN_CODE_SDK_BUSY_EMV_,RETURN_CODE_SDK_BUSY_MSR,RETURN_CODE_SDK_BUSY_CTLS, RETURN_CODE_SDK_BUSY_CMD
+   //RESOLUTION:  Execute device_cancelTranaction.  If successful cancel, try transaction again.  If unsuccessful, device_disconnectBLE, then attempt to reconnect and try again.  If you can't reconnect, report disconnected error to customer.
+   //
 - (BOOL) isPreviousTransactionInProgress: (RETURN_CODE) idTechReturnCode {
-    //- If the SDK believes there was a previous transasction already in progress that didn't finish yet, you will get back RETURN_CODE_SDK_BUSY_MSR_, RETURN_CODE_SDK_BUSY_CTLS_, RETURN_CODE_SDK_BUSY_EMV_,RETURN_CODE_SDK_BUSY_MSR,RETURN_CODE_SDK_BUSY_CTLS, RETURN_CODE_SDK_BUSY_CMD
-    //RESOLUTION:  Execute device_cancelTranaction.  If successful cancel, try transaction again.  If unsuccessful, device_disconnectBLE, then attempt to reconnect and try again.  If you can't reconnect, report disconnected error to customer.
-    //
+   
     if(idTechReturnCode == RETURN_CODE_SDK_BUSY_CTLS_
        || idTechReturnCode == RETURN_CODE_SDK_BUSY_EMV_
        || idTechReturnCode == RETURN_CODE_SDK_BUSY_MSR
@@ -321,60 +331,64 @@ static NSString *const PAYMENT_REQUEST_NOT_FOUND = @"PAYMENT REQUEST NOT FOUND";
     return NO;
 }
 
+//- If you send invalid parameters, you will get back RETURN_CODE_ERR_INVALID_PARAMETER_, RETURN_CODE_ERR_INVALID_PARAMETER
+//RESOLUTION:  Send correct parameters and try again
+//
 - (BOOL) isTransactionInvalid: (RETURN_CODE) idTechReturnCode {
     
-    //- If you send invalid parameters, you will get back RETURN_CODE_ERR_INVALID_PARAMETER_, RETURN_CODE_ERR_INVALID_PARAMETER
-    //RESOLUTION:  Send correct parameters and try again
-    //
     if(idTechReturnCode == RETURN_CODE_ERR_INVALID_PARAMETER_
        || idTechReturnCode == RETURN_CODE_ERR_INVALID_PARAMETER) {
         return YES;
     }
+    
     return NO;
 }
 
+//- If there is a general or unknown failure, you will get back RETURN_CODE_ERR_OTHER_, RETURN_CODE_FAILED_,RETURN_CODE_ERR_OTHER, RETURN_CODE_FAILED
+   //RESOLUTION:  Execute device_cancelTranaction.  If successful cancel, try transaction again.  If unsuccessful, device_disconnectBLE, then attempt to reconnect and try again.  If you can't reconnect, report disconnected error to customer.
+   //
 - (BOOL) isGeneralFailure: (RETURN_CODE) idTechReturnCode {
     
-    //- If there is a general or unknown failure, you will get back RETURN_CODE_ERR_OTHER_, RETURN_CODE_FAILED_,RETURN_CODE_ERR_OTHER, RETURN_CODE_FAILED
-    //RESOLUTION:  Execute device_cancelTranaction.  If successful cancel, try transaction again.  If unsuccessful, device_disconnectBLE, then attempt to reconnect and try again.  If you can't reconnect, report disconnected error to customer.
-    //
     if(idTechReturnCode == RETURN_CODE_ERR_OTHER_
        || idTechReturnCode == RETURN_CODE_FAILED_
        || idTechReturnCode == RETURN_CODE_ERR_OTHER
        || idTechReturnCode == RETURN_CODE_FAILED) {
         return YES;
     }
+    
     return NO;
 }
 
+//- If the reader doesn't have terminal/aid files, you will get back a RETURN_CODE_DATA_DOES_NOT_EXIST
+   //RESOLUTION:  load your configuration files and try transaction again
+   //
 - (BOOL) isBadConfiguration: (RETURN_CODE) idTechReturnCode {
     
-    //- If the reader doesn't have terminal/aid files, you will get back a RETURN_CODE_DATA_DOES_NOT_EXIST
-    //RESOLUTION:  load your configuration files and try transaction again
-    //
     if(idTechReturnCode == RETURN_CODE_DATA_DOES_NOT_EXIST) {
         return YES;
     }
+    
     return NO;
 }
 
 - (RETURN_CODE) device_startTransaction:(id<ClearentPaymentRequest>) clearentPaymentRequest {
+    
     RETURN_CODE deviceStartRt;
     
     if([self isConfigurationRequested]) {
-        [_clearentDelegate deviceMessage:DISABLE_CONFIGURATION_TO_RUN_TRANSACTION];
+        [_clearentDelegate deviceMessage:CLEARENT_DISABLE_CONFIGURATION_TO_RUN_TRANSACTION];
         deviceStartRt = RETURN_CODE_CANNOT_START_CONTACT_EMV;
     } else if(![_clearentDelegate.idTechSharedInstance isConnected]) {
         [Teleport logInfo:@"device_startTransaction. Tried to start transaction but disconnected"];
-        [_clearentDelegate deviceMessage:DEVICE_NOT_CONNECTED];
+        [_clearentDelegate deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
         deviceStartRt = RETURN_CODE_ERR_DISCONNECT;
     } else if(![_clearentDelegate isDeviceConfigured]) {
         [Teleport logInfo:@"device_startTransaction. Tried to start transaction but reader is not configured"];
-        [_clearentDelegate deviceMessage:READER_IS_NOT_CONFIGURED];
+        [_clearentDelegate deviceMessage:CLEARENT_READER_IS_NOT_CONFIGURED];
         deviceStartRt = RETURN_CODE_EMV_FAILED;
         RETURN_CODE cancelTransactionRt = [_clearentDelegate.idTechSharedInstance device_cancelTransaction];
         if (RETURN_CODE_DO_SUCCESS == cancelTransactionRt) {
-            [_clearentDelegate deviceMessage:@"Transaction cancelled"];
+            [Teleport logInfo:@"device_startTransaction. transaction cancelled"];
         }
     } else {
 
@@ -487,6 +501,7 @@ static NSString *const PAYMENT_REQUEST_NOT_FOUND = @"PAYMENT REQUEST NOT FOUND";
 }
 
 - (ClearentPayment*) createPaymentRequest:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline  fallback:(BOOL)fallback {
+    
     ClearentPayment *paymentRequest = [[ClearentPayment alloc] init];
     [paymentRequest setAmount:amount];
     paymentRequest.amtOther = amtOther;
@@ -496,41 +511,58 @@ static NSString *const PAYMENT_REQUEST_NOT_FOUND = @"PAYMENT REQUEST NOT FOUND";
     paymentRequest.emailAddress = nil;
     paymentRequest.fallback = fallback;
     paymentRequest.forceOnline = forceOnline;
+    
     return paymentRequest;
+    
 }
 
 - (ClearentResponse*) createRequiredTransactionRequestResponse {
+    
     ClearentResponse *clearentResponse = [[ClearentResponse alloc] init];
     [Teleport logInfo:@"createRequiredTransactionRequestResponse. payment request and connection required "];
     clearentResponse.responseType = RESPONSE_FAIL;
-    clearentResponse.response = REQUIRED_TRANSACTION_REQUEST_RESPONSE;
+    clearentResponse.response = CLEARENT_REQUIRED_TRANSACTION_REQUEST_RESPONSE;
     clearentResponse.idtechReturnCode = RETURN_CODE_CANNOT_START_CONTACT_EMV;
+    
     return clearentResponse;
+    
 }
 
 - (ClearentResponse*) createConfigurationRequestResponse {
+    
     ClearentResponse *clearentResponse = [[ClearentResponse alloc] init];
+    
     [Teleport logInfo:@"createConfigurationRequestResponse. configuration is still enabled "];
     clearentResponse.responseType = RESPONSE_FAIL;
-    clearentResponse.response = DISABLE_CONFIGURATION_TO_RUN_TRANSACTION;
+    clearentResponse.response = CLEARENT_DISABLE_CONFIGURATION_TO_RUN_TRANSACTION;
     clearentResponse.idtechReturnCode = RETURN_CODE_CANNOT_START_CONTACT_EMV;
+    
     return clearentResponse;
+    
 }
 
 - (ClearentResponse*) createStillConnectedToAudioJackResponse {
+    
     ClearentResponse *clearentResponse = [[ClearentResponse alloc] init];
+    
     [Teleport logInfo:@"createStillConnectedToAudioJackResponse. Still connected to audio jack but wants to connect to bluetooth"];
     clearentResponse.responseType = RESPONSE_FAIL;
-    clearentResponse.response = UNPLUG_AUDIO_JACK_BEFORE_CONNECTING_TO_BLUETOOTH;
+    clearentResponse.response = CLEARENT_UNPLUG_AUDIO_JACK_BEFORE_CONNECTING_TO_BLUETOOTH;
+    
     return clearentResponse;
+    
 }
 
 - (ClearentResponse*) createAudioJackNotConnectedResponse {
+    
     ClearentResponse *clearentResponse = [[ClearentResponse alloc] init];
+    
     [Teleport logInfo:@"createStillConnectedToAudioJackResponse. audio jack is not connected"];
     clearentResponse.responseType = RESPONSE_FAIL;
     clearentResponse.response = @"AUDIO JACK NOT CONNECTED";
+    
     return clearentResponse;
+    
 }
 
 - (ClearentResponse*) startTransactionByReaderInterfaceMode: (id<ClearentPaymentRequest>) clearentPaymentRequest
@@ -539,8 +571,11 @@ clearentConnection:(ClearentConnection*) clearentConnection {
     [_clearentDelegate setClearentPayment:clearentPaymentRequest];
     
     [Teleport logInfo:@"startTransactionByReaderInterfaceMode. Device is connected. Start transaction"];
+    
     RETURN_CODE startTransactionReturnCode = [self startTransactionByReaderInterfaceMode:_clearentDelegate.clearentConnection.readerInterfaceMode];
+    
     ClearentResponse *clearentResponse =  [self handleStartTransactionResult: startTransactionReturnCode];
+    
     if(clearentResponse != nil && clearentResponse.responseType == RESPONSE_FAIL) {
         [_clearentDelegate deviceMessage:clearentResponse.response];
     }
@@ -548,13 +583,16 @@ clearentConnection:(ClearentConnection*) clearentConnection {
 }
 
 - (ClearentResponse*) handleStartTransactionResult: (RETURN_CODE) startTransactionReturnCode  {
+    
     ClearentResponse *clearentResponse = [[ClearentResponse alloc] init];
+    
     clearentResponse.idtechReturnCode = startTransactionReturnCode;
     
     if([self isTransactionStarted:startTransactionReturnCode]) {
         
-        clearentResponse.response = RESPONSE_TRANSACTION_STARTED;
+        clearentResponse.response = CLEARENT_RESPONSE_TRANSACTION_STARTED;
         clearentResponse.responseType = RESPONSE_SUCCESS;
+        
         [Teleport logInfo:@"handleStartTransactionErrors: transaction started"];
         
     } else if([self isPreviousTransactionInProgress:startTransactionReturnCode] || [self isGeneralFailure:startTransactionReturnCode]) {
@@ -566,16 +604,16 @@ clearentConnection:(ClearentConnection*) clearentConnection {
             clearentResponse.idtechReturnCode = startTransactionReturnCode;
             if([self isTransactionStarted:startTransactionReturnCode]) {
                 [Teleport logInfo:@"handleStartTransactionErrors: previous transaction in progress or general failure. cancel transaction succeeded. start new transaction success"];
-                clearentResponse.response = RESPONSE_TRANSACTION_STARTED;
+                clearentResponse.response = CLEARENT_RESPONSE_TRANSACTION_STARTED;
                 clearentResponse.responseType = RESPONSE_SUCCESS;
-            } else if(_clearentDelegate.clearentConnection != nil && _clearentDelegate.clearentConnection.connectionType == BLUETOOTH) {
+            } else if(_clearentDelegate.clearentConnection != nil && _clearentDelegate.clearentConnection.connectionType == CLEARENT_BLUETOOTH) {
                 [_clearentVP3300 device_disconnectBLE];
                 if(!_retriedTransactionAfterDisconnect) {
                     [Teleport logInfo:@"handleStartTransactionErrors: previous transaction in progress or general failure. retry of transaction after cancelling transaction failed. retryTransactionAfterBluetoothDisconnect"];
                     clearentResponse = [self retryTransactionAfterReconnectAttempt];
                 }
             }
-        } else if(_clearentDelegate.clearentConnection != nil && _clearentDelegate.clearentConnection.connectionType == BLUETOOTH) {
+        } else if(_clearentDelegate.clearentConnection != nil && _clearentDelegate.clearentConnection.connectionType == CLEARENT_BLUETOOTH) {
             [_clearentVP3300 device_disconnectBLE];
             if(!_retriedTransactionAfterDisconnect) {
                 [Teleport logInfo:@"handleStartTransactionErrors: previous transaction in progress or general failure. cancel transaction failed. retryTransactionAfterBluetoothDisconnect"];
@@ -592,19 +630,19 @@ clearentConnection:(ClearentConnection*) clearentConnection {
         
     } else if([self isConnectionError:startTransactionReturnCode]) {
         
-        if(_clearentDelegate.clearentConnection != nil && _clearentDelegate.clearentConnection.connectionType == BLUETOOTH) {
+        if(_clearentDelegate.clearentConnection != nil && _clearentDelegate.clearentConnection.connectionType == CLEARENT_BLUETOOTH) {
             [_clearentVP3300 device_disconnectBLE];
             [Teleport logInfo:@"handleStartTransactionErrors: isConnectionError. retryTransactionAfterBluetoothDisconnect"];
             clearentResponse = [self retryTransactionAfterReconnectAttempt];
         } else {
-            clearentResponse.response = DEVICE_NOT_CONNECTED;
+            clearentResponse.response = CLEARENT_DEVICE_NOT_CONNECTED;
             clearentResponse.responseType = RESPONSE_FAIL;
             clearentResponse.idtechReturnCode = startTransactionReturnCode;
         }
         
     } else if([self isTransactionInvalid:startTransactionReturnCode]) {
         
-        clearentResponse.response = RESPONSE_INVALID_TRANSACTION;
+        clearentResponse.response = CLEARENT_RESPONSE_INVALID_TRANSACTION;
         clearentResponse.responseType = RESPONSE_FAIL;
         
     }
@@ -615,16 +653,16 @@ clearentConnection:(ClearentConnection*) clearentConnection {
         
         NSString *errorResponse = [_clearentDelegate.idTechSharedInstance device_getResponseCodeString:startTransactionReturnCode];
         
-        if(errorResponse != nil) {
+        if(errorResponse != nil && ![errorResponse isEqualToString:@""]) {
             
-            NSString *errorMessage = [NSString stringWithFormat:@"%@[%@%@", RESPONSE_TRANSACTION_FAILED, errorResponse , @"]"];
+            NSString *errorMessage = [NSString stringWithFormat:@"%@[%@%@", CLEARENT_RESPONSE_TRANSACTION_FAILED, errorResponse , @"]"];
             [Teleport logInfo:errorMessage];
             clearentResponse.response = errorMessage;
             
         } else {
             
             clearentResponse.responseType = RESPONSE_FAIL;
-            clearentResponse.response = RESPONSE_TRANSACTION_FAILED;
+            clearentResponse.response = CLEARENT_RESPONSE_TRANSACTION_FAILED;
             
         }
         
@@ -655,10 +693,10 @@ clearentConnection:(ClearentConnection*) clearentConnection {
     ClearentResponse *clearentResponse = [[ClearentResponse alloc] init];
     clearentResponse.responseType = RESPONSE_SUCCESS;
     
-    if(clearentConnection.connectionType == BLUETOOTH) {
-        clearentResponse.response = USER_ACTION_PRESS_BUTTON_MESSAGE;
+    if(clearentConnection.connectionType == CLEARENT_BLUETOOTH) {
+        clearentResponse.response = CLEARENT_USER_ACTION_PRESS_BUTTON_MESSAGE;
     } else  {
-        clearentResponse.response = PLUGIN_AUDIO_JACK;
+        clearentResponse.response = CLEARENT_PLUGIN_AUDIO_JACK;
     }
     
     [_clearentDelegate setRunStoredPaymentAfterConnecting:TRUE];
@@ -688,10 +726,14 @@ clearentConnection:(ClearentConnection*) clearentConnection {
 
 - (void) promptUserToConnectSpecificReader:(ClearentConnection*) clearentConnection {
     
-    if(clearentConnection.connectionType == BLUETOOTH) {
-        [_clearentDelegate deviceMessage:USER_ACTION_PRESS_BUTTON_MESSAGE];
-    } else if(clearentConnection.connectionType == AUDIO_JACK && ![_clearentVP3300 device_isAudioReaderConnected]) {
-        [_clearentDelegate deviceMessage:PLUGIN_AUDIO_JACK];
+    if(clearentConnection.connectionType == CLEARENT_BLUETOOTH) {
+        if(clearentConnection.searchBluetooth) {
+            [_clearentDelegate deviceMessage:CLEARENT_BLUETOOTH_SEARCH];
+        } else {
+            [_clearentDelegate deviceMessage:CLEARENT_USER_ACTION_PRESS_BUTTON_MESSAGE];
+        }
+    } else if(clearentConnection.connectionType == CLEARENT_AUDIO_JACK && ![_clearentVP3300 device_isAudioReaderConnected]) {
+        [_clearentDelegate deviceMessage:CLEARENT_PLUGIN_AUDIO_JACK];
     }
     
 }
@@ -708,7 +750,7 @@ clearentConnection:(ClearentConnection*) clearentConnection {
 
 - (void) updateConfiguration:(ClearentConnection*) clearentConnection {
     
-    if(clearentConnection.readerInterfaceMode == READER_INTERFACE_2_IN_1) {
+    if(clearentConnection.readerInterfaceMode == CLEARENT_READER_INTERFACE_2_IN_1) {
         [self setContactless:FALSE];
     } else {
         [self setContactless:TRUE];

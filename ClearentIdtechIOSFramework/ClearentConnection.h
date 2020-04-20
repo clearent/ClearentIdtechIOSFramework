@@ -8,21 +8,21 @@
 
 #import <Foundation/Foundation.h>
 
-typedef NS_ENUM(NSUInteger, CONNECTION_TYPE) {
-    BLUETOOTH = 0,
-    AUDIO_JACK = 1
+typedef NS_ENUM(NSUInteger, CLEARENT_CONNECTION_TYPE) {
+    CLEARENT_BLUETOOTH = 0,
+    CLEARENT_AUDIO_JACK = 1
 };
 
 typedef enum {
-    BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT = 0,
-    BLUETOOTH_ADVERTISING_INTERVAL_319_MS = 1,
-    BLUETOOTH_ADVERTISING_INTERVAL_760_MS = 2,
-    BLUETOOTH_ADVERTISING_INTERVAL_1280_MS = 3
-} BLUETOOTH_ADVERTISING_INTERVAL;
+    CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT = 0,
+    CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_319_MS = 1,
+    CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_760_MS = 2,
+    CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_1280_MS = 3
+} CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL;
 
-typedef NS_ENUM(NSUInteger, READER_INTERFACE_MODE) {
-    READER_INTERFACE_3_IN_1 = 0,
-    READER_INTERFACE_2_IN_1 = 1
+typedef NS_ENUM(NSUInteger, CLEARENT_READER_INTERFACE_MODE) {
+    CLEARENT_READER_INTERFACE_3_IN_1 = 0,
+    CLEARENT_READER_INTERFACE_2_IN_1 = 1
 };
 
 @protocol ClearentConnection <NSObject>
@@ -33,11 +33,11 @@ typedef NS_ENUM(NSUInteger, READER_INTERFACE_MODE) {
 - (NSString*) bluetoothDeviceId;
 - (BOOL) connectToFirstBluetoothFound;
 - (BOOL) searchBluetooth;
-- (CONNECTION_TYPE*) connectionType;
-- (READER_INTERFACE_MODE*) readerInterfaceMode;
+- (CLEARENT_CONNECTION_TYPE*) connectionType;
+- (CLEARENT_READER_INTERFACE_MODE*) readerInterfaceMode;
 - (NSString*) createLogMessage;
 - (BOOL) isDeviceKnown;
-- (BLUETOOTH_ADVERTISING_INTERVAL*) bluetoothAdvertisingInterval;
+- (CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL*) bluetoothAdvertisingInterval;
 
 - (instancetype) initBluetooth;
 - (instancetype) initAudioJack;
@@ -58,9 +58,9 @@ typedef NS_ENUM(NSUInteger, READER_INTERFACE_MODE) {
 @property (nonatomic) NSString *bluetoothDeviceId;
 @property (nonatomic) BOOL connectToFirstBluetoothFound;
 @property (nonatomic) BOOL searchBluetooth;
-@property (nonatomic) CONNECTION_TYPE connectionType;
-@property (nonatomic) READER_INTERFACE_MODE readerInterfaceMode;
-@property (nonatomic) BLUETOOTH_ADVERTISING_INTERVAL bluetoothAdvertisingInterval;
+@property (nonatomic) CLEARENT_CONNECTION_TYPE connectionType;
+@property (nonatomic) CLEARENT_READER_INTERFACE_MODE readerInterfaceMode;
+@property (nonatomic) CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL bluetoothAdvertisingInterval;
 
 - (NSString*) createLogMessage;
 - (BOOL) isDeviceKnown;
