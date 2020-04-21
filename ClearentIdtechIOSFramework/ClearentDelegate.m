@@ -56,6 +56,9 @@ static NSString *const CONTACTLESS_ERROR_CODE_CARD_MISSING_CA_PUBLIC_KEY = @"50"
 static NSString *const CONTACTLESS_ERROR_CODE_CARD_FAILED_TO_RECOVER_ISSUER_PUBLIC_KEY = @"51";
 static NSString *const CONTACTLESS_ERROR_CODE_PROCESSING_RESTRICTIONS_FAILED = @"55";
 
+static NSString *const READER_CONFIGURED_FLAG_LETTER_P_IN_HEX = @"50";
+static NSString *const MERCHANT_NAME_AND_LOCATION_HIJACKED_AS_PRECONFIGURED_FLAG  = @"9F4E";
+
 /// <#Description#>
 @implementation ClearentDelegate
 
@@ -1113,6 +1116,7 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     NSData* ff8106Data = [emvData.unencryptedTags objectForKey:MASTERCARD_GROUP_FF8106_TAG];
     [self addFromFF81XX: clearentTransactionTokenRequest ff81XX:ff8106Data tags:outgoingTags];
 
+    [self recordConfiguredReaderFlag: [outgoingTags objectForKey:MERCHANT_NAME_AND_LOCATION_HIJACKED_AS_PRECONFIGURED_FLAG]];
     [self addRequiredTags: outgoingTags];
     [self addApplicationPreferredName:clearentTransactionTokenRequest tags:outgoingTags];
 
@@ -1139,9 +1143,11 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     }
     
     if(outgoingTags != nil) {
+    
         tagsAsNSData = [IDTUtility DICTotTLV:outgoingTags];
         tlvInHex = [IDTUtility dataToHexString:tagsAsNSData];
         clearentTransactionTokenRequest.tlv = tlvInHex.uppercaseString;
+        
     }
 
     clearentTransactionTokenRequest.emv = true;
@@ -1150,6 +1156,28 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     clearentTransactionTokenRequest.firmwareVersion = [self firmwareVersion];
 
     return clearentTransactionTokenRequest;
+}
+
+- (void) recordConfiguredReaderFlag: (NSData*) tagData  {
+    
+    if(tagData != nil) {
+        
+        NSString *merchantNameAndLocationHijackedAsConfiguredFlag = [IDTUtility dataToHexString:tagData];
+        
+        if(merchantNameAndLocationHijackedAsConfiguredFlag != nil && [merchantNameAndLocationHijackedAsConfiguredFlag isEqualToString:READER_CONFIGURED_FLAG_LETTER_P_IN_HEX]) {
+            [Teleport logInfo:@"🤩 🤩 🤩 🤩 🤩 IDTECH READER IS PRECONFIGURED 🤩 🤩 🤩 🤩 🤩"];
+        } else {
+            
+            if(merchantNameAndLocationHijackedAsConfiguredFlag != nil) {
+                [Teleport logInfo:[NSString stringWithFormat:@"PRECONFIG CHECK 9f4e value is: %@", merchantNameAndLocationHijackedAsConfiguredFlag]];
+            } else {
+                [Teleport logInfo:[NSString stringWithFormat:@"PRECONFIG CHECK No 9F4E tag found"]];
+            }
+            
+        }
+        
+    }
+    
 }
 
 - (NSMutableDictionary*) createDefaultOutgoingTags: (IDTEMVData*)emvData {
@@ -1161,7 +1189,7 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         outgoingTags = [emvData.unencryptedTags mutableCopy];
     } else {
         NSDictionary *transactionResultDictionary;
-        NSData *tsysTags = [IDTUtility hexToData:@"508E82959A9B9C5F2A9F029F039F1A9F219F269F279F339F349F359F369F379F394F845F2D5F349F069F129F099F405F369F1E9F105657FF8106FF8105FFEE14FFEE06"];
+        NSData *tsysTags = [IDTUtility hexToData:@"508E82959A9B9C5F2A9F029F039F1A9F219F269F279F339F349F359F369F379F399F4E4F845F2D5F349F069F129F099F405F369F1E9F105657FF8106FF8105FFEE14FFEE06"];
         RETURN_CODE emvRetrieveTransactionResultRt = [_idTechSharedInstance emv_retrieveTransactionResult:tsysTags retrievedTags:&transactionResultDictionary];
         if(RETURN_CODE_DO_SUCCESS == emvRetrieveTransactionResultRt) {
             outgoingTags = [transactionResultDictionary objectForKey:@"tags"];
@@ -1330,6 +1358,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     [outgoingTags removeObjectForKey:@"9F12"];
     [outgoingTags removeObjectForKey:@"FFEE1F"];
     [outgoingTags removeObjectForKey:@"DF8001"];
+    [outgoingTags removeObjectForKey:@"9F4E"];
 
     NSString *dataDF8129 = [IDTUtility dataToHexString:[outgoingTags objectForKey:@"DF8129"]];
     if(dataDF8129 != nil) {

@@ -234,7 +234,9 @@ NSTimer *bluetoothSearchDisableTimer;
         return;
     }
     
-    [self sendBluetoothFeedback:CLEARENT_BLUETOOTH_SEARCH];
+    if(clearentConnection.searchBluetooth) {
+        [self sendBluetoothFeedback:CLEARENT_BLUETOOTH_SEARCH];
+    };
      
     [_bluetoothDevices removeAllObjects];
    

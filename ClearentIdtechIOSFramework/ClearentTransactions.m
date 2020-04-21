@@ -241,7 +241,7 @@
 
 - (RETURN_CODE) device_startTransaction:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline  fallback:(BOOL)fallback {
     
-    if([self isConfigurationRequested]) {
+    if ([self isConfigurationRequested]) {
         
         [_clearentDelegate deviceMessage:CLEARENT_DISABLE_CONFIGURATION_TO_RUN_TRANSACTION];
         
@@ -380,24 +380,41 @@
         
         [self remoteLogTransactionRequest: deviceStartRt];
     }
+    
     return deviceStartRt;
+    
 }
 
 - (void) remoteLogTransactionRequest: (RETURN_CODE) idtechReturnCode {
+    
     if([self isTransactionStarted:idtechReturnCode]) {
+        
         [Teleport logInfo:@"TRANSACTION STARTED"];
+        
     } else if([self isTransactionInvalid:idtechReturnCode]) {
+        
         [Teleport logInfo:@"TRANSACTION FAILED. bad parameters"];
+        
     } else if(RETURN_CODE_MONO_AUDIO_ == idtechReturnCode) {
+        
         [Teleport logInfo:@"TRANSACTION FAILED. Possible unrecoverable error. Use reader reset button"];
+        
     } else if([self isPreviousTransactionInProgress:idtechReturnCode]) {
-             [Teleport logInfo:@"TRANSACTION FAILED. Existing transaction."];
+        
+        [Teleport logInfo:@"TRANSACTION FAILED. Existing transaction."];
+        
     } else if([self isDisconnected:idtechReturnCode]) {
+        
         [Teleport logInfo:@"TRANSACTION FAILED. Disconnected"];
+        
     } else if([self isConnectionError:idtechReturnCode]) {
+        
         [Teleport logInfo:@"TRANSACTION FAILED. possible state - If the reader if OFF, but SDK thinks it still is connected."];
+        
     } else {
+        
         NSString *errorResponse = [_clearentDelegate.idTechSharedInstance device_getResponseCodeString:idtechReturnCode];
+        
         [Teleport logInfo:[NSString stringWithFormat:@"remoteLogTransactionRequest: TRANSACTION FAILED. Error: ", errorResponse]];
         
     }
