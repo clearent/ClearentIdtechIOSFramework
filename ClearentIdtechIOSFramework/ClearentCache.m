@@ -46,7 +46,7 @@ static NSString *const CURRENT_DEVICESERIALNUMBER = @"CurrentDeviceSerialNumber"
     [defaults setObject:readerContactlessConfiguredFlag forKey:NSUSERDEFAULT_CONTACTLESSCONFIGURED];
     [Teleport logInfo:@"Updated the contactless configuration flag cache"];
 }
-//todo scenario...contactless is the only thing configured but the device was switched
+
 + (void) updateConfigurationCache:(NSString *) deviceSerialNumber readerConfiguredFlag:(NSString *) readerConfiguredFlag {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:deviceSerialNumber forKey:NSUSERDEFAULT_DEVICESERIALNUMBER];

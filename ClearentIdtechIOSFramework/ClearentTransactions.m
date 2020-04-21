@@ -70,13 +70,7 @@
         [Teleport logInfo:@"emv_startTransaction. Tried to start transaction but disconnected"];
         [_clearentDelegate deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
         emvStartRt = RETURN_CODE_ERR_DISCONNECT;
-        
-    } else if(![_clearentDelegate isDeviceConfigured]) {
-        
-        [Teleport logInfo:@"emv_startTransaction. Tried to start transaction but reader is not configured"];
-        [_clearentDelegate deviceMessage:CLEARENT_READER_IS_NOT_CONFIGURED];
-        emvStartRt = RETURN_CODE_EMV_FAILED;
-        
+    
     } else {
         
         [_clearentDelegate.idTechSharedInstance emv_disableAutoAuthenticateTransaction:FALSE];
@@ -109,13 +103,7 @@
         [Teleport logInfo:@"ctls_startTransaction. Tried to start transaction but disconnected"];
         [_clearentDelegate deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
         ctlsStartRt = RETURN_CODE_ERR_DISCONNECT;
-        
-    } else if(![_clearentDelegate isDeviceConfigured]) {
-        
-        [Teleport logInfo:@"ctls_startTransaction. Tried to start transaction but reader is not configured"];
-        [_clearentDelegate deviceMessage:CLEARENT_READER_IS_NOT_CONFIGURED];
-        ctlsStartRt = RETURN_CODE_EMV_FAILED;
-        
+    
     } else {
         
          [Teleport logInfo:@"ctls_startTransaction with vars TRANSACTION_STARTED"];
@@ -155,14 +143,6 @@
         
         ctlsStartRt = RETURN_CODE_ERR_DISCONNECT;
         
-    } else if(![_clearentDelegate isDeviceConfigured]) {
-        
-        [Teleport logInfo:@"ctls_startTransaction no vars. Tried to start transaction but reader is not configured"];
-        
-        [_clearentDelegate deviceMessage:CLEARENT_READER_IS_NOT_CONFIGURED];
-        
-        ctlsStartRt = RETURN_CODE_EMV_FAILED;
-        
     } else {
         
         [Teleport logInfo:@"ctls_startTransaction no vars TRANSACTION_STARTED"];
@@ -179,21 +159,19 @@
     
     RETURN_CODE emvStartRt;
     
-    if(![_clearentDelegate.idTechSharedInstance isConnected]) {
+    if([self isConfigurationRequested]) {
+        
+        [_clearentDelegate deviceMessage:CLEARENT_DISABLE_CONFIGURATION_TO_RUN_TRANSACTION];
+        
+        emvStartRt = RETURN_CODE_CANNOT_START_CONTACT_EMV;
+        
+    } else if(![_clearentDelegate.idTechSharedInstance isConnected]) {
         
         [Teleport logInfo:@"emv_startTransaction. Tried to start transaction but disconnected"];
         
         [_clearentDelegate deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
         
         emvStartRt = RETURN_CODE_ERR_DISCONNECT;
-        
-    } else if(![_clearentDelegate isDeviceConfigured]) {
-        
-        [Teleport logInfo:@"emv_startTransaction. Tried to start transaction but reader is not configured"];
-        
-        [_clearentDelegate deviceMessage:CLEARENT_READER_IS_NOT_CONFIGURED];
-        
-        emvStartRt = RETURN_CODE_EMV_FAILED;
         
     } else {
         
@@ -376,20 +354,19 @@
     RETURN_CODE deviceStartRt;
     
     if([self isConfigurationRequested]) {
+        
         [_clearentDelegate deviceMessage:CLEARENT_DISABLE_CONFIGURATION_TO_RUN_TRANSACTION];
+        
         deviceStartRt = RETURN_CODE_CANNOT_START_CONTACT_EMV;
+        
     } else if(![_clearentDelegate.idTechSharedInstance isConnected]) {
+        
         [Teleport logInfo:@"device_startTransaction. Tried to start transaction but disconnected"];
+        
         [_clearentDelegate deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
+        
         deviceStartRt = RETURN_CODE_ERR_DISCONNECT;
-    } else if(![_clearentDelegate isDeviceConfigured]) {
-        [Teleport logInfo:@"device_startTransaction. Tried to start transaction but reader is not configured"];
-        [_clearentDelegate deviceMessage:CLEARENT_READER_IS_NOT_CONFIGURED];
-        deviceStartRt = RETURN_CODE_EMV_FAILED;
-        RETURN_CODE cancelTransactionRt = [_clearentDelegate.idTechSharedInstance device_cancelTransaction];
-        if (RETURN_CODE_DO_SUCCESS == cancelTransactionRt) {
-            [Teleport logInfo:@"device_startTransaction. transaction cancelled"];
-        }
+        
     } else {
 
         [NSThread sleepForTimeInterval:0.5f];
