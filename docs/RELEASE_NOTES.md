@@ -4,7 +4,7 @@
 
 2.0.0-beta - We've added a new method (startTransaction) allowing you to pass in connection properties at transaction time so the framework can take control of bluetooth and audio jack connectivity. We've also simplified the integration by deprecating methods that are not used and consolidating methods that did the same thing (lcdDisplay and deviceMessage).
 
-[Upgrade guide](docs/Clearent_iOS_IDTech_Framework_Version2.doc)
+[Upgrade guide](Clearent_iOS_IDTech_Framework_Version2.doc)
 
 1.1.12-beta
 
