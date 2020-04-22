@@ -204,16 +204,12 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 - (void) plugStatusChange: (BOOL) deviceInserted {
     
     if (deviceInserted) {
-        [self deviceMessage:CLEARENT_AUDIO_JACK_ATTACHED];
-        
         if ([[AVAudioSession sharedInstance] outputVolume] < 1.0) {
             [self deviceMessage:CLEARENT_AUDIO_JACK_LOW_VOLUME];
         } else{
             [self deviceMessage:CLEARENT_CONNECTING_AUDIO_JACK];
             [_idTechSharedInstance device_connectToAudioReader];
         }
-    } else {
-        [self deviceMessage:CLEARENT_AUDIO_JACK_REMOVED];
     }
     
     [self.publicDelegate plugStatusChange:deviceInserted];
@@ -243,6 +239,10 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     }
     
     [self setReaderProfile];
+    
+    //TODO IDTech ticket 20356
+    //[_clearentDeviceConnector adjustBluetoothAdvertisingInterval];
+    
     [self.publicDelegate deviceConnected];
     
     if(!self.autoConfiguration && !self.contactlessAutoConfiguration) {

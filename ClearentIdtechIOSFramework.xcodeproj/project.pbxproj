@@ -145,6 +145,7 @@
 		4B074F4D24474FD100868E21 /* TestPublicDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestPublicDelegate.m; sourceTree = "<group>"; };
 		4B074F4F244DBAB900868E21 /* ClearentTransactions_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentTransactions_Tests.m; sourceTree = "<group>"; };
 		4B074F51244DFCA000868E21 /* ClearentFeedback_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentFeedback_Tests.m; sourceTree = "<group>"; };
+		4B074F57244F835800868E21 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/System/Library/Frameworks/QuartzCore.framework; sourceTree = DEVELOPER_DIR; };
 		4B32C0892432540D00CCF9B9 /* ClearentResponse.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentResponse.h; sourceTree = "<group>"; };
 		4B32C08A2432560600CCF9B9 /* ClearentResponse.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentResponse.m; sourceTree = "<group>"; };
 		4B32C08C2432584F00CCF9B9 /* ClearentConnection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentConnection.h; sourceTree = "<group>"; };
@@ -462,6 +463,7 @@
 		E765050E1FFC30F000B345F6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4B074F57244F835800868E21 /* QuartzCore.framework */,
 				E733E2412253C7730050CB31 /* CocoaLumberjack.framework */,
 				E733E2442253CF090050CB31 /* CocoaLumberjack.framework */,
 				E728DB4420E685D7004C01E7 /* OCMock.framework */,
@@ -982,6 +984,7 @@
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1033,6 +1036,7 @@
 					"$(SRCROOT)/test/libraries",
 					"$(PROJECT_DIR)/test/libraries",
 				);
+				GCC_OPTIMIZATION_LEVEL = s;
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)",
 					"$(PROJECT_DIR)/test",

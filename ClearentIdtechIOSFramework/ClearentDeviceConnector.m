@@ -92,17 +92,21 @@ NSTimer *bluetoothSearchDisableTimer;
 - (void) communicateConnectionState:(ClearentConnection*) clearentConnection {
     
     if(clearentConnection.connectionType == CLEARENT_BLUETOOTH) {
-        NSString *bleFriendlyName = [_clearentVP3300 device_getBLEFriendlyName];
-        if(bleFriendlyName != nil) {
-            NSString *logMessage = [NSString stringWithFormat:@"CONNECTED : %@", bleFriendlyName];
-            [self sendBluetoothFeedback:logMessage];
-        } else {
-            [self sendBluetoothFeedback:@"CONNECTED"];
-        }
+        [self communicateBluetoothState];
     } else {
         [self communicateAudioJackState];
     }
     
+}
+
+- (void) communicateBluetoothState {
+    NSString *bleFriendlyName = [_clearentVP3300 device_getBLEFriendlyName];
+    if(bleFriendlyName != nil && ![bleFriendlyName isEqualToString:@""]) {
+        NSString *logMessage = [NSString stringWithFormat:@"CONNECTED : %@", bleFriendlyName];
+        [self sendBluetoothFeedback:logMessage];
+    } else {
+        [self sendBluetoothFeedback:@"CONNECTED"];
+    }
 }
 
 - (void) communicateAudioJackState {
@@ -141,73 +145,88 @@ NSTimer *bluetoothSearchDisableTimer;
     }
 }
 
-//TODO does this belong in the connector ?
-//- (void) adjustBluetoothAdvertisingInterval {
-//
-//    if(_clearentDelegate.clearentConnection != nil && [_clearentVP3300 isConnected]) {
-//
-//        NSString *firmwareVersion = [_clearentDelegate getFirmwareVersion];
-//
-//        if(firmwareVersion != nil
-//           && ([firmwareVersion isEqualToString:INVALID_FIRMWARE_VERSION] ||
-//               [firmwareVersion isEqualToString:@"VP3300 Bluetooth NEO v1.01.151"] ||
-//               [firmwareVersion isEqualToString:@"VP3300 Bluetooth NEO v1.01.090"]
-//                 || [firmwareVersion isEqualToString:@"VP3300 Audio Jack NEO v1.01.055"]
-//                 || [firmwareVersion isEqualToString:@"VP3300 Audio Jack NEO v1.01.064"])) {
-//                  [Teleport logInfo:[NSString stringWithFormat:@"skipping adjustBluetoothAdvertisingInterval for firmware version - %@", firmwareVersion]];
-//            return;
-//        } else {
-//            [Teleport logInfo:[NSString stringWithFormat:@"adjustBluetoothAdvertisingInterval: firmware version - %@", firmwareVersion]];
-//        }
-//
-//        NSString *advertisingIntervalHex;
-//
-//        advertisingIntervalHex = [self getAdvertisingIntervalInHex:_clearentDelegate.clearentConnection.bluetoothAdvertisingInterval];
-//
-//        NSString *updateAdvertisingIntervalStr = [NSString stringWithFormat:@"DFED6C02%@", advertisingIntervalHex];
-//
-//        [Teleport logInfo:[NSString stringWithFormat:@"adjustBluetoothAdvertisingInterval update %@", updateAdvertisingIntervalStr]];
-//
-//        NSData *configData = [IDTUtility hexToData:updateAdvertisingIntervalStr];
-//        RETURN_CODE ctls_setTerminalDataRt = [[IDT_VP3300 sharedController] ctls_setTerminalData:configData];
-//
-//        if (RETURN_CODE_DO_SUCCESS == ctls_setTerminalDataRt) {
-//                [Teleport logInfo:[NSString stringWithFormat:@"adjustBluetoothAdvertisingInterval updated"]];
-//        } else {
-//            NSString *errorResponse = [[IDT_VP3300 sharedController] device_getResponseCodeString:ctls_setTerminalDataRt];
-//            [_clearentDelegate deviceMessage:errorResponse];
-//            [Teleport logInfo:[NSString stringWithFormat:@"adjustBluetoothAdvertisingInterval failed set advertising interval. error %@", errorResponse]];
-//        }
-//    } else {
-//        [Teleport logInfo:[NSString stringWithFormat:@"reader is not connected or no connection props. skip updating advertising interval"]];
-//    }
-//
-//}
+//if this works we need to use NSUSErDefaults to save a flag so it doesnt adjust every time.
+- (void) adjustBluetoothAdvertisingInterval {
+    
+    if(_clearentDelegate.clearentConnection != nil && [_clearentVP3300 isConnected]) {
 
-//- (NSString*) getAdvertisingIntervalInHex: (BLUETOOTH_ADVERTISING_INTERVAL) bluetoothAdvertisingInterval {
-//    
-//    NSString *advIntHex;
-//
-//    switch(bluetoothAdvertisingInterval){
-//        case BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT:
-//            advIntHex = @"02F8";
-//             break;
-//        case BLUETOOTH_ADVERTISING_INTERVAL_319_MS:
-//            advIntHex = @"013F";
-//             break;
-//        case BLUETOOTH_ADVERTISING_INTERVAL_760_MS:
-//            advIntHex = @"02F8";
-//             break;
-//        case BLUETOOTH_ADVERTISING_INTERVAL_1280_MS:
-//            advIntHex = @"0500";
-//        break;
-//    default:
-//            advIntHex = @"013E";
-//        break;
-//    }
-//
-//    return advIntHex;
-//}
+        NSString *firmwareVersion = [_clearentDelegate getFirmwareVersion];
+
+        if(firmwareVersion != nil
+           && ([firmwareVersion isEqualToString:CLEARENT_INVALID_FIRMWARE_VERSION] ||
+               [firmwareVersion isEqualToString:@"VP3300 Bluetooth NEO v1.01.151"] ||
+               [firmwareVersion isEqualToString:@"VP3300 Bluetooth NEO v1.01.090"]
+                 || [firmwareVersion isEqualToString:@"VP3300 Audio Jack NEO v1.01.055"]
+                 || [firmwareVersion isEqualToString:@"VP3300 Audio Jack NEO v1.01.064"])) {
+                  [Teleport logInfo:[NSString stringWithFormat:@"skipping adjustBluetoothAdvertisingInterval for firmware version - %@", firmwareVersion]];
+            return;
+        } else {
+            [Teleport logInfo:[NSString stringWithFormat:@"adjustBluetoothAdvertisingInterval: firmware version - %@", firmwareVersion]];
+        }
+
+        //NSString *advertisingIntervalHex = [self getAdvertisingIntervalInHex:_clearentDelegate.clearentConnection.bluetoothAdvertisingInterval];
+        NSString *advertisingIntervalHex = @"";
+        NSString *updateAdvertisingIntervalStr = [NSString stringWithFormat:@"DFED6C02%@", advertisingIntervalHex];
+
+        [Teleport logInfo:[NSString stringWithFormat:@"adjustBluetoothAdvertisingInterval update %@", updateAdvertisingIntervalStr]];
+
+        NSData *configData = [IDTUtility hexToData:updateAdvertisingIntervalStr];
+        
+        bool adjusted = false;
+        
+        for(int i = 0; i < 5; i++ ) {
+            
+            if(!adjusted) {
+                
+                [NSThread sleepForTimeInterval:0.5f];
+                
+                RETURN_CODE ctls_setTerminalDataRt = [[IDT_VP3300 sharedController] ctls_setTerminalData:configData];
+
+                if (RETURN_CODE_DO_SUCCESS == ctls_setTerminalDataRt) {
+                    adjusted = true;
+                    [Teleport logInfo:[NSString stringWithFormat:@"adjustBluetoothAdvertisingInterval updated"]];
+                    break;
+                } else {
+                    NSString *errorResponse = [[IDT_VP3300 sharedController] device_getResponseCodeString:ctls_setTerminalDataRt];
+                    [_clearentDelegate deviceMessage:errorResponse];
+                    [Teleport logInfo:[NSString stringWithFormat:@"adjustBluetoothAdvertisingInterval failed set advertising interval. error %@", errorResponse]];
+                }
+            }
+        }
+       
+    } else {
+        [Teleport logInfo:[NSString stringWithFormat:@"reader is not connected or no connection props. skip updating advertising interval"]];
+    }
+    
+}
+
+- (NSString*) getAdvertisingIntervalInHex: (CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL) bluetoothAdvertisingInterval {
+    
+    NSString *advIntHex;
+
+    switch(bluetoothAdvertisingInterval){
+        case CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_DEFAULT:
+            advIntHex = @"003C";
+             break;
+        case CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_60_MS:
+            advIntHex = @"003C";
+             break;
+        case CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_319_MS:
+            advIntHex = @"013F";
+             break;
+        case CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_760_MS:
+            advIntHex = @"02F8";
+             break;
+        case CLEARENT_BLUETOOTH_ADVERTISING_INTERVAL_1280_MS:
+            advIntHex = @"0500";
+        break;
+    default:
+            advIntHex = @"003C";
+        break;
+    }
+
+    return advIntHex;
+}
 
 
 - (BOOL) isNewConnectionRequest:(ClearentConnection*) currentConnection connectionRequest:(ClearentConnection*) connectionRequest {
@@ -226,11 +245,8 @@ NSTimer *bluetoothSearchDisableTimer;
         return;
     }
     
-    if([_clearentVP3300 isConnected] && !clearentConnection.searchBluetooth) {
-        NSString *logMessage = [NSString stringWithFormat:@"CONNECTED : %@", [_clearentVP3300 device_getBLEFriendlyName]];
-        if(clearentConnection.connectionType == CLEARENT_BLUETOOTH) {
-            [self sendBluetoothFeedback:logMessage];
-        }
+    if([_clearentVP3300 isConnected] && !clearentConnection.searchBluetooth && clearentConnection.connectionType == CLEARENT_BLUETOOTH) {
+        [self communicateBluetoothState];
         return;
     }
     
