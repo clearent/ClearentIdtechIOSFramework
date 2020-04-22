@@ -469,17 +469,17 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     }
 
     if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_COLLISION_ERROR]) {
-        [self.publicDelegate deviceMessage:CLEARENT_TAP_PRESENT_ONE_CARD_ONLY];
+        [self deviceMessage:CLEARENT_TAP_PRESENT_ONE_CARD_ONLY];
         return;
     }
 
     NSString *errorMessage;
     if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_CARD_BLOCKED]) {
-        [self.publicDelegate deviceMessage:CLEARENT_CARD_BLOCKED];
+        [self deviceMessage:CLEARENT_CARD_BLOCKED];
     } else if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_CARD_EXPIRED]) {
-        [self.publicDelegate deviceMessage:CLEARENT_CARD_EXPIRED];
+        [self deviceMessage:CLEARENT_CARD_EXPIRED];
     } else if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_CARD_UNSUPPORTED]) {
-        [self.publicDelegate deviceMessage:CLEARENT_CARD_UNSUPPORTED];
+        [self deviceMessage:CLEARENT_CARD_UNSUPPORTED];
     } else if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_CARD_DID_NOT_RESPOND]) {
         [self retryContactless];
         return;
@@ -501,7 +501,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     } else if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_GO_TO_MAGSTRIPE_INTERFACE]) {
         [Teleport logError:@"handleContactlessError: go to magstripe interface"];
     } else if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_AMOUNT_OVER_MAXIMUM_LIMIT]) {
-        [self.publicDelegate deviceMessage:CLEARENT_TAP_OVER_MAX_AMOUNT];
+        [self deviceMessage:CLEARENT_TAP_OVER_MAX_AMOUNT];
     } else {
         errorMessage = @"";
     }
@@ -515,7 +515,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     [NSThread sleepForTimeInterval:0.3f];
     
     if(![_idTechSharedInstance isConnected]) {
-        [self.publicDelegate deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
+        [self deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
         return;
     }
 
@@ -530,18 +530,18 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     RETURN_CODE emvStartRt =  [_idTechSharedInstance emv_startTransaction:self.clearentPayment.amount amtOther:self.clearentPayment.amtOther type:self.clearentPayment.type timeout:self.clearentPayment.timeout tags:self.clearentPayment.tags forceOnline:self.clearentPayment.forceOnline fallback:self.clearentPayment.fallback];
     
     if(RETURN_CODE_OK_NEXT_COMMAND == emvStartRt || RETURN_CODE_DO_SUCCESS == emvStartRt) {
-        [self.publicDelegate deviceMessage:fullErrorMessage];
+        [self deviceMessage:fullErrorMessage];
     } else {
         NSString *logErrorMessage =[NSString stringWithFormat:@"startContactlessFallbackToContact %@%@",[_idTechSharedInstance device_getResponseCodeString:emvStartRt], fullErrorMessage];
         [Teleport logInfo:logErrorMessage];
-        [self.publicDelegate deviceMessage:CLEARENT_TAP_FAILED_INSERT_CARD_FIRST];
+        [self deviceMessage:CLEARENT_TAP_FAILED_INSERT_CARD_FIRST];
     }
 }
 
 -(void) retryContactless {
     [NSThread sleepForTimeInterval:0.3f];
     if(![_idTechSharedInstance isConnected]) {
-        [self.publicDelegate deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
+        [self deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
         return;
     }
 
@@ -551,16 +551,16 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     emvStartRt =  [_idTechSharedInstance device_startTransaction:self.clearentPayment.amount amtOther:self.clearentPayment.amtOther type:self.clearentPayment.type timeout:self.clearentPayment.timeout tags:self.clearentPayment.tags forceOnline:self.clearentPayment.forceOnline fallback:self.clearentPayment.fallback];
 
     if(RETURN_CODE_OK_NEXT_COMMAND == emvStartRt || RETURN_CODE_DO_SUCCESS == emvStartRt) {
-        [self.publicDelegate deviceMessage:CLEARENT_CONTACTLESS_RETRY_MESSAGE];
+        [self deviceMessage:CLEARENT_CONTACTLESS_RETRY_MESSAGE];
     } else {
         [NSThread sleepForTimeInterval:0.2f];
         emvStartRt =  [_idTechSharedInstance device_startTransaction:self.clearentPayment.amount amtOther:self.clearentPayment.amtOther type:self.clearentPayment.type timeout:self.clearentPayment.timeout tags:self.clearentPayment.tags forceOnline:self.clearentPayment.forceOnline fallback:self.clearentPayment.fallback];
         if(RETURN_CODE_OK_NEXT_COMMAND == emvStartRt || RETURN_CODE_DO_SUCCESS == emvStartRt) {
-            [self.publicDelegate deviceMessage:CLEARENT_CONTACTLESS_RETRY_MESSAGE];
+            [self deviceMessage:CLEARENT_CONTACTLESS_RETRY_MESSAGE];
         } else {
             NSString *logErrorMessage =[NSString stringWithFormat:@"retryContactless %@",[_idTechSharedInstance device_getResponseCodeString:emvStartRt]];
             [Teleport logInfo:logErrorMessage];
-            [self.publicDelegate deviceMessage:CLEARENT_GENERIC_CONTACTLESS_FAILED];
+            [self deviceMessage:CLEARENT_GENERIC_CONTACTLESS_FAILED];
         }
     }
 }
@@ -569,7 +569,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     
     [NSThread sleepForTimeInterval:0.3f];
     if(![_idTechSharedInstance isConnected]) {
-        [self.publicDelegate deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
+        [self deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
         return;
     }
 
@@ -594,7 +594,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         } else {
             NSString *logErrorMessage =[NSString stringWithFormat:@"restartSwipeIn2In1Mode %@",[_idTechSharedInstance device_getResponseCodeString:emvStartRt]];
             [Teleport logInfo:logErrorMessage];
-            [self.publicDelegate deviceMessage:CLEARENT_GENERIC_CARD_READ_ERROR_RESPONSE];
+            [self deviceMessage:CLEARENT_GENERIC_CARD_READ_ERROR_RESPONSE];
         }
     }
     
@@ -603,7 +603,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 -(void) restartSwipeOnly:(IDTMSRData*) cardData {
     [NSThread sleepForTimeInterval:0.3f];
     if(![_idTechSharedInstance isConnected]) {
-        [self.publicDelegate deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
+        [self deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
         return;
     }
 
@@ -627,7 +627,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         } else {
             NSString *logErrorMessage =[NSString stringWithFormat:@"restartSwipeOnly %@",[_idTechSharedInstance device_getResponseCodeString:msr_startMSRSwipeRt]];
             [Teleport logInfo:logErrorMessage];
-            [self.publicDelegate deviceMessage:CLEARENT_GENERIC_CARD_READ_ERROR_RESPONSE];
+            [self deviceMessage:CLEARENT_GENERIC_CARD_READ_ERROR_RESPONSE];
         }
     }
 }
@@ -641,7 +641,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     } else if(userToldToUseMagStripe) {
         [self deviceMessage:CLEARENT_USE_MAGSTRIPE];
     } else if((cardData != nil && cardData.iccPresent) || previousSwipeWasCardWithChip || userToldToUseChipReader) {
-        [self.publicDelegate deviceMessage:CLEARENT_CHIP_FOUND_ON_SWIPE];
+        [self deviceMessage:CLEARENT_CHIP_FOUND_ON_SWIPE];
     }
 }
 
