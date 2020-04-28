@@ -114,7 +114,9 @@ static NSString *const EXPIRATION_DATE_REQUIRED = @"Expiration date required";
            NSString *responseCode = [jsonDictionary objectForKey:@"code"];
            if([responseCode isEqualToString:@"200"]) {
                [Teleport logInfo:@"Successful transaction token communicated to client app for manual entry"];
-               [self.clearentManualEntryDelegate successfulTransactionToken:response];
+               if ([self.clearentManualEntryDelegate respondsToSelector:@selector(successfulTransactionToken:)]) {
+                   [self.clearentManualEntryDelegate successfulTransactionToken:response];
+               }
                ClearentTransactionToken *clearentTransactionToken = [[ClearentTransactionToken alloc] initWithJson:response];
                [self.clearentManualEntryDelegate successTransactionToken:clearentTransactionToken];
            } else {

@@ -10,4 +10,40 @@
 
 @implementation ClearentVP3300Config : NSObject
 
+- (instancetype) initContactlessNoConfiguration:(NSString*) baseUrl publicKey:(NSString*) publicKey {
+    
+    self = [super init];
+    
+    if (self) {
+        
+        self.clearentBaseUrl = baseUrl;
+        self.publicKey = publicKey;
+        self.contactAutoConfiguration = false;
+        self.contactlessAutoConfiguration = false;
+        self.contactless = true;
+        self.disableRemoteLogging = false;
+        
+    }
+    
+    return self;
+}
+
+- (instancetype) initNoContactlessNoConfiguration:(NSString*) baseUrl publicKey:(NSString*) publicKey {
+    
+    self = [super init];
+    
+    if (self) {
+        
+        self.clearentBaseUrl = baseUrl;
+        self.publicKey = publicKey;
+        self.contactAutoConfiguration = false;
+        self.contactlessAutoConfiguration = false;
+        self.contactless = false;
+        self.disableRemoteLogging = false;
+        
+    }
+    
+    return self;
+}
+
 @end

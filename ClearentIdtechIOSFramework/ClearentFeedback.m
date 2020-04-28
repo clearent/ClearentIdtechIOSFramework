@@ -59,9 +59,9 @@ NSString *const CLEARENT_AUDIO_JACK_LOW_VOLUME = @"AUDIO JACK LOW VOLUME. TURN U
 NSString *const CLEARENT_CONNECTING_AUDIO_JACK = @"CONNECTING AUDIO JACK";
 NSString *const CLEARENT_AUDIO_JACK_REMOVED = @"AUDIO JACK REMOVED";
 NSString *const CLEARENT_PAYMENT_REQUEST_NOT_FOUND = @"PAYMENT REQUEST NOT FOUND";
-NSString *const CLEARENT_PLEASE_WAIT = @"PLEASE WAIT…";
-NSString *const CLEARENT_TRANSACTION_PROCESSING = @"PROCESSING…";
-NSString *const CLEARENT_TRANSACTION_AUTHORIZING = @"AUTHORIZING…";
+NSString *const CLEARENT_PLEASE_WAIT = @"PLEASE WAIT...";
+NSString *const CLEARENT_TRANSACTION_PROCESSING = @"PROCESSING...";
+NSString *const CLEARENT_TRANSACTION_AUTHORIZING = @"AUTHORIZING...";
 NSString *const CLEARENT_BLUETOOTH_FRIENDLY_NAME_REQUIRED = @"Bluetooth friendly name required";
 NSString *const CLEARENT_TRANSACTION_TERMINATED = @"TERMINATED";
 NSString *const CLEARENT_TRANSACTION_TERMINATE = @"TERMINATE";
@@ -181,9 +181,9 @@ NSString *const CLEARENT_TRY_MSR_AGAIN = @"TRY MSR AGAIN";
             CLEARENT_CONNECTING_AUDIO_JACK : [NSNumber numberWithInt:CLEARENT_FEEDBACK_INFO],
             CLEARENT_AUDIO_JACK_REMOVED : [NSNumber numberWithInt:CLEARENT_FEEDBACK_INFO],
             CLEARENT_PAYMENT_REQUEST_NOT_FOUND : [NSNumber numberWithInt:CLEARENT_FEEDBACK_ERROR],
-            CLEARENT_PLEASE_WAIT : [NSNumber numberWithInt:CLEARENT_FEEDBACK_USER_ACTION],
-            CLEARENT_TRANSACTION_PROCESSING : [NSNumber numberWithInt:CLEARENT_FEEDBACK_INFO],
-            CLEARENT_TRANSACTION_AUTHORIZING: [NSNumber numberWithInt:CLEARENT_FEEDBACK_INFO],
+            //CLEARENT_PLEASE_WAIT : [NSNumber numberWithInt:CLEARENT_FEEDBACK_USER_ACTION],
+            //CLEARENT_TRANSACTION_PROCESSING : [NSNumber numberWithInt:CLEARENT_FEEDBACK_INFO],
+            //CLEARENT_TRANSACTION_AUTHORIZING: [NSNumber numberWithInt:CLEARENT_FEEDBACK_INFO],
             CLEARENT_BLUETOOTH_FRIENDLY_NAME_REQUIRED : [NSNumber numberWithInt:CLEARENT_FEEDBACK_ERROR],
             CLEARENT_TRANSACTION_TERMINATED : [NSNumber numberWithInt:CLEARENT_FEEDBACK_ERROR],
             CLEARENT_TRANSACTION_TERMINATE: [NSNumber numberWithInt:CLEARENT_FEEDBACK_ERROR],
@@ -243,16 +243,40 @@ NSString *const CLEARENT_TRY_MSR_AGAIN = @"TRY MSR AGAIN";
 
 + (void) updateFeedbackType: (ClearentFeedback*) clearentFeedback {
 
-    NSLog([NSString stringWithFormat:@"feedback : %@%@%@", @"[", clearentFeedback.message, @"]"]);
-    
     if([ClearentFeedback feedbackValues] != nil && [[ClearentFeedback feedbackValues] count] > 0) {
+        
+        if([clearentFeedback.message containsString:@"PLEASE WAIT"]) {
+            clearentFeedback.feedBackMessageType = CLEARENT_FEEDBACK_USER_ACTION;
+            clearentFeedback.message = @"PLEASE WAIT...";
+            clearentFeedback.returnCode = 0;
+            return;
+        } else if([clearentFeedback.message containsString:@"PROCESSING"]) {
+            clearentFeedback.feedBackMessageType = CLEARENT_FEEDBACK_INFO;
+            clearentFeedback.returnCode = 0;
+            clearentFeedback.message = @"PROCESSING...";
+            return;
+        } else if ([clearentFeedback.message containsString:@"AUTHORIZING"]) {
+            clearentFeedback.feedBackMessageType = CLEARENT_FEEDBACK_INFO;
+            clearentFeedback.returnCode = 0;
+            clearentFeedback.message = @"AUTHORIZING...";
+            return;
+        }
+            
         int feedbackMessageType = [[[ClearentFeedback feedbackValues] valueForKey:clearentFeedback.message] intValue];
         if(feedbackMessageType == 0 && ![clearentFeedback.message containsString:@"TAP FAILED"]) {
             clearentFeedback.feedBackMessageType = CLEARENT_FEEDBACK_ERROR;
             clearentFeedback.returnCode = 0;
-        } else if([clearentFeedback.message containsString:@"TAP FAILED"]) {
+        } else if([clearentFeedback.message containsString:@"TAP FAILED"] || [clearentFeedback.message containsString:@"PLEASE WAIT"]) {
             clearentFeedback.feedBackMessageType = CLEARENT_FEEDBACK_USER_ACTION;
             clearentFeedback.returnCode = 0;
+        } else if([clearentFeedback.message containsString:@"PROCESSING"]) {
+            clearentFeedback.feedBackMessageType = CLEARENT_FEEDBACK_INFO;
+            clearentFeedback.returnCode = 0;
+            clearentFeedback.message = @"PROCESSING...";
+        } else if ([clearentFeedback.message containsString:@"AUTHORIZING"]) {
+           clearentFeedback.feedBackMessageType = CLEARENT_FEEDBACK_INFO;
+            clearentFeedback.returnCode = 0;
+            clearentFeedback.message = @"AUTHORIZING...";
         } else if(feedbackMessageType == 1) {
             clearentFeedback.feedBackMessageType = CLEARENT_FEEDBACK_USER_ACTION;
             clearentFeedback.returnCode = 0;

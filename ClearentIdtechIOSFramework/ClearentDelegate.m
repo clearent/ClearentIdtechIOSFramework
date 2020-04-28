@@ -192,13 +192,17 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         }
         
         if(updatedArray.count > 0) {
-            [self.publicDelegate lcdDisplay:(int)mode  lines:(NSArray*)updatedArray];
+            if ([self.publicDelegate respondsToSelector:@selector(lcdDisplay:)]) {
+                [self.publicDelegate lcdDisplay:(int)mode  lines:(NSArray*)updatedArray];
+            }
         }
     }
 }
 
 - (void) dataInOutMonitor:(NSData*)data  incoming:(BOOL)isIncoming {
-    [self.publicDelegate dataInOutMonitor:data incoming:isIncoming];
+    if ([self.publicDelegate respondsToSelector:@selector(dataInOutMonitor:)]) {
+        [self.publicDelegate dataInOutMonitor:data incoming:isIncoming];
+    }
 }
 
 - (void) plugStatusChange: (BOOL) deviceInserted {
@@ -212,11 +216,15 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         }
     }
     
-    [self.publicDelegate plugStatusChange:deviceInserted];
+    if ([self.publicDelegate respondsToSelector:@selector(plugStatusChange:)]) {
+       [self.publicDelegate plugStatusChange:deviceInserted];
+    }
 }
 
 - (void) bypassData:(NSData*)data {
-    [self.publicDelegate bypassData:data];
+    if ([self.publicDelegate respondsToSelector:@selector(bypassData:)]) {
+        [self.publicDelegate bypassData:data];
+    }
 }
 
 -(void) deviceConnected {
@@ -243,7 +251,9 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     //TODO IDTech ticket 20356
     //[_clearentDeviceConnector adjustBluetoothAdvertisingInterval];
     
-    [self.publicDelegate deviceConnected];
+    if ([self.publicDelegate respondsToSelector:@selector(deviceConnected)]) {
+        [self.publicDelegate deviceConnected];
+    }
     
     if(!self.autoConfiguration && !self.contactlessAutoConfiguration) {
         [self setupReaderOnConnect];
@@ -385,7 +395,9 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         
     [Teleport logInfo:[NSString stringWithFormat:@"Device disconnected"]];
     
-    [self.publicDelegate deviceDisconnected];
+    if ([self.publicDelegate respondsToSelector:@selector(deviceDisconnected:)]) {
+        [self.publicDelegate deviceDisconnected];
+    }
     
 }
 
@@ -404,7 +416,9 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
             self.runStoredPaymentAfterConnecting = FALSE;
             [self.callbackObject performSelector:self.runTransactionSelector];
         } else {
-            [self.publicDelegate isReady];
+            if ([self.publicDelegate respondsToSelector:@selector(isReady:)]) {
+                [self.publicDelegate isReady];
+            }
         }
         return;
     }
@@ -414,12 +428,16 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     }
     
     if(message != nil && [message isEqualToString:@"POWERING UNIPAY"]) {
-        [self.publicDelegate deviceMessage:CLEARENT_POWERING_UP];
+        if ([self.publicDelegate respondsToSelector:@selector(deviceMessage:)]) {
+            [self.publicDelegate deviceMessage:CLEARENT_POWERING_UP];
+        }
         return;
     }
     
     if(message != nil && [message isEqualToString:@"RETURN_CODE_LOW_VOLUME"]) {
-        [self.publicDelegate deviceMessage:CLEARENT_AUDIO_JACK_LOW_VOLUME];
+        if ([self.publicDelegate respondsToSelector:@selector(deviceMessage:)]) {
+            [self.publicDelegate deviceMessage:CLEARENT_AUDIO_JACK_LOW_VOLUME];
+        }
         return;
     }
 
@@ -433,7 +451,9 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     if(message != nil && [message containsString:@"BLE DEVICE FOUND"]) {
         [_clearentDeviceConnector handleBluetoothDeviceFound:message];
     } else {
-        [self.publicDelegate deviceMessage:message];
+        if ([self.publicDelegate respondsToSelector:@selector(deviceMessage:)]) {
+            [self.publicDelegate deviceMessage:message];
+        }
         [self sendFeedback:message];
     }
 }
@@ -451,7 +471,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 }
 
 - (void) feedback:(ClearentFeedback*)clearentFeedback {
-        [self.publicDelegate feedback:clearentFeedback];
+    [self.publicDelegate feedback:clearentFeedback];
 }
                           
 - (void) handleContactlessError:(NSString*)contactlessError emvData:(IDTEMVData*)emvData {
@@ -1507,7 +1527,9 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
         [Teleport logInfo:@"Successful transaction token communicated to client app"];
         [self deviceMessage:CLEARENT_SUCCESSFUL_TOKENIZATION_MESSAGE];
         [self clearCurrentRequest];
-        [self.publicDelegate successfulTransactionToken:response];
+        if ([self.publicDelegate respondsToSelector:@selector(successfulTransactionToken:)]) {
+            [self.publicDelegate successfulTransactionToken:response];
+        }
         ClearentTransactionToken *clearentTransactionToken = [[ClearentTransactionToken alloc] initWithJson:response];
         [self.publicDelegate successTransactionToken:clearentTransactionToken];
     } else {
@@ -1669,9 +1691,13 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
         for (ClearentBluetoothDevice* clearentBluetoothDevice in _clearentDeviceConnector.bluetoothDevices) {
             [Teleport logInfo:[NSString stringWithFormat:@"Bluetooth Device Found %@", clearentBluetoothDevice.friendlyName]];
         }
-        [self.publicDelegate bluetoothDevices:_clearentDeviceConnector.bluetoothDevices];
+        if ([self.publicDelegate respondsToSelector:@selector(bluetoothDevices:)]) {
+            [self.publicDelegate bluetoothDevices:_clearentDeviceConnector.bluetoothDevices];
+        }
     } else {
-        [self.publicDelegate bluetoothDevices:[NSMutableArray arrayWithCapacity:0]];
+         if ([self.publicDelegate respondsToSelector:@selector(bluetoothDevices:)]) {
+            [self.publicDelegate bluetoothDevices:[NSMutableArray arrayWithCapacity:0]];
+         }
     }
 
 }

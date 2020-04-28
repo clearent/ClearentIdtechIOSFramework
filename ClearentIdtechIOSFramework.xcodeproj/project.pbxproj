@@ -33,6 +33,7 @@
 		4B074F4E24474FD100868E21 /* TestPublicDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B074F4D24474FD100868E21 /* TestPublicDelegate.m */; };
 		4B074F50244DBABA00868E21 /* ClearentTransactions_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B074F4F244DBAB900868E21 /* ClearentTransactions_Tests.m */; };
 		4B074F52244DFCA100868E21 /* ClearentFeedback_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B074F51244DFCA000868E21 /* ClearentFeedback_Tests.m */; };
+		4B2BA93B2458749C007B9403 /* ClearentDeviceConnector.h in Headers */ = {isa = PBXBuildFile; fileRef = 4B32C09D2436286700CCF9B9 /* ClearentDeviceConnector.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4B32C08B2432560600CCF9B9 /* ClearentResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B32C08A2432560600CCF9B9 /* ClearentResponse.m */; };
 		4B32C08E2432586500CCF9B9 /* ClearentConnection.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B32C08D2432586500CCF9B9 /* ClearentConnection.m */; };
 		4B32C0912432677F00CCF9B9 /* ClearentTransactionToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B32C0902432677F00CCF9B9 /* ClearentTransactionToken.m */; };
@@ -555,6 +556,7 @@
 				E702E5732364886C0032ED8D /* ClearentVP3300Config.h in Headers */,
 				E721ECE721F7483B0064163F /* ClearentManualEntryDelegate.h in Headers */,
 				E77DE80E2247ADA900C8AB02 /* Clearent_VP3300.h in Headers */,
+				4B2BA93B2458749C007B9403 /* ClearentDeviceConnector.h in Headers */,
 				E764E77423031B740029B753 /* ClearentPaymentRequest.h in Headers */,
 				4B074F3E244717E500868E21 /* ClearentConfiguration.h in Headers */,
 				4B074F3F244717EE00868E21 /* ClearentConfigFetcher.h in Headers */,
