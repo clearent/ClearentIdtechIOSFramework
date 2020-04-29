@@ -439,10 +439,8 @@ NSTimer *bluetoothSearchDisableTimer;
         size = [_bluetoothDevices count];
     }
         
-    BOOL sendBluetoothDeviceList = false;
     
     if(size > 0) {
-        sendBluetoothDeviceList = true;
         [Teleport logInfo:@"LIST OF BLUETOOTH DEVICES COMMUNICATED"];
     } else {
         [Teleport logInfo:@"EMPTY BLUETOOTH DEVICES COMMUNICATED"];
@@ -462,7 +460,6 @@ NSTimer *bluetoothSearchDisableTimer;
         } else  {
             if(!_tryConnectWithSavedDeviceId) {
                 if(size == 0) {
-                    sendBluetoothDeviceList = false;
                     [Teleport logInfo:@"disableBluetoothSearch says it is not connected but no devices found. force disconnect and try again"];
                     [self retryBluetoothWhenNoDevicesFound];
                 } else {
@@ -473,7 +470,6 @@ NSTimer *bluetoothSearchDisableTimer;
                 [Teleport logInfo:@"disableBluetoothSearch saved blbuetooth not found. Clear bluetooth cache and start bluetooth connection again"];
                 [ClearentCache cacheLastUsedBluetoothDevice:nil bluetoothFriendlyName:nil];
                 _tryConnectWithSavedDeviceId = false;
-                sendBluetoothDeviceList = false;
                 [self startConnection:_clearentDelegate.clearentConnection];
             }
         }
@@ -483,7 +479,7 @@ NSTimer *bluetoothSearchDisableTimer;
          }
     }
     
-    if(sendBluetoothDeviceList) {
+    if(_clearentDelegate.clearentConnection.searchBluetooth) {
         [_clearentDelegate sendBluetoothDevices];
     }
     

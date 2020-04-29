@@ -234,7 +234,6 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         if(self.clearentConnection.connectionType == CLEARENT_BLUETOOTH) {
             [self deviceMessage:CLEARENT_BLUETOOTH_CONNECTED];
             [_clearentDeviceConnector recordBluetoothDeviceAsConnected];
-            [self sendBluetoothDevices];
             [_clearentDeviceConnector resetBluetoothAfterConnected];
         }
         
@@ -385,10 +384,6 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
             [self deviceMessage:CLEARENT_AUDIO_JACK_DISCONNECTED];
         }
         
-        if (self.clearentConnection.connectionType == CLEARENT_BLUETOOTH) {
-            [self sendBluetoothDevices];
-        }
-        
         [Teleport logInfo:[NSString stringWithFormat:@"%@%@", @"connected ", [self.clearentConnection createLogMessage]]];
         
     }
@@ -471,7 +466,9 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 }
 
 - (void) feedback:(ClearentFeedback*)clearentFeedback {
-    [self.publicDelegate feedback:clearentFeedback];
+    if ([self.publicDelegate respondsToSelector:@selector(feedback:)]) {
+        [self.publicDelegate feedback:clearentFeedback];
+    }
 }
                           
 - (void) handleContactlessError:(NSString*)contactlessError emvData:(IDTEMVData*)emvData {

@@ -373,7 +373,9 @@
         
     } else {
 
-        [NSThread sleepForTimeInterval:0.5f];
+        //With a faster process there is a scenario where the idtech framework is still doing clean up activities from the previous transaction.
+        //a slight delay can help.
+        [NSThread sleepForTimeInterval:1.0f];
         [_clearentDelegate.idTechSharedInstance emv_disableAutoAuthenticateTransaction:FALSE];
         [_clearentDelegate setClearentPayment:clearentPaymentRequest];
         [self resetInvalidDeviceData];
@@ -725,9 +727,7 @@ clearentConnection:(ClearentConnection*) clearentConnection {
 - (void) promptUserToConnectSpecificReader:(ClearentConnection*) clearentConnection {
     
     if(clearentConnection.connectionType == CLEARENT_BLUETOOTH) {
-        if(clearentConnection.searchBluetooth) {
-            [_clearentDelegate deviceMessage:CLEARENT_BLUETOOTH_SEARCH];
-        } else {
+        if(!clearentConnection.searchBluetooth) {
             [_clearentDelegate deviceMessage:CLEARENT_USER_ACTION_PRESS_BUTTON_MESSAGE];
         }
     } else if(clearentConnection.connectionType == CLEARENT_AUDIO_JACK && ![_clearentVP3300 device_isAudioReaderConnected]) {
