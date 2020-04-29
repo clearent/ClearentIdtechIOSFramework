@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>VP3300.ipa</key>
+	<array>
+		<dict>
+			<key>architectures</key>
+			<array>
+				<string>armv7</string>
+				<string>arm64</string>
+			</array>
+			<key>certificate</key>
+			<dict>
+				<key>SHA1</key>
+				<string>E6E869BE4E7B204C388EAC522A862E12CEF660D6</string>
+				<key>dateExpires</key>
+				<string>3/27/21</string>
+				<key>type</key>
+				<string>Apple Development</string>
+			</dict>
+			<key>embeddedBinaries</key>
+			<array>
+				<dict>
+					<key>architectures</key>
+					<array>
+						<string>armv7</string>
+						<string>arm64</string>
+					</array>
+					<key>certificate</key>
+					<dict>
+						<key>SHA1</key>
+						<string>E6E869BE4E7B204C388EAC522A862E12CEF660D6</string>
+						<key>dateExpires</key>
+						<string>3/27/21</string>
+						<key>type</key>
+						<string>Apple Development</string>
+					</dict>
+					<key>name</key>
+					<string>ClearentIdtechIOSFramework.framework</string>
+					<key>team</key>
+					<dict>
+						<key>id</key>
+						<string>PY4645385H</string>
+						<key>name</key>
+						<string>Clearent, LLC</string>
+					</dict>
+				</dict>
+			</array>
+			<key>entitlements</key>
+			<dict>
+				<key>application-identifier</key>
+				<string>PY4645385H.com.clearent.vp3300demo20</string>
+				<key>com.apple.developer.team-identifier</key>
+				<string>PY4645385H</string>
+				<key>get-task-allow</key>
+				<true/>
+				<key>keychain-access-groups</key>
+				<array>
+					<string>PY4645385H.com.clearent.vp3300demo20</string>
+				</array>
+			</dict>
+			<key>name</key>
+			<string>IDTECH DEMO V2.app</string>
+			<key>profile</key>
+			<dict>
+				<key>UUID</key>
+				<string>5be1434e-ef0d-47b5-b95d-cfed8a241619</string>
+				<key>name</key>
+				<string>iOS Team Provisioning Profile: *</string>
+			</dict>
+			<key>team</key>
+			<dict>
+				<key>id</key>
+				<string>PY4645385H</string>
+				<key>name</key>
+				<string>Clearent, LLC</string>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>
