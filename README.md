@@ -297,3 +297,5 @@ When the Clearent framework applies the emv configuration to the reader it is us
 - [ ] Switch Clearent api keys from sandbox to production
 - [ ] Confirm Clearent api keys are used server side only and not embedded in your app.
 - [ ] :shipit: :city_sunset: :saxophone: :notes:
+
+From an ipad, download latest objc demo  <a href="https://github.com/clearent/ClearentIdtechIOSFramework/blob/2.0/apps/VP3300%202020-04-29%2006-18-09/index.html">here</a>
