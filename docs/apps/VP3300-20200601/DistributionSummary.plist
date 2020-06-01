@@ -50,14 +50,14 @@
 			<key>entitlements</key>
 			<dict>
 				<key>application-identifier</key>
-				<string>PY4645385H.com.clearent.vp3300demo2011</string>
+				<string>PY4645385H.com.clearent.vp3300demo20</string>
 				<key>com.apple.developer.team-identifier</key>
 				<string>PY4645385H</string>
 				<key>get-task-allow</key>
 				<true/>
 				<key>keychain-access-groups</key>
 				<array>
-					<string>PY4645385H.com.clearent.vp3300demo2011</string>
+					<string>PY4645385H.com.clearent.vp3300demo20</string>
 				</array>
 			</dict>
 			<key>name</key>
