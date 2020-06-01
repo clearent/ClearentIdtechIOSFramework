@@ -11,19 +11,19 @@
 					<key>kind</key>
 					<string>software-package</string>
 					<key>url</key>
-					<string>https://github.com/clearent/ClearentIdtechIOSFramework/blob/2.0/apps/VP3300%2020-06-01&07-33-55/VP3300.ipa</string>
+					<string>https://github.com/clearent/ClearentIdtechIOSFramework/blob/2.0/apps/VP3300-20200601/VP3300.ipa</string>
 				</dict>
 				<dict>
 					<key>kind</key>
 					<string>display-image</string>
 					<key>url</key>
-					<string>https://github.com/clearent/ClearentIdtechIOSFramework/blob/2.0/apps/VP3300%2020-06-01&07-33-55/Underdog.png</string>
+					<string>https://github.com/clearent/ClearentIdtechIOSFramework/blob/2.0/apps/VP3300-20200601/Underdog.png</string>
 				</dict>
 				<dict>
 					<key>kind</key>
 					<string>full-size-image</string>
 					<key>url</key>
-					<string>https://github.com/clearent/ClearentIdtechIOSFramework/blob/2.0/apps/VP3300%2020-06-01&07-33-55/Underdog.png</string>
+					<string>https://github.com/clearent/ClearentIdtechIOSFramework/blob/2.0/apps/VP3300-20200601/Underdog.png</string>
 				</dict>
 			</array>
 			<key>metadata</key>
