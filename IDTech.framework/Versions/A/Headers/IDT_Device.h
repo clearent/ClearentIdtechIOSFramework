@@ -280,6 +280,13 @@
 +(void) bypassOutput:(bool)bypass;
 
 
+
+/**
+ Sets the flag to bypass Ble Validation.
+ @param bypass TRUE = bypass output
+ */
++(void) bypassBLEValidation:(bool)bypass;
+
 /**
  Outputs MSR swipe data in tag DFEE23.
  @param keep TRUE = DFEE23 is output, FALSE = Parsed as MSR data

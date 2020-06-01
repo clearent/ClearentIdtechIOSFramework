@@ -1186,4 +1186,17 @@ Forces the device to reader attached state.
 */
 + (NSString*) createFastEMVData:(IDTEMVData*)emvData;
 
+/**
+ * Set Terminal Data
+ *
+ * Sets the Terminal Data for CTLS transaction and general terminal settings as specified by the TLV.  If the value already exists in terminal data, it will be updated.
+ * If the value does not exist, it will be added.
+ 
+ @param tlv TerminalData configuration data
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
+ 
+ */
+-(RETURN_CODE) ctls_setTerminalData:(NSData*)tlv;
+
 @end

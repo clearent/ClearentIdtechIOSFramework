@@ -1,5 +1,36 @@
 # iOS SDK Changelog
 
+
+## 1.1.163.005
+### 5/27/20
+Added parseEnhancedMSRFormat to IDTUtility
+Parse DFEE23 to card data object when returning EMV data callback
+
+## 1.1.163.004
+### 4/30/20
+Fixed crash when DFEE23 has no card data
+Fixed swipe delegate to execute on swipe of non-icc card
+
+## 1.1.163.003
+### 4/30/20
+Fixed SDK incorrectly activating ICC Present EMV transaction when a
+bad swipe event returns DFEE23 with no card data.
+
+## 1.1.163.002
+### 4/28/20
+Removed setting emv card data to nil immedately after sending to delegate
+Added sending emv card data to msr swipe callback if msr data and callback exists
+Update BLE routines to separate combined ble message when ctls active 01-05x1905
+
+## 1.1.163.001
+### 4/27/20
+Updated CTLS message processing 01-05x1905
+Removed duplicate activate transaction when no response
+
+## 1.1.162.002
+### 4/7/20
+Updated createFastEMVData to convert emvData to FastEMV KB String
+
 ## 1.1.162.001
 ### 4/2/20
 Added createFastEMVData to convert emvData to FastEMV KB String

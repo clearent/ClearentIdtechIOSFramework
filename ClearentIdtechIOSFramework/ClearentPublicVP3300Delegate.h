@@ -80,5 +80,4 @@
 
 - (void) bluetoothDevices:(NSArray<ClearentBluetoothDevice*>*) bluetoothDevices;
 
-
 @end

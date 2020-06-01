@@ -15,7 +15,6 @@ static int const DEFAULT_BLUETOOTH_MAXIMUM_SCAN_TIME_IN_SECONDS = 10;
 static int const DEFAULT_BLUETOOTH_SEARCH_MAXIMUM_SCAN_TIME_IN_SECONDS = 10;
 static NSString *const IDTECH_FRIENDLY_NAME_PREFIX = @"IDTECH-VP3300-";
 
-
 - (instancetype) initBluetoothSearch {
     self = [super init];
     if (self) {

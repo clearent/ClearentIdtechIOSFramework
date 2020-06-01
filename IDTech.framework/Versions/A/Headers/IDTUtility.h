@@ -5,7 +5,7 @@
 //  Created by Randy Palermo on 5/9/14.
 //  Copyright (c) 2014 IDTech Products. All rights reserved.
 //
-
+#import "IDTMSRData.h"
 
 @interface IDTUtility : NSObject
 
@@ -47,4 +47,6 @@
 +(NSMutableDictionary*) updateTags_Old_To_New:(NSDictionary*)tags;
 +(NSString*) tagToString:(NSString*)tag value:(NSData*)value;
 + (NSString*) printDictionary:(NSDictionary<NSString*,NSData*>*)dict;
++ (NSString*) msrToKB:(NSData*)data;
++(IDTMSRData*) parseEnhancedEncryptedMSRFormat:(NSData*)data;
 @end

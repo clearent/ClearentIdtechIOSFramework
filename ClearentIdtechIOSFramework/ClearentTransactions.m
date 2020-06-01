@@ -195,7 +195,7 @@
         
         clearentResponse = [self createRequiredTransactionRequestResponse];
         
-    } if([self isConfigurationRequested]) {
+    } else if([self isConfigurationRequested]) {
         
         clearentResponse = [self createConfigurationRequestResponse];
         
@@ -381,6 +381,8 @@
         [self resetInvalidDeviceData];
         
         [self workaroundCardSeatedIssue:clearentPaymentRequest.amount amtOther:clearentPaymentRequest.amtOther type:clearentPaymentRequest.type timeout:clearentPaymentRequest.timeout tags:clearentPaymentRequest.tags forceOnline:clearentPaymentRequest.forceOnline  fallback:clearentPaymentRequest.fallback];
+        
+        [self.clearentDelegate startFinalFeedbackMonitor:clearentPaymentRequest.timeout];
         
         deviceStartRt = [_clearentDelegate.idTechSharedInstance device_startTransaction:clearentPaymentRequest.amount amtOther:clearentPaymentRequest.amtOther type:clearentPaymentRequest.type timeout:clearentPaymentRequest.timeout tags:clearentPaymentRequest.tags forceOnline:clearentPaymentRequest.forceOnline  fallback:clearentPaymentRequest.fallback];
         
@@ -655,7 +657,7 @@ clearentConnection:(ClearentConnection*) clearentConnection {
         
         if(errorResponse != nil && ![errorResponse isEqualToString:@""]) {
             
-            NSString *errorMessage = [NSString stringWithFormat:@"%@[%@%@", CLEARENT_RESPONSE_TRANSACTION_FAILED, errorResponse , @"]"];
+            NSString *errorMessage = [NSString stringWithFormat:@"%@ - %@", CLEARENT_RESPONSE_TRANSACTION_FAILED, errorResponse];
             [Teleport logInfo:errorMessage];
             clearentResponse.response = errorMessage;
             
@@ -713,6 +715,7 @@ clearentConnection:(ClearentConnection*) clearentConnection {
     [_clearentDelegate setRunStoredPaymentAfterConnecting:FALSE];
     [_clearentDelegate.clearentDeviceConnector resetConnection];
     _retriedTransactionAfterDisconnect = false;
+    [_clearentDelegate disableCardRemovalTimer];
     
 }
 

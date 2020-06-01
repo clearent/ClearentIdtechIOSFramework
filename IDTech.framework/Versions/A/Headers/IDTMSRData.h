@@ -71,6 +71,8 @@
      @endcode
      */
     CAPTURE_ENCRYPT_TYPE captureEncryptType;
+    CAPTURE_CARD_TYPE captureCardType;
+    KEY_VARIANT_TYPE msr_keyVariantType;
     NSData* cardData;   //!< Complete unparsed swipe data as received from MSR
     NSString* track1;   //!< Track 1 masked if encryption enabled or cleartext if encryption disabled
     NSString* track2;   //!< Track 2 masked if encryption enabled or cleartext if encryption disabled
@@ -80,6 +82,7 @@
     int track3Length;   //!< Length of track 3 masked/clear text data
     NSData* encTrack1;   //!< Track 1 encoded data OR all encoded track data if encryption method combines all tracks into single blob
     NSData* encTrack2;   //!< Track 2 encoded
+    NSData* msr_extendedField;   //!< MSR Extended Field
     NSData* encTrack3;   //!< Track 3 encoded
     NSData* hashTrack1;   //!< Sha-256 hash of Track 1 encoded data
     NSData* hashTrack2;   //!< Sha-256 hash of Track 2 encoded data
@@ -87,6 +90,9 @@
     NSString* RSN;   //!< Reader Serial Number
     NSData* KSN;   //!< Key Serial Number
     NSData* sessionID;   //!< Session ID - Security level 4 only
+    NSData* mac;   //!< mac
+    NSData* macKSN;   //!< macKSN
+    NSData* rawData;   //!< rawData
     /**
      Track Read Status
      - Bit 0: 1=Track 1 decode success, 0=Track 1 decode fail
@@ -119,9 +125,13 @@
 + (IDTMSRData *)sharedController;
 
 
+@property KEY_VARIANT_TYPE  msr_keyVariantType;
 @property EVENT_MSR_Types  event;
 @property CAPTURE_ENCODE_TYPE captureEncodeType;
 @property CAPTURE_ENCRYPT_TYPE captureEncryptType;
+@property CAPTURE_CARD_TYPE captureCardType;
+@property (nonatomic, strong) NSData* mac;
+@property (nonatomic, strong) NSData* macKSN;
 @property (nonatomic, strong) NSData* cardData;
 @property (nonatomic, strong) NSString* track1;
 @property (nonatomic, strong) NSString* track2;
@@ -129,6 +139,8 @@
 @property int track1Length;
 @property int track2Length;
 @property int track3Length;
+@property (nonatomic, strong) NSData* rawData;
+@property (nonatomic, strong) NSData* msr_extendedField;
 @property (nonatomic, strong) NSData* encTrack1;
 @property (nonatomic, strong) NSData* encTrack2;
 @property (nonatomic, strong) NSData* encTrack3;

@@ -1545,44 +1545,6 @@ If you did not instruct the framework to do any configuration when you initializ
  */
 -(RETURN_CODE) isReaderPreconfigured;
 
-/**
- Contactless Event
- During a Contactless transaction, if events are enabled, they will be sent to this protocol,
- 
- @param event Event Type:
- - 01 = LED Event
- - 02 = Buzzer Event
- - 03 = LCD Message
- @param scheme LCD Message Scheme
- @param data Data
-    - When Event Type 01:
-    -- 0x00 = LED0 off
-    -- 0x10 = LED1 off
-     -- 0x20 = LED2 off
-     -- 0x30 = LED3 off
-     -- 0xF0 = ALL off
-    -- 0x01 = LED0 on
-    -- 0x11 = LED1 on
-     -- 0x21 = LED2 on
-     -- 0x31 = LED3 on
-     -- 0xF1 = ALL on
-     - When Event Type 02:
-     -- 0x10 = Short Beep No Change
-     -- 0x11 = Short Beep No Change
-     -- 0x12 = Double Short Beep
-     -- 0x13 = Triple Short Beep
-     -- 0x20 = 200ms Beep
-     -- 0x21 = 400ms Beep
-     -- 0x22 = 600ms Beep
-     - When Event Type 03:
-     -- Message ID (please refer to table in NEO Reference Guide)
- */
-
-//- (void) ctlsEvent:(Byte)event scheme:(Byte)scheme  data:(Byte)data;
-
-
-//- (void) gen2Data:(NSData*)tlv;//!<Receives Gen2 TLV data.
-//!< @param tlv TLV data from gen2 event
 
 /**
  * The Clearent solution includes remote logging to aid in support calls. If you want to contribute to these logs pass us
@@ -1606,6 +1568,7 @@ If you did not instruct the framework to do any configuration when you initializ
  * the framework is aware the connection request could change and will clear out the stored bluetooth device id when appropriate. But, in case it does not, here is a method you can use to clear it out.
  */
 - (void) clearBluetoothDeviceCache;
+
 
 @end
 

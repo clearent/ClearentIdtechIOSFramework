@@ -393,14 +393,12 @@
 /**
  * Set Terminal Data
  *
- Sets the Terminal Data for CTLS as specified by the TLV.  The first TLV must be Configuration Group Number (Tag DFEE2D).  The terminal global data
- is group 0, so the first TLV would be DFEE2D0100.  Other groups can be defined using this method (1 or greater), and those can be
- retrieved with ctls_getConfigurationGroup(int group), and deleted with ctls_removeConfigurationGroup(int group).  You cannot
- delete group 0.
+ * Sets the Terminal Data for CTLS transaction and general terminal settings as specified by the TLV.  If the value already exists in terminal data, it will be updated.
+ * If the value does not exist, it will be added.
  
  @param tlv TerminalData configuration data
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_NEO2::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_VP8800::device_getResponseCodeString:()
  
  */
 -(RETURN_CODE) ctls_setTerminalData:(NSData*)tlv;
