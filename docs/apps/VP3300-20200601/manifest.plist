@@ -31,7 +31,7 @@
 				<key>bundle-identifier</key>
 				<string>com.clearent.vp3300demo2011</string>
 				<key>bundle-version</key>
-				<string>2.0.11</string>
+				<string>2.0</string>
 				<key>kind</key>
 				<string>software</string>
 				<key>platform-identifier</key>
