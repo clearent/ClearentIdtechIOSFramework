@@ -1,6 +1,10 @@
 ![Screenshot](clearent_logo.jpg)
 
-# Release Notes (Current Release is 1.1.12)
+# Release Notes (Current Release is 2.0.3)
+
+2.0.3-beta - disabled a retry of a swipe when it wasn't necessary.
+
+2.0.2-beta - logging. added a TIMEOUT that will occur 1 second after the transaction times out if idtech has not returned the TIMEOUT. When there are 3 short beeps it when using a phone for tap a message "SEE PHONE" should show to indicate the user needs to answer a password or biometric prompt.
 
 2.0.1-beta - perform selector checks before calling deprecated delegate callbacks to ensure they have been implemented
 
