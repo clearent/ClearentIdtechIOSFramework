@@ -470,6 +470,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 
 - (void) disableCardRemovalTimer {
     if(monitorCardRemovalTimer != nil) {
+         [Teleport logError:@"monitorCardRemovalTimer: invalidate"];
           [monitorCardRemovalTimer invalidate];
     }
 }
@@ -535,6 +536,8 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
            || [clearentFeedback.message isEqualToString:CLEARENT_TRANSACTION_TERMINATED]
            || [clearentFeedback.message isEqualToString:CLEARENT_MSD_CONTACTLESS_UNSUPPORTED]
            || [clearentFeedback.message isEqualToString:CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE]
+           || [clearentFeedback.message isEqualToString:CLEARENT_CARD_READ_OK_TO_REMOVE_CARD]
+           || [clearentFeedback.message isEqualToString:CLEARENT_TRANSLATING_CARD_TO_TOKEN]
            || [clearentFeedback.message isEqualToString:CLEARENT_SUCCESSFUL_TOKENIZATION_MESSAGE])) {
         
         [self disableCardRemovalTimer];
@@ -734,7 +737,11 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         } else {
             ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequestForASwipe:cardData];
             if(clearentTransactionTokenRequest == nil || clearentTransactionTokenRequest.track2Data == nil || [clearentTransactionTokenRequest.track2Data isEqualToString:@""]) {
-                [self restartSwipeIn2In1Mode:cardData];
+                if(![self isSwipeHandledInEmvFlow]) {
+                  [self deviceMessage:CLEARENT_GENERIC_CARD_READ_ERROR_RESPONSE];
+                } else {
+                  [self restartSwipeIn2In1Mode:cardData];
+                }
             } else {
                 if(!sentCardReadSuccessMessage) {
                     [self deviceMessage:CLEARENT_CARD_READ_SUCCESS];
@@ -747,9 +754,9 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         [self restartSwipeIn2In1Mode:cardData];
     } else if (cardData != nil && cardData.event == EVENT_MSR_TIMEOUT) {
         [self deviceMessage:CLEARENT_TIMEOUT_ERROR_RESPONSE];
-    } else if(userToldToUseMagStripe) {
+    } else if(userToldToUseMagStripe && ![self isSwipeHandledInEmvFlow]) {
         [self restartSwipeOnly:cardData];
-    } else {
+    } else if(![self isSwipeHandledInEmvFlow]) {
         [self restartSwipeIn2In1Mode:cardData];
     }
 }
@@ -875,11 +882,13 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     if (cardData != nil && cardData.event == EVENT_MSR_CARD_DATA && (cardData.track2 != nil || cardData.encTrack2 != nil)) {
         ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequestFallbackSwipe:cardData];
         if(clearentTransactionTokenRequest == nil || clearentTransactionTokenRequest.track2Data == nil || [clearentTransactionTokenRequest.track2Data isEqualToString:@""]) {
-            if(userToldToUseMagStripe) {
+             if(![self isSwipeHandledInEmvFlow]) {
+                 [self deviceMessage:CLEARENT_GENERIC_CARD_READ_ERROR_RESPONSE];
+             } else if(userToldToUseMagStripe) {
                 [self restartSwipeOnly:cardData];
-            } else {
+             } else {
                 [self restartSwipeIn2In1Mode:cardData];
-            }
+             }
         } else {
             if(!sentCardReadSuccessMessage) {
                 [self deviceMessage:CLEARENT_CARD_READ_SUCCESS];
@@ -1025,7 +1034,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     @try {
         if (emvData.cardData != nil
             && emvData.resultCodeV2 == EMV_RESULT_CODE_V2_MSR_SUCCESS) {
-            if(_originalEntryMode == 81 || previousSwipeWasCardWithChip || userToldToUseChipReader) {
+           if(_originalEntryMode == 81 || previousSwipeWasCardWithChip || userToldToUseChipReader) {
                 [self swipeMSRDataFallback:emvData.cardData];
             } else if(entryMode == SWIPE) {
                 if([self isSwipeHandledInEmvFlow]) {
@@ -1036,8 +1045,13 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
             } else if(isSupportedEmvEntryMode(entryMode)) {
                 ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequest:emvData];
                 if(clearentTransactionTokenRequest == nil || clearentTransactionTokenRequest.track2Data == nil || [clearentTransactionTokenRequest.track2Data isEqualToString:@""]) {
-                       [self restartSwipeIn2In1Mode:emvData.cardData];
-                       return;
+                    //it is possible with the latest idtech framework swipe changes this was starting a new transaction while another was still in flight.
+                    if(![self isSwipeHandledInEmvFlow]) {
+                        [Teleport logInfo:@"Skipping bad swipe in convertIDTechCardToClearentTransactionToken"];
+                    } else {
+                        [self restartSwipeIn2In1Mode:emvData.cardData];
+                    }
+                    return;
                 }
                 if(!sentCardReadSuccessMessage) {
                     [self deviceMessage:CLEARENT_CARD_READ_SUCCESS];
