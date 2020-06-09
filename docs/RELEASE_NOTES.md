@@ -1,7 +1,16 @@
 ![Screenshot](clearent_logo.jpg)
 
-# Release Notes
+# Release Notes (Current Release is 2.0.3)
 
+2.0.3 - Latest release
+
+2.0.3-beta - disabled a retry of a swipe when it wasn't necessary.
+
+2.0.2-beta - logging. added a TIMEOUT that will occur 1 second after the transaction times out if idtech has not returned the TIMEOUT. When there are 3 short beeps it when using a phone for tap a message "SEE PHONE" should show to indicate the user needs to answer a password or biometric prompt.
+
+2.0.1-beta - perform selector checks before calling deprecated delegate callbacks to ensure they have been implemented
+
+2.0.0-beta - We've added a new method (startTransaction) allowing you to pass in connection properties at transaction time so the framework can take control of bluetooth and audio jack connectivity. We've also simplified the integration by deprecating methods that are not used and consolidating methods that did the same thing (lcdDisplay and deviceMessage).
 1.0.26 - Added remote logging. Any errors, and some informational messages, are sent to Clearent server to aid in support. No sensitive data is transmitted (ex-card data). Fixed an issue with the manual entry request. The software-type was not being sent. The logging solution uses the file system. It cleans up after itself, rotating logs every couple of minutes and transmitting data to server every minute (but only if there is something to transmit).
 
 1.0.26.1 - New static methods to call before instantiating the Clearent_VP3300 object to avoid the microphone permission prompt. Use only if you exclusively use bluetooth readers.
