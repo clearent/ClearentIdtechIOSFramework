@@ -1,6 +1,10 @@
 # iOS SDK Changelog
 
 
+## 1.1.163.006
+### 6/10/20
+Updated SDK to recognize msr result code change from 0x11 to 0x07
+
 ## 1.1.163.005
 ### 5/27/20
 Added parseEnhancedMSRFormat to IDTUtility

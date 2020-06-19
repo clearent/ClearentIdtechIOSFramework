@@ -722,6 +722,8 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         [self deviceMessage:CLEARENT_USE_MAGSTRIPE];
     } else if((cardData != nil && cardData.iccPresent) || previousSwipeWasCardWithChip || userToldToUseChipReader) {
         [self deviceMessage:CLEARENT_CHIP_FOUND_ON_SWIPE];
+    } else {
+        [self deviceMessage:CLEARENT_TRY_MSR_AGAIN];
     }
 }
 
@@ -754,9 +756,11 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         [self restartSwipeIn2In1Mode:cardData];
     } else if (cardData != nil && cardData.event == EVENT_MSR_TIMEOUT) {
         [self deviceMessage:CLEARENT_TIMEOUT_ERROR_RESPONSE];
-    } else if(userToldToUseMagStripe && ![self isSwipeHandledInEmvFlow]) {
+    } else if(userToldToUseMagStripe) {
         [self restartSwipeOnly:cardData];
-    } else if(![self isSwipeHandledInEmvFlow]) {
+    } else if(cardData != nil && ![self isSwipeHandledInEmvFlow]) {
+        [self restartSwipeIn2In1Mode:cardData];
+    } else if (cardData != nil && cardData.event == EVENT_MSR_CARD_DATA) {
         [self restartSwipeIn2In1Mode:cardData];
     }
 }

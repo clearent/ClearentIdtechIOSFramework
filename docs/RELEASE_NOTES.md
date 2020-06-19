@@ -2,6 +2,11 @@
 
 # Release Notes (Current Release is 2.0.3)
 
+2.0.4 - added logic to handle an incomplete card object that comes back from the idtech framework during a bad swipe.
+When this happens we will cancel the current transaction and resstart a transaction in '2 in 1' mode.
+
+2.0.3 - RELEASE
+
 2.0.3-beta - disabled a retry of a swipe when it wasn't necessary.
 
 2.0.2-beta - logging. added a TIMEOUT that will occur 1 second after the transaction times out if idtech has not returned the TIMEOUT. When there are 3 short beeps it when using a phone for tap a message "SEE PHONE" should show to indicate the user needs to answer a password or biometric prompt.

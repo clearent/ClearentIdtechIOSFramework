@@ -93,6 +93,7 @@ NSString *const CLEARENT_CARD_READ_SUCCESS = @"CARD READ OK";
 NSString *const CLEARENT_CARD_READ_ERROR = @"CARD READ ERROR";
 NSString *const CLEARENT_SEE_PHONE = @"SEE PHONE";
 
+
 - (instancetype) initBluetooth:(NSString *)message {
     
     self = [super init];
