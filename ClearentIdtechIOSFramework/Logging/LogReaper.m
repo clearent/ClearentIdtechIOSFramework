@@ -77,9 +77,14 @@ static const char* const TP_LOG_REAPING_QUEUE_NAME = "com.clearent.LogReaping";
 
     NSArray *sortedFiles = [self getSortedFilesWithSuffix:[_logRotator logPathSuffix] fromFolder:[_logRotator logDir]];
     
-    [TeleportUtils teleportDebug:[NSString stringWithFormat:@"# of log files found: %lu", (unsigned long)sortedFiles.count]];
-
-    if (sortedFiles.count < 1) {
+    @try {
+          [TeleportUtils teleportDebug:[NSString stringWithFormat:@"# of log files found: %lu", (unsigned long)sortedFiles.count]];
+       }
+       @catch (NSException *e) {
+           //do nothing
+       }
+    
+    if (sortedFiles == nil || sortedFiles.count < 1) {
         return;
     }
 
@@ -89,11 +94,25 @@ static const char* const TP_LOG_REAPING_QUEUE_NAME = "com.clearent.LogReaping";
 //    if ([oldestFile isEqualToString:[_logRotator currentLogFilePath]])
 //        return;
 
-    [TeleportUtils teleportDebug:[NSString stringWithFormat:@"Oldest log file: %@", oldestFile]];
-
+    if(oldestFile != nil) {
+        [TeleportUtils teleportDebug:[NSString stringWithFormat:@"Oldest log file: %@", oldestFile]];
+    }
+    NSError* error = nil;
     // Only reap 1 log file, the oldest one, at a time
     @try {
-        [_forwarder forwardLog:[NSData dataWithContentsOfFile:oldestFile] forDeviceId:[_uuid UUIDString]];
+        
+        NSData *fileData = [NSData dataWithContentsOfFile:oldestFile options: 0 error: &error];
+        if (fileData == nil)
+        {
+           NSLog(@"Failed to read file, error %@", error);
+          [TeleportUtils teleportDebug:@"The oldestfile is not available in reap"];
+        }
+        else
+        {
+            [_forwarder forwardLog:fileData forDeviceId:[_uuid UUIDString]];
+        }
+        
+        
     }
     @catch (NSException *e) {
         [TeleportUtils teleportDebug:[NSString stringWithFormat:@"Exception: %@", e]];
@@ -103,11 +122,21 @@ static const char* const TP_LOG_REAPING_QUEUE_NAME = "com.clearent.LogReaping";
         // Consider log file reaped even in case of exception for maximum robustness.
         NSFileManager *manager = [NSFileManager defaultManager];
         NSError *error = nil;
-        [manager removeItemAtPath:oldestFile error:&error];
         
-        if (error) {
-            [TeleportUtils teleportDebug:[NSString stringWithFormat:@"Exception: %@", error]];
-        }
+        @try {
+               
+              [manager removeItemAtPath:oldestFile error:&error];
+               
+               if (error) {
+                   [TeleportUtils teleportDebug:[NSString stringWithFormat:@"Exception: %@", error]];
+               }
+               
+           }
+           @catch (NSException *e) {
+               //do nothing
+           }
+        
+        
         if (sortedFiles.count == 1) {
             [TeleportUtils teleportDebug:@"Rotate when last file deleted"];
             [_logRotator rotate];

@@ -20,17 +20,19 @@
         FILE *out = stderr;
 #endif
         
-        NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
-        [dateFormat setDateFormat:@"HH:mm:ss:SSS"];
-        //NSDate *now = [[NSDate alloc] init];
-        //NSString* timeString = [dateFormat stringFromDate:now];
-        NSString *contents;
-        va_list args;
-        va_start(args, format);
-        contents = [[NSString alloc] initWithFormat:format arguments:args];
-        va_end(args);
-        //fprintf(out, "%s - %s\n", [timeString UTF8String], [contents UTF8String]);
-        
+        @try {
+               
+               NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
+               [dateFormat setDateFormat:@"HH:mm:ss:SSS"];
+               NSString *contents;
+               va_list args;
+               va_start(args, format);
+               contents = [[NSString alloc] initWithFormat:format arguments:args];
+               va_end(args);
+        }
+        @catch (NSException *e) {
+            NSLog(@"failed to log debug");
+        }
     }
 
 }

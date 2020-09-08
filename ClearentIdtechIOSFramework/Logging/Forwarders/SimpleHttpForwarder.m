@@ -36,42 +36,59 @@ static NSString *const LINE_DELIMITER = @"clrnt";
     }
     
     ClearentLoggingRequest *clearentLoggingRequest = [self parseData:log];
-    [self uploadData:clearentLoggingRequest forField:@"file" URL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/%@", self.aggregatorUrl,LOG_RELATIVE_URL]] completion:^(BOOL success, NSString *errorMessage) {
-        [TeleportUtils teleportDebug:[NSString stringWithFormat:@"success = %d; errorMessage = %@", success, errorMessage]];
-    }];
+    if(clearentLoggingRequest != nil && clearentLoggingRequest.logging != nil) {
+        
+        @try {
+                [self uploadData:clearentLoggingRequest forField:@"file" URL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/%@", self.aggregatorUrl,LOG_RELATIVE_URL]] completion:^(BOOL success, NSString *errorMessage) {
+                      [TeleportUtils teleportDebug:[NSString stringWithFormat:@"success = %d; errorMessage = %@", success, errorMessage]];
+                  }];
+              }
+              @catch (NSException *e) {
+                  NSLog(@"exception when calling clearent remote logging");
+              }
+    }
 }
 
 -(ClearentLoggingRequest*) parseData:(NSData*) responseData
 {
     ClearentLoggingRequest *clearentLoggingRequest = [[ClearentLoggingRequest alloc] init];
-    clearentLoggingRequest.deviceSerialNumber = [ClearentCache getCurrentDeviceSerialNumber];
     
-    NSString *stringFromData = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
-    NSArray *logLines = [stringFromData componentsSeparatedByString:END_OF_LINE_INDICATOR];
+    @try {
+           clearentLoggingRequest.deviceSerialNumber = [ClearentCache getCurrentDeviceSerialNumber];
+           
+           NSString *stringFromData = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
+           NSArray *logLines = [stringFromData componentsSeparatedByString:END_OF_LINE_INDICATOR];
 
-    NSMutableArray* clearentLoggings = [NSMutableArray arrayWithCapacity:[logLines count]];
+           NSMutableArray* clearentLoggings = [NSMutableArray arrayWithCapacity:[logLines count]];
+           
+           for (NSString *line in logLines) {
+               if(![line isEqualToString:@""]) {
+                   ClearentLogging *clearentLogging = [[ClearentLogging alloc] init];
+                   NSArray *logData = [line componentsSeparatedByString:LINE_DELIMITER];
+                   if(logData != nil) {
+                       clearentLogging.level = logData[0];
+                       clearentLogging.message = logData[1];
+                       clearentLogging.createdDate = logData[2];
+                       [clearentLoggings addObject:clearentLogging.asDictionary];
+                   }
+               }
+           }
+           
+           NSData* data = [ NSJSONSerialization dataWithJSONObject:clearentLoggings options:0 error:nil ];
+           NSError *serializationError;
+           NSDictionary *loggingsDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&serializationError];
+           if(serializationError) {
+               clearentLoggingRequest.logging = nil;
+           } else {
+               clearentLoggingRequest.logging = loggingsDictionary;
+           }
+          
+       }
+       @catch (NSException *e) {
+           clearentLoggingRequest.logging = nil;
+       }
     
-    for (NSString *line in logLines) {
-        if(![line isEqualToString:@""]) {
-            ClearentLogging *clearentLogging = [[ClearentLogging alloc] init];
-            NSArray *logData = [line componentsSeparatedByString:LINE_DELIMITER];
-            if(logData != nil) {
-                clearentLogging.level = logData[0];
-                clearentLogging.message = logData[1];
-                clearentLogging.createdDate = logData[2];
-                [clearentLoggings addObject:clearentLogging.asDictionary];
-            }
-        }
-    }
-    
-    NSData* data = [ NSJSONSerialization dataWithJSONObject:clearentLoggings options:0 error:nil ];
-    NSError *serializationError;
-    NSDictionary *loggingsDictionary = [NSJSONSerialization JSONObjectWithData:data options:0 error:&serializationError];
-    if(serializationError) {
-        clearentLoggingRequest.logging = nil;
-    } else {
-        clearentLoggingRequest.logging = loggingsDictionary;
-    }
+   
     return clearentLoggingRequest;
     
 }

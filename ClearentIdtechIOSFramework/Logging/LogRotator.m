@@ -99,25 +99,32 @@ static const int TP_MAX_ROTATE_INTERVAL_IN_SECS = 600;
     return [fileSizeNumber longLongValue];
 }
 
-- (void)rotate
+- (void) rotate
 {
-    NSString *logDir = [self ensureLogDir];
-    NSString *nextFileName = [NSString stringWithFormat:@"%f%@", [[NSDate date] timeIntervalSince1970] * 1000, [self logPathSuffix]];
-    [TeleportUtils teleportDebug:@"Rotating FROM: %@", _currentLogPath];
-    _currentLogPath = [logDir stringByAppendingPathComponent:nextFileName];
-    [TeleportUtils teleportDebug:@"TO: %@", _currentLogPath];
-    //Do not direct stderr to file. Let's handle writing to the file.
-    //freopen([_currentLogPath cStringUsingEncoding:NSASCIIStringEncoding], "a+", stderr);
+    @try{
+        
+        NSString *logDir = [self ensureLogDir];
+        NSString *nextFileName = [NSString stringWithFormat:@"%f%@", [[NSDate date] timeIntervalSince1970] * 1000, [self logPathSuffix]];
+        [TeleportUtils teleportDebug:@"Rotating FROM: %@", _currentLogPath];
+        _currentLogPath = [logDir stringByAppendingPathComponent:nextFileName];
+        [TeleportUtils teleportDebug:@"TO: %@", _currentLogPath];
+        //Do not direct stderr to file. Let's handle writing to the file.
+        //freopen([_currentLogPath cStringUsingEncoding:NSASCIIStringEncoding], "a+", stderr);
 
-    NSFileHandle *fileHandle = [NSFileHandle fileHandleForUpdatingAtPath: _currentLogPath];
-    if(fileHandle == nil) {
-        [[NSFileManager defaultManager] createFileAtPath:_currentLogPath contents:nil attributes:nil];
-        NSMutableData *data;
-        const char *bytestring = "Beginning of log file";
-        data = [NSMutableData dataWithBytes:bytestring length:strlen(bytestring)];
-        [fileHandle writeData:data];
-        [fileHandle closeFile];
+        NSFileHandle *fileHandle = [NSFileHandle fileHandleForUpdatingAtPath: _currentLogPath];
+        if(fileHandle == nil) {
+            [[NSFileManager defaultManager] createFileAtPath:_currentLogPath contents:nil attributes:nil];
+            NSMutableData *data;
+            const char *bytestring = "Beginning of log file";
+            data = [NSMutableData dataWithBytes:bytestring length:strlen(bytestring)];
+            [fileHandle writeData:data];
+            [fileHandle closeFile];
+        }
     }
+    @catch (NSException *e) {
+            //do nothing
+    }
+    
     _lastRotation = [NSDate date];
 }
 
