@@ -22,6 +22,8 @@ Code references are in objective-c since the framework was built in that languag
 
 You can use our [Clearent Cocoapod](https://github.com/clearent/CocoaPods) or [Carthage](https://github.com/Carthage/Carthage).
 
+:new: CocoaPods latest version is 2.0.15.
+
 ### Carthage ###
 
 :one: Install Carthage if you have not done so. ex - brew install carthage.
@@ -30,7 +32,7 @@ You can use our [Clearent Cocoapod](https://github.com/clearent/CocoaPods) or [C
 
 :three: Add a Cartfile to your project (at root). Point to Clearent's github repository for this framework by adding the following to your Cartfile
 
-    github "clearent/ClearentIdtechIOSFramework" "2.0.4"
+    github "clearent/ClearentIdtechIOSFramework" "2.0.5"
 
 :four: Run this command from your project's root folder. This command will pull down a copy of the Clearent Framework and build it locally under Carthage/Build.
 

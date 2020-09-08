@@ -1,9 +1,11 @@
 ![Screenshot](clearent_logo.jpg)
 
-# Release Notes (Current Release is 2.0.3)
+# Release Notes (Current Release is 2.0.5)
+
+2.0.4 - There was an unrecoverable file exception that produced a crash in our remote logging solution.
 
 2.0.4 - added logic to handle an incomplete card object that comes back from the idtech framework during a bad swipe.
-When this happens we will cancel the current transaction and resstart a transaction in '2 in 1' mode.
+When this happens we will cancel the current transaction and restart a transaction in '2 in 1' mode.
 
 2.0.3 - RELEASE
 
