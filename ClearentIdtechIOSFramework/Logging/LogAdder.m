@@ -41,7 +41,7 @@ static NSString *const CREATED_DATE_FORMAT = @"yyyy-MM-dd-HH-mm-ss-SSS-zzz";
         }
         @catch (NSException *e)
         {
-           //do nothing
+            NSLog(@"LogAdder:log failed");
         }
         
     }

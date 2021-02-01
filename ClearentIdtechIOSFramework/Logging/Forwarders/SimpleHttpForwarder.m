@@ -85,7 +85,10 @@ static NSString *const LINE_DELIMITER = @"clrnt";
           
        }
        @catch (NSException *e) {
-           clearentLoggingRequest.logging = nil;
+           NSLog(@"failed to parse logging data");
+           if(clearentLoggingRequest != nil) {
+               clearentLoggingRequest.logging = nil;
+           }
        }
     
    

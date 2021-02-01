@@ -75,43 +75,39 @@ static const char* const TP_LOG_REAPING_QUEUE_NAME = "com.clearent.LogReaping";
         return;
     }
 
-    NSArray *sortedFiles = [self getSortedFilesWithSuffix:[_logRotator logPathSuffix] fromFolder:[_logRotator logDir]];
-    
+    NSArray *sortedFiles = nil;
     @try {
+          sortedFiles = [self getSortedFilesWithSuffix:[_logRotator logPathSuffix] fromFolder:[_logRotator logDir]];
           [TeleportUtils teleportDebug:[NSString stringWithFormat:@"# of log files found: %lu", (unsigned long)sortedFiles.count]];
        }
        @catch (NSException *e) {
-           //do nothing
+           NSLog("failed to sort files");
        }
     
     if (sortedFiles == nil || sortedFiles.count < 1) {
         return;
     }
 
-    NSString *oldestFile = [(NSDictionary*)[sortedFiles objectAtIndex:0] objectForKey:@"path"];
-    // when the oldest file is current log file, nothing to reap
-    //Not true for us. We want to reap every time.
-//    if ([oldestFile isEqualToString:[_logRotator currentLogFilePath]])
-//        return;
-
-    if(oldestFile != nil) {
-        [TeleportUtils teleportDebug:[NSString stringWithFormat:@"Oldest log file: %@", oldestFile]];
-    }
+    NSString *oldestFile = nil;
     NSError* error = nil;
-    // Only reap 1 log file, the oldest one, at a time
+    
     @try {
         
-        NSData *fileData = [NSData dataWithContentsOfFile:oldestFile options: 0 error: &error];
-        if (fileData == nil)
-        {
-           NSLog(@"Failed to read file, error %@", error);
-          [TeleportUtils teleportDebug:@"The oldestfile is not available in reap"];
+        oldestFile = [(NSDictionary*)[sortedFiles objectAtIndex:0] objectForKey:@"path"];
+      
+        if(oldestFile != nil) {
+            [TeleportUtils teleportDebug:[NSString stringWithFormat:@"Oldest log file: %@", oldestFile]];
+            NSData *fileData = [NSData dataWithContentsOfFile:oldestFile options: 0 error: &error];
+            if (fileData == nil)
+            {
+               NSLog(@"Failed to read file, error %@", error);
+              [TeleportUtils teleportDebug:@"The oldestfile is not available in reap"];
+            }
+            else
+            {
+                [_forwarder forwardLog:fileData forDeviceId:[_uuid UUIDString]];
+            }
         }
-        else
-        {
-            [_forwarder forwardLog:fileData forDeviceId:[_uuid UUIDString]];
-        }
-        
         
     }
     @catch (NSException *e) {
@@ -125,19 +121,21 @@ static const char* const TP_LOG_REAPING_QUEUE_NAME = "com.clearent.LogReaping";
         
         @try {
                
+            if(oldestFile != nil) {
               [manager removeItemAtPath:oldestFile error:&error];
                
                if (error) {
                    [TeleportUtils teleportDebug:[NSString stringWithFormat:@"Exception: %@", error]];
                }
+            }
                
-           }
-           @catch (NSException *e) {
-               //do nothing
-           }
+        }
+        @catch (NSException *e) {
+            NSLog(@"failed to remote item at path");
+        }
         
         
-        if (sortedFiles.count == 1) {
+        if (sortedFiles != nil && sortedFiles.count == 1) {
             [TeleportUtils teleportDebug:@"Rotate when last file deleted"];
             [_logRotator rotate];
         }
@@ -148,44 +146,50 @@ static const char* const TP_LOG_REAPING_QUEUE_NAME = "com.clearent.LogReaping";
 //This is reusable method which takes folder path and returns sorted file list
 -(NSArray*) getSortedFilesWithSuffix: (NSString *) suffix fromFolder: (NSString*) folderPath
 {
-    NSError *error = nil;
-    NSArray* filesArray = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:folderPath error:&error];
-    if (error) {
-        [TeleportUtils teleportDebug:@"Error: %@", error];
-        return [[NSArray alloc] init]; //return empty array in case of error
-    }
-
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF EndsWith %@", suffix];
-    filesArray =  [filesArray filteredArrayUsingPredicate:predicate];
-
-    NSMutableArray* filesAndProperties = [NSMutableArray arrayWithCapacity:[filesArray count]];
-    
-    for(NSString* file in filesArray) {
-        
-        if (![file isEqualToString:@".DS_Store"]) {
-            NSString* filePath = [folderPath stringByAppendingPathComponent:file];
-            NSDictionary* properties = [[NSFileManager defaultManager]
-                                        attributesOfItemAtPath:filePath
-                                        error:&error];
-            NSDate* modDate = [properties objectForKey:NSFileModificationDate];
-            
-            [filesAndProperties addObject:[NSDictionary dictionaryWithObjectsAndKeys:
-                                           filePath, @"path",
-                                           modDate, @"lastModDate",
-                                           nil]];
-            
+    @try{
+        NSError *error = nil;
+        NSArray* filesArray = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:folderPath error:&error];
+        if (error) {
+            [TeleportUtils teleportDebug:@"Error: %@", error];
+            return [[NSArray alloc] init]; //return empty array in case of error
         }
+
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF EndsWith %@", suffix];
+        filesArray =  [filesArray filteredArrayUsingPredicate:predicate];
+
+        NSMutableArray* filesAndProperties = [NSMutableArray arrayWithCapacity:[filesArray count]];
+        
+        for(NSString* file in filesArray) {
+            
+            if (![file isEqualToString:@".DS_Store"]) {
+                NSString* filePath = [folderPath stringByAppendingPathComponent:file];
+                NSDictionary* properties = [[NSFileManager defaultManager]
+                                            attributesOfItemAtPath:filePath
+                                            error:&error];
+                NSDate* modDate = [properties objectForKey:NSFileModificationDate];
+                
+                [filesAndProperties addObject:[NSDictionary dictionaryWithObjectsAndKeys:
+                                               filePath, @"path",
+                                               modDate, @"lastModDate",
+                                               nil]];
+                
+            }
+        }
+        
+        // Sort using a block - order inverted as we want latest date first
+        NSArray* sortedFiles = [filesAndProperties sortedArrayUsingComparator:
+                                ^(NSDictionary* path1, NSDictionary* path2)
+                                {
+                                    return [(NSDate*)[path1 objectForKey:@"lastModDate"] compare:
+                                                               [path2 objectForKey:@"lastModDate"]];
+                                }];
+        return sortedFiles;
+    }
+    @catch (NSException *e) {
+        NSLog(@"failed to getSortedFilesWithSuffix");
     }
     
-    // Sort using a block - order inverted as we want latest date first
-    NSArray* sortedFiles = [filesAndProperties sortedArrayUsingComparator:
-                            ^(NSDictionary* path1, NSDictionary* path2)
-                            {
-                                return [(NSDate*)[path1 objectForKey:@"lastModDate"] compare:
-                                                           [path2 objectForKey:@"lastModDate"]];
-                            }];
-    
-    return sortedFiles;
+    return nil;
     
 }
 @end
