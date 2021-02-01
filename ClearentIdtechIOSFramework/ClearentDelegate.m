@@ -300,15 +300,21 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     NSString *firmwareVersion;
     for(int i = 0; i < 5; i++ ) {
         [NSThread sleepForTimeInterval:0.2f];
-        NSString *result;
-        RETURN_CODE rt = [_idTechSharedInstance device_getFirmwareVersion:&result];
-        if (RETURN_CODE_DO_SUCCESS == rt) {
-            firmwareVersion = result;
-            found = true;
-            break;
+        if([_idTechSharedInstance isConnected]) {
+            NSString *result;
+            RETURN_CODE rt = [_idTechSharedInstance device_getFirmwareVersion:&result];
+            if (RETURN_CODE_DO_SUCCESS == rt) {
+                firmwareVersion = result;
+                found = true;
+                break;
+            } else {
+                [Teleport logError:CLEARENT_INVALID_FIRMWARE_VERSION];
+            }
         } else {
-            [Teleport logError:CLEARENT_INVALID_FIRMWARE_VERSION];
+            [Teleport logError:@"getFirmwareVersion:reader disconnected"];
+            break;
         }
+            
     }
     if(!found) {
         firmwareVersion = CLEARENT_INVALID_FIRMWARE_VERSION;
@@ -370,22 +376,26 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 
 - (NSString *) getDeviceSerialNumberFromReader {
     
-    bool found = false;
     NSString *firstTenOfDeviceSerialNumber;
     
     for(int i = 0; i < 5; i++ ) {
         [NSThread sleepForTimeInterval:0.5f];
-        NSString *result;
-        RETURN_CODE config_getSerialNumberRt = [_idTechSharedInstance config_getSerialNumber:&result];
-        if (RETURN_CODE_DO_SUCCESS == config_getSerialNumberRt) {
-            if (result != nil && [result length] >= 10) {
-                firstTenOfDeviceSerialNumber = [result substringToIndex:10];
+        if([_idTechSharedInstance isConnected]) {
+            NSString *result;
+            RETURN_CODE config_getSerialNumberRt = [_idTechSharedInstance config_getSerialNumber:&result];
+            if (RETURN_CODE_DO_SUCCESS == config_getSerialNumberRt) {
+                if (result != nil && [result length] >= 10) {
+                    firstTenOfDeviceSerialNumber = [result substringToIndex:10];
+                } else {
+                    firstTenOfDeviceSerialNumber = result;
+                }
+                break;
             } else {
-                firstTenOfDeviceSerialNumber = result;
+                [Teleport logError:@"getDeviceSerialNumberFromReader:fail"];
             }
-            break;
         } else {
-            [Teleport logError:@"getDeviceSerialNumberFromReader:fail"];
+            [Teleport logError:@"getDeviceSerialNumberFromReader:reader disconnected"];
+            break;
         }
     }
     
@@ -470,7 +480,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 
 - (void) disableCardRemovalTimer {
     if(monitorCardRemovalTimer != nil) {
-         [Teleport logError:@"monitorCardRemovalTimer: invalidate"];
+         [Teleport logInfo:@"monitorCardRemovalTimer: invalidate"];
           [monitorCardRemovalTimer invalidate];
     }
 }
@@ -575,7 +585,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         return;
     } else if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_CARD_SSA_OR_DDA_FAILED]) {
         [Teleport logError:@"handleContactlessError: ssa or dda failed"];
-    } else if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_CARD_MISSING_CA_PUBLIC_KEY]) {
+    } else if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_CARD_MISSING_CA_PUBLIC_KEY ]) {
         [Teleport logError:@"handleContactlessError: contactless ca public key not found"];
     } else if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_CARD_FAILED_TO_RECOVER_ISSUER_PUBLIC_KEY]) {
         [Teleport logError:@"handleContactlessError: failed to recover issuer public key"];
@@ -927,7 +937,20 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 
 - (void) emvTransactionData:(IDTEMVData*)emvData errorCode:(int)error{
   
-    [Teleport logInfo:[NSString stringWithFormat:@"EMV Transaction Data Response: = %@",[_idTechSharedInstance device_getResponseCodeString:error]]];
+    
+    @try{
+        NSString *deviceResponseCodeString = [_idTechSharedInstance device_getResponseCodeString:error];
+        if(deviceResponseCodeString != nil && ![deviceResponseCodeString isEqualToString:@""] && ![deviceResponseCodeString containsString:@"no error file found"]) {
+            [Teleport logInfo:[NSString stringWithFormat:@"EMV Transaction Data Response: = %@",deviceResponseCodeString]];
+        } else {
+            NSString *idtechErrorMessage = [ClearentUtils getIDtechErrorMessage:error];
+            [Teleport logInfo:[NSString stringWithFormat:@"EMV Transaction Data Response: = %@",idtechErrorMessage]];
+        }
+    }
+    @catch (NSException *e) {
+        [Teleport logInfo:@"Unknown EMV Transaction Data Response"];
+    }
+    
 
     if([self isEmvErrorHandled:emvData error:error]) {
         return;
@@ -1173,6 +1196,9 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     
     ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [[ClearentTransactionTokenRequest alloc] init];
     NSMutableDictionary *outgoingTags = [self createDefaultOutgoingTags:emvData];
+    if(outgoingTags == nil) {
+        [Teleport logInfo:@"createClearentTransactionTokenRequest:outgoingTags nil"];
+    }
     NSData *tagsAsNSData;
     NSString *tlvInHex;
     clearentTransactionTokenRequest.encrypted = false;
@@ -1221,12 +1247,9 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     
     if (emvData.cardType == 1) {
         [self removeInvalidContactlessTags:outgoingTags];
-        //commented this out during EMV Phase 1 contactless certification. Why did we do it in the first place ?
-//        NSString *data9F53 = [IDTUtility dataToHexString:[outgoingTags objectForKey:@"9F53"]];
-//        if(data9F53 != nil) {
-//            [outgoingTags removeObjectForKey:@"9F53"];
-//            [outgoingTags setObject:@"2010000000009000" forKey:@"9F53"];
-//        }
+        [self fixContactlessEntryMode:outgoingTags];
+    } else {
+        [self fixContactEntryMode:outgoingTags];
     }
 
     if(clearentTransactionTokenRequest.deviceSerialNumber == nil) {
@@ -1279,10 +1302,14 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
 - (NSMutableDictionary*) createDefaultOutgoingTags: (IDTEMVData*)emvData {
     NSMutableDictionary *outgoingTags;
     if(emvData == nil) {
+        [Teleport logError:@"outgoing tags nil in createDefaultOutgoingTags"];
         return outgoingTags;
     }
     if (emvData.cardType == 1) {//contactless
         outgoingTags = [emvData.unencryptedTags mutableCopy];
+        if(outgoingTags == nil) {
+            [Teleport logError:@"outgoing tags nil in createDefaultOutgoingTags for contactless"];
+        }
     } else {
         NSDictionary *transactionResultDictionary;
         NSData *tsysTags = [IDTUtility hexToData:@"508E82959A9B9C5F2A9F029F039F1A9F219F269F279F339F349F359F369F379F399F4E4F845F2D5F349F069F129F099F405F369F1E9F105657FF8106FF8105FFEE14FFEE06"];
@@ -1428,81 +1455,112 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
 }
 
 - (void) addRequiredTags: (NSMutableDictionary*) outgoingTags {
-    NSData *kernelInHex;
-    if(self.kernelVersion != nil) {
-        kernelInHex = [IDTUtility stringToData:self.kernelVersion];
-    } else {
-        NSString *kernelWithRevision = [NSString stringWithFormat:@"%@%@", KERNEL_BASE_VERSION, KERNEL_VERSION_INCREMENTAL];
-        kernelInHex = [IDTUtility stringToData:kernelWithRevision];
+    if(outgoingTags != nil) {
+        NSData *kernelInHex;
+        if(self.kernelVersion != nil) {
+            kernelInHex = [IDTUtility stringToData:self.kernelVersion];
+        } else {
+            NSString *kernelWithRevision = [NSString stringWithFormat:@"%@%@", KERNEL_BASE_VERSION, KERNEL_VERSION_INCREMENTAL];
+            kernelInHex = [IDTUtility stringToData:kernelWithRevision];
+        }
+        if([self deviceSerialNumber] != nil) {
+            [outgoingTags setObject:[IDTUtility stringToData:[self deviceSerialNumber]] forKey:DEVICE_SERIAL_NUMBER_EMV_TAG];
+        } else {
+            [outgoingTags setObject:[IDTUtility stringToData:@"9999999999"] forKey:DEVICE_SERIAL_NUMBER_EMV_TAG];
+        }
+        [outgoingTags setObject:kernelInHex forKey:KERNEL_VERSION_EMV_TAG];
     }
-    if([self deviceSerialNumber] != nil) {
-        [outgoingTags setObject:[IDTUtility stringToData:[self deviceSerialNumber]] forKey:DEVICE_SERIAL_NUMBER_EMV_TAG];
-    } else {
-        [outgoingTags setObject:[IDTUtility stringToData:@"9999999999"] forKey:DEVICE_SERIAL_NUMBER_EMV_TAG];
-    }
-    [outgoingTags setObject:kernelInHex forKey:KERNEL_VERSION_EMV_TAG];
 }
 
 - (void) removeInvalidTSYSTags: (NSMutableDictionary*) outgoingTags {
-    [outgoingTags removeObjectForKey:@"DFEF4D"];
-    [outgoingTags removeObjectForKey:@"DFEF4C"];
-    [outgoingTags removeObjectForKey:@"FFEE06"];
-    [outgoingTags removeObjectForKey:@"FFEE12"];
-    [outgoingTags removeObjectForKey:@"FFEE13"];
-    [outgoingTags removeObjectForKey:@"FFEE14"];
-    [outgoingTags removeObjectForKey:@"FF8106"];
-    [outgoingTags removeObjectForKey:@"FF8105"];
-    [outgoingTags removeObjectForKey:TRACK2_DATA_EMV_TAG];
-    [outgoingTags removeObjectForKey:TRACK1_DATA_EMV_TAG];
-    [outgoingTags removeObjectForKey:@"DFEE26"];
-    [outgoingTags removeObjectForKey:@"FFEE01"];
-    [outgoingTags removeObjectForKey:@"DF8115"];
-    [outgoingTags removeObjectForKey:@"9F12"];
-    [outgoingTags removeObjectForKey:@"FFEE1F"];
-    [outgoingTags removeObjectForKey:@"DF8001"];
-    [outgoingTags removeObjectForKey:@"9F4E"];
+    if(outgoingTags != nil) {
+        [outgoingTags removeObjectForKey:@"DFEF4D"];
+        [outgoingTags removeObjectForKey:@"DFEF4C"];
+        [outgoingTags removeObjectForKey:@"FFEE06"];
+        [outgoingTags removeObjectForKey:@"FFEE12"];
+        [outgoingTags removeObjectForKey:@"FFEE13"];
+        [outgoingTags removeObjectForKey:@"FFEE14"];
+        [outgoingTags removeObjectForKey:@"FF8106"];
+        [outgoingTags removeObjectForKey:@"FF8105"];
+        [outgoingTags removeObjectForKey:TRACK2_DATA_EMV_TAG];
+        [outgoingTags removeObjectForKey:TRACK1_DATA_EMV_TAG];
+        [outgoingTags removeObjectForKey:@"DFEE26"];
+        [outgoingTags removeObjectForKey:@"FFEE01"];
+        [outgoingTags removeObjectForKey:@"DF8115"];
+        [outgoingTags removeObjectForKey:@"9F12"];
+        [outgoingTags removeObjectForKey:@"FFEE1F"];
+        [outgoingTags removeObjectForKey:@"DF8001"];
+        [outgoingTags removeObjectForKey:@"9F4E"];
 
-    NSString *dataDF8129 = [IDTUtility dataToHexString:[outgoingTags objectForKey:@"DF8129"]];
-    if(dataDF8129 != nil) {
-        [outgoingTags removeObjectForKey:@"DF8129"];
-    }
+        NSString *dataDF8129 = [IDTUtility dataToHexString:[outgoingTags objectForKey:@"DF8129"]];
+        if(dataDF8129 != nil) {
+            [outgoingTags removeObjectForKey:@"DF8129"];
+        }
 
-    NSString *data9F6E = [IDTUtility dataToHexString:[outgoingTags objectForKey:@"9F6E"]];
-    if(data9F6E == nil || ([data9F6E isEqualToString:@""])) {
-        [outgoingTags removeObjectForKey:@"9F6E"];
-    }
-    NSString *data4F = [IDTUtility dataToHexString:[outgoingTags objectForKey:@"4F"]];
-    if(data4F == nil || ([data4F isEqualToString:@""])) {
-        [outgoingTags removeObjectForKey:@"4F"];
+        NSString *data9F6E = [IDTUtility dataToHexString:[outgoingTags objectForKey:@"9F6E"]];
+        if(data9F6E == nil || ([data9F6E isEqualToString:@""])) {
+            [outgoingTags removeObjectForKey:@"9F6E"];
+        }
+        NSString *data4F = [IDTUtility dataToHexString:[outgoingTags objectForKey:@"4F"]];
+        if(data4F == nil || ([data4F isEqualToString:@""])) {
+            [outgoingTags removeObjectForKey:@"4F"];
+        }
+    } else {
+        [Teleport logInfo:@"outgoingtags is nil. cannot remove invalid tsys tags"];
     }
 }
 
 - (void) removeInvalidContactlessTags: (NSMutableDictionary*) outgoingTags {
-    [Teleport logInfo:@"remove invalid contactless tags"];
-    [outgoingTags removeObjectForKey:@"9F66"];
-    [outgoingTags removeObjectForKey:@"9F07"];
-    [outgoingTags removeObjectForKey:@"5F24"];
-    [outgoingTags removeObjectForKey:@"5F25"];
-    [outgoingTags removeObjectForKey:@"9F71"];
-    [outgoingTags removeObjectForKey:@"9F66"];
-    [outgoingTags removeObjectForKey:@"9F11"];
-    [outgoingTags removeObjectForKey:@"9F0D"];
-    [outgoingTags removeObjectForKey:@"9F42"];
-    [outgoingTags removeObjectForKey:@"9F08"];
-    [outgoingTags removeObjectForKey:@"5F30"];
-    [outgoingTags removeObjectForKey:@"9F0E"];
-    [outgoingTags removeObjectForKey:@"DF76"];
-    [outgoingTags removeObjectForKey:@"9F0F"];
-    [outgoingTags removeObjectForKey:@"5F20"];
-    [outgoingTags removeObjectForKey:@"9F5D"];
-    [outgoingTags removeObjectForKey:@"9F6C"];//visa unknown in tsys
-    [outgoingTags removeObjectForKey:@"9F6D"];//mastercard unknown in tsys
+    if(outgoingTags != nil) {
+        [Teleport logInfo:@"remove invalid contactless tags"];
+        [outgoingTags removeObjectForKey:@"9F66"];
+        [outgoingTags removeObjectForKey:@"9F07"];
+        [outgoingTags removeObjectForKey:@"5F24"];
+        [outgoingTags removeObjectForKey:@"5F25"];
+        [outgoingTags removeObjectForKey:@"9F71"];
+        [outgoingTags removeObjectForKey:@"9F66"];
+        [outgoingTags removeObjectForKey:@"9F11"];
+        [outgoingTags removeObjectForKey:@"9F0D"];
+        [outgoingTags removeObjectForKey:@"9F42"];
+        [outgoingTags removeObjectForKey:@"9F08"];
+        [outgoingTags removeObjectForKey:@"5F30"];
+        [outgoingTags removeObjectForKey:@"9F0E"];
+        [outgoingTags removeObjectForKey:@"DF76"];
+        [outgoingTags removeObjectForKey:@"9F0F"];
+        [outgoingTags removeObjectForKey:@"5F20"];
+        [outgoingTags removeObjectForKey:@"9F5D"];
+        [outgoingTags removeObjectForKey:@"9F6C"];//visa unknown in tsys
+        [outgoingTags removeObjectForKey:@"9F6D"];//mastercard unknown in tsys
 
-    NSString *data9F7C = [IDTUtility dataToHexString:[outgoingTags objectForKey:@"9F7C"]];
-    if(data9F7C == nil || ([data9F7C isEqualToString:@""]) || ([data9F7C isEqualToString:@"0000000000000000000000000000000000000000"])) {
-        [outgoingTags removeObjectForKey:@"9F7C"];
+        NSString *data9F7C = [IDTUtility dataToHexString:[outgoingTags objectForKey:@"9F7C"]];
+        if(data9F7C == nil || ([data9F7C isEqualToString:@""]) || ([data9F7C isEqualToString:@"0000000000000000000000000000000000000000"])) {
+            [outgoingTags removeObjectForKey:@"9F7C"];
+        }
+    } else {
+        [Teleport logInfo:@"outgoingtags is nil. cannot remove invalid contactless tags"];
     }
 }
+
+- (void) fixContactlessEntryMode: (NSMutableDictionary*) outgoingTags {
+    if(outgoingTags != nil) {
+        NSString *data9F39 = [IDTUtility dataToHexString:[outgoingTags objectForKey:@"9F39"]];
+        if(data9F39 == nil || ([data9F39 isEqualToString:@""]) || ([data9F39 isEqualToString:@"05"])) {
+            [Teleport logInfo:@"Fixing contactless entry mode"];
+            [outgoingTags setObject:[IDTUtility stringToData:@"07"] forKey:"9F39"];
+        }
+    }
+}
+
+- (void) fixContactEntryMode: (NSMutableDictionary*) outgoingTags {
+    if(outgoingTags != nil) {
+        NSString *data9F39 = [IDTUtility dataToHexString:[outgoingTags objectForKey:@"9F39"]];
+        if(data9F39 == nil || ([data9F39 isEqualToString:@""]) || ([data9F39 isEqualToString:@"07"])) {
+            [Teleport logInfo:@"Fixing contact entry mode"];
+            [outgoingTags setObject:[IDTUtility stringToData:@"05"] forKey:"9F39"];
+        }
+    }
+}
+
 
 - (void) updateTransactionTimeTags: (NSMutableDictionary*) outgoingTags {
     [outgoingTags removeObjectForKey:@"9A"];
@@ -1530,6 +1588,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     }
 
     if(clearentTransactionTokenRequest == nil || clearentTransactionTokenRequest.track2Data == nil || [clearentTransactionTokenRequest.track2Data isEqualToString:@""]) {
+        [Teleport logError:@"NO TRACK2DATA. LAST CHECK BEFORE SENDING TO OUR JWT ENDPOINT"];
         [self deviceMessage:CLEARENT_FAILED_TO_READ_CARD_ERROR_RESPONSE];
         return;
     }
@@ -1586,6 +1645,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
                                                                    options:0
                                                                      error:&error];
     if (error) {
+        [Teleport logError:@"handleError:Bad response when trying to make jwt"];
         [self deviceMessage:CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
     } else {
         NSDictionary *payloadDictionary = [jsonDictionary objectForKey:@"payload"];
@@ -1621,6 +1681,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
         ClearentTransactionToken *clearentTransactionToken = [[ClearentTransactionToken alloc] initWithJson:response];
         [self.publicDelegate successTransactionToken:clearentTransactionToken];
     } else {
+        [Teleport logError:@"handleResponse:Bad response when trying to make jwt"];
         [self deviceMessage:CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
     }
 }

@@ -694,7 +694,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\nUNIVERSAL_OUTPUTFOLDER=/Users/dhigginbotham/Downloads/universal\n# Make sure the output directory exists\nmkdir -p \"${UNIVERSAL_OUTPUTFOLDER}\"\n# Next, work out if we're in SIM or DEVICE\nxcodebuild -target \"${PROJECT_NAME}\" -configuration ${CONFIGURATION} -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO BUILD_DIR=\"${UNIVERSAL_OUTPUTFOLDER}/build\" BUILD_ROOT=\"${UNIVERSAL_OUTPUTFOLDER}\" clean build\nxcodebuild -target \"${PROJECT_NAME}\" ONLY_ACTIVE_ARCH=NO -configuration ${CONFIGURATION} -arch arm64 -arch armv7 -arch armv7s defines_module=yes  -sdk iphoneos  BUILD_DIR=\"${UNIVERSAL_OUTPUTFOLDER}/build\" BUILD_ROOT=\"${UNIVERSAL_OUTPUTFOLDER}\" clean build\n# Step 2. Copy the framework structure (from iphoneos build) to the universal folder\ncp -R \"${UNIVERSAL_OUTPUTFOLDER}/build/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework\" \"${UNIVERSAL_OUTPUTFOLDER}/\"\n# Step 3. Copy simulator\ncp -R \"${UNIVERSAL_OUTPUTFOLDER}/build/${CONFIGURATION}-iphonesimulator/${PROJECT_NAME}.framework\" \"${UNIVERSAL_OUTPUTFOLDER}/\"\n# Step 4. Create universal binary file using lipo and place the combined executable in the copied framework directory\nlipo -create -output \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${UNIVERSAL_OUTPUTFOLDER}/build/Debug-iphonesimulator/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${UNIVERSAL_OUTPUTFOLDER}/build/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework/${PROJECT_NAME}\"\n\n";
+			shellScript = "UNIVERSAL_OUTPUTFOLDER=/Users/dhigginbotham/Downloads/universal\n# Make sure the output directory exists\nmkdir -p \"${UNIVERSAL_OUTPUTFOLDER}\"\n# Next, work out if we're in SIM or DEVICE\nxcodebuild -target \"${PROJECT_NAME}\" -configuration ${CONFIGURATION} -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO BUILD_DIR=\"${UNIVERSAL_OUTPUTFOLDER}/build\" BUILD_ROOT=\"${UNIVERSAL_OUTPUTFOLDER}\" clean build\nxcodebuild -target \"${PROJECT_NAME}\" ONLY_ACTIVE_ARCH=NO -configuration ${CONFIGURATION} -arch arm64 -arch armv7 -arch armv7s defines_module=yes  -sdk iphoneos  BUILD_DIR=\"${UNIVERSAL_OUTPUTFOLDER}/build\" BUILD_ROOT=\"${UNIVERSAL_OUTPUTFOLDER}\" clean build\n# Step 2. Copy the framework structure (from iphoneos build) to the universal folder\ncp -R \"${UNIVERSAL_OUTPUTFOLDER}/build/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework\" \"${UNIVERSAL_OUTPUTFOLDER}/\"\n# Step 3. Copy simulator\ncp -R \"${UNIVERSAL_OUTPUTFOLDER}/build/${CONFIGURATION}-iphonesimulator/${PROJECT_NAME}.framework\" \"${UNIVERSAL_OUTPUTFOLDER}/\"\n# Step 4. Create universal binary file using lipo and place the combined executable in the copied framework directory\nlipo -create -output \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${UNIVERSAL_OUTPUTFOLDER}/build/Debug-iphonesimulator/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${UNIVERSAL_OUTPUTFOLDER}/build/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework/${PROJECT_NAME}\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -777,9 +777,11 @@
 				);
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Automatic;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
+				VALID_ARCHS = "";
 			};
 			name = Debug;
 		};
@@ -795,8 +797,10 @@
 				);
 				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = YES;
 				CODE_SIGN_STYLE = Automatic;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = arm64;
+				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				VALID_ARCHS = "arm64 armv7 armv7s i386 x86_64";
+				VALID_ARCHS = "";
 			};
 			name = Release;
 		};
@@ -859,7 +863,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CODE_SIGN_FLAGS = "--remove-signature";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "arm64 armv7 armv7s i386";
+				VALID_ARCHS = "";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -918,7 +922,7 @@
 				OTHER_CODE_SIGN_FLAGS = "--remove-signature";
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "arm64 armv7 armv7s i386";
+				VALID_ARCHS = "";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -927,6 +931,11 @@
 		E76505091FFC306100B345F6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					armv7s,
+					armv7,
+					arm64,
+				);
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -957,14 +966,18 @@
 				SKIP_INSTALL = NO;
 				STRIP_INSTALLED_PRODUCT = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "arm64 armv7 i386 x86_64";
-				"VALID_ARCHS[sdk=*]" = "arm64 armv7 i386 x86_64";
+				VALID_ARCHS = "";
 			};
 			name = Debug;
 		};
 		E765050A1FFC306100B345F6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					armv7s,
+					armv7,
+					arm64,
+				);
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				DEFINES_MODULE = YES;
@@ -994,7 +1007,7 @@
 				SKIP_INSTALL = NO;
 				STRIP_INSTALLED_PRODUCT = NO;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALID_ARCHS = "arm64 armv7 armv7s i386";
+				VALID_ARCHS = "";
 			};
 			name = Release;
 		};
@@ -1038,6 +1051,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.clearent.ClearentIdtechIOSFramework-Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "";
 			};
 			name = Debug;
 		};
@@ -1081,6 +1095,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.clearent.ClearentIdtechIOSFramework-Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "";
 			};
 			name = Release;
 		};

@@ -538,6 +538,11 @@
     }
 }
 
+- (void) sendRemoteLogs {
+    [Teleport reap];
+}
+
+
 -(void) startConnection:(ClearentConnection*) clearentConnection {
     [clearentDeviceConnector startConnection:clearentConnection];
 }

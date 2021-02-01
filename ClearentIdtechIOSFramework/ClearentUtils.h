@@ -14,5 +14,6 @@
 + (NSString*) osVersion;
 + (NSString*) sdkVersion;
 + (NSDictionary*) hostProfileData;
++ (NSString*) getIDtechErrorMessage:(int)code;
 
 @end

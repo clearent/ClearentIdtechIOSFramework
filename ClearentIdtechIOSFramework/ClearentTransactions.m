@@ -14,6 +14,7 @@
 #import "ClearentDelegate.h"
 #import "Teleport.h"
 #import "ClearentDeviceConnector.h"
+#import "ClearentUtils.h"
 
 @implementation ClearentTransactions
 
@@ -378,12 +379,13 @@
         [NSThread sleepForTimeInterval:1.0f];
         [_clearentDelegate.idTechSharedInstance emv_disableAutoAuthenticateTransaction:FALSE];
         [_clearentDelegate setClearentPayment:clearentPaymentRequest];
-        [self resetInvalidDeviceData];
+        //[self resetInvalidDeviceData];
         
         [self workaroundCardSeatedIssue:clearentPaymentRequest.amount amtOther:clearentPaymentRequest.amtOther type:clearentPaymentRequest.type timeout:clearentPaymentRequest.timeout tags:clearentPaymentRequest.tags forceOnline:clearentPaymentRequest.forceOnline  fallback:clearentPaymentRequest.fallback];
         
         [self.clearentDelegate startFinalFeedbackMonitor:clearentPaymentRequest.timeout];
         
+        [NSThread sleepForTimeInterval:.5f];
         deviceStartRt = [_clearentDelegate.idTechSharedInstance device_startTransaction:clearentPaymentRequest.amount amtOther:clearentPaymentRequest.amtOther type:clearentPaymentRequest.type timeout:clearentPaymentRequest.timeout tags:clearentPaymentRequest.tags forceOnline:clearentPaymentRequest.forceOnline  fallback:clearentPaymentRequest.fallback];
         
         [self remoteLogTransactionRequest: deviceStartRt];
@@ -421,9 +423,28 @@
         
     } else {
         
-        NSString *errorResponse = [_clearentDelegate.idTechSharedInstance device_getResponseCodeString:idtechReturnCode];
+        @try{
+            NSString *idtechErrorMessage = [ClearentUtils getIDtechErrorMessage:idtechReturnCode];
+            [Teleport logInfo:[NSString stringWithFormat:@"%@ - %@", CLEARENT_RESPONSE_TRANSACTION_FAILED, idtechErrorMessage]];
+        }
+        @catch (NSException *e) {
+            [Teleport logInfo:@"Could not figure out start transaction error"];
+        }
         
-        [Teleport logInfo:[NSString stringWithFormat:@"remoteLogTransactionRequest: TRANSACTION FAILED. Error: ", errorResponse]];
+        @try{
+            NSString *deviceResponseCodeString = [_clearentDelegate.idTechSharedInstance device_getResponseCodeString:idtechReturnCode];
+            if(deviceResponseCodeString != nil && ![deviceResponseCodeString isEqualToString:@""] && ![deviceResponseCodeString containsString:@"no error file found"]) {
+                [Teleport logInfo:[NSString stringWithFormat:@"Start Transaction Error: = %@",deviceResponseCodeString]];
+            } else {
+                NSString *idtechErrorMessage = [ClearentUtils getIDtechErrorMessage:idtechReturnCode];
+                [Teleport logInfo:[NSString stringWithFormat:@"Start Transaction Error: = %@",idtechErrorMessage]];
+            }
+        }
+        @catch (NSException *e) {
+            [Teleport logInfo:@"remoteLogTransactionRequest:Unknown Start Transaction Error Code "];
+            
+        }
+        
         
     }
 }
@@ -653,19 +674,23 @@ clearentConnection:(ClearentConnection*) clearentConnection {
         
         clearentResponse.responseType = RESPONSE_FAIL;
         
-        NSString *errorResponse = [_clearentDelegate.idTechSharedInstance device_getResponseCodeString:startTransactionReturnCode];
-        
-        if(errorResponse != nil && ![errorResponse isEqualToString:@""]) {
-            
-            NSString *errorMessage = [NSString stringWithFormat:@"%@ - %@", CLEARENT_RESPONSE_TRANSACTION_FAILED, errorResponse];
-            [Teleport logInfo:errorMessage];
-            clearentResponse.response = errorMessage;
-            
-        } else {
-            
-            clearentResponse.responseType = RESPONSE_FAIL;
+        @try{
+            NSString *deviceResponseCodeString = [_clearentDelegate.idTechSharedInstance device_getResponseCodeString:startTransactionReturnCode];
+            if(deviceResponseCodeString != nil && ![deviceResponseCodeString isEqualToString:@""] && ![deviceResponseCodeString containsString:@"no error file found"]) {
+                [Teleport logInfo:[NSString stringWithFormat:@"Start Transaction Error: = %@",deviceResponseCodeString]];
+                NSString *errorMessage = [NSString stringWithFormat:@"%@ - %@", CLEARENT_RESPONSE_TRANSACTION_FAILED, deviceResponseCodeString];
+                clearentResponse.response = errorMessage;
+
+            } else {
+                NSString *idtechErrorMessage = [ClearentUtils getIDtechErrorMessage:startTransactionReturnCode];
+                [Teleport logInfo:[NSString stringWithFormat:@"Start Transaction Error: = %@",idtechErrorMessage]];
+                NSString *errorMessage = [NSString stringWithFormat:@"%@ - %@", CLEARENT_RESPONSE_TRANSACTION_FAILED, idtechErrorMessage];
+                clearentResponse.response = errorMessage;
+            }
+        }
+        @catch (NSException *e) {
+            [Teleport logInfo:@"Unknown Start Transaction Error Code "];
             clearentResponse.response = CLEARENT_RESPONSE_TRANSACTION_FAILED;
-            
         }
         
     }
@@ -764,5 +789,7 @@ clearentConnection:(ClearentConnection*) clearentConnection {
     [_clearentDelegate setContactless:enable];
     
 }
+
+
 
 @end

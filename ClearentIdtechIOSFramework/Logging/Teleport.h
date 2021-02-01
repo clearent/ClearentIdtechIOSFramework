@@ -15,4 +15,5 @@ FOUNDATION_EXPORT BOOL TELEPORT_DEBUG;
 + (void) startWithForwarder:(id <Forwarder>)forwarder;
 + (void) logInfo:(NSString*) logMessage;
 + (void) logError:(NSString*) logMessage;
++ (void) reap;
 @end

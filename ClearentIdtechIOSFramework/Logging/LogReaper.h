@@ -16,5 +16,7 @@
 
 //  Find all log files out of rotation, forward them to backend, and delete them.
 - (void)startLogReaping;
+//expose the reap ability so we can send logs immediately
+- (void) reap;
 
 @end

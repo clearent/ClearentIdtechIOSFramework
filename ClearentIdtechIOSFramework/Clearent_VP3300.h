@@ -1569,6 +1569,10 @@ If you did not instruct the framework to do any configuration when you initializ
  */
 - (void) clearBluetoothDeviceCache;
 
+/**
+ *  Remote logs are delayed. if you want to send them immediately call this.
+ */
+- (void) sendRemoteLogs;
 
 @end
 

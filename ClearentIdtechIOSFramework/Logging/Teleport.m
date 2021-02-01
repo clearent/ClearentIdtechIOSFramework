@@ -56,6 +56,15 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(Teleport)
     }
 }
 
+- (void) reap {
+    [_logReaper reap];
+}
+
++ (void) reap {
+    Teleport *instance = [Teleport sharedInstance];
+    [instance reap];
+}
+
 + (void) logInfo:(NSString*) logMessage {
     if(TELEPORT_ENABLED) {
         if(logMessage != nil) {
