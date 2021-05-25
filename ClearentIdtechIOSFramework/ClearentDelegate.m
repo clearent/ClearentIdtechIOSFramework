@@ -79,6 +79,10 @@ int countNumberOfShortBeeps = 0;
 
 NSTimer *monitorCardRemovalTimer;
 
+BOOL userNotifiedOfTimeOut = NO;
+
+BOOL transactionIsInProcess = NO;
+
 
 - (instancetype) init : (id <Clearent_Public_IDTech_VP3300_Delegate>) publicDelegate clearentBaseUrl:(NSString*)clearentBaseUrl publicKey:(NSString*)publicKey idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance  {
     
@@ -171,7 +175,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
                 if(!self.contactless && [message isEqualToString:@"PLEASE SWIPE,"]) {
                     [Teleport logError:@"contactless is not enabled. Switch PLEASE SWIPE to old message"];
                     [updatedArray addObject:@"INSERT/SWIPE"];
-                    [self sendFeedback:CLEARENT_USER_ACTION_2_IN_1_MESSAGE];
+                    [self deviceMessage:CLEARENT_USER_ACTION_2_IN_1_MESSAGE];
                 } else  if(!self.contactless && [message isEqualToString:@"TAP, OR INSERT"]) {
                     [Teleport logError:@"contactless is not enabled. Switch TAP OR INSERT to old message"];
                     [updatedArray addObject:@"CARD"];
@@ -203,7 +207,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
                     NSLog(@"This is not really an approval. Clearent is creating a transaction token for later use.");
                 } else {
                    [Teleport logInfo:message];
-                   [self sendFeedback:message];
+                   [self deviceMessage:message];
                    [updatedArray addObject:message];
                 }
             }
@@ -426,11 +430,19 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 
 - (void) deviceMessage:(NSString*)message {
     
-    if(message != nil) {
-        [Teleport logInfo:[NSString stringWithFormat:@"%@:%@", @"deviceMessage", message]];
+    if(message == nil) {
+        [Teleport logInfo:@"deviceMessage:message nil"];
+        return;
     }
-
-    if(message != nil && [message isEqualToString:CLEARENT_READER_CONFIGURED_MESSAGE]) {
+    
+    if(([message isEqualToString:@""] || [message isEqualToString:@" "])) {
+        [Teleport logInfo:@"deviceMessage:No Message"];
+        return;
+    }
+    
+    [Teleport logInfo:[NSString stringWithFormat:@"%@:%@", @"deviceMessage", message]];
+    
+    if([message isEqualToString:CLEARENT_READER_CONFIGURED_MESSAGE]) {
         [Teleport logInfo:@"💚💚READER READY💚💚"];
         [Teleport logInfo:@"Framework notified reader is ready"];
         self.configured = YES;
@@ -446,29 +458,50 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         return;
     }
 
-    if(message != nil && [message isEqualToString:@"RETURN_CODE_SDK_BUSY_MSR"]) {
+    if([message isEqualToString:@"RETURN_CODE_SDK_BUSY_MSR"]) {
         return;
     }
     
-    if(message != nil && [message isEqualToString:@"POWERING UNIPAY"]) {
+    if([message isEqualToString:@"POWERING UNIPAY"]) {
         if ([self.publicDelegate respondsToSelector:@selector(deviceMessage:)]) {
             [self.publicDelegate deviceMessage:CLEARENT_POWERING_UP];
         }
         return;
     }
     
-    if(message != nil && [message isEqualToString:@"RETURN_CODE_LOW_VOLUME"]) {
+    if([message isEqualToString:@"RETURN_CODE_LOW_VOLUME"]) {
         if ([self.publicDelegate respondsToSelector:@selector(deviceMessage:)]) {
             [self.publicDelegate deviceMessage:CLEARENT_AUDIO_JACK_LOW_VOLUME];
         }
         return;
     }
-
-    if(message != nil && ([message isEqualToString:CLEARENT_TIMEOUT_ERROR_RESPONSE2] || [message isEqualToString:CLEARENT_TIMEOUT_ERROR_RESPONSE] ||[message isEqualToString:CLEARENT_UNABLE_TO_GO_ONLINE] || [message isEqualToString:CLEARENT_MSD_CONTACTLESS_UNSUPPORTED])) {
-        [self cancelTransaction];
+    
+    if(([message isEqualToString:CLEARENT_PLEASE_WAIT]
+        || [message isEqualToString:CLEARENT_CARD_READ_OK_TO_REMOVE_CARD]
+        || [message isEqualToString:CLEARENT_TRANSACTION_PROCESSING]
+        || [message isEqualToString:CLEARENT_TRANSACTION_AUTHORIZING])) {
+        transactionIsInProcess = YES;
     }
 
-    if(message != nil && [message containsString:@"BLE DEVICE FOUND"]) {
+    //IDTech framework will never return timeout when its in the middle of a transaction. We have other errors to account for this.
+    //This timeout is the result of the timer we have that wraps the entire transaction to account for a scenario where the
+    //idtech framework cannot tell us to timeout. Ex- user inserts card but reader does not recognize and cannot report
+    if(transactionIsInProcess &&  [message isEqualToString:CLEARENT_TRANSACTION_FINAL_FALLBACK_ERROR]) {
+        [Teleport logInfo:@"deviceMessage:Dont callback with timeout message. Transaction is in process"];
+        return;
+    }
+    
+    if(([message isEqualToString:CLEARENT_UNABLE_TO_GO_ONLINE] || [message isEqualToString:CLEARENT_MSD_CONTACTLESS_UNSUPPORTED] || [message isEqualToString:CLEARENT_TRANSACTION_FINAL_FALLBACK_ERROR])) {
+        [self cancelTransaction];
+    }
+    
+    if(message != nil && ([message isEqualToString:@"Timeout"] || [message isEqualToString:CLEARENT_TIMEOUT_ERROR_RESPONSE2] || [message isEqualToString:CLEARENT_TIMEOUT_ERROR_RESPONSE2] || [message isEqualToString:CLEARENT_TIMEOUT_ERROR_RESPONSE] || [message isEqualToString:CLEARENT_TRANSACTION_FINAL_FALLBACK_ERROR])) {
+        if(userNotifiedOfTimeOut) {
+            return;
+        }
+    }
+    
+    if([message containsString:@"BLE DEVICE FOUND"]) {
         [_clearentDeviceConnector handleBluetoothDeviceFound:message];
     } else {
         if ([self.publicDelegate respondsToSelector:@selector(deviceMessage:)]) {
@@ -480,11 +513,9 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 
 - (void) disableCardRemovalTimer {
     if(monitorCardRemovalTimer != nil) {
-         [Teleport logInfo:@"monitorCardRemovalTimer: invalidate"];
-          [monitorCardRemovalTimer invalidate];
+        [monitorCardRemovalTimer invalidate];
     }
 }
-
 
 - (void) startFinalFeedbackMonitor:(int) timeout {
     
@@ -500,27 +531,35 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         RETURN_CODE icc_getICCReaderStatusRt = [_idTechSharedInstance icc_getICCReaderStatus:&response];
         if(RETURN_CODE_DO_SUCCESS == icc_getICCReaderStatusRt) {
             if(response->cardSeated) {
-               [self sendFeedback:CLEARENT_CARD_INSERTED];
+               [self deviceMessage:CLEARENT_CARD_INSERTED];
                [Teleport logInfo:@"monitorCardRemoval card is seated"];
             }
-        } else {
-            [Teleport logError:@"monitorCardRemoval:Failed to retrieve the icc reader status"];
         }
     } @catch (NSException *exception) {
-        [Teleport logError:@"monitorCardRemoval:Failed to retrieve the icc reader status"];
+        [Teleport logInfo:@"monitorCardRemoval:Failed to retrieve the icc reader status"];
     } @finally {
-        [self sendFeedback:CLEARENT_TRANSACTION_FINAL_FALLBACK_ERROR];
-        [Teleport logInfo:@"monitorCardRemoval final"];
+        if(!userNotifiedOfTimeOut) {
+            [self deviceMessage:CLEARENT_TRANSACTION_FINAL_FALLBACK_ERROR];
+        }
     }
-
 }
 
 
 - (void) sendFeedback:(NSString*) message {
-        
+
+    if(message != nil && ([message isEqualToString:@"Timeout"] || [message isEqualToString:CLEARENT_TIMEOUT_ERROR_RESPONSE2] || [message isEqualToString:CLEARENT_TIMEOUT_ERROR_RESPONSE] || [message isEqualToString:CLEARENT_TRANSACTION_FINAL_FALLBACK_ERROR])) {
+        if(userNotifiedOfTimeOut) {
+            return;
+        } else {
+            userNotifiedOfTimeOut = YES;
+        }
+    }
+    
     ClearentFeedback *clearentFeedback = [ClearentFeedback createFeedback:message];
 
-    if(clearentFeedback.message != nil && ![clearentFeedback.message isEqualToString:@""]) {
+    if(clearentFeedback.message != nil
+       && ![clearentFeedback.message isEqualToString:@""]
+       && ![clearentFeedback.message isEqualToString:@" "]) {
        
         [self feedback:clearentFeedback];
         
@@ -540,12 +579,8 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 - (void) disableCardRemovalTimerWhenFeedback:(ClearentFeedback*)clearentFeedback {
     
     if(clearentFeedback.message != nil
-       && ([clearentFeedback.message isEqualToString:CLEARENT_TIMEOUT_ERROR_RESPONSE]
-           || [clearentFeedback.message isEqualToString:CLEARENT_TIMEOUT_ERROR_RESPONSE2]
-           || [clearentFeedback.message isEqualToString:CLEARENT_TRANSACTION_TERMINATE]
-           || [clearentFeedback.message isEqualToString:CLEARENT_TRANSACTION_TERMINATED]
-           || [clearentFeedback.message isEqualToString:CLEARENT_MSD_CONTACTLESS_UNSUPPORTED]
-           || [clearentFeedback.message isEqualToString:CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE]
+       && !([clearentFeedback.message isEqualToString:@""] || [clearentFeedback.message isEqualToString:@" "])
+       && (clearentFeedback.feedBackMessageType == 4
            || [clearentFeedback.message isEqualToString:CLEARENT_CARD_READ_OK_TO_REMOVE_CARD]
            || [clearentFeedback.message isEqualToString:CLEARENT_TRANSLATING_CARD_TO_TOKEN]
            || [clearentFeedback.message isEqualToString:CLEARENT_SUCCESSFUL_TOKENIZATION_MESSAGE])) {
@@ -553,7 +588,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         [self disableCardRemovalTimer];
         
     }
-    
+  
 }
                           
 - (void) handleContactlessError:(NSString*)contactlessError emvData:(IDTEMVData*)emvData {
@@ -1546,7 +1581,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
         NSString *data9F39 = [IDTUtility dataToHexString:[outgoingTags objectForKey:@"9F39"]];
         if(data9F39 == nil || ([data9F39 isEqualToString:@""]) || ([data9F39 isEqualToString:@"05"])) {
             [Teleport logInfo:@"Fixing contactless entry mode"];
-            [outgoingTags setObject:[IDTUtility stringToData:@"07"] forKey:"9F39"];
+            [outgoingTags setObject:[IDTUtility stringToData:@"07"] forKey:@"9F39"];
         }
     }
 }
@@ -1556,7 +1591,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
         NSString *data9F39 = [IDTUtility dataToHexString:[outgoingTags objectForKey:@"9F39"]];
         if(data9F39 == nil || ([data9F39 isEqualToString:@""]) || ([data9F39 isEqualToString:@"07"])) {
             [Teleport logInfo:@"Fixing contact entry mode"];
-            [outgoingTags setObject:[IDTUtility stringToData:@"05"] forKey:"9F39"];
+            [outgoingTags setObject:[IDTUtility stringToData:@"05"] forKey:@"9F39"];
         }
     }
 }
@@ -1815,7 +1850,8 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     
     processingCurrentRequest = NO;
     countNumberOfShortBeeps = 0;
-    
+    userNotifiedOfTimeOut = NO;
+    transactionIsInProcess = NO;
 }
 
 - (void) clearContactlessConfigurationCache {

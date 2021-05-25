@@ -16,7 +16,7 @@
         self.softwareType = @"ClearentIdtechIOSFramework";
     }
     if(self.softwareTypeVersion == nil) {
-        self.softwareTypeVersion = @"v2.0.8";
+        self.softwareTypeVersion = @"v2.1.0";
     }
     
     if(self.csc != nil) {

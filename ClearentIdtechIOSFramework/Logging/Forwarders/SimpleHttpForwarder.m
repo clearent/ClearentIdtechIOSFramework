@@ -40,7 +40,9 @@ static NSString *const LINE_DELIMITER = @"clrnt";
         
         @try {
                 [self uploadData:clearentLoggingRequest forField:@"file" URL:[NSURL URLWithString:[NSString stringWithFormat:@"%@/%@", self.aggregatorUrl,LOG_RELATIVE_URL]] completion:^(BOOL success, NSString *errorMessage) {
-                      [TeleportUtils teleportDebug:[NSString stringWithFormat:@"success = %d; errorMessage = %@", success, errorMessage]];
+//                    if(errorMessage != nil) {
+//                      [TeleportUtils teleportDebug:[NSString stringWithFormat:@"success = %d; errorMessage = %@", success, errorMessage]];
+//                    }
                   }];
               }
               @catch (NSException *e) {
@@ -107,7 +109,7 @@ static NSString *const LINE_DELIMITER = @"clrnt";
     NSData *postData = [NSJSONSerialization dataWithJSONObject:clearentLoggingRequest.asDictionary options:0 error:&serializationError];
     
     if (serializationError) {
-        [TeleportUtils teleportDebug:[NSString stringWithFormat: @"serializationError = %@", serializationError]];
+        //[TeleportUtils teleportDebug:[NSString stringWithFormat: @"serializationError = %@", serializationError]];
         return;
     }
     
@@ -167,12 +169,12 @@ static NSString *const LINE_DELIMITER = @"clrnt";
         NSDictionary *mobileLogDictionary = [payloadDictionary objectForKey:@"mobile-log"];
         NSString *disableLogging = [mobileLogDictionary objectForKey:@"disable-logging"];
         if([disableLogging boolValue]) {
-            [TeleportUtils teleportDebug:@"Remote logging has been disabled by the server. If the app is restarted you can enable a one time log request."];
+//            [TeleportUtils teleportDebug:@"Remote logging has been disabled by the server. If the app is restarted you can enable a one time log request."];
             enabled = NO;
         }
     }
     @catch (NSException *e) {
-        [TeleportUtils teleportDebug:@"Remote logging response could not be read. Logging can never be disabled."];
+       // [TeleportUtils teleportDebug:@"Remote logging response could not be read. Logging can never be disabled."];
     }
    
 }

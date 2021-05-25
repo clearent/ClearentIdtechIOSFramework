@@ -313,20 +313,6 @@ NSTimer *bluetoothSearchDisableTimer;
 
 - (void) disableBluetoothSearchInFuture: (ClearentConnection*) clearentConnection {
     
-    NSString *lastUsedBluetoothDeviceId = [ClearentCache getLastUsedBluetoothDeviceId];
-    
-    if(clearentConnection.searchBluetooth) {
-        _tryConnectWithSavedDeviceId = false;
-    } else if(lastUsedBluetoothDeviceId != nil && ![lastUsedBluetoothDeviceId isEqualToString:@""]) {
-        _tryConnectWithSavedDeviceId = true;
-        [Teleport logInfo:@"disableBluetoothSearchInFuture. bluetooth search using saved device id."];
-    } else if(clearentConnection.bluetoothDeviceId != nil && ![clearentConnection.bluetoothDeviceId isEqualToString:@""]) {
-        _tryConnectWithSavedDeviceId = true;
-        [Teleport logInfo:@"disableBluetoothSearchInFuture. bluetooth search using provided device id."];
-    } else {
-        _tryConnectWithSavedDeviceId = false;
-    }
-    
     [self disableBluetoothSearchAfterPeriod:clearentConnection.bluetoothMaximumScanInSeconds];
 }
 
@@ -437,48 +423,30 @@ NSTimer *bluetoothSearchDisableTimer;
     
     if(_bluetoothDevices != nil) {
         size = [_bluetoothDevices count];
+    } else {
+        [Teleport logInfo:@"disableBluetoothSearch: _bluetoothDevices is nil"];
     }
         
-    
     if(size > 0) {
-        [Teleport logInfo:@"LIST OF BLUETOOTH DEVICES COMMUNICATED"];
+        [Teleport logInfo:@"disableBluetoothSearch: BLUETOOTH DEVICES FOUND"];
     } else {
-        [Teleport logInfo:@"EMPTY BLUETOOTH DEVICES COMMUNICATED"];
+        [Teleport logInfo:@"disableBluetoothSearch: NO BLUETOOTH DEVICES FOUND"];
     }
     
     if(![_clearentVP3300 isConnected] && !_clearentDelegate.clearentConnection.searchBluetooth) {
-        if(_retriedBluetoothWhenNoDevicesFound) {
-            [Teleport logInfo:@"disableBluetoothSearch retriedBluetoothWhenNoDevicesFound failed."];
-            if(size == 0) {
-                [Teleport logInfo:@"disableBluetoothSearch retriedBluetoothWhenNoDevicesFound. No devices found."];
-            }
-            if(!_clearentDelegate.clearentConnection.connectToFirstBluetoothFound) {
-                [Teleport logInfo:@"disableBluetoothSearch retriedBluetoothWhenNoDevicesFound. Report only."];
-            } else {
-                [self sendBluetoothFeedback:CLEARENT_BLUETOOTH_DISCONNECTED];
-            }
-        } else  {
-            if(!_tryConnectWithSavedDeviceId) {
-                if(size == 0) {
-                    [Teleport logInfo:@"disableBluetoothSearch says it is not connected but no devices found. force disconnect and try again"];
-                    [self retryBluetoothWhenNoDevicesFound];
-                } else {
-                    [Teleport logInfo:@"disableBluetoothSearch says it is not connected but devices found. force disconnect and try again"];
-                    [self retryBluetoothWhenNoDevicesFound];
-                }
-            } else {
-                [Teleport logInfo:@"disableBluetoothSearch saved blbuetooth not found. Clear bluetooth cache and start bluetooth connection again"];
-                [ClearentCache cacheLastUsedBluetoothDevice:nil bluetoothFriendlyName:nil];
-                _tryConnectWithSavedDeviceId = false;
-                [self startConnection:_clearentDelegate.clearentConnection];
-            }
-        }
-    } else if(size == 0) {
-         if(_clearentDelegate.clearentConnection.searchBluetooth) {
-             [Teleport logInfo:@"disableBluetoothSearch says it is connected but no devices found. handle this elsewhere"];
-         }
+        [Teleport logInfo:@"disableBluetoothSearch:CLEARENT_BLUETOOTH_DISCONNECTED"];
+        [self sendBluetoothFeedback:CLEARENT_BLUETOOTH_DISCONNECTED];
     }
     
+    //Special case for idtech framework.
+    //Readers are broadcasting but no devices come back in idtech callback. Forcing a disconnect and searching again
+    //fixes this. We used to try one more time but then the client is left wondering why it's taking longer than the configured 10 seconds
+    //maximum search. Let's compromise and force the disconnect now and make them retry.
+    if(size == 0 || ![_clearentVP3300 isConnected]) {
+
+        [_clearentVP3300 device_disconnectBLE];
+    }
+        
     if(_clearentDelegate.clearentConnection.searchBluetooth) {
         [_clearentDelegate sendBluetoothDevices];
     }
@@ -494,23 +462,6 @@ NSTimer *bluetoothSearchDisableTimer;
 - (void) sendBluetoothFeedback:(NSString*) message {
     
     [_clearentDelegate feedback:[[ClearentFeedback alloc] initBluetooth:message]];
-    
-}
-
-//Readers are broadcasting but no devices come back in idtech callback. Forcing a disconnect and searching again
-//fixes this. Just trying once should reset whatever the Idtech framework is doing.
-- (void) retryBluetoothWhenNoDevicesFound {
-    
-    if(!_retriedBluetoothWhenNoDevicesFound) {
-        
-        [_clearentVP3300 device_disconnectBLE];
-        [NSThread sleepForTimeInterval:0.5f];
-        _foundDeviceWaitingToConnect = false;
-        [self startConnection:_clearentDelegate.clearentConnection];
-        
-    }
-    
-    _retriedBluetoothWhenNoDevicesFound = true;
     
 }
 

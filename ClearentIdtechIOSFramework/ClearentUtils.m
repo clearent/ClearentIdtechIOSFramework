@@ -12,7 +12,7 @@
 #import "Teleport.h"
 
 static NSString *const DEVICESERIALNUMBER_STANDIN = @"9999999999";
-static NSString *const SDK_VERSION = @"2.0.6";
+static NSString *const SDK_VERSION = @"2.1.0";
 static NSString *const DATE_FORMAT = @"yyyy-MM-dd-HH-mm-ss-SSS-zzz";
 static NSString *const PLATFORM = @"IOS";
 static NSString *const DEFAULT_EMBEDDED_VALUE = @"LOG";

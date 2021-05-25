@@ -36,7 +36,7 @@ static const int TP_MAX_ROTATE_INTERVAL_IN_SECS = 600;
         _lastRotation = [NSDate date];
         _logRotationQueue = dispatch_queue_create(TP_LOG_ROTATION_QUEUE_NAME, DISPATCH_QUEUE_SERIAL);
 
-        [TeleportUtils teleportDebug:@"Rotation Queue: %@", _logRotationQueue];
+        //[TeleportUtils teleportDebug:@"Rotation Queue: %@", _logRotationQueue];
     }
     return self;
 }
@@ -74,7 +74,7 @@ static const int TP_MAX_ROTATE_INTERVAL_IN_SECS = 600;
 // *Not thread-safe* Need to be synchronized by caller.
 - (void)rotateIfNeeded
 {
-    [TeleportUtils teleportDebug:@"Log rotation woke up"];
+    //[TeleportUtils teleportDebug:@"Log rotation woke up"];
 
     if (_currentLogPath == nil) {
         NSLog(@"no current log path. rotate");//No current log. Create a new one
@@ -109,9 +109,9 @@ static const int TP_MAX_ROTATE_INTERVAL_IN_SECS = 600;
         
         NSString *logDir = [self ensureLogDir];
         NSString *nextFileName = [NSString stringWithFormat:@"%f%@", [[NSDate date] timeIntervalSince1970] * 1000, [self logPathSuffix]];
-        [TeleportUtils teleportDebug:@"Rotating FROM: %@", _currentLogPath];
+       // [TeleportUtils teleportDebug:@"Rotating FROM: %@", _currentLogPath];
         _currentLogPath = [logDir stringByAppendingPathComponent:nextFileName];
-        [TeleportUtils teleportDebug:@"TO: %@", _currentLogPath];
+       // [TeleportUtils teleportDebug:@"TO: %@", _currentLogPath];
         //Do not direct stderr to file. Let's handle writing to the file.
         //freopen([_currentLogPath cStringUsingEncoding:NSASCIIStringEncoding], "a+", stderr);
 
@@ -143,20 +143,18 @@ static const int TP_MAX_ROTATE_INTERVAL_IN_SECS = 600;
         NSError *err2;
         if ([[NSFileManager defaultManager] fileExistsAtPath:nextDirectory isDirectory:&isDir])
         {
-            [TeleportUtils teleportDebug:@"Dir existed: %@", nextDirectory];
             if (!isDir) {
-                [TeleportUtils teleportDebug:@"WARNING!!! Existed but not a dir. Recreating %@", nextDirectory];
                 [[NSFileManager defaultManager] removeItemAtPath:nextDirectory error:&err1];
                 [[NSFileManager defaultManager]createDirectoryAtPath:nextDirectory withIntermediateDirectories:YES attributes:nil error:&err2];
             }
         }
         else
         {
-            [TeleportUtils teleportDebug:@"Dir not existed: %@. Creating", nextDirectory];
+           // [TeleportUtils teleportDebug:@"Dir not existed: %@. Creating", nextDirectory];
             [[NSFileManager defaultManager]createDirectoryAtPath:nextDirectory withIntermediateDirectories:YES attributes:nil error:&err2];
         }
         if (err1 || err2) {
-            [TeleportUtils teleportDebug:@"ERROR!!!: error1: %@\nerror2: %@", err1, err2];;
+            //[TeleportUtils teleportDebug:@"ERROR!!!: error1: %@\nerror2: %@", err1, err2];;
             return nil;
         }
     }

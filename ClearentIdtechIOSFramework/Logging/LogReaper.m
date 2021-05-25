@@ -41,9 +41,9 @@ static const char* const TP_LOG_REAPING_QUEUE_NAME = "com.clearent.LogReaping";
         _forwarder = forwarder;
 
         _uuid = [[UIDevice currentDevice] identifierForVendor];
-        [TeleportUtils teleportDebug:@"UUID: %@", _uuid];
+       // [TeleportUtils teleportDebug:@"UUID: %@", _uuid];
         _logReapingQueue = dispatch_queue_create(TP_LOG_REAPING_QUEUE_NAME, DISPATCH_QUEUE_SERIAL);
-        [TeleportUtils teleportDebug:@"Reaping Queue: %@", _logReapingQueue];
+       // [TeleportUtils teleportDebug:@"Reaping Queue: %@", _logReapingQueue];
         
     }
     return self;
@@ -68,20 +68,20 @@ static const char* const TP_LOG_REAPING_QUEUE_NAME = "com.clearent.LogReaping";
 
 - (void) reap
 {
-    [TeleportUtils teleportDebug:@"Log reaping woke up"];
+   // [TeleportUtils teleportDebug:@"Log reaping woke up"];
 
     if ([_logRotator currentLogFilePath] == nil) {
-        [TeleportUtils teleportDebug:@"Rotator is not ready yet. Nothing to be done"];
+       // [TeleportUtils teleportDebug:@"Rotator is not ready yet. Nothing to be done"];
         return;
     }
 
     NSArray *sortedFiles = nil;
     @try {
           sortedFiles = [self getSortedFilesWithSuffix:[_logRotator logPathSuffix] fromFolder:[_logRotator logDir]];
-          [TeleportUtils teleportDebug:[NSString stringWithFormat:@"# of log files found: %lu", (unsigned long)sortedFiles.count]];
+          //[TeleportUtils teleportDebug:[NSString stringWithFormat:@"# of log files found: %lu", (unsigned long)sortedFiles.count]];
        }
        @catch (NSException *e) {
-           NSLog("failed to sort files");
+           NSLog(@"failed to sort files");
        }
     
     if (sortedFiles == nil || sortedFiles.count < 1) {
@@ -96,12 +96,12 @@ static const char* const TP_LOG_REAPING_QUEUE_NAME = "com.clearent.LogReaping";
         oldestFile = [(NSDictionary*)[sortedFiles objectAtIndex:0] objectForKey:@"path"];
       
         if(oldestFile != nil) {
-            [TeleportUtils teleportDebug:[NSString stringWithFormat:@"Oldest log file: %@", oldestFile]];
+           // [TeleportUtils teleportDebug:[NSString stringWithFormat:@"Oldest log file: %@", oldestFile]];
             NSData *fileData = [NSData dataWithContentsOfFile:oldestFile options: 0 error: &error];
             if (fileData == nil)
             {
                NSLog(@"Failed to read file, error %@", error);
-              [TeleportUtils teleportDebug:@"The oldestfile is not available in reap"];
+             // [TeleportUtils teleportDebug:@"The oldestfile is not available in reap"];
             }
             else
             {
@@ -111,7 +111,7 @@ static const char* const TP_LOG_REAPING_QUEUE_NAME = "com.clearent.LogReaping";
         
     }
     @catch (NSException *e) {
-        [TeleportUtils teleportDebug:[NSString stringWithFormat:@"Exception: %@", e]];
+       // [TeleportUtils teleportDebug:[NSString stringWithFormat:@"Exception: %@", e]];
     }
     @finally {
         // Delete log file after reapped
@@ -124,9 +124,9 @@ static const char* const TP_LOG_REAPING_QUEUE_NAME = "com.clearent.LogReaping";
             if(oldestFile != nil) {
               [manager removeItemAtPath:oldestFile error:&error];
                
-               if (error) {
-                   [TeleportUtils teleportDebug:[NSString stringWithFormat:@"Exception: %@", error]];
-               }
+//               if (error) {
+//                   [TeleportUtils teleportDebug:[NSString stringWithFormat:@"Exception: %@", error]];
+//               }
             }
                
         }
@@ -136,7 +136,7 @@ static const char* const TP_LOG_REAPING_QUEUE_NAME = "com.clearent.LogReaping";
         
         
         if (sortedFiles != nil && sortedFiles.count == 1) {
-            [TeleportUtils teleportDebug:@"Rotate when last file deleted"];
+           // [TeleportUtils teleportDebug:@"Rotate when last file deleted"];
             [_logRotator rotate];
         }
         
@@ -150,7 +150,7 @@ static const char* const TP_LOG_REAPING_QUEUE_NAME = "com.clearent.LogReaping";
         NSError *error = nil;
         NSArray* filesArray = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:folderPath error:&error];
         if (error) {
-            [TeleportUtils teleportDebug:@"Error: %@", error];
+            //[TeleportUtils teleportDebug:@"Error: %@", error];
             return [[NSArray alloc] init]; //return empty array in case of error
         }
 
