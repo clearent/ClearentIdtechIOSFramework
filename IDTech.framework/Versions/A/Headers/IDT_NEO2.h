@@ -48,6 +48,110 @@
 - (void) pinRequest:(EMV_PIN_MODE_Types)mode  key:(NSData*)key  PAN:(NSData*)PAN startTO:(int)startTO intervalTO:(int)intervalTO language:(NSString*)language;
 
 
+/**
+ Bluetooth Picker Alert
+ When a bluetooth scan is requested, this delegate will return an UIAlertView for displaying to allow the selection of a found device
+ 
+ @param view UIAlertView:
+ 
+ */
+
+- (void) bluetoothPickerAlert:(UIAlertView*)view;
+
+
+
+/**
+ * Activate Transaction
+ *
+ - VP3300
+ Initiates a CTLS transaction
+ 
+ Use this command when the ctls reader is in “Poll on Demand” mode to begin an EMV or contactless MagStripe Card transaction. When the reader is in “Poll on Demand” mode, the RF is turned on only after receiving an Activate Transaction command. When a valid Activate Transaction command is sent to the ctls reader, it starts polling for cards.
+ 
+ If the ctls reader does not find a supported card (an AID that matches one of the configured AIDs in the reader) for the specified time duration, it times out and ends the transaction. If the ctls reader finds a card within the specified time interval, it attempts to carry out the transaction. The transaction flow between the reader and the card depends on the type of card detected.
+ 
+ If the transaction is successful, the reader returns the data in CTLSResponse. If the transaction is not successful, yet it proceeded into the transaction state machine, the reader returns a Failed Transaction Record in the response data. The presence and format of the Clearing Record, Track Data and Failed Transaction record depends on the type of card that was detected.
+ 
+ Note: While an Activate command is in progress, only a Cancel may be sent. Do not send other commands until Activate Transaction has completed, because the reader will interpret these as a Cancel Transaction command.
+ 
+ 
+
+ @param tags Activate TLV tags
+ @param timeout Timeout value in seconds.
+
+ 
+ Activate TVL Tag | Description | Format | Length
+  ------ | ------ | ------ | ------
+ 9A | Transaction Date | n6 (YYMMDD) | 3
+ 9C | Transction Type | n2 | 2
+ 5F2A | Transaction Currency Code | n2 | 2
+ 5F36 | Transaction Currency Exponent | n1 | 1
+ 9F02 | Amount, Authorized | n12 | 6
+ 9F03 | Amount Other | n12 | 6
+ 9F1A | Terminal Country Code |  n3| 2
+ 9F21 | Transaction Time | n6 (HHMMSS} | 3
+ 9F5A | Terminal Transaction Type | b | 1
+ 
+ Transaction Types: 0x00 = Purchase Goods/Services, 0x20 = Refund
+ Terminal Transaction Type (Interac)  0x00 = Purchase, 0x01 = Refund
+ 
+ * @return RETURN_CODE:
+ - 0x0000: Success: no error - RETURN_CODE_DO_SUCCESS
+ - 0x0001: Disconnect: no response from reader - RETURN_CODE_ERR_DISCONNECT
+ - 0x0002: Invalid Response: invalid response data - RETURN_CODE_ERR_CMD_RESPONSE
+ - 0x0003: Timeout: time out for task or CMD - RETURN_CODE_ERR_TIMEDOUT
+ - 0x0004: Invalid Parameter: wrong parameter - RETURN_CODE_ERR_INVALID_PARAMETER
+ - 0x0005: MSR Busy: SDK is doing MSR or ICC task - RETURN_CODE_SDK_BUSY_MSR
+ - 0x0006: PINPad Busy:  SDK is doing PINPad task - RETURN_CODE_SDK_BUSY_PINPAD
+ - 0x0007: Unknown:  Unknown error - RETURN_CODE_ERR_OTHER
+ - 0xFF00: Accept the online transaction RETURN_CODE_EMV_APPROVED
+ - 0xFF01: Decline the online transaction RETURN_CODE_EMV_DECLINED
+ - 0xFF02: Request to go online RETURN_CODE_EMV_GO_ONLINE
+ - 0xFF03: Transaction is terminated RETURN_CODE_EMV_FAILED
+ - 0xFF05: ICC format error or ICC missing data error RETURN_CODE_EMV_SYSTEM_ERROR
+ - 0xFF07: ICC didn't accept transaction RETURN_CODE_EMV_NOT_ACCEPTED
+ - 0xFF0A: Application may fallback to magstripe technology RETURN_CODE_EMV_FALLBACK
+ - 0xFF0C: Transaction was cancelled RETURN_CODE_EMV_CANCEL
+ - 0xFF0D: Timeout RETURN_CODE_EMV_TIMEOUT
+ - 0xFF0F: Other EMV Error RETURN_CODE_EMV_OTHER_ERROR
+ - 0xFF10: Accept the offline transaction RETURN_CODE_EMV_OFFLINE_APPROVED
+ - 0xFF11: Decline the offline transaction RETURN_CODE_EMV_OFFLINE_DECLINED
+ 
+ 
+ 
+ \par Converting TLV to NSMutableDictionary
+ 
+ EMV data is  received in TLV (Tag, Length, value) format:
+ `950500000080009B02E8009F2701018A025A339F26080C552B9364D55CE5`
+ 
+ This data contains the following EMV tags/values:
+ 
+ Tag | Length | Value
+ ----- | ----- | -----
+ 9502 | 06 | 000000001995
+ 9A | 03 | 140530
+ 9C | 01 | 00
+ 
+ An example how to create an NSMutableDictionary with these values follows.
+ 
+ @code
+ -(NSMutableDictionary*) createTLVDict{
+ 
+ NSMutableDictionary *emvTags = [[NSMutableDictionary alloc] initWithCapacity:0];
+ 
+ [emvTags setObject:@"000000001995" forKey:@"9502"];
+ [emvTags setObject:@"140530" forKey:@"9A"];
+ [emvTags setObject:@"00" forKey:@"9C"];
+ 
+ return emvTags;
+ 
+ }
+ @endcode
+ 
+ */
+
+-(RETURN_CODE) activateTransaction:(NSMutableDictionary<NSString*,NSString*> *_Nullable)tags timeout:(int)timeout;
+
 
 /**
  Pinpad data delegate protocol
@@ -702,6 +806,157 @@
 -(RETURN_CODE) device_setPassThrough:(BOOL)enablePassThrough;
 
 
+/**
+* Poll for Token
+*
+Once Pass-Through Mode is started, ViVOpay will not poll for any cards until the “Poll for Token”
+	command is received. This command tells ViVOpay to start polling for a Type A or Type B PICC
+	until a PICC is detected or a timeout occurs.
+
+	This command automatically turns the RF Antenna on.
+
+If a PICC is detected within the specified time limit, ViVOpay activates it and responds back to the
+	terminal with card related data such as the Serial Number.
+If no PICC is detected within the specified time limit, ViVOpay stops polling and responds back
+	indicating that no card was found. No card related data is returned in this case
+
+ @param timeout  Timeout, in seconds to wait for card to be detected
+ @param card Card Type:
+   -  00h None (Card Not Detected or Could not Activate)
+   -  01h ISO 14443 Type A (Supports ISO 14443-4 Protocol)
+   -  02h ISO 14443 Type B (Supports ISO 14443-4 Protocol)
+   -  03h Mifare Type A (Standard)
+   -  04h Mifare Type A (Ultralight)
+   -  05h ISO 14443 Type A (Does not support ISO 14443-4 Protocol)
+   -  06h ISO 14443 Type B (Does not support ISO 14443-4 Protocol)
+   -  07h ISO 14443 Type A and Mifare (NFC phone)
+
+ @param serialNumber  Serial Number or the UID of the PICC
+ @param ident Device ID to send command to.  If not specified, current SDK default device will be used.
+
+ @return RETURN_CODE:  Values can be parsed with device_getResponseCodeString
+*/
+
+-(RETURN_CODE) device_pollForToken:(Byte)seconds card:(Byte**)card serialNumber:(NSData**)serialNumber;
+
+
+/**
+* Antenna Control
+*
+ The Antenna Control command turns the RF Antenna ON or OFF.
+
+ @param turnON  TRUE = ON, FALSE = OFF
+
+ @return RETURN_CODE:  Values can be parsed with device_getResponseCodeString
+*/
+-(RETURN_CODE) device_antennaControl:(bool)turnON;
+
+/**
+* Exchange Contactless Data
+*
+ The Echange Contactless Data command allows the host device to send, via the ViVOpay reader,
+ application-level APDUs to a PICC that supports ISO 14443-4 Protocol. The reader sends the PICC
+ response back to the host
+
+ @param sendData  APDU Out
+ @param receiveData  APDU response
+
+ @return RETURN_CODE:  Values can be parsed with device_getResponseCodeString
+*/
+-(RETURN_CODE) device_exchangeContactlessData:(NSData*)sendData  receiveData:(NSData**)receiveData;
+
+/**
+* Set Special Function or Feature Configuration Command
+*
+ The Set Special Function or Feature Configuration command sets a specific special configuration.
+
+ @param feature  Function/Feature ID
+ @param addRequirement  Additional Requirement
+
+ @return RETURN_CODE:  Values can be parsed with device_getResponseCodeString
+*/
+-(RETURN_CODE) device_setSpecialFunctionOrFeature:(NSData*)feature addRequirement:(NSData*)addRequirement;
+
+
+/**
+* Get Special Function or Feature Configuration Command
+*
+ The Get Special Function or Feature Configuration command returns the specific special configuration.
+
+ @param feature  Function/Feature ID
+ @param addRequirement  Additional Requirement
+
+ @return RETURN_CODE:  Values can be parsed with device_getResponseCodeString
+*/
+-(RETURN_CODE) device_getSpecialFunctionOrFeature:(NSData**)feature addRequirement:(NSData**)addRequirement;
+
+
+/**
+ * Set Terminal Data
+
+ *
+ Sets the Terminal Data .
+ 
+ * @param responseData  The data to set
+ *
+ *
+ * @return RETURN_CODE:
+ - 0x0000: Success: no error - RETURN_CODE_DO_SUCCESS
+ - 0x0001: Disconnect: no response from reader - RETURN_CODE_ERR_DISCONNECT
+ - 0x0002: Invalid Response: invalid response data - RETURN_CODE_ERR_CMD_RESPONSE
+ - 0x0003: Timeout: time out for task or CMD - RETURN_CODE_ERR_TIMEDOUT
+ - 0x0004: Invalid Parameter: wrong parameter - RETURN_CODE_ERR_INVALID_PARAMETER
+ - 0x0005: MSR Busy: SDK is doing MSR or ICC task - RETURN_CODE_SDK_BUSY_MSR
+ - 0x0006: PINPad Busy:  SDK is doing PINPad task - RETURN_CODE_SDK_BUSY_PINPAD
+ - 0x0007: Unknown:  Unknown error - RETURN_CODE_ERR_OTHER
+ - 0x0100 through 0xFFFF refer to IDT_Device::getResponseCodeString:()
+ */
+-(RETURN_CODE) device_setTerminalData:(NSData*)tags;
+
+/**
+ * Retrieve Terminal Data
+
+ *
+ Retrieves the Terminal Data .  The Terminal Data will be in the response parameter responseData
+ 
+ * @param responseData  The response returned from the method as NSData
+ *
+ *
+ * @return RETURN_CODE:
+ - 0x0000: Success: no error - RETURN_CODE_DO_SUCCESS
+ - 0x0001: Disconnect: no response from reader - RETURN_CODE_ERR_DISCONNECT
+ - 0x0002: Invalid Response: invalid response data - RETURN_CODE_ERR_CMD_RESPONSE
+ - 0x0003: Timeout: time out for task or CMD - RETURN_CODE_ERR_TIMEDOUT
+ - 0x0004: Invalid Parameter: wrong parameter - RETURN_CODE_ERR_INVALID_PARAMETER
+ - 0x0005: MSR Busy: SDK is doing MSR or ICC task - RETURN_CODE_SDK_BUSY_MSR
+ - 0x0006: PINPad Busy:  SDK is doing PINPad task - RETURN_CODE_SDK_BUSY_PINPAD
+ - 0x0007: Unknown:  Unknown error - RETURN_CODE_ERR_OTHER
+ - 0x0100 through 0xFFFF refer to IDT_Device::getResponseCodeString:()
+ */
+-(RETURN_CODE) device_retrieveTerminalData:(NSData**)responseData;
+
+/**
+ * Add Terminal Data
+
+ *
+ Adds the specified TLV to the current terminal data .
+ 
+ * @param tlv  The data to set, overwriting any existing value
+ *
+ *
+ * @return RETURN_CODE:
+ - 0x0000: Success: no error - RETURN_CODE_DO_SUCCESS
+ - 0x0001: Disconnect: no response from reader - RETURN_CODE_ERR_DISCONNECT
+ - 0x0002: Invalid Response: invalid response data - RETURN_CODE_ERR_CMD_RESPONSE
+ - 0x0003: Timeout: time out for task or CMD - RETURN_CODE_ERR_TIMEDOUT
+ - 0x0004: Invalid Parameter: wrong parameter - RETURN_CODE_ERR_INVALID_PARAMETER
+ - 0x0005: MSR Busy: SDK is doing MSR or ICC task - RETURN_CODE_SDK_BUSY_MSR
+ - 0x0006: PINPad Busy:  SDK is doing PINPad task - RETURN_CODE_SDK_BUSY_PINPAD
+ - 0x0007: Unknown:  Unknown error - RETURN_CODE_ERR_OTHER
+ - 0x0100 through 0xFFFF refer to IDT_Device::getResponseCodeString:()
+ */
+
+-(RETURN_CODE) device_addTLVToTerminalData:(NSData*)tlv;
 
 /**
  * Send Burst Mode
@@ -1608,6 +1863,20 @@
 
 
 /**
+ * FeliCa Send Command
+ *
+ Send a Felica Command
+ 
+ NOTE: The reader must be in Pass Through Mode for FeliCa commands to work.
+ 
+ @param command Command data from settlement center to be sent to felica card
+ @param response Response data from felica card
+ * @return RETURN_CODE:  Values can be parsed with errorCode.getErrorString()
+ 
+ */
+-(RETURN_CODE) felica_SendCommand:(NSData*)command response:(NSData**)response;
+
+/**
  * FeliCa Write with MAC Generation
  *
  Writes a block with MAC Generation.  FeliCa Authentication must be performed first
@@ -1701,7 +1970,22 @@
         */
 -(RETURN_CODE) ctls_nfcCommand:(NSData*)systemCode response:(NSData**)response;
 
+/**
+* Begins searching for Bluetooth Low Energy devices in range and return UIAlertView with choices
+- VP3300, NEO2
+*
+* This will initiate a bluetooth searech, and return an UIAlertView to the delegate bluetoothPickerAlert
+ 
+* @param scanTime Amount of time to search for devices before returning alert view.
+* @param serviceUUIDs  A null terminated array of CBUUID to filter for specific device type.  Sending nil will report all ble devices in range
+ @param options scan options
+*
+*
+*
+* Note: Please refer to CBCentralManager scanForPeripheralsWithServices for information about serviceUUIDs and options parameters
+*/
 
+- (void)scanForBLEDevices:(NSTimeInterval)scanTime serviceUUIDs:(nullable NSArray<CBUUID *> *)serviceUUIDs options:(nullable NSDictionary<NSString *, id> *)options;
 
 /**
  * FeliCa Request Service
@@ -1772,5 +2056,8 @@
 *
 */
 + (NSString*) createFastEMVData:(IDTEMVData*)emvData;
+
+
+
 
 @end

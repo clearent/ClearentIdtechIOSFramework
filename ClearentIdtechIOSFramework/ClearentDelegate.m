@@ -277,7 +277,6 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     }
     
     if(!self.autoConfiguration && !self.contactlessAutoConfiguration) {
-        [self setupReaderOnConnect];
         [self deviceMessage:CLEARENT_READER_CONFIGURED_MESSAGE];
     } else {
         [self applyClearentConfiguration];
@@ -290,9 +289,6 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     self.kernelVersion = [self getKernelVersion];
 }
 
-- (void) setupReaderOnConnect {
-    [_clearentConfigurator initClock];
-}
 
 -(void) applyClearentConfiguration {
     [self deviceMessage:CLEARENT_DEVICE_CONNECTED_WAITING_FOR_CONFIG];
@@ -1074,7 +1070,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
      } else if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_DECLINED) {
          [Teleport logInfo:@"ignoring IDTECH authorization decline"];
          emvErrorHandled = YES;
-     } else if (emvData.cardData != nil && (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_MSR_SUCCESS || emvData.resultCodeV2 == EMV_RESULT_CODE_V2_USE_MAGSTRIPE)) {
+     } else if (emvData.cardData != nil && (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_SWIPE_NON_ICC || emvData.resultCodeV2 == EMV_RESULT_CODE_MSR_SWIPE_CAPTURED || emvData.resultCodeV2 == EMV_RESULT_CODE_V2_USE_MAGSTRIPE)) {
            if(emvData.cardData.encTrack2 == nil && emvData.cardData.track2 == nil) {
                if(userToldToUseMagStripe) {
                    [self restartSwipeOnly:emvData.cardData];
@@ -1095,7 +1091,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 - (void) convertIDTechCardToClearentTransactionToken: (IDTEMVData*)emvData entryMode:(int) entryMode {
     @try {
         if (emvData.cardData != nil
-            && emvData.resultCodeV2 == EMV_RESULT_CODE_V2_MSR_SUCCESS) {
+            && (emvData.resultCodeV2 == EMV_RESULT_CODE_MSR_SWIPE_CAPTURED || emvData.resultCodeV2 == EMV_RESULT_CODE_V2_SWIPE_NON_ICC)) {
            if(_originalEntryMode == 81 || previousSwipeWasCardWithChip || userToldToUseChipReader) {
                 [self swipeMSRDataFallback:emvData.cardData];
             } else if(entryMode == SWIPE) {
@@ -1230,41 +1226,41 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
 - (ClearentTransactionTokenRequest*) createClearentTransactionTokenRequest:(IDTEMVData*)emvData {
     
     ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [[ClearentTransactionTokenRequest alloc] init];
-    NSMutableDictionary *outgoingTags = [self createDefaultOutgoingTags:emvData];
-    if(outgoingTags == nil) {
-        [Teleport logInfo:@"createClearentTransactionTokenRequest:outgoingTags nil"];
+    clearentTransactionTokenRequest.encrypted = false;
+    
+    NSMutableDictionary *outgoingTags;
+    
+    if (emvData.cardType == 1) {//contactless
+        [self addContactlessCardToClearentTransactionTokenRequest:clearentTransactionTokenRequest emvData:emvData];
+        outgoingTags = [emvData.unencryptedTags mutableCopy];
+    } else {
+        NSDictionary *transactionResultDictionary = [self getRequiredEmvTags];
+        if(transactionResultDictionary != nil) {
+            outgoingTags = [transactionResultDictionary objectForKey:@"tags"];
+            [self addContactCardToClearentTransactionTokenRequest: clearentTransactionTokenRequest transactionResultDictionary:transactionResultDictionary emvData:emvData];
+        } else {
+            outgoingTags = [emvData.unencryptedTags mutableCopy];
+        }
     }
+    
     NSData *tagsAsNSData;
     NSString *tlvInHex;
-    clearentTransactionTokenRequest.encrypted = false;
     
     if(emvData.cardData != nil) {
         [self addCardData:clearentTransactionTokenRequest iDTEMVData:emvData];
-    } else if(isEncryptedTransaction(emvData.encryptedTags)) {
-        [self addTrack2Data: clearentTransactionTokenRequest tags:emvData.encryptedTags];
-        if(clearentTransactionTokenRequest.track2Data == nil) {
-           NSString *encryptedTrack2 = [IDTUtility dataToHexString:[emvData.encryptedTags objectForKey:IDTECH_DFEF4D_CIPHERTEXT_TAG]];
-           if(encryptedTrack2 != nil && !([encryptedTrack2 isEqualToString:@""])) {
-                clearentTransactionTokenRequest.track2Data = encryptedTrack2.uppercaseString;
-           }
-        }
-        [self addTrack2Data: clearentTransactionTokenRequest tags:emvData.unencryptedTags];
-        [self addMaskedData: clearentTransactionTokenRequest maskedTags:emvData.maskedTags];
+//    } else if(isEncryptedTransaction(emvData.encryptedTags)) {
+//        [self addTrack2Data: clearentTransactionTokenRequest tags:emvData.encryptedTags];
+//        if(clearentTransactionTokenRequest.track2Data == nil) {
+//           NSString *encryptedTrack2 = [IDTUtility dataToHexString:[emvData.encryptedTags objectForKey:IDTECH_DFEF4D_CIPHERTEXT_TAG]];
+//           if(encryptedTrack2 != nil && !([encryptedTrack2 isEqualToString:@""])) {
+//                clearentTransactionTokenRequest.track2Data = encryptedTrack2.uppercaseString;
+//           }
+//        }
+//        [self addTrack2Data: clearentTransactionTokenRequest tags:emvData.unencryptedTags];
+//        [self addMaskedData: clearentTransactionTokenRequest maskedTags:emvData.maskedTags];
     } else {
         [self addTrack2Data: clearentTransactionTokenRequest tags:emvData.unencryptedTags];
         [self addMaskedData: clearentTransactionTokenRequest maskedTags:emvData.maskedTags];
-    }
-
-    [self addKSN:clearentTransactionTokenRequest iDTEMVData:emvData];
-    
-    if (emvData.cardType == 1) {//contactless
-        if(isEncryptedTransaction(emvData.encryptedTags)) {
-            NSData* ff8105Data = [emvData.encryptedTags objectForKey:MASTERCARD_GROUP_FF8105_TAG];
-            [self addFromFF81XX: clearentTransactionTokenRequest ff81XX:ff8105Data tags:outgoingTags];
-
-            NSData* ff8106Data = [emvData.encryptedTags objectForKey:MASTERCARD_GROUP_FF8106_TAG];
-            [self addFromFF81XX: clearentTransactionTokenRequest ff81XX:ff8106Data tags:outgoingTags];
-        }
     }
     
     NSData* ff8105Data = [emvData.unencryptedTags objectForKey:MASTERCARD_GROUP_FF8105_TAG];
@@ -1278,7 +1274,6 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     [self addApplicationPreferredName:clearentTransactionTokenRequest tags:outgoingTags];
 
     [self removeInvalidTSYSTags: outgoingTags];
-    [self updateTransactionTimeTags:outgoingTags];
     
     if (emvData.cardType == 1) {
         [self removeInvalidContactlessTags:outgoingTags];
@@ -1287,13 +1282,19 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         [self fixContactEntryMode:outgoingTags];
     }
 
+    clearentTransactionTokenRequest.deviceSerialNumber = [self deviceSerialNumber];
+
     if(clearentTransactionTokenRequest.deviceSerialNumber == nil) {
-        NSString *deviceSerialNumber = [self deviceSerialNumber];
-        if(deviceSerialNumber != nil && [deviceSerialNumber length] > 8) {
-            [outgoingTags removeObjectForKey:@"9F1E"];
-            NSString *lastEightOfDeviceSerialNumber = [deviceSerialNumber substringFromIndex:[deviceSerialNumber length] - 8];
-            [outgoingTags setObject:[IDTUtility stringToData:lastEightOfDeviceSerialNumber] forKey:@"9F1E"];
-        }
+
+         if(emvData.cardData != nil && emvData.cardData.RSN != nil) {
+             [Teleport logInfo:[NSString stringWithFormat:@"Reader Serial Number %@",emvData.cardData.RSN]];
+             clearentTransactionTokenRequest.deviceSerialNumber = emvData.cardData.RSN;
+         } else {
+             NSData* data9F1E = [outgoingTags objectForKey:@"9F1E"];
+             if(data9F1E != nil) {
+                 clearentTransactionTokenRequest.deviceSerialNumber = [IDTUtility dataToString:data9F1E];
+             }
+         }
     }
     
     if(outgoingTags != nil) {
@@ -1306,10 +1307,66 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
 
     clearentTransactionTokenRequest.emv = true;
     clearentTransactionTokenRequest.kernelVersion = [self kernelVersion];
-    clearentTransactionTokenRequest.deviceSerialNumber = [self deviceSerialNumber];
+    //TODO is the firmwareversion available in the tags ? if we can stop relying on retrieving this it will cut down comm. with reader
     clearentTransactionTokenRequest.firmwareVersion = [self firmwareVersion];
 
     return clearentTransactionTokenRequest;
+}
+
+
+- (NSDictionary*) getRequiredEmvTags {
+    NSDictionary *transactionResultDictionary;
+    NSData *tsysTags = [IDTUtility hexToData:@"508E82959A9B9C5F2A9F029F039F1A9F219F269F279F339F349F359F369F379F399F4E4F845F2D5F349F069F129F099F405F369F1E9F105657FF8106FF8105FFEE14FFEE06DFEF4DFFEE12"];
+    RETURN_CODE emvRetrieveTransactionResultRt = [_idTechSharedInstance emv_retrieveTransactionResult:tsysTags retrievedTags:&transactionResultDictionary];
+    if(RETURN_CODE_DO_SUCCESS != emvRetrieveTransactionResultRt || transactionResultDictionary == nil) {
+        [Teleport logInfo:@"Failed to retrieve the Transaction Result Tags"];
+    }
+    return transactionResultDictionary;
+}
+
+
+- (void) addContactlessCardToClearentTransactionTokenRequest: (ClearentTransactionTokenRequest*) clearentTransactionTokenRequest emvData:(IDTEMVData*)emvData {
+
+    [self addMaskedData: clearentTransactionTokenRequest maskedTags:emvData.maskedTags];
+
+    if(isEncryptedTransaction(emvData.encryptedTags)) {
+
+        [self addKSN:clearentTransactionTokenRequest iDTEMVData:emvData];
+        [self addTrack2Data: clearentTransactionTokenRequest tags:emvData.unencryptedTags];//contactless get from unencrypted
+        [self addApplicationPreferredName:clearentTransactionTokenRequest tags:emvData.unencryptedTags];
+
+        if(clearentTransactionTokenRequest.track2Data == nil) {
+           NSString *encryptedTrack2FromEncrypted = [IDTUtility dataToHexString:[emvData.encryptedTags objectForKey:IDTECH_DFEF4D_CIPHERTEXT_TAG]];
+           if(encryptedTrack2FromEncrypted != nil && !([encryptedTrack2FromEncrypted isEqualToString:@""])) {
+                clearentTransactionTokenRequest.track2Data = encryptedTrack2FromEncrypted.uppercaseString;
+           } else {
+               NSString *encryptedTrack2FromUnencrypted = [IDTUtility dataToHexString:[emvData.unencryptedTags objectForKey:IDTECH_DFEF4D_CIPHERTEXT_TAG]];
+               if(encryptedTrack2FromUnencrypted != nil && !([encryptedTrack2FromUnencrypted isEqualToString:@""])) {
+                   clearentTransactionTokenRequest.track2Data = encryptedTrack2FromUnencrypted.uppercaseString;
+               }
+           }
+           [self addTrack2Data: clearentTransactionTokenRequest tags:emvData.encryptedTags];
+        }
+
+    } else {
+        [self addTrack2Data: clearentTransactionTokenRequest tags:emvData.unencryptedTags];
+    }
+}
+
+- (void) addContactCardToClearentTransactionTokenRequest: (ClearentTransactionTokenRequest*) clearentTransactionTokenRequest transactionResultDictionary:(NSDictionary*) transactionResultDictionary emvData:(IDTEMVData*)emvData {
+    NSDictionary* _tags = [transactionResultDictionary objectForKey:@"tags"];
+    NSDictionary*_encTags = [transactionResultDictionary objectForKey:@"encrypted"];
+    NSDictionary*_maskedTags = [transactionResultDictionary objectForKey:@"masked"];
+    [self addMaskedData: clearentTransactionTokenRequest maskedTags:_maskedTags];
+    if(isEncryptedTransaction(_encTags)) {
+        [self addTrack2Data: clearentTransactionTokenRequest tags:_encTags];
+        [self addKSN:clearentTransactionTokenRequest iDTEMVData:emvData];
+        [self addCipherFromRequestedTags:clearentTransactionTokenRequest requestedTags:_tags];
+    }
+    if(_tags != nil) {
+        [self addTrack2Data: clearentTransactionTokenRequest tags:_tags];
+        [self addApplicationPreferredName:clearentTransactionTokenRequest tags:_tags];
+    }
 }
 
 - (void) recordConfiguredReaderFlag: (NSData*) tagData  {
@@ -1347,7 +1404,7 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         }
     } else {
         NSDictionary *transactionResultDictionary;
-        NSData *tsysTags = [IDTUtility hexToData:@"508E82959A9B9C5F2A9F029F039F1A9F219F269F279F339F349F359F369F379F399F4E4F845F2D5F349F069F129F099F405F369F1E9F105657FF8106FF8105FFEE14FFEE06"];
+        NSData *tsysTags = [IDTUtility hexToData:@"508E82959A9B9C5F2A9F029F039F1A9F219F269F279F339F349F359F369F379F399F4E4F845F2D5F349F069F129F099F405F369F1E9F105657FF8106FF8105FFEE14FFEE06DFEF4DFFEE12"];
         RETURN_CODE emvRetrieveTransactionResultRt = [_idTechSharedInstance emv_retrieveTransactionResult:tsysTags retrievedTags:&transactionResultDictionary];
         if(RETURN_CODE_DO_SUCCESS == emvRetrieveTransactionResultRt) {
             outgoingTags = [transactionResultDictionary objectForKey:@"tags"];
@@ -1383,16 +1440,28 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
 }
 
 - (void) addKSN: (ClearentTransactionTokenRequest*) clearentTransactionTokenRequest iDTEMVData:(IDTEMVData*)iDTEMVData {
-    NSString *ksn;
-    if(iDTEMVData.KSN != nil) {
-        ksn = [IDTUtility dataToHexString:iDTEMVData.KSN].uppercaseString;
+    if(clearentTransactionTokenRequest.ksn == nil && iDTEMVData != nil) {
+        NSString *ksn;
+        if(iDTEMVData.KSN != nil) {
+            ksn = [IDTUtility dataToHexString:iDTEMVData.KSN].uppercaseString;
+        }
+        if(ksn == nil) {
+            ksn = [IDTUtility dataToHexString:[iDTEMVData.unencryptedTags objectForKey:KSN_TAG]];
+        }
+        if(ksn != nil && !([ksn isEqualToString:@""])) {
+            clearentTransactionTokenRequest.ksn = [ksn uppercaseString];
+            clearentTransactionTokenRequest.encrypted = true;
+        }
     }
-    if(ksn == nil) {
-        ksn = [IDTUtility dataToHexString:[iDTEMVData.unencryptedTags objectForKey:KSN_TAG]];
-    }
-    if(ksn != nil && !([ksn isEqualToString:@""])) {
-        clearentTransactionTokenRequest.ksn = [ksn uppercaseString];
-        clearentTransactionTokenRequest.encrypted = true;
+}
+
+- (void) addCipherFromRequestedTags: (ClearentTransactionTokenRequest*) clearentTransactionTokenRequest requestedTags:(NSDictionary*)tags {
+
+    if(clearentTransactionTokenRequest.track2Data == nil && tags != nil && [tags count] > 0) {
+        NSString *encryptedTrack2 = [IDTUtility dataToHexString:[tags objectForKey:IDTECH_DFEF4D_CIPHERTEXT_TAG]];
+        if(encryptedTrack2 != nil && !([encryptedTrack2 isEqualToString:@""])) {
+             clearentTransactionTokenRequest.track2Data = encryptedTrack2.uppercaseString;
+        }
     }
 }
 
@@ -1596,15 +1665,6 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     }
 }
 
-
-- (void) updateTransactionTimeTags: (NSMutableDictionary*) outgoingTags {
-    [outgoingTags removeObjectForKey:@"9A"];
-    [outgoingTags removeObjectForKey:@"9F21"];
-    [outgoingTags setObject:[self getClockDateAsYYMMDDInHex] forKey:@"9A"];
-    [outgoingTags removeObjectForKey:@"9F21"];
-    [outgoingTags setObject:[self getTimeAsHHMMSSInHex] forKey:@"9F21"];
-
-}
 
 - (void) createTransactionToken:(ClearentTransactionTokenRequest*)clearentTransactionTokenRequest {
     

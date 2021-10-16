@@ -52,6 +52,19 @@
  */
 +(NSString*) SDK_version;
 
+
+/**
+* Send UniMag Command
+
+*
+* @param command  A command to execute
+
+* @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniMag::device_getResponseCodeString:()
+ */
+
+-(RETURN_CODE) device_sendUniMagCmd:(NSString*)command;
+
+
 /**
  * Singleton Instance
  - All Devices
@@ -84,6 +97,54 @@
  *
  */
 -(RETURN_CODE) device_sendUniMagCommand:(UNIMAG_COMMAND_Types)command;
+
+/**
+ * Set Swipe Data Encryption
+ *
+ * Sets the swipe encryption method
+ *
+ @param encryption 1 = TDES, 2 = AES
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniPay::device_getResponseCodeString:()
+ 
+ 
+ */
+-(RETURN_CODE) msr_setSwipeEncryption:(int)encryption;
+
+
+/**
+ * Set Swipe Force Encryption
+ *
+ * Sets the swipe force encryption options
+ *
+ @param forceON TRUE = Force Encryption ON,  FALSE = Force Encryption OFF
+
+ 
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniMag::device_getResponseCodeString:()
+ 
+ 
+ */
+-(RETURN_CODE) msr_setSwipeForcedEncryptionOption:(BOOL)forceON;
+
+/**
+ * Polls device for Firmware Version
+ 
+ *
+ * @param response Response returned of Firmware Version
+ *
+ * @return RETURN_CODE:
+ - 0x0000: Success: no error - RETURN_CODE_DO_SUCCESS
+ - 0x0001: Disconnect: no response from reader - RETURN_CODE_ERR_DISCONNECT
+ - 0x0002: Invalid Response: invalid response data - RETURN_CODE_ERR_CMD_RESPONSE
+ - 0x0003: Timeout: time out for task or CMD - RETURN_CODE_ERR_TIMEDOUT
+ - 0x0004: Invalid Parameter: wrong parameter - RETURN_CODE_ERR_INVALID_PARAMETER
+ - 0x0005: MSR Busy: SDK is doing MSR or ICC task - RETURN_CODE_SDK_BUSY_MSR
+ - 0x0006: PINPad Busy:  SDK is doing PINPad task - RETURN_CODE_SDK_BUSY_PINPAD
+ - 0x0007: Unknown:  Unknown error - RETURN_CODE_ERR_OTHER
+ - 0x0100 through 0xFFFF refer to IDT_UniPay::device_getResponseCodeString:()
+ *
+ */
+-(RETURN_CODE) device_getFirmwareVersion:(NSString**)response;
 
 /**
  * Polls device for Serial Number
@@ -151,19 +212,6 @@
 
 
 /**
- * Set Swipe Data Encryption
- *
- * Sets the swipe encryption method
- *
- @param encryption 1 = TDES, 2 = AES
- 
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniMag::device_getResponseCodeString:()
- 
- 
- */
--(RETURN_CODE) msr_setSwipeEncryption:(int)encryption;
-
-/**
  * Set PrePAN Clear Digits
  
  *
@@ -195,14 +243,16 @@
  *
  * Sets the swipe force encryption options
  *
- @param forceON TRUE = Force Encryption ON,  FALSE = Force Encryption OFF
-
+ @param track1 Force encrypt track 1
+ @param track2 Force encrypt track 2
+ @param track3 Force encrypt track 3
+ @param track3card0 Force encrypt track 3 when card type is 0
  
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniMag::device_getResponseCodeString:()
+ * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniPay::device_getResponseCodeString:()
  
  
  */
--(RETURN_CODE) msr_setSwipeForcedEncryptionOption:(BOOL)forceON;
+-(RETURN_CODE) msr_setSwipeForcedEncryptionOption:(BOOL)track1 track2:(BOOL)track2 track3:(BOOL)track3 track3card0:(BOOL)track3card0;
 
 /**
  Device Connected

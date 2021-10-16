@@ -1867,4 +1867,6 @@ When using BTPay on OSX, the device can connect either via Bluetooth or USB-HID.
 */
 + (NSString*) createFastEMVData:(IDTEMVData*)emvData;
 
+
+
 @end

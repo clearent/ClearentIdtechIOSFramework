@@ -1787,4 +1787,5 @@
 */
 + (NSString*) createFastEMVData:(IDTEMVData*)emvData;
 
+
 @end

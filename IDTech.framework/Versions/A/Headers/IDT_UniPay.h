@@ -694,24 +694,7 @@
 
 
 
-/**
- * Loads the ICC DUKPT Key
- *
- * Sets the key the data will be encrypted with
- *
- @param type Key Type
-  - DUKPT_KEY_MSR = 0x00,
-  - DUKPT_KEY_ICC = 0x01,
-  - DUKPT_KEY_Admin = 0x10,
-  - DUKPT_KEY_Paireing_PinPad = 0x20,
- @param hexKSN Key Serial Number as a Hex string
- @param hexInitKey Initial key as a Hex string
- 
- * @return RETURN_CODE:  Return codes listed as typedef enum in IDTCommon:RETURN_CODE.  Values can be parsed with IDT_UniPay::device_getResponseCodeString:())
- 
- 
- */
--(RETURN_CODE) icc_loadDUKPTKey:(DUKPT_KEY_Type)type ksn:(NSString*)hexKSN initialKey:(NSString*)hexInitKey;
+
 
 
 

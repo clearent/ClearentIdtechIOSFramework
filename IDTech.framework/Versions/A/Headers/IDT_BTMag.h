@@ -197,4 +197,7 @@ typedef enum{
 */
 + (NSString*) createFastEMVData:(IDTEMVData*)emvData;
 
+
+
+
 @end

@@ -1,6 +1,152 @@
 # iOS SDK Changelog
 
 
+## 1.1.166.010
+### 9/17/21
+Restored write without response
+
+## 1.1.166.009
+### 9/17/21
+Added a 1 second connection start delay on BLE to overcome VP3600 reconnect issues
+
+## 1.1.166.008
+### 8/11/21
+Added/Updated the following error codes:
+EMV_RESULT_CODE_V2_SWIPE_NON_ICC = 0x0011,
+EMV_RESULT_CODE_V2_TRANSACTION_CANCELLED = 0x0012,
+EMV_RESULT_CODE_CTLS_TWO_CARDS = 0x7A,
+EMV_RESULT_CODE_CTLS_TERMINATE = 0x7E,
+EMV_RESULT_CODE_CTLS_TERMINATE_TRY_ANOTHER = 0x7D,
+EMV_RESULT_CODE_MSR_SWIPE_CAPTURED = 0x80,
+EMV_RESULT_CODE_REQUEST_ONLINE_PIN = 0x81,
+EMV_RESULT_CODE_REQUEST_SIGNATURE = 0x82,
+EMV_RESULT_CODE_FALLBACK_TO_CONTACT = 0x83,
+EMV_RESULT_CODE_FALLBACK_TO_OTHER = 0x84,
+EMV_RESULT_CODE_REVERSAL_REQUIRED = 0x85,
+EMV_RESULT_CODE_ADVISE_REQUIRED = 0x86,
+EMV_RESULT_CODE_ADVISE_REVERSAL_REQUIRED = 0x87,
+EMV_RESULT_CODE_NO_ADVISE_REVERSAL_REQUIRED = 0x88,
+EMV_RESULT_CODE_UNABLE_TO_REACH_HOST = 0xFF,
+EMV_RESULT_CODE_V2_MSR_CARD_READ_ERROR = 0x3012,
+
+## 1.1.166.007
+### 8/10/21
+added device_setTerminalData:(NSData*)tags
+added  device_retrieveTerminalData:(NSData**)responseData
+added device_addTLVToTerminalData:(NSData*)tlv
+
+## 1.1.166.006
+### 8/09/21
+Fixed IDT_Device , IDT_Neo2-> device_getSpecialFunctionOrFeature
+
+## 1.1.166.005
+### 8/05/21
+added IDT_Device , IDT_Neo2-> device_setSpecialFunctionOrFeature
+added IDT_Device , IDT_Neo2-> device_getSpecialFunctionOrFeature
+
+## 1.1.166.004
+### 8/04/21
+added IDT_Device -> antennaControl
+added IDT_NEO2 -> device_antennaControl
+added IDT_Device -> exchangeContactlessData
+added IDT_NEO2 -> device_exchangeContactlessData
+
+## 1.1.166.003
+### 7/13/21
+removed disconnect if set device type is current device type
+
+## 1.1.166.001
+### 7/09/21
+Added PROTOCOL_STRING_NEO = @"com.idtechproducts.neo"
+Added + (NSString*) externalAccessoryProtocol
+Added + (void) setExternalAccessoryProtocol:(NSString*)newValue
+
+## 1.1.165.004
+### 6/11/21
+Added felica_SendCommand
+
+## 1.1.165.003
+### 5/26/21
+Updated connecting to BLE
+
+## 1.1.165.002
+### 1/3/21
+Fixed transaction timeout issue when running ctls_startTransaction
+
+## 1.1.165.001
+### 1/2/21
+Added support for VP6800 BLE
+
+## 1.1.164.005
+### 1/29/21
+Automatically disconnect from previous ble scan session when starting new session 
+
+## 1.1.164.004
+### 1/25/21
+Fixed time sync from Hour/Month to Hour/Second 
+
+## 1.1.164.003
+### 1/22/21
+Added device_syncTime for VP3300 
+Added VP3300 time syncing upon start transaction SUIIS-36
+
+## 1.1.164.002
+### 1/15/21
+Added device_syncClock for VP3300 
+Added VP3300 clock syncing upon device connect SUIIS-36
+
+
+## 1.1.164.001
+### 1/08/21
+Added device_pollForToken (command 2c-02) to NEOII class
+
+## 1.1.163.016
+### 9/02/20
+Moved dispatch queues for BLE and Audio from Main to Unque
+
+## 1.1.163.015
+### 8/04/20
+Remove Tag Queue (combining TLV dictionaries)
+
+## 1.1.163.014
+### 8/02/20
+Added activateTransaction to NEO2/VP3300 class
+
+## 1.1.163.013
+### 7/23/20
+Added method resetSingleton to IDT_Device class
+Fixed createFastEMV DFEE23 tag size
+Fixed createFastEVM to add DFEE25SPS_SERVICE_3600
+
+## 1.1.163.012
+### 7/21/20
+Updated createFastEMV to fix 9F1E data issue
+Added UniMag Pro class 
+Added additional UniMag Support
+
+## 1.1.163.011
+### 7/20/20
+Updated createFastEMV to fix DFEE23 length issue
+
+## 1.1.163.010
+### 7/17/20
+Updated VP3600 TX Characteristic from 49535343-1E4D-4BD9-BA61-23C647249616 to 49535343-4c8a-39b3-2f49-511cff0773b7e CS-3429
+
+
+## 1.1.163.009
+### 6/29/20
+Remove compilier warnings duplicate methods/symbols CS-3396
+Added VP3350 Support
+
+## 1.1.163.008
+### 6/17/20
+Incorporated UniMag legacy library 7.21 and re-enabled UniMag support
+Added getDeviceType to IDT_Device class
+
+## 1.1.163.007
+### 6/17/20
+Added BLE support for VP3350
+
 ## 1.1.163.006
 ### 6/10/20
 Updated SDK to recognize msr result code change from 0x11 to 0x07

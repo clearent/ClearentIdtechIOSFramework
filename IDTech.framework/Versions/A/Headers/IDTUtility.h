@@ -13,6 +13,7 @@
 
 +(NSString*) dataToPrintableString:(NSData*)data;
 
++(NSString*) getErrorString:(int)code;
 + (NSString*) hexToString:(NSData*)data startByte:(int)start length:(int)len;
 + (NSString*) dataToString:(NSData*)data startByte:(int)start length:(int)len;
 + (NSString *) getSubString:(NSString*)str startPosition:(int)start length:(int)len;

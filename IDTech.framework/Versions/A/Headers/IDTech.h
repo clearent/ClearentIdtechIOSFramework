@@ -6,6 +6,7 @@
 #import <IDTech/IDT_iMag.h>
 #import <IDTech/IDT_UniPay.h>
 #import <IDTech/IDT_UniMag.h>
+#import <IDTech/IDT_UniMagPro.h>
 #import <IDTech/IDTMSRData.h>
 #import <IDTech/IDTEMVData.h>
 #import <IDTech/IDTUtility.h>

@@ -1,10 +1,10 @@
-/* Copyright 2010-2014 ID TECH. All rights reserved.
+/* Copyright 2010-2016 ID TECH. All rights reserved.
 */
 
 #import <Foundation/Foundation.h>
 
 //Versioning
-#define UMSDK_VERSION @"7.19"
+#define UMSDK_VERSION @"7.21"
 #define UMSDK_CUSTOMIZATION 0
 
 //Notification identifiers used with NSNotificationCenter
@@ -47,6 +47,7 @@ static inline NSString* UmReader_lookup(UmReader c) {
     case UMREADER_UNIMAG_PRO     : return @"UniMag Pro";
     case UMREADER_UNIMAG_II      : return @"UniMag II";
     case UMREADER_SHUTTLE        : return @"Shuttle";
+    default: return @"<unknown code>";
     }
 }
 
@@ -92,6 +93,7 @@ static inline NSString* UmRet_lookup(UmRet c) {
     URLOOK(UMRET_UF_INVALID_STR   )
     URLOOK(UMRET_UF_NO_FILE       )
     URLOOK(UMRET_UF_INVALID_FILE  )
+    default: return @"<unknown code>";
     }
 #undef URLOOK
 }
@@ -122,6 +124,7 @@ typedef enum {
 //version
 +(NSString*) SDK_version;
 +(uniMag*) sharedController;
+
 //status
 -(BOOL) isReaderAttached;
 -(BOOL) getConnectionStatus;
@@ -163,6 +166,7 @@ typedef enum {
 -(UmRet) sendCommandClearBuffer;
 -(UmRet) sendCommandResetBaudRate;
 -(UmRet) sendCommandCustom:(NSData *) cmd;
+-(UmRet) sendCommand:(NSString *) cmd;
 
 // firmware updating
 -(UmRet) getAuthentication;
@@ -188,6 +192,7 @@ typedef enum {
 -(void) cancelSwipe;
 //  It is no longer possible to change command timeout
 -(BOOL) setCmdTimeoutDuration:(NSInteger) seconds;
+-(void) setReaderType:(UmReader)type;
 
 @end
 

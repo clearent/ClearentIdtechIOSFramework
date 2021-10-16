@@ -135,7 +135,7 @@ typedef struct {
 +(void) enableLogging:(BOOL) enable;
 +(UniPay*) sharedController;
 +(void) isVP3300:(BOOL)VP3300;
-+(void) isUniMag:(BOOL)uniMag;
++(void) isUniMag:(int)uniMag;
 -(void) setVivoAlive:(BOOL)val;
 -(void) clearTask;
 -(void) restart;
@@ -201,6 +201,15 @@ typedef struct {
 - (void)uniMagNotifEnable:(BOOL) enable;
 +(void) usePreamble:(BOOL)pre;
 -(void) startTask_hook ;
+/**
+* Reset Singleton
+-  All Devices
+*
+Resets the singleton instance of the SDK
+
+*/
+
++(void) resetSingleton;
 
 @end
 

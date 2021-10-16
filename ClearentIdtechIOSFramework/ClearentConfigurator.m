@@ -46,8 +46,6 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
         return;
     }
     
-    [self initClock];
-    
     //we use the cache to stop configurating every time they connect. If they want to override the cache they can use the clearConfigurationCache & clearContactlessConfigurationCache
     //in Clearent_VP3300.
      NSString *storedDeviceSerialNumber = [ClearentCache getStoredDeviceSerialNumber];
@@ -250,17 +248,6 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
     return contactlessConfigurationReturnCode;
 }
 
--(void) initClock {
-    [NSThread sleepForTimeInterval:0.5f];
-    int clockRt = [self initDateAndTime];
-    if(clockRt != CLOCK_CONFIGURATION_SUCCESS) {
-        [NSThread sleepForTimeInterval:0.5f];
-         int clockRetryRt = [self initDateAndTime];
-         if(clockRetryRt != CLOCK_CONFIGURATION_SUCCESS) {
-             [Teleport logInfo:@"Failed to configure device clock"];
-         }
-    }
-}
 
 - (void) notifyInfo:(NSString*)message {
     [Teleport logInfo:message];
@@ -278,23 +265,6 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
      #pragma GCC diagnostic pop
 }
 
-- (int) initDateAndTime {
-    RETURN_CODE dateRt = [self initClockDate];
-    RETURN_CODE timeRt = [self initClockTime];
-    if (RETURN_CODE_DO_SUCCESS == dateRt && RETURN_CODE_DO_SUCCESS == timeRt) {
-        [Teleport logInfo:@"Clock Initialized"];
-    } else {
-        return CLOCK_FAILED;
-    }
-    return CLOCK_CONFIGURATION_SUCCESS;
-}
-
-- (int) initClockDate {
-    NSData *clockDate = [self getClockDateAsYYYYMMDD];
-    NSData *result;
-    return [_sharedController device_sendIDGCommand:0x25 subCommand:0x03 data:clockDate response:&result];
-}
-
 - (NSData*) getClockDateAsYYYYMMDD {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     dateFormatter.dateFormat = @"yyyyMMdd";
@@ -302,11 +272,6 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
     return [IDTUtility hexToData:dateString];
 }
 
-- (int) initClockTime {
-    NSData *timeDate = [self getClockTimeAsHHMM];
-    NSData *result;
-    return [_sharedController device_sendIDGCommand:0x25 subCommand:0x01 data:timeDate response:&result];
-}
 
 - (NSData*) getClockTimeAsHHMM {
     NSDateFormatter *timeFormatter = [[NSDateFormatter alloc] init];

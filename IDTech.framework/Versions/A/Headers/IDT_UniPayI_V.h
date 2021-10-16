@@ -1186,6 +1186,9 @@ Forces the device to reader attached state.
 */
 + (NSString*) createFastEMVData:(IDTEMVData*)emvData;
 
+
+
+
 /**
  * Set Terminal Data
  *
