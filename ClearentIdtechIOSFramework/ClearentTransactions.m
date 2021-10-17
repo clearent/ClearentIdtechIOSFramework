@@ -379,7 +379,6 @@
         [NSThread sleepForTimeInterval:1.0f];
         [_clearentDelegate.idTechSharedInstance emv_disableAutoAuthenticateTransaction:FALSE];
         [_clearentDelegate setClearentPayment:clearentPaymentRequest];
-        //[self resetInvalidDeviceData];
         
         [self.clearentDelegate startFinalFeedbackMonitor:clearentPaymentRequest.timeout];
         
@@ -459,10 +458,6 @@
 
 - (void) clearCurrentRequest{
     [_clearentDelegate clearCurrentRequest];
-}
-
-- (void) resetInvalidDeviceData {
-   [_clearentDelegate resetInvalidDeviceData];
 }
 
 - (ClearentPayment*) createPaymentRequest:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline  fallback:(BOOL)fallback {

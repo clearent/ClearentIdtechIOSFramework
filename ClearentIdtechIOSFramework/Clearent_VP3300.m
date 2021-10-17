@@ -432,12 +432,6 @@
     [clearentDelegate clearCurrentRequest];
 }
 
-//Sometimes our initial call to the reader requesting information fails. We still need to allow the system to continue on since this data is not considered critical to
-//the run of the transaction.
-- (void) resetInvalidDeviceData {
-   [clearentDelegate resetInvalidDeviceData];
-}
-
 - (void) clearContactlessConfigurationCache {
     [clearentDelegate clearContactlessConfigurationCache];
 }

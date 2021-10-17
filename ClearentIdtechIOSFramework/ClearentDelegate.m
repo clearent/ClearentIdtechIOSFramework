@@ -296,50 +296,24 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 }
 
 - (NSString *) getFirmwareVersion {
-    bool found = false;
     NSString *firmwareVersion;
-    for(int i = 0; i < 5; i++ ) {
-        [NSThread sleepForTimeInterval:0.2f];
-        if([_idTechSharedInstance isConnected]) {
-            NSString *result;
-            RETURN_CODE rt = [_idTechSharedInstance device_getFirmwareVersion:&result];
-            if (RETURN_CODE_DO_SUCCESS == rt) {
-                firmwareVersion = result;
-                found = true;
-                break;
-            } else {
-                [Teleport logError:CLEARENT_INVALID_FIRMWARE_VERSION];
-            }
+    if([_idTechSharedInstance isConnected]) {
+        NSString *result;
+        RETURN_CODE rt = [_idTechSharedInstance device_getFirmwareVersion:&result];
+        if (RETURN_CODE_DO_SUCCESS == rt) {
+            firmwareVersion = result;
         } else {
-            [Teleport logError:@"getFirmwareVersion:reader disconnected"];
-            break;
+            [Teleport logError:@"getFirmwareVersion:device_getFirmwareVersion error"];
+            firmwareVersion = CLEARENT_INVALID_FIRMWARE_VERSION;
         }
-            
-    }
-    if(!found) {
+    } else {
         firmwareVersion = CLEARENT_INVALID_FIRMWARE_VERSION;
+        [Teleport logError:@"getFirmwareVersion:reader disconnected"];
     }
+            
     return firmwareVersion;
 }
 
-- (void) resetInvalidDeviceData {
-    [self resetDeviceSerialNumber];
-    [self resetFirmwareVersion];
-}
-
-- (void) resetFirmwareVersion {
-    if(self.firmwareVersion == nil || [self.firmwareVersion isEqualToString:CLEARENT_INVALID_FIRMWARE_VERSION]) {
-       [Teleport logInfo:@"Try to fix invalid firmware version"];
-       self.firmwareVersion= [self getFirmwareVersion];
-    }
-}
-
-- (void) resetDeviceSerialNumber {
-    if(self.deviceSerialNumber == nil || [self.deviceSerialNumber isEqualToString:DEVICE_SERIAL_NUMBER_PLACEHOLDER]) {
-         [Teleport logInfo:@"Try to fix invalid device serial number"];
-         self.deviceSerialNumber = [self getDeviceSerialNumber];
-    }
-}
 
 - (NSString *) getKernelVersion {
     NSString *result;

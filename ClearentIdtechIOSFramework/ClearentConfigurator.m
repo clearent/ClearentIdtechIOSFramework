@@ -76,12 +76,10 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
     
     if(!autoConfiguration && !contactlessAutoConfiguration) {
         BOOL isDeviceConfigured = [ClearentCache isDeviceConfigured:autoConfiguration contactlessAutoConfiguration:contactlessAutoConfiguration deviceSerialNumber:deviceSerialNumber];
-        if(isDeviceConfigured) {
-            [Teleport logInfo:@"Skipping emv and contactless configuration. Cache says reader is configured"];
-        } else {
-            [Teleport logInfo:@"Skipping emv and contactless configuration. Cache says reader is not configured. Assume preconfigured."];
+        if(!isDeviceConfigured) {
             [self cacheConfiguredReader: deviceSerialNumber];
         }
+        [Teleport logInfo:@"ClearentConfigurator:both config flags are disabled"];
         [self notifyInfo:READER_CONFIGURED_MESSAGE];
         return;
     }
