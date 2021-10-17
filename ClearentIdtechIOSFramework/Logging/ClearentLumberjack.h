@@ -12,7 +12,7 @@
 #define DD_LEGACY_MESSAGE_TAG 0
 #import <CocoaLumberjack/CocoaLumberjack.h>
 
-static const DDLogLevel ddLogLevel = DDLogLevelInfo;
+static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
 
 @interface ClearentLumberjack : NSObject
     + (void) initLumberJack:(NSString *) baseUrl publicKey:(NSString *) publicKey;

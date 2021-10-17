@@ -202,9 +202,9 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
                         [Teleport logError:@"User told to use magstripe even though use chip reader message came back."];
                     }
                 } else if([message isEqualToString:@"DECLINED"]) {
-                    NSLog(@"This is not really a decline. Clearent is creating a transaction token for later use.");
+                    //NSLog(@"This is not really a decline. Clearent is creating a transaction token for later use.");
                 } else if([message isEqualToString:@"APPROVED"]) {
-                    NSLog(@"This is not really an approval. Clearent is creating a transaction token for later use.");
+                   // NSLog(@"This is not really an approval. Clearent is creating a transaction token for later use.");
                 } else {
                    [Teleport logInfo:message];
                    [self deviceMessage:message];

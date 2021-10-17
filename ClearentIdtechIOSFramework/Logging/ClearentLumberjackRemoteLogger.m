@@ -87,21 +87,14 @@ static NSString *const LINE_DELIMITER = @"clrnt";
         NSAssert(NO, @"db_saveAndDelete should only be executed on the internalLoggerQueue thread, if you're seeing this, your doing it wrong.");
     }
     
-    // If no log messages in array, just return
     if ([_logMessagesArray count] == 0) {
         return;
     }
 
-    // Get reference to log messages
     NSArray *oldLogMessagesArray = [_logMessagesArray copy];
 
-    // reset array
     _logMessagesArray = [NSMutableArray arrayWithCapacity:0];
 
-    // Create string with all log messages
-    //NSString *logMessagesString = [oldLogMessagesArray componentsJoinedByString:@"\n"];
-
-    // Post string to Clearent
     [self postLogsToClearent:oldLogMessagesArray];
 
 }
@@ -148,10 +141,11 @@ static NSString *const LINE_DELIMITER = @"clrnt";
                    } else {
                        clearentLogging.level = @"debug";
                    }
+                   
                    clearentLogging.message = ddLogMessage.message;
                    NSString *dateString = [NSDateFormatter localizedStringFromDate:ddLogMessage.timestamp
-                                                                         dateStyle:NSDateFormatterShortStyle
-                                                                         timeStyle:NSDateFormatterShortStyle];
+                                    dateStyle:NSDateFormatterMediumStyle
+                                    timeStyle:NSDateFormatterMediumStyle];
                    clearentLogging.createdDate = dateString;
                    [clearentLoggings addObject:clearentLogging.asDictionary];
                }

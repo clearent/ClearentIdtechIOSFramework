@@ -31,14 +31,9 @@
         clearentDelegate = [[ClearentDelegate alloc] init:publicDelegate clearentBaseUrl:clearentBaseUrl publicKey:publicKey idTechSharedInstance: [IDT_VP3300 sharedController]];
         clearentTransactions = [[ClearentTransactions alloc] init:clearentDelegate clearentVP3300:self];
         [IDT_VP3300 sharedController].delegate = clearentDelegate;
-        TELEPORT_DEBUG = YES;
-//
-//        [Teleport startWithForwarder:
-//        [SimpleHttpForwarder forwarderWithAggregatorUrl:clearentBaseUrl publicKey:publicKey]];
-        
+ 
         [ClearentLumberjack initLumberJack:clearentBaseUrl publicKey:publicKey];
         
-        [ClearentLumberjack logInfo:@"Testing testing"];
     }
     return self;
 }
@@ -50,14 +45,9 @@
         clearentTransactions = [[ClearentTransactions alloc] init:clearentDelegate clearentVP3300:self];
         [IDT_VP3300 sharedController].delegate = clearentDelegate;
         if(!clearentVP3300Configuration.disableRemoteLogging) {
-            TELEPORT_DEBUG = YES;
-//            [Teleport startWithForwarder:
-//            [SimpleHttpForwarder forwarderWithAggregatorUrl:clearentVP3300Configuration.clearentBaseUrl publicKey:clearentVP3300Configuration.publicKey]];
             
             [ClearentLumberjack initLumberJack:clearentVP3300Configuration.clearentBaseUrl publicKey:clearentVP3300Configuration.publicKey];
             
-            
-            [ClearentLumberjack logInfo:@"Testing testing"];
         }
     }
     return self;
@@ -80,13 +70,9 @@
 
         
         if(!clearentVP3300Configuration.disableRemoteLogging) {
-            TELEPORT_DEBUG = YES;
-//            [Teleport startWithForwarder:
-//            [SimpleHttpForwarder forwarderWithAggregatorUrl:clearentVP3300Configuration.clearentBaseUrl publicKey:clearentVP3300Configuration.publicKey]];
-            
+
             [ClearentLumberjack initLumberJack:clearentVP3300Configuration.clearentBaseUrl publicKey:clearentVP3300Configuration.publicKey];
             
-            [ClearentLumberjack logInfo:@"Testing testing"];
         }
     }
     return self;
