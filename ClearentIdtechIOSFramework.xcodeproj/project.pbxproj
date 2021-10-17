@@ -48,6 +48,9 @@
 		4B32C0BF243FB9D500CCF9B9 /* ClearentConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CA494120E171960090CFFC /* ClearentConfiguration.m */; };
 		4B32C0C0243FB9DF00CCF9B9 /* ClearentConfigFetcher.m in Sources */ = {isa = PBXBuildFile; fileRef = E7CA497420E579190090CFFC /* ClearentConfigFetcher.m */; };
 		4B907F8B242E7FAA0029C21E /* ClearentFeedback.m in Sources */ = {isa = PBXBuildFile; fileRef = 4B907F8A242E7FAA0029C21E /* ClearentFeedback.m */; };
+		4BAEA880271C5007007F5FCF /* CocoaLumberjack.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BAEA87F271C5006007F5FCF /* CocoaLumberjack.framework */; platformFilter = ios; };
+		4BAEA885271C5CD8007F5FCF /* ClearentLumberjack.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BAEA884271C5CD8007F5FCF /* ClearentLumberjack.m */; };
+		4BAEA888271C5F24007F5FCF /* ClearentLumberjackRemoteLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BAEA887271C5F24007F5FCF /* ClearentLumberjackRemoteLogger.m */; };
 		E702E56523647D6B0032ED8D /* IDTech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E760460523645A61006CFB78 /* IDTech.framework */; };
 		E702E5702364835B0032ED8D /* ClearentVP3300Config.m in Sources */ = {isa = PBXBuildFile; fileRef = E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */; };
 		E702E572236488630032ED8D /* ClearentPayment.h in Headers */ = {isa = PBXBuildFile; fileRef = E746CB5F235896EC00C41DF1 /* ClearentPayment.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -161,6 +164,11 @@
 		4B32C0A12436612900CCF9B9 /* ClearentTransactions.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentTransactions.m; sourceTree = "<group>"; };
 		4B907F89242E7D420029C21E /* ClearentFeedback.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentFeedback.h; sourceTree = "<group>"; };
 		4B907F8A242E7FAA0029C21E /* ClearentFeedback.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentFeedback.m; sourceTree = "<group>"; };
+		4BAEA87F271C5006007F5FCF /* CocoaLumberjack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CocoaLumberjack.framework; path = "Carthage/Build/CocoaLumberjack.xcframework/ios-arm64_armv7/CocoaLumberjack.framework"; sourceTree = "<group>"; };
+		4BAEA883271C5CAD007F5FCF /* ClearentLumberjack.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentLumberjack.h; sourceTree = "<group>"; };
+		4BAEA884271C5CD8007F5FCF /* ClearentLumberjack.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentLumberjack.m; sourceTree = "<group>"; };
+		4BAEA886271C5F11007F5FCF /* ClearentLumberjackRemoteLogger.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentLumberjackRemoteLogger.h; sourceTree = "<group>"; };
+		4BAEA887271C5F24007F5FCF /* ClearentLumberjackRemoteLogger.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentLumberjackRemoteLogger.m; sourceTree = "<group>"; };
 		E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentVP3300Config.m; sourceTree = "<group>"; };
 		E702E571236485280032ED8D /* ClearentVP3300Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentVP3300Config.h; sourceTree = "<group>"; };
 		E726A0362258B5A400F3E8B7 /* ClearentCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentCache.h; sourceTree = "<group>"; };
@@ -278,6 +286,7 @@
 				E76505181FFC313A00B345F6 /* AVFoundation.framework in Frameworks */,
 				E76505161FFC313200B345F6 /* MediaPlayer.framework in Frameworks */,
 				E76505141FFC312500B345F6 /* ExternalAccessory.framework in Frameworks */,
+				4BAEA880271C5007007F5FCF /* CocoaLumberjack.framework in Frameworks */,
 				E702E56523647D6B0032ED8D /* IDTech.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -347,6 +356,10 @@
 				E75891ED225522AB00288032 /* ClearentLogging.m */,
 				E75891FE2257872100288032 /* LogAdder.h */,
 				E75891FF2257874100288032 /* LogAdder.m */,
+				4BAEA883271C5CAD007F5FCF /* ClearentLumberjack.h */,
+				4BAEA884271C5CD8007F5FCF /* ClearentLumberjack.m */,
+				4BAEA886271C5F11007F5FCF /* ClearentLumberjackRemoteLogger.h */,
+				4BAEA887271C5F24007F5FCF /* ClearentLumberjackRemoteLogger.m */,
 			);
 			path = Logging;
 			sourceTree = "<group>";
@@ -464,6 +477,7 @@
 		E765050E1FFC30F000B345F6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				4BAEA87F271C5006007F5FCF /* CocoaLumberjack.framework */,
 				4B074F57244F835800868E21 /* QuartzCore.framework */,
 				E733E2412253C7730050CB31 /* CocoaLumberjack.framework */,
 				E733E2442253CF090050CB31 /* CocoaLumberjack.framework */,
@@ -714,6 +728,7 @@
 				E746CB612358983200C41DF1 /* ClearentPayment.m in Sources */,
 				4B32C0A22436612900CCF9B9 /* ClearentTransactions.m in Sources */,
 				E764E7722303182C0029B753 /* ClearentOfflineDeclineReceipt.m in Sources */,
+				4BAEA888271C5F24007F5FCF /* ClearentLumberjackRemoteLogger.m in Sources */,
 				4B32C09824335D5500CCF9B9 /* ClearentBluetoothDevice.m in Sources */,
 				E75891F3225522AB00288032 /* LogReaper.m in Sources */,
 				E702E5702364835B0032ED8D /* ClearentVP3300Config.m in Sources */,
@@ -726,6 +741,7 @@
 				E75891F6225522AB00288032 /* SimpleHttpForwarder.m in Sources */,
 				4B32C0912432677F00CCF9B9 /* ClearentTransactionToken.m in Sources */,
 				E7CA494520E1753D0090CFFC /* ClearentConfigurator.m in Sources */,
+				4BAEA885271C5CD8007F5FCF /* ClearentLumberjack.m in Sources */,
 				E726A0382258B5B400F3E8B7 /* ClearentCache.m in Sources */,
 				E75891FB225522AB00288032 /* TeleportUtils.m in Sources */,
 				4B32C08B2432560600CCF9B9 /* ClearentResponse.m in Sources */,
@@ -946,6 +962,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/ClearentIdtechIOSFramework",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Carthage/Build/CocoaLumberjack.xcframework/ios-arm64_armv7",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/ClearentIdtechIOSFramework/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
@@ -982,6 +999,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/ClearentIdtechIOSFramework",
 					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/Carthage/Build/CocoaLumberjack.xcframework/ios-arm64_armv7",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/ClearentIdtechIOSFramework/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";

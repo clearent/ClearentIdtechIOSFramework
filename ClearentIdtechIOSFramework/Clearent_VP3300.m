@@ -14,6 +14,7 @@
 #import "ClearentCache.h"
 #import "ClearentDeviceConnector.h"
 #import "ClearentTransactions.h"
+#import "ClearentLumberjack.h"
 
 @implementation Clearent_VP3300 
 
@@ -31,8 +32,13 @@
         clearentTransactions = [[ClearentTransactions alloc] init:clearentDelegate clearentVP3300:self];
         [IDT_VP3300 sharedController].delegate = clearentDelegate;
         TELEPORT_DEBUG = YES;
-        [Teleport startWithForwarder:
-        [SimpleHttpForwarder forwarderWithAggregatorUrl:clearentBaseUrl publicKey:publicKey]];
+//
+//        [Teleport startWithForwarder:
+//        [SimpleHttpForwarder forwarderWithAggregatorUrl:clearentBaseUrl publicKey:publicKey]];
+        
+        [ClearentLumberjack initLumberJack:clearentBaseUrl publicKey:publicKey];
+        
+        [ClearentLumberjack logInfo:@"Testing testing"];
     }
     return self;
 }
@@ -45,8 +51,13 @@
         [IDT_VP3300 sharedController].delegate = clearentDelegate;
         if(!clearentVP3300Configuration.disableRemoteLogging) {
             TELEPORT_DEBUG = YES;
-            [Teleport startWithForwarder:
-            [SimpleHttpForwarder forwarderWithAggregatorUrl:clearentVP3300Configuration.clearentBaseUrl publicKey:clearentVP3300Configuration.publicKey]];
+//            [Teleport startWithForwarder:
+//            [SimpleHttpForwarder forwarderWithAggregatorUrl:clearentVP3300Configuration.clearentBaseUrl publicKey:clearentVP3300Configuration.publicKey]];
+            
+            [ClearentLumberjack initLumberJack:clearentVP3300Configuration.clearentBaseUrl publicKey:clearentVP3300Configuration.publicKey];
+            
+            
+            [ClearentLumberjack logInfo:@"Testing testing"];
         }
     }
     return self;
@@ -70,8 +81,12 @@
         
         if(!clearentVP3300Configuration.disableRemoteLogging) {
             TELEPORT_DEBUG = YES;
-            [Teleport startWithForwarder:
-            [SimpleHttpForwarder forwarderWithAggregatorUrl:clearentVP3300Configuration.clearentBaseUrl publicKey:clearentVP3300Configuration.publicKey]];
+//            [Teleport startWithForwarder:
+//            [SimpleHttpForwarder forwarderWithAggregatorUrl:clearentVP3300Configuration.clearentBaseUrl publicKey:clearentVP3300Configuration.publicKey]];
+            
+            [ClearentLumberjack initLumberJack:clearentVP3300Configuration.clearentBaseUrl publicKey:clearentVP3300Configuration.publicKey];
+            
+            [ClearentLumberjack logInfo:@"Testing testing"];
         }
     }
     return self;

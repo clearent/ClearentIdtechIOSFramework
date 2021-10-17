@@ -11,7 +11,7 @@
 #import "LogRotator.h"
 #import "LogReaper.h"
 #import "LogAdder.h"
-
+#import "ClearentLumberjack.h"
 
 BOOL TELEPORT_DEBUG = NO;
 BOOL TELEPORT_ENABLED = NO;
@@ -72,6 +72,9 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(Teleport)
             [instance logInfo:[NSString stringWithFormat:@" %@", logMessage]];
         }
     }
+    if(logMessage != nil) {
+        DDLogInfo(logMessage);
+    }
 }
 
 - (void) logInfo:(NSString*) logMessage {
@@ -89,8 +92,11 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(Teleport)
     if(TELEPORT_ENABLED) {
         if(logMessage != nil) {
             Teleport *instance = [Teleport sharedInstance];
-            [instance logError:[NSString stringWithFormat:@"💩💩💩 %@%@", logMessage, @" 💩💩💩"]];
+            [instance logError:[NSString stringWithFormat:@"%@%@", logMessage, @""]];
         }
+    }
+    if(logMessage != nil) {
+        DDLogError(logMessage);
     }
 }
 
@@ -103,6 +109,7 @@ IMPLEMENT_EXCLUSIVE_SHARED_INSTANCE(Teleport)
             [LogAdder logError:logMessage currentLogFilePath:[_logRotator currentLogFilePath]];
         }
     }
+
 }
 
 @end
