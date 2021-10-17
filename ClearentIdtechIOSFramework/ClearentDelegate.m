@@ -10,7 +10,7 @@
 #import "ClearentConfigurator.h"
 #import <IDTech/IDTUtility.h>
 #import "ClearentUtils.h"
-#import "Teleport.h"
+#import "ClearentLumberjack.h"
 #import "ClearentCache.h"
 #import "ClearentOfflineDeclineReceipt.h"
 #import "ClearentPayment.h"
@@ -147,16 +147,16 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     
     switch (mode) {
         case 0x10:
-            [Teleport logInfo:@"prompt 10"];
+            [ClearentLumberjack logInfo:@"prompt 10"];
             break;
         case 0x03:
-            [Teleport logInfo:@"prompt 3"];
+            [ClearentLumberjack logInfo:@"prompt 3"];
             break;
         case 0x01:
-            [Teleport logInfo:@"prompt 1"];
+            [ClearentLumberjack logInfo:@"prompt 1"];
             break;
         case 0x02:
-            [Teleport logInfo:@"prompt 2"];
+            [ClearentLumberjack logInfo:@"prompt 2"];
             break;
         case 0x08:{
             [_idTechSharedInstance emv_callbackResponseLCD:mode selection:1];
@@ -173,40 +173,40 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         for (NSString* message in lines) {
             if(message != nil) {
                 if(!self.contactless && [message isEqualToString:@"PLEASE SWIPE,"]) {
-                    [Teleport logError:@"contactless is not enabled. Switch PLEASE SWIPE to old message"];
+                    [ClearentLumberjack logError:@"contactless is not enabled. Switch PLEASE SWIPE to old message"];
                     [updatedArray addObject:@"INSERT/SWIPE"];
                     [self deviceMessage:CLEARENT_USER_ACTION_2_IN_1_MESSAGE];
                 } else  if(!self.contactless && [message isEqualToString:@"TAP, OR INSERT"]) {
-                    [Teleport logError:@"contactless is not enabled. Switch TAP OR INSERT to old message"];
+                    [ClearentLumberjack logError:@"contactless is not enabled. Switch TAP OR INSERT to old message"];
                     [updatedArray addObject:@"CARD"];
                 } else if([message isEqualToString:@"TERMINATED"]) {
-                    [Teleport logError:@"IDTech framework terminated the request."];
+                    [ClearentLumberjack logError:@"IDTech framework terminated the request."];
                     [self deviceMessage:CLEARENT_TRANSACTION_TERMINATED];
                 }  else if([message isEqualToString:@"TERMINATE"]) {
-                    [Teleport logError:@"IDTech framework terminated the request."];
+                    [ClearentLumberjack logError:@"IDTech framework terminated the request."];
                     [self deviceMessage:CLEARENT_TRANSACTION_TERMINATE];
                 }  else if([message isEqualToString:@"USE MAGSTRIPE"]) {
                     userToldToUseMagStripe = YES;
-                    [Teleport logError:@"IDTech framework USE MAGSTRIPE."];
+                    [ClearentLumberjack logError:@"IDTech framework USE MAGSTRIPE."];
                     [self deviceMessage:CLEARENT_USE_MAGSTRIPE];
                 } else if([message isEqualToString:@"CARD"] && (userToldToUseMagStripe || userToldToUseChipReader)) {
-                     [Teleport logError:@"do not show CARD message to help with messaging of restarts of the transaction"];
+                     [ClearentLumberjack logError:@"do not show CARD message to help with messaging of restarts of the transaction"];
                 } else if([message isEqualToString:@"INSERT/SWIPE"] && (userToldToUseMagStripe || userToldToUseChipReader)) {
-                    [Teleport logError:@"do not show INSERT/SWIPE message to help with messaging of restarts of the transaction"];
+                    [ClearentLumberjack logError:@"do not show INSERT/SWIPE message to help with messaging of restarts of the transaction"];
                 } else if([message isEqualToString:@"USE CHIP READER"]) {
                     userToldToUseChipReader = YES;
                     if(!userToldToUseMagStripe) {
                         [self deviceMessage:CLEARENT_CHIP_FOUND_ON_SWIPE];
-                        [Teleport logInfo:@"Clearent is handling the use chip reader message."];
+                        [ClearentLumberjack logInfo:@"Clearent is handling the use chip reader message."];
                     } else {
-                        [Teleport logError:@"User told to use magstripe even though use chip reader message came back."];
+                        [ClearentLumberjack logError:@"User told to use magstripe even though use chip reader message came back."];
                     }
                 } else if([message isEqualToString:@"DECLINED"]) {
                     //NSLog(@"This is not really a decline. Clearent is creating a transaction token for later use.");
                 } else if([message isEqualToString:@"APPROVED"]) {
                    // NSLog(@"This is not really an approval. Clearent is creating a transaction token for later use.");
                 } else {
-                   [Teleport logInfo:message];
+                   [ClearentLumberjack logInfo:message];
                    [self deviceMessage:message];
                    [updatedArray addObject:message];
                 }
@@ -259,7 +259,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
             [_clearentDeviceConnector resetBluetoothAfterConnected];
         }
         
-        [Teleport logInfo:[NSString stringWithFormat:@"%@%@", @"connected ", [self.clearentConnection createLogMessage]]];
+        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"%@%@", @"connected ", [self.clearentConnection createLogMessage]]];
         
     }
     
@@ -303,12 +303,12 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         if (RETURN_CODE_DO_SUCCESS == rt) {
             firmwareVersion = result;
         } else {
-            [Teleport logError:@"getFirmwareVersion:device_getFirmwareVersion error"];
+            [ClearentLumberjack logError:@"getFirmwareVersion:device_getFirmwareVersion error"];
             firmwareVersion = CLEARENT_INVALID_FIRMWARE_VERSION;
         }
     } else {
         firmwareVersion = CLEARENT_INVALID_FIRMWARE_VERSION;
-        [Teleport logError:@"getFirmwareVersion:reader disconnected"];
+        [ClearentLumberjack logError:@"getFirmwareVersion:reader disconnected"];
     }
             
     return firmwareVersion;
@@ -329,7 +329,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         }
         return result;
     } else{
-        [Teleport logError:@"Failed to get kernel version. Use default"];
+        [ClearentLumberjack logError:@"Failed to get kernel version. Use default"];
         return [NSString stringWithFormat:@"%@%@", KERNEL_BASE_VERSION, KERNEL_VERSION_INCREMENTAL];
     }
 }
@@ -343,7 +343,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         return deviceSerialNumber;
     }
     
-    [Teleport logError:@"Failed to get device serial number using config_getSerialNumber. Using all nines placeholder"];
+    [ClearentLumberjack logError:@"Failed to get device serial number using config_getSerialNumber. Using all nines placeholder"];
     
     return DEVICE_SERIAL_NUMBER_PLACEHOLDER;
 }
@@ -365,10 +365,10 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
                 }
                 break;
             } else {
-                [Teleport logError:@"getDeviceSerialNumberFromReader:fail"];
+                [ClearentLumberjack logError:@"getDeviceSerialNumberFromReader:fail"];
             }
         } else {
-            [Teleport logError:@"getDeviceSerialNumberFromReader:reader disconnected"];
+            [ClearentLumberjack logError:@"getDeviceSerialNumberFromReader:reader disconnected"];
             break;
         }
     }
@@ -386,11 +386,11 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
             [self deviceMessage:CLEARENT_AUDIO_JACK_DISCONNECTED];
         }
         
-        [Teleport logInfo:[NSString stringWithFormat:@"%@%@", @"connected ", [self.clearentConnection createLogMessage]]];
+        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"%@%@", @"connected ", [self.clearentConnection createLogMessage]]];
         
     }
         
-    [Teleport logInfo:[NSString stringWithFormat:@"Device disconnected"]];
+    [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Device disconnected"]];
     
     if ([self.publicDelegate respondsToSelector:@selector(deviceDisconnected:)]) {
         [self.publicDelegate deviceDisconnected];
@@ -401,20 +401,20 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 - (void) deviceMessage:(NSString*)message {
     
     if(message == nil) {
-        [Teleport logInfo:@"deviceMessage:message nil"];
+        [ClearentLumberjack logInfo:@"deviceMessage:message nil"];
         return;
     }
     
     if(([message isEqualToString:@""] || [message isEqualToString:@" "])) {
-        [Teleport logInfo:@"deviceMessage:No Message"];
+        [ClearentLumberjack logInfo:@"deviceMessage:No Message"];
         return;
     }
     
-    [Teleport logInfo:[NSString stringWithFormat:@"%@:%@", @"deviceMessage", message]];
+    [ClearentLumberjack logInfo:[NSString stringWithFormat:@"%@:%@", @"deviceMessage", message]];
     
     if([message isEqualToString:CLEARENT_READER_CONFIGURED_MESSAGE]) {
-        [Teleport logInfo:@"💚💚READER READY💚💚"];
-        [Teleport logInfo:@"Framework notified reader is ready"];
+        [ClearentLumberjack logInfo:@"💚💚READER READY💚💚"];
+        [ClearentLumberjack logInfo:@"Framework notified reader is ready"];
         self.configured = YES;
         
         if(self.runStoredPaymentAfterConnecting) {
@@ -457,7 +457,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     //This timeout is the result of the timer we have that wraps the entire transaction to account for a scenario where the
     //idtech framework cannot tell us to timeout. Ex- user inserts card but reader does not recognize and cannot report
     if(transactionIsInProcess &&  [message isEqualToString:CLEARENT_TRANSACTION_FINAL_FALLBACK_ERROR]) {
-        [Teleport logInfo:@"deviceMessage:Dont callback with timeout message. Transaction is in process"];
+        [ClearentLumberjack logInfo:@"deviceMessage:Dont callback with timeout message. Transaction is in process"];
         return;
     }
     
@@ -502,11 +502,11 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         if(RETURN_CODE_DO_SUCCESS == icc_getICCReaderStatusRt) {
             if(response->cardSeated) {
                [self deviceMessage:CLEARENT_CARD_INSERTED];
-               [Teleport logInfo:@"monitorCardRemoval card is seated"];
+               [ClearentLumberjack logInfo:@"monitorCardRemoval card is seated"];
             }
         }
     } @catch (NSException *exception) {
-        [Teleport logInfo:@"monitorCardRemoval:Failed to retrieve the icc reader status"];
+        [ClearentLumberjack logInfo:@"monitorCardRemoval:Failed to retrieve the icc reader status"];
     } @finally {
         if(!userNotifiedOfTimeOut) {
             [self deviceMessage:CLEARENT_TRANSACTION_FINAL_FALLBACK_ERROR];
@@ -585,29 +585,29 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         [self retryContactless];
         return;
     } else if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_CARD_GENERATED_AAC]) {
-        [Teleport logError:@"handleContactlessError: aac generated"];
+        [ClearentLumberjack logError:@"handleContactlessError: aac generated"];
         [self sendDeclineReceipt:emvData];
         return;
     } else if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_CARD_SSA_OR_DDA_FAILED]) {
-        [Teleport logError:@"handleContactlessError: ssa or dda failed"];
+        [ClearentLumberjack logError:@"handleContactlessError: ssa or dda failed"];
     } else if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_CARD_MISSING_CA_PUBLIC_KEY ]) {
-        [Teleport logError:@"handleContactlessError: contactless ca public key not found"];
+        [ClearentLumberjack logError:@"handleContactlessError: contactless ca public key not found"];
     } else if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_CARD_FAILED_TO_RECOVER_ISSUER_PUBLIC_KEY]) {
-        [Teleport logError:@"handleContactlessError: failed to recover issuer public key"];
+        [ClearentLumberjack logError:@"handleContactlessError: failed to recover issuer public key"];
         errorMessage = @"DECLINED";
     } else if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_GO_TO_CONTACT_INTERFACE]) {
-        [Teleport logError:@"handleContactlessError: go to contact interface"];
+        [ClearentLumberjack logError:@"handleContactlessError: go to contact interface"];
     } else if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_GO_TO_OTHER_INTERFACE]) {
-        [Teleport logError:@"handleContactlessError: go to other interface"];
+        [ClearentLumberjack logError:@"handleContactlessError: go to other interface"];
     } else if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_GO_TO_MAGSTRIPE_INTERFACE]) {
-        [Teleport logError:@"handleContactlessError: go to magstripe interface"];
+        [ClearentLumberjack logError:@"handleContactlessError: go to magstripe interface"];
     } else if(contactlessError == nil || [contactlessError isEqualToString:CONTACTLESS_ERROR_CODE_AMOUNT_OVER_MAXIMUM_LIMIT]) {
         [self deviceMessage:CLEARENT_TAP_OVER_MAX_AMOUNT];
     } else {
         errorMessage = @"";
     }
     
-    [Teleport logInfo:errorMessage];
+    [ClearentLumberjack logInfo:errorMessage];
     [self startContactlessFallbackToContact: errorMessage];
 }
 
@@ -634,7 +634,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         [self deviceMessage:fullErrorMessage];
     } else {
         NSString *logErrorMessage =[NSString stringWithFormat:@"startContactlessFallbackToContact %@%@",[_idTechSharedInstance device_getResponseCodeString:emvStartRt], fullErrorMessage];
-        [Teleport logInfo:logErrorMessage];
+        [ClearentLumberjack logInfo:logErrorMessage];
         [self deviceMessage:CLEARENT_TAP_FAILED_INSERT_CARD_FIRST];
     }
 }
@@ -646,7 +646,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         return;
     }
 
-    [Teleport logInfo:@"retryContactless:device_startTransaction"];
+    [ClearentLumberjack logInfo:@"retryContactless:device_startTransaction"];
 
     RETURN_CODE emvStartRt;
     emvStartRt =  [_idTechSharedInstance device_startTransaction:self.clearentPayment.amount amtOther:self.clearentPayment.amtOther type:self.clearentPayment.type timeout:self.clearentPayment.timeout tags:self.clearentPayment.tags forceOnline:self.clearentPayment.forceOnline fallback:self.clearentPayment.fallback];
@@ -660,7 +660,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
             [self deviceMessage:CLEARENT_CONTACTLESS_RETRY_MESSAGE];
         } else {
             NSString *logErrorMessage =[NSString stringWithFormat:@"retryContactless %@",[_idTechSharedInstance device_getResponseCodeString:emvStartRt]];
-            [Teleport logInfo:logErrorMessage];
+            [ClearentLumberjack logInfo:logErrorMessage];
             [self deviceMessage:CLEARENT_GENERIC_CONTACTLESS_FAILED];
         }
     }
@@ -676,7 +676,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 
     [self cancelTransaction];
 
-    [Teleport logInfo:@"restartSwipeIn2In1Mode:emv_startTransaction"];
+    [ClearentLumberjack logInfo:@"restartSwipeIn2In1Mode:emv_startTransaction"];
 
     RETURN_CODE emvStartRt;
     emvStartRt =  [_idTechSharedInstance emv_startTransaction:self.clearentPayment.amount amtOther:self.clearentPayment.amtOther type:self.clearentPayment.type timeout:self.clearentPayment.timeout tags:self.clearentPayment.tags forceOnline:self.clearentPayment.forceOnline fallback:self.clearentPayment.fallback];
@@ -684,14 +684,14 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     if(RETURN_CODE_OK_NEXT_COMMAND == emvStartRt || RETURN_CODE_DO_SUCCESS == emvStartRt) {
         [self sendSwipeErrorMessage:cardData];
     } else {
-        [Teleport logInfo:@"restartSwipeIn2In1Mode:try emv_startTransaction one more time after initial failure"];
+        [ClearentLumberjack logInfo:@"restartSwipeIn2In1Mode:try emv_startTransaction one more time after initial failure"];
         [NSThread sleepForTimeInterval:0.2f];
         emvStartRt =  [_idTechSharedInstance emv_startTransaction:self.clearentPayment.amount amtOther:self.clearentPayment.amtOther type:self.clearentPayment.type timeout:self.clearentPayment.timeout tags:self.clearentPayment.tags forceOnline:self.clearentPayment.forceOnline fallback:self.clearentPayment.fallback];
         if(RETURN_CODE_OK_NEXT_COMMAND == emvStartRt || RETURN_CODE_DO_SUCCESS == emvStartRt) {
             [self sendSwipeErrorMessage:cardData];
         } else {
             NSString *logErrorMessage =[NSString stringWithFormat:@"restartSwipeIn2In1Mode %@",[_idTechSharedInstance device_getResponseCodeString:emvStartRt]];
-            [Teleport logInfo:logErrorMessage];
+            [ClearentLumberjack logInfo:logErrorMessage];
             [self deviceMessage:CLEARENT_GENERIC_CARD_READ_ERROR_RESPONSE];
         }
     }
@@ -707,21 +707,21 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 
     [self cancelTransaction];
 
-    [Teleport logInfo:@"restartSwipeOnly:msrSwipe"];
+    [ClearentLumberjack logInfo:@"restartSwipeOnly:msrSwipe"];
 
     RETURN_CODE msr_startMSRSwipeRt = [_idTechSharedInstance msr_startMSRSwipe];
 
     if(RETURN_CODE_OK_NEXT_COMMAND == msr_startMSRSwipeRt || RETURN_CODE_DO_SUCCESS == msr_startMSRSwipeRt) {
         [self sendSwipeErrorMessage:cardData];
     } else {
-        [Teleport logInfo:@"restartSwipeOnly:try msr_startMSRSwipe one more time after initial failure"];
+        [ClearentLumberjack logInfo:@"restartSwipeOnly:try msr_startMSRSwipe one more time after initial failure"];
         [NSThread sleepForTimeInterval:0.2f];
         msr_startMSRSwipeRt = [_idTechSharedInstance msr_startMSRSwipe];
         if(RETURN_CODE_OK_NEXT_COMMAND == msr_startMSRSwipeRt || RETURN_CODE_DO_SUCCESS == msr_startMSRSwipeRt) {
             [self sendSwipeErrorMessage:cardData];
         } else {
             NSString *logErrorMessage =[NSString stringWithFormat:@"restartSwipeOnly %@",[_idTechSharedInstance device_getResponseCodeString:msr_startMSRSwipeRt]];
-            [Teleport logInfo:logErrorMessage];
+            [ClearentLumberjack logInfo:logErrorMessage];
             [self deviceMessage:CLEARENT_GENERIC_CARD_READ_ERROR_RESPONSE];
         }
     }
@@ -832,7 +832,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
                }
             case 0x03:
         {
-//            [Teleport logInfo:[NSString stringWithFormat:@"LCD Event = %i",(int)data]];
+//            [ClearentLumberjack logInfo:[NSString stringWithFormat:@"LCD Event = %i",(int)data]];
 //            NSString* line1=nil;
 //            NSString* line2=nil;
 //            [IDTUtility retrieveCTLSMessage:scheme lang:0 messageID:data line1:&line1 line2:&line2];
@@ -854,7 +854,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
             case 0x10:
             case 0x11:
                 {
-//                    [Teleport logInfo:[NSString stringWithFormat:@"OTHERs LCD Event = %i",(int)data]];
+//                    [ClearentLumberjack logInfo:[NSString stringWithFormat:@"OTHERs LCD Event = %i",(int)data]];
 //                    NSString* line1=nil;
 //                    NSString* line2=nil;
 //                    [IDTUtility retrieveCTLSMessage:scheme lang:0 messageID:data line1:&line1 line2:&line2];
@@ -946,14 +946,14 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     @try{
         NSString *deviceResponseCodeString = [_idTechSharedInstance device_getResponseCodeString:error];
         if(deviceResponseCodeString != nil && ![deviceResponseCodeString isEqualToString:@""] && ![deviceResponseCodeString containsString:@"no error file found"]) {
-            [Teleport logInfo:[NSString stringWithFormat:@"EMV Transaction Data Response: = %@",deviceResponseCodeString]];
+            [ClearentLumberjack logInfo:[NSString stringWithFormat:@"EMV Transaction Data Response: = %@",deviceResponseCodeString]];
         } else {
             NSString *idtechErrorMessage = [ClearentUtils getIDtechErrorMessage:error];
-            [Teleport logInfo:[NSString stringWithFormat:@"EMV Transaction Data Response: = %@",idtechErrorMessage]];
+            [ClearentLumberjack logInfo:[NSString stringWithFormat:@"EMV Transaction Data Response: = %@",idtechErrorMessage]];
         }
     }
     @catch (NSException *e) {
-        [Teleport logInfo:@"Unknown EMV Transaction Data Response"];
+        [ClearentLumberjack logInfo:@"Unknown EMV Transaction Data Response"];
     }
     
 
@@ -964,12 +964,12 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     int entryMode = [self getEntryMode: emvData];
 
     if(entryMode == 0 && emvData.cardType != 1) {
-        [Teleport logError:@"No entryMode defined"];
+        [ClearentLumberjack logError:@"No entryMode defined"];
         return;
     }
 
     if (emvData.cardType == 1 && entryMode == CONTACTLESS_MAGNETIC_SWIPE) {
-        [Teleport logInfo:@"🙅🙅MSD CONTACTLESS NOT SUPPORTED🙅🙅"];
+        [ClearentLumberjack logInfo:@"🙅🙅MSD CONTACTLESS NOT SUPPORTED🙅🙅"];
         [self deviceMessage:CLEARENT_MSD_CONTACTLESS_UNSUPPORTED];
         return;
     }
@@ -997,7 +997,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     BOOL emvErrorHandled = NO;
 
     if (emvData != nil && emvData.cardType != 1 && emvData.resultCodeV2 != EMV_RESULT_CODE_V2_NO_RESPONSE) {
-       [Teleport logInfo:[NSString stringWithFormat:@"EMV_RESULT_CODE_V2_response = %2X",emvData.resultCodeV2]];
+       [ClearentLumberjack logInfo:[NSString stringWithFormat:@"EMV_RESULT_CODE_V2_response = %2X",emvData.resultCodeV2]];
     }
 
     if (error == 8) {
@@ -1042,7 +1042,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
      } else if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_START_TRANS_SUCCESS) {
          emvErrorHandled = YES;
      } else if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_DECLINED) {
-         [Teleport logInfo:@"ignoring IDTECH authorization decline"];
+         [ClearentLumberjack logInfo:@"ignoring IDTECH authorization decline"];
          emvErrorHandled = YES;
      } else if (emvData.cardData != nil && (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_SWIPE_NON_ICC || emvData.resultCodeV2 == EMV_RESULT_CODE_MSR_SWIPE_CAPTURED || emvData.resultCodeV2 == EMV_RESULT_CODE_V2_USE_MAGSTRIPE)) {
            if(emvData.cardData.encTrack2 == nil && emvData.cardData.track2 == nil) {
@@ -1072,14 +1072,14 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
                 if([self isSwipeHandledInEmvFlow]) {
                    [self swipeMSRData:emvData.cardData];
                 } else {
-                   [Teleport logInfo:@"Skipping swipe call in emv data flow"];
+                   [ClearentLumberjack logInfo:@"Skipping swipe call in emv data flow"];
                 }
             } else if(isSupportedEmvEntryMode(entryMode)) {
                 ClearentTransactionTokenRequest *clearentTransactionTokenRequest = [self createClearentTransactionTokenRequest:emvData];
                 if(clearentTransactionTokenRequest == nil || clearentTransactionTokenRequest.track2Data == nil || [clearentTransactionTokenRequest.track2Data isEqualToString:@""]) {
                     //it is possible with the latest idtech framework swipe changes this was starting a new transaction while another was still in flight.
                     if(![self isSwipeHandledInEmvFlow]) {
-                        [Teleport logInfo:@"Skipping bad swipe in convertIDTechCardToClearentTransactionToken"];
+                        [ClearentLumberjack logInfo:@"Skipping bad swipe in convertIDTechCardToClearentTransactionToken"];
                     } else {
                         [self restartSwipeIn2In1Mode:emvData.cardData];
                     }
@@ -1105,12 +1105,12 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
                 [self createTransactionToken:clearentTransactionTokenRequest];
             }
         } else {
-            [Teleport logInfo:[NSString stringWithFormat:@"convertIDTechCardToClearentTransactionToken: pass through. this means our error handler probably missed something"]];
+            [ClearentLumberjack logInfo:[NSString stringWithFormat:@"convertIDTechCardToClearentTransactionToken: pass through. this means our error handler probably missed something"]];
         }
     } @catch (NSException *exception) {
         NSString *errorMessage = [NSString stringWithFormat:@"[Error] - %@ %@", exception.name, exception.reason];
         NSLog( @"%@", errorMessage );
-        [Teleport logInfo:[NSString stringWithFormat:@"convertIDTechCardToClearentTransactionToken: Possible Programming Error %@", errorMessage]];
+        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"convertIDTechCardToClearentTransactionToken: Possible Programming Error %@", errorMessage]];
     }
 }
 
@@ -1124,7 +1124,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     //we upgrade the framework.
     if(sdkVersion != nil
        && ([sdkVersion isEqualToString:@"1.1.163.002"])) {
-        [Teleport logInfo:[NSString stringWithFormat:@"Swipe is not handled in emv flow for sdk version - %@", sdkVersion]];
+        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Swipe is not handled in emv flow for sdk version - %@", sdkVersion]];
         swipeHandledInEmvFlow = NO;
     }
     return swipeHandledInEmvFlow;
@@ -1141,7 +1141,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     }
     NSString *ffee1fHex = [IDTUtility dataToHexString:ffee1fData];
     if(ffee1fHex != nil && ![ffee1fHex isEqualToString:@""]) {
-        [Teleport logInfo:[NSString stringWithFormat:@"See Error Code table page 28 of NEO Guide version 125 for first byte meaning. FFEE1F. %@",ffee1fHex]];
+        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"See Error Code table page 28 of NEO Guide version 125 for first byte meaning. FFEE1F. %@",ffee1fHex]];
     }
     return [ffee1fHex substringWithRange: NSMakeRange (0, 2)];
 }
@@ -1175,9 +1175,9 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     
     RETURN_CODE startMSRSwipeRt = [_idTechSharedInstance msr_startMSRSwipe];
     if (RETURN_CODE_DO_SUCCESS == startMSRSwipeRt || RETURN_CODE_OK_NEXT_COMMAND == startMSRSwipeRt) {
-        [Teleport logInfo:@"deviceMessage: start fallback swipe succeeded "];
+        [ClearentLumberjack logInfo:@"deviceMessage: start fallback swipe succeeded "];
     } else {
-        [Teleport logInfo:@"deviceMessage: start fallback swipe failed "];
+        [ClearentLumberjack logInfo:@"deviceMessage: start fallback swipe failed "];
         [self deviceMessage:CLEARENT_PULLED_CARD_OUT_EARLY];
     }
 }
@@ -1261,7 +1261,7 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     if(clearentTransactionTokenRequest.deviceSerialNumber == nil) {
 
          if(emvData.cardData != nil && emvData.cardData.RSN != nil) {
-             [Teleport logInfo:[NSString stringWithFormat:@"Reader Serial Number %@",emvData.cardData.RSN]];
+             [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Reader Serial Number %@",emvData.cardData.RSN]];
              clearentTransactionTokenRequest.deviceSerialNumber = emvData.cardData.RSN;
          } else {
              NSData* data9F1E = [outgoingTags objectForKey:@"9F1E"];
@@ -1293,7 +1293,7 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     NSData *tsysTags = [IDTUtility hexToData:@"508E82959A9B9C5F2A9F029F039F1A9F219F269F279F339F349F359F369F379F399F4E4F845F2D5F349F069F129F099F405F369F1E9F105657FF8106FF8105FFEE14FFEE06DFEF4DFFEE12"];
     RETURN_CODE emvRetrieveTransactionResultRt = [_idTechSharedInstance emv_retrieveTransactionResult:tsysTags retrievedTags:&transactionResultDictionary];
     if(RETURN_CODE_DO_SUCCESS != emvRetrieveTransactionResultRt || transactionResultDictionary == nil) {
-        [Teleport logInfo:@"Failed to retrieve the Transaction Result Tags"];
+        [ClearentLumberjack logInfo:@"Failed to retrieve the Transaction Result Tags"];
     }
     return transactionResultDictionary;
 }
@@ -1350,13 +1350,13 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         NSString *merchantNameAndLocationHijackedAsConfiguredFlag = [IDTUtility dataToHexString:tagData];
         
         if(merchantNameAndLocationHijackedAsConfiguredFlag != nil && [merchantNameAndLocationHijackedAsConfiguredFlag isEqualToString:READER_CONFIGURED_FLAG_LETTER_P_IN_HEX]) {
-            [Teleport logInfo:@"🤩 🤩 🤩 🤩 🤩 IDTECH READER IS PRECONFIGURED 🤩 🤩 🤩 🤩 🤩"];
+            [ClearentLumberjack logInfo:@"🤩 🤩 🤩 🤩 🤩 IDTECH READER IS PRECONFIGURED 🤩 🤩 🤩 🤩 🤩"];
         } else {
             
             if(merchantNameAndLocationHijackedAsConfiguredFlag != nil) {
-                [Teleport logInfo:[NSString stringWithFormat:@"PRECONFIG CHECK 9f4e value is: %@", merchantNameAndLocationHijackedAsConfiguredFlag]];
+                [ClearentLumberjack logInfo:[NSString stringWithFormat:@"PRECONFIG CHECK 9f4e value is: %@", merchantNameAndLocationHijackedAsConfiguredFlag]];
             } else {
-                [Teleport logInfo:[NSString stringWithFormat:@"PRECONFIG CHECK No 9F4E tag found"]];
+                [ClearentLumberjack logInfo:[NSString stringWithFormat:@"PRECONFIG CHECK No 9F4E tag found"]];
             }
             
         }
@@ -1368,13 +1368,13 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
 - (NSMutableDictionary*) createDefaultOutgoingTags: (IDTEMVData*)emvData {
     NSMutableDictionary *outgoingTags;
     if(emvData == nil) {
-        [Teleport logError:@"outgoing tags nil in createDefaultOutgoingTags"];
+        [ClearentLumberjack logError:@"outgoing tags nil in createDefaultOutgoingTags"];
         return outgoingTags;
     }
     if (emvData.cardType == 1) {//contactless
         outgoingTags = [emvData.unencryptedTags mutableCopy];
         if(outgoingTags == nil) {
-            [Teleport logError:@"outgoing tags nil in createDefaultOutgoingTags for contactless"];
+            [ClearentLumberjack logError:@"outgoing tags nil in createDefaultOutgoingTags for contactless"];
         }
     } else {
         NSDictionary *transactionResultDictionary;
@@ -1383,7 +1383,7 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
         if(RETURN_CODE_DO_SUCCESS == emvRetrieveTransactionResultRt) {
             outgoingTags = [transactionResultDictionary objectForKey:@"tags"];
         } else {
-            [Teleport logError:@"Failed to retrieve tlv from Device. Default to unencryptedTags"];
+            [ClearentLumberjack logError:@"Failed to retrieve tlv from Device. Default to unencryptedTags"];
             outgoingTags = [emvData.unencryptedTags mutableCopy];
         }
     }
@@ -1408,7 +1408,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
         clearentTransactionTokenRequest.track2Data = iDTEMVData.cardData.track2;
     }
     if(iDTEMVData.cardData != nil && iDTEMVData.cardData.RSN != nil) {
-        [Teleport logInfo:[NSString stringWithFormat:@"Reader Serial Number %@",iDTEMVData.cardData.RSN]];
+        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Reader Serial Number %@",iDTEMVData.cardData.RSN]];
         clearentTransactionTokenRequest.deviceSerialNumber = iDTEMVData.cardData.RSN;
     }
 }
@@ -1584,13 +1584,13 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
             [outgoingTags removeObjectForKey:@"4F"];
         }
     } else {
-        [Teleport logInfo:@"outgoingtags is nil. cannot remove invalid tsys tags"];
+        [ClearentLumberjack logInfo:@"outgoingtags is nil. cannot remove invalid tsys tags"];
     }
 }
 
 - (void) removeInvalidContactlessTags: (NSMutableDictionary*) outgoingTags {
     if(outgoingTags != nil) {
-        [Teleport logInfo:@"remove invalid contactless tags"];
+        [ClearentLumberjack logInfo:@"remove invalid contactless tags"];
         [outgoingTags removeObjectForKey:@"9F66"];
         [outgoingTags removeObjectForKey:@"9F07"];
         [outgoingTags removeObjectForKey:@"5F24"];
@@ -1615,7 +1615,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
             [outgoingTags removeObjectForKey:@"9F7C"];
         }
     } else {
-        [Teleport logInfo:@"outgoingtags is nil. cannot remove invalid contactless tags"];
+        [ClearentLumberjack logInfo:@"outgoingtags is nil. cannot remove invalid contactless tags"];
     }
 }
 
@@ -1623,7 +1623,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     if(outgoingTags != nil) {
         NSString *data9F39 = [IDTUtility dataToHexString:[outgoingTags objectForKey:@"9F39"]];
         if(data9F39 == nil || ([data9F39 isEqualToString:@""]) || ([data9F39 isEqualToString:@"05"])) {
-            [Teleport logInfo:@"Fixing contactless entry mode"];
+            [ClearentLumberjack logInfo:@"Fixing contactless entry mode"];
             [outgoingTags setObject:[IDTUtility stringToData:@"07"] forKey:@"9F39"];
         }
     }
@@ -1633,7 +1633,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     if(outgoingTags != nil) {
         NSString *data9F39 = [IDTUtility dataToHexString:[outgoingTags objectForKey:@"9F39"]];
         if(data9F39 == nil || ([data9F39 isEqualToString:@""]) || ([data9F39 isEqualToString:@"07"])) {
-            [Teleport logInfo:@"Fixing contact entry mode"];
+            [ClearentLumberjack logInfo:@"Fixing contact entry mode"];
             [outgoingTags setObject:[IDTUtility stringToData:@"05"] forKey:@"9F39"];
         }
     }
@@ -1643,7 +1643,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
 - (void) createTransactionToken:(ClearentTransactionTokenRequest*)clearentTransactionTokenRequest {
     
     if(processingCurrentRequest) {
-        [Teleport logInfo:@"STOPPING DUPLICATE TRANSACTION FROM BEING SENT TO CLEARENT"];
+        [ClearentLumberjack logInfo:@"STOPPING DUPLICATE TRANSACTION FROM BEING SENT TO CLEARENT"];
         [self deviceMessage:@"SECURING CARD"];
     }
     processingCurrentRequest = YES;
@@ -1651,13 +1651,13 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     //Complete the transaction as soon as possible so the idtech framework does not resend the current transaction.
     RETURN_CODE emv_completeOnlineEMVTransactionRt = [_idTechSharedInstance emv_completeOnlineEMVTransaction:false hostResponseTags:nil];
     if(RETURN_CODE_OK_NEXT_COMMAND == emv_completeOnlineEMVTransactionRt || RETURN_CODE_DO_SUCCESS == emv_completeOnlineEMVTransactionRt) {
-        [Teleport logInfo:@"Request IDTech to Complete Transaction Successful IDTECH_TRANSACTION_COMPLETED"];
+        [ClearentLumberjack logInfo:@"Request IDTech to Complete Transaction Successful IDTECH_TRANSACTION_COMPLETED"];
     } else {
-        [Teleport logInfo:@"Request IDTech to Complete Transaction Failed IDTECH_TRANSACTION_COMPLETED"];
+        [ClearentLumberjack logInfo:@"Request IDTech to Complete Transaction Failed IDTECH_TRANSACTION_COMPLETED"];
     }
 
     if(clearentTransactionTokenRequest == nil || clearentTransactionTokenRequest.track2Data == nil || [clearentTransactionTokenRequest.track2Data isEqualToString:@""]) {
-        [Teleport logError:@"NO TRACK2DATA. LAST CHECK BEFORE SENDING TO OUR JWT ENDPOINT"];
+        [ClearentLumberjack logError:@"NO TRACK2DATA. LAST CHECK BEFORE SENDING TO OUR JWT ENDPOINT"];
         [self deviceMessage:CLEARENT_FAILED_TO_READ_CARD_ERROR_RESPONSE];
         return;
     }
@@ -1673,7 +1673,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     }
     
     [self deviceMessage:CLEARENT_TRANSLATING_CARD_TO_TOKEN];
-    [Teleport logInfo:@"Call Clearent to produce transaction token"];
+    [ClearentLumberjack logInfo:@"Call Clearent to produce transaction token"];
 
     [request setHTTPBody:postData];
     [request setHTTPMethod:@"POST"];
@@ -1692,7 +1692,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
           NSString *responseStr = nil;
           if(error != nil) {
               [self deviceMessage:CLEARENT_UNABLE_TO_GO_ONLINE];
-              [Teleport logInfo:error.description];
+              [ClearentLumberjack logInfo:error.description];
           } else if(data != nil) {
               responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
               if(200 == [httpResponse statusCode]) {
@@ -1714,7 +1714,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
                                                                    options:0
                                                                      error:&error];
     if (error) {
-        [Teleport logError:@"handleError:Bad response when trying to make jwt"];
+        [ClearentLumberjack logError:@"handleError:Bad response when trying to make jwt"];
         [self deviceMessage:CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
     } else {
         NSDictionary *payloadDictionary = [jsonDictionary objectForKey:@"payload"];
@@ -1740,8 +1740,8 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     }
     NSString *responseCode = [jsonDictionary objectForKey:@"code"];
     if([responseCode isEqualToString:@"200"]) {
-        [Teleport logInfo:@"😀😀💳💳CARD IS NOW TOKEN💳💳😀😀"];
-        [Teleport logInfo:@"Successful transaction token communicated to client app"];
+        [ClearentLumberjack logInfo:@"😀😀💳💳CARD IS NOW TOKEN💳💳😀😀"];
+        [ClearentLumberjack logInfo:@"Successful transaction token communicated to client app"];
         [self deviceMessage:CLEARENT_SUCCESSFUL_TOKENIZATION_MESSAGE];
         [self clearCurrentRequest];
         if ([self.publicDelegate respondsToSelector:@selector(successfulTransactionToken:)]) {
@@ -1750,7 +1750,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
         ClearentTransactionToken *clearentTransactionToken = [[ClearentTransactionToken alloc] initWithJson:response];
         [self.publicDelegate successTransactionToken:clearentTransactionToken];
     } else {
-        [Teleport logError:@"handleResponse:Bad response when trying to make jwt"];
+        [ClearentLumberjack logError:@"handleResponse:Bad response when trying to make jwt"];
         [self deviceMessage:CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
     }
 }
@@ -1763,7 +1763,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     [self deviceMessage:@"DECLINED"];
 
     if(self.clearentPayment == nil || self.clearentPayment.emailAddress == nil) {
-        [Teleport logError:@"Did not send the offline decline receipt because the email address was not provided"];
+        [ClearentLumberjack logError:@"Did not send the offline decline receipt because the email address was not provided"];
         return;
     }
 
@@ -1784,7 +1784,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
         return;
     }
 
-    [Teleport logInfo:@"Call Clearent to send a decline receipt"];
+    [ClearentLumberjack logInfo:@"Call Clearent to send a decline receipt"];
 
     [request setHTTPBody:postData];
     [request setHTTPMethod:@"POST"];
@@ -1803,7 +1803,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
           NSString *responseStr = nil;
           if(error != nil) {
               [self deviceMessage:CLEARENT_FAILED_TO_SEND_DECLINE_RECEIPT];
-              [Teleport logInfo:error.description];
+              [ClearentLumberjack logInfo:error.description];
               [_idTechSharedInstance emv_completeOnlineEMVTransaction:false hostResponseTags:nil];
           } else if(data != nil) {
               responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -1864,7 +1864,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     }
     NSString *responseCode = [jsonDictionary objectForKey:@"code"];
     if([responseCode isEqualToString:@"200"]) {
-        [Teleport logInfo:@"Successful declined receipt communicated to client app"];
+        [ClearentLumberjack logInfo:@"Successful declined receipt communicated to client app"];
         [self deviceMessage:CLEARENT_SUCCESSFUL_DECLINE_RECEIPT_MESSAGE];
     } else {
         [self deviceMessage:CLEARENT_GENERIC_DECLINE_RECEIPT_ERROR_RESPONSE];
@@ -1913,7 +1913,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     
     if(_clearentDeviceConnector.bluetoothDevices != nil && [_clearentDeviceConnector.bluetoothDevices count] > 0) {
         for (ClearentBluetoothDevice* clearentBluetoothDevice in _clearentDeviceConnector.bluetoothDevices) {
-            [Teleport logInfo:[NSString stringWithFormat:@"Bluetooth Device Found %@", clearentBluetoothDevice.friendlyName]];
+            [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Bluetooth Device Found %@", clearentBluetoothDevice.friendlyName]];
         }
         if ([self.publicDelegate respondsToSelector:@selector(bluetoothDevices:)]) {
             [self.publicDelegate bluetoothDevices:_clearentDeviceConnector.bluetoothDevices];
@@ -1930,9 +1930,9 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     [self disableCardRemovalTimer];
     RETURN_CODE cancelTransactionRt = [_idTechSharedInstance device_cancelTransaction];
     if (RETURN_CODE_DO_SUCCESS == cancelTransactionRt) {
-        [Teleport logInfo:@"ClearentDelegate:cancelTransaction:success"];
+        [ClearentLumberjack logInfo:@"ClearentDelegate:cancelTransaction:success"];
     } else {
-        [Teleport logInfo:@"ClearentDelegate:cancelTransaction:fail"];
+        [ClearentLumberjack logInfo:@"ClearentDelegate:cancelTransaction:fail"];
     }
 }
 

@@ -12,7 +12,7 @@
 #import "ClearentResponse.h"
 #import "Clearent_VP3300.h"
 #import "ClearentDelegate.h"
-#import "Teleport.h"
+#import "ClearentLumberjack.h"
 #import "ClearentDeviceConnector.h"
 #import "ClearentUtils.h"
 
@@ -68,14 +68,14 @@
     
     if(![_clearentDelegate.idTechSharedInstance isConnected]) {
         
-        [Teleport logInfo:@"emv_startTransaction. Tried to start transaction but disconnected"];
+        [ClearentLumberjack logInfo:@"emv_startTransaction. Tried to start transaction but disconnected"];
         [_clearentDelegate deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
         emvStartRt = RETURN_CODE_ERR_DISCONNECT;
     
     } else {
         
         [_clearentDelegate.idTechSharedInstance emv_disableAutoAuthenticateTransaction:FALSE];
-        [Teleport logInfo:@"emv_startTransaction TRANSACTION_STARTED"];
+        [ClearentLumberjack logInfo:@"emv_startTransaction TRANSACTION_STARTED"];
         emvStartRt =  [_clearentDelegate.idTechSharedInstance emv_startTransaction:amount amtOther:amtOther type:type timeout:timeout tags:tags forceOnline:forceOnline fallback:fallback];
         
     }
@@ -101,13 +101,13 @@
     
     if(![_clearentDelegate.idTechSharedInstance isConnected]) {
         
-        [Teleport logInfo:@"ctls_startTransaction. Tried to start transaction but disconnected"];
+        [ClearentLumberjack logInfo:@"ctls_startTransaction. Tried to start transaction but disconnected"];
         [_clearentDelegate deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
         ctlsStartRt = RETURN_CODE_ERR_DISCONNECT;
     
     } else {
         
-         [Teleport logInfo:@"ctls_startTransaction with vars TRANSACTION_STARTED"];
+         [ClearentLumberjack logInfo:@"ctls_startTransaction with vars TRANSACTION_STARTED"];
         ctlsStartRt =  [_clearentDelegate.idTechSharedInstance ctls_startTransaction:amount type:type timeout:timeout tags:tags];
         
     }
@@ -138,7 +138,7 @@
         
     } else if(![_clearentDelegate.idTechSharedInstance isConnected]) {
         
-        [Teleport logInfo:@"ctls_startTransaction no vars. Tried to start transaction but disconnected"];
+        [ClearentLumberjack logInfo:@"ctls_startTransaction no vars. Tried to start transaction but disconnected"];
         
         [_clearentDelegate deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
         
@@ -146,7 +146,7 @@
         
     } else {
         
-        [Teleport logInfo:@"ctls_startTransaction no vars TRANSACTION_STARTED"];
+        [ClearentLumberjack logInfo:@"ctls_startTransaction no vars TRANSACTION_STARTED"];
         
         ctlsStartRt =   [_clearentDelegate.idTechSharedInstance ctls_startTransaction];
         
@@ -168,7 +168,7 @@
         
     } else if(![_clearentDelegate.idTechSharedInstance isConnected]) {
         
-        [Teleport logInfo:@"emv_startTransaction. Tried to start transaction but disconnected"];
+        [ClearentLumberjack logInfo:@"emv_startTransaction. Tried to start transaction but disconnected"];
         
         [_clearentDelegate deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
         
@@ -178,7 +178,7 @@
         
         [_clearentDelegate.idTechSharedInstance emv_disableAutoAuthenticateTransaction:FALSE];
         
-        [Teleport logInfo:@"emv_startTransaction TRANSACTION_STARTED"];
+        [ClearentLumberjack logInfo:@"emv_startTransaction TRANSACTION_STARTED"];
         
         emvStartRt = [_clearentDelegate.idTechSharedInstance emv_startTransaction:clearentPaymentRequest.amount amtOther:clearentPaymentRequest.amtOther type:clearentPaymentRequest.type timeout:clearentPaymentRequest.timeout tags:clearentPaymentRequest.tags forceOnline:clearentPaymentRequest.forceOnline  fallback:clearentPaymentRequest.fallback];
         
@@ -366,7 +366,7 @@
         
     } else if(![_clearentDelegate.idTechSharedInstance isConnected]) {
         
-        [Teleport logInfo:@"device_startTransaction. Tried to start transaction but disconnected"];
+        [ClearentLumberjack logInfo:@"device_startTransaction. Tried to start transaction but disconnected"];
         
         [_clearentDelegate deviceMessage:CLEARENT_DEVICE_NOT_CONNECTED];
         
@@ -396,49 +396,49 @@
     
     if([self isTransactionStarted:idtechReturnCode]) {
         
-        [Teleport logInfo:@"TRANSACTION STARTED"];
+        [ClearentLumberjack logInfo:@"TRANSACTION STARTED"];
         
     } else if([self isTransactionInvalid:idtechReturnCode]) {
         
-        [Teleport logInfo:@"TRANSACTION FAILED. bad parameters"];
+        [ClearentLumberjack logInfo:@"TRANSACTION FAILED. bad parameters"];
         
     } else if(RETURN_CODE_MONO_AUDIO_ == idtechReturnCode) {
         
-        [Teleport logInfo:@"TRANSACTION FAILED. Possible unrecoverable error. Use reader reset button"];
+        [ClearentLumberjack logInfo:@"TRANSACTION FAILED. Possible unrecoverable error. Use reader reset button"];
         
     } else if([self isPreviousTransactionInProgress:idtechReturnCode]) {
         
-        [Teleport logInfo:@"TRANSACTION FAILED. Existing transaction."];
+        [ClearentLumberjack logInfo:@"TRANSACTION FAILED. Existing transaction."];
         
     } else if([self isDisconnected:idtechReturnCode]) {
         
-        [Teleport logInfo:@"TRANSACTION FAILED. Disconnected"];
+        [ClearentLumberjack logInfo:@"TRANSACTION FAILED. Disconnected"];
         
     } else if([self isConnectionError:idtechReturnCode]) {
         
-        [Teleport logInfo:@"TRANSACTION FAILED. possible state - If the reader if OFF, but SDK thinks it still is connected."];
+        [ClearentLumberjack logInfo:@"TRANSACTION FAILED. possible state - If the reader if OFF, but SDK thinks it still is connected."];
         
     } else {
         
         @try{
             NSString *idtechErrorMessage = [ClearentUtils getIDtechErrorMessage:idtechReturnCode];
-            [Teleport logInfo:[NSString stringWithFormat:@"%@ - %@", CLEARENT_RESPONSE_TRANSACTION_FAILED, idtechErrorMessage]];
+            [ClearentLumberjack logInfo:[NSString stringWithFormat:@"%@ - %@", CLEARENT_RESPONSE_TRANSACTION_FAILED, idtechErrorMessage]];
         }
         @catch (NSException *e) {
-            [Teleport logInfo:@"Could not figure out start transaction error"];
+            [ClearentLumberjack logInfo:@"Could not figure out start transaction error"];
         }
         
         @try{
             NSString *deviceResponseCodeString = [_clearentDelegate.idTechSharedInstance device_getResponseCodeString:idtechReturnCode];
             if(deviceResponseCodeString != nil && ![deviceResponseCodeString isEqualToString:@""] && ![deviceResponseCodeString containsString:@"no error file found"]) {
-                [Teleport logInfo:[NSString stringWithFormat:@"Start Transaction Error: = %@",deviceResponseCodeString]];
+                [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Start Transaction Error: = %@",deviceResponseCodeString]];
             } else {
                 NSString *idtechErrorMessage = [ClearentUtils getIDtechErrorMessage:idtechReturnCode];
-                [Teleport logInfo:[NSString stringWithFormat:@"Start Transaction Error: = %@",idtechErrorMessage]];
+                [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Start Transaction Error: = %@",idtechErrorMessage]];
             }
         }
         @catch (NSException *e) {
-            [Teleport logInfo:@"remoteLogTransactionRequest:Unknown Start Transaction Error Code "];
+            [ClearentLumberjack logInfo:@"remoteLogTransactionRequest:Unknown Start Transaction Error Code "];
             
         }
         
@@ -479,7 +479,7 @@
 - (ClearentResponse*) createRequiredTransactionRequestResponse {
     
     ClearentResponse *clearentResponse = [[ClearentResponse alloc] init];
-    [Teleport logInfo:@"createRequiredTransactionRequestResponse. payment request and connection required "];
+    [ClearentLumberjack logInfo:@"createRequiredTransactionRequestResponse. payment request and connection required "];
     clearentResponse.responseType = RESPONSE_FAIL;
     clearentResponse.response = CLEARENT_REQUIRED_TRANSACTION_REQUEST_RESPONSE;
     clearentResponse.idtechReturnCode = RETURN_CODE_CANNOT_START_CONTACT_EMV;
@@ -492,7 +492,7 @@
     
     ClearentResponse *clearentResponse = [[ClearentResponse alloc] init];
     
-    [Teleport logInfo:@"createConfigurationRequestResponse. configuration is still enabled "];
+    [ClearentLumberjack logInfo:@"createConfigurationRequestResponse. configuration is still enabled "];
     clearentResponse.responseType = RESPONSE_FAIL;
     clearentResponse.response = CLEARENT_DISABLE_CONFIGURATION_TO_RUN_TRANSACTION;
     clearentResponse.idtechReturnCode = RETURN_CODE_CANNOT_START_CONTACT_EMV;
@@ -505,7 +505,7 @@
     
     ClearentResponse *clearentResponse = [[ClearentResponse alloc] init];
     
-    [Teleport logInfo:@"createStillConnectedToAudioJackResponse. Still connected to audio jack but wants to connect to bluetooth"];
+    [ClearentLumberjack logInfo:@"createStillConnectedToAudioJackResponse. Still connected to audio jack but wants to connect to bluetooth"];
     clearentResponse.responseType = RESPONSE_FAIL;
     clearentResponse.response = CLEARENT_UNPLUG_AUDIO_JACK_BEFORE_CONNECTING_TO_BLUETOOTH;
     
@@ -517,7 +517,7 @@
     
     ClearentResponse *clearentResponse = [[ClearentResponse alloc] init];
     
-    [Teleport logInfo:@"createStillConnectedToAudioJackResponse. audio jack is not connected"];
+    [ClearentLumberjack logInfo:@"createStillConnectedToAudioJackResponse. audio jack is not connected"];
     clearentResponse.responseType = RESPONSE_FAIL;
     clearentResponse.response = @"AUDIO JACK NOT CONNECTED";
     
@@ -530,7 +530,7 @@ clearentConnection:(ClearentConnection*) clearentConnection {
     
     [_clearentDelegate setClearentPayment:clearentPaymentRequest];
     
-    [Teleport logInfo:@"startTransactionByReaderInterfaceMode. Device is connected. Start transaction"];
+    [ClearentLumberjack logInfo:@"startTransactionByReaderInterfaceMode. Device is connected. Start transaction"];
     
     RETURN_CODE startTransactionReturnCode = [self startTransactionByReaderInterfaceMode:_clearentDelegate.clearentConnection.readerInterfaceMode];
     
@@ -553,7 +553,7 @@ clearentConnection:(ClearentConnection*) clearentConnection {
         clearentResponse.response = CLEARENT_RESPONSE_TRANSACTION_STARTED;
         clearentResponse.responseType = RESPONSE_SUCCESS;
         
-        [Teleport logInfo:@"handleStartTransactionErrors: transaction started"];
+        [ClearentLumberjack logInfo:@"handleStartTransactionErrors: transaction started"];
         
     } else if([self isPreviousTransactionInProgress:startTransactionReturnCode] || [self isGeneralFailure:startTransactionReturnCode]) {
         
@@ -563,20 +563,20 @@ clearentConnection:(ClearentConnection*) clearentConnection {
             startTransactionReturnCode = [self startTransactionByReaderInterfaceMode:_clearentDelegate.clearentConnection.readerInterfaceMode];
             clearentResponse.idtechReturnCode = startTransactionReturnCode;
             if([self isTransactionStarted:startTransactionReturnCode]) {
-                [Teleport logInfo:@"handleStartTransactionErrors: previous transaction in progress or general failure. cancel transaction succeeded. start new transaction success"];
+                [ClearentLumberjack logInfo:@"handleStartTransactionErrors: previous transaction in progress or general failure. cancel transaction succeeded. start new transaction success"];
                 clearentResponse.response = CLEARENT_RESPONSE_TRANSACTION_STARTED;
                 clearentResponse.responseType = RESPONSE_SUCCESS;
             } else if(_clearentDelegate.clearentConnection != nil && _clearentDelegate.clearentConnection.connectionType == CLEARENT_BLUETOOTH) {
                 [_clearentVP3300 device_disconnectBLE];
                 if(!_retriedTransactionAfterDisconnect) {
-                    [Teleport logInfo:@"handleStartTransactionErrors: previous transaction in progress or general failure. retry of transaction after cancelling transaction failed. retryTransactionAfterBluetoothDisconnect"];
+                    [ClearentLumberjack logInfo:@"handleStartTransactionErrors: previous transaction in progress or general failure. retry of transaction after cancelling transaction failed. retryTransactionAfterBluetoothDisconnect"];
                     clearentResponse = [self retryTransactionAfterReconnectAttempt];
                 }
             }
         } else if(_clearentDelegate.clearentConnection != nil && _clearentDelegate.clearentConnection.connectionType == CLEARENT_BLUETOOTH) {
             [_clearentVP3300 device_disconnectBLE];
             if(!_retriedTransactionAfterDisconnect) {
-                [Teleport logInfo:@"handleStartTransactionErrors: previous transaction in progress or general failure. cancel transaction failed. retryTransactionAfterBluetoothDisconnect"];
+                [ClearentLumberjack logInfo:@"handleStartTransactionErrors: previous transaction in progress or general failure. cancel transaction failed. retryTransactionAfterBluetoothDisconnect"];
                 clearentResponse = [self retryTransactionAfterReconnectAttempt];
             }
         }
@@ -584,7 +584,7 @@ clearentConnection:(ClearentConnection*) clearentConnection {
     } else if([self isDisconnected:startTransactionReturnCode]) {
         
         if(!_retriedTransactionAfterDisconnect) {
-            [Teleport logInfo:@"handleStartTransactionErrors: isDisconnected. retryTransactionAfterBluetoothDisconnect"];
+            [ClearentLumberjack logInfo:@"handleStartTransactionErrors: isDisconnected. retryTransactionAfterBluetoothDisconnect"];
             clearentResponse = [self retryTransactionAfterReconnectAttempt];
         }
         
@@ -592,7 +592,7 @@ clearentConnection:(ClearentConnection*) clearentConnection {
         
         if(_clearentDelegate.clearentConnection != nil && _clearentDelegate.clearentConnection.connectionType == CLEARENT_BLUETOOTH) {
             [_clearentVP3300 device_disconnectBLE];
-            [Teleport logInfo:@"handleStartTransactionErrors: isConnectionError. retryTransactionAfterBluetoothDisconnect"];
+            [ClearentLumberjack logInfo:@"handleStartTransactionErrors: isConnectionError. retryTransactionAfterBluetoothDisconnect"];
             clearentResponse = [self retryTransactionAfterReconnectAttempt];
         } else {
             clearentResponse.response = CLEARENT_DEVICE_NOT_CONNECTED;
@@ -614,19 +614,19 @@ clearentConnection:(ClearentConnection*) clearentConnection {
         @try{
             NSString *deviceResponseCodeString = [_clearentDelegate.idTechSharedInstance device_getResponseCodeString:startTransactionReturnCode];
             if(deviceResponseCodeString != nil && ![deviceResponseCodeString isEqualToString:@""] && ![deviceResponseCodeString containsString:@"no error file found"]) {
-                [Teleport logInfo:[NSString stringWithFormat:@"Start Transaction Error: = %@",deviceResponseCodeString]];
+                [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Start Transaction Error: = %@",deviceResponseCodeString]];
                 NSString *errorMessage = [NSString stringWithFormat:@"%@ - %@", CLEARENT_RESPONSE_TRANSACTION_FAILED, deviceResponseCodeString];
                 clearentResponse.response = errorMessage;
 
             } else {
                 NSString *idtechErrorMessage = [ClearentUtils getIDtechErrorMessage:startTransactionReturnCode];
-                [Teleport logInfo:[NSString stringWithFormat:@"Start Transaction Error: = %@",idtechErrorMessage]];
+                [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Start Transaction Error: = %@",idtechErrorMessage]];
                 NSString *errorMessage = [NSString stringWithFormat:@"%@ - %@", CLEARENT_RESPONSE_TRANSACTION_FAILED, idtechErrorMessage];
                 clearentResponse.response = errorMessage;
             }
         }
         @catch (NSException *e) {
-            [Teleport logInfo:@"Unknown Start Transaction Error Code "];
+            [ClearentLumberjack logInfo:@"Unknown Start Transaction Error Code "];
             clearentResponse.response = CLEARENT_RESPONSE_TRANSACTION_FAILED;
         }
         

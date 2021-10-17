@@ -36,5 +36,8 @@
     }
 }
 
++ (void) flush {
+    [DDLog flushLog];
+}
 
 @end

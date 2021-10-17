@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ClearentManualEntry.h"
-#import "Teleport.h"
+#import "ClearentLumberjack.h"
 
 static NSString *const GENERIC_ERROR_RESPONSE = @"Fail to create transaction token for manual entry";
 static NSString *const CARD_REQUIRED = @"Card number required";
@@ -27,7 +27,7 @@ static NSString *const EXPIRATION_DATE_REQUIRED = @"Expiration date required";
     }
 
     - (void) handleManualEntryError:(NSString*)message {
-        [Teleport logError:message];
+        [ClearentLumberjack logError:message];
         [self.clearentManualEntryDelegate handleManualEntryError:message];
     }
     
@@ -46,7 +46,7 @@ static NSString *const EXPIRATION_DATE_REQUIRED = @"Expiration date required";
            NSData *postData = [NSJSONSerialization dataWithJSONObject:clearentCard.asDictionary options:0 error:&error];
            
            if (error) {
-               [Teleport logError:@"Failed to serialize card data"];
+               [ClearentLumberjack logError:@"Failed to serialize card data"];
                [self handleManualEntryError:GENERIC_ERROR_RESPONSE];
                return;
            }
@@ -113,7 +113,7 @@ static NSString *const EXPIRATION_DATE_REQUIRED = @"Expiration date required";
            }
            NSString *responseCode = [jsonDictionary objectForKey:@"code"];
            if([responseCode isEqualToString:@"200"]) {
-               [Teleport logInfo:@"Successful transaction token communicated to client app for manual entry"];
+               [ClearentLumberjack logInfo:@"Successful transaction token communicated to client app for manual entry"];
                if ([self.clearentManualEntryDelegate respondsToSelector:@selector(successfulTransactionToken:)]) {
                    [self.clearentManualEntryDelegate successfulTransactionToken:response];
                }

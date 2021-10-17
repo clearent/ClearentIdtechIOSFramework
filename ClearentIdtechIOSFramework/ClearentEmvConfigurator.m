@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "ClearentEmvConfigurator.h"
 #import <IDTech/IDTUtility.h>
-#import "Teleport.h"
+#import "ClearentLumberjack.h"
 
 static NSString *const EMV_DIP_ENTRY_MODE_TAG = @"05";
 static NSString *const IDTECH_EMV_ENTRY_MODE_EMV_TAG = @"DFEE17";
@@ -35,21 +35,21 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
     }
     RETURN_CODE emvSetTerminalMajorConfigurationRt = [_sharedController emv_setTerminalMajorConfiguration:terminalMajorConfiguration];
     if (RETURN_CODE_DO_SUCCESS == emvSetTerminalMajorConfigurationRt) {
-        [Teleport logInfo:@"Contact Terminal Major Set to 5"];
+        [ClearentLumberjack logInfo:@"Contact Terminal Major Set to 5"];
         NSLog(@"Contact Terminal Major Set to 5");
     } else {
         NSString *error =[_sharedController device_getResponseCodeString:emvSetTerminalMajorConfigurationRt];
-        [Teleport logError:[NSString stringWithFormat:@"Failed to set terminal to 5 %@", error]];
+        [ClearentLumberjack logError:[NSString stringWithFormat:@"Failed to set terminal to 5 %@", error]];
         NSLog(@"Failed to set terminal to 5 %@",[NSString stringWithFormat:@"%@", error]);
         
         [NSThread sleepForTimeInterval:0.8f];
         if(![_sharedController isConnected]) {
-            [Teleport logError:@"Reader is disconnected prior to trying set the major configuration a second time"];
+            [ClearentLumberjack logError:@"Reader is disconnected prior to trying set the major configuration a second time"];
             return CONTACT_DEVICE_IS_DISCONNECTED;
         } else {
             RETURN_CODE emvSetTerminalMajorConfigurationRt = [_sharedController emv_setTerminalMajorConfiguration:terminalMajorConfiguration];
             if (RETURN_CODE_DO_SUCCESS != emvSetTerminalMajorConfigurationRt) {
-                [Teleport logError:@"Tried to set the major configuration a second time but it failed"];
+                [ClearentLumberjack logError:@"Tried to set the major configuration a second time but it failed"];
                 return TERMINAL_MAJOR_5C_FAILED;
             }
         }
@@ -62,9 +62,9 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
     }
     RETURN_CODE setDefaultRt = [_sharedController emv_setTerminalData:[IDTUtility TLVtoDICT:defaultTlvTags]];
     if (RETURN_CODE_DO_SUCCESS == setDefaultRt) {
-        [Teleport logInfo:@"Emv Entry mode changed from 07 to 05"];
+        [ClearentLumberjack logInfo:@"Emv Entry mode changed from 07 to 05"];
     } else{
-        [Teleport logError:@"Failed to retrieve major tags"];
+        [ClearentLumberjack logError:@"Failed to retrieve major tags"];
         configureMajorTagsReturnCode = MAJOR_TAGS_RETRIEVE_FAILED;
     }
     
@@ -82,11 +82,11 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
         }
         RETURN_CODE rt = [_sharedController emv_setApplicationData:name configData:values];
         if (RETURN_CODE_DO_SUCCESS == rt) {
-            [Teleport logInfo:[NSString stringWithFormat:@"contact aid loaded %@", name]];
+            [ClearentLumberjack logInfo:[NSString stringWithFormat:@"contact aid loaded %@", name]];
             NSLog(@"contact aid loaded %@",[NSString stringWithFormat:@"%@", name]);
         } else{
             NSString *error =[_sharedController device_getResponseCodeString:rt];
-            [Teleport logError:[NSString stringWithFormat:@"contact aid failed to load %@,%@", name, error]];
+            [ClearentLumberjack logError:[NSString stringWithFormat:@"contact aid failed to load %@,%@", name, error]];
             NSLog(@"contact aid failed to load %@",[NSString stringWithFormat:@"%@,%@", name, error]);
             allSuccessful = false;
         }
@@ -105,7 +105,7 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
     RETURN_CODE emv_retrieveCAPKListRt = [_sharedController  emv_retrieveCAPKList:&capkList];
     if (RETURN_CODE_DO_SUCCESS == emv_retrieveCAPKListRt) {
         NSLog(@"Successfully retrieved list of configured contact capk");
-        [Teleport logInfo:[NSString stringWithFormat:@"Successfully removed all currently configured contact capk"]];
+        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Successfully removed all currently configured contact capk"]];
         for(NSString *nameAndKeyIndex in capkList) {
             NSString *name = [nameAndKeyIndex substringToIndex:[nameAndKeyIndex length] - 2];
             NSString *keyIndex = [nameAndKeyIndex substringFromIndex: [nameAndKeyIndex length] - 2];
@@ -114,16 +114,16 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
             RETURN_CODE emv_removeCAPKRt = [_sharedController  emv_removeCAPK:name index:keyIndex];
             if (RETURN_CODE_DO_SUCCESS == emv_removeCAPKRt) {
                 NSLog(@"contact capk removed %@",[NSString stringWithFormat:@"%@", nameAndKeyIndex]);
-                [Teleport logInfo:[NSString stringWithFormat:@"contact capk removed %@", nameAndKeyIndex]];
+                [ClearentLumberjack logInfo:[NSString stringWithFormat:@"contact capk removed %@", nameAndKeyIndex]];
             } else {
                 NSLog(@"contact capk not removed %@",[NSString stringWithFormat:@"%@", nameAndKeyIndex]);
-                [Teleport logInfo:[NSString stringWithFormat:@"contact capk not removed %@", nameAndKeyIndex]];
+                [ClearentLumberjack logInfo:[NSString stringWithFormat:@"contact capk not removed %@", nameAndKeyIndex]];
                 allSuccessful = false;
             }
         }
     } else{
         NSLog(@"Failed to get list of contact capk");
-        [Teleport logInfo:[NSString stringWithFormat:@"Failed to get list of contact capk"]];
+        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Failed to get list of contact capk"]];
         allSuccessful = false;
     }
     
@@ -154,11 +154,11 @@ static NSString *const READER_CONFIGURED_MESSAGE = @"Reader configured and ready
         }
         RETURN_CODE capkRt = [_sharedController emv_setCAPKFile:capk];
         if (RETURN_CODE_DO_SUCCESS == capkRt) {
-            [Teleport logInfo:[NSString stringWithFormat:@"contact capk loaded %@", name]];
+            [ClearentLumberjack logInfo:[NSString stringWithFormat:@"contact capk loaded %@", name]];
             NSLog(@"contact capk loaded %@",[NSString stringWithFormat:@"%@", name]);
         } else{
             NSString *error =[_sharedController device_getResponseCodeString:capkRt];
-            [Teleport logError:[NSString stringWithFormat:@"contact capk failed to load %@,%@", name, error]];
+            [ClearentLumberjack logError:[NSString stringWithFormat:@"contact capk failed to load %@,%@", name, error]];
             NSLog(@"contact capk failed to load %@",[NSString stringWithFormat:@"%@,%@", name, error]);
             allSuccessful = false;
         }

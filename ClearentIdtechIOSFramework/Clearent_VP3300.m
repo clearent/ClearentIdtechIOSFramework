@@ -8,7 +8,7 @@
 
 #import "Clearent_VP3300.h"
 #import "ClearentDelegate.h"
-#import "Teleport.h"
+#import "ClearentLumberjack.h"
 #import "ClearentPayment.h"
 #import <IDTech/IDTUtility.h>
 #import "ClearentCache.h"
@@ -454,17 +454,17 @@
     if (clearentDelegate.contactlessAutoConfiguration) {
         [clearentDelegate clearContactlessConfigurationCache];
     }
-    [Teleport logInfo:@"applyClearentConfiguration:Manual configuration requested"];
+    [ClearentLumberjack logInfo:@"applyClearentConfiguration:Manual configuration requested"];
     if (clearentDelegate.autoConfiguration || clearentDelegate.contactlessAutoConfiguration) {
         clearentDelegate.configured = false;
-         [Teleport logInfo:@"applyClearentConfiguration:configuration has been enabled. clear cache and reset configuration flag"];
+         [ClearentLumberjack logInfo:@"applyClearentConfiguration:configuration has been enabled. clear cache and reset configuration flag"];
     }
     
     if(![clearentDelegate isDeviceConfigured]) {
-         [Teleport logInfo:@"applyClearentConfiguration:called"];
+         [ClearentLumberjack logInfo:@"applyClearentConfiguration:called"];
         [clearentDelegate applyClearentConfiguration];
     } else {
-        [Teleport logInfo:@"applyClearentConfiguration:did not apply configuration because the reader is still considered configured. setting configuration flag to true"];
+        [ClearentLumberjack logInfo:@"applyClearentConfiguration:did not apply configuration because the reader is still considered configured. setting configuration flag to true"];
         [clearentDelegate deviceMessage:CLEARENT_READER_CONFIGURED_MESSAGE];
         [clearentDelegate setConfigured:true];
     }
@@ -475,19 +475,19 @@
 -(RETURN_CODE) isContactlessConfigured {
     RETURN_CODE returnCode = RETURN_CODE_DO_SUCCESS;
     if(![[IDT_VP3300 sharedController] isConnected]) {
-        [Teleport logInfo:@"isContactlessConfigured. Reader disconnected"];
+        [ClearentLumberjack logInfo:@"isContactlessConfigured. Reader disconnected"];
         returnCode = RETURN_CODE_ERR_DISCONNECT;
     } else {
         NSDictionary *result;
         returnCode = [[IDT_VP3300 sharedController]  ctls_getConfigurationGroup:1 response:&result];
         if (RETURN_CODE_DO_SUCCESS == returnCode) {
             if(result == nil || result.count == 0) {
-                [Teleport logInfo:[NSString stringWithFormat:@"isContactlessConfigured Group 1 not found:\n%@", result.description]];
+                [ClearentLumberjack logInfo:[NSString stringWithFormat:@"isContactlessConfigured Group 1 not found:\n%@", result.description]];
                 returnCode = RETURN_CODE_NO_DATA_AVAILABLE_;
             } 
         } else {
              returnCode = RETURN_CODE_NO_DATA_AVAILABLE_;
-             [Teleport logInfo:[NSString stringWithFormat:@"isContactlessConfigured Group 1 error Response: = %@",[[IDT_VP3300 sharedController] device_getResponseCodeString:returnCode]]];
+             [ClearentLumberjack logInfo:[NSString stringWithFormat:@"isContactlessConfigured Group 1 error Response: = %@",[[IDT_VP3300 sharedController] device_getResponseCodeString:returnCode]]];
         }
     }
    
@@ -500,7 +500,7 @@
 -(RETURN_CODE) isReaderPreconfigured {
     RETURN_CODE returnCode = RETURN_CODE_DO_SUCCESS;
     if(![[IDT_VP3300 sharedController] isConnected]) {
-        [Teleport logInfo:@"isReaderPreconfigured. Reader disconnected"];
+        [ClearentLumberjack logInfo:@"isReaderPreconfigured. Reader disconnected"];
         returnCode = RETURN_CODE_ERR_DISCONNECT;
     } else {
         NSDictionary *terminalData;
@@ -508,17 +508,17 @@
         if (RETURN_CODE_DO_SUCCESS == returnCode) {
             NSString *merchantNameAndLocationHijackedAsConfiguredFlag = [IDTUtility dataToHexString:[terminalData objectForKey:MERCHANT_NAME_AND_LOCATION_HIJACKED_AS_PRECONFIGURED_FLAG]];
             if(merchantNameAndLocationHijackedAsConfiguredFlag != nil && [merchantNameAndLocationHijackedAsConfiguredFlag isEqualToString:READER_CONFIGURED_FLAG_LETTER_P_IN_HEX]) {
-                [Teleport logInfo:@"🤩 🤩 🤩 🤩 🤩 IDTECH READER IS PRECONFIGURED 🤩 🤩 🤩 🤩 🤩"];
+                [ClearentLumberjack logInfo:@"🤩 🤩 🤩 🤩 🤩 IDTECH READER IS PRECONFIGURED 🤩 🤩 🤩 🤩 🤩"];
             } else {
                 if(merchantNameAndLocationHijackedAsConfiguredFlag != nil) {
-                    [Teleport logInfo:[NSString stringWithFormat:@"isReaderPreconfigured 9f4e value is: %@", merchantNameAndLocationHijackedAsConfiguredFlag]];
+                    [ClearentLumberjack logInfo:[NSString stringWithFormat:@"isReaderPreconfigured 9f4e value is: %@", merchantNameAndLocationHijackedAsConfiguredFlag]];
                 } else {
-                    [Teleport logInfo:[NSString stringWithFormat:@"isReaderPreconfigured No 9F4E tag found"]];
+                    [ClearentLumberjack logInfo:[NSString stringWithFormat:@"isReaderPreconfigured No 9F4E tag found"]];
                 }
                 returnCode = RETURN_CODE_NO_DATA_AVAILABLE_;
             }
         } else {
-            [Teleport logInfo:[NSString stringWithFormat:@"isReaderPreconfigured Failed to get 9F4E tag : = %@",[[IDT_VP3300 sharedController] device_getResponseCodeString:returnCode]]];
+            [ClearentLumberjack logInfo:[NSString stringWithFormat:@"isReaderPreconfigured Failed to get 9F4E tag : = %@",[[IDT_VP3300 sharedController] device_getResponseCodeString:returnCode]]];
             returnCode = RETURN_CODE_NO_DATA_AVAILABLE_;
         }
     }
@@ -529,12 +529,12 @@
 
 - (void) addRemoteLogRequest:(NSString*) clientSoftwareVersion message:(NSString*) message {
     if(clientSoftwareVersion != nil && message != nil) {
-        [Teleport logInfo:[NSString stringWithFormat:@"CLIENT:%@:%@",clientSoftwareVersion, message]];
+        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"CLIENT:%@:%@",clientSoftwareVersion, message]];
     }
 }
 
 - (void) sendRemoteLogs {
-    [Teleport reap];
+    [ClearentLumberjack flush];
 }
 
 

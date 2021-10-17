@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "ClearentContactlessConfigurator.h"
 #import <IDTech/IDTUtility.h>
-#import "Teleport.h"
+#import "ClearentLumberjack.h"
 
 static NSString *const EMV_DIP_ENTRY_MODE_TAG = @"05";
 static NSString *const IDTECH_EMV_ENTRY_MODE_EMV_TAG = @"DFEE17";
@@ -26,7 +26,7 @@ static NSString *const CONTACTLESS_CONFIGURED_MESSAGE = @"Reader configured for 
     NSArray *configuredAidsList;
     RETURN_CODE retrieveAIDListReturnCode = [sharedController ctls_retrieveAIDList:&configuredAidsList];
     if (RETURN_CODE_DO_SUCCESS == retrieveAIDListReturnCode) {
-        [Teleport logInfo:@"Remove unsupported contactless aids"];
+        [ClearentLumberjack logInfo:@"Remove unsupported contactless aids"];
         for(NSData *configuredContactlessAid in configuredAidsList) {
             NSString *aidtoRemove = [IDTUtility dataToHexString:configuredContactlessAid];
             if(![contactlessSupportedAids containsObject:aidtoRemove]) {
@@ -36,16 +36,16 @@ static NSString *const CONTACTLESS_CONFIGURED_MESSAGE = @"Reader configured for 
                 RETURN_CODE removeApplicationDataReturnCode = [[IDT_VP3300 sharedController] ctls_removeApplicationData:aidtoRemove];
                 if (RETURN_CODE_DO_SUCCESS == removeApplicationDataReturnCode) {
                     NSLog(@"Removed unsupported from contactless %@",[NSString stringWithFormat:@"aid %@", configuredContactlessAid]);
-                    [Teleport logInfo:[NSString stringWithFormat:@"Removed unsupported contactless aid %@", configuredContactlessAid]];
+                    [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Removed unsupported contactless aid %@", configuredContactlessAid]];
                 } else {
                     NSLog(@"Failed to remove unsupported contactless %@",[NSString stringWithFormat:@"aid %@", configuredContactlessAid]);
-                    [Teleport logInfo:[NSString stringWithFormat:@"Failed to remove unsupported contactless aid %@", configuredContactlessAid]];
+                    [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Failed to remove unsupported contactless aid %@", configuredContactlessAid]];
                     contactlessConfigurationReturnCode = FAILED_TO_REMOVE_UNSUPPORTED_AID;
                 }
             }
         }
     } else {
-        [Teleport logInfo:@"Failed to retrieve contactless aids list"];
+        [ClearentLumberjack logInfo:@"Failed to retrieve contactless aids list"];
         return FAILED_TO_RETRIEVE_AIDS_LIST;
     }
     return contactlessConfigurationReturnCode;
@@ -68,11 +68,11 @@ static NSString *const CONTACTLESS_CONFIGURED_MESSAGE = @"Reader configured for 
         }
         RETURN_CODE returnCode = [sharedController ctls_setConfigurationGroup:groupTlvData];
         if (RETURN_CODE_DO_SUCCESS == returnCode) {
-            [Teleport logInfo:[NSString stringWithFormat:@"contactless group added/updated  name %@,group %@", name, group]];
+            [ClearentLumberjack logInfo:[NSString stringWithFormat:@"contactless group added/updated  name %@,group %@", name, group]];
             NSLog(@"contactless group added/updated %@",[NSString stringWithFormat:@"name %@,group %@", name, group]);
         } else {
             allSuccessful = false;
-            [Teleport logInfo:[NSString stringWithFormat:@"contactless group added/updated failed name %@,group %@", name, group]];
+            [ClearentLumberjack logInfo:[NSString stringWithFormat:@"contactless group added/updated failed name %@,group %@", name, group]];
             NSLog(@"contactless group added/updated failed %@",[NSString stringWithFormat:@"name %@,group %@", name, group]);
         }
      }
@@ -98,13 +98,13 @@ static NSString *const CONTACTLESS_CONFIGURED_MESSAGE = @"Reader configured for 
         }
         int setApplicationDataRt2 = [[IDT_VP3300 sharedController] ctls_setApplicationData:setApplicationData2];
         if (RETURN_CODE_DO_SUCCESS == setApplicationDataRt2) {
-            [Teleport logInfo:[NSString stringWithFormat:@"contactless aid applied  name %@", name]];
+            [ClearentLumberjack logInfo:[NSString stringWithFormat:@"contactless aid applied  name %@", name]];
             NSLog(@"contactless aid applied %@",[NSString stringWithFormat:@"name %@", name]);
         } else {
             allSuccessful = false;
             NSString *error =[[IDT_VP3300 sharedController] device_getResponseCodeString:setApplicationDataRt2];
             NSLog(@"contactless setApplicationData unsuccessful %@",[NSString stringWithFormat:@"name %@,error %@", name, error]);
-            [Teleport logInfo:[NSString stringWithFormat:@"contactless add applied failed name %@", name]];
+            [ClearentLumberjack logInfo:[NSString stringWithFormat:@"contactless add applied failed name %@", name]];
             NSLog(@"contactless aid applied   failed %@",[NSString stringWithFormat:@"name %@", name]);
         }
     }
@@ -120,7 +120,7 @@ static NSString *const CONTACTLESS_CONFIGURED_MESSAGE = @"Reader configured for 
     RETURN_CODE removeCapkRt = [[IDT_VP3300 sharedController] ctls_removeAllCAPK];
     if (RETURN_CODE_DO_SUCCESS == removeCapkRt) {
         NSLog(@"Successfully removed all currently configured contactless capk");
-        [Teleport logInfo:[NSString stringWithFormat:@"Successfully removed all currently configured contactless capk"]];
+        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Successfully removed all currently configured contactless capk"]];
     } else {
         return CONTACTLESS_CAPKS_FAILED;
     }
@@ -145,11 +145,11 @@ static NSString *const CONTACTLESS_CONFIGURED_MESSAGE = @"Reader configured for 
         RETURN_CODE capkRt = [sharedController ctls_setCAPK:capk];
         if (RETURN_CODE_DO_SUCCESS == capkRt) {
             NSLog(@"contactless capk loaded %@",[NSString stringWithFormat:@"%@", name]);
-            [Teleport logInfo:[NSString stringWithFormat:@"contactless capk loaded name %@", name]];
+            [ClearentLumberjack logInfo:[NSString stringWithFormat:@"contactless capk loaded name %@", name]];
         } else{
             NSString *error =[sharedController device_getResponseCodeString:capkRt];
             NSLog(@"contactless capk failed to load %@",[NSString stringWithFormat:@"%@,%@", name, error]);
-            [Teleport logInfo:[NSString stringWithFormat:@"contactless capk failed to load name %@,error %@", name, error]];
+            [ClearentLumberjack logInfo:[NSString stringWithFormat:@"contactless capk failed to load name %@,error %@", name, error]];
             allSuccessful = false;
         }
     }

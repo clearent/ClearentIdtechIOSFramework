@@ -7,7 +7,7 @@
 //
 
 #import "ClearentTransactionToken.h"
-#import "Teleport.h"
+#import "ClearentLumberjack.h"
 
 @implementation ClearentTransactionToken
 
@@ -43,7 +43,7 @@
                                                                    options:0
                                                                      error:&error];
     if (error) {
-        [Teleport logError:[NSString stringWithFormat:@"Failed to create ClearentTransactionToken %@", stringJson]];
+        [ClearentLumberjack logError:[NSString stringWithFormat:@"Failed to create ClearentTransactionToken %@", stringJson]];
     }
     
     return jsonDictionary;

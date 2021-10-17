@@ -8,7 +8,7 @@
 
 #import "ClearentConfigurator.h"
 #import <IDTech/IDTUtility.h>
-#import "Teleport.h"
+#import "ClearentLumberjack.h"
 #import "ClearentContactlessConfigurator.h"
 #import "ClearentCache.h"
 
@@ -54,11 +54,11 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
           
      if(storedDeviceSerialNumber != nil && [storedDeviceSerialNumber isEqualToString:deviceSerialNumber]) {
         if(readerConfiguredFlag != nil && [readerConfiguredFlag isEqualToString:@"true"]) {
-            [Teleport logInfo:@"Reader already configured. Disable contact configuration"];
+            [ClearentLumberjack logInfo:@"Reader already configured. Disable contact configuration"];
             autoConfiguration = false;
         }
         if(readerContactlessConfiguredFlag != nil && [readerContactlessConfiguredFlag isEqualToString:@"true"]) {
-            [Teleport logInfo:@"Reader already configured. Disable contactless configuration"];
+            [ClearentLumberjack logInfo:@"Reader already configured. Disable contactless configuration"];
             contactlessAutoConfiguration = false;
         }
      } else if(storedDeviceSerialNumber != nil && (autoConfiguration || contactlessAutoConfiguration)) {
@@ -67,11 +67,11 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
      };
     
     if(!autoConfiguration) {
-        [Teleport logInfo:@"Skipping emv contact configuration"];
+        [ClearentLumberjack logInfo:@"Skipping emv contact configuration"];
     }
     
     if(!contactlessAutoConfiguration) {
-        [Teleport logInfo:@"Skipping contactless configuration"];
+        [ClearentLumberjack logInfo:@"Skipping contactless configuration"];
     }
     
     if(!autoConfiguration && !contactlessAutoConfiguration) {
@@ -79,7 +79,7 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
         if(!isDeviceConfigured) {
             [self cacheConfiguredReader: deviceSerialNumber];
         }
-        [Teleport logInfo:@"ClearentConfigurator:both config flags are disabled"];
+        [ClearentLumberjack logInfo:@"ClearentConfigurator:both config flags are disabled"];
         [self notifyInfo:READER_CONFIGURED_MESSAGE];
         return;
     }
@@ -90,7 +90,7 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
 }
 
 - (void)fetchConfiguration:(BOOL)autoConfiguration contactlessAutoConfiguration:(BOOL)contactlessAutoConfiguration deviceSerialNumber:(NSString *)deviceSerialNumber kernelVersion:(NSString *)kernelVersion {
-    [Teleport logInfo:@"Call Clearent to get configuration"];
+    [ClearentLumberjack logInfo:@"Call Clearent to get configuration"];
     ClearentConfigFetcher *clearentConfigFetcher = [[ClearentConfigFetcher alloc] init:[NSURLSession sharedSession] baseUrl:self.baseUrl deviceSerialNumber:deviceSerialNumber kernelVersion:kernelVersion publicKey:self.publicKey];
     
     ClearentConfigFetcherResponse clearentConfigFetcherResponse = ^(NSDictionary *json) {
@@ -130,7 +130,7 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
     
     if(contactReady && contactlessReady) {
         [self notifyInfo:configurationMessage];
-        [Teleport logInfo:@"🍻🍻🍻🍻🍻 READER CONFIGURED BY IOS FRAMEWORK 🍻🍻🍻🍻🍻"];
+        [ClearentLumberjack logInfo:@"🍻🍻🍻🍻🍻 READER CONFIGURED BY IOS FRAMEWORK 🍻🍻🍻🍻🍻"];
         [self cacheConfiguredReader: deviceSerialNumber];
         if(contactlessAutoConfiguration) {
             [ClearentCache updateContactlessFlagCache:@"true"];
@@ -145,7 +145,7 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
     }
     
     if(deviceSerialNumber != nil && [deviceSerialNumber isEqualToString:DEVICESERIALNUMBER_STANDIN]) {
-        [Teleport logInfo:@"Not tag the reader if device serial number is all nines"];
+        [ClearentLumberjack logInfo:@"Not tag the reader if device serial number is all nines"];
         return;
     }
     
@@ -166,12 +166,12 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
         
         RETURN_CODE emv_setTerminalDataRt = [_sharedController emv_setTerminalData:terminalData];
         if (RETURN_CODE_DO_SUCCESS == emv_setTerminalDataRt) {
-            [Teleport logInfo:[NSString stringWithFormat:@"Reader has been tagged %@", configurationVersion]];
+            [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Reader has been tagged %@", configurationVersion]];
         } else{
-            [Teleport logError:[NSString stringWithFormat:@"Failed to tag reader %@", configurationVersion]];
+            [ClearentLumberjack logError:[NSString stringWithFormat:@"Failed to tag reader %@", configurationVersion]];
         }
     } else {
-        [Teleport logInfo:[NSString stringWithFormat:@"failed to tag reder for device serial number %@", deviceSerialNumber]];
+        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"failed to tag reder for device serial number %@", deviceSerialNumber]];
     }
        
 }
@@ -184,7 +184,7 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
 
 - (CONFIGURATION_ERROR_CODE) configureContact:(ClearentConfiguration*) clearentConfiguration {
     CONFIGURATION_ERROR_CODE emvConfigReturnCode = EMV_CONFIGURATION_SUCCESS;
-    [Teleport logInfo:@"Emv Contact Configuration Started"];
+    [ClearentLumberjack logInfo:@"Emv Contact Configuration Started"];
     ClearentEmvConfigurator *clearentEmvConfigurator = [[ClearentEmvConfigurator alloc] initWithIdtechSharedController:self->_sharedController];
     
     if(clearentConfiguration.autoConfiguration) {
@@ -211,12 +211,12 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
             emvConfigReturnCode = CONTACT_FAILED;
         }
     }
-    [Teleport logInfo:@"Emv Contact Configuration done"];
+    [ClearentLumberjack logInfo:@"Emv Contact Configuration done"];
     return emvConfigReturnCode;
 }
 
 - (CONTACTLESS_CONFIGURATION_RETURN_CODE) configureContactless:(ClearentConfiguration*) clearentConfiguration sharedController:(IDT_VP3300*) sharedController {
-    [Teleport logInfo:@"Starting Contactless Configuration"];
+    [ClearentLumberjack logInfo:@"Starting Contactless Configuration"];
     CONTACTLESS_CONFIGURATION_RETURN_CODE contactlessConfigurationReturnCode = CONTACTLESS_CONFIGURATION_SUCCESS;
 //    [self notifyInfo:@"Contactless Configuration - Remove Unsupported Application Ids (1 of 4)"];
 //    contactlessConfigurationReturnCode = [_clearentContactlessConfigurator removeUnsupportedAids:clearentConfiguration.contactlessSupportedAids sharedController:sharedController];
@@ -248,7 +248,7 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
 
 
 - (void) notifyInfo:(NSString*)message {
-    [Teleport logInfo:message];
+    [ClearentLumberjack logInfo:message];
     #pragma GCC diagnostic push
     #pragma GCC diagnostic ignored "-Warc-performSelector-leaks"
     [self.callbackObject performSelector:self.selector withObject:message];
@@ -256,7 +256,7 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
 }
 
 - (void) notifyError:(NSString*)message {
-    [Teleport logError:message];
+    [ClearentLumberjack logError:message];
     #pragma GCC diagnostic push
     #pragma GCC diagnostic ignored "-Warc-performSelector-leaks"
     [self.callbackObject performSelector:self.selector withObject:message];
@@ -282,9 +282,9 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
     NSData* response;
     RETURN_CODE increaseStandByTimeRt = [[IDT_VP3300 sharedController] device_sendIDGCommand:0xF0 subCommand:0x00 data:[IDTUtility hexToData:@"05FF"] response:&response];
     if(RETURN_CODE_DO_SUCCESS != increaseStandByTimeRt) {
-        [Teleport logInfo:@"Failed to increase stand by time to 255 seconds"];
+        [ClearentLumberjack logInfo:@"Failed to increase stand by time to 255 seconds"];
     } else {
-        [Teleport logInfo:@"Stand by time increased to 255 seconds"];
+        [ClearentLumberjack logInfo:@"Stand by time increased to 255 seconds"];
     }
 }
 

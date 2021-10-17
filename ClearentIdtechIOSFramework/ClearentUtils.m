@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "ClearentUtils.h"
 #import <sys/utsname.h>
-#import "Teleport.h"
+#import "ClearentLumberjack.h"
 
 static NSString *const DEVICESERIALNUMBER_STANDIN = @"9999999999";
 static NSString *const SDK_VERSION = @"2.1.0";

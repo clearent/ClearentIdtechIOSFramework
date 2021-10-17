@@ -18,4 +18,5 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
     + (void) initLumberJack:(NSString *) baseUrl publicKey:(NSString *) publicKey;
     + (void) logInfo:(NSString*) logMessage;
     + (void) logError:(NSString*) logMessage;
+    + (void) flush;
 @end

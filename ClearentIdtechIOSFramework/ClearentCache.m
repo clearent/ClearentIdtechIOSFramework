@@ -9,7 +9,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ClearentCache.h"
-#import "Teleport.h"
+#import "ClearentLumberjack.h"
 
 static NSString *const NSUSERDEFAULT_LAST_USED_BLUETOOTH_DEVICEID = @"LastUsedBluetoothDeviceId";
 static NSString *const NSUSERDEFAULT_LAST_USED_BLUETOOTH_FRIENDLYNAME = @"LastUsedBluetoothFriendlyName";
@@ -44,27 +44,27 @@ static NSString *const CURRENT_DEVICESERIALNUMBER = @"CurrentDeviceSerialNumber"
 + (void) updateContactlessFlagCache:(NSString *) readerContactlessConfiguredFlag {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:readerContactlessConfiguredFlag forKey:NSUSERDEFAULT_CONTACTLESSCONFIGURED];
-    [Teleport logInfo:@"Updated the contactless configuration flag cache"];
+    [ClearentLumberjack logInfo:@"Updated the contactless configuration flag cache"];
 }
 
 + (void) updateConfigurationCache:(NSString *) deviceSerialNumber readerConfiguredFlag:(NSString *) readerConfiguredFlag {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:deviceSerialNumber forKey:NSUSERDEFAULT_DEVICESERIALNUMBER];
     [defaults setObject:readerConfiguredFlag forKey:NSUSERDEFAULT_READERCONFIGURED];
-    [Teleport logInfo:[NSString stringWithFormat:@"Updated the reader configuration cache. Device Serial Number is %@. Configured flag is %@", deviceSerialNumber, readerConfiguredFlag]];
+    [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Updated the reader configuration cache. Device Serial Number is %@. Configured flag is %@", deviceSerialNumber, readerConfiguredFlag]];
 }
 
 + (void) clearConfigurationCache {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:nil forKey:NSUSERDEFAULT_DEVICESERIALNUMBER];
     [defaults setObject:nil forKey:NSUSERDEFAULT_READERCONFIGURED];
-    [Teleport logInfo:@"Clearing configuration cache"];
+    [ClearentLumberjack logInfo:@"Clearing configuration cache"];
 }
 
 + (void) clearContactlessConfigurationCache {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:nil forKey:NSUSERDEFAULT_CONTACTLESSCONFIGURED];
-    [Teleport logInfo:@"Clearing contactless configuration cache"];
+    [ClearentLumberjack logInfo:@"Clearing contactless configuration cache"];
 }
 
 + (BOOL) isDeviceConfigured:(BOOL)autoConfiguration contactlessAutoConfiguration:(BOOL)contactlessAutoConfiguration deviceSerialNumber:(NSString *)deviceSerialNumber {

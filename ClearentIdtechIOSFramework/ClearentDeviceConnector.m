@@ -9,7 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "ClearentDeviceConnector.h"
 #import "ClearentCache.h"
-#import "Teleport.h"
+#import "ClearentLumberjack.h"
 #import "ClearentConnection.h"
 #import "ClearentDelegate.h"
 #import "Clearent_VP3300.h"
@@ -123,13 +123,13 @@ NSTimer *bluetoothSearchDisableTimer;
     
     if([_clearentVP3300 device_isAudioReaderConnected] && clearentConnection.connectionType == CLEARENT_AUDIO_JACK) {
         
-        [Teleport logInfo:@"disconnectBluetooth AUDIO JACK ALREADY CONNECTED"];
+        [ClearentLumberjack logInfo:@"disconnectBluetooth AUDIO JACK ALREADY CONNECTED"];
         
     } else if([_clearentVP3300 isConnected]
               && [self isNewConnectionRequest:_clearentDelegate.clearentConnection connectionRequest: clearentConnection]
               && (clearentConnection.connectionType == CLEARENT_BLUETOOTH || _clearentDelegate.clearentConnection.connectionType == CLEARENT_BLUETOOTH)) {
         
-        [Teleport logInfo:@"disconnectBluetooth. Device is connected but a new connection request is provided. Disconnect bluetooth"];
+        [ClearentLumberjack logInfo:@"disconnectBluetooth. Device is connected but a new connection request is provided. Disconnect bluetooth"];
         
         [self disconnectBluetooth];
         
@@ -139,7 +139,7 @@ NSTimer *bluetoothSearchDisableTimer;
         
     } else if([_clearentVP3300 isConnected] && _previousConnectionFailed) {
         
-        [Teleport logInfo:@"disconnectBluetooth. the framework says it's connected but previous attempt to connect failed. FORCE A DISCONNECT"];
+        [ClearentLumberjack logInfo:@"disconnectBluetooth. the framework says it's connected but previous attempt to connect failed. FORCE A DISCONNECT"];
         [self disconnectBluetooth];
         
     }
@@ -158,17 +158,17 @@ NSTimer *bluetoothSearchDisableTimer;
                [firmwareVersion isEqualToString:@"VP3300 Bluetooth NEO v1.01.090"]
                  || [firmwareVersion isEqualToString:@"VP3300 Audio Jack NEO v1.01.055"]
                  || [firmwareVersion isEqualToString:@"VP3300 Audio Jack NEO v1.01.064"])) {
-                  [Teleport logInfo:[NSString stringWithFormat:@"skipping adjustBluetoothAdvertisingInterval for firmware version - %@", firmwareVersion]];
+                  [ClearentLumberjack logInfo:[NSString stringWithFormat:@"skipping adjustBluetoothAdvertisingInterval for firmware version - %@", firmwareVersion]];
             return;
         } else {
-            [Teleport logInfo:[NSString stringWithFormat:@"adjustBluetoothAdvertisingInterval: firmware version - %@", firmwareVersion]];
+            [ClearentLumberjack logInfo:[NSString stringWithFormat:@"adjustBluetoothAdvertisingInterval: firmware version - %@", firmwareVersion]];
         }
 
         //NSString *advertisingIntervalHex = [self getAdvertisingIntervalInHex:_clearentDelegate.clearentConnection.bluetoothAdvertisingInterval];
         NSString *advertisingIntervalHex = @"";
         NSString *updateAdvertisingIntervalStr = [NSString stringWithFormat:@"DFED6C02%@", advertisingIntervalHex];
 
-        [Teleport logInfo:[NSString stringWithFormat:@"adjustBluetoothAdvertisingInterval update %@", updateAdvertisingIntervalStr]];
+        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"adjustBluetoothAdvertisingInterval update %@", updateAdvertisingIntervalStr]];
 
         NSData *configData = [IDTUtility hexToData:updateAdvertisingIntervalStr];
         
@@ -184,18 +184,18 @@ NSTimer *bluetoothSearchDisableTimer;
 
                 if (RETURN_CODE_DO_SUCCESS == ctls_setTerminalDataRt) {
                     adjusted = true;
-                    [Teleport logInfo:[NSString stringWithFormat:@"adjustBluetoothAdvertisingInterval updated"]];
+                    [ClearentLumberjack logInfo:[NSString stringWithFormat:@"adjustBluetoothAdvertisingInterval updated"]];
                     break;
                 } else {
                     NSString *errorResponse = [[IDT_VP3300 sharedController] device_getResponseCodeString:ctls_setTerminalDataRt];
                     [_clearentDelegate deviceMessage:errorResponse];
-                    [Teleport logInfo:[NSString stringWithFormat:@"adjustBluetoothAdvertisingInterval failed set advertising interval. error %@", errorResponse]];
+                    [ClearentLumberjack logInfo:[NSString stringWithFormat:@"adjustBluetoothAdvertisingInterval failed set advertising interval. error %@", errorResponse]];
                 }
             }
         }
        
     } else {
-        [Teleport logInfo:[NSString stringWithFormat:@"reader is not connected or no connection props. skip updating advertising interval"]];
+        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"reader is not connected or no connection props. skip updating advertising interval"]];
     }
     
 }
@@ -340,19 +340,19 @@ NSTimer *bluetoothSearchDisableTimer;
                    && ![clearentConnection.bluetoothDeviceId isEqualToString:@""]
                    && [clearentConnection.bluetoothDeviceId isEqualToString:lastUsedDeviceId]) {
                     
-                      [Teleport logInfo:@"BLUETOOTH DEVICE ID MATCHES SAVED DEVICE UUID"];
+                      [ClearentLumberjack logInfo:@"BLUETOOTH DEVICE ID MATCHES SAVED DEVICE UUID"];
                     
                 } else if(clearentConnection.fullFriendlyName != nil
                    && ![clearentConnection.fullFriendlyName isEqualToString:@""]
                    && [clearentConnection.fullFriendlyName isEqualToString:lastUsedFriendlyName]) {
                     
-                      [Teleport logInfo:@"BLUETOOTH FRIENDLY NAME MATCHES SAVED FRIENDLY NAME"];
+                      [ClearentLumberjack logInfo:@"BLUETOOTH FRIENDLY NAME MATCHES SAVED FRIENDLY NAME"];
                     
                 } else if(clearentConnection.lastFiveDigitsOfDeviceSerialNumber != nil
                     && ![clearentConnection.lastFiveDigitsOfDeviceSerialNumber isEqualToString:@""]
                     && [lastUsedFriendlyName containsString:clearentConnection.lastFiveDigitsOfDeviceSerialNumber]) {
                     
-                       [Teleport logInfo:@"SAVED BLUETOOTH FRIENDLY NAME CONTAINS PROVIDED LAST 5 DIGITS OF DSN"];
+                       [ClearentLumberjack logInfo:@"SAVED BLUETOOTH FRIENDLY NAME CONTAINS PROVIDED LAST 5 DIGITS OF DSN"];
                     
                 } else {
                     
@@ -374,7 +374,7 @@ NSTimer *bluetoothSearchDisableTimer;
 
 - (void) clearSavedBluetoothCache {
     
-    [Teleport logInfo:@"clearSavedDeviceId CLEAR SAVED BLUETOOTH DEVICE FROM CACHE"];
+    [ClearentLumberjack logInfo:@"clearSavedDeviceId CLEAR SAVED BLUETOOTH DEVICE FROM CACHE"];
     
     [ClearentCache cacheLastUsedBluetoothDevice:nil bluetoothFriendlyName:nil];
     
@@ -382,7 +382,7 @@ NSTimer *bluetoothSearchDisableTimer;
         
     if([_clearentVP3300 isConnected]) {
         
-        [Teleport logInfo:@"clearSavedBluetoothCache. Disconnect bluetooth"];
+        [ClearentLumberjack logInfo:@"clearSavedBluetoothCache. Disconnect bluetooth"];
         [_clearentVP3300 device_disconnectBLE];
         [NSThread sleepForTimeInterval:0.5f];
         
@@ -414,9 +414,9 @@ NSTimer *bluetoothSearchDisableTimer;
     RETURN_CODE rt = [_clearentVP3300 device_disableBLEDeviceSearch];
     
     if (RETURN_CODE_DO_SUCCESS == rt) {
-        [Teleport logInfo:@"disableBluetoothSearch: BLUETOOTH SEARCH DISABLED"];
+        [ClearentLumberjack logInfo:@"disableBluetoothSearch: BLUETOOTH SEARCH DISABLED"];
     } else {
-        [Teleport logInfo:@"disableBluetoothSearch: BLUETOOTH SEARCH FAILED TO DISABLE"];
+        [ClearentLumberjack logInfo:@"disableBluetoothSearch: BLUETOOTH SEARCH FAILED TO DISABLE"];
     }
    
     NSUInteger size = 0;
@@ -424,17 +424,17 @@ NSTimer *bluetoothSearchDisableTimer;
     if(_bluetoothDevices != nil) {
         size = [_bluetoothDevices count];
     } else {
-        [Teleport logInfo:@"disableBluetoothSearch: _bluetoothDevices is nil"];
+        [ClearentLumberjack logInfo:@"disableBluetoothSearch: _bluetoothDevices is nil"];
     }
         
     if(size > 0) {
-        [Teleport logInfo:@"disableBluetoothSearch: BLUETOOTH DEVICES FOUND"];
+        [ClearentLumberjack logInfo:@"disableBluetoothSearch: BLUETOOTH DEVICES FOUND"];
     } else {
-        [Teleport logInfo:@"disableBluetoothSearch: NO BLUETOOTH DEVICES FOUND"];
+        [ClearentLumberjack logInfo:@"disableBluetoothSearch: NO BLUETOOTH DEVICES FOUND"];
     }
     
     if(![_clearentVP3300 isConnected] && !_clearentDelegate.clearentConnection.searchBluetooth) {
-        [Teleport logInfo:@"disableBluetoothSearch:CLEARENT_BLUETOOTH_DISCONNECTED"];
+        [ClearentLumberjack logInfo:@"disableBluetoothSearch:CLEARENT_BLUETOOTH_DISCONNECTED"];
         [self sendBluetoothFeedback:CLEARENT_BLUETOOTH_DISCONNECTED];
     }
     
@@ -483,7 +483,7 @@ NSTimer *bluetoothSearchDisableTimer;
         }
     } else if (lastUsedBluetoothDeviceId != nil && [lastUsedBluetoothDeviceId isEqualToString:_searchingBluetoothDeviceId]) {
 
-        [Teleport logInfo:[NSString stringWithFormat:@"Bluetooth friendly name found by uuid %@", _searchingBluetoothfriendlyName]];
+        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Bluetooth friendly name found by uuid %@", _searchingBluetoothfriendlyName]];
         
         [self recordFoundBluetoothDevice:_searchingBluetoothfriendlyName deviceId:_searchingBluetoothDeviceId];
         
@@ -493,7 +493,7 @@ NSTimer *bluetoothSearchDisableTimer;
               && _clearentDelegate.clearentConnection.bluetoothDeviceId != nil
               && [_clearentDelegate.clearentConnection.bluetoothDeviceId isEqualToString:_searchingBluetoothDeviceId]) {
         
-        [Teleport logInfo:[NSString stringWithFormat:@"Bluetooth friendly name found by provided device uuid %@", _searchingBluetoothfriendlyName]];
+        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Bluetooth friendly name found by provided device uuid %@", _searchingBluetoothfriendlyName]];
                
         [self recordFoundBluetoothDevice:_searchingBluetoothfriendlyName deviceId:_searchingBluetoothDeviceId];
                
@@ -501,7 +501,7 @@ NSTimer *bluetoothSearchDisableTimer;
         
     } else if(_findBluetoothFriendlyName != nil && [_searchingBluetoothfriendlyName isEqualToString:_findBluetoothFriendlyName]) {
     
-        [Teleport logInfo:[NSString stringWithFormat:@"Bluetooth friendly name found %@",_findBluetoothFriendlyName]];
+        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Bluetooth friendly name found %@",_findBluetoothFriendlyName]];
         
         [self recordFoundDeviceWaitingToConnect];
         
@@ -511,7 +511,7 @@ NSTimer *bluetoothSearchDisableTimer;
               && _clearentDelegate.clearentConnection.fullFriendlyName != nil
               && [_searchingBluetoothfriendlyName isEqualToString:_clearentDelegate.clearentConnection.fullFriendlyName]) {
            
-        [Teleport logInfo:[NSString stringWithFormat:@"Bluetooth friendly name found %@",_searchingBluetoothfriendlyName]];
+        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Bluetooth friendly name found %@",_searchingBluetoothfriendlyName]];
                
         [self recordFoundDeviceWaitingToConnect];
             
@@ -525,16 +525,16 @@ NSTimer *bluetoothSearchDisableTimer;
                 if(_clearentDelegate.clearentConnection.lastFiveDigitsOfDeviceSerialNumber != nil
                    && ![_clearentDelegate.clearentConnection.lastFiveDigitsOfDeviceSerialNumber isEqualToString:@""]
                    && ([_searchingBluetoothfriendlyName containsString:_clearentDelegate.clearentConnection.lastFiveDigitsOfDeviceSerialNumber])) {
-                    [Teleport logInfo:[NSString stringWithFormat:@"Connect to first bluetooth reader found with last 5 %@", _searchingBluetoothfriendlyName]];
+                    [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Connect to first bluetooth reader found with last 5 %@", _searchingBluetoothfriendlyName]];
                     [self recordFoundDeviceWaitingToConnect];
                 } else if(_clearentDelegate.clearentConnection.fullFriendlyName != nil
                 && ![_clearentDelegate.clearentConnection.fullFriendlyName isEqualToString:@""]
                 && ([_searchingBluetoothfriendlyName containsString:_clearentDelegate.clearentConnection.fullFriendlyName])) {
-                    [Teleport logInfo:[NSString stringWithFormat:@"Connect to first bluetooth reader found with friendly name %@", _searchingBluetoothfriendlyName]];
+                    [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Connect to first bluetooth reader found with friendly name %@", _searchingBluetoothfriendlyName]];
                     [self recordFoundDeviceWaitingToConnect];
                 }
             } else {
-                [Teleport logInfo:[NSString stringWithFormat:@"Connect to first bluetooth reader found when device is not known %@", _searchingBluetoothfriendlyName]];
+                [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Connect to first bluetooth reader found when device is not known %@", _searchingBluetoothfriendlyName]];
                 [self recordFoundDeviceWaitingToConnect];
             }
             
@@ -544,7 +544,7 @@ NSTimer *bluetoothSearchDisableTimer;
         
     } else {
         
-        [Teleport logInfo:[NSString stringWithFormat:@"Found NON IDTECH bluetooth devices %@", _searchingBluetoothfriendlyName]];
+        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Found NON IDTECH bluetooth devices %@", _searchingBluetoothfriendlyName]];
         
     }
 }
@@ -652,7 +652,7 @@ NSTimer *bluetoothSearchDisableTimer;
     bool device_enableBLEDeviceSearchReturnCode = [_clearentVP3300 device_enableBLEDeviceSearch:val];
     
     if(!device_enableBLEDeviceSearchReturnCode) {
-        [Teleport logInfo:@"Clearent_VP3300:startBluetoothSearchWithUUID device_enableBLEDeviceSearch bad return code but might have still connected"];
+        [ClearentLumberjack logInfo:@"Clearent_VP3300:startBluetoothSearchWithUUID device_enableBLEDeviceSearch bad return code but might have still connected"];
     }
 }
 
@@ -666,7 +666,7 @@ NSTimer *bluetoothSearchDisableTimer;
     bool device_enableBLEDeviceSearchReturnCode = [_clearentVP3300 device_enableBLEDeviceSearch:val];
     
     if(!device_enableBLEDeviceSearchReturnCode) {
-        [Teleport logInfo:@"BLUETOOTH SCAN FAILED WITH FULL FRIENDLY NAME"];
+        [ClearentLumberjack logInfo:@"BLUETOOTH SCAN FAILED WITH FULL FRIENDLY NAME"];
     }
     
 }
@@ -680,7 +680,7 @@ NSTimer *bluetoothSearchDisableTimer;
     bool device_enableBLEDeviceSearchReturnCode = [_clearentVP3300 device_enableBLEDeviceSearch:val];
     
     if(!device_enableBLEDeviceSearchReturnCode) {
-        [Teleport logInfo:@"BLUETOOTH SCAN FAILED on BLIND SEARCH"];
+        [ClearentLumberjack logInfo:@"BLUETOOTH SCAN FAILED on BLIND SEARCH"];
     }
     
 }
