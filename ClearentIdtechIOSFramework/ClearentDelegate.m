@@ -145,6 +145,11 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 
 - (void) lcdDisplay:(int)mode  lines:(NSArray*)lines {
     
+    if(processingCurrentRequest) {
+        [ClearentLumberjack logInfo:@"CLEARENT PROCESSING STARTED. STOP LCDDISPLAY COMM"];
+        return;
+    }
+    
     switch (mode) {
         case 0x10:
             [ClearentLumberjack logInfo:@"prompt 10"];
@@ -221,11 +226,6 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     }
 }
 
-- (void) dataInOutMonitor:(NSData*)data  incoming:(BOOL)isIncoming {
-    if ([self.publicDelegate respondsToSelector:@selector(dataInOutMonitor:isIncoming:)]) {
-        [self.publicDelegate dataInOutMonitor:data incoming:isIncoming];
-    }
-}
 
 - (void) plugStatusChange: (BOOL) deviceInserted {
     
@@ -243,11 +243,6 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     }
 }
 
-- (void) bypassData:(NSData*)data {
-    if ([self.publicDelegate respondsToSelector:@selector(bypassData:)]) {
-        [self.publicDelegate bypassData:data];
-    }
-}
 
 -(void) deviceConnected {
     
@@ -420,10 +415,6 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         if(self.runStoredPaymentAfterConnecting) {
             self.runStoredPaymentAfterConnecting = FALSE;
             [self.callbackObject performSelector:self.runTransactionSelector];
-        } else {
-            if ([self.publicDelegate respondsToSelector:@selector(isReady:)]) {
-                [self.publicDelegate isReady];
-            }
         }
         return;
     }
@@ -1642,10 +1633,6 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
 
 - (void) createTransactionToken:(ClearentTransactionTokenRequest*)clearentTransactionTokenRequest {
     
-    if(processingCurrentRequest) {
-        [ClearentLumberjack logInfo:@"STOPPING DUPLICATE TRANSACTION FROM BEING SENT TO CLEARENT"];
-        [self deviceMessage:@"SECURING CARD"];
-    }
     processingCurrentRequest = YES;
     
     //Complete the transaction as soon as possible so the idtech framework does not resend the current transaction.

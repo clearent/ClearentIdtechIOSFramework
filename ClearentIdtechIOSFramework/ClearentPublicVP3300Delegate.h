@@ -40,11 +40,6 @@
 -(void) successfulTransactionToken:(NSString*)jsonString __deprecated_msg("use successTransactionToken method with ClearentTransactionToken instead.");
 
 
-/**
- * This will notify you when the device is ready for use (connection, configuration, etc is completed).
- */
--(void) isReady __deprecated_msg("Rely on the deviceConnected callback.");
-
 -(void) deviceConnected; //!<Fires when device connects.  If a connection is established before the delegate is established (no delegate to send initial connection notification to), this method will fire upon establishing the delegate.
 
 -(void) deviceDisconnected; //!<Fires when device disconnects.
@@ -65,13 +60,6 @@
 //Deprecated - Use message method
 
 - (void) lcdDisplay:(int)mode  lines:(NSArray*)lines __deprecated_msg("use feedback method instead.");
-
-
-- (void) dataInOutMonitor:(NSData*)data  incoming:(BOOL)isIncoming __deprecated_msg("We are utilizing remote logging for support.");
-
-
-- (void) bypassData:(NSData*)data __deprecated_msg("not used in our implementation.");//!<When bypass output is enabled, all data intended for the current device will be sent here .
-//!< @param data The data intended for the device
 
 /**
  *  If you started a payment and asked the framework to connect to a bluetooth device, and the device is not found, or you were asking for a general scan, the framework will send back a list of

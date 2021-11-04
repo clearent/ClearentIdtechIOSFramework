@@ -1,0 +1,2 @@
+dependencies: \
+  /Users/dhigginbotham/Documents/_idtech_frameworks/ClearentIdtechIOSFramework/build/ClearentIdtechIOSFramework.build/Debug-iphoneos/ClearentIdtechIOSFramework.build/DerivedSources/ClearentIdtechIOSFramework_vers.c
