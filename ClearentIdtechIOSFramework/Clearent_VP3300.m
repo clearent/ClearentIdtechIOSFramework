@@ -348,7 +348,9 @@
 }
 
 -(void) device_disconnectBLE {
-    [ClearentCache cacheLastUsedBluetoothDevice:nil bluetoothFriendlyName:nil];
+    //now that we regard the incoming connection as more important than the cache we can regard the cache
+    //as a last chance fallback. I'm not sure why we would clear the cache out every time we disconnect anyway.
+    //[ClearentCache cacheLastUsedBluetoothDevice:nil bluetoothFriendlyName:nil];
     return [[IDT_VP3300 sharedController] device_disconnectBLE];
 }
 
@@ -529,7 +531,7 @@
 
 - (void) addRemoteLogRequest:(NSString*) clientSoftwareVersion message:(NSString*) message {
     if(clientSoftwareVersion != nil && message != nil) {
-        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"CLIENT:%@:%@",clientSoftwareVersion, message]];
+        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"🐨CLIENT:%@:%@",clientSoftwareVersion, message]];
     }
 }
 

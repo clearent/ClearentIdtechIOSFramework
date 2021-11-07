@@ -8,6 +8,7 @@
 
 #import "ClearentConnection.h"
 #import "ClearentCache.h"
+#import "ClearentLumberjack.h"
 
 @implementation ClearentConnection
 
@@ -218,25 +219,42 @@ static NSString *const IDTECH_FRIENDLY_NAME_PREFIX = @"IDTECH-VP3300-";
 + (BOOL) isNewConnectionRequest:(ClearentConnection*) currentConnection connectionRequest:(ClearentConnection*) connectionRequest {
     
     if(currentConnection == nil || connectionRequest == nil ) {
+        [ClearentLumberjack logInfo:@"isNewConnectionRequest:nil"];
         return YES;
-    } else if(currentConnection.searchBluetooth) {
-        return YES;
-    }
-    
-    NSString *storedDeviceId = [ClearentCache getLastUsedBluetoothDeviceId];
-    
-    if(connectionRequest.bluetoothDeviceId != nil && storedDeviceId != nil && [storedDeviceId isEqualToString:connectionRequest.bluetoothDeviceId]) {
-        return NO;
-    }
-    
-    NSString *currentConnectionStr = [currentConnection createLogMessage];
-    NSString *newConnectionStr = [connectionRequest createLogMessage];
-    
-    if (![currentConnectionStr isEqualToString:newConnectionStr]) {
+    } else if(connectionRequest != nil && connectionRequest.searchBluetooth) {
+        [ClearentLumberjack logInfo:@"isNewConnectionRequest:connectionRequest is search"];
         return YES;
     }
     
-    return FALSE;
+    if(currentConnection != nil
+        && connectionRequest != nil
+        && currentConnection.lastFiveDigitsOfDeviceSerialNumber != nil
+        && connectionRequest.lastFiveDigitsOfDeviceSerialNumber != nil
+        && ![currentConnection.lastFiveDigitsOfDeviceSerialNumber isEqualToString:connectionRequest.lastFiveDigitsOfDeviceSerialNumber]) {
+        [ClearentLumberjack logInfo:@"isNewConnectionRequest:request 5 digits does not match current connection 5 digits"];
+        return YES;
+    }
+    
+    if(currentConnection != nil
+        && connectionRequest != nil
+        && currentConnection.bluetoothDeviceId != nil
+        && connectionRequest.bluetoothDeviceId != nil
+        && ![currentConnection.bluetoothDeviceId isEqualToString:connectionRequest.bluetoothDeviceId]) {
+        [ClearentLumberjack logInfo:@"isNewConnectionRequest:request bluetoothDeviceId does not match current connection bluetoothDeviceId"];
+        return YES;
+    }
+    
+    if(currentConnection != nil
+        && connectionRequest != nil
+        && currentConnection.fullFriendlyName != nil
+        && connectionRequest.fullFriendlyName != nil
+        && ![currentConnection.fullFriendlyName isEqualToString:connectionRequest.fullFriendlyName]) {
+        [ClearentLumberjack logInfo:@"isNewConnectionRequest:request fullFriendlyName does not match current connection fullFriendlyName"];
+        return YES;
+    }
+    
+    [ClearentLumberjack logInfo:@"isNewConnectionRequest:NO"];
+    return NO;
 }
 
 @end

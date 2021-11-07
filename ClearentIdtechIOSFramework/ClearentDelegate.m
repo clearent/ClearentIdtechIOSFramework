@@ -286,6 +286,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 
 
 -(void) applyClearentConfiguration {
+    [ClearentLumberjack logError:@"⚠️ applyClearentConfiguration"];
     [self deviceMessage:CLEARENT_DEVICE_CONNECTED_WAITING_FOR_CONFIG];
     [_clearentConfigurator configure:self.kernelVersion deviceSerialNumber:self.deviceSerialNumber autoConfiguration:self.autoConfiguration contactlessAutoConfiguration:self.contactlessAutoConfiguration];
 }
@@ -338,7 +339,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         return deviceSerialNumber;
     }
     
-    [ClearentLumberjack logError:@"Failed to get device serial number using config_getSerialNumber. Using all nines placeholder"];
+    [ClearentLumberjack logError:@"⚠️ Failed to get device serial number using config_getSerialNumber. Using all nines placeholder"];
     
     return DEVICE_SERIAL_NUMBER_PLACEHOLDER;
 }
@@ -347,8 +348,8 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     
     NSString *firstTenOfDeviceSerialNumber;
     
-    for(int i = 0; i < 5; i++ ) {
-        [NSThread sleepForTimeInterval:0.5f];
+    for(int i = 0; i < 3; i++ ) {
+        [NSThread sleepForTimeInterval:0.7f];
         if([_idTechSharedInstance isConnected]) {
             NSString *result;
             RETURN_CODE config_getSerialNumberRt = [_idTechSharedInstance config_getSerialNumber:&result];
@@ -360,7 +361,8 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
                 }
                 break;
             } else {
-                [ClearentLumberjack logError:@"getDeviceSerialNumberFromReader:fail"];
+                NSString *logErrorMessage =[NSString stringWithFormat:@"getDeviceSerialNumberFromReader fail %@",[_idTechSharedInstance device_getResponseCodeString:config_getSerialNumberRt]];
+                [ClearentLumberjack logError:logErrorMessage];
             }
         } else {
             [ClearentLumberjack logError:@"getDeviceSerialNumberFromReader:reader disconnected"];
@@ -408,8 +410,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     [ClearentLumberjack logInfo:[NSString stringWithFormat:@"%@:%@", @"deviceMessage", message]];
     
     if([message isEqualToString:CLEARENT_READER_CONFIGURED_MESSAGE]) {
-        [ClearentLumberjack logInfo:@"💚💚READER READY💚💚"];
-        [ClearentLumberjack logInfo:@"Framework notified reader is ready"];
+        [ClearentLumberjack logInfo:@"➡️ Framework notified reader is ready"];
         self.configured = YES;
         
         if(self.runStoredPaymentAfterConnecting) {
@@ -1637,15 +1638,11 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     
     //Complete the transaction as soon as possible so the idtech framework does not resend the current transaction.
     RETURN_CODE emv_completeOnlineEMVTransactionRt = [_idTechSharedInstance emv_completeOnlineEMVTransaction:false hostResponseTags:nil];
-    if(RETURN_CODE_OK_NEXT_COMMAND == emv_completeOnlineEMVTransactionRt || RETURN_CODE_DO_SUCCESS == emv_completeOnlineEMVTransactionRt) {
-        [ClearentLumberjack logInfo:@"Request IDTech to Complete Transaction Successful IDTECH_TRANSACTION_COMPLETED"];
-    } else {
-        [ClearentLumberjack logInfo:@"Request IDTech to Complete Transaction Failed IDTECH_TRANSACTION_COMPLETED"];
-    }
 
     if(clearentTransactionTokenRequest == nil || clearentTransactionTokenRequest.track2Data == nil || [clearentTransactionTokenRequest.track2Data isEqualToString:@""]) {
-        [ClearentLumberjack logError:@"NO TRACK2DATA. LAST CHECK BEFORE SENDING TO OUR JWT ENDPOINT"];
+        [ClearentLumberjack logError:@"createTransactionToken:NO TRACK2DATA. LAST CHECK BEFORE SENDING TO OUR JWT ENDPOINT"];
         [self deviceMessage:CLEARENT_FAILED_TO_READ_CARD_ERROR_RESPONSE];
+        processingCurrentRequest = NO;
         return;
     }
     
@@ -1656,11 +1653,13 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
 
     if (error) {
         [self deviceMessage:CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
+        [ClearentLumberjack logError:@"createTransactionToken:error dont call clearent"];
+        processingCurrentRequest = NO;
         return;
     }
     
     [self deviceMessage:CLEARENT_TRANSLATING_CARD_TO_TOKEN];
-    [ClearentLumberjack logInfo:@"Call Clearent to produce transaction token"];
+    [ClearentLumberjack logInfo:@"➡️ Call Clearent to produce transaction token"];
 
     [request setHTTPBody:postData];
     [request setHTTPMethod:@"POST"];
@@ -1688,6 +1687,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
                   [self handleError:responseStr];
               }
           }
+          processingCurrentRequest = NO;
           data = nil;
           response = nil;
           error = nil;
@@ -1727,8 +1727,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     }
     NSString *responseCode = [jsonDictionary objectForKey:@"code"];
     if([responseCode isEqualToString:@"200"]) {
-        [ClearentLumberjack logInfo:@"😀😀💳💳CARD IS NOW TOKEN💳💳😀😀"];
-        [ClearentLumberjack logInfo:@"Successful transaction token communicated to client app"];
+        [ClearentLumberjack logInfo:@"➡️ Successful transaction token communicated to client app"];
         [self deviceMessage:CLEARENT_SUCCESSFUL_TOKENIZATION_MESSAGE];
         [self clearCurrentRequest];
         if ([self.publicDelegate respondsToSelector:@selector(successfulTransactionToken:)]) {
@@ -1851,7 +1850,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     }
     NSString *responseCode = [jsonDictionary objectForKey:@"code"];
     if([responseCode isEqualToString:@"200"]) {
-        [ClearentLumberjack logInfo:@"Successful declined receipt communicated to client app"];
+        [ClearentLumberjack logInfo:@"➡️ Successful declined receipt communicated to client app"];
         [self deviceMessage:CLEARENT_SUCCESSFUL_DECLINE_RECEIPT_MESSAGE];
     } else {
         [self deviceMessage:CLEARENT_GENERIC_DECLINE_RECEIPT_ERROR_RESPONSE];

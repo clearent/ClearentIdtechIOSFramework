@@ -29,8 +29,6 @@ NSTimer *bluetoothSearchDisableTimer;
     if (self) {
         _clearentDelegate = clearentDelegate;
         _clearentVP3300 = clearentVP3300;
-        _previousConnectionFailed = false;
-        _retriedBluetoothWhenNoDevicesFound = false;
         _tryConnectWithSavedDeviceId = false;
         _bluetoothDevices = [[NSMutableArray<ClearentBluetoothDevice> alloc] init];
     }
@@ -49,8 +47,6 @@ NSTimer *bluetoothSearchDisableTimer;
 - (void) resetBluetoothAfterConnected {
     
     _tryConnectWithSavedDeviceId = false;
-    _previousConnectionFailed = false;
-    _retriedBluetoothWhenNoDevicesFound = false;
     _searchingBluetoothfriendlyName = nil;
     _searchingBluetoothDeviceId = nil;
     _connectingWithBluetoothfriendlyName = nil;
@@ -79,12 +75,15 @@ NSTimer *bluetoothSearchDisableTimer;
     [self disconnectBluetoothOnChangedState:clearentConnection];
     
     if(![_clearentVP3300 isConnected]) {
+        [ClearentLumberjack logInfo:@"startConnection. Device not connected"];
         if(clearentConnection.connectionType == CLEARENT_AUDIO_JACK) {
             [self communicateAudioJackState];
         } else if(clearentConnection.connectionType == CLEARENT_BLUETOOTH) {
+            [ClearentLumberjack logInfo:@"startConnection. device_setBLEFriendlyName to nil"];
             [self startBluetoothSearch: clearentConnection];
         }
     } else {
+        [ClearentLumberjack logInfo:@"startConnection. connected,communicateConnectionState"];
         [self communicateConnectionState:clearentConnection];
     }
 }
@@ -125,11 +124,14 @@ NSTimer *bluetoothSearchDisableTimer;
         
         [ClearentLumberjack logInfo:@"disconnectBluetooth AUDIO JACK ALREADY CONNECTED"];
         
-    } else if([_clearentVP3300 isConnected]
-              && [self isNewConnectionRequest:_clearentDelegate.clearentConnection connectionRequest: clearentConnection]
+    } else if([self isNewConnectionRequest:_clearentDelegate.clearentConnection connectionRequest: clearentConnection]
               && (clearentConnection.connectionType == CLEARENT_BLUETOOTH || _clearentDelegate.clearentConnection.connectionType == CLEARENT_BLUETOOTH)) {
         
-        [ClearentLumberjack logInfo:@"disconnectBluetooth. Device is connected but a new connection request is provided. Disconnect bluetooth"];
+        if([_clearentVP3300 isConnected]) {
+            [ClearentLumberjack logInfo:@"disconnectBluetoothOnChangedState. Device is connected but a new connection request is provided. Disconnect bluetooth"];
+        } else {
+            [ClearentLumberjack logInfo:@"disconnectBluetoothOnChangedState. Device is not connected but a new connection request is provided. Force a disconnect bluetooth"];
+        }
         
         [self disconnectBluetooth];
         
@@ -137,11 +139,8 @@ NSTimer *bluetoothSearchDisableTimer;
             [self sendBluetoothFeedback:CLEARENT_DISCONNECTING_BLUETOOTH_PLUGIN_AUDIO_JACK];
         }
         
-    } else if([_clearentVP3300 isConnected] && _previousConnectionFailed) {
-        
-        [ClearentLumberjack logInfo:@"disconnectBluetooth. the framework says it's connected but previous attempt to connect failed. FORCE A DISCONNECT"];
-        [self disconnectBluetooth];
-        
+    } else {
+        [ClearentLumberjack logInfo:@"disconnectBluetoothOnChangedState: Same connection request"];
     }
 }
 
@@ -235,7 +234,7 @@ NSTimer *bluetoothSearchDisableTimer;
          return YES;
     }
     
-    return FALSE;
+    return NO;
 }
 
 - (void) startBluetoothSearch: (ClearentConnection*) clearentConnection {
@@ -269,6 +268,9 @@ NSTimer *bluetoothSearchDisableTimer;
     }
 }
 
+//11-06-21 Now we check the cache LAST. The caller has told us they have the information for the search.
+//let's always check the incoming request first and fallback to the cache. This should help in scenarios
+//where the cache might not be reliable.
 - (void) pickBluetoothSearchAndStart : (ClearentConnection*) clearentConnection {
 
     NSString *lastUsedBluetoothDeviceId = [ClearentCache getLastUsedBluetoothDeviceId];
@@ -278,10 +280,6 @@ NSTimer *bluetoothSearchDisableTimer;
     if(clearentConnection.searchBluetooth) {
         
         [self startBlindBluetoothSearch];
-        
-    } else if(lastUsedBluetoothDeviceId != nil && ![lastUsedBluetoothDeviceId isEqualToString:@""]) {
-        
-        [self startBluetoothSearchWithUUID:lastUsedBluetoothDeviceId];
         
     } else if(clearentConnection.bluetoothDeviceId != nil && ![clearentConnection.bluetoothDeviceId isEqualToString:@""]) {
         
@@ -295,6 +293,10 @@ NSTimer *bluetoothSearchDisableTimer;
     } else if(clearentConnection.fullFriendlyName != nil && ![clearentConnection.fullFriendlyName isEqualToString:@""]) {
         
         [self startBluetoothSearchWithFullFriendlyName:clearentConnection.fullFriendlyName ];
+        
+    } else if(lastUsedBluetoothDeviceId != nil && ![lastUsedBluetoothDeviceId isEqualToString:@""]) {
+        
+        [self startBluetoothSearchWithUUID:lastUsedBluetoothDeviceId];
         
     } else {
         
@@ -411,13 +413,19 @@ NSTimer *bluetoothSearchDisableTimer;
 
 -(void) disableBluetoothSearch:(id) sender {
     
-    RETURN_CODE rt = [_clearentVP3300 device_disableBLEDeviceSearch];
     
-    if (RETURN_CODE_DO_SUCCESS == rt) {
-        [ClearentLumberjack logInfo:@"disableBluetoothSearch: BLUETOOTH SEARCH DISABLED"];
-    } else {
-        [ClearentLumberjack logInfo:@"disableBluetoothSearch: BLUETOOTH SEARCH FAILED TO DISABLE"];
-    }
+   // if([_clearentVP3300 isConnected]) {
+   //     [ClearentLumberjack logInfo:@"disableBluetoothSearch: SKIP DISABLING BLUETOOTH SEARCH WHEN CONNECTED BECAUSE IDTECH ALREADY DOES IT"];
+    //} else {
+    
+//        RETURN_CODE rt = [_clearentVP3300 device_disableBLEDeviceSearch];
+//
+//        if (RETURN_CODE_DO_SUCCESS == rt) {
+//            [ClearentLumberjack logInfo:@"disableBluetoothSearch: BLUETOOTH SEARCH DISABLED"];
+//        } else {
+//            [ClearentLumberjack logInfo:@"disableBluetoothSearch: BLUETOOTH SEARCH FAILED TO DISABLE"];
+//        }
+    //}
    
     NSUInteger size = 0;
     
@@ -442,21 +450,18 @@ NSTimer *bluetoothSearchDisableTimer;
     //Readers are broadcasting but no devices come back in idtech callback. Forcing a disconnect and searching again
     //fixes this. We used to try one more time but then the client is left wondering why it's taking longer than the configured 10 seconds
     //maximum search. Let's compromise and force the disconnect now and make them retry.
-    if(size == 0 || ![_clearentVP3300 isConnected]) {
-
-        [_clearentVP3300 device_disconnectBLE];
-    }
+    
+    //11-06-21 Let's stop doing this and see if the new IDTech framework is better.
+//    if(size == 0 || ![_clearentVP3300 isConnected]) {
+//        [ClearentLumberjack logInfo:@"disableBluetoothSearch:no devices found and device is not connecrted. force disconnect"];
+//        [_clearentVP3300 device_disconnectBLE];
+//    }
         
     if(_clearentDelegate.clearentConnection.searchBluetooth) {
+        [ClearentLumberjack logInfo:@"disableBluetoothSearch:sendBluetoothDevices"];
         [_clearentDelegate sendBluetoothDevices];
     }
-    
-    if(![_clearentVP3300 isConnected] && !_clearentDelegate.clearentConnection.searchBluetooth) {
-        _previousConnectionFailed = true;
-    } else {
-        _previousConnectionFailed = false;
-    }
-    
+
 }
 
 - (void) sendBluetoothFeedback:(NSString*) message {
@@ -465,6 +470,7 @@ NSTimer *bluetoothSearchDisableTimer;
     
 }
 
+//11-06-21 Flipped the logic around to always check the incoming connection request first before relying on the cached information.
 - (void) handleBluetoothDeviceFound:(NSString*) bluetoothDeviceFoundMessage {
 
     
@@ -481,13 +487,6 @@ NSTimer *bluetoothSearchDisableTimer;
         if([bluetoothDeviceFoundMessage containsString:@"IDTECH"]) {
             [self recordFoundBluetoothDevice:_searchingBluetoothfriendlyName deviceId:_searchingBluetoothDeviceId];
         }
-    } else if (lastUsedBluetoothDeviceId != nil && [lastUsedBluetoothDeviceId isEqualToString:_searchingBluetoothDeviceId]) {
-
-        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Bluetooth friendly name found by uuid %@", _searchingBluetoothfriendlyName]];
-        
-        [self recordFoundBluetoothDevice:_searchingBluetoothfriendlyName deviceId:_searchingBluetoothDeviceId];
-        
-        [self recordFoundDeviceWaitingToConnect];
         
     } else if(_clearentDelegate.clearentConnection != nil
               && _clearentDelegate.clearentConnection.bluetoothDeviceId != nil
@@ -499,23 +498,32 @@ NSTimer *bluetoothSearchDisableTimer;
                
         [self recordFoundDeviceWaitingToConnect];
         
-    } else if(_findBluetoothFriendlyName != nil && [_searchingBluetoothfriendlyName isEqualToString:_findBluetoothFriendlyName]) {
-    
-        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Bluetooth friendly name found %@",_findBluetoothFriendlyName]];
-        
-        [self recordFoundDeviceWaitingToConnect];
-        
-        [self recordFoundBluetoothDevice:_searchingBluetoothfriendlyName deviceId:_searchingBluetoothDeviceId];
-       
     } else if(_clearentDelegate.clearentConnection != nil
               && _clearentDelegate.clearentConnection.fullFriendlyName != nil
               && [_searchingBluetoothfriendlyName isEqualToString:_clearentDelegate.clearentConnection.fullFriendlyName]) {
            
         [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Bluetooth friendly name found %@",_searchingBluetoothfriendlyName]];
-               
-        [self recordFoundDeviceWaitingToConnect];
             
         [self recordFoundBluetoothDevice:_searchingBluetoothfriendlyName deviceId:_searchingBluetoothDeviceId];
+        
+        [self recordFoundDeviceWaitingToConnect];
+        
+    } else if(_findBluetoothFriendlyName != nil && [_searchingBluetoothfriendlyName isEqualToString:_findBluetoothFriendlyName]) {
+    
+        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Bluetooth friendly name found %@",_findBluetoothFriendlyName]];
+        
+        [self recordFoundBluetoothDevice:_searchingBluetoothfriendlyName deviceId:_searchingBluetoothDeviceId];
+        
+        [self recordFoundDeviceWaitingToConnect];
+        
+    } else if (lastUsedBluetoothDeviceId != nil && [lastUsedBluetoothDeviceId isEqualToString:_searchingBluetoothDeviceId]) {
+
+        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Bluetooth friendly name found by uuid %@", _searchingBluetoothfriendlyName]];
+        
+        [self recordFoundBluetoothDevice:_searchingBluetoothfriendlyName deviceId:_searchingBluetoothDeviceId];
+        
+        [self recordFoundDeviceWaitingToConnect];
+    
         
     } else if([bluetoothDeviceFoundMessage containsString:@"IDTECH"]) {
         
@@ -620,12 +628,22 @@ NSTimer *bluetoothSearchDisableTimer;
                         [ClearentCache cacheLastUsedBluetoothDevice: clearentBluetoothDevice.deviceId bluetoothFriendlyName: clearentBluetoothDevice.friendlyName];
                         clearentBluetoothDevice.connected = true;
 
+                    } else {
+                        [ClearentLumberjack logInfo:@"recordBluetoothDeviceAsConnected:connectedNSUUID does not match deviceid"];
                     }
+                } else {
+                    [ClearentLumberjack logInfo:@"recordBluetoothDeviceAsConnected:connectedNSUUID nil"];
                 }
               
                 found = true;
             }
         }
+        if(!found) {
+            [ClearentLumberjack logInfo:@"recordBluetoothDeviceAsConnected:failed to find in device list"];
+        }
+    } else {
+        
+        [ClearentLumberjack logInfo:@"recordBluetoothDeviceAsConnected:failed to record ble as connected"];
         
     }
     
@@ -641,7 +659,7 @@ NSTimer *bluetoothSearchDisableTimer;
 }
 
 - (void) startBluetoothSearchWithUUID:(NSString *) uuid {
-    
+    [ClearentLumberjack logInfo:@"startBluetoothSearchWithUUID"];
     [_clearentVP3300 device_setBLEFriendlyName:nil];
     
     NSUUID *val = nil;
@@ -657,7 +675,7 @@ NSTimer *bluetoothSearchDisableTimer;
 }
 
 - (void) startBluetoothSearchWithFullFriendlyName:(NSString*) fullFriendlyName {
-    
+    [ClearentLumberjack logInfo:@"startBluetoothSearchWithFullFriendlyName"];
     _findBluetoothFriendlyName = fullFriendlyName;
     [_clearentVP3300 device_setBLEFriendlyName:_findBluetoothFriendlyName];
     
@@ -673,6 +691,8 @@ NSTimer *bluetoothSearchDisableTimer;
 
 - (void) startBlindBluetoothSearch {
     
+    [ClearentLumberjack logInfo:@"startBlindBluetoothSearch"];
+    
     [self setInvalidSearchFriendlyName];
     
     NSUUID* val = nil;
@@ -686,6 +706,7 @@ NSTimer *bluetoothSearchDisableTimer;
 }
 
 - (void) setInvalidSearchFriendlyName {
+    [ClearentLumberjack logInfo:@"setInvalidSearchFriendlyName"];
     _findBluetoothFriendlyName = nil;
     [_clearentVP3300 device_setBLEFriendlyName:nil];
 }

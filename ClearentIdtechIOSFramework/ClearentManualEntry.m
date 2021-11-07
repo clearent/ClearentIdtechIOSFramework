@@ -113,7 +113,7 @@ static NSString *const EXPIRATION_DATE_REQUIRED = @"Expiration date required";
            }
            NSString *responseCode = [jsonDictionary objectForKey:@"code"];
            if([responseCode isEqualToString:@"200"]) {
-               [ClearentLumberjack logInfo:@"Successful transaction token communicated to client app for manual entry"];
+               [ClearentLumberjack logInfo:@"➡️ Successful transaction token communicated to client app for manual entry"];
                if ([self.clearentManualEntryDelegate respondsToSelector:@selector(successfulTransactionToken:)]) {
                    [self.clearentManualEntryDelegate successfulTransactionToken:response];
                }
