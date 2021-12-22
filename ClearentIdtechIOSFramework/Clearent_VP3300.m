@@ -556,6 +556,10 @@
     [ClearentCache cacheLastUsedBluetoothDevice:nil bluetoothFriendlyName:nil];
 }
 
+-(void) setPublicKey:(NSString*)publicKey {
+    clearentDelegate.publicKey = publicKey;
+}
+
 @end
 
 

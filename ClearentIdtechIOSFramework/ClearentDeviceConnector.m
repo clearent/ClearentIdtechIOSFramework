@@ -413,19 +413,13 @@ NSTimer *bluetoothSearchDisableTimer;
 
 -(void) disableBluetoothSearch:(id) sender {
     
+    if(_clearentDelegate.clearentConnection.searchBluetooth) {
     
-   // if([_clearentVP3300 isConnected]) {
-   //     [ClearentLumberjack logInfo:@"disableBluetoothSearch: SKIP DISABLING BLUETOOTH SEARCH WHEN CONNECTED BECAUSE IDTECH ALREADY DOES IT"];
-    //} else {
-    
-//        RETURN_CODE rt = [_clearentVP3300 device_disableBLEDeviceSearch];
-//
-//        if (RETURN_CODE_DO_SUCCESS == rt) {
-//            [ClearentLumberjack logInfo:@"disableBluetoothSearch: BLUETOOTH SEARCH DISABLED"];
-//        } else {
-//            [ClearentLumberjack logInfo:@"disableBluetoothSearch: BLUETOOTH SEARCH FAILED TO DISABLE"];
-//        }
-    //}
+        [ClearentLumberjack logInfo:@"disableBluetoothSearch: device_disableBLEDeviceSearch only when in search mode"];
+        
+        RETURN_CODE rt = [_clearentVP3300 device_disableBLEDeviceSearch];
+
+    }
    
     NSUInteger size = 0;
     

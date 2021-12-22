@@ -1637,7 +1637,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     processingCurrentRequest = YES;
     
     //Complete the transaction as soon as possible so the idtech framework does not resend the current transaction.
-    RETURN_CODE emv_completeOnlineEMVTransactionRt = [_idTechSharedInstance emv_completeOnlineEMVTransaction:false hostResponseTags:nil];
+    [_idTechSharedInstance emv_completeOnlineEMVTransaction:false hostResponseTags:nil];
 
     if(clearentTransactionTokenRequest == nil || clearentTransactionTokenRequest.track2Data == nil || [clearentTransactionTokenRequest.track2Data isEqualToString:@""]) {
         [ClearentLumberjack logError:@"createTransactionToken:NO TRACK2DATA. LAST CHECK BEFORE SENDING TO OUR JWT ENDPOINT"];
@@ -1790,14 +1790,14 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
           if(error != nil) {
               [self deviceMessage:CLEARENT_FAILED_TO_SEND_DECLINE_RECEIPT];
               [ClearentLumberjack logInfo:error.description];
-              [_idTechSharedInstance emv_completeOnlineEMVTransaction:false hostResponseTags:nil];
+              [[self idTechSharedInstance] emv_completeOnlineEMVTransaction:false hostResponseTags:nil];
           } else if(data != nil) {
               responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
               if(200 == [httpResponse statusCode]) {
-                  [_idTechSharedInstance emv_completeOnlineEMVTransaction:false hostResponseTags:nil];
+                  [[self idTechSharedInstance] emv_completeOnlineEMVTransaction:false hostResponseTags:nil];
                   [self handleDeclineReceiptResponse:responseStr];
               } else {
-                  [_idTechSharedInstance emv_completeOnlineEMVTransaction:false hostResponseTags:nil];
+                  [[self idTechSharedInstance] emv_completeOnlineEMVTransaction:false hostResponseTags:nil];
                   [self handleDeclineReceiptError:responseStr];
               }
           }
