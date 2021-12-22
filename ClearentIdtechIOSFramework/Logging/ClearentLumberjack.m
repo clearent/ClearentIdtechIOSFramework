@@ -11,11 +11,13 @@
 
 @implementation ClearentLumberjack
 
+ClearentLumberjackRemoteLogger *clearentLumberjackRemoteLogger;
+
 + (void) initLumberJack:(NSString *) baseUrl publicKey:(NSString *) publicKey
 {
     [DDLog addLogger:[DDOSLogger sharedInstance]];
     
-    ClearentLumberjackRemoteLogger *clearentLumberjackRemoteLogger = [[ClearentLumberjackRemoteLogger alloc] init];
+    clearentLumberjackRemoteLogger = [[ClearentLumberjackRemoteLogger alloc] init];
     
     clearentLumberjackRemoteLogger.baseUrl = baseUrl;
     clearentLumberjackRemoteLogger.publicKey = publicKey;
@@ -38,6 +40,12 @@
 
 + (void) flush {
     [DDLog flushLog];
+}
+
++ (void) updatePublicKey:(NSString*) publicKey {
+    if(publicKey != nil) {
+        clearentLumberjackRemoteLogger.publicKey = publicKey;
+    }
 }
 
 @end

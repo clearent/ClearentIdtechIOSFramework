@@ -127,6 +127,8 @@ During a Contactless transaction, if events are enabled, they will be sent to th
 
 - (void) disableCardRemovalTimer;
 
+- (void) updatePublicKey:(NSString *)publicKey;
+
 @end
 
 

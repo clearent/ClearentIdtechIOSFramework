@@ -557,7 +557,8 @@
 }
 
 -(void) setPublicKey:(NSString*)publicKey {
-    clearentDelegate.publicKey = publicKey;
+    [clearentDelegate updatePublicKey:publicKey];
+    [ClearentLumberjack updatePublicKey:publicKey];
 }
 
 @end

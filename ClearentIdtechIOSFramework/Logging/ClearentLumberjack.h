@@ -19,4 +19,5 @@ static const DDLogLevel ddLogLevel = DDLogLevelVerbose;
     + (void) logInfo:(NSString*) logMessage;
     + (void) logError:(NSString*) logMessage;
     + (void) flush;
+    + (void) updatePublicKey:(NSString*) logMessage;
 @end

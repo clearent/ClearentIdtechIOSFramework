@@ -1922,4 +1922,13 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     }
 }
 
+- (void) updatePublicKey:(NSString *)publicKey {
+    if(publicKey != nil) {
+        self.publicKey = publicKey;
+        if(_clearentConfigurator != nil) {
+            _clearentConfigurator.publicKey = publicKey;
+        }
+    }
+}
+
 @end
