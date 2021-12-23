@@ -1,5 +1,25 @@
 # iOS SDK Changelog
 
+## 1.1.166.015
+### 12/22/21
+Added fix to allow methods to execute properly within device connected callback
+
+## 1.1.166.014
+### 12/3/21
+Reset centralManager to nil for enableBLEDeviceSearch to correctly re-init second attempt
+
+## 1.1.166.013
+### 12/2/21
+Updated enableBLEDeviceSearch to reset central manager upon execution
+
+## 1.1.166.012
+### 11/29/21
+Updated BLE Device Auto-Reconnect
+
+## 1.1.166.011
+### 11/12/21
+Updated device_enableBLEDeviceSearch to reset UUID
+
 
 ## 1.1.166.010
 ### 9/17/21
@@ -12,7 +32,7 @@ Added a 1 second connection start delay on BLE to overcome VP3600 reconnect issu
 ## 1.1.166.008
 ### 8/11/21
 Added/Updated the following error codes:
-EMV_RESULT_CODE_V2_SWIPE_NON_ICC = 0x0011,
+EMV_RESULT_CODE_V2_SWIPE_NON_ICC = 0x0011,  (renamed from EMV_RESULT_CODE_V2_MSR_SUCCESS)
 EMV_RESULT_CODE_V2_TRANSACTION_CANCELLED = 0x0012,
 EMV_RESULT_CODE_CTLS_TWO_CARDS = 0x7A,
 EMV_RESULT_CODE_CTLS_TERMINATE = 0x7E,

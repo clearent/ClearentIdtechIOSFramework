@@ -277,6 +277,16 @@ Resets the singleton instance of the SDK
 
 +(void) resetSingleton;
 
+
+
+/**
+ * Bypass Time Sync
+ *
+ Bypasses the time sync function on device connection
+  */
++(bool) BypassSync;
+
+
 /**
  * SDK Version
  - All Devices

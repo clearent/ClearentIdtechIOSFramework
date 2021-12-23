@@ -155,6 +155,9 @@
  */
 +(void) disableAudioDetection;
 
+
+
+
 /**
  * SDK Version
  *
