@@ -133,6 +133,8 @@ NSTimer *bluetoothSearchDisableTimer;
             [ClearentLumberjack logInfo:@"disconnectBluetoothOnChangedState. Device is not connected but a new connection request is provided. Force a disconnect bluetooth"];
         }
         
+        [ClearentCache clearReaderProfile];
+        
         [self disconnectBluetooth];
         
         if(![_clearentVP3300 device_isAudioReaderConnected] && clearentConnection.connectionType == CLEARENT_AUDIO_JACK) {

@@ -10,7 +10,6 @@
 
 @interface ClearentCache : NSObject
 
-+ (NSString *) getStoredDeviceSerialNumber;
 + (NSString *) getReaderConfiguredFlag;
 + (NSString *) getReaderContactlessConfiguredFlag;
 + (void) updateConfigurationCache:(NSString *) deviceSerialNumber readerConfiguredFlag:(NSString *) readerConfiguredFlag;
@@ -25,4 +24,15 @@
 
 + (NSString *) getLastUsedBluetoothDeviceId;
 + (NSString *) getLastUsedBluetoothFriendlyName;
+
++ (void) cacheReaderProfile:(NSString *) kernelVersion firmwareVersion:(NSString *) firmwareVersion deviceSerialNumber: (NSString *) deviceSerialNumber;
+
++ (NSString *) getKernelVersion;
+
++ (NSString *) getFirmwareVersion;
+
++ (void) clearReaderProfile;
+
++ (BOOL) isReaderProfileCached;
+
 @end

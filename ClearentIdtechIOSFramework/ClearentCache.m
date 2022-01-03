@@ -11,6 +11,8 @@
 #import "ClearentCache.h"
 #import "ClearentLumberjack.h"
 
+static NSString *const NSUSERDEFAULT_KERNEL_VERSION = @"KernelVersion";
+static NSString *const NSUSERDEFAULT_FIRMWARE_VERSION = @"FirmwareVersion";
 static NSString *const NSUSERDEFAULT_LAST_USED_BLUETOOTH_DEVICEID = @"LastUsedBluetoothDeviceId";
 static NSString *const NSUSERDEFAULT_LAST_USED_BLUETOOTH_FRIENDLYNAME = @"LastUsedBluetoothFriendlyName";
 static NSString *const NSUSERDEFAULT_DEVICESERIALNUMBER = @"DeviceSerialNumber";
@@ -18,18 +20,8 @@ static NSString *const NSUSERDEFAULT_READERCONFIGURED = @"ReaderConfigured";
 static NSString *const NSUSERDEFAULT_CONTACTLESSCONFIGURED = @"ReaderContactlessConfigured";
 
 static NSString *const DEVICESERIALNUMBER_STANDIN = @"9999999999";
-static NSString *const CURRENT_DEVICESERIALNUMBER = @"CurrentDeviceSerialNumber";
 
 @implementation ClearentCache
-
-+ (NSString *) getStoredDeviceSerialNumber {
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *storedDeviceSerialNumber = [defaults objectForKey:NSUSERDEFAULT_DEVICESERIALNUMBER];
-    if(storedDeviceSerialNumber == nil) {
-        storedDeviceSerialNumber = DEVICESERIALNUMBER_STANDIN;
-    }
-    return storedDeviceSerialNumber;
-}
 
 + (NSString *) getReaderConfiguredFlag {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
@@ -73,7 +65,7 @@ static NSString *const CURRENT_DEVICESERIALNUMBER = @"CurrentDeviceSerialNumber"
          return YES;
     }
     
-    NSString *storedDeviceSerialNumber = [ClearentCache getStoredDeviceSerialNumber];
+    NSString *storedDeviceSerialNumber = [ClearentCache getCurrentDeviceSerialNumber];
     NSString *readerConfiguredFlag = [ClearentCache getReaderConfiguredFlag];
     NSString *readerContactlessConfiguredFlag = [ClearentCache getReaderContactlessConfiguredFlag];
     
@@ -101,7 +93,7 @@ static NSString *const CURRENT_DEVICESERIALNUMBER = @"CurrentDeviceSerialNumber"
 
 + (NSString *) getCurrentDeviceSerialNumber {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
-    NSString *currentDeviceSerialNumber = [defaults objectForKey:CURRENT_DEVICESERIALNUMBER];
+    NSString *currentDeviceSerialNumber = [defaults objectForKey:NSUSERDEFAULT_DEVICESERIALNUMBER];
     if(currentDeviceSerialNumber == nil) {
         currentDeviceSerialNumber = DEVICESERIALNUMBER_STANDIN;
     }
@@ -113,10 +105,10 @@ static NSString *const CURRENT_DEVICESERIALNUMBER = @"CurrentDeviceSerialNumber"
     if(currentDeviceSerialNumber == nil) {
         currentDeviceSerialNumber = DEVICESERIALNUMBER_STANDIN;
     }
-    [defaults setObject:currentDeviceSerialNumber forKey:CURRENT_DEVICESERIALNUMBER];
+    [defaults setObject:currentDeviceSerialNumber forKey:NSUSERDEFAULT_DEVICESERIALNUMBER];
 }
 
-+ (void) cacheLastUsedBluetoothDevice:(NSString*) bluetoothDeviceId bluetoothFriendlyName:(NSString *) bluetoothFriendlyName; {
++ (void) cacheLastUsedBluetoothDevice:(NSString*) bluetoothDeviceId bluetoothFriendlyName:(NSString *) bluetoothFriendlyName {
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     [defaults setObject:bluetoothDeviceId forKey:NSUSERDEFAULT_LAST_USED_BLUETOOTH_DEVICEID];
     [defaults setObject:bluetoothFriendlyName forKey:NSUSERDEFAULT_LAST_USED_BLUETOOTH_FRIENDLYNAME];
@@ -132,6 +124,51 @@ static NSString *const CURRENT_DEVICESERIALNUMBER = @"CurrentDeviceSerialNumber"
     return [defaults objectForKey:NSUSERDEFAULT_LAST_USED_BLUETOOTH_FRIENDLYNAME];
 }
 
++ (void) cacheReaderProfile:(NSString *) kernelVersion firmwareVersion:(NSString *) firmwareVersion deviceSerialNumber: (NSString *) deviceSerialNumber {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:kernelVersion forKey:NSUSERDEFAULT_KERNEL_VERSION];
+    [defaults setObject:firmwareVersion forKey:NSUSERDEFAULT_FIRMWARE_VERSION];
+    [defaults setObject:deviceSerialNumber forKey:NSUSERDEFAULT_DEVICESERIALNUMBER];
+    
+}
+
++ (NSString *) getKernelVersion {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    return [defaults objectForKey:NSUSERDEFAULT_KERNEL_VERSION];
+}
+
+
++ (NSString *) getFirmwareVersion {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    return [defaults objectForKey:NSUSERDEFAULT_FIRMWARE_VERSION];
+}
+
++ (void) clearReaderProfile {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:nil forKey:NSUSERDEFAULT_DEVICESERIALNUMBER];
+    [defaults setObject:nil forKey:NSUSERDEFAULT_FIRMWARE_VERSION];
+    [defaults setObject:nil forKey:NSUSERDEFAULT_KERNEL_VERSION];
+    [ClearentLumberjack logInfo:@"Clearing cached reader profile"];
+}
+
+
++ (BOOL) isReaderProfileCached {
+    
+    NSString *deviceSerialNumber = [ClearentCache getCurrentDeviceSerialNumber];
+    NSString *kernelVersion = [ClearentCache getKernelVersion];
+    NSString *firmwareVersion = [ClearentCache getFirmwareVersion];
+    
+    if(deviceSerialNumber == nil || kernelVersion == nil || firmwareVersion == nil) {
+        return NO;
+    }
+    
+    if(deviceSerialNumber != nil && [deviceSerialNumber isEqualToString:DEVICESERIALNUMBER_STANDIN]) {
+        [ClearentLumberjack logInfo:@"Device Serial Number cached as nines. Consider cache busted"];
+        return NO;
+    }
+    
+    return YES;
+}
 
 @end
 

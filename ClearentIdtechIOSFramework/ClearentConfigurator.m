@@ -48,7 +48,7 @@ ClearentContactlessConfigurator* _clearentContactlessConfigurator;
     
     //we use the cache to stop configurating every time they connect. If they want to override the cache they can use the clearConfigurationCache & clearContactlessConfigurationCache
     //in Clearent_VP3300.
-     NSString *storedDeviceSerialNumber = [ClearentCache getStoredDeviceSerialNumber];
+     NSString *storedDeviceSerialNumber = [ClearentCache getCurrentDeviceSerialNumber];
      NSString *readerConfiguredFlag = [ClearentCache getReaderConfiguredFlag];
      NSString *readerContactlessConfiguredFlag = [ClearentCache getReaderContactlessConfiguredFlag];
           

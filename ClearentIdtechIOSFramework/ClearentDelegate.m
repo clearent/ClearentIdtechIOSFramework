@@ -262,10 +262,18 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         [self deviceMessage:CLEARENT_AUDIO_JACK_CONNECTED];
     }
     
-    [self setReaderProfile];
+    if(self.clearentConnection != nil) {
     
-    //TODO IDTech ticket 20356
-    //[_clearentDeviceConnector adjustBluetoothAdvertisingInterval];
+       if([ClearentCache isReaderProfileCached]) {
+           [ClearentLumberjack logInfo:@"deviceConnected:Connection obj provided and Reader Profile cached. Skip communication with reader"];
+       } else {
+           [ClearentLumberjack logInfo:@"deviceConnected:Connection obj provided and Reader Profile not cached. Get dsn,kernel,and firmware version"];
+           [self setReaderProfile];
+       }
+    } else {
+        [ClearentLumberjack logInfo:@"deviceConnected:No connection obj provided. Get dsn,kernel,and firmware version"];
+        [self setReaderProfile];
+    }
     
     if ([self.publicDelegate respondsToSelector:@selector(deviceConnected)]) {
         [self.publicDelegate deviceConnected];
@@ -279,11 +287,12 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 }
 
 - (void) setReaderProfile {
-    self.firmwareVersion = [self getFirmwareVersion];
-    self.deviceSerialNumber = [self getDeviceSerialNumber];
-    self.kernelVersion = [self getKernelVersion];
-}
 
+    self.deviceSerialNumber = [self getDeviceSerialNumber];
+    self.firmwareVersion = [self getFirmwareVersion];
+    self.kernelVersion = [self getKernelVersion];
+    
+}
 
 -(void) applyClearentConfiguration {
     [ClearentLumberjack logError:@"⚠️ applyClearentConfiguration"];
@@ -1273,7 +1282,6 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
 
     clearentTransactionTokenRequest.emv = true;
     clearentTransactionTokenRequest.kernelVersion = [self kernelVersion];
-    //TODO is the firmwareversion available in the tags ? if we can stop relying on retrieving this it will cut down comm. with reader
     clearentTransactionTokenRequest.firmwareVersion = [self firmwareVersion];
 
     return clearentTransactionTokenRequest;
