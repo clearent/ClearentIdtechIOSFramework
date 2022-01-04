@@ -546,18 +546,21 @@ clearentConnection:(ClearentConnection*) clearentConnection {
     } else {
             @try{
                 NSString *deviceResponseCodeString = [_clearentDelegate.idTechSharedInstance device_getResponseCodeString:startTransactionReturnCode];
+                NSString *idtechErrorMessage = [ClearentUtils getIDtechErrorMessage:startTransactionReturnCode];
                 if(deviceResponseCodeString != nil && ![deviceResponseCodeString isEqualToString:@""] && ([deviceResponseCodeString containsString:@"no reader attached"] || [deviceResponseCodeString containsString:@"Command not Allowed"])) {
                     [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Start failed with Command not allowed. Possible contactless card in field issue. Start Transaction Error: = %@",deviceResponseCodeString]];
-                    [ClearentLumberjack logError:@"startTransactionByReaderInterfaceMode:reader disconnected"];
-                    clearentResponse = [[ClearentResponse alloc] init];
-                    clearentResponse.response = CLEARENT_START_TRANSACTION_FAILED;
-                    clearentResponse.responseType = RESPONSE_FAIL;
+                    [ClearentLumberjack logError:@"startTransactionByReaderInterfaceMode:deviceResponseCodeString"];
+                    clearentResponse = [self createFailedStartResponse];
+                }  else if(idtechErrorMessage != nil && ![idtechErrorMessage isEqualToString:@""] && ([idtechErrorMessage containsString:@"no reader attached"] || [idtechErrorMessage containsString:@"Command not Allowed"])) {
+                    [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Start failed with Command not allowed. Possible contactless card in field issue. Start Transaction Error: = %@",idtechErrorMessage]];
+                    [ClearentLumberjack logError:@"startTransactionByReaderInterfaceMode:idtechErrorMessage"];
+                    clearentResponse = [self createFailedStartResponse];
                 } else {
                     [ClearentLumberjack logInfo:@"startTransactionByReaderInterfaceMode: retry loop of start transaction does not handle this error"];
                 }
             }
             @catch (NSException *e) {
-                    [ClearentLumberjack logInfo:@"NSException. Unknown Start Transaction Error Code "];
+                [ClearentLumberjack logInfo:@"NSException. Unknown Start Transaction Error Code "];
             }
     }
     
@@ -569,6 +572,14 @@ clearentConnection:(ClearentConnection*) clearentConnection {
         [_clearentDelegate deviceMessage:clearentResponse.response];
     }
     return clearentResponse;
+}
+
+- (ClearentResponse*) createFailedStartResponse {
+    ClearentResponse *clearentResponse = [[ClearentResponse alloc] init];
+    clearentResponse.response = CLEARENT_START_TRANSACTION_FAILED;
+    clearentResponse.responseType = RESPONSE_FAIL;
+    return clearentResponse;
+    
 }
 
 - (ClearentResponse*) handleStartTransactionResult: (RETURN_CODE) startTransactionReturnCode  {
