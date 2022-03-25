@@ -22,6 +22,7 @@
 #import "ClearentFeedback.h"
 #import "ClearentBluetoothDevice.h"
 #import "ClearentDeviceConnector.h"
+#import "ClearentUIManager.h"
 
 #import "IDT_VP3300.h"
 #import "IDTCommon.h"
