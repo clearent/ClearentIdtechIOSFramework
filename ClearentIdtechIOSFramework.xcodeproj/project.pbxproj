@@ -56,6 +56,9 @@
 		4BAEA885271C5CD8007F5FCF /* ClearentLumberjack.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BAEA884271C5CD8007F5FCF /* ClearentLumberjack.m */; };
 		4BAEA888271C5F24007F5FCF /* ClearentLumberjackRemoteLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BAEA887271C5F24007F5FCF /* ClearentLumberjackRemoteLogger.m */; };
 		4BAEA898273410A6007F5FCF /* CocoaLumberjack.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BAEA897273410A6007F5FCF /* CocoaLumberjack.xcframework */; };
+		BA40A34B27F1B38C0041CCF7 /* ClearentHttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA40A34827F1B38C0041CCF7 /* ClearentHttpClient.swift */; };
+		BA40A34C27F1B38C0041CCF7 /* SDKWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA40A34927F1B38C0041CCF7 /* SDKWrapper.swift */; };
+		BA40A34D27F1B38C0041CCF7 /* HttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA40A34A27F1B38C0041CCF7 /* HttpClient.swift */; };
 		E702E56523647D6B0032ED8D /* IDTech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E760460523645A61006CFB78 /* IDTech.framework */; };
 		E702E5702364835B0032ED8D /* ClearentVP3300Config.m in Sources */ = {isa = PBXBuildFile; fileRef = E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */; };
 		E702E572236488630032ED8D /* ClearentPayment.h in Headers */ = {isa = PBXBuildFile; fileRef = E746CB5F235896EC00C41DF1 /* ClearentPayment.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -170,6 +173,9 @@
 		4BAEA88F27340E3D007F5FCF /* CocoaLumberjackSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CocoaLumberjackSwift.framework; sourceTree = "<group>"; };
 		4BAEA89327340E89007F5FCF /* CocoaLumberjack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CocoaLumberjack.framework; sourceTree = "<group>"; };
 		4BAEA897273410A6007F5FCF /* CocoaLumberjack.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = CocoaLumberjack.xcframework; sourceTree = "<group>"; };
+		BA40A34827F1B38C0041CCF7 /* ClearentHttpClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentHttpClient.swift; sourceTree = "<group>"; };
+		BA40A34927F1B38C0041CCF7 /* SDKWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDKWrapper.swift; sourceTree = "<group>"; };
+		BA40A34A27F1B38C0041CCF7 /* HttpClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpClient.swift; sourceTree = "<group>"; };
 		E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentVP3300Config.m; sourceTree = "<group>"; };
 		E702E571236485280032ED8D /* ClearentVP3300Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentVP3300Config.h; sourceTree = "<group>"; };
 		E726A0362258B5A400F3E8B7 /* ClearentCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentCache.h; sourceTree = "<group>"; };
@@ -303,6 +309,16 @@
 			path = ClearentUI;
 			sourceTree = "<group>";
 		};
+		BA40A34727F1B38C0041CCF7 /* Wrapper */ = {
+			isa = PBXGroup;
+			children = (
+				BA40A34827F1B38C0041CCF7 /* ClearentHttpClient.swift */,
+				BA40A34927F1B38C0041CCF7 /* SDKWrapper.swift */,
+				BA40A34A27F1B38C0041CCF7 /* HttpClient.swift */,
+			);
+			path = Wrapper;
+			sourceTree = "<group>";
+		};
 		E728DB4920E686CA004C01E7 /* test */ = {
 			isa = PBXGroup;
 			children = (
@@ -398,6 +414,7 @@
 		E76504F61FFC306100B345F6 /* ClearentIdtechIOSFramework */ = {
 			isa = PBXGroup;
 			children = (
+				BA40A34727F1B38C0041CCF7 /* Wrapper */,
 				19B0A07E27EC9FB1006DAA48 /* ClearentUI */,
 				E75891DD225522AB00288032 /* Logging */,
 				E7D95F68209B96B4001C5871 /* ClearentIdtechIOSFramework.h */,
@@ -623,6 +640,7 @@
 					};
 					E76504F31FFC306100B345F6 = {
 						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 1320;
 					};
 					E7CA495220E3C2230090CFFC = {
 						CreatedOnToolsVersion = 9.4.1;
@@ -706,13 +724,16 @@
 				4B32C09F2436287700CCF9B9 /* ClearentDeviceConnector.m in Sources */,
 				E7CA494220E171960090CFFC /* ClearentConfiguration.m in Sources */,
 				E79BC82520B366300030FD8C /* Clearent_VP3300.m in Sources */,
+				BA40A34B27F1B38C0041CCF7 /* ClearentHttpClient.swift in Sources */,
 				E7A8BFA023311EE500FEBF48 /* ClearentContactlessConfigurator.m in Sources */,
 				E746CB612358983200C41DF1 /* ClearentPayment.m in Sources */,
 				4B32C0A22436612900CCF9B9 /* ClearentTransactions.m in Sources */,
 				E764E7722303182C0029B753 /* ClearentOfflineDeclineReceipt.m in Sources */,
+				BA40A34D27F1B38C0041CCF7 /* HttpClient.swift in Sources */,
 				4BAEA888271C5F24007F5FCF /* ClearentLumberjackRemoteLogger.m in Sources */,
 				4B32C09824335D5500CCF9B9 /* ClearentBluetoothDevice.m in Sources */,
 				E702E5702364835B0032ED8D /* ClearentVP3300Config.m in Sources */,
+				BA40A34C27F1B38C0041CCF7 /* SDKWrapper.swift in Sources */,
 				E75891FC225522AB00288032 /* ClearentLogging.m in Sources */,
 				E75891F7225522AB00288032 /* ClearentLoggingRequest.m in Sources */,
 				E75A5BEC20DD20580035B911 /* ClearentEmvConfigurator.m in Sources */,
@@ -926,6 +947,8 @@
 		E76505091FFC306100B345F6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -956,6 +979,8 @@
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SKIP_INSTALL = NO;
 				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = arm64;
 			};
@@ -964,6 +989,8 @@
 		E765050A1FFC306100B345F6 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Manual;
 				DEFINES_MODULE = YES;
@@ -993,6 +1020,7 @@
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SKIP_INSTALL = NO;
 				STRIP_INSTALLED_PRODUCT = NO;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALID_ARCHS = arm64;
 			};
@@ -1001,6 +1029,7 @@
 		E7CA495C20E3C2230090CFFC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
@@ -1045,6 +1074,7 @@
 		E7CA495D20E3C2230090CFFC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_STYLE = Automatic;
