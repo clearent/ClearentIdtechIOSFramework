@@ -21,11 +21,6 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		19B0A08227ECB04B006DAA48 /* ClearentPaymentProcessingViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 19B0A07F27ECB04B006DAA48 /* ClearentPaymentProcessingViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		19B0A08327ECB04B006DAA48 /* ClearentPaymentProcessingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 19B0A08027ECB04B006DAA48 /* ClearentPaymentProcessingViewController.m */; };
-		19B0A08427ECB04B006DAA48 /* ClearentPaymentProcessingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19B0A08127ECB04B006DAA48 /* ClearentPaymentProcessingViewController.xib */; };
-		19C3A0CD27EC8B650024592C /* ClearentUIManager.h in Headers */ = {isa = PBXBuildFile; fileRef = 19C3A0CB27EC8B650024592C /* ClearentUIManager.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		19C3A0CE27EC8B650024592C /* ClearentUIManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 19C3A0CC27EC8B650024592C /* ClearentUIManager.m */; };
 		4B074F3C2447173200868E21 /* ClearentConfigFetcher_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E728DB1D20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m */; };
 		4B074F3E244717E500868E21 /* ClearentConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA494020E171830090CFFC /* ClearentConfiguration.h */; };
 		4B074F3F244717EE00868E21 /* ClearentConfigFetcher.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA497320E578BC0090CFFC /* ClearentConfigFetcher.h */; };
@@ -138,11 +133,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		19B0A07F27ECB04B006DAA48 /* ClearentPaymentProcessingViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentPaymentProcessingViewController.h; sourceTree = "<group>"; };
-		19B0A08027ECB04B006DAA48 /* ClearentPaymentProcessingViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentPaymentProcessingViewController.m; sourceTree = "<group>"; };
-		19B0A08127ECB04B006DAA48 /* ClearentPaymentProcessingViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentPaymentProcessingViewController.xib; sourceTree = "<group>"; };
-		19C3A0CB27EC8B650024592C /* ClearentUIManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentUIManager.h; sourceTree = "<group>"; };
-		19C3A0CC27EC8B650024592C /* ClearentUIManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentUIManager.m; sourceTree = "<group>"; };
 		4B074F4624471B7900868E21 /* ClearentBluetoothDevice_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentBluetoothDevice_Tests.m; sourceTree = "<group>"; };
 		4B074F4824471F2700868E21 /* ClearentConnection_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentConnection_Tests.m; sourceTree = "<group>"; };
 		4B074F4A2447313900868E21 /* ClearentDeviceConnector_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentDeviceConnector_Tests.m; sourceTree = "<group>"; };
@@ -300,11 +290,6 @@
 		19B0A07E27EC9FB1006DAA48 /* ClearentUI */ = {
 			isa = PBXGroup;
 			children = (
-				19C3A0CB27EC8B650024592C /* ClearentUIManager.h */,
-				19C3A0CC27EC8B650024592C /* ClearentUIManager.m */,
-				19B0A07F27ECB04B006DAA48 /* ClearentPaymentProcessingViewController.h */,
-				19B0A08027ECB04B006DAA48 /* ClearentPaymentProcessingViewController.m */,
-				19B0A08127ECB04B006DAA48 /* ClearentPaymentProcessingViewController.xib */,
 			);
 			path = ClearentUI;
 			sourceTree = "<group>";
@@ -554,7 +539,6 @@
 				E77C098A23685C5B0041402B /* IDT_VP8800.h in Headers */,
 				E77C098C23685C5D0041402B /* IDTCommon.h in Headers */,
 				E77C099323685C6A0041402B /* IDTUtility.h in Headers */,
-				19C3A0CD27EC8B650024592C /* ClearentUIManager.h in Headers */,
 				4B32C0952433560200CCF9B9 /* ClearentFeedback.h in Headers */,
 				4B32C09924335E2200CCF9B9 /* ClearentBluetoothDevice.h in Headers */,
 				E77C099523685C710041402B /* uniMag.h in Headers */,
@@ -580,7 +564,6 @@
 				E721ECE821F7483B0064163F /* ClearentManualEntry.h in Headers */,
 				E77C90472000442200C3E590 /* ClearentTransactionTokenRequest.h in Headers */,
 				E77C900F1FFFE38100C3E590 /* ClearentDelegate.h in Headers */,
-				19B0A08227ECB04B006DAA48 /* ClearentPaymentProcessingViewController.h in Headers */,
 				E75A5BEF20DD21BF0035B911 /* ClearentEmvConfigurator.h in Headers */,
 				E7CA494720E192510090CFFC /* ClearentConfigurator.h in Headers */,
 			);
@@ -672,7 +655,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				19B0A08427ECB04B006DAA48 /* ClearentPaymentProcessingViewController.xib in Resources */,
 				E77687472062B66300284FF4 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -719,8 +701,6 @@
 				4B907F8B242E7FAA0029C21E /* ClearentFeedback.m in Sources */,
 				4B32C08E2432586500CCF9B9 /* ClearentConnection.m in Sources */,
 				E78E2E84224E847900943B14 /* ClearentUtils.m in Sources */,
-				19C3A0CE27EC8B650024592C /* ClearentUIManager.m in Sources */,
-				19B0A08327ECB04B006DAA48 /* ClearentPaymentProcessingViewController.m in Sources */,
 				4B32C09F2436287700CCF9B9 /* ClearentDeviceConnector.m in Sources */,
 				E7CA494220E171960090CFFC /* ClearentConfiguration.m in Sources */,
 				E79BC82520B366300030FD8C /* Clearent_VP3300.m in Sources */,
