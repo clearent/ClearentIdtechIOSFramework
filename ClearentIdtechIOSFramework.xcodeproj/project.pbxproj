@@ -21,6 +21,8 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		1937010A27F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1937010827F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.swift */; };
+		1937010B27F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1937010927F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.xib */; };
 		4B074F3C2447173200868E21 /* ClearentConfigFetcher_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E728DB1D20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m */; };
 		4B074F3E244717E500868E21 /* ClearentConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA494020E171830090CFFC /* ClearentConfiguration.h */; };
 		4B074F3F244717EE00868E21 /* ClearentConfigFetcher.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA497320E578BC0090CFFC /* ClearentConfigFetcher.h */; };
@@ -133,6 +135,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1937010827F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentPaymentProcessingViewController.swift; sourceTree = "<group>"; };
+		1937010927F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentPaymentProcessingViewController.xib; sourceTree = "<group>"; };
 		4B074F4624471B7900868E21 /* ClearentBluetoothDevice_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentBluetoothDevice_Tests.m; sourceTree = "<group>"; };
 		4B074F4824471F2700868E21 /* ClearentConnection_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentConnection_Tests.m; sourceTree = "<group>"; };
 		4B074F4A2447313900868E21 /* ClearentDeviceConnector_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentDeviceConnector_Tests.m; sourceTree = "<group>"; };
@@ -290,6 +294,8 @@
 		19B0A07E27EC9FB1006DAA48 /* ClearentUI */ = {
 			isa = PBXGroup;
 			children = (
+				1937010827F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.swift */,
+				1937010927F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.xib */,
 			);
 			path = ClearentUI;
 			sourceTree = "<group>";
@@ -655,6 +661,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1937010B27F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.xib in Resources */,
 				E77687472062B66300284FF4 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -712,6 +719,7 @@
 				BA40A34D27F1B38C0041CCF7 /* HttpClient.swift in Sources */,
 				4BAEA888271C5F24007F5FCF /* ClearentLumberjackRemoteLogger.m in Sources */,
 				4B32C09824335D5500CCF9B9 /* ClearentBluetoothDevice.m in Sources */,
+				1937010A27F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.swift in Sources */,
 				E702E5702364835B0032ED8D /* ClearentVP3300Config.m in Sources */,
 				BA40A34C27F1B38C0041CCF7 /* SDKWrapper.swift in Sources */,
 				E75891FC225522AB00288032 /* ClearentLogging.m in Sources */,
