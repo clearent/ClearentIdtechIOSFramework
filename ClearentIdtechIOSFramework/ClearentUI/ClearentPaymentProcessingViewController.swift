@@ -9,15 +9,16 @@
 import UIKit
 
 public class ClearentPaymentProcessingViewController: UIViewController {
-
-    private let sdkWrapper: SDKWrapper
+    public var presenter: PaymentProcessingProtocol?
     private let nibIdentifier = "ClearentPaymentProcessingViewController"
+    
+    @IBOutlet weak var paymentProcessingLabel: UILabel!
+    @IBOutlet weak var tryPairingAgainButton: UIButton!
+    
     
     // MARK: Init
     
-    public init(baseURL: String, publicKey: String, apiKey: String) {
-        self.sdkWrapper = SDKWrapper(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey)
-        
+    public init() {
         super.init(nibName: nibIdentifier, bundle: Bundle(for: ClearentPaymentProcessingViewController.self))
     }
     
@@ -29,5 +30,13 @@ public class ClearentPaymentProcessingViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        
+        presenter?.startBluetoothDevicePairing()
+    }
+}
+
+extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView {
+    public func updateInfoLabel(message: String) {
+        paymentProcessingLabel.text = message
     }
 }

@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import ClearentIdtechIOSFramework
 
 public enum UserAction: String {
     case pleaseWait = "PLEASE WAIT...",
