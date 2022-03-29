@@ -20,7 +20,7 @@ public enum UserInfo: String {
 }
 
 public enum TransactionError {
-    case networkError, insuficientFunds, generalError, duplicateTransaction
+    case networkError, insuficientFunds, duplicateTransaction, generalError
 }
 
 public protocol SDKWrapperProtocol : AnyObject {
@@ -52,7 +52,7 @@ public protocol SDKWrapperProtocol : AnyObject {
     }
     
     
-    /// Public
+    // MARK - Public
     
     @objc public func startPairing() {
         let config = ClearentVP3300Config(noContactlessNoConfiguration: baseURL, publicKey: publicKey)
@@ -65,10 +65,7 @@ public protocol SDKWrapperProtocol : AnyObject {
         clearentVP3300.start(connection)
     }
     
-//    @objc public setDelegate(delegate:SDKWrapperProtocol) {
-//        self.delegate = delegate
-//    }
-//        
+     
     @objc public func startTransactionWithAmount(amount: String) {
         let payment = ClearentPayment.init(sale: ())
         if (amount.canBeConverted(to: String.Encoding.utf8)) {
@@ -119,7 +116,9 @@ extension SDKWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         
         switch clearentFeedback.feedBackMessageType {
             case .TYPE_UNKNOWN:
-                self.delegate?.didEncounteredGeneralError()
+                DispatchQueue.main.async {
+                    self.delegate?.didEncounteredGeneralError()
+                }
             case .USER_ACTION:
                 if let action = UserAction(rawValue: clearentFeedback.message) {
                     DispatchQueue.main.async {
