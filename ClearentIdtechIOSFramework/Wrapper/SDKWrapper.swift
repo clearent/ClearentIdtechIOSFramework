@@ -98,6 +98,7 @@ public protocol SDKWrapperProtocol : AnyObject {
         }
         connection?.searchBluetooth = false
         connection?.readerInterfaceMode = ._2_IN_1
+        clearentVP3300.start(connection)
     }
     
     private func amountToTransmit() -> String {
