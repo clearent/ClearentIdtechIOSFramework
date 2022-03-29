@@ -13,8 +13,8 @@ public class ClearentPaymentProcessingViewController: UIViewController {
     private let nibIdentifier = "ClearentPaymentProcessingViewController"
     
     @IBOutlet weak var paymentProcessingLabel: UILabel!
-    @IBOutlet weak var tryPairingAgainButton: UIButton!
-    
+    @IBOutlet weak var pairBluetoothDeviceButton: UIButton!
+    @IBOutlet weak var dismissButton: UIButton!
     
     // MARK: Init
     
@@ -31,12 +31,33 @@ public class ClearentPaymentProcessingViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        presenter?.startBluetoothDevicePairing()
+        dismissButton.isHidden = true
+        guard let presenter = presenter else { return }
+        presenter.startBluetoothDevicePairing()
+    }
+    
+    // MARK: IBAction
+    
+    @IBAction func pairBluetoothDeviceButtonPressed(_ sender: Any) {
+        guard let presenter = presenter else { return }
+        presenter.pairAgainBluetoothDevice()
+    }
+    
+    @IBAction func dismissButtonPressed(_ sender: Any) {
+        dismiss(animated: true)
     }
 }
 
 extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView {
     public func updateInfoLabel(message: String) {
         paymentProcessingLabel.text = message
+    }
+    
+    public func updatePairingButton(shouldBeHidden: Bool) {
+        pairBluetoothDeviceButton.isHidden = shouldBeHidden
+    }
+    
+    public func updateDismissButton(shouldBeHidden: Bool) {
+        dismissButton.isHidden = shouldBeHidden
     }
 }

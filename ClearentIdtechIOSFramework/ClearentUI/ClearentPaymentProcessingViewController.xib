@@ -11,8 +11,9 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ClearentPaymentProcessingViewController" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
             <connections>
+                <outlet property="dismissButton" destination="DzZ-Eo-Moe" id="fEW-M9-m8P"/>
+                <outlet property="pairBluetoothDeviceButton" destination="pnS-Od-Mvx" id="nUa-9b-FZS"/>
                 <outlet property="paymentProcessingLabel" destination="c8Y-aT-oHR" id="OpA-TG-hve"/>
-                <outlet property="tryPairingAgainButton" destination="pnS-Od-Mvx" id="0ml-ul-HRw"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -34,14 +35,27 @@
                     <rect key="frame" x="165.5" y="489" width="83.5" height="31"/>
                     <state key="normal" title="Button"/>
                     <buttonConfiguration key="configuration" style="plain" title="Try again"/>
+                    <connections>
+                        <action selector="pairBluetoothDeviceButtonPressed:" destination="-1" eventType="touchUpInside" id="tC9-5V-hic"/>
+                    </connections>
+                </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="DzZ-Eo-Moe">
+                    <rect key="frame" x="170" y="577" width="74.5" height="31"/>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain" title="Dismiss"/>
+                    <connections>
+                        <action selector="dismissButtonPressed:" destination="-1" eventType="touchUpInside" id="ZTq-nN-we6"/>
+                    </connections>
                 </button>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="c8Y-aT-oHR" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="20" id="Ncq-Wk-Sdf"/>
+                <constraint firstItem="DzZ-Eo-Moe" firstAttribute="centerX" secondItem="pnS-Od-Mvx" secondAttribute="centerX" id="T17-zo-XsJ"/>
                 <constraint firstItem="c8Y-aT-oHR" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="265" id="lMo-uw-XXH"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="c8Y-aT-oHR" secondAttribute="trailing" constant="20" id="lq6-ww-A6R"/>
+                <constraint firstItem="DzZ-Eo-Moe" firstAttribute="top" secondItem="pnS-Od-Mvx" secondAttribute="bottom" constant="57" id="qra-bQ-s0J"/>
                 <constraint firstItem="pnS-Od-Mvx" firstAttribute="centerX" secondItem="fnl-2z-Ty3" secondAttribute="centerX" id="skm-0r-9Mj"/>
                 <constraint firstItem="pnS-Od-Mvx" firstAttribute="top" secondItem="c8Y-aT-oHR" secondAttribute="bottom" constant="150" id="xej-S3-BJ8"/>
             </constraints>

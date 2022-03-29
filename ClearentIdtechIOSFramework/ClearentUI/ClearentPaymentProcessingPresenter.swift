@@ -10,10 +10,13 @@ import UIKit
 
 public protocol ClearentPaymentProcessingView: AnyObject {
     func updateInfoLabel(message: String)
+    func updatePairingButton(shouldBeHidden: Bool)
+    func updateDismissButton(shouldBeHidden: Bool)
 }
 
 public protocol PaymentProcessingProtocol {
     func startBluetoothDevicePairing()
+    func pairAgainBluetoothDevice()
 }
 
 public class ClearentPaymentProcessingPresenter {
@@ -33,50 +36,61 @@ public class ClearentPaymentProcessingPresenter {
 extension ClearentPaymentProcessingPresenter: PaymentProcessingProtocol {
     public func startBluetoothDevicePairing() {
         sdkWrapper.delegate = self
-        sdkWrapper.startPairing()
+        guard let paymentProcessingView = paymentProcessingView else { return }
+        paymentProcessingView.updatePairingButton(shouldBeHidden: true)
         
-        guard let paymentProcessingViewController = paymentProcessingView else { return }
-        paymentProcessingViewController.updateInfoLabel(message: "SEARCHING FOR READER...")
+        if sdkWrapper.isReaderConnected() {
+            sdkWrapper.startTransactionWithAmount(amount: String(amount))
+        } else {
+            paymentProcessingView.updateInfoLabel(message: "SEARCHING FOR READER...")
+            
+            sdkWrapper.startPairing()
+        }
+    }
+    
+    public func pairAgainBluetoothDevice() {
+        sdkWrapper.startPairing()
     }
 }
 
 extension ClearentPaymentProcessingPresenter: SDKWrapperProtocol {
     public func didEncounteredGeneralError() {
-        guard let paymentProcessingViewController = paymentProcessingView else { return }
-        paymentProcessingViewController.updateInfoLabel(message: "Oops, General Error")
-        //button for try again
+        guard let paymentProcessingView = paymentProcessingView else { return }
+        paymentProcessingView.updateInfoLabel(message: "Oops, General Error")
+        paymentProcessingView.updatePairingButton(shouldBeHidden: false)
     }
     
     public func didFinishPairing() {
-        guard let paymentProcessingViewController = paymentProcessingView else { return }
-        paymentProcessingViewController.updateInfoLabel(message: "Device Successfully Paired")
+        guard let paymentProcessingView = paymentProcessingView else { return }
+        paymentProcessingView.updateInfoLabel(message: "Device Successfully Paired")
         
         sdkWrapper.startTransactionWithAmount(amount: String(amount))
     }
     
     public func didFinishTransaction() {
-        guard let paymentProcessingViewController = paymentProcessingView else { return }
-        paymentProcessingViewController.updateInfoLabel(message: "Transaction Completed")
+        guard let paymentProcessingView = paymentProcessingView else { return }
+        paymentProcessingView.updateInfoLabel(message: "Transaction Completed")
+        paymentProcessingView.updateDismissButton(shouldBeHidden: false)
     }
     
     public func didReceiveTransactionError(error: TransactionError) {
-        guard let paymentProcessingViewController = paymentProcessingView else { return }
-        paymentProcessingViewController.updateInfoLabel(message: "Oops, General Error")
+        guard let paymentProcessingView = paymentProcessingView else { return }
+        paymentProcessingView.updateInfoLabel(message: "Oops, General Error")
     }
     
     public func userActionNeeded(action: UserAction) {
-        guard let paymentProcessingViewController = paymentProcessingView else { return }
-        paymentProcessingViewController.updateInfoLabel(message: action.rawValue)
+        guard let paymentProcessingView = paymentProcessingView else { return }
+        paymentProcessingView.updateInfoLabel(message: action.rawValue)
     }
     
     public func didReceiveInfo(info: UserInfo) {
-        guard let paymentProcessingViewController = paymentProcessingView else { return }
-        paymentProcessingViewController.updateInfoLabel(message: info.rawValue)
+        guard let paymentProcessingView = paymentProcessingView else { return }
+        paymentProcessingView.updateInfoLabel(message: info.rawValue)
     }
     
     public func deviceDidDisconnect() {
-        guard let paymentProcessingViewController = paymentProcessingView else { return }
-        paymentProcessingViewController.updateInfoLabel(message: "Oops, Device Disconnected")
-        //button for try again
+        guard let paymentProcessingView = paymentProcessingView else { return }
+        paymentProcessingView.updateInfoLabel(message: "Oops, Device Disconnected")
+        paymentProcessingView.updatePairingButton(shouldBeHidden: false)
     }
 }
