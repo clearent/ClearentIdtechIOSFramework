@@ -34,11 +34,11 @@ class ClearentHttpClient {
     }
     
     
-    /// Public
+    // MARK - Public
     
     public func saleTransaction(jwt: String, amount: String, completion: @escaping (Data?, Error?) -> Void) {
         let saleURL = URL(string: baseURL + ClearentEndpoints.sale)
-        let headers = self.headersForTransaction(jwt: jwt, apiKey: self.apiKey)
+        let headers = headersForTransaction(jwt: jwt, apiKey: self.apiKey)
         let _ = HttpClient.makeRawRequest(to: saleURL!, method: transactionMethod(type: TransactionType.sale.rawValue, amount: amount), headers: headers) { data, error in
             completion(data, error)
         }
@@ -46,27 +46,27 @@ class ClearentHttpClient {
     
     public func refundTransaction(jwt: String, amount: String, completion: @escaping (Data?, Error?) -> Void) {
         let saleURL = URL(string: baseURL + ClearentEndpoints.refund)
-        let headers = self.headersForTransaction(jwt: jwt, apiKey: self.apiKey)
+        let headers = headersForTransaction(jwt: jwt, apiKey: self.apiKey)
         let _ = HttpClient.makeRawRequest(to: saleURL!, method: transactionMethod(type: TransactionType.refund.rawValue, amount: amount), headers: headers) { data, error in
             completion(data, error)
         }
     }
     
     
-    /// Private
+    // MARK - Private
     
-    func transactionMethod(type: String, amount: String) -> HttpClient.HTTPMethod {
+    private func transactionMethod(type: String, amount: String) -> HttpClient.HTTPMethod {
         let method = HttpClient.HTTPMethod.POST(transactionBody(type: type, amount: amount))
         return method
     }
     
-    func transactionBody(type:String, amount: String) -> HttpClient.HTTPBody {
+    private func transactionBody(type:String, amount: String) -> HttpClient.HTTPBody {
         let paramsDictionary = ["amount":amount, "type":type, "software-type": ClientInfo.softwareType, "software-type-version":ClientInfo.softwareTypeVersion]
         let body = HttpClient.HTTPBody.parameters(paramsDictionary, HttpClient.ParameterEncoding.json)
         return body
     }
     
-    func headersForTransaction(jwt: String, apiKey:String) -> Dictionary<String, String> {
+    private func headersForTransaction(jwt: String, apiKey:String) -> Dictionary<String, String> {
         let headers = ["mobilejwt" : jwt, "Content-Type": "application/json", "Accept": "application/json", "api-key" : apiKey]
         return headers
     }

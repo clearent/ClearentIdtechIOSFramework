@@ -10,8 +10,6 @@ import Foundation
 class HttpClient {
     static let shared = HttpClient(baseURL: URL(string: "URL")!)
     var baseURL: URL
-    static let isInDebugMode = false
-    var globalHeaders = [String: String]()
     
     init(baseURL: URL) {
         self.baseURL = baseURL
