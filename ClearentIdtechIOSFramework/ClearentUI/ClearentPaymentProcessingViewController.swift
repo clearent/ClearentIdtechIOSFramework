@@ -30,14 +30,27 @@ public class ClearentPaymentProcessingViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        
+        configureButtons()
     }
     
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        dismissButton.isHidden = true
         guard let presenter = presenter else { return }
         presenter.startBluetoothDevicePairing()
+    }
+    
+    // MARK: Private
+    
+    private func configureButtons() {
+        pairBluetoothDeviceButton.isHidden = true
+        pairBluetoothDeviceButton.layer.cornerRadius = 7
+        pairBluetoothDeviceButton.clipsToBounds = true
+        
+        dismissButton.isHidden = true
+        dismissButton.layer.cornerRadius = 7
+        dismissButton.clipsToBounds = true
     }
     
     // MARK: IBAction
