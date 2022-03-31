@@ -39,12 +39,12 @@ public protocol SDKWrapperProtocol : AnyObject {
     private var baseURL: String = ""
     private var apiKey: String = ""
     private var publicKey: String = ""
-    
     private var clearentVP3300 = Clearent_VP3300()
     private var connection  = ClearentConnection(bluetoothSearch: ())
     private var foundDevice = false
     weak var delegate: SDKWrapperProtocol?
-
+    public var friendlyName : String?
+    
     @objc public override init() {
         super.init()
     }
@@ -99,6 +99,7 @@ public protocol SDKWrapperProtocol : AnyObject {
         connection?.bluetoothDeviceId = bleDeviceID
         if let name = friendly {
             connection?.fullFriendlyName = name
+            friendlyName = name
         }
         connection?.searchBluetooth = false
         connection?.readerInterfaceMode = ._2_IN_1
