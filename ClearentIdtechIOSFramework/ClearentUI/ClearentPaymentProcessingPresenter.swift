@@ -29,7 +29,8 @@ public class ClearentPaymentProcessingPresenter {
     public init(paymentProcessingView: ClearentPaymentProcessingView, amount: Double, baseURL: String, publicKey: String, apiKey: String) {
         self.paymentProcessingView = paymentProcessingView
         self.amount = amount
-        self.sdkWrapper = SDKWrapper(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey)
+        self.sdkWrapper = SDKWrapper.shared
+        self.sdkWrapper.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey)
     }
 }
 

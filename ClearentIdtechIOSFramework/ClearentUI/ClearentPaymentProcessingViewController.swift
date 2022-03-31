@@ -30,6 +30,10 @@ public class ClearentPaymentProcessingViewController: UIViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+    }
+    
+    public override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         
         dismissButton.isHidden = true
         guard let presenter = presenter else { return }

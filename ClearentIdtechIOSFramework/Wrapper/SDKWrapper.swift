@@ -34,29 +34,26 @@ public protocol SDKWrapperProtocol : AnyObject {
 }
 
 @objc public final class SDKWrapper : NSObject {
-    private var baseURL: String
-    private var apiKey: String
-    private var publicKey: String
+    
+    static let shared = SDKWrapper()
+    private var baseURL: String = ""
+    private var apiKey: String = ""
+    private var publicKey: String = ""
     
     private var clearentVP3300 = Clearent_VP3300()
     private var connection  = ClearentConnection(bluetoothSearch: ())
     private var foundDevice = false
     weak var delegate: SDKWrapperProtocol?
 
-    @objc public init(baseURL:String, publicKey: String, apiKey: String) {
-        self.baseURL = baseURL
-        self.apiKey = apiKey
-        self.publicKey = publicKey
-    
+    @objc public override init() {
         super.init()
     }
-    
-    
+
     // MARK - Public
     
     @objc public func startPairing() {
         let config = ClearentVP3300Config(noContactlessNoConfiguration: baseURL, publicKey: publicKey)
-        config?.contactAutoConfiguration = false
+        //config?.contactAutoConfiguration = true
         
         clearentVP3300 = Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
         clearentVP3300.device_enableBLEDeviceSearch(nil)
@@ -65,8 +62,15 @@ public protocol SDKWrapperProtocol : AnyObject {
         clearentVP3300.start(connection)
     }
     
-     
+    @objc public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String) {
+        self.baseURL = baseURL
+        self.apiKey = apiKey
+        self.publicKey = publicKey
+    }
+    
     @objc public func startTransactionWithAmount(amount: String) {
+        
+        clearentVP3300.emv_cancelTransaction()
         let payment = ClearentPayment.init(sale: ())
         if (amount.canBeConverted(to: String.Encoding.utf8)) {
             payment?.amount = Double(amount) ?? 0
@@ -126,7 +130,7 @@ extension SDKWrapper : Clearent_Public_IDTech_VP3300_Delegate {
                         self.delegate?.userActionNeeded(action: action)
                     }
                 }
-            case .INFO:
+        case .INFO:
                 if let info = UserInfo(rawValue: clearentFeedback.message) {
                     DispatchQueue.main.async {
                      self.delegate?.didReceiveInfo(info: info)
