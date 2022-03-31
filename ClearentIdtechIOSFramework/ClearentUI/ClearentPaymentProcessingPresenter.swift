@@ -12,6 +12,7 @@ public protocol ClearentPaymentProcessingView: AnyObject {
     func updateInfoLabel(message: String)
     func updatePairingButton(shouldBeHidden: Bool)
     func updateDismissButton(shouldBeHidden: Bool)
+    func updateDeviceNameLabel(value: String)
 }
 
 public protocol PaymentProcessingProtocol {
@@ -93,5 +94,13 @@ extension ClearentPaymentProcessingPresenter: SDKWrapperProtocol {
         guard let paymentProcessingView = paymentProcessingView else { return }
         paymentProcessingView.updateInfoLabel(message: "Oops, Device Disconnected")
         paymentProcessingView.updatePairingButton(shouldBeHidden: false)
+    }
+    
+    public func didReceiveDeviceFriendlyName(_ name: String?) {
+        guard let deviceFriendlyName = name else {
+            paymentProcessingView?.updateDeviceNameLabel(value: "Unknown")
+            return
+        }
+        paymentProcessingView?.updateDeviceNameLabel(value: deviceFriendlyName)
     }
 }

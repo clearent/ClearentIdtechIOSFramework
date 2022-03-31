@@ -13,6 +13,8 @@ public class ClearentPaymentProcessingViewController: UIViewController {
     private let nibIdentifier = "ClearentPaymentProcessingViewController"
     
     @IBOutlet weak var paymentProcessingLabel: UILabel!
+    @IBOutlet weak var connectedToLabel: UILabel!
+    @IBOutlet weak var deviceNameLabel: UILabel!
     @IBOutlet weak var pairBluetoothDeviceButton: UIButton!
     @IBOutlet weak var dismissButton: UIButton!
     
@@ -32,6 +34,9 @@ public class ClearentPaymentProcessingViewController: UIViewController {
         super.viewDidLoad()
         
         configureButtons()
+        
+        connectedToLabel.isHidden = true
+        deviceNameLabel.isHidden = true
     }
     
     public override func viewDidAppear(_ animated: Bool) {
@@ -76,5 +81,11 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
     
     public func updateDismissButton(shouldBeHidden: Bool) {
         dismissButton.isHidden = shouldBeHidden
+    }
+    
+    public func updateDeviceNameLabel(value: String) {
+        connectedToLabel.isHidden = false
+        deviceNameLabel.isHidden = false
+        deviceNameLabel.text = value
     }
 }
