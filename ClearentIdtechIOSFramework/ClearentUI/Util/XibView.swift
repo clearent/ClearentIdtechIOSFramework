@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// A custom UIView  that contains all the necessary methods for loading a view from nib. Could be used as a base class for other UI components in order to avoid boilerplate code.
 class XibView: UIView {
     // MARK: - Lifecycle
 

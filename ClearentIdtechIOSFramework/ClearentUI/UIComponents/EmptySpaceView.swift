@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SpaceView: MarginableView {
+class EmptySpaceView: MarginableView {
     @IBOutlet var heightConstraint: NSLayoutConstraint!
 
     var height = 16.0 {

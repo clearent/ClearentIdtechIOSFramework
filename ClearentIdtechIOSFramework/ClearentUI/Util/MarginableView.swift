@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// A  XibView subclass that adds custom bottom padding to the view
 class MarginableView: XibView, Marginable {
     @IBOutlet var bottomLayoutConstraint: NSLayoutConstraint?
 

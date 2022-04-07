@@ -7,6 +7,7 @@
 
 import UIKit
 
+/// A custom UIStackView  that supports subviews with different margins between them.
 class AdaptiveStackView: UIStackView {
     // MARK: - Lifecycle
 
