@@ -1,0 +1,40 @@
+/* 
+  Localizable.strings
+  ClearentIdtechIOSFramework
+
+  Created by Ovidiu Rotaru on 07.04.2022.
+  Copyright © 2022 Clearent, L.L.C. All rights reserved.
+*/
+
+
+/* Payment Flow*/
+
+
+// General error
+"xsdk_user_action_retry" = "Try Again";
+"xsdk_user_action_cancel" = "Cancel";
+"xsdk_user_action_ok" = "OK";
+
+
+// Transaction completed
+"xsdk_transaction_completed_description" = "Payment succesful";
+
+// Insert card
+"xsdk_tap_insert_swipe_description" = "Please swipe, tap or insert the card";
+
+// Processing
+"xsdk_processing_description" = "Processing...";
+
+// Press button
+"xsdk_press_button_description" = "Please swipe, tap or insert the card";
+
+// Read error (try ICC again)
+"xsdk_read_card_try_icc_again_title" = "Read error";
+"xsdk_read_card_try_icc_again_description" = "Try ICC again";
+
+// Read error (card has chip)
+"xsdk_read_card_has_chip_title" = "Read error";
+"xsdk_read_card_has_chip_description" = "Card has chip, try insert";
+
+
+

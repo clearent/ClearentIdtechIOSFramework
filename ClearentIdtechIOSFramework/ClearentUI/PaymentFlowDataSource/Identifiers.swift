@@ -8,11 +8,17 @@
 
 import Foundation
 
+extension String {
+    var localized: String {
+        return NSLocalizedString(self, bundle: .main, comment: self)
+    }
+}
+
 enum FlowDataKeys : String {
     case readerStatus = "xplor_reader_status"
     case readerBatteryLevel = "xplor_battery_level"
     case readerName = "xplor_reader_name"
-    case icon = "xplor_icon_type"
+    case graphicType = "xplor_icon_type"
     case title = "xplor_title"
     case description = "xplor_description"
     case userAction = "xplor_user_action_type"
@@ -22,8 +28,8 @@ enum FlowFeedbackType {
     case error, info, warning
 }
 
-enum FlowiconType {
-    case insert_card, press_button, transaction_completed, loading
+enum FlowGraphicType {
+    case insert_card, press_button, transaction_completed, loading, error, warning
 }
 
 enum ProcessType {
