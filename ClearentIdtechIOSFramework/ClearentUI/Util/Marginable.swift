@@ -10,18 +10,15 @@ import UIKit
 protocol Marginable {
     var viewType: UIView.Type { get }
     var margings: [RelativeMargin] { get }
-    func createBottomMargings(at index: Int, with neighbor: Marginable?)
-    func setBottomMargin(value: RelativeMargin)
+    func handleBottomMarging(to neighbor: Marginable?)
+    func setBottomMargin(margin: RelativeMargin)
 }
 
 extension Marginable {
-    func createBottomMargings(at index: Int, with neighbor: Marginable?) {
-        guard let neighbor = neighbor else { return }
-        for margin in margings {
-            if neighbor.viewType == margin.relatedViewType {
-                setBottomMargin(value: margin)
-            }
-        }
+    func handleBottomMarging(to neighbor: Marginable?) {
+        guard let neighbor = neighbor,
+              let margin =  margings.first(where: { neighbor.viewType == $0.relatedViewType }) else { return }
+        setBottomMargin(margin: margin)
     }
 }
 
@@ -33,4 +30,3 @@ class RelativeMargin {
         self.relatedViewType = relatedViewType
     }
 }
-

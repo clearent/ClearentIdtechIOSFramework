@@ -8,14 +8,13 @@
 import UIKit
 
 class XibView: UIView {
-
     // MARK: - Lifecycle
 
     override func awakeFromNib() {
         super.awakeFromNib()
         configure()
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         loadViewFromNib()
@@ -25,14 +24,14 @@ class XibView: UIView {
         super.init(frame: frame)
         loadViewFromNib()
     }
-    
+
     convenience init() {
         self.init(frame: CGRect.zero)
         configure()
     }
 
     func configure() {
-        // Add additional configuration here
+        // Add additional configuration for child view here
     }
 
     // MARK: - Private

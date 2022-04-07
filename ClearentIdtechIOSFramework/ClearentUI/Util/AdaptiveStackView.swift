@@ -8,7 +8,6 @@
 import UIKit
 
 class AdaptiveStackView: UIStackView {
-    
     // MARK: - Lifecycle
 
     override func layoutSubviews() {
@@ -32,7 +31,7 @@ class AdaptiveStackView: UIStackView {
                     }
                     neighborIndex += 1
                 }
-                subview.createBottomMargings(at: index, with: neighbor)
+                subview.handleBottomMarging(to: neighbor)
             }
         }
     }

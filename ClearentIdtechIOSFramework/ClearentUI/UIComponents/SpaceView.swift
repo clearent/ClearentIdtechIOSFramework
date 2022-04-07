@@ -9,7 +9,7 @@ import UIKit
 
 class SpaceView: MarginableView {
     @IBOutlet var heightConstraint: NSLayoutConstraint!
-    
+
     var height = 16.0 {
         didSet {
             heightConstraint?.constant = height
