@@ -22,7 +22,7 @@
 
 /* Begin PBXBuildFile section */
 		0169C2DE27FF1A4000B8B4DB /* EmptySpaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0169C2DC27FF1A4000B8B4DB /* EmptySpaceView.swift */; };
-		0169C2DF27FF1A4000B8B4DB /* SpaceView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0169C2DD27FF1A4000B8B4DB /* SpaceView.xib */; };
+		0169C2DF27FF1A4000B8B4DB /* EmptySpaceView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0169C2DD27FF1A4000B8B4DB /* EmptySpaceView.xib */; };
 		0169C2E427FF1A4600B8B4DB /* Marginable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0169C2E027FF1A4600B8B4DB /* Marginable.swift */; };
 		0169C2E527FF1A4600B8B4DB /* MarginableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0169C2E127FF1A4600B8B4DB /* MarginableView.swift */; };
 		0169C2E627FF1A4600B8B4DB /* AdaptiveStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0169C2E227FF1A4600B8B4DB /* AdaptiveStackView.swift */; };
@@ -145,7 +145,7 @@
 
 /* Begin PBXFileReference section */
 		0169C2DC27FF1A4000B8B4DB /* EmptySpaceView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptySpaceView.swift; sourceTree = "<group>"; };
-		0169C2DD27FF1A4000B8B4DB /* SpaceView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SpaceView.xib; sourceTree = "<group>"; };
+		0169C2DD27FF1A4000B8B4DB /* EmptySpaceView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EmptySpaceView.xib; sourceTree = "<group>"; };
 		0169C2E027FF1A4600B8B4DB /* Marginable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Marginable.swift; sourceTree = "<group>"; };
 		0169C2E127FF1A4600B8B4DB /* MarginableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarginableView.swift; sourceTree = "<group>"; };
 		0169C2E227FF1A4600B8B4DB /* AdaptiveStackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdaptiveStackView.swift; sourceTree = "<group>"; };
@@ -313,7 +313,7 @@
 			isa = PBXGroup;
 			children = (
 				0169C2DC27FF1A4000B8B4DB /* EmptySpaceView.swift */,
-				0169C2DD27FF1A4000B8B4DB /* SpaceView.xib */,
+				0169C2DD27FF1A4000B8B4DB /* EmptySpaceView.xib */,
 			);
 			path = UIComponents;
 			sourceTree = "<group>";
@@ -713,7 +713,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1937010B27F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.xib in Resources */,
-				0169C2DF27FF1A4000B8B4DB /* SpaceView.xib in Resources */,
+				0169C2DF27FF1A4000B8B4DB /* EmptySpaceView.xib in Resources */,
 				E77687472062B66300284FF4 /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -17,7 +17,7 @@ class EmptySpaceView: MarginableView {
         }
     }
 
-    // MAKR: - Lifecycle
+    // MARK: - Lifecycle
 
     convenience init(height: CGFloat) {
         self.init()
@@ -28,7 +28,9 @@ class EmptySpaceView: MarginableView {
         setHeight(height: height)
     }
 
-    func setHeight(height: CGFloat) {
+    // MARK: - Private
+
+    private func setHeight(height: CGFloat) {
         self.height = height
     }
 }

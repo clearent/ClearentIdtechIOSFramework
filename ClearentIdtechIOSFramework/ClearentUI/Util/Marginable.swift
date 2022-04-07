@@ -7,6 +7,7 @@
 
 import UIKit
 
+// Helper class used to create space between two views
 protocol Marginable {
     var viewType: UIView.Type { get }
     var margings: [RelativeMargin] { get }
@@ -17,7 +18,7 @@ protocol Marginable {
 extension Marginable {
     func handleBottomMarging(to neighbor: Marginable?) {
         guard let neighbor = neighbor,
-              let margin =  margings.first(where: { neighbor.viewType == $0.relatedViewType }) else { return }
+              let margin = margings.first(where: { neighbor.viewType == $0.relatedViewType }) else { return }
         setBottomMargin(margin: margin)
     }
 }
