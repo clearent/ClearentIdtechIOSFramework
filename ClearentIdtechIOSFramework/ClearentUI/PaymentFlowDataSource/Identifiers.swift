@@ -10,7 +10,7 @@ import Foundation
 
 enum FlowDataKeys : String {
     case readerStatus = "xplor_reader_status"
-    case readerBatteryLevel = "xplor__battery_level"
+    case readerBatteryLevel = "xplor_battery_level"
     case readerName = "xplor_reader_name"
     case icon = "xplor_icon_type"
     case title = "xplor_title"
@@ -18,17 +18,15 @@ enum FlowDataKeys : String {
     case userAction = "xplor_user_action_type"
 }
 
-enum FlowFeedbackType : String {
-    case error = "xplor_error_type", info = "xplor_info_type", warning = "xplor_warning_type"
+enum FlowFeedbackType {
+    case error, info, warning
+}
+
+enum FlowiconType {
+    case insert_card, press_button, transaction_completed, loading
 }
 
 enum ProcessType {
     case pairing
     case payment
-}
-
-enum FeedBackStepType {
-    case insertCard
-    case tryAgain
-    case generalError
 }

@@ -11,11 +11,16 @@ public enum UserAction: String {
     case pleaseWait = "PLEASE WAIT...",
          swipeInsert = "INSERT/SWIPE CARD",
          pressReaderButton = "PRESS BUTTON ON READER",
-         removeCard = "CARD READ OK, REMOVE CARD"
+         removeCard = "CARD READ OK, REMOVE CARD",
+         tryICCAgain = "TRY ICC AGAIN",
+         goingOnline = "GOING ONLINE",
+         cardSecured = "CARD SECURED",
+         cardHasChip = "CARD HAS CHIP. TRY INSERT",
+         tryMSRAgain = "TRY MSR AGAIN"
 }
 
 public enum UserInfo: String {
-    case authorizing = "AUTHORIZING",
+    case authorizing = "AUTHORIZING...",
          processing = "PROCESSING..."
 }
 
@@ -123,32 +128,32 @@ extension SDKWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     public func feedback(_ clearentFeedback: ClearentFeedback!) {
         
         switch clearentFeedback.feedBackMessageType {
-            case .TYPE_UNKNOWN:
+        case .TYPE_UNKNOWN:
+            DispatchQueue.main.async {
+                self.delegate?.didEncounteredGeneralError()
+            }
+        case .USER_ACTION:
+            if let action = UserAction(rawValue: clearentFeedback.message) {
                 DispatchQueue.main.async {
-                    self.delegate?.didEncounteredGeneralError()
+                    self.delegate?.userActionNeeded(action: action)
                 }
-            case .USER_ACTION:
-                if let action = UserAction(rawValue: clearentFeedback.message) {
-                    DispatchQueue.main.async {
-                        self.delegate?.userActionNeeded(action: action)
-                    }
-                }
+            }
         case .INFO:
-                if let info = UserInfo(rawValue: clearentFeedback.message) {
-                    DispatchQueue.main.async {
-                     self.delegate?.didReceiveInfo(info: info)
-                    }
-                }
-            case .BLUETOOTH:
-                print("Some bluetooth Feedback")
-            case .ERROR:
+            if let info = UserInfo(rawValue: clearentFeedback.message) {
                 DispatchQueue.main.async {
-                    self.delegate?.didEncounteredGeneralError()
+                 self.delegate?.didReceiveInfo(info: info)
                 }
-            @unknown default:
-                DispatchQueue.main.async {
-                    self.delegate?.didEncounteredGeneralError()
-                }
+            }
+        case .BLUETOOTH:
+            print("Some bluetooth Feedback")
+        case .ERROR:
+            DispatchQueue.main.async {
+                self.delegate?.didEncounteredGeneralError()
+            }
+        @unknown default:
+            DispatchQueue.main.async {
+                self.delegate?.didEncounteredGeneralError()
+            }
         }
     }
     

@@ -10,10 +10,10 @@ import Foundation
 
 class FlowFeedback {
     var flow : ProcessType
-    var type : FeedBackStepType
-    var items : [String:String] = [String:String]()
+    var type : FlowFeedbackType
+    var items : [FlowDataKeys:Any] = [FlowDataKeys:Any]()
     
-    init(flow: ProcessType, type: FeedBackStepType, items: [String:String]) {
+    init(flow: ProcessType, type: FlowFeedbackType, items: [FlowDataKeys:Any]) {
         self.flow = flow
         self.type = type
         self.items = items
@@ -23,40 +23,41 @@ class FlowFeedback {
 struct ReaderInfo {
     var readerName : String
     let batterylevel : Int?
+    let signalLevel : Int?
     let isConnected : Bool
     
-    init(name: String?, level: Int, connected: Bool) {
+    init(name: String?, batterylevel: Int, signalLevel:Int, connected: Bool) {
         self.readerName = "Unknown"
         if let readerName = name {
             self.readerName = readerName
         }
-        self.batterylevel = level
+        self.batterylevel = batterylevel
+        self.signalLevel = signalLevel
         self.isConnected = connected
     }
 }
 
 class FlowDataFactory {
     
-    class func componentWithType(flow: ProcessType, type: FeedBackStepType, readerInfo: ReaderInfo)-> FlowFeedback {
+    class func componentWithType(flow: ProcessType, type: FlowFeedbackType, readerInfo: ReaderInfo)-> FlowFeedback {
         return FlowFeedback(flow: flow, type: type, items: createDataFor(type: type, readerInfo: readerInfo))
     }
     
-    class func createDataFor(type:FeedBackStepType, readerInfo:ReaderInfo) -> [String : String] {
+    class func createDataFor(type:FlowFeedbackType, readerInfo:ReaderInfo) -> [FlowDataKeys : Any] {
         let readerInfoDict = createDictionaryWithDeviceInfo(readerInfo: readerInfo)
         
-        let feedbackDataDict = [FlowDataKeys.icon.rawValue : FlowFeedbackType.info.rawValue,
-                        FlowDataKeys.title.rawValue : "Insert Card",
-                        FlowDataKeys.description.rawValue : "Hey do something...",
-                        FlowDataKeys.userAction.rawValue : "Retry"]
-        
+        let feedbackDataDict = [FlowDataKeys.icon : FlowFeedbackType.info,
+                        FlowDataKeys.title : "Insert Card",
+                        FlowDataKeys.description : "Hey do something...",
+                        FlowDataKeys.userAction : "Retry"] as [FlowDataKeys : Any]
         
         let dataDict = feedbackDataDict.merging(readerInfoDict) { (current, _) in current }
         return dataDict
     }
     
-    class func createDictionaryWithDeviceInfo(readerInfo:ReaderInfo) -> [String:String] {
-        return [FlowDataKeys.readerStatus.rawValue : readerInfo.isConnected ? "Connected" : "Idle",
-                FlowDataKeys.readerName.rawValue : readerInfo.readerName]
+    class func createDictionaryWithDeviceInfo(readerInfo:ReaderInfo) -> [FlowDataKeys:Any] {
+        return [FlowDataKeys.readerStatus : readerInfo.isConnected,
+                FlowDataKeys.readerName : readerInfo.readerName]
     }
 }
 
@@ -75,7 +76,7 @@ class FlowDataProvider : NSObject {
     }
     
     func fetchReaderInfo() -> ReaderInfo {
-        return ReaderInfo(name: sdkWrapper.friendlyName, level: 100, connected: sdkWrapper.isReaderConnected())
+        return ReaderInfo(name: sdkWrapper.friendlyName, batterylevel: 100, signalLevel: 1, connected: sdkWrapper.isReaderConnected())
     }
 }
 
@@ -84,56 +85,94 @@ extension FlowDataProvider : SDKWrapperProtocol {
     
     func didEncounteredGeneralError() {
         let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment,
-                                                         type: FeedBackStepType.generalError,
+                                                         type: FlowFeedbackType.error,
                                                          readerInfo: fetchReaderInfo())
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
     func didFinishPairing() {
-        let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FeedBackStepType.generalError, readerInfo: fetchReaderInfo())
+        let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FlowFeedbackType.info, readerInfo: fetchReaderInfo())
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
     func didFinishTransaction() {
-        let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FeedBackStepType.generalError, readerInfo: fetchReaderInfo())
+        let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FlowFeedbackType.info, readerInfo: fetchReaderInfo())
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
     func didReceiveTransactionError(error: TransactionError) {
-        let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FeedBackStepType.generalError, readerInfo: fetchReaderInfo())
+        let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FlowFeedbackType.error, readerInfo: fetchReaderInfo())
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
     func userActionNeeded(action: UserAction) {
         switch action {
-            case .pleaseWait:
-                let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FeedBackStepType.generalError, readerInfo: fetchReaderInfo())
-                self.delegate?.didReceiveFlowFeedback(feedback: feedback)
-            case .swipeInsert:
-                let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FeedBackStepType.generalError, readerInfo: fetchReaderInfo())
-                self.delegate?.didReceiveFlowFeedback(feedback: feedback)
-            case .pressReaderButton:
-                let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FeedBackStepType.generalError, readerInfo: fetchReaderInfo())
-                self.delegate?.didReceiveFlowFeedback(feedback: feedback)
-            case .removeCard:
-                let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FeedBackStepType.generalError, readerInfo: fetchReaderInfo())
-                self.delegate?.didReceiveFlowFeedback(feedback: feedback)
-            }
+        case .pleaseWait:
+            let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FlowFeedbackType.info, readerInfo: fetchReaderInfo())
+            self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        case .swipeInsert:
+            let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FlowFeedbackType.info, readerInfo: fetchReaderInfo())
+            self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        case .pressReaderButton:
+            let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FlowFeedbackType.info, readerInfo: fetchReaderInfo())
+            self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        case .removeCard:
+            let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FlowFeedbackType.info, readerInfo: fetchReaderInfo())
+            self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        case .tryICCAgain:
+            let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FlowFeedbackType.info, readerInfo: fetchReaderInfo())
+            self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        case .goingOnline:
+            let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FlowFeedbackType.info, readerInfo: fetchReaderInfo())
+            self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        case .cardSecured:
+            let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FlowFeedbackType.info, readerInfo: fetchReaderInfo())
+            self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        case .cardHasChip:
+            let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FlowFeedbackType.info, readerInfo: fetchReaderInfo())
+            self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        case .tryMSRAgain:
+            let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FlowFeedbackType.info, readerInfo: fetchReaderInfo())
+            self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        }
+    }
+    
+    func datAForuserAction(userAction : UserAction) -> [FlowDataKeys : Any] {
+        switch userAction {
+        case .pleaseWait:
+            <#code#>
+        case .swipeInsert:
+            <#code#>
+        case .pressReaderButton:
+            <#code#>
+        case .removeCard:
+            <#code#>
+        case .tryICCAgain:
+            <#code#>
+        case .goingOnline:
+            <#code#>
+        case .cardSecured:
+            <#code#>
+        case .cardHasChip:
+            <#code#>
+        case .tryMSRAgain:
+            <#code#>
+        }
     }
     
     func didReceiveInfo(info: UserInfo) {
         switch info {
         case .authorizing:
-            let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FeedBackStepType.generalError, readerInfo: fetchReaderInfo())
+            let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FlowFeedbackType.info, readerInfo: fetchReaderInfo())
             self.delegate?.didReceiveFlowFeedback(feedback: feedback)
         case .processing:
-            let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FeedBackStepType.generalError, readerInfo: fetchReaderInfo())
+            let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FlowFeedbackType.info, readerInfo: fetchReaderInfo())
             self.delegate?.didReceiveFlowFeedback(feedback: feedback)
         }
     }
     
     func deviceDidDisconnect() {
-        let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FeedBackStepType.generalError, readerInfo: fetchReaderInfo())
+        let feedback = FlowDataFactory.componentWithType(flow: ProcessType.payment, type: FlowFeedbackType.info, readerInfo: fetchReaderInfo())
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
