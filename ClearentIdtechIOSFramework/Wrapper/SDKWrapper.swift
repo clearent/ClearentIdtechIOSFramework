@@ -36,7 +36,6 @@ public protocol SDKWrapperProtocol : AnyObject {
     func userActionNeeded(action: UserAction)
     func didReceiveInfo(info: UserInfo)
     func deviceDidDisconnect()
-    func didReceiveDeviceFriendlyName(_ name: String?)
 }
 
 @objc public final class SDKWrapper : NSObject {
@@ -106,7 +105,6 @@ public protocol SDKWrapperProtocol : AnyObject {
         if let name = friendly {
             connection?.fullFriendlyName = name
             friendlyName = name
-            self.delegate?.didReceiveDeviceFriendlyName(friendlyName)
         }
         connection?.searchBluetooth = false
         connection?.readerInterfaceMode = ._2_IN_1

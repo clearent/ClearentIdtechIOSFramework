@@ -10,13 +10,14 @@ import Foundation
 
 extension String {
     var localized: String {
-        return NSLocalizedString(self, bundle: .main, comment: self)
+        return NSLocalizedString(self, bundle: Bundle(for: FlowDataProvider.self), comment: self)
     }
 }
 
 enum FlowDataKeys : String {
-    case readerStatus = "xplor_reader_status"
+    case readerConnected = "xplor_reader_connected"
     case readerBatteryLevel = "xplor_battery_level"
+    case readerSignalLevel = "xplor_reader_signal_level"
     case readerName = "xplor_reader_name"
     case graphicType = "xplor_icon_type"
     case title = "xplor_title"

@@ -24,6 +24,7 @@ public class ClearentPaymentProcessingPresenter {
     private weak var paymentProcessingView: ClearentPaymentProcessingView?
     private var amount: Double
     private let sdkWrapper: SDKWrapper
+    private var sdkFeedbackProvider : FlowDataProvider
     
     // MARK: Init
     
@@ -31,13 +32,15 @@ public class ClearentPaymentProcessingPresenter {
         self.paymentProcessingView = paymentProcessingView
         self.amount = amount
         self.sdkWrapper = SDKWrapper.shared
+        sdkFeedbackProvider = FlowDataProvider()
         self.sdkWrapper.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey)
     }
 }
 
 extension ClearentPaymentProcessingPresenter: PaymentProcessingProtocol {
     public func startBluetoothDevicePairing() {
-        sdkWrapper.delegate = self
+       // sdkWrapper.delegate = self
+        sdkFeedbackProvider.delegate = self
         guard let paymentProcessingView = paymentProcessingView else { return }
         paymentProcessingView.updatePairingButton(shouldBeHidden: true)
         
@@ -52,6 +55,20 @@ extension ClearentPaymentProcessingPresenter: PaymentProcessingProtocol {
     
     public func pairAgainBluetoothDevice() {
         sdkWrapper.startPairing()
+    }
+}
+
+extension ClearentPaymentProcessingPresenter: FlowDataProtocol {
+    
+    func didFinishedPairing() {
+        guard let paymentProcessingView = paymentProcessingView else { return }
+        paymentProcessingView.updateInfoLabel(message: "Device Successfully Paired")
+        
+        sdkWrapper.startTransactionWithAmount(amount: String(amount))
+    }
+    
+    func didReceiveFlowFeedback(feedback: FlowFeedback) {
+        paymentProcessingView!.updateInfoLabel(message: feedback.items[FlowDataKeys.description] as! String)
     }
 }
 

@@ -11,6 +11,8 @@
 
 
 // General error
+"xsdk_general_error_title" = "Ops";
+"xsdk_general_error_description" = "Something Went wrong";
 "xsdk_user_action_retry" = "Try Again";
 "xsdk_user_action_cancel" = "Cancel";
 "xsdk_user_action_ok" = "OK";
@@ -33,8 +35,9 @@
 "xsdk_read_card_try_icc_again_description" = "Try ICC again";
 
 // Read error (card has chip)
-"xsdk_read_card_has_chip_title" = "Read error";
+"xsdk_read_error_title" = "Read error";
 "xsdk_read_card_has_chip_description" = "Card has chip, try insert";
 
-
+// Read error (try MSR again)
+"xsdk_read_try_msr_again_description" = "Try MSR again";
 
