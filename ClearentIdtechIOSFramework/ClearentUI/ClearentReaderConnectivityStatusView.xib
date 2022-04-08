@@ -26,14 +26,14 @@
             <rect key="frame" x="0.0" y="0.0" width="168" height="61"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="onlineConnectivityStatus" translatesAutoresizingMaskIntoConstraints="NO" id="Ehc-jD-soA">
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ehc-jD-soA">
                     <rect key="frame" x="0.0" y="1.5" width="12" height="11"/>
                     <constraints>
                         <constraint firstAttribute="width" constant="12" id="GQZ-0r-r3N"/>
                         <constraint firstAttribute="height" constant="11" id="Qni-MS-TSO"/>
                     </constraints>
                 </imageView>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Connected" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DqH-kv-sQv">
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DqH-kv-sQv">
                     <rect key="frame" x="18" y="0.0" width="150" height="14"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="14" id="fQm-ig-gNb"/>
@@ -57,7 +57,6 @@
         </view>
     </objects>
     <resources>
-        <image name="onlineConnectivityStatus" width="12" height="12"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

@@ -11,7 +11,10 @@ import UIKit
 class ClearentReaderStatusHeaderView: UIView {
     
     @IBOutlet var contentView: UIView!
+    @IBOutlet weak var stackView: UIStackView!
     @IBOutlet weak var readerNameLabel: UILabel!
+    @IBOutlet weak var readerConnectivityStatusView: ClearentReaderConnectivityStatusView!
+    @IBOutlet weak var readerBatteryStatusView: ClearentReaderConnectivityStatusView!
     
     // MARK: Init
     

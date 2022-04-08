@@ -33,6 +33,9 @@
 		1937014E27FDB25F00BF48E5 /* Asset Catalog.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1937014D27FDB25F00BF48E5 /* Asset Catalog.xcassets */; };
 		1937015727FDC5CD00BF48E5 /* ClearentReaderConnectivityStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1937015627FDC5CD00BF48E5 /* ClearentReaderConnectivityStatusView.swift */; };
 		1937015927FDC5DF00BF48E5 /* ClearentReaderConnectivityStatusView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1937015827FDC5DF00BF48E5 /* ClearentReaderConnectivityStatusView.xib */; };
+		193701A02800001A00BF48E5 /* ClearentReaderFeedbackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1937019F2800001A00BF48E5 /* ClearentReaderFeedbackView.swift */; };
+		193701A22800007D00BF48E5 /* ClearentReaderFeedbackView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 193701A12800007D00BF48E5 /* ClearentReaderFeedbackView.xib */; };
+		193701A42800031500BF48E5 /* SF-Pro-Text-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 193701A32800031500BF48E5 /* SF-Pro-Text-Bold.otf */; };
 		4B074F3C2447173200868E21 /* ClearentConfigFetcher_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E728DB1D20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m */; };
 		4B074F3E244717E500868E21 /* ClearentConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA494020E171830090CFFC /* ClearentConfiguration.h */; };
 		4B074F3F244717EE00868E21 /* ClearentConfigFetcher.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA497320E578BC0090CFFC /* ClearentConfigFetcher.h */; };
@@ -157,6 +160,9 @@
 		1937014D27FDB25F00BF48E5 /* Asset Catalog.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Asset Catalog.xcassets"; sourceTree = "<group>"; };
 		1937015627FDC5CD00BF48E5 /* ClearentReaderConnectivityStatusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentReaderConnectivityStatusView.swift; sourceTree = "<group>"; };
 		1937015827FDC5DF00BF48E5 /* ClearentReaderConnectivityStatusView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentReaderConnectivityStatusView.xib; sourceTree = "<group>"; };
+		1937019F2800001A00BF48E5 /* ClearentReaderFeedbackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentReaderFeedbackView.swift; sourceTree = "<group>"; };
+		193701A12800007D00BF48E5 /* ClearentReaderFeedbackView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentReaderFeedbackView.xib; sourceTree = "<group>"; };
+		193701A32800031500BF48E5 /* SF-Pro-Text-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-Bold.otf"; sourceTree = "<group>"; };
 		4B074F4624471B7900868E21 /* ClearentBluetoothDevice_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentBluetoothDevice_Tests.m; sourceTree = "<group>"; };
 		4B074F4824471F2700868E21 /* ClearentConnection_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentConnection_Tests.m; sourceTree = "<group>"; };
 		4B074F4A2447313900868E21 /* ClearentDeviceConnector_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentDeviceConnector_Tests.m; sourceTree = "<group>"; };
@@ -314,6 +320,7 @@
 		1937013327FC25F900BF48E5 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
+				193701A32800031500BF48E5 /* SF-Pro-Text-Bold.otf */,
 				1937013527FC261800BF48E5 /* SF-Pro-Text-Medium.otf */,
 				1937013427FC261800BF48E5 /* SF-Pro-Text-Regular.otf */,
 			);
@@ -342,6 +349,8 @@
 				1937014A27FDADCD00BF48E5 /* ClearentUserActionView.xib */,
 				1937015627FDC5CD00BF48E5 /* ClearentReaderConnectivityStatusView.swift */,
 				1937015827FDC5DF00BF48E5 /* ClearentReaderConnectivityStatusView.xib */,
+				1937019F2800001A00BF48E5 /* ClearentReaderFeedbackView.swift */,
+				193701A12800007D00BF48E5 /* ClearentReaderFeedbackView.xib */,
 			);
 			path = ClearentUI;
 			sourceTree = "<group>";
@@ -709,9 +718,11 @@
 			files = (
 				1937015927FDC5DF00BF48E5 /* ClearentReaderConnectivityStatusView.xib in Resources */,
 				1937010B27F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.xib in Resources */,
+				193701A22800007D00BF48E5 /* ClearentReaderFeedbackView.xib in Resources */,
 				E77687472062B66300284FF4 /* .gitignore in Resources */,
 				1937014E27FDB25F00BF48E5 /* Asset Catalog.xcassets in Resources */,
 				1937013627FC261800BF48E5 /* SF-Pro-Text-Regular.otf in Resources */,
+				193701A42800031500BF48E5 /* SF-Pro-Text-Bold.otf in Resources */,
 				1937013727FC261800BF48E5 /* SF-Pro-Text-Medium.otf in Resources */,
 				1937013227FC21B700BF48E5 /* ClearentReaderStatusHeaderView.xib in Resources */,
 				1937014B27FDADCD00BF48E5 /* ClearentUserActionView.xib in Resources */,
@@ -779,6 +790,7 @@
 				BA40A34C27F1B38C0041CCF7 /* SDKWrapper.swift in Sources */,
 				E75891FC225522AB00288032 /* ClearentLogging.m in Sources */,
 				E75891F7225522AB00288032 /* ClearentLoggingRequest.m in Sources */,
+				193701A02800001A00BF48E5 /* ClearentReaderFeedbackView.swift in Sources */,
 				E75A5BEC20DD20580035B911 /* ClearentEmvConfigurator.m in Sources */,
 				4B32C0912432677F00CCF9B9 /* ClearentTransactionToken.m in Sources */,
 				E7CA494520E1753D0090CFFC /* ClearentConfigurator.m in Sources */,
