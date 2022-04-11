@@ -68,7 +68,8 @@ extension ClearentPaymentProcessingPresenter: FlowDataProtocol {
     }
     
     func didReceiveFlowFeedback(feedback: FlowFeedback) {
-        paymentProcessingView!.updateInfoLabel(message: feedback.items[FlowDataKeys.description] as! String)
+        guard let message = feedback.items[.description] as? String else { return }
+        paymentProcessingView!.updateInfoLabel(message: message)
     }
 }
 

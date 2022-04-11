@@ -14,15 +14,8 @@ extension String {
     }
 }
 
-enum FlowDataKeys : String {
-    case readerConnected = "xplor_reader_connected"
-    case readerBatteryLevel = "xplor_battery_level"
-    case readerSignalLevel = "xplor_reader_signal_level"
-    case readerName = "xplor_reader_name"
-    case graphicType = "xplor_icon_type"
-    case title = "xplor_title"
-    case description = "xplor_description"
-    case userAction = "xplor_user_action_type"
+enum FlowDataKeys {
+    case readerConnected, readerBatteryLevel, readerSignalLevel, readerName, graphicType, title, description, userAction
 }
 
 enum FlowFeedbackType {

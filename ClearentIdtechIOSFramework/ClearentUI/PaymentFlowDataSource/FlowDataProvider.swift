@@ -11,7 +11,7 @@ import Foundation
 class FlowFeedback {
     var flow : ProcessType
     var type : FlowFeedbackType
-    var items : [FlowDataKeys:Any] = [FlowDataKeys:Any]()
+    var items = [FlowDataKeys: Any]()
     
     init(flow: ProcessType, type: FlowFeedbackType, items: [FlowDataKeys:Any]) {
         self.flow = flow
@@ -27,7 +27,7 @@ struct ReaderInfo {
     let isConnected : Bool
     
     init(name: String?, batterylevel: Int, signalLevel:Int, connected: Bool) {
-        self.readerName = "Unknown"
+        self.readerName = "xsdk_unknown_reader_name".localized
         if let readerName = name {
             self.readerName = readerName
         }

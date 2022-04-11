@@ -9,6 +9,7 @@
 
 /* Payment Flow*/
 
+"xsdk_unknown_reader_name" = "Unknown";
 
 // General error
 "xsdk_general_error_title" = "Ops";
