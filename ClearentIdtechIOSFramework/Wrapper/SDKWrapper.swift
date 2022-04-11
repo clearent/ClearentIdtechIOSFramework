@@ -113,11 +113,36 @@ public protocol SDKWrapperProtocol : AnyObject {
         clearentVP3300.start(connection)
     }
     
-    private func amountToTransmit() -> String {
-        return "20.0"
-    }
     
     // MARK - Logger Related
+    
+    public func retriveLoggFileContents() -> String {
+        var logs = ""
+        let fileInfo = fetchLoggerFileInfo()
+        if let newFileInfo = fileInfo {
+            if let newLogs = readContentsOfFile(from: newFileInfo.filePath) {
+                logs = newLogs
+            }
+        }
+        return logs
+    }
+    
+    public func fetchLogFileURL() -> URL? {
+        if let fileInfo = fetchLoggerFileInfo() {
+            let urlPath = URL(fileURLWithPath: fileInfo.filePath)
+            return urlPath
+        }
+        return nil
+    }
+    
+    public func clearLogFile() {
+        DDLog.allLoggers.forEach { logger in
+            if (logger.isKind(of: DDFileLogger.self)) {
+                let fileLogger : DDFileLogger = logger as! DDFileLogger
+                fileLogger.rollLogFile(withCompletion: nil)
+            }
+        }
+    }
     
     private func createLogFile() {
         DDLog.allLoggers.forEach { logger in
@@ -156,25 +181,6 @@ public protocol SDKWrapperProtocol : AnyObject {
             print("Could not read log file.")
         }
         return string
-    }
-    
-    public func retriveLoggFileContents() -> String {
-        var logs = ""
-        let fileInfo = fetchLoggerFileInfo()
-        if let newFileInfo = fileInfo {
-            if let newLogs = readContentsOfFile(from: newFileInfo.filePath) {
-                logs = newLogs
-            }
-        }
-        return logs
-    }
-    
-    public func fetchLogFileURL() -> URL? {
-        if let fileInfo = fetchLoggerFileInfo() {
-            let urlPath = URL(fileURLWithPath: fileInfo.filePath)
-            return urlPath
-        }
-        return nil
     }
 }
 
