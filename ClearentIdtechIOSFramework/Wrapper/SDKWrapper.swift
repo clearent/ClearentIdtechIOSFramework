@@ -153,22 +153,19 @@ public protocol SDKWrapperProtocol : AnyObject {
         do {
             string = try String(contentsOf:urlPath, encoding: .utf8)
         } catch {
-            print("error")
+            print("Could not read log file.")
         }
-        
         return string
     }
     
     public func retriveLoggFileContents() -> String {
         var logs = ""
-        
         let fileInfo = fetchLoggerFileInfo()
         if let newFileInfo = fileInfo {
             if let newLogs = readContentsOfFile(from: newFileInfo.filePath) {
                 logs = newLogs
             }
         }
-                
         return logs
     }
     
@@ -177,7 +174,6 @@ public protocol SDKWrapperProtocol : AnyObject {
             let urlPath = URL(fileURLWithPath: fileInfo.filePath)
             return urlPath
         }
-        
         return nil
     }
 }
