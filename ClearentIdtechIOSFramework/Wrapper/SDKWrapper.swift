@@ -99,7 +99,7 @@ public protocol SDKWrapperProtocol : AnyObject {
         return clearentVP3300.isConnected()
     }
     
-    /// MARK - Private
+    // MARK - Private
     
     @objc private func updateConnectionWithDevice(bleDeviceID:String, friendly: String?) {
         foundDevice = true
@@ -115,6 +115,70 @@ public protocol SDKWrapperProtocol : AnyObject {
     
     private func amountToTransmit() -> String {
         return "20.0"
+    }
+    
+    // MARK - Logger Related
+    
+    private func createLogFile() {
+        DDLog.allLoggers.forEach { logger in
+            if (logger.isKind(of: DDFileLogger.self)) {
+                let fl : DDFileLogger = logger as! DDFileLogger
+                do {
+                    if fl.currentLogFileInfo == nil {
+                        try fl.logFileManager.createNewLogFile()
+                    }
+                } catch {
+                    print("error logger")
+                }
+            }
+        }
+    }
+    
+    private func fetchLoggerFileInfo() -> DDLogFileInfo? {
+        var resultFileInfo : DDLogFileInfo? = nil
+        DDLog.allLoggers.forEach { logger in
+            if (logger.isKind(of: DDFileLogger.self)) {
+                let fileLogger : DDFileLogger = logger as! DDFileLogger
+                let fileInfos = fileLogger.logFileManager.sortedLogFileInfos
+                resultFileInfo =  (fileInfos.count > 0) ? fileInfos[0] : nil
+            }
+        }
+        
+        return resultFileInfo
+    }
+    
+    private func readContentsOfFile(from path: String) -> String? {
+        var string: String? = nil
+        let urlPath = URL(fileURLWithPath: path)
+        do {
+            string = try String(contentsOf:urlPath, encoding: .utf8)
+        } catch {
+            print("error")
+        }
+        
+        return string
+    }
+    
+    public func retriveLoggFileContents() -> String {
+        var logs = ""
+        
+        let fileInfo = fetchLoggerFileInfo()
+        if let newFileInfo = fileInfo {
+            if let newLogs = readContentsOfFile(from: newFileInfo.filePath) {
+                logs = newLogs
+            }
+        }
+                
+        return logs
+    }
+    
+    public func fetchLogFileURL() -> URL? {
+        if let fileInfo = fetchLoggerFileInfo() {
+            let urlPath = URL(fileURLWithPath: fileInfo.filePath)
+            return urlPath
+        }
+        
+        return nil
     }
 }
 
@@ -185,52 +249,5 @@ extension SDKWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         DispatchQueue.main.async {
             self.delegate?.deviceDidDisconnect()
         }
-    }
-    
-    private func doRead(from path: String) throws -> String {
-        var string: String = ""
-        let urlPath = URL(fileURLWithPath: path)
-        do {
-            string = try String(contentsOf:urlPath, encoding: .utf8)
-        } catch {
-            print("error")
-        }
-        
-        return string
-    }
-    
-    
-    public func createLogFile() {
-        DDLog.allLoggers.forEach { logger in
-            if (logger.isKind(of: DDFileLogger.self)) {
-                let fl : DDFileLogger = logger as! DDFileLogger
-                do {
-                    try fl.logFileManager.createNewLogFile()
-                } catch {
-                    print("error logger")
-                }
-            }
-        }
-    }
-    
-    public func retriveLogg() {
-        DDLog.allLoggers.forEach { logger in
-            if (logger.isKind(of: DDFileLogger.self)) {
-                let fl : DDFileLogger = logger as! DDFileLogger
-                
-                let fileInfos = fl.logFileManager.sortedLogFileInfos
-                let fileInfo = fileInfos[0]
-                
-                do {
-                    let logs = try doRead(from: fileInfo.filePath)
-                } catch {
-                    print("Log File Read Failed")
-                }
-            }
-        }
-    }
-    
-    public func logFilePath() -> String {
-        return "logFilePath"
     }
 }
