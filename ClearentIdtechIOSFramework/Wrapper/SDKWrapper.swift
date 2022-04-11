@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CocoaLumberjack
 
 public enum UserAction: String {
     case pleaseWait = "PLEASE WAIT...",
@@ -36,7 +37,7 @@ public protocol SDKWrapperProtocol : AnyObject {
 
 @objc public final class SDKWrapper : NSObject {
     
-    static let shared = SDKWrapper()
+    public static let shared = SDKWrapper()
     private var baseURL: String = ""
     private var apiKey: String = ""
     private var publicKey: String = ""
@@ -48,6 +49,7 @@ public protocol SDKWrapperProtocol : AnyObject {
     
     @objc public override init() {
         super.init()
+        createLogFile()
     }
 
     // MARK - Public
@@ -93,7 +95,7 @@ public protocol SDKWrapperProtocol : AnyObject {
         return clearentVP3300.isConnected()
     }
     
-    /// Private
+    /// MARK - Private
     
     @objc private func updateConnectionWithDevice(bleDeviceID:String, friendly: String?) {
         foundDevice = true
@@ -180,5 +182,52 @@ extension SDKWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         DispatchQueue.main.async {
             self.delegate?.deviceDidDisconnect()
         }
+    }
+    
+    private func doRead(from path: String) throws -> String {
+        var string: String = ""
+        let urlPath = URL(fileURLWithPath: path)
+        do {
+            string = try String(contentsOf:urlPath, encoding: .utf8)
+        } catch {
+            print("error")
+        }
+        
+        return string
+    }
+    
+    
+    public func createLogFile() {
+        DDLog.allLoggers.forEach { logger in
+            if (logger.isKind(of: DDFileLogger.self)) {
+                let fl : DDFileLogger = logger as! DDFileLogger
+                do {
+                    try fl.logFileManager.createNewLogFile()
+                } catch {
+                    print("error logger")
+                }
+            }
+        }
+    }
+    
+    public func retriveLogg() {
+        DDLog.allLoggers.forEach { logger in
+            if (logger.isKind(of: DDFileLogger.self)) {
+                let fl : DDFileLogger = logger as! DDFileLogger
+                
+                let fileInfos = fl.logFileManager.sortedLogFileInfos
+                let fileInfo = fileInfos[0]
+                
+                do {
+                    let logs = try doRead(from: fileInfo.filePath)
+                } catch {
+                    print("Log File Read Failed")
+                }
+            }
+        }
+    }
+    
+    public func logFilePath() -> String {
+        return "logFilePath"
     }
 }
