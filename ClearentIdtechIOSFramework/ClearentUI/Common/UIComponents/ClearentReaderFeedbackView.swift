@@ -8,30 +8,17 @@
 
 import UIKit
 
-class ClearentReaderFeedbackView: UIView {
+class ClearentReaderFeedbackView: ClearentMarginableView {
 
-    @IBOutlet var contentView: UIView!
     @IBOutlet weak var iconImageView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var descriptionLabel: UILabel!
     
-    // MARK: Init
+    // MARK: Public
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        commonInit()
-    }
-    
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        commonInit()
-    }
-    
-    // MARK: Private
-    
-    private func commonInit() {
-        Bundle(for: ClearentReaderFeedbackView.self).loadNibNamed("ClearentReaderFeedbackView", owner: self, options: nil)
-        addSubview(contentView)
-        contentView.frame = bounds
+    public func setup(image: UIImage, title: String, description: String) {
+        iconImageView.image = image
+        titleLabel.text = title
+        descriptionLabel.text = description
     }
 }

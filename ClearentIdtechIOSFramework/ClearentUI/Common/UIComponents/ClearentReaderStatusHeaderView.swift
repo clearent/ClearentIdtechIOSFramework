@@ -8,29 +8,26 @@
 
 import UIKit
 
-class ClearentReaderStatusHeaderView: UIView {
+class ClearentReaderStatusHeaderView: ClearentMarginableView {
     
-    @IBOutlet var contentView: UIView!
     @IBOutlet weak var stackView: UIStackView!
     @IBOutlet weak var readerNameLabel: UILabel!
     @IBOutlet weak var readerConnectivityStatusView: ClearentReaderConnectivityStatusView!
     @IBOutlet weak var readerBatteryStatusView: ClearentReaderConnectivityStatusView!
     
-    // MARK: Init
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        commonInit()
+    override var margins: [RelativeMargin] {
+        [RelativeMargin(constant: 58.0, relatedViewType: ClearentUserActionView.self)]
     }
     
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        commonInit()
-    }
+    // MARK: Public
     
-    private func commonInit() {
-        Bundle(for: ClearentReaderStatusHeaderView.self).loadNibNamed("ClearentReaderStatusHeaderView", owner: self, options: nil)
-        addSubview(contentView)
-        contentView.frame = bounds
+    public func setup(readerName: String,
+                      connectivityStatusImage: UIImage,
+                      connectivityStatus: String,
+                      readerBatteryStatusImage: UIImage,
+                      readerBatteryStatus: String) {
+        readerNameLabel.text = readerName
+        readerConnectivityStatusView.setup(image: connectivityStatusImage, status: connectivityStatus)
+        readerBatteryStatusView.setup(image: readerBatteryStatusImage, status: readerBatteryStatus)
     }
 }

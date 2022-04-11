@@ -16,7 +16,6 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ClearentReaderConnectivityStatusView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
             <connections>
-                <outlet property="contentView" destination="iN0-l3-epB" id="8Zp-cP-2WT"/>
                 <outlet property="statusImageView" destination="Ehc-jD-soA" id="HW1-Oa-wdm"/>
                 <outlet property="statusLabel" destination="DqH-kv-sQv" id="8KF-Zm-ill"/>
             </connections>
@@ -53,7 +52,7 @@
                 <constraint firstItem="Ehc-jD-soA" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="rPp-LR-pL0"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <point key="canvasLocation" x="-46.376811594202906" y="-157.03125"/>
+            <point key="canvasLocation" x="-52" y="-158"/>
         </view>
     </objects>
     <resources>

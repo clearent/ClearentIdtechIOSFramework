@@ -8,30 +8,19 @@
 
 import UIKit
 
-class ClearentUserActionView: UIView {
+class ClearentUserActionView: ClearentMarginableView {
 
-    @IBOutlet var contentView: UIView!
     @IBOutlet weak var userActionImageView: UIImageView!
     @IBOutlet weak var descriptionLabel: UILabel!
     
-    
-    // MARK: Init
-    
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        commonInit()
+    override var margins: [RelativeMargin] {
+        [RelativeMargin(constant: 24.0, relatedViewType: ClearentPrimaryButton.self)]
     }
     
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-        commonInit()
-    }
+    // MARK: Public
     
-    // MARK: Private
-    
-    private func commonInit() {
-        Bundle( for: ClearentUserActionView.self).loadNibNamed("ClearentUserActionView", owner: self, options: nil)
-        addSubview(contentView)
-        contentView.frame = bounds
+    public func setup(image: UIImage, description: String) {
+        userActionImageView.image = image
+        descriptionLabel.text = description
     }
 }

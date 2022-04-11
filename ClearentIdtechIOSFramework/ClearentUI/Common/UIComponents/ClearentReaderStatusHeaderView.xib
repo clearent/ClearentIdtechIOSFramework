@@ -17,7 +17,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ClearentReaderStatusHeaderView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
             <connections>
-                <outlet property="contentView" destination="iN0-l3-epB" id="W53-bq-E05"/>
+                <outlet property="bottomLayoutConstraint" destination="aUt-13-icG" id="qhZ-EC-6AI"/>
                 <outlet property="readerBatteryStatusView" destination="3q1-WZ-ap3" id="4ZV-MW-ac8"/>
                 <outlet property="readerConnectivityStatusView" destination="387-wB-aty" id="NdB-C6-TIr"/>
                 <outlet property="readerNameLabel" destination="Mxb-gX-Hn6" id="fhr-Mc-dzt"/>

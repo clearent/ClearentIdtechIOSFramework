@@ -16,7 +16,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ClearentUserActionView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
             <connections>
-                <outlet property="contentView" destination="iN0-l3-epB" id="jsN-CS-HCb"/>
+                <outlet property="bottomLayoutConstraint" destination="f2M-PL-Kf5" id="eEJ-si-feG"/>
                 <outlet property="descriptionLabel" destination="Dao-Ox-FPB" id="hWQ-Nb-d0y"/>
                 <outlet property="userActionImageView" destination="9ye-18-wPr" id="09b-5V-UCh"/>
             </connections>
@@ -27,17 +27,14 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="9ye-18-wPr">
-                    <rect key="frame" x="119" y="44" width="80" height="80"/>
+                    <rect key="frame" x="119" y="0.0" width="80" height="80"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="80" id="5Pn-ZX-UkU"/>
                         <constraint firstAttribute="width" constant="80" id="5eT-OA-U1k"/>
                     </constraints>
                 </imageView>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dao-Ox-FPB">
-                    <rect key="frame" x="140.5" y="173" width="37" height="20"/>
-                    <constraints>
-                        <constraint firstAttribute="height" constant="20" id="PaT-RV-cPm"/>
-                    </constraints>
+                    <rect key="frame" x="140.5" y="129" width="37" height="113"/>
                     <fontDescription key="fontDescription" name="SFProText-Medium" family="SF Pro Text" pointSize="14"/>
                     <color key="textColor" red="0.41568627450980389" green="0.42745098039215684" blue="0.49019607843137253" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
@@ -48,7 +45,8 @@
             <constraints>
                 <constraint firstItem="Dao-Ox-FPB" firstAttribute="centerX" secondItem="9ye-18-wPr" secondAttribute="centerX" id="33r-4D-0DW"/>
                 <constraint firstItem="9ye-18-wPr" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="DlF-XI-vGw"/>
-                <constraint firstItem="9ye-18-wPr" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="44" id="pHh-Ut-hkQ"/>
+                <constraint firstAttribute="bottom" secondItem="Dao-Ox-FPB" secondAttribute="bottom" id="f2M-PL-Kf5"/>
+                <constraint firstItem="9ye-18-wPr" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="pHh-Ut-hkQ"/>
                 <constraint firstItem="Dao-Ox-FPB" firstAttribute="top" secondItem="9ye-18-wPr" secondAttribute="bottom" constant="49" id="shP-Ro-23N"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
