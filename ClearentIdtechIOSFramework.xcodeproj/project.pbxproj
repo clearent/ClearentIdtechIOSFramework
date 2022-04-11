@@ -21,12 +21,17 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		0169C2DE27FF1A4000B8B4DB /* EmptySpaceView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0169C2DC27FF1A4000B8B4DB /* EmptySpaceView.swift */; };
-		0169C2DF27FF1A4000B8B4DB /* EmptySpaceView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0169C2DD27FF1A4000B8B4DB /* EmptySpaceView.xib */; };
-		0169C2E427FF1A4600B8B4DB /* Marginable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0169C2E027FF1A4600B8B4DB /* Marginable.swift */; };
-		0169C2E527FF1A4600B8B4DB /* MarginableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0169C2E127FF1A4600B8B4DB /* MarginableView.swift */; };
-		0169C2E627FF1A4600B8B4DB /* AdaptiveStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0169C2E227FF1A4600B8B4DB /* AdaptiveStackView.swift */; };
-		0169C2E727FF1A4600B8B4DB /* XibView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0169C2E327FF1A4600B8B4DB /* XibView.swift */; };
+		010394962803462F000A7A94 /* UIStackViewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 010394952803462F000A7A94 /* UIStackViewExtension.swift */; };
+		014B2BA6280087AD0056F7FD /* ClearentPrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014B2BA5280087AD0056F7FD /* ClearentPrimaryButton.swift */; };
+		014B2BA8280087C10056F7FD /* ClearentPrimaryButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 014B2BA7280087C10056F7FD /* ClearentPrimaryButton.xib */; };
+		014B2BAA280090130056F7FD /* ClearentConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014B2BA9280090130056F7FD /* ClearentConstants.swift */; };
+		014B2BAC280092F10056F7FD /* ClearentColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014B2BAB280092F10056F7FD /* ClearentColorExtension.swift */; };
+		0169C2DE27FF1A4000B8B4DB /* ClearentEmptySpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0169C2DC27FF1A4000B8B4DB /* ClearentEmptySpace.swift */; };
+		0169C2DF27FF1A4000B8B4DB /* ClearentEmptySpace.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0169C2DD27FF1A4000B8B4DB /* ClearentEmptySpace.xib */; };
+		0169C2E427FF1A4600B8B4DB /* ClearentMarginable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0169C2E027FF1A4600B8B4DB /* ClearentMarginable.swift */; };
+		0169C2E527FF1A4600B8B4DB /* ClearentMarginableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0169C2E127FF1A4600B8B4DB /* ClearentMarginableView.swift */; };
+		0169C2E627FF1A4600B8B4DB /* ClearentAdaptiveStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0169C2E227FF1A4600B8B4DB /* ClearentAdaptiveStackView.swift */; };
+		0169C2E727FF1A4600B8B4DB /* ClearentXibView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0169C2E327FF1A4600B8B4DB /* ClearentXibView.swift */; };
 		1937010A27F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1937010827F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.swift */; };
 		1937010B27F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1937010927F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.xib */; };
 		1937011D27F31C8100BF48E5 /* ClearentPaymentProcessingPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1937011C27F31C8100BF48E5 /* ClearentPaymentProcessingPresenter.swift */; };
@@ -156,12 +161,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0169C2DC27FF1A4000B8B4DB /* EmptySpaceView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EmptySpaceView.swift; sourceTree = "<group>"; };
-		0169C2DD27FF1A4000B8B4DB /* EmptySpaceView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EmptySpaceView.xib; sourceTree = "<group>"; };
-		0169C2E027FF1A4600B8B4DB /* Marginable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Marginable.swift; sourceTree = "<group>"; };
-		0169C2E127FF1A4600B8B4DB /* MarginableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MarginableView.swift; sourceTree = "<group>"; };
-		0169C2E227FF1A4600B8B4DB /* AdaptiveStackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AdaptiveStackView.swift; sourceTree = "<group>"; };
-		0169C2E327FF1A4600B8B4DB /* XibView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XibView.swift; sourceTree = "<group>"; };
+		010394952803462F000A7A94 /* UIStackViewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIStackViewExtension.swift; sourceTree = "<group>"; };
+		014B2BA5280087AD0056F7FD /* ClearentPrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentPrimaryButton.swift; sourceTree = "<group>"; };
+		014B2BA7280087C10056F7FD /* ClearentPrimaryButton.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentPrimaryButton.xib; sourceTree = "<group>"; };
+		014B2BA9280090130056F7FD /* ClearentConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentConstants.swift; sourceTree = "<group>"; };
+		014B2BAB280092F10056F7FD /* ClearentColorExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentColorExtension.swift; sourceTree = "<group>"; };
+		0169C2DC27FF1A4000B8B4DB /* ClearentEmptySpace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentEmptySpace.swift; sourceTree = "<group>"; };
+		0169C2DD27FF1A4000B8B4DB /* ClearentEmptySpace.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ClearentEmptySpace.xib; sourceTree = "<group>"; };
+		0169C2E027FF1A4600B8B4DB /* ClearentMarginable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentMarginable.swift; sourceTree = "<group>"; };
+		0169C2E127FF1A4600B8B4DB /* ClearentMarginableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentMarginableView.swift; sourceTree = "<group>"; };
+		0169C2E227FF1A4600B8B4DB /* ClearentAdaptiveStackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentAdaptiveStackView.swift; sourceTree = "<group>"; };
+		0169C2E327FF1A4600B8B4DB /* ClearentXibView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentXibView.swift; sourceTree = "<group>"; };
 		1937010827F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentPaymentProcessingViewController.swift; sourceTree = "<group>"; };
 		1937010927F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentPaymentProcessingViewController.xib; sourceTree = "<group>"; };
 		1937011C27F31C8100BF48E5 /* ClearentPaymentProcessingPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentPaymentProcessingPresenter.swift; sourceTree = "<group>"; };
@@ -349,11 +359,31 @@
 				1937014D27FDB25F00BF48E5 /* Asset Catalog.xcassets */,
 			);
 			path = Assets;
+		01039493280345F8000A7A94 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				010394952803462F000A7A94 /* UIStackViewExtension.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		010394942803460E000A7A94 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				0169C2DA27FF19B800B8B4DB /* UIComponents */,
+				01039493280345F8000A7A94 /* Extensions */,
+				0169C2DB27FF19EB00B8B4DB /* Util */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
 		0169C2DA27FF19B800B8B4DB /* UIComponents */ = {
 			isa = PBXGroup;
 			children = (
-				0169C2DC27FF1A4000B8B4DB /* EmptySpaceView.swift */,
-				0169C2DD27FF1A4000B8B4DB /* EmptySpaceView.xib */,
+				0169C2DC27FF1A4000B8B4DB /* ClearentEmptySpace.swift */,
+				0169C2DD27FF1A4000B8B4DB /* ClearentEmptySpace.xib */,
+				014B2BA5280087AD0056F7FD /* ClearentPrimaryButton.swift */,
+				014B2BA7280087C10056F7FD /* ClearentPrimaryButton.xib */,
 			);
 			path = UIComponents;
 			sourceTree = "<group>";
@@ -361,10 +391,12 @@
 		0169C2DB27FF19EB00B8B4DB /* Util */ = {
 			isa = PBXGroup;
 			children = (
-				0169C2E227FF1A4600B8B4DB /* AdaptiveStackView.swift */,
-				0169C2E027FF1A4600B8B4DB /* Marginable.swift */,
-				0169C2E127FF1A4600B8B4DB /* MarginableView.swift */,
-				0169C2E327FF1A4600B8B4DB /* XibView.swift */,
+				0169C2E227FF1A4600B8B4DB /* ClearentAdaptiveStackView.swift */,
+				0169C2E027FF1A4600B8B4DB /* ClearentMarginable.swift */,
+				0169C2E127FF1A4600B8B4DB /* ClearentMarginableView.swift */,
+				0169C2E327FF1A4600B8B4DB /* ClearentXibView.swift */,
+				014B2BA9280090130056F7FD /* ClearentConstants.swift */,
+				014B2BAB280092F10056F7FD /* ClearentColorExtension.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -376,6 +408,7 @@
 				1937013327FC25F900BF48E5 /* Fonts */,
 				0169C2DB27FF19EB00B8B4DB /* Util */,
 				0169C2DA27FF19B800B8B4DB /* UIComponents */,
+				010394942803460E000A7A94 /* Common */,
 				BAC4E3C027FC3DC9001B5E6D /* PaymentFlowDataSource */,
 				1937010827F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.swift */,
 				1937010927F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.xib */,
@@ -766,6 +799,8 @@
 				1937010B27F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.xib in Resources */,
 				193701A22800007D00BF48E5 /* ClearentReaderFeedbackView.xib in Resources */,
 				0169C2DF27FF1A4000B8B4DB /* EmptySpaceView.xib in Resources */,
+				014B2BA8280087C10056F7FD /* ClearentPrimaryButton.xib in Resources */,
+				0169C2DF27FF1A4000B8B4DB /* ClearentEmptySpace.xib in Resources */,
 				E77687472062B66300284FF4 /* .gitignore in Resources */,
 				1937014E27FDB25F00BF48E5 /* Asset Catalog.xcassets in Resources */,
 				1937013627FC261800BF48E5 /* SF-Pro-Text-Regular.otf in Resources */,
@@ -815,11 +850,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0169C2E727FF1A4600B8B4DB /* XibView.swift in Sources */,
+				0169C2E727FF1A4600B8B4DB /* ClearentXibView.swift in Sources */,
 				4B907F8B242E7FAA0029C21E /* ClearentFeedback.m in Sources */,
 				1937014927FDADB700BF48E5 /* ClearentUserActionView.swift in Sources */,
+				014B2BAC280092F10056F7FD /* ClearentColorExtension.swift in Sources */,
 				4B32C08E2432586500CCF9B9 /* ClearentConnection.m in Sources */,
-				0169C2E427FF1A4600B8B4DB /* Marginable.swift in Sources */,
+				0169C2E427FF1A4600B8B4DB /* ClearentMarginable.swift in Sources */,
 				BAC4E3C227FC3E44001B5E6D /* Identifiers.swift in Sources */,
 				E78E2E84224E847900943B14 /* ClearentUtils.m in Sources */,
 				4B32C09F2436287700CCF9B9 /* ClearentDeviceConnector.m in Sources */,
@@ -831,16 +867,18 @@
 				1937013027FC21AB00BF48E5 /* ClearentReaderStatusHeaderView.swift in Sources */,
 				E746CB612358983200C41DF1 /* ClearentPayment.m in Sources */,
 				4B32C0A22436612900CCF9B9 /* ClearentTransactions.m in Sources */,
+				014B2BAA280090130056F7FD /* ClearentConstants.swift in Sources */,
 				E764E7722303182C0029B753 /* ClearentOfflineDeclineReceipt.m in Sources */,
 				BA40A34D27F1B38C0041CCF7 /* HttpClient.swift in Sources */,
 				4BAEA888271C5F24007F5FCF /* ClearentLumberjackRemoteLogger.m in Sources */,
 				4B32C09824335D5500CCF9B9 /* ClearentBluetoothDevice.m in Sources */,
-				0169C2DE27FF1A4000B8B4DB /* EmptySpaceView.swift in Sources */,
+				0169C2DE27FF1A4000B8B4DB /* ClearentEmptySpace.swift in Sources */,
 				1937010A27F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.swift in Sources */,
 				E702E5702364835B0032ED8D /* ClearentVP3300Config.m in Sources */,
 				BA40A34C27F1B38C0041CCF7 /* SDKWrapper.swift in Sources */,
-				0169C2E527FF1A4600B8B4DB /* MarginableView.swift in Sources */,
+				0169C2E527FF1A4600B8B4DB /* ClearentMarginableView.swift in Sources */,
 				E75891FC225522AB00288032 /* ClearentLogging.m in Sources */,
+				010394962803462F000A7A94 /* UIStackViewExtension.swift in Sources */,
 				E75891F7225522AB00288032 /* ClearentLoggingRequest.m in Sources */,
 				193701A02800001A00BF48E5 /* ClearentReaderFeedbackView.swift in Sources */,
 				E75A5BEC20DD20580035B911 /* ClearentEmvConfigurator.m in Sources */,
@@ -854,9 +892,10 @@
 				E77C90482000442200C3E590 /* ClearentTransactionTokenRequest.m in Sources */,
 				E79A4D94204F14B000E4BBF6 /* ClearentDelegate.m in Sources */,
 				E71E309521F7A0E3001C950A /* ClearentCard.m in Sources */,
+				014B2BA6280087AD0056F7FD /* ClearentPrimaryButton.swift in Sources */,
 				E7B89E3121F6A6A400078C73 /* ClearentManualEntry.m in Sources */,
 				E7CA497520E579190090CFFC /* ClearentConfigFetcher.m in Sources */,
-				0169C2E627FF1A4600B8B4DB /* AdaptiveStackView.swift in Sources */,
+				0169C2E627FF1A4600B8B4DB /* ClearentAdaptiveStackView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

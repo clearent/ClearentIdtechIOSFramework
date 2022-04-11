@@ -1,5 +1,5 @@
 //
-//  XibView.swift
+//  ClearentXibView.swift
 //  XplorPayMobile
 //
 //  Created by Carmen Jurcovan on 07.04.2022.
@@ -7,8 +7,8 @@
 
 import UIKit
 
-/// A custom UIView  that contains all the necessary methods for loading a view from nib. Could be used as a base class for other UI components in order to avoid boilerplate code.
-class XibView: UIView {
+/// A custom UIView  that contains all the necessary methods for loading a view from nib. Could be used as a base class for UI components in order to avoid boilerplate code.
+class ClearentXibView: UIView {
     // MARK: - Lifecycle
 
     override func awakeFromNib() {
