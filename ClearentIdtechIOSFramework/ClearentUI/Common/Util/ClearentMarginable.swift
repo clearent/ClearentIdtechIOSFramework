@@ -1,5 +1,5 @@
 //
-//  Marginable.swift
+//  ClearentMarginable.swift
 //  XplorPayMobile
 //
 //  Created by Carmen Jurcovan on 06.04.2022.
@@ -8,17 +8,17 @@
 import UIKit
 
 // Helper class used to create space between two views
-protocol Marginable {
+protocol ClearentMarginable {
     var viewType: UIView.Type { get }
-    var margings: [RelativeMargin] { get }
-    func handleBottomMarging(to neighbor: Marginable?)
+    var margins: [RelativeMargin] { get }
+    func handleBottomMarging(to neighbor: ClearentMarginable?)
     func setBottomMargin(margin: RelativeMargin)
 }
 
-extension Marginable {
-    func handleBottomMarging(to neighbor: Marginable?) {
+extension ClearentMarginable {
+    func handleBottomMarging(to neighbor: ClearentMarginable?) {
         guard let neighbor = neighbor,
-              let margin = margings.first(where: { neighbor.viewType == $0.relatedViewType }) else { return }
+              let margin = margins.first(where: { neighbor.viewType == $0.relatedViewType }) else { return }
         setBottomMargin(margin: margin)
     }
 }
