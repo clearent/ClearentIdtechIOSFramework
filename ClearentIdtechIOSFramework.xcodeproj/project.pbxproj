@@ -82,6 +82,7 @@
 		BA40A34D27F1B38C0041CCF7 /* HttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA40A34A27F1B38C0041CCF7 /* HttpClient.swift */; };
 		BAC4E3C227FC3E44001B5E6D /* Identifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC4E3C127FC3E44001B5E6D /* Identifiers.swift */; };
 		BAC4E3C427FC3E88001B5E6D /* FlowDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC4E3C327FC3E88001B5E6D /* FlowDataProvider.swift */; };
+		BAC4E3D127FED72B001B5E6D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BAC4E3D027FED72B001B5E6D /* Localizable.strings */; };
 		E702E56523647D6B0032ED8D /* IDTech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E760460523645A61006CFB78 /* IDTech.framework */; };
 		E702E5702364835B0032ED8D /* ClearentVP3300Config.m in Sources */ = {isa = PBXBuildFile; fileRef = E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */; };
 		E702E572236488630032ED8D /* ClearentPayment.h in Headers */ = {isa = PBXBuildFile; fileRef = E746CB5F235896EC00C41DF1 /* ClearentPayment.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -222,6 +223,7 @@
 		BA40A34A27F1B38C0041CCF7 /* HttpClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpClient.swift; sourceTree = "<group>"; };
 		BAC4E3C127FC3E44001B5E6D /* Identifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifiers.swift; sourceTree = "<group>"; };
 		BAC4E3C327FC3E88001B5E6D /* FlowDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowDataProvider.swift; sourceTree = "<group>"; };
+		BAC4E3D027FED72B001B5E6D /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentVP3300Config.m; sourceTree = "<group>"; };
 		E702E571236485280032ED8D /* ClearentVP3300Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentVP3300Config.h; sourceTree = "<group>"; };
 		E726A0362258B5A400F3E8B7 /* ClearentCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentCache.h; sourceTree = "<group>"; };
@@ -421,6 +423,7 @@
 				1937010827F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.swift */,
 				1937010927F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.xib */,
 				1937011C27F31C8100BF48E5 /* ClearentPaymentProcessingPresenter.swift */,
+				BAC4E3D027FED72B001B5E6D /* Localizable.strings */,
 			);
 			path = ClearentUI;
 			sourceTree = "<group>";
@@ -795,6 +798,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BAC4E3D127FED72B001B5E6D /* Localizable.strings in Resources */,
 				1937010B27F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.xib in Resources */,
 				19A61D662804129100E295B3 /* ClearentUserActionView.xib in Resources */,
 				19A61D5B2804121400E295B3 /* SF-Pro-Text-Regular.otf in Resources */,
