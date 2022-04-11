@@ -7,11 +7,7 @@
 //
 
 extension UIColor {
-    /// Create color by a hex representation of RGB
-    ///
-    /// - Parameter hex: a valid hex value like 'fff'
-    /// - Returns: UIColor as specified
-
+    /// Create color from a hex representation of RGB
     convenience init(hexString: String) {
         let scanner = Scanner(string: hexString.replacingOccurrences(of: "#", with: ""))
         var rgbValue: UInt64 = 0

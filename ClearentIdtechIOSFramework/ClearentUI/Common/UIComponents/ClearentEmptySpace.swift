@@ -26,7 +26,6 @@ class ClearentEmptySpace: ClearentMarginableView {
 
     override func configure() {
         setHeight(height: height)
-        backgroundColor = .red
     }
 
     // MARK: - Private

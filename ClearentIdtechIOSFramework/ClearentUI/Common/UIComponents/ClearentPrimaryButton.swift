@@ -15,23 +15,23 @@ class ClearentPrimaryButton: ClearentMarginableView {
 
     @IBOutlet weak var button: UIButton!
 
-    public var enabledBackgroundColor = ClearentConstants.Color.base01 {
+    var enabledBackgroundColor = ClearentConstants.Color.base01 {
         didSet { updateAppearence() }
     }
 
-    public var disabledBackgroundColor = ClearentConstants.Color.base01 {
+    var disabledBackgroundColor = ClearentConstants.Color.base01 {
         didSet { updateAppearence() }
     }
 
-    public var enabledTextColor = ClearentConstants.Color.backgroundSecondary01 {
+    var enabledTextColor = ClearentConstants.Color.backgroundSecondary01 {
         didSet { updateAppearence() }
     }
 
-    public var disabledTextColor = ClearentConstants.Color.backgroundSecondary01 {
+    var disabledTextColor = ClearentConstants.Color.backgroundSecondary01 {
         didSet { updateAppearence() }
     }
 
-    public var textFont = ClearentConstants.Font.regularMedium {
+    var textFont = ClearentConstants.Font.regularMedium {
         didSet {
             button.titleLabel?.font = textFont
         }
