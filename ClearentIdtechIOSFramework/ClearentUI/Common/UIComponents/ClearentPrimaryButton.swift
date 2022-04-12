@@ -47,11 +47,11 @@ class ClearentPrimaryButton: ClearentMarginableView {
 
     override func configure() {
         updateAppearence()
-        button.layer.cornerRadius = button.bounds.height/2
+        button.layer.cornerRadius = button.bounds.height / 2
         button.layer.masksToBounds = true
         textFont = ClearentConstants.Font.regularMedium
     }
-    
+
     // MARK: - Private
 
     private func updateAppearence() {
@@ -60,4 +60,3 @@ class ClearentPrimaryButton: ClearentMarginableView {
         button.setTitleColor(textColor, for: .normal)
     }
 }
-

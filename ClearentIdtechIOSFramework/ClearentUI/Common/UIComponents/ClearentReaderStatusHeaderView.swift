@@ -31,6 +31,10 @@ class ClearentReaderStatusHeaderView: ClearentMarginableView {
                       readerBatteryStatus: String?) {
         readerNameLabel.text = readerName
         readerConnectivityStatusView.setup(imageName: connectivityStatusImageName, status: connectivityStatus)
-        readerBatteryStatusView.setup(imageName: readerBatteryStatusImageName, status: readerBatteryStatus)
+        guard let batteryImage = readerBatteryStatusImageName, let batteryStatus = readerBatteryStatus else {
+            readerBatteryStatusView.isHidden = true
+            return
+        }
+        readerBatteryStatusView.setup(imageName: batteryImage, status: batteryStatus)
     }
 }

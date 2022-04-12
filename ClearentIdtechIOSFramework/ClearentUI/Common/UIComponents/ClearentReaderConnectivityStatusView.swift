@@ -9,15 +9,12 @@
 import UIKit
 
 class ClearentReaderConnectivityStatusView: ClearentXibView {
+    @IBOutlet var statusImageView: UIImageView!
+    @IBOutlet var statusLabel: UILabel!
 
-    @IBOutlet weak var statusImageView: UIImageView!
-    @IBOutlet weak var statusLabel: UILabel!
-    
     // MARK: Public
-    
-    public func setup(imageName: String?, status: String?) {
-        guard let imageName = imageName else { return }
-        guard let status = status else { return }
+
+    public func setup(imageName: String, status: String) {
         statusImageView.image = UIImage(named: imageName, in: ClearentConstants.bundle, compatibleWith: nil)
         statusLabel.text = status
     }
