@@ -33,4 +33,32 @@ class ClearentConstants {
         static let regularMedium = UIFont.systemFont(ofSize: 14)
         static let regularSmall = UIFont.systemFont(ofSize: 10)
     }
+    
+    // MARK: Assets
+    
+    enum Assets {
+        enum DeviceBatteryStatus {
+            static let full = "full"
+            static let high = "high"
+            static let mediumHigh = "mediumHigh"
+            static let medium = "medium"
+            static let mediumLow = "mediumLow"
+            static let low = "low"
+        }
+        
+        enum DeviceConnectivityStatus {
+            static let online = "onlineConnectivityStatus"
+            static let idle = "idleConnectivityStatus"
+        }
+        
+        enum UserInteraction {
+            static let pressButtonOnReader = "pressButtonOnReader"
+            static let cardInteraction = "cardInteraction"
+        }
+        
+        enum Information {
+            static let error = "error"
+            static let warning = "warning"
+        }
+    }
 }
