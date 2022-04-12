@@ -36,29 +36,27 @@ class ClearentConstants {
     
     // MARK: Assets
     
-    enum Assets {
-        enum DeviceBatteryStatus {
-            static let full = "full"
-            static let high = "high"
-            static let mediumHigh = "mediumHigh"
-            static let medium = "medium"
-            static let mediumLow = "mediumLow"
-            static let low = "low"
-        }
+    enum IconName {
+        // Reader Battery Status
+        static let batteryFull = "full"
+        static let batteryHigh = "high"
+        static let batteryMediumHigh = "mediumHigh"
+        static let batteryMedium = "medium"
+        static let batteryMediumLow = "mediumLow"
+        static let batteryLow = "low"
         
-        enum DeviceConnectivityStatus {
-            static let online = "onlineConnectivityStatus"
-            static let idle = "idleConnectivityStatus"
-        }
+        // Reader Signal Status
+        static let batterySignalOnline = "onlineConnectivityStatus"
+        static let signalIdle = "idleConnectivityStatus"
         
-        enum UserInteraction {
-            static let pressButtonOnReader = "pressButtonOnReader"
-            static let cardInteraction = "cardInteraction"
-        }
+        // User Interaction
+        static let pressButtonOnReader = "pressButtonOnReader"
+        static let cardInteraction = "cardInteraction"
         
-        enum Information {
-            static let error = "error"
-            static let warning = "warning"
-        }
+        // Information
+        static let error = "error"
+        static let warning = "warning"
+        static let success = "success"
+        static let loading = "loading"
     }
 }

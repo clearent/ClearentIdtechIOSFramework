@@ -42,3 +42,7 @@
 // Read error (try MSR again)
 "xsdk_read_try_msr_again_description" = "Try MSR again";
 
+// Reader signal
+"xsdk_reader_signal_idle" = "Idle";
+"xsdk_reader_signal_connected" = "Connected";
+

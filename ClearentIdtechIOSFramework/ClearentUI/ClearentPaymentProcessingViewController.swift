@@ -17,6 +17,7 @@ public class ClearentPaymentProcessingViewController: UIViewController {
     @IBOutlet weak var deviceNameLabel: UILabel!
     @IBOutlet weak var pairBluetoothDeviceButton: UIButton!
     @IBOutlet weak var dismissButton: UIButton!
+    @IBOutlet weak var stackView: ClearentAdaptiveStackView!
     
     // MARK: Init
     
@@ -34,7 +35,7 @@ public class ClearentPaymentProcessingViewController: UIViewController {
         super.viewDidLoad()
         
         configureButtons()
-        
+    //    updateContent(with: FeedbackComponent(feedbackItems: [))
         connectedToLabel.isHidden = true
         deviceNameLabel.isHidden = true
     }
@@ -87,5 +88,35 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
         connectedToLabel.isHidden = false
         deviceNameLabel.isHidden = false
         deviceNameLabel.text = value
+    }
+    
+    public func updateContent(with component: PaymentFeedbackComponentProtocol) {
+        stackView.removeAllArrangedSubviews()
+        
+        // ReaderStatusHeaderView
+        let readerStatusHeader = ClearentReaderStatusHeaderView()
+        readerStatusHeader.setup(readerName: component.readerName,
+                                 connectivityStatusImageName: component.signalStatus.iconName, connectivityStatus: component.signalStatus.title,
+                                 readerBatteryStatusImageName: component.batteryStatus.iconName, readerBatteryStatus: component.batteryStatus.title)
+        stackView.addArrangedSubview(readerStatusHeader)
+
+        if let title = component.mainTitle {
+            // ReaderFeedbackView
+            let readerFeedbackView = ClearentReaderFeedbackView()
+            readerFeedbackView.setup(image: component.mainIconName!, title: title, description: component.mainDescription ?? "")
+            stackView.addArrangedSubview(readerFeedbackView)
+        } else {
+            // UserActionView
+            let actionView = ClearentUserActionView()
+            actionView.setup(imageName: component.mainIconName!, description: component.mainDescription ?? "")
+            stackView.addArrangedSubview(actionView)
+        }
+        
+        // PrimaryButton
+        if let userAction = component.userAction {
+            let button = ClearentPrimaryButton()
+            button.button.setTitle(userAction, for: .normal)
+            stackView.addArrangedSubview(button)
+        }
     }
 }

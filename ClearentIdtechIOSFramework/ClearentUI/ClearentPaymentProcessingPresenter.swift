@@ -13,6 +13,7 @@ public protocol ClearentPaymentProcessingView: AnyObject {
     func updatePairingButton(shouldBeHidden: Bool)
     func updateDismissButton(shouldBeHidden: Bool)
     func updateDeviceNameLabel(value: String)
+    func updateContent(with component: PaymentFeedbackComponentProtocol)
 }
 
 public protocol PaymentProcessingProtocol {
@@ -63,13 +64,12 @@ extension ClearentPaymentProcessingPresenter: FlowDataProtocol {
     func didFinishedPairing() {
         guard let paymentProcessingView = paymentProcessingView else { return }
         paymentProcessingView.updateInfoLabel(message: "Device Successfully Paired")
-        
         sdkWrapper.startTransactionWithAmount(amount: String(amount))
     }
     
     func didReceiveFlowFeedback(feedback: FlowFeedback) {
-        guard let message = feedback.items[.description] as? String else { return }
-        paymentProcessingView!.updateInfoLabel(message: message)
+        let component = PaymentFeedbackComponent(feedbackItems: feedback.items)
+        paymentProcessingView?.updateContent(with: component)
     }
 }
 
