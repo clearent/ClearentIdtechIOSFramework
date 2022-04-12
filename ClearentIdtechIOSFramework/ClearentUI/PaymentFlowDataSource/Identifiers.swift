@@ -8,7 +8,7 @@
 
 import Foundation
 
-public enum FlowDataKeys {
+enum FlowDataKeys {
     case readerConnected, readerBatteryLevel, readerSignalLevel, readerName, graphicType, title, description, userAction
 }
 

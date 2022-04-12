@@ -41,16 +41,16 @@ extension ClearentPaymentProcessingPresenter: PaymentProcessingProtocol {
         sdkFeedbackProvider.delegate = self
         guard let paymentProcessingView = paymentProcessingView else { return }
         paymentProcessingView.updatePairingButton(shouldBeHidden: true)
-
+        
         if sdkWrapper.isReaderConnected() {
             sdkWrapper.startTransactionWithAmount(amount: String(amount))
         } else {
             paymentProcessingView.updateInfoLabel(message: "SEARCHING FOR READER...")
-
+            
             sdkWrapper.startPairing()
         }
     }
-
+    
     public func pairAgainBluetoothDevice() {
         sdkWrapper.startPairing()
     }

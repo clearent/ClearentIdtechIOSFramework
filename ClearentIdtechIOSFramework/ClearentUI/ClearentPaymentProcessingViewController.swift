@@ -10,7 +10,6 @@ import UIKit
 
 public class ClearentPaymentProcessingViewController: UIViewController {
     public var presenter: PaymentProcessingProtocol?
-    private let nibIdentifier = "ClearentPaymentProcessingViewController"
 
     @IBOutlet weak var paymentProcessingLabel: UILabel!
     @IBOutlet weak var pairBluetoothDeviceButton: UIButton!
@@ -19,7 +18,7 @@ public class ClearentPaymentProcessingViewController: UIViewController {
     // MARK: Init
 
     public init() {
-        super.init(nibName: nibIdentifier, bundle: Bundle(for: ClearentPaymentProcessingViewController.self))
+        super.init(nibName: String(describing: ClearentPaymentProcessingViewController.self), bundle: ClearentConstants.bundle)
     }
 
     @available(*, unavailable)
@@ -81,16 +80,16 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
                                  readerBatteryStatusImageName: component.batteryStatus.iconName, readerBatteryStatus: component.batteryStatus.title)
         stackView.addArrangedSubview(readerStatusHeader)
 
-        if let icon = component.mainIconName, let description = component.mainDescription {
+        if let imageName = component.mainIconName, let description = component.mainDescription {
             if let title = component.mainTitle {
                 // ReaderFeedbackView
                 let readerFeedbackView = ClearentReaderFeedbackView()
-                readerFeedbackView.setup(image: icon, title: title, description: description)
+                readerFeedbackView.setup(imageName: imageName, title: title, description: description)
                 stackView.addArrangedSubview(readerFeedbackView)
             } else {
                 // UserActionView
                 let actionView = ClearentUserActionView()
-                actionView.setup(imageName: icon, description: description)
+                actionView.setup(imageName: imageName, description: description)
                 stackView.addArrangedSubview(actionView)
             }
         }
