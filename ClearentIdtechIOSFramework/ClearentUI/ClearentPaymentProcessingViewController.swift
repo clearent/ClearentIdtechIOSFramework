@@ -35,7 +35,6 @@ public class ClearentPaymentProcessingViewController: UIViewController {
         super.viewDidLoad()
         
         configureButtons()
-    //    updateContent(with: FeedbackComponent(feedbackItems: [))
         connectedToLabel.isHidden = true
         deviceNameLabel.isHidden = true
     }
@@ -100,16 +99,18 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
                                  readerBatteryStatusImageName: component.batteryStatus.iconName, readerBatteryStatus: component.batteryStatus.title)
         stackView.addArrangedSubview(readerStatusHeader)
 
-        if let title = component.mainTitle {
-            // ReaderFeedbackView
-            let readerFeedbackView = ClearentReaderFeedbackView()
-            readerFeedbackView.setup(image: component.mainIconName!, title: title, description: component.mainDescription ?? "")
-            stackView.addArrangedSubview(readerFeedbackView)
-        } else {
-            // UserActionView
-            let actionView = ClearentUserActionView()
-            actionView.setup(imageName: component.mainIconName!, description: component.mainDescription ?? "")
-            stackView.addArrangedSubview(actionView)
+        if let icon = component.mainIconName, let description = component.mainDescription {
+            if let title = component.mainTitle {
+                // ReaderFeedbackView
+                let readerFeedbackView = ClearentReaderFeedbackView()
+                readerFeedbackView.setup(image: icon, title: title, description: description)
+                stackView.addArrangedSubview(readerFeedbackView)
+            } else {
+                // UserActionView
+                let actionView = ClearentUserActionView()
+                actionView.setup(imageName: icon, description: description)
+                stackView.addArrangedSubview(actionView)
+            }
         }
         
         // PrimaryButton
