@@ -15,8 +15,8 @@ class ClearentReaderConnectivityStatusView: ClearentXibView {
     
     // MARK: Public
     
-    public func setup(image: UIImage, status: String) {
-        statusImageView.image = image
+    public func setup(imageName: String, status: String) {
+        statusImageView.image = UIImage(named: imageName, in: ClearentConstants.bundle, compatibleWith: nil)
         statusLabel.text = status
     }
 }

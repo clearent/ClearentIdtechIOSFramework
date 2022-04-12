@@ -22,12 +22,12 @@ class ClearentReaderStatusHeaderView: ClearentMarginableView {
     // MARK: Public
     
     public func setup(readerName: String,
-                      connectivityStatusImage: UIImage,
+                      connectivityStatusImageName: String,
                       connectivityStatus: String,
-                      readerBatteryStatusImage: UIImage,
+                      readerBatteryStatusImageName: String,
                       readerBatteryStatus: String) {
         readerNameLabel.text = readerName
-        readerConnectivityStatusView.setup(image: connectivityStatusImage, status: connectivityStatus)
-        readerBatteryStatusView.setup(image: readerBatteryStatusImage, status: readerBatteryStatus)
+        readerConnectivityStatusView.setup(imageName: connectivityStatusImageName, status: connectivityStatus)
+        readerBatteryStatusView.setup(imageName: readerBatteryStatusImageName, status: readerBatteryStatus)
     }
 }

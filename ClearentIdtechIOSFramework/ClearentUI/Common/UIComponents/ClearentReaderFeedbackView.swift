@@ -16,8 +16,8 @@ class ClearentReaderFeedbackView: ClearentMarginableView {
     
     // MARK: Public
     
-    public func setup(image: UIImage, title: String, description: String) {
-        iconImageView.image = image
+    public func setup(imageName: String, title: String, description: String) {
+        iconImageView.image = UIImage(named: imageName, in: ClearentConstants.bundle, compatibleWith: nil)
         titleLabel.text = title
         descriptionLabel.text = description
     }

@@ -19,8 +19,8 @@ class ClearentUserActionView: ClearentMarginableView {
     
     // MARK: Public
     
-    public func setup(image: UIImage, description: String) {
-        userActionImageView.image = image
+    public func setup(imageName: String, description: String) {
+        userActionImageView.image = UIImage(named: imageName, in: ClearentConstants.bundle, compatibleWith: nil)
         descriptionLabel.text = description
     }
 }
