@@ -14,6 +14,10 @@ class ClearentReaderFeedbackView: ClearentMarginableView {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var descriptionLabel: UILabel!
     
+    override var margins: [RelativeMargin] {
+        [RelativeMargin(constant: 16, relatedViewType: ClearentPrimaryButton.self)]
+    }
+    
     // MARK: Public
     
     public func setup(imageName: String, title: String, description: String) {
