@@ -63,11 +63,7 @@ public protocol SDKWrapperProtocol : AnyObject {
     
     @objc public func startPairing() {
         let config = ClearentVP3300Config(noContactlessNoConfiguration: baseURL, publicKey: publicKey)
-        
         clearentVP3300 = Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
-        clearentVP3300.device_enableBLEDeviceSearch(nil)
-        
-        connection?.searchBluetooth = true
         clearentVP3300.start(connection)
         
         self.delegate?.didStartPairing()
@@ -247,8 +243,9 @@ extension SDKWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     }
     
     public func deviceConnected() {
-        updateConnectionWithDevice(bleDeviceID: clearentVP3300.device_connectedBLEDevice().uuidString,
-                                   friendly: clearentVP3300.device_getBLEFriendlyName())
+        DispatchQueue.main.async {
+            self.delegate?.didFinishPairing()
+        }
     }
     
     public func deviceDisconnected() {
