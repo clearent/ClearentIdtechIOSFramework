@@ -392,14 +392,14 @@
 		0169C2DB27FF19EB00B8B4DB /* Util */ = {
 			isa = PBXGroup;
 			children = (
-				01F6D57C280585A300310E01 /* AdaptiveView */,
+				01F6D57C280585A300310E01 /* AdaptiveStackView */,
 				014B2BA9280090130056F7FD /* ClearentConstants.swift */,
 				014B2BAB280092F10056F7FD /* ClearentColorExtension.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
 		};
-		01F6D57C280585A300310E01 /* AdaptiveView */ = {
+		01F6D57C280585A300310E01 /* AdaptiveStackView */ = {
 			isa = PBXGroup;
 			children = (
 				0169C2E227FF1A4600B8B4DB /* ClearentAdaptiveStackView.swift */,
@@ -407,7 +407,7 @@
 				0169C2E127FF1A4600B8B4DB /* ClearentMarginableView.swift */,
 				0169C2E327FF1A4600B8B4DB /* ClearentXibView.swift */,
 			);
-			path = AdaptiveView;
+			path = AdaptiveStackView;
 			sourceTree = "<group>";
 		};
 		19A61D572804121400E295B3 /* Fonts */ = {

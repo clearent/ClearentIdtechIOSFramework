@@ -15,10 +15,8 @@ class ClearentPrimaryButton: ClearentMarginableView {
 
     @IBOutlet weak var button: UIButton!
     
-    override var margins: [Margin] {
-        [
-            AbsoluteMargin(constant: 16, row: -1)
-        ]
+    override var margins: [BottomMargin] {
+        [ BottomMargin(contant: 16) ]
     }
 
     var enabledBackgroundColor = ClearentConstants.Color.base01 {

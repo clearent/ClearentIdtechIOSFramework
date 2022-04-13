@@ -14,10 +14,8 @@ class ClearentReaderFeedbackView: ClearentMarginableView {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var descriptionLabel: UILabel!
     
-    override var margins: [Margin] {
-        [
-            RelativeMargin(constant: 16, relatedViewType: ClearentPrimaryButton.self)
-        ]
+    override var margins: [BottomMargin] {
+        [ RelativeBottomMargin(constant: 16, relatedViewType: ClearentPrimaryButton.self) ]
     }
     
     // MARK: Public

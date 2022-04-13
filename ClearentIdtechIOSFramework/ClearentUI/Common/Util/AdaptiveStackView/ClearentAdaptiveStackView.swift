@@ -32,7 +32,7 @@ class ClearentAdaptiveStackView: UIStackView {
                     }
                     neighborIndex += 1
                 }
-                subview.handleBottomMargin(at: index, to: neighbor)
+                subview.handleBottomMargin(to: neighbor)
             }
         }
     }

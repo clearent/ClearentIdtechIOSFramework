@@ -15,10 +15,10 @@ class ClearentReaderStatusHeaderView: ClearentMarginableView {
     @IBOutlet weak var readerConnectivityStatusView: ClearentReaderConnectivityStatusView!
     @IBOutlet weak var readerBatteryStatusView: ClearentReaderConnectivityStatusView!
     
-    override var margins: [Margin] {
+    override var margins: [BottomMargin] {
         [
-            RelativeMargin(constant: 50.0, relatedViewType: ClearentUserActionView.self),
-            RelativeMargin(constant: 30.0, relatedViewType: ClearentReaderFeedbackView.self)
+            RelativeBottomMargin(constant: 50.0, relatedViewType: ClearentUserActionView.self),
+            RelativeBottomMargin(constant: 30.0, relatedViewType: ClearentReaderFeedbackView.self)
         ]
     }
     

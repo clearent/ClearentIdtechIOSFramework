@@ -13,9 +13,9 @@ class ClearentMarginableView: ClearentXibView, ClearentMarginable {
     @IBOutlet var bottomLayoutConstraint: NSLayoutConstraint?
 
     var viewType: UIView.Type { type(of: self) }
-    var margins: [Margin] { [] }
+    var margins: [BottomMargin] { [] }
 
-    func setBottomMargin(margin: Margin) {
+    func setBottomMargin(margin: BottomMargin) {
         bottomLayoutConstraint?.constant = margin.constant
     }
 }

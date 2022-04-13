@@ -10,52 +10,37 @@ import UIKit
 // Helper class used to create space between two views
 protocol ClearentMarginable {
     var viewType: UIView.Type { get }
-    var margins: [Margin] { get }
-    func handleBottomMargin(at row: Int, to neighbor: ClearentMarginable?)
-    func setBottomMargin(margin: Margin)
+    var margins: [BottomMargin] { get }
+    func handleBottomMargin(to neighbor: ClearentMarginable?)
+    func setBottomMargin(margin: BottomMargin)
 }
 
 extension ClearentMarginable {
-    func handleBottomMargin(at row: Int, to neighbor: ClearentMarginable?) {
-        var currentRow = row
-
-        if neighbor == nil {
-            // current element has no neighbor => last element
-            currentRow = -1
-        }
-
+    func handleBottomMargin(to neighbor: ClearentMarginable?) {
         for margin in margins {
-            if let relatedViewMargin = margin as? RelativeMargin {
+            if let relatedViewMargin = margin as? RelativeBottomMargin {
                 if neighbor != nil, neighbor?.viewType == relatedViewMargin.relatedViewType {
                     setBottomMargin(margin: margin)
                 }
-            }
-
-            if let absoluteMargin = margin as? AbsoluteMargin, absoluteMargin.row == currentRow || absoluteMargin.row == row {
+            } else if neighbor == nil {
                 setBottomMargin(margin: margin)
             }
         }
     }
 }
 
-class Margin {
+class BottomMargin {
     var constant: CGFloat
     
     init(contant: CGFloat) {
         self.constant = contant
     }
 }
-class RelativeMargin: Margin {
+
+class RelativeBottomMargin: BottomMargin {
     var relatedViewType: UIView.Type
     public init(constant: CGFloat, relatedViewType: UIView.Type) {
         self.relatedViewType = relatedViewType
-        super.init(contant: constant)
-    }
-}
-class AbsoluteMargin: Margin {
-    var row: Int
-    init(constant: CGFloat, row: Int) {
-        self.row = row
         super.init(contant: constant)
     }
 }

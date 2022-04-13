@@ -13,10 +13,10 @@ class ClearentUserActionView: ClearentMarginableView {
     @IBOutlet weak var userActionImageView: UIImageView!
     @IBOutlet weak var descriptionLabel: UILabel!
     
-    override var margins: [Margin] {
+    override var margins: [BottomMargin] {
         [
-            RelativeMargin(constant: 24.0, relatedViewType: ClearentPrimaryButton.self),
-            AbsoluteMargin(constant: 80, row: -1)
+            RelativeBottomMargin(constant: 24.0, relatedViewType: ClearentPrimaryButton.self),
+            BottomMargin(contant: 80)
         ]
     }
     

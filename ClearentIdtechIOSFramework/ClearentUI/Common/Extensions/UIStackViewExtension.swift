@@ -10,4 +10,14 @@ extension UIStackView {
     func removeAllArrangedSubviews() {
         arrangedSubviews.forEach { $0.removeFromSuperview() }
     }
+
+    func addRoundedCorners(backgroundColor: UIColor, radius: CGFloat, margin: CGFloat) {
+        let subView = UIView(frame: CGRect(x: -margin, y: -margin, width: bounds.width + margin * 2, height: bounds.height + margin))
+        subView.backgroundColor = backgroundColor
+        subView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        insertSubview(subView, at: 0)
+        subView.layer.cornerRadius = radius
+        subView.layer.masksToBounds = true
+        subView.clipsToBounds = true
+    }
 }
