@@ -84,7 +84,7 @@ class FlowDataProvider : NSObject {
 extension FlowDataProvider : SDKWrapperProtocol {
     
     func didStartPairing() {
-        let pairingDict = [.title:"xsdk_searching_for_reader".localized,
+        let pairingDict = [
                            .description:"xsdk_searching_for_reader".localized,
                            .userAction:"xsdk_user_action_cancel".localized,
                            .graphicType:FlowGraphicType.loading] as [FlowDataKeys : Any]
