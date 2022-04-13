@@ -11,8 +11,6 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ClearentPaymentProcessingViewController" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
             <connections>
-                <outlet property="pairBluetoothDeviceButton" destination="pnS-Od-Mvx" id="nUa-9b-FZS"/>
-                <outlet property="paymentProcessingLabel" destination="c8Y-aT-oHR" id="OpA-TG-hve"/>
                 <outlet property="stackView" destination="78l-9c-DkQ" id="AVZ-7b-6ZL"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -22,45 +20,29 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
+                <view alpha="0.69999999999999996" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5mq-8y-fNs">
+                    <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </view>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="78l-9c-DkQ" customClass="ClearentAdaptiveStackView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                    <rect key="frame" x="24" y="68" width="366" height="599.5"/>
+                    <rect key="frame" x="24" y="262.5" width="366" height="599.5"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="599.5" placeholder="YES" id="su4-jd-1lx"/>
                     </constraints>
                 </stackView>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="c8Y-aT-oHR">
-                    <rect key="frame" x="20" y="682" width="374" height="0.0"/>
-                    <fontDescription key="fontDescription" type="boldSystem" pointSize="25"/>
-                    <nil key="textColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
-                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pnS-Od-Mvx">
-                    <rect key="frame" x="107" y="752" width="200" height="31"/>
-                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    <constraints>
-                        <constraint firstAttribute="width" constant="200" id="7DE-ux-rWw"/>
-                    </constraints>
-                    <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    <state key="normal" title="Button"/>
-                    <buttonConfiguration key="configuration" style="plain" title="Try again"/>
-                    <connections>
-                        <action selector="pairBluetoothDeviceButtonPressed:" destination="-1" eventType="touchUpInside" id="tC9-5V-hic"/>
-                    </connections>
-                </button>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="78l-9c-DkQ" secondAttribute="trailing" constant="24" id="AGU-Sp-bHr"/>
-                <constraint firstItem="c8Y-aT-oHR" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="20" id="Ncq-Wk-Sdf"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="c8Y-aT-oHR" secondAttribute="bottom" constant="180" id="Otd-rT-dFb"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="78l-9c-DkQ" secondAttribute="bottom" id="Bkk-y5-4SR"/>
+                <constraint firstItem="5mq-8y-fNs" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="GqJ-mc-LAw"/>
+                <constraint firstItem="5mq-8y-fNs" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="LrC-bP-8vo"/>
                 <constraint firstItem="78l-9c-DkQ" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="24" id="Uhx-44-AlM"/>
-                <constraint firstItem="pnS-Od-Mvx" firstAttribute="centerX" secondItem="c8Y-aT-oHR" secondAttribute="centerX" id="fES-ZH-vD7"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="c8Y-aT-oHR" secondAttribute="trailing" constant="20" id="lq6-ww-A6R"/>
-                <constraint firstItem="78l-9c-DkQ" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="24" id="xCV-GQ-Ben"/>
-                <constraint firstItem="pnS-Od-Mvx" firstAttribute="top" secondItem="c8Y-aT-oHR" secondAttribute="bottom" constant="70" id="xej-S3-BJ8"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="5mq-8y-fNs" secondAttribute="bottom" id="bie-Hp-qk2"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="5mq-8y-fNs" secondAttribute="trailing" id="vuw-iD-w7x"/>
             </constraints>
-            <point key="canvasLocation" x="133" y="132"/>
+            <point key="canvasLocation" x="131.8840579710145" y="131.91964285714286"/>
         </view>
     </objects>
     <resources>

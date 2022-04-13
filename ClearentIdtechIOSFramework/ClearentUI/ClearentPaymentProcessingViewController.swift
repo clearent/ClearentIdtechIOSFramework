@@ -11,8 +11,6 @@ import UIKit
 public class ClearentPaymentProcessingViewController: UIViewController {
     public var presenter: PaymentProcessingProtocol?
 
-    @IBOutlet weak var paymentProcessingLabel: UILabel!
-    @IBOutlet weak var pairBluetoothDeviceButton: UIButton!
     @IBOutlet weak var stackView: ClearentAdaptiveStackView!
 
     // MARK: Init
@@ -31,7 +29,8 @@ public class ClearentPaymentProcessingViewController: UIViewController {
     override public func viewDidLoad() {
         super.viewDidLoad()
 
-        configureButtons()
+        view.backgroundColor = .clear
+        view.isOpaque = false
     }
 
     override public func viewDidAppear(_ animated: Bool) {
@@ -42,12 +41,6 @@ public class ClearentPaymentProcessingViewController: UIViewController {
     }
 
     // MARK: Private
-
-    private func configureButtons() {
-        pairBluetoothDeviceButton.isHidden = true
-        pairBluetoothDeviceButton.layer.cornerRadius = 7
-        pairBluetoothDeviceButton.clipsToBounds = true
-    }
 
     // MARK: IBAction
 
@@ -63,11 +56,11 @@ public class ClearentPaymentProcessingViewController: UIViewController {
 
 extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView {
     public func updateInfoLabel(message: String) {
-        paymentProcessingLabel.text = message
+        //paymentProcessingLabel.text = message
     }
 
     public func updatePairingButton(shouldBeHidden: Bool) {
-        pairBluetoothDeviceButton.isHidden = shouldBeHidden
+        //pairBluetoothDeviceButton.isHidden = shouldBeHidden
     }
 
     public func updateContent(with component: PaymentFeedbackComponentProtocol) {

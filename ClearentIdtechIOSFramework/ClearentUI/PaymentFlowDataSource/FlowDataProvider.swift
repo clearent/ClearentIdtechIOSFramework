@@ -39,10 +39,15 @@ struct ReaderInfo {
 
 class FlowDataFactory {
     
-    class func component(with flow: ProcessType, type: FlowFeedbackType, readerInfo: ReaderInfo, payload:[FlowDataKeys:Any])-> FlowFeedback {
-        let readerInfoDict = createDictionaryWithDeviceInfo(readerInfo: readerInfo)
-        let dataDict = payload.merging(readerInfoDict) { (current, _) in current }
-        return FlowFeedback(flow: flow, type: type, items: dataDict)
+    class func component(with flow: ProcessType, type: FlowFeedbackType, readerInfo: ReaderInfo?, payload:[FlowDataKeys:Any])-> FlowFeedback {
+        
+        if let readerInfo = readerInfo {
+            let readerInfoDict = createDictionaryWithDeviceInfo(readerInfo: readerInfo)
+            let dataDict = payload.merging(readerInfoDict) { (current, _) in current }
+            return FlowFeedback(flow: flow, type: type, items: dataDict)
+        }
+      
+        return FlowFeedback(flow: flow, type: type, items: payload)
     }
         
     class func createDictionaryWithDeviceInfo(readerInfo:ReaderInfo) -> [FlowDataKeys:Any] {
@@ -77,6 +82,19 @@ class FlowDataProvider : NSObject {
 
 
 extension FlowDataProvider : SDKWrapperProtocol {
+    
+    func didStartPairing() {
+        let pairingDict = [.title:"xsdk_searching_for_reader".localized,
+                         .userAction:"xsdk_user_action_cancel".localized,
+                         .graphicType:FlowGraphicType.loading] as [FlowDataKeys : Any]
+        
+        let feedback = FlowDataFactory.component(with: .payment,
+                                                 type: .info,
+                                                 readerInfo: nil,
+                                                 payload: pairingDict)
+        
+        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+    }
     
     func didEncounteredGeneralError() {
         let errorDict = [.description:"xsdk_general_error_description".localized,

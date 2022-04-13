@@ -31,6 +31,7 @@ public enum TransactionError {
 }
 
 public protocol SDKWrapperProtocol : AnyObject {
+    func didStartPairing()
     func didEncounteredGeneralError()
     func didFinishPairing()
     func didFinishTransaction()
@@ -66,6 +67,8 @@ public protocol SDKWrapperProtocol : AnyObject {
         
         connection?.searchBluetooth = true
         clearentVP3300.start(connection)
+        
+        self.delegate?.didStartPairing()
     }
     
     @objc public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String) {
