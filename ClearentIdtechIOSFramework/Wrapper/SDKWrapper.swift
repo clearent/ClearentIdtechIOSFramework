@@ -10,6 +10,7 @@ import CocoaLumberjack
 
 public enum UserAction: String {
     case pleaseWait = "PLEASE WAIT...",
+         swipeTapOrInsert = "PLEASE SWIPE, TAP, OR INSERT",
          swipeInsert = "INSERT/SWIPE CARD",
          pressReaderButton = "PRESS BUTTON ON READER",
          removeCard = "CARD READ OK, REMOVE CARD",
@@ -17,7 +18,8 @@ public enum UserAction: String {
          goingOnline = "GOING ONLINE",
          cardSecured = "CARD SECURED",
          cardHasChip = "CARD HAS CHIP. TRY INSERT",
-         tryMSRAgain = "TRY MSR AGAIN"
+         tryMSRAgain = "TRY MSR AGAIN",
+         transactionStarted = "TRANSACTION STARTED"
 }
 
 public enum UserInfo: String {
@@ -60,7 +62,6 @@ public protocol SDKWrapperProtocol : AnyObject {
     
     @objc public func startPairing() {
         let config = ClearentVP3300Config(noContactlessNoConfiguration: baseURL, publicKey: publicKey)
-        //config?.contactAutoConfiguration = true
         
         clearentVP3300 = Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
         clearentVP3300.device_enableBLEDeviceSearch(nil)
@@ -109,7 +110,7 @@ public protocol SDKWrapperProtocol : AnyObject {
             friendlyName = name
         }
         connection?.searchBluetooth = false
-        connection?.readerInterfaceMode = ._2_IN_1
+        //connection?.readerInterfaceMode = ._2_IN_1
         clearentVP3300.start(connection)
     }
     
