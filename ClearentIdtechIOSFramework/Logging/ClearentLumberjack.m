@@ -12,18 +12,21 @@
 @implementation ClearentLumberjack
 
 ClearentLumberjackRemoteLogger *clearentLumberjackRemoteLogger;
+DDFileLogger *clearentFileLogger;
 
 + (void) initLumberJack:(NSString *) baseUrl publicKey:(NSString *) publicKey
 {
     [DDLog addLogger:[DDOSLogger sharedInstance]];
     
     clearentLumberjackRemoteLogger = [[ClearentLumberjackRemoteLogger alloc] init];
+    clearentFileLogger = [[DDFileLogger alloc] init];
     
     clearentLumberjackRemoteLogger.baseUrl = baseUrl;
     clearentLumberjackRemoteLogger.publicKey = publicKey;
     clearentLumberjackRemoteLogger.saveInterval = 30;
     
     [DDLog addLogger:clearentLumberjackRemoteLogger];
+    [DDLog addLogger:clearentFileLogger];
 }
 
 + (void) logInfo:(NSString*) logMessage {
