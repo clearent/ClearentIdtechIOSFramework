@@ -55,7 +55,7 @@ struct PaymentFeedbackComponent: PaymentFeedbackComponentProtocol {
         guard let connected = feedbackItems[.readerConnected] as? Bool, connected else {
             return (iconName: ClearentConstants.IconName.signalIdle, title: "xsdk_reader_signal_idle".localized)
         }
-        return (iconName: ClearentConstants.IconName.batterySignalOnline, title: "xsdk_reader_signal_connected".localized)
+        return (iconName: ClearentConstants.IconName.signalConnected, title: "xsdk_reader_signal_connected".localized)
     }
 
     var mainIconName: String? {

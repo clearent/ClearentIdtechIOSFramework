@@ -46,7 +46,7 @@ class ClearentConstants {
         static let batteryLow = "low"
 
         // Reader Signal Status
-        static let batterySignalOnline = "onlineConnectivityStatus"
+        static let signalConnected = "onlineConnectivityStatus"
         static let signalIdle = "idleConnectivityStatus"
 
         // User Interaction
