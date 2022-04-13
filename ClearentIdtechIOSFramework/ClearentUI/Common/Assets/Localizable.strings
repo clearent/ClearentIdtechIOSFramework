@@ -36,7 +36,7 @@
 "xsdk_read_card_try_icc_again_description" = "Try ICC again";
 
 // Read error (card has chip)
-"xsdk_read_error_title" = "Read error";
+"xsdk_read_error_title" = "Care read error";
 "xsdk_read_card_has_chip_description" = "Card has chip, try insert";
 
 // Read error (try MSR again)

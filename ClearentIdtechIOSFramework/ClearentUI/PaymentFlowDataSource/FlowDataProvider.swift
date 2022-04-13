@@ -125,7 +125,7 @@ extension FlowDataProvider : SDKWrapperProtocol {
         case .pleaseWait:
             infoDict = [.description:"xsdk_processing_description".localized,
                         .graphicType:FlowGraphicType.loading] as [FlowDataKeys : Any]
-        case .swipeInsert:
+        case .swipeInsert, .swipeTapOrInsert:
             infoDict = [.description:"xsdk_tap_insert_swipe_description".localized,
                         .userAction:"xsdk_user_action_cancel".localized,
                         .graphicType:FlowGraphicType.insert_card] as [FlowDataKeys : Any]
@@ -137,19 +137,32 @@ extension FlowDataProvider : SDKWrapperProtocol {
             type = .warning
             infoDict = [.title:"xsdk_read_error_title".localized,
                         .description:"xsdk_read_card_try_icc_again_description".localized,
+                        .userAction:"xsdk_user_action_cancel".localized,
                         .graphicType:FlowGraphicType.insert_card] as [FlowDataKeys : Any]
         case .cardHasChip:
             type = .warning
-            infoDict = [.description:"xsdk_read_error_title".localized,
-                        .userAction:"xsdk_read_card_has_chip_description".localized,
+            infoDict = [.title:"xsdk_read_error_title".localized,
+                        .description:"xsdk_read_card_has_chip_description".localized,
+                        .userAction:"xsdk_user_action_cancel".localized,
                         .graphicType:FlowGraphicType.insert_card] as [FlowDataKeys : Any]
         case .tryMSRAgain:
             type = .warning
-            infoDict = [.description:"xsdk_read_error_title".localized,
-                        .userAction:"xsdk_read_try_msr_again_description".localized,
+            infoDict = [.title:"xsdk_read_error_title".localized,
+                        .description:"xsdk_read_try_msr_again_description".localized,
+                        .userAction:"xsdk_user_action_cancel".localized,
                         .graphicType:FlowGraphicType.insert_card] as [FlowDataKeys : Any]
-        case .goingOnline, .removeCard, .cardSecured:
+        case .removeCard, .cardSecured:
             print("nothing to do here")
+        case .transactionStarted, .goingOnline:
+            let infoDict = [FlowDataKeys.description:"xsdk_processing_description".localized,
+                        FlowDataKeys.graphicType:FlowGraphicType.loading] as [FlowDataKeys : Any]
+            
+            let feedback = FlowDataFactory.component(with: .payment,
+                                                     type: .info,
+                                                     readerInfo: fetchReaderInfo(),
+                                                     payload: infoDict)
+            
+            self.delegate?.didReceiveFlowFeedback(feedback: feedback)
         }
         
         if let dict = infoDict {
