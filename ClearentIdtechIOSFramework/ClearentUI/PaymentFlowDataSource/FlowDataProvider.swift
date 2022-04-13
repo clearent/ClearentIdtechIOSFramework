@@ -85,8 +85,9 @@ extension FlowDataProvider : SDKWrapperProtocol {
     
     func didStartPairing() {
         let pairingDict = [.title:"xsdk_searching_for_reader".localized,
-                         .userAction:"xsdk_user_action_cancel".localized,
-                         .graphicType:FlowGraphicType.loading] as [FlowDataKeys : Any]
+                           .description:"xsdk_searching_for_reader".localized,
+                           .userAction:"xsdk_user_action_cancel".localized,
+                           .graphicType:FlowGraphicType.loading] as [FlowDataKeys : Any]
         
         let feedback = FlowDataFactory.component(with: .payment,
                                                  type: .info,
