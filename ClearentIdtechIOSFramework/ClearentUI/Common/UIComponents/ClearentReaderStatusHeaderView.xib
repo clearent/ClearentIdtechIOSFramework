@@ -31,13 +31,14 @@
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mxb-gX-Hn6">
                     <rect key="frame" x="0.0" y="0.0" width="352" height="20"/>
-                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="20" id="Ygf-U4-Z2A"/>
                     </constraints>
                     <fontDescription key="fontDescription" name="SFProText-Medium" family="SF Pro Text" pointSize="14"/>
                     <color key="textColor" red="0.10588235294117647" green="0.094117647058823528" blue="0.12156862745098039" alpha="1" colorSpace="calibratedRGB"/>
                     <nil key="highlightedColor"/>
+                    <color key="shadowColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </label>
                 <stackView opaque="NO" contentMode="scaleToFill" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="QCv-p8-D5F">
                     <rect key="frame" x="76" y="25" width="200" height="193"/>
@@ -58,7 +59,7 @@
                 </stackView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
-            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="QCv-p8-D5F" firstAttribute="centerX" secondItem="Mxb-gX-Hn6" secondAttribute="centerX" id="BGG-pc-P6y"/>
                 <constraint firstItem="Mxb-gX-Hn6" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="IKE-0A-ysA"/>

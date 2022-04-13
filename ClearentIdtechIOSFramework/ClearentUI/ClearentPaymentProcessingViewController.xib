@@ -21,31 +21,61 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view alpha="0.69999999999999996" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5mq-8y-fNs">
-                    <rect key="frame" x="0.0" y="44" width="414" height="818"/>
-                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+                    <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </view>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="78l-9c-DkQ" customClass="ClearentAdaptiveStackView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                    <rect key="frame" x="24" y="262.5" width="366" height="599.5"/>
+                    <rect key="frame" x="32" y="594" width="350" height="270"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3eb-xL-gFT" customClass="ClearentEmptySpace" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="350" height="90"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pRV-qt-FW9">
+                            <rect key="frame" x="0.0" y="90" width="350" height="90"/>
+                            <subviews>
+                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="loading" translatesAutoresizingMaskIntoConstraints="NO" id="Qq5-we-gvm">
+                                    <rect key="frame" x="145" y="0.0" width="60" height="90"/>
+                                </imageView>
+                            </subviews>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <constraints>
+                                <constraint firstAttribute="bottom" secondItem="Qq5-we-gvm" secondAttribute="bottom" id="9LC-oq-Jvs"/>
+                                <constraint firstItem="Qq5-we-gvm" firstAttribute="top" secondItem="pRV-qt-FW9" secondAttribute="top" id="KGC-AE-P7k"/>
+                                <constraint firstItem="Qq5-we-gvm" firstAttribute="centerX" secondItem="pRV-qt-FW9" secondAttribute="centerX" id="mqC-JI-g8m"/>
+                            </constraints>
+                        </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PER-iX-fnC" customClass="ClearentEmptySpace" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="180" width="350" height="90"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="90" id="byn-Ka-mPr"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="599.5" placeholder="YES" id="su4-jd-1lx"/>
+                        <constraint firstItem="pRV-qt-FW9" firstAttribute="height" secondItem="3eb-xL-gFT" secondAttribute="height" id="kZf-f3-QMU"/>
+                        <constraint firstItem="PER-iX-fnC" firstAttribute="height" secondItem="3eb-xL-gFT" secondAttribute="height" id="qid-LQ-XdR"/>
                     </constraints>
                 </stackView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="78l-9c-DkQ" secondAttribute="trailing" constant="24" id="AGU-Sp-bHr"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="78l-9c-DkQ" secondAttribute="bottom" id="Bkk-y5-4SR"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="78l-9c-DkQ" secondAttribute="trailing" constant="32" id="AGU-Sp-bHr"/>
+                <constraint firstAttribute="bottom" secondItem="78l-9c-DkQ" secondAttribute="bottom" constant="32" id="Bkk-y5-4SR"/>
                 <constraint firstItem="5mq-8y-fNs" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="GqJ-mc-LAw"/>
-                <constraint firstItem="5mq-8y-fNs" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="LrC-bP-8vo"/>
-                <constraint firstItem="78l-9c-DkQ" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="24" id="Uhx-44-AlM"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="5mq-8y-fNs" secondAttribute="bottom" id="bie-Hp-qk2"/>
+                <constraint firstItem="5mq-8y-fNs" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="LrC-bP-8vo"/>
+                <constraint firstItem="78l-9c-DkQ" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="32" id="Uhx-44-AlM"/>
+                <constraint firstAttribute="bottom" secondItem="5mq-8y-fNs" secondAttribute="bottom" id="bie-Hp-qk2"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="5mq-8y-fNs" secondAttribute="trailing" id="vuw-iD-w7x"/>
             </constraints>
             <point key="canvasLocation" x="131.8840579710145" y="131.91964285714286"/>
         </view>
     </objects>
     <resources>
+        <image name="loading" width="60" height="60"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

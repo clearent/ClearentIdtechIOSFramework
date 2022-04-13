@@ -10,8 +10,13 @@ import UIKit
 
 public class ClearentPaymentProcessingViewController: UIViewController {
     public var presenter: PaymentProcessingProtocol?
-
     @IBOutlet weak var stackView: ClearentAdaptiveStackView!
+    
+    enum ModalLayout {
+        static let cornerRadius = 15.0
+        static let margin = 16.0
+        static let backgroundColor = ClearentConstants.Color.backgroundSecondary01
+    }
 
     // MARK: Init
 
@@ -28,29 +33,25 @@ public class ClearentPaymentProcessingViewController: UIViewController {
 
     override public func viewDidLoad() {
         super.viewDidLoad()
-
-        view.backgroundColor = .clear
-        view.isOpaque = false
+        customiseModalView()
     }
 
     override public func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
-        guard let presenter = presenter else { return }
-        presenter.startBluetoothDevicePairing()
+        presenter?.startBluetoothDevicePairing()
     }
 
-    // MARK: Private
+    private func customiseModalView() {
+        view.backgroundColor = .clear
+        view.isOpaque = false
+        stackView.addRoundedCorners(backgroundColor: ModalLayout.backgroundColor, radius: ModalLayout.cornerRadius, margin: ModalLayout.margin)
+    }
 
     // MARK: IBAction
 
     @IBAction func pairBluetoothDeviceButtonPressed(_: Any) {
         guard let presenter = presenter else { return }
         presenter.pairAgainBluetoothDevice()
-    }
-
-    @IBAction func dismissButtonPressed(_: Any) {
-        dismiss(animated: true)
     }
 }
 
@@ -90,8 +91,24 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
         // PrimaryButton
         if let userAction = component.userAction {
             let button = ClearentPrimaryButton()
-            button.button.setTitle(userAction, for: .normal)
+            button.title = userAction
+            button.action = { [weak self] in
+                self?.dismiss(animated: true)
+            }
             stackView.addArrangedSubview(button)
         }
+    }
+}
+
+
+extension UIStackView {
+func addRoundedCorners(backgroundColor: UIColor, radius: CGFloat, margin: CGFloat) {
+        let subView = UIView(frame: CGRect(x: -margin, y: -margin, width: bounds.width + margin * 2, height: bounds.height + margin))
+        subView.backgroundColor = backgroundColor
+        subView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        insertSubview(subView, at: 0)
+        subView.layer.cornerRadius = radius
+        subView.layer.masksToBounds = true
+        subView.clipsToBounds = true
     }
 }

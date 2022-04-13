@@ -14,6 +14,12 @@ class ClearentPrimaryButton: ClearentMarginableView {
     public var action: (() -> Void)?
 
     @IBOutlet weak var button: UIButton!
+    
+    override var margins: [Margin] {
+        [
+            AbsoluteMargin(constant: 16, row: -1)
+        ]
+    }
 
     var enabledBackgroundColor = ClearentConstants.Color.base01 {
         didSet { updateAppearence() }
@@ -44,6 +50,12 @@ class ClearentPrimaryButton: ClearentMarginableView {
         }
         get { button.isEnabled }
     }
+    
+    var title: String? {
+        didSet {
+            button.setTitle(title, for: .normal)
+        }
+    }
 
     override func configure() {
         updateAppearence()
@@ -51,7 +63,12 @@ class ClearentPrimaryButton: ClearentMarginableView {
         button.layer.masksToBounds = true
         textFont = ClearentConstants.Font.regularMedium
     }
-
+    
+    
+    @IBAction func buttonWasPressed(_ sender: Any) {
+        action?()
+    }
+    
     // MARK: - Private
 
     private func updateAppearence() {
