@@ -20,11 +20,12 @@ class FlowFeedback {
     }
 }
 
-struct ReaderInfo {
+public struct ReaderInfo {
     var readerName : String
-    let batterylevel : Int?
-    let signalLevel : Int?
-    let isConnected : Bool
+    var batterylevel : Int?
+    var signalLevel : Int?
+    var isConnected : Bool
+    var udid: UUID?
     
     init(name: String?, batterylevel: Int, signalLevel:Int, connected: Bool) {
         self.readerName = "xsdk_unknown_reader_name".localized
@@ -76,7 +77,7 @@ class FlowDataProvider : NSObject {
     }
     
     func fetchReaderInfo() -> ReaderInfo {
-        return ReaderInfo(name: sdkWrapper.friendlyName, batterylevel: 100, signalLevel: 1, connected: sdkWrapper.isReaderConnected())
+        return sdkWrapper.readerInfo!
     }
 }
 

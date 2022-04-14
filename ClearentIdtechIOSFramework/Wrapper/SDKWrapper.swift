@@ -8,6 +8,7 @@
 import Foundation
 import CocoaLumberjack
 
+
 public enum UserAction: String {
     case pleaseWait = "PLEASE WAIT...",
          swipeTapOrInsert = "PLEASE SWIPE, TAP, OR INSERT",
@@ -45,14 +46,20 @@ public protocol SDKWrapperProtocol : AnyObject {
 @objc public final class SDKWrapper : NSObject {
     
     public static let shared = SDKWrapper()
+    weak var delegate: SDKWrapperProtocol?
+    private var bleManager : BluetoothManager?
+    
     private var baseURL: String = ""
     private var apiKey: String = ""
     private var publicKey: String = ""
+    
     private var clearentVP3300 = Clearent_VP3300()
     private var connection  = ClearentConnection(bluetoothSearch: ())
+    public var readerInfo: ReaderInfo?
+    
     private var foundDevice = false
-    weak var delegate: SDKWrapperProtocol?
     public var friendlyName : String?
+    
     
     @objc public override init() {
         super.init()
@@ -76,7 +83,7 @@ public protocol SDKWrapperProtocol : AnyObject {
     }
     
     @objc public func startTransactionWithAmount(amount: String) {
-        
+        SDKWrapper.shared.startDeviceInfoUpdate()
         clearentVP3300.emv_cancelTransaction()
         let payment = ClearentPayment.init(sale: ())
         if (amount.canBeConverted(to: String.Encoding.utf8)) {
@@ -99,9 +106,18 @@ public protocol SDKWrapperProtocol : AnyObject {
         return clearentVP3300.isConnected()
     }
     
+    public func startDeviceInfoUpdate() {
+        bleManager?.readRSSI()
+    }
+    
     // MARK - Private
     
     @objc private func updateConnectionWithDevice(bleDeviceID:String, friendly: String?) {
+        
+        readerInfo = ReaderInfo(name: friendly, batterylevel: 0, signalLevel: 0, connected: false)
+        if let uuid = UUID(uuidString: bleDeviceID) {
+            readerInfo?.udid = uuid
+        }
         foundDevice = true
         connection?.bluetoothDeviceId = bleDeviceID
         if let name = friendly {
@@ -109,7 +125,6 @@ public protocol SDKWrapperProtocol : AnyObject {
             friendlyName = name
         }
         connection?.searchBluetooth = false
-        //connection?.readerInterfaceMode = ._2_IN_1
         clearentVP3300.start(connection)
     }
     
@@ -235,22 +250,29 @@ extension SDKWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     }
 
     public func deviceMessage(_ message: String!) {
-        if (message == "BLUETOOTH CONNECTED") {
-            DispatchQueue.main.async {
-                self.delegate?.didFinishPairing()
-            }
-        }
+        print("Will be deprecated")
     }
     
     public func deviceConnected() {
-        DispatchQueue.main.async {
-            self.delegate?.didFinishPairing()
-        }
+        bleManager = BluetoothManager.init(udid: (readerInfo?.udid)!, delegate: self)
+        readerInfo?.isConnected = true
+        self.delegate?.didFinishPairing()
     }
     
     public func deviceDisconnected() {
         DispatchQueue.main.async {
             self.delegate?.deviceDidDisconnect()
         }
+    }
+}
+
+extension SDKWrapper: BluetoothManagerProtocol {
+    
+    func didReceivedSignalStrength(level: SignalLevel) {
+        readerInfo?.signalLevel = level.rawValue
+    }
+    
+    func didFinishWithError() {
+        self.delegate?.didFinishPairing()
     }
 }

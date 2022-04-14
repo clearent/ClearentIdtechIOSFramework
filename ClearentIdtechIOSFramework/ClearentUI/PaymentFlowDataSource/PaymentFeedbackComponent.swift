@@ -55,7 +55,25 @@ struct PaymentFeedbackComponent: PaymentFeedbackComponentProtocol {
         guard let connected = feedbackItems[.readerConnected] as? Bool, connected else {
             return (iconName: ClearentConstants.IconName.signalIdle, title: "xsdk_reader_signal_idle".localized)
         }
-        return (iconName: ClearentConstants.IconName.signalConnected, title: "xsdk_reader_signal_connected".localized)
+       
+        guard let signalLevel = feedbackItems[.readerSignalLevel] as? Int else {
+            return (iconName: ClearentConstants.IconName.signalIdle, title: "xsdk_reader_signal_idle".localized)
+        }
+        
+        var icon = ClearentConstants.IconName.signalIdle
+        switch signalLevel {
+        
+            case 0 :
+                icon =  ClearentConstants.IconName.goodSignal
+            case 1 :
+                icon =  ClearentConstants.IconName.mediumSignal
+            case 2 :
+                icon =  ClearentConstants.IconName.weakSignal
+            default:
+                icon =  ClearentConstants.IconName.signalIdle
+        }
+        
+        return (iconName: icon, title: "xsdk_reader_signal_connected".localized)
     }
 
     var mainIconName: String? {

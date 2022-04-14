@@ -8,6 +8,10 @@
 
 import Foundation
 
+enum SignalLevel : Int {
+    case good = 0, medium, bad
+}
+
 enum FlowDataKeys {
     case readerConnected, readerBatteryLevel, readerSignalLevel, readerName, graphicType, title, description, userAction
 }
