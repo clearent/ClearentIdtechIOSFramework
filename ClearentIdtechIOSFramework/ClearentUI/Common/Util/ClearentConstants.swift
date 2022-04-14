@@ -59,6 +59,5 @@ class ClearentConstants {
         static let error = "error"
         static let warning = "warning"
         static let success = "success"
-        static let loading = "loading"
     }
 }

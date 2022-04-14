@@ -33,25 +33,20 @@ public class ClearentPaymentProcessingViewController: UIViewController {
 
     override public func viewDidLoad() {
         super.viewDidLoad()
-        customiseModalView()
+        customizeModalView()
     }
 
-    override public func viewDidAppear(_ animated: Bool) {
+    // MARK: Private
+
+    public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         presenter?.startBluetoothDevicePairing()
     }
 
-    private func customiseModalView() {
+    private func customizeModalView() {
         view.backgroundColor = .clear
         view.isOpaque = false
         stackView.addRoundedCorners(backgroundColor: ModalLayout.backgroundColor, radius: ModalLayout.cornerRadius, margin: ModalLayout.margin)
-    }
-
-    // MARK: IBAction
-
-    @IBAction func pairBluetoothDeviceButtonPressed(_: Any) {
-        guard let presenter = presenter else { return }
-        presenter.pairAgainBluetoothDevice()
     }
 }
 
@@ -74,16 +69,16 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
                                  readerBatteryStatusImageName: component.batteryStatus.iconName, readerBatteryStatus: component.batteryStatus.title)
         stackView.addArrangedSubview(readerStatusHeader)
 
-        if let imageName = component.mainIconName, let description = component.mainDescription {
-            if let title = component.mainTitle {
+        if let description = component.mainDescription {
+            if let iconName = component.iconName, let title = component.mainTitle {
                 // ReaderFeedbackView
                 let readerFeedbackView = ClearentReaderFeedbackView()
-                readerFeedbackView.setup(imageName: imageName, title: title, description: description)
+                readerFeedbackView.setup(imageName: iconName, title: title, description: description)
                 stackView.addArrangedSubview(readerFeedbackView)
             } else {
                 // UserActionView
                 let actionView = ClearentUserActionView()
-                actionView.setup(imageName: imageName, description: description)
+                actionView.setup(imageName: component.iconName, description: description)
                 stackView.addArrangedSubview(actionView)
             }
         }

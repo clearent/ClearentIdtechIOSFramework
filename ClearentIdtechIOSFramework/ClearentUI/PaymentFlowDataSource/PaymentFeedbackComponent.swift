@@ -13,7 +13,7 @@ public protocol PaymentFeedbackComponentProtocol {
 
     var signalStatus: (iconName: String, title: String) { get }
 
-    var mainIconName: String? { get }
+    var iconName: String? { get }
 
     var mainTitle: String? { get }
 
@@ -76,23 +76,20 @@ struct PaymentFeedbackComponent: PaymentFeedbackComponentProtocol {
         return (iconName: icon, title: "xsdk_reader_signal_connected".localized)
     }
 
-    var mainIconName: String? {
+    var iconName: String? {
         guard let graphicType = feedbackItems[.graphicType] as? FlowGraphicType else { return nil }
         return graphicType.iconName
     }
 
     var mainDescription: String? {
-        guard let description = feedbackItems[.description] as? String else { return nil }
-        return description
+        feedbackItems[.description] as? String
     }
 
     var mainTitle: String? {
-        guard let title = feedbackItems[.title] as? String else { return nil }
-        return title
+        feedbackItems[.title] as? String
     }
 
     var userAction: String? {
-        guard let userActionText = feedbackItems[.userAction] as? String else { return nil }
-        return userActionText
+        feedbackItems[.userAction] as? String
     }
 }

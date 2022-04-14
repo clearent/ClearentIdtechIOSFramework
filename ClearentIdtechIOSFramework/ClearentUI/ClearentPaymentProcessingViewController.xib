@@ -25,31 +25,35 @@
                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </view>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="78l-9c-DkQ" customClass="ClearentAdaptiveStackView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                    <rect key="frame" x="32" y="594" width="350" height="270"/>
+                    <rect key="frame" x="32" y="552" width="350" height="312"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3eb-xL-gFT" customClass="ClearentEmptySpace" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="0.0" width="350" height="90"/>
+                            <rect key="frame" x="0.0" y="0.0" width="350" height="104"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         </view>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pRV-qt-FW9">
-                            <rect key="frame" x="0.0" y="90" width="350" height="90"/>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pRV-qt-FW9" userLabel="Loading">
+                            <rect key="frame" x="0.0" y="104" width="350" height="104"/>
                             <subviews>
-                                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="loading" translatesAutoresizingMaskIntoConstraints="NO" id="Qq5-we-gvm">
-                                    <rect key="frame" x="145" y="0.0" width="60" height="90"/>
-                                </imageView>
+                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="huk-QG-7XB" customClass="LoadingIndicatorView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                                    <rect key="frame" x="158" y="35" width="34" height="34"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="34" id="PGh-Hd-fSs"/>
+                                        <constraint firstAttribute="width" secondItem="huk-QG-7XB" secondAttribute="height" id="jOf-yA-tXT"/>
+                                    </constraints>
+                                </view>
                             </subviews>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
-                                <constraint firstAttribute="bottom" secondItem="Qq5-we-gvm" secondAttribute="bottom" id="9LC-oq-Jvs"/>
-                                <constraint firstItem="Qq5-we-gvm" firstAttribute="top" secondItem="pRV-qt-FW9" secondAttribute="top" id="KGC-AE-P7k"/>
-                                <constraint firstItem="Qq5-we-gvm" firstAttribute="centerX" secondItem="pRV-qt-FW9" secondAttribute="centerX" id="mqC-JI-g8m"/>
+                                <constraint firstItem="huk-QG-7XB" firstAttribute="centerX" secondItem="pRV-qt-FW9" secondAttribute="centerX" id="opQ-m6-skf"/>
+                                <constraint firstItem="huk-QG-7XB" firstAttribute="centerY" secondItem="pRV-qt-FW9" secondAttribute="centerY" id="wwe-Yw-zx5"/>
                             </constraints>
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PER-iX-fnC" customClass="ClearentEmptySpace" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="180" width="350" height="90"/>
+                            <rect key="frame" x="0.0" y="208" width="350" height="104"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
-                                <constraint firstAttribute="height" constant="90" id="byn-Ka-mPr"/>
+                                <constraint firstAttribute="height" constant="104" id="byn-Ka-mPr"/>
                             </constraints>
                         </view>
                     </subviews>
@@ -75,7 +79,6 @@
         </view>
     </objects>
     <resources>
-        <image name="loading" width="60" height="60"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>
