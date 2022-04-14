@@ -19,7 +19,7 @@ enum FlowFeedbackType {
 enum FlowGraphicType {
     case insert_card, press_button, transaction_completed, loading, error, warning
     
-    var iconName: String {
+    var iconName: String? {
         switch self {
         case .insert_card:
             return ClearentConstants.IconName.cardInteraction
@@ -27,12 +27,12 @@ enum FlowGraphicType {
             return ClearentConstants.IconName.pressButtonOnReader
         case .transaction_completed:
             return ClearentConstants.IconName.success
-        case .loading:
-            return ClearentConstants.IconName.loading
         case .error:
             return ClearentConstants.IconName.error
         case .warning:
             return ClearentConstants.IconName.warning
+        case .loading:
+            return nil
         }
     }
 }
