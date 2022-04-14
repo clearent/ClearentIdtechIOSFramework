@@ -28,33 +28,32 @@ class BluetoothManager: NSObject {
         self.delegate = delegate
         
         centralManager = CBCentralManager(delegate: self, queue: nil)
+    }
+    
+    public func setupDevice() {
+        guard let udid = self.udid else {return}
+        let devices = centralManager.retrievePeripherals(withIdentifiers: [udid])
         
-       
+        if devices.count == 1 {
+            self.device = devices[0]
+            self.device?.delegate = self
+            // without connecting to the device from this instance of CBCEntralManager we can't read the RSSI
+            centralManager.connect(devices[0], options: nil)
+        }
     }
 
     public func readRSSI() {
-
-        let items = centralManager.retrievePeripherals(withIdentifiers: [self.udid!])
-        if (items.count == 1 && device?.delegate != nil) {
-            device = items[0]
-            if (device?.state == .connected) {
-                device?.delegate = self
-            } else {
-                centralManager.connect(device!, options: nil)
-            }
-        }
-        
         device?.readRSSI()
     }
     
     func levelForRSSI(RSSI: NSNumber) -> SignalLevel {
         var signal = SignalLevel.good
         
-        if (RSSI.intValue < -60) {
+        if (RSSI.intValue > -60) {
+            signal = SignalLevel.good
+        } else if (RSSI.intValue > -80) {
             signal = SignalLevel.medium
-        }
-        
-        if (RSSI.intValue < -80) {
+        } else {
             signal = SignalLevel.bad
         }
         
@@ -77,6 +76,7 @@ extension BluetoothManager: CBCentralManagerDelegate, CBPeripheralDelegate {
         case .poweredOff:
             self.delegate?.didFinishWithError()
         case .poweredOn:
+            setupDevice()
             central.scanForPeripherals(withServices: nil, options: nil)
         @unknown default:
             print("default")
@@ -85,34 +85,15 @@ extension BluetoothManager: CBCentralManagerDelegate, CBPeripheralDelegate {
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         if (peripheral.identifier.uuidString == self.udid!.uuidString) {
-            device = peripheral
-            device?.delegate = self
-            
-            
-
-            var signal = SignalLevel.good
-            
-            if (RSSI.intValue < -60) {
-                signal = SignalLevel.medium
-            }
-            
-            if (RSSI.intValue < -80) {
-                signal = SignalLevel.bad
-            }
-
+            let signal = levelForRSSI(RSSI: RSSI)
             self.delegate?.didReceivedSignalStrength(level: signal)
-            centralManager.stopScan()
+            central.stopScan()
         }
     }
 
     func peripheral(_ peripheral: CBPeripheral, didReadRSSI RSSI: NSNumber, error: Error?) {
-       // guard error != nil else { return }
+        guard error == nil else { return }
         let level = levelForRSSI(RSSI: RSSI)
         self.delegate?.didReceivedSignalStrength(level: level)
-    }
-    
-    
-    func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
-        peripheral.readRSSI()
     }
 }

@@ -84,7 +84,7 @@ public protocol SDKWrapperProtocol : AnyObject {
     
     @objc public func startTransactionWithAmount(amount: String) {
         SDKWrapper.shared.startDeviceInfoUpdate()
-        clearentVP3300.emv_cancelTransaction()
+       
         let payment = ClearentPayment.init(sale: ())
         if (amount.canBeConverted(to: String.Encoding.utf8)) {
             payment?.amount = Double(amount) ?? 0
@@ -254,8 +254,10 @@ extension SDKWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     }
     
     public func deviceConnected() {
-        bleManager = BluetoothManager.init(udid: (readerInfo?.udid)!, delegate: self)
         readerInfo?.isConnected = true
+        bleManager = BluetoothManager.init(udid: (readerInfo?.udid)!, delegate: self)
+        bleManager?.setupDevice()
+        bleManager?.readRSSI()
         self.delegate?.didFinishPairing()
     }
     
