@@ -37,7 +37,7 @@ class BluetoothManager: NSObject {
         if devices.count == 1 {
             self.device = devices[0]
             self.device?.delegate = self
-            // without connecting to the device from this instance of CBCEntralManager we can't read the RSSI
+            // Without connecting to the device from this instance of CBCEntralManager we can't read the RSSI
             centralManager.connect(devices[0], options: nil)
         }
     }

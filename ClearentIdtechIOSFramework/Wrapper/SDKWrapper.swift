@@ -84,7 +84,7 @@ public protocol SDKWrapperProtocol : AnyObject {
     
     @objc public func startTransactionWithAmount(amount: String) {
         SDKWrapper.shared.startDeviceInfoUpdate()
-       
+        
         let payment = ClearentPayment.init(sale: ())
         if (amount.canBeConverted(to: String.Encoding.utf8)) {
             payment?.amount = Double(amount) ?? 0
@@ -108,15 +108,38 @@ public protocol SDKWrapperProtocol : AnyObject {
     
     public func startDeviceInfoUpdate() {
         bleManager?.readRSSI()
+        getBatterylevel()
     }
+    
+    public func getBatterylevel() {
+        var response : NSData? = NSData()
+        _ = clearentVP3300.device_sendIDGCommand(0xF0, subCommand: 0x02, data: nil, response: &response)
+                
+        if let response = response {
+            let batteryLevel = batteryLevelPercentageFrom(level: response.int)
+            self.readerInfo?.batterylevel = batteryLevel
+        } else {
+            self.readerInfo?.batterylevel = nil
+        }
+    }
+        
+    private func batteryLevelPercentageFrom(level: Int) -> Int {
+        let minim = 192.0
+        let maxim = 210.0
+        let lvl = Double(level)
+        let percentage: Double = Double((lvl - minim) / (maxim - minim) * 100.0)
+        return Int(percentage)
+    }
+    
     
     // MARK - Private
     
     @objc private func updateConnectionWithDevice(bleDeviceID:String, friendly: String?) {
-        
         readerInfo = ReaderInfo(name: friendly, batterylevel: 0, signalLevel: 0, connected: false)
+
         if let uuid = UUID(uuidString: bleDeviceID) {
             readerInfo?.udid = uuid
+            bleManager = BluetoothManager.init(udid: uuid, delegate: self)
         }
         foundDevice = true
         connection?.bluetoothDeviceId = bleDeviceID
@@ -255,7 +278,6 @@ extension SDKWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     
     public func deviceConnected() {
         readerInfo?.isConnected = true
-        bleManager = BluetoothManager.init(udid: (readerInfo?.udid)!, delegate: self)
         bleManager?.setupDevice()
         bleManager?.readRSSI()
         self.delegate?.didFinishPairing()
