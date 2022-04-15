@@ -68,6 +68,10 @@ public protocol SDKWrapperProtocol : AnyObject {
         self.delegate?.didStartPairing()
     }
     
+    public func cancelTransaction() {
+        clearentVP3300.emv_cancelTransaction()
+    }
+    
     @objc public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String) {
         self.baseURL = baseURL
         self.apiKey = apiKey
@@ -235,15 +239,20 @@ extension SDKWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     }
     
     public func bluetoothDevices(_ bluetoothDevices: [ClearentBluetoothDevice]!) {
-        // for now we only handle the one device case
-        if (bluetoothDevices.count == 1) {
-            updateConnectionWithDevice(bleDeviceID: bluetoothDevices[0].deviceId,
-                                       friendly: bluetoothDevices[0].friendlyName)
-        } else if (bluetoothDevices.count == 0) {
-            // most probably the reader is in sleep mode
-           // self.delegate?.userActionNeeded(action: UserAction.pressReaderButton)
+
+            // for now we only handle the one device case
+            if (bluetoothDevices.count == 1) {
+                updateConnectionWithDevice(bleDeviceID: bluetoothDevices[0].deviceId,
+                                           friendly: bluetoothDevices[0].friendlyName)
+            } else {
+                bluetoothDevices.forEach { device in
+                    if (device.friendlyName == "IDTECH-VP3300-27224") {
+                        updateConnectionWithDevice(bleDeviceID: device.deviceId,
+                                                   friendly: device.friendlyName)
+                    }
+                }
+            }
         }
-    }
 
     public func deviceMessage(_ message: String!) {
         if (message == "BLUETOOTH CONNECTED") {

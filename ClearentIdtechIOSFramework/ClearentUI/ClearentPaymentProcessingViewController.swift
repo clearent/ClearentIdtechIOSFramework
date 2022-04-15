@@ -34,13 +34,13 @@ public class ClearentPaymentProcessingViewController: UIViewController {
     override public func viewDidLoad() {
         super.viewDidLoad()
         customizeModalView()
+        presenter?.startBluetoothDevicePairing()
     }
 
     // MARK: Private
 
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        presenter?.startBluetoothDevicePairing()
     }
 
     private func customizeModalView() {
@@ -89,6 +89,7 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
             button.title = userAction
             button.action = { [weak self] in
                 self?.dismiss(animated: true)
+                SDKWrapper.shared.cancelTransaction()
             }
             stackView.addArrangedSubview(button)
         }
