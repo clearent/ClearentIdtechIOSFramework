@@ -76,6 +76,10 @@ public protocol SDKWrapperProtocol : AnyObject {
         self.delegate?.didStartPairing()
     }
     
+    public func cancelTransaction() {
+        clearentVP3300.emv_cancelTransaction()
+    }
+    
     @objc public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String) {
         self.baseURL = baseURL
         self.apiKey = apiKey
