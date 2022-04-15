@@ -125,7 +125,7 @@ public protocol SDKWrapperProtocol : AnyObject {
         
     private func batteryLevelPercentageFrom(level: Int) -> Int {
         let minim = 192.0
-        let maxim = 210.0
+        let maxim = 216.0
         let lvl = Double(level)
         let percentage: Double = Double((lvl - minim) / (maxim - minim) * 100.0)
         return Int(percentage)
@@ -266,9 +266,13 @@ extension SDKWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         if (bluetoothDevices.count == 1) {
             updateConnectionWithDevice(bleDeviceID: bluetoothDevices[0].deviceId,
                                        friendly: bluetoothDevices[0].friendlyName)
-        } else if (bluetoothDevices.count == 0) {
-            // most probably the reader is in sleep mode
-           // self.delegate?.userActionNeeded(action: UserAction.pressReaderButton)
+        } else {
+            bluetoothDevices.forEach { device in
+                if (device.friendlyName == "IDTECH-VP3300-27224") {
+                    updateConnectionWithDevice(bleDeviceID: device.deviceId,
+                                               friendly: device.friendlyName)
+                }
+            }
         }
     }
 
