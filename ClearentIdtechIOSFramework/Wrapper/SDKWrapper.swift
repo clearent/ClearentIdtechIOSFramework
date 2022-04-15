@@ -35,8 +35,7 @@ public protocol SDKWrapperProtocol : AnyObject {
     func didStartPairing()
     func didEncounteredGeneralError()
     func didFinishPairing()
-    func didFinishTransaction()
-    func didReceiveTransactionError(error:TransactionError)
+    func didFinishTransaction(response: TransactionResponse, error: ResponseError?)
     func userActionNeeded(action: UserAction)
     func didReceiveInfo(info: UserInfo)
     func deviceDidDisconnect()
@@ -90,7 +89,19 @@ public protocol SDKWrapperProtocol : AnyObject {
         let httpClient = ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
         httpClient.saleTransaction(jwt: jwt, amount: amount) { data, error in
             DispatchQueue.main.async {
-                self.delegate?.didFinishTransaction()
+                guard let responseData = data else { return }
+                
+                do {
+                    let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
+                    
+                    guard let transactionError = decodedResponse.payload.error else {
+                        self.delegate?.didFinishTransaction(response: decodedResponse, error: nil)
+                        return
+                    }
+                    self.delegate?.didFinishTransaction(response: decodedResponse, error: transactionError)
+                } catch let jsonDecodingError {
+                    print(jsonDecodingError)
+                }
             }
         }
     }
