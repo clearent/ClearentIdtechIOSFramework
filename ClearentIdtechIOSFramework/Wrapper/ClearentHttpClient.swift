@@ -52,7 +52,6 @@ class ClearentHttpClient {
         }
     }
     
-    
     // MARK - Private
     
     private func transactionMethod(type: String, amount: String) -> HttpClient.HTTPMethod {
