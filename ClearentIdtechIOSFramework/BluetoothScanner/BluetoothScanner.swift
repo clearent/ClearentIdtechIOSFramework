@@ -9,20 +9,20 @@
 import Foundation
 import CoreBluetooth
 
-protocol BluetoothManagerProtocol : AnyObject {
+protocol BluetoothScannerProtocol : AnyObject {
     func didReceivedSignalStrength(level:SignalLevel)
     func didFinishWithError()
 }
 
-class BluetoothManager: NSObject {
+class BluetoothScanner: NSObject {
 
     private var centralManager: CBCentralManager!
     private var readerUDID: String?
     private var udid: UUID?
-    private weak var delegate: BluetoothManagerProtocol?
+    private weak var delegate: BluetoothScannerProtocol?
     private var device: CBPeripheral?
     
-    init(udid:UUID, delegate: BluetoothManagerProtocol) {
+    init(udid:UUID, delegate: BluetoothScannerProtocol) {
         super.init()
         self.udid = udid
         self.delegate = delegate
@@ -61,7 +61,7 @@ class BluetoothManager: NSObject {
     }
 }
 
-extension BluetoothManager: CBCentralManagerDelegate, CBPeripheralDelegate {
+extension BluetoothScanner: CBCentralManagerDelegate, CBPeripheralDelegate {
     
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         switch central.state {
@@ -78,6 +78,9 @@ extension BluetoothManager: CBCentralManagerDelegate, CBPeripheralDelegate {
         case .poweredOn:
             setupDevice()
             central.scanForPeripherals(withServices: nil, options: nil)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 6) { [self] in
+                centralManager.stopScan()
+            }
         @unknown default:
             print("default")
         }

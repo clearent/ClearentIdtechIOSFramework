@@ -85,7 +85,7 @@
 		BA40A34B27F1B38C0041CCF7 /* ClearentHttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA40A34827F1B38C0041CCF7 /* ClearentHttpClient.swift */; };
 		BA40A34C27F1B38C0041CCF7 /* SDKWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA40A34927F1B38C0041CCF7 /* SDKWrapper.swift */; };
 		BA40A34D27F1B38C0041CCF7 /* HttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA40A34A27F1B38C0041CCF7 /* HttpClient.swift */; };
-		BA475A442807FEA9002A003D /* BluetoothManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA475A432807FEA9002A003D /* BluetoothManager.swift */; };
+		BA475A442807FEA9002A003D /* BluetoothScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA475A432807FEA9002A003D /* BluetoothScanner.swift */; };
 		BA475A4628087EC1002A003D /* NSDataExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA475A4528087EC1002A003D /* NSDataExtension.swift */; };
 		BAC4E3C227FC3E44001B5E6D /* Identifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC4E3C127FC3E44001B5E6D /* Identifiers.swift */; };
 		BAC4E3C427FC3E88001B5E6D /* FlowDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC4E3C327FC3E88001B5E6D /* FlowDataProvider.swift */; };
@@ -233,7 +233,7 @@
 		BA40A34827F1B38C0041CCF7 /* ClearentHttpClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentHttpClient.swift; sourceTree = "<group>"; };
 		BA40A34927F1B38C0041CCF7 /* SDKWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDKWrapper.swift; sourceTree = "<group>"; };
 		BA40A34A27F1B38C0041CCF7 /* HttpClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpClient.swift; sourceTree = "<group>"; };
-		BA475A432807FEA9002A003D /* BluetoothManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothManager.swift; sourceTree = "<group>"; };
+		BA475A432807FEA9002A003D /* BluetoothScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothScanner.swift; sourceTree = "<group>"; };
 		BA475A4528087EC1002A003D /* NSDataExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSDataExtension.swift; sourceTree = "<group>"; };
 		BAC4E3C127FC3E44001B5E6D /* Identifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifiers.swift; sourceTree = "<group>"; };
 		BAC4E3C327FC3E88001B5E6D /* FlowDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowDataProvider.swift; sourceTree = "<group>"; };
@@ -473,12 +473,12 @@
 			path = Wrapper;
 			sourceTree = "<group>";
 		};
-		BA475A422807FE99002A003D /* BluetoothManager */ = {
+		BA475A422807FE99002A003D /* BluetoothScanner */ = {
 			isa = PBXGroup;
 			children = (
-				BA475A432807FEA9002A003D /* BluetoothManager.swift */,
+				BA475A432807FEA9002A003D /* BluetoothScanner.swift */,
 			);
-			path = BluetoothManager;
+			path = BluetoothScanner;
 			sourceTree = "<group>";
 		};
 		BAC4E3C027FC3DC9001B5E6D /* PaymentFlowDataSource */ = {
@@ -586,7 +586,7 @@
 		E76504F61FFC306100B345F6 /* ClearentIdtechIOSFramework */ = {
 			isa = PBXGroup;
 			children = (
-				BA475A422807FE99002A003D /* BluetoothManager */,
+				BA475A422807FE99002A003D /* BluetoothScanner */,
 				BA40A34727F1B38C0041CCF7 /* Wrapper */,
 				19B0A07E27EC9FB1006DAA48 /* ClearentUI */,
 				E75891DD225522AB00288032 /* Logging */,
@@ -916,7 +916,7 @@
 				E746CB612358983200C41DF1 /* ClearentPayment.m in Sources */,
 				01F6D5792805744E00310E01 /* PaymentFeedbackComponent.swift in Sources */,
 				4B32C0A22436612900CCF9B9 /* ClearentTransactions.m in Sources */,
-				BA475A442807FEA9002A003D /* BluetoothManager.swift in Sources */,
+				BA475A442807FEA9002A003D /* BluetoothScanner.swift in Sources */,
 				014B2BAA280090130056F7FD /* ClearentConstants.swift in Sources */,
 				E764E7722303182C0029B753 /* ClearentOfflineDeclineReceipt.m in Sources */,
 				BA40A34D27F1B38C0041CCF7 /* HttpClient.swift in Sources */,

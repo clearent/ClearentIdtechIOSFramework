@@ -47,7 +47,7 @@ public protocol SDKWrapperProtocol : AnyObject {
     
     public static let shared = SDKWrapper()
     weak var delegate: SDKWrapperProtocol?
-    private var bleManager : BluetoothManager?
+    private var bleManager : BluetoothScanner?
     
     private var baseURL: String = ""
     private var apiKey: String = ""
@@ -143,7 +143,7 @@ public protocol SDKWrapperProtocol : AnyObject {
 
         if let uuid = UUID(uuidString: bleDeviceID) {
             readerInfo?.udid = uuid
-            bleManager = BluetoothManager.init(udid: uuid, delegate: self)
+            bleManager = BluetoothScanner.init(udid: uuid, delegate: self)
         }
         foundDevice = true
         connection?.bluetoothDeviceId = bleDeviceID
@@ -298,7 +298,7 @@ extension SDKWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     }
 }
 
-extension SDKWrapper: BluetoothManagerProtocol {
+extension SDKWrapper: BluetoothScannerProtocol {
     
     func didReceivedSignalStrength(level: SignalLevel) {
         readerInfo?.signalLevel = level.rawValue
