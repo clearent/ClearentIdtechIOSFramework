@@ -118,8 +118,13 @@ public protocol SDKWrapperProtocol : AnyObject {
     public func getBatterylevel() {
         var response : NSData? = NSData()
         _ = clearentVP3300.device_sendIDGCommand(0xF0, subCommand: 0x02, data: nil, response: &response)
-                
-        if let response = response {
+        guard let response = response else {
+            self.readerInfo?.batterylevel = nil
+            return
+        }
+
+        let curentLevel = response.int
+        if (curentLevel > 0) {
             let batteryLevel = batteryLevelPercentageFrom(level: response.int)
             self.readerInfo?.batterylevel = batteryLevel
         } else {
@@ -131,7 +136,9 @@ public protocol SDKWrapperProtocol : AnyObject {
         let minim = 192.0
         let maxim = 216.0
         let lvl = Double(level)
-        let percentage: Double = Double((lvl - minim) / (maxim - minim) * 100.0)
+        var percentage: Double = Double((lvl - minim) / (maxim - minim) * 100.0)
+        // it seams that when the reader is charging we get higer values that the limit specified in the documentation
+        percentage = (percentage <= 100) ? percentage : 100
         return Int(percentage)
     }
     
