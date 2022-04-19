@@ -65,10 +65,8 @@ extension BluetoothScanner: CBCentralManagerDelegate, CBPeripheralDelegate {
     
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         switch central.state {
-        case .unknown:
-            print("unknown")
-        case .resetting:
-            print("resetting")
+        case .unknown, .resetting:
+            break
         case .unsupported:
             self.delegate?.didFinishWithError()
         case .unauthorized:
@@ -82,12 +80,13 @@ extension BluetoothScanner: CBCentralManagerDelegate, CBPeripheralDelegate {
                 centralManager.stopScan()
             }
         @unknown default:
-            print("default")
+            print("Unknown")
         }
     }
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-        if (peripheral.identifier.uuidString == self.udid!.uuidString) {
+        guard let uuid = self.udid else {return}
+        if (peripheral.identifier.uuidString == uuid.uuidString) {
             let signal = levelForRSSI(RSSI: RSSI)
             self.delegate?.didReceivedSignalStrength(level: signal)
             central.stopScan()

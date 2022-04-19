@@ -52,17 +52,12 @@ struct PaymentFeedbackComponent: PaymentFeedbackComponentProtocol {
     }
 
     var signalStatus: (iconName: String, title: String) {
-        guard let connected = feedbackItems[.readerConnected] as? Bool, connected else {
-            return (iconName: ClearentConstants.IconName.signalIdle, title: "xsdk_reader_signal_idle".localized)
-        }
-       
-        guard let signalLevel = feedbackItems[.readerSignalLevel] as? Int else {
+        guard let connected = feedbackItems[.readerConnected] as? Bool, connected, let signalLevel = feedbackItems[.readerSignalLevel] as? Int else {
             return (iconName: ClearentConstants.IconName.signalIdle, title: "xsdk_reader_signal_idle".localized)
         }
         
         var icon = ClearentConstants.IconName.signalIdle
         switch signalLevel {
-        
             case 0 :
                 icon =  ClearentConstants.IconName.goodSignal
             case 1 :
