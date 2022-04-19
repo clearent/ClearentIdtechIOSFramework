@@ -20,11 +20,12 @@ class FlowFeedback {
     }
 }
 
-struct ReaderInfo {
+public struct ReaderInfo {
     var readerName : String
-    let batterylevel : Int?
-    let signalLevel : Int?
-    let isConnected : Bool
+    var batterylevel : Int?
+    var signalLevel : Int?
+    var isConnected : Bool
+    var udid: UUID?
     
     init(name: String?, batterylevel: Int, signalLevel:Int, connected: Bool) {
         self.readerName = "xsdk_unknown_reader_name".localized
@@ -75,8 +76,8 @@ class FlowDataProvider : NSObject {
         sdkWrapper.delegate = self
     }
     
-    func fetchReaderInfo() -> ReaderInfo {
-        return ReaderInfo(name: sdkWrapper.friendlyName, batterylevel: 100, signalLevel: 1, connected: sdkWrapper.isReaderConnected())
+    func fetchReaderInfo() -> ReaderInfo? {
+        return sdkWrapper.readerInfo
     }
 }
 
@@ -110,29 +111,29 @@ extension FlowDataProvider : SDKWrapperProtocol {
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
         
-    func didFinishTransaction(response: TransactionResponse, error: ResponseError?) {
-        let feedback: FlowFeedback
+    func didFinishTransaction() {
+        let transactionDict = [.description:"xsdk_transaction_completed_description".localized,
+                               .graphicType:FlowGraphicType.transaction_completed] as [FlowDataKeys : Any]
         
-        if let error = error {
-            let errorDictionary = [.title:"xsdk_general_error_title".localized,
-                                   .description:error.message,
-                                   .userAction:"xsdk_user_action_ok".localized,
-                                   .graphicType:FlowGraphicType.error] as [FlowDataKeys : Any]
-            
-            feedback = FlowDataFactory.component(with: .payment,
-                                                     type: .error,
-                                                     readerInfo: fetchReaderInfo(),
-                                                     payload: errorDictionary)
-        } else {
-            let transactionDictionary = [.description:"xsdk_transaction_completed_description".localized,
-                                         .graphicType:FlowGraphicType.transaction_completed] as [FlowDataKeys : Any]
-            
-            feedback = FlowDataFactory.component(with: .payment,
+        let feedback = FlowDataFactory.component(with: .payment,
                                                  type: .info,
                                                  readerInfo: fetchReaderInfo(),
-                                                 payload: transactionDictionary)
-            
-        }
+                                                 payload: transactionDict)
+        
+        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+    }
+    
+    func didReceiveTransactionError(error: TransactionError) {
+        let errorDict = [.title:"xsdk_general_error_title".localized,
+                         .description:"xsdk_general_error_description".localized,
+                         .userAction:"xsdk_user_action_ok".localized,
+                         .graphicType:FlowGraphicType.error] as [FlowDataKeys : Any]
+        
+        let feedback = FlowDataFactory.component(with: .payment,
+                                                 type: .error,
+                                                 readerInfo: fetchReaderInfo(),
+                                                 payload: errorDict)
+        
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
