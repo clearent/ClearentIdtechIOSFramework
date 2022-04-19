@@ -15,7 +15,7 @@
 "xsdk_unknown_reader_name" = "Unknown";
 
 // General error
-"xsdk_general_error_title" = "Transaction failed";
+"xsdk_general_error_title" = "Ops";
 "xsdk_general_error_description" = "Something Went wrong";
 "xsdk_user_action_retry" = "Try Again";
 "xsdk_user_action_cancel" = "Cancel";
