@@ -76,8 +76,8 @@ class FlowDataProvider : NSObject {
         sdkWrapper.delegate = self
     }
     
-    func fetchReaderInfo() -> ReaderInfo {
-        return sdkWrapper.readerInfo!
+    func fetchReaderInfo() -> ReaderInfo? {
+        return sdkWrapper.readerInfo
     }
 }
 
