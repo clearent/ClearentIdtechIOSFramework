@@ -32,7 +32,7 @@ public enum TransactionError {
     case networkError, insuficientFunds, duplicateTransaction, generalError
 }
 
-public protocol SDKWrapperProtocol : AnyObject {
+public protocol ClearentWrapperProtocol : AnyObject {
     func didStartPairing()
     func didEncounteredGeneralError()
     func didFinishPairing()
@@ -42,16 +42,16 @@ public protocol SDKWrapperProtocol : AnyObject {
     func deviceDidDisconnect()
 }
 
-@objc public final class SDKWrapper : NSObject {
+@objc public final class ClearentWrapper : NSObject {
     
-    public static let shared = SDKWrapper()
+    public static let shared = ClearentWrapper()
     private var baseURL: String = ""
     private var apiKey: String = ""
     private var publicKey: String = ""
     private var clearentVP3300 = Clearent_VP3300()
     private var connection  = ClearentConnection(bluetoothSearch: ())
     private var foundDevice = false
-    weak var delegate: SDKWrapperProtocol?
+    weak var delegate: ClearentWrapperProtocol?
     public var friendlyName : String?
     private var transactionAmount: String?
     
@@ -84,7 +84,7 @@ public protocol SDKWrapperProtocol : AnyObject {
     }
     
     @objc public func startTransactionWithAmount(amount: String) {
-        SDKWrapper.shared.startDeviceInfoUpdate()
+        ClearentWrapper.shared.startDeviceInfoUpdate()
 
         let payment = ClearentPayment.init(sale: ())
         if (amount.canBeConverted(to: String.Encoding.utf8)) {
@@ -266,7 +266,7 @@ public protocol SDKWrapperProtocol : AnyObject {
     }
 }
 
-extension SDKWrapper : Clearent_Public_IDTech_VP3300_Delegate {
+extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     
     // needs a way to transmit the amount
     public func successTransactionToken(_ clearentTransactionToken: ClearentTransactionToken!) {
@@ -339,7 +339,7 @@ extension SDKWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     }
 }
 
-extension SDKWrapper: BluetoothScannerProtocol {
+extension ClearentWrapper: BluetoothScannerProtocol {
     
     func didReceivedSignalStrength(level: SignalLevel) {
         readerInfo?.signalLevel = level.rawValue

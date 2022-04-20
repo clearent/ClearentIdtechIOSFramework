@@ -69,7 +69,7 @@ class FlowDataProvider : NSObject {
     weak var delegate: FlowDataProtocol?
     static let shared = FlowDataProvider()
     
-    let sdkWrapper = SDKWrapper.shared
+    let sdkWrapper = ClearentWrapper.shared
     
     public override init() {
         super.init()
@@ -82,7 +82,7 @@ class FlowDataProvider : NSObject {
 }
 
 
-extension FlowDataProvider : SDKWrapperProtocol {
+extension FlowDataProvider : ClearentWrapperProtocol {
     
     func didStartPairing() {
         let pairingDict = [

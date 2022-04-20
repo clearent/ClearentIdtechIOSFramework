@@ -89,7 +89,7 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
             button.title = userAction
             button.action = { [weak self] in
                 self?.dismiss(animated: true)
-                SDKWrapper.shared.cancelTransaction()
+                ClearentWrapper.shared.cancelTransaction()
             }
             stackView.addArrangedSubview(button)
         }

@@ -22,7 +22,7 @@ public protocol PaymentProcessingProtocol {
 public class ClearentPaymentProcessingPresenter {
     private weak var paymentProcessingView: ClearentPaymentProcessingView?
     private var amount: Double
-    private let sdkWrapper: SDKWrapper
+    private let sdkWrapper: ClearentWrapper
     private var sdkFeedbackProvider: FlowDataProvider
 
     // MARK: Init
@@ -30,7 +30,7 @@ public class ClearentPaymentProcessingPresenter {
     public init(paymentProcessingView: ClearentPaymentProcessingView, amount: Double, baseURL: String, publicKey: String, apiKey: String) {
         self.paymentProcessingView = paymentProcessingView
         self.amount = amount
-        sdkWrapper = SDKWrapper.shared
+        sdkWrapper = ClearentWrapper.shared
         sdkFeedbackProvider = FlowDataProvider()
         sdkWrapper.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey)
     }

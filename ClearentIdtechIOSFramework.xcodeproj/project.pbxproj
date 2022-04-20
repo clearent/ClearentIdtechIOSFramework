@@ -83,7 +83,7 @@
 		4BAEA888271C5F24007F5FCF /* ClearentLumberjackRemoteLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BAEA887271C5F24007F5FCF /* ClearentLumberjackRemoteLogger.m */; };
 		4BAEA898273410A6007F5FCF /* CocoaLumberjack.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BAEA897273410A6007F5FCF /* CocoaLumberjack.xcframework */; };
 		BA40A34B27F1B38C0041CCF7 /* ClearentHttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA40A34827F1B38C0041CCF7 /* ClearentHttpClient.swift */; };
-		BA40A34C27F1B38C0041CCF7 /* SDKWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA40A34927F1B38C0041CCF7 /* SDKWrapper.swift */; };
+		BA40A34C27F1B38C0041CCF7 /* ClearentWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA40A34927F1B38C0041CCF7 /* ClearentWrapper.swift */; };
 		BA40A34D27F1B38C0041CCF7 /* HttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA40A34A27F1B38C0041CCF7 /* HttpClient.swift */; };
 		BA475A442807FEA9002A003D /* BluetoothScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA475A432807FEA9002A003D /* BluetoothScanner.swift */; };
 		BA475A4628087EC1002A003D /* NSDataExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA475A4528087EC1002A003D /* NSDataExtension.swift */; };
@@ -232,7 +232,7 @@
 		4BAEA89327340E89007F5FCF /* CocoaLumberjack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CocoaLumberjack.framework; sourceTree = "<group>"; };
 		4BAEA897273410A6007F5FCF /* CocoaLumberjack.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = CocoaLumberjack.xcframework; sourceTree = "<group>"; };
 		BA40A34827F1B38C0041CCF7 /* ClearentHttpClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentHttpClient.swift; sourceTree = "<group>"; };
-		BA40A34927F1B38C0041CCF7 /* SDKWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDKWrapper.swift; sourceTree = "<group>"; };
+		BA40A34927F1B38C0041CCF7 /* ClearentWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentWrapper.swift; sourceTree = "<group>"; };
 		BA40A34A27F1B38C0041CCF7 /* HttpClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpClient.swift; sourceTree = "<group>"; };
 		BA475A432807FEA9002A003D /* BluetoothScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothScanner.swift; sourceTree = "<group>"; };
 		BA475A4528087EC1002A003D /* NSDataExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSDataExtension.swift; sourceTree = "<group>"; };
@@ -470,7 +470,7 @@
 			children = (
 				BA475A55280FEB91002A003D /* Entities */,
 				BA40A34827F1B38C0041CCF7 /* ClearentHttpClient.swift */,
-				BA40A34927F1B38C0041CCF7 /* SDKWrapper.swift */,
+				BA40A34927F1B38C0041CCF7 /* ClearentWrapper.swift */,
 				BA40A34A27F1B38C0041CCF7 /* HttpClient.swift */,
 			);
 			path = Wrapper;
@@ -939,7 +939,7 @@
 				1937010A27F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.swift in Sources */,
 				19A61D6D2804129100E295B3 /* ClearentReaderStatusHeaderView.swift in Sources */,
 				E702E5702364835B0032ED8D /* ClearentVP3300Config.m in Sources */,
-				BA40A34C27F1B38C0041CCF7 /* SDKWrapper.swift in Sources */,
+				BA40A34C27F1B38C0041CCF7 /* ClearentWrapper.swift in Sources */,
 				0169C2E527FF1A4600B8B4DB /* ClearentMarginableView.swift in Sources */,
 				01F6D57B280580B200310E01 /* ClearentStringExtension.swift in Sources */,
 				E75891FC225522AB00288032 /* ClearentLogging.m in Sources */,
