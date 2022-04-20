@@ -9,8 +9,8 @@
 import UIKit
 
 public class ClearentPaymentProcessingViewController: UIViewController {
-    @IBOutlet weak var stackView: ClearentAdaptiveStackView!
-    
+    @IBOutlet var stackView: ClearentAdaptiveStackView!
+
     public var presenter: PaymentProcessingProtocol?
     private var initialTouchPoint = CGPoint.zero
     private enum ModalLayout {
@@ -41,7 +41,7 @@ public class ClearentPaymentProcessingViewController: UIViewController {
     // MARK: Private
     
     private func dismissViewController() {
-        self.dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: nil)
         SDKWrapper.shared.cancelTransaction()
         presenter?.dismissAction?()
     }
@@ -62,7 +62,7 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
         createMainInfoView(with: component)
         createButton(with: component)
     }
-    
+
     private func createStatusHeader(with component: PaymentFeedbackComponentProtocol) {
         let readerStatusHeader = ClearentReaderStatusHeaderView()
         readerStatusHeader.setup(readerName: component.readerName,
@@ -72,7 +72,7 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
                                  batteryStatusTitle: component.batteryStatus.title)
         stackView.addArrangedSubview(readerStatusHeader)
     }
-    
+
     private func createMainInfoView(with component: PaymentFeedbackComponentProtocol) {
         if let description = component.mainDescription {
             if let iconName = component.iconName, let title = component.mainTitle {
@@ -88,7 +88,7 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
             }
         }
     }
-    
+
     private func createButton(with component: PaymentFeedbackComponentProtocol) {
         if let userAction = component.userAction {
             let button = ClearentPrimaryButton()

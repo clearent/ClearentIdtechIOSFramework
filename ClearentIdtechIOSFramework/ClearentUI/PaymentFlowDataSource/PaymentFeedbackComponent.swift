@@ -42,7 +42,7 @@ struct PaymentFeedbackComponent: PaymentFeedbackComponentProtocol {
     }
 
     var signalStatus: (iconName: String, title: String) {
-        guard let readerInfo = feedbackItems[.readerInfo] as? ReaderInfo else { return  (iconName: ClearentConstants.IconName.signalIdle, title: "xsdk_reader_signal_idle".localized) }
+        guard let readerInfo = feedbackItems[.readerInfo] as? ReaderInfo else { return (iconName: ClearentConstants.IconName.signalIdle, title: "xsdk_reader_signal_idle".localized) }
         return readerInfo.signalStatus
     }
 

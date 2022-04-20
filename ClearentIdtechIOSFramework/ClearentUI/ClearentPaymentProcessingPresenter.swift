@@ -45,7 +45,7 @@ extension ClearentPaymentProcessingPresenter: PaymentProcessingProtocol {
             sdkWrapper.startPairing()
         }
     }
-    
+
     public func pairAgainBluetoothDevice() {
         sdkWrapper.startPairing()
     }
@@ -53,9 +53,9 @@ extension ClearentPaymentProcessingPresenter: PaymentProcessingProtocol {
 
 extension ClearentPaymentProcessingPresenter: FlowDataProtocol {
     public func deviceDidDisconnect() {
-        // TODO
+        // TODO: implement method
     }
-    
+
     func didFinishedPairing() {
         sdkWrapper.startTransactionWithAmount(amount: String(amount))
     }
