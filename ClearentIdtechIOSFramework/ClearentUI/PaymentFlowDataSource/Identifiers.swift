@@ -43,7 +43,7 @@ enum FlowGraphicType {
         case .reader:
             // TO DO - add the correct asset
             return nil
-        case .pairedReader
+        case .pairedReader:
             // TO DO - add the correct asset
             return nil
         }
