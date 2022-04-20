@@ -9,17 +9,19 @@
 import UIKit
 
 public class ClearentPaymentProcessingViewController: UIViewController {
+    
+    // MARK: - Properties
+    
     @IBOutlet var stackView: ClearentAdaptiveStackView!
-
     public var presenter: PaymentProcessingProtocol?
-    private var initialTouchPoint = CGPoint.zero
-    private enum ModalLayout {
+    private struct Layout {
         static let cornerRadius = 15.0
         static let margin = 16.0
         static let backgroundColor = ClearentConstants.Color.backgroundSecondary01
     }
 
-    // MARK: Init
+
+    // MARK: - Init
 
     public init() {
         super.init(nibName: String(describing: ClearentPaymentProcessingViewController.self), bundle: ClearentConstants.bundle)
@@ -30,7 +32,7 @@ public class ClearentPaymentProcessingViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    // MARK: Lifecycle
+    // MARK: - Lifecycle
 
     override public func viewDidLoad() {
         super.viewDidLoad()
@@ -38,7 +40,7 @@ public class ClearentPaymentProcessingViewController: UIViewController {
         presenter?.startBluetoothDevicePairing()
     }
     
-    // MARK: Private
+    // MARK: - Private
     
     private func dismissViewController() {
         dismiss(animated: true, completion: nil)
@@ -49,11 +51,11 @@ public class ClearentPaymentProcessingViewController: UIViewController {
     private func setupStyle() {
         view.backgroundColor = .clear
         view.isOpaque = false
-        stackView.addRoundedCorners(backgroundColor: ModalLayout.backgroundColor, radius: ModalLayout.cornerRadius, margin: ModalLayout.margin)
+        stackView.addRoundedCorners(backgroundColor: Layout.backgroundColor, radius: Layout.cornerRadius, margin: Layout.margin)
     }
 }
 
-// MARK: ClearentPaymentProcessingView
+// MARK: - ClearentPaymentProcessingView
 
 extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView {
     public func updateContent(with component: PaymentFeedbackComponentProtocol) {
