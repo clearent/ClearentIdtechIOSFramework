@@ -6,9 +6,14 @@
   Copyright © 2022 Clearent, L.L.C. All rights reserved.
 */
 
-/* Payring Flow*/
+/* Pairing Flow*/
 
 "xsdk_searching_for_reader" = "Searching for your reader...";
+"xsdk_pair_new_reader" = "Pair new reader";
+"xsdk_press_reader_button" = "Press the button on reader";
+"xsdk_select_reader" = "Please select the reader you wish to pair with";
+"xsdk_connecting_reader" = "Connecting";
+
 
 /* Payment Flow*/
 

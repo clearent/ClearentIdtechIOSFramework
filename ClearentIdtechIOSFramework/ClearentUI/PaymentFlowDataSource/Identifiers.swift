@@ -13,15 +13,15 @@ enum SignalLevel : Int {
 }
 
 enum FlowDataKeys {
-    case readerConnected, readerBatteryLevel, readerSignalLevel, readerName, graphicType, title, description, userAction
+    case readerConnected, readerBatteryLevel, readerSignalLevel, readerName, graphicType, title, description, userAction, devicesFound
 }
 
 enum FlowFeedbackType {
-    case error, info, warning
+    case error, info, warning, searchDevices
 }
 
 enum FlowGraphicType {
-    case insert_card, press_button, transaction_completed, loading, error, warning
+    case insert_card, press_button, transaction_completed, loading, error, warning, readerButton, reader
     
     var iconName: String? {
         switch self {
@@ -36,6 +36,12 @@ enum FlowGraphicType {
         case .warning:
             return ClearentConstants.IconName.warning
         case .loading:
+            return nil
+        case .readerButton:
+            // TO DO - add the correct asset
+            return nil
+        case .reader:
+            // TO DO - add the correct asset
             return nil
         }
     }

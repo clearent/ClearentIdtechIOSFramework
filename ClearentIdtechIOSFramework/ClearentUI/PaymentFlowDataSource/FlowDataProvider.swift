@@ -84,7 +84,7 @@ class FlowDataProvider : NSObject {
 
 
 extension FlowDataProvider : ClearentWrapperProtocol {
-        
+    
     // MARK - Transaction related
     
     func didEncounteredGeneralError() {
@@ -225,11 +225,40 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
-    func didFoundReaders(readers: [ReaderInfo]) {
-        //
+    func didFindReaders(readers: [ReaderInfo]) {
+        let pairingDict = [.title:"xsdk_select_reader".localized,
+                           .graphicType:FlowGraphicType.loading,
+                           .devicesFound:readers] as [FlowDataKeys : Any]
+        
+        let feedback = FlowDataFactory.component(with: .pairing,
+                                                 type: .searchDevices,
+                                                 readerInfo: nil,
+                                                 payload: pairingDict)
+        
+        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
-    func didNotFoundReaders() {
-        // show Info to make sure the reader is not sleeping
+    func startedReaderConnection(with reader: ReaderInfo) {
+        let pairingDict = [.description:"xsdk_connecting_reader".localized,
+                           .graphicType:FlowGraphicType.loading] as [FlowDataKeys : Any]
+        
+        let feedback = FlowDataFactory.component(with: .pairing,
+                                                 type: .searchDevices,
+                                                 readerInfo: reader,
+                                                 payload: pairingDict)
+        
+        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+    }
+    
+    func didNotFindReaders() {
+        let pairingDict = [.description:"xsdk_press_reader_button".localized,
+                           .graphicType:FlowGraphicType.readerButton,] as [FlowDataKeys : Any]
+        
+        let feedback = FlowDataFactory.component(with: .pairing,
+                                                 type: .info,
+                                                 readerInfo: nil,
+                                                 payload: pairingDict)
+        
+        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
 }

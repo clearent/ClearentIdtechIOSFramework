@@ -33,10 +33,11 @@ public enum TransactionError {
 
 public protocol ClearentWrapperProtocol : AnyObject {
     func didStartPairing()
-    func deviceDidDisconnect()
     func didFinishPairing()
-    func didFoundReaders(readers:[ReaderInfo])
-    func didNotFoundReaders()
+    func didFindReaders(readers:[ReaderInfo])
+    func deviceDidDisconnect()
+    func didNotFindReaders()
+    func startedReaderConnection(with reader:ReaderInfo)
     
     func didEncounteredGeneralError()
     func didFinishTransaction(response: TransactionResponse, error: ResponseError?)
@@ -196,6 +197,8 @@ public protocol ClearentWrapperProtocol : AnyObject {
         
         connection?.searchBluetooth = false
         clearentVP3300.start(connection)
+        
+        self.delegate?.startedReaderConnection(with: readerInfo)
     }
     
     private func readerInfo(from clearentDevice:ClearentBluetoothDevice) -> ReaderInfo {
@@ -250,9 +253,9 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
             let readers = bluetoothDevices.map { device in
                 return readerInfo(from: device)
             }
-            self.delegate?.didFoundReaders(readers: readers)
+            self.delegate?.didFindReaders(readers: readers)
         } else {
-            self.delegate?.didNotFoundReaders()
+            self.delegate?.didNotFindReaders()
         }
     }
 
