@@ -8,7 +8,6 @@
 import Foundation
 import CocoaLumberjack
 
-
 public enum UserAction: String {
     case pleaseWait = "PLEASE WAIT...",
          swipeTapOrInsert = "PLEASE SWIPE, TAP, OR INSERT",
@@ -193,76 +192,6 @@ public protocol ClearentWrapperProtocol : AnyObject {
         }
         connection?.searchBluetooth = false
         clearentVP3300.start(connection)
-    }
-    
-    
-    // MARK - Logger Related
-    
-    public func retriveLoggFileContents() -> String {
-        var logs = ""
-        let fileInfo = fetchLoggerFileInfo()
-        if let newFileInfo = fileInfo {
-            if let newLogs = readContentsOfFile(from: newFileInfo.filePath) {
-                logs = newLogs
-            }
-        }
-        return logs
-    }
-    
-    public func fetchLogFileURL() -> URL? {
-        if let fileInfo = fetchLoggerFileInfo() {
-            let urlPath = URL(fileURLWithPath: fileInfo.filePath)
-            return urlPath
-        }
-        return nil
-    }
-    
-    public func clearLogFile() {
-        DDLog.allLoggers.forEach { logger in
-            if (logger.isKind(of: DDFileLogger.self)) {
-                let fileLogger : DDFileLogger = logger as! DDFileLogger
-                fileLogger.rollLogFile(withCompletion: nil)
-            }
-        }
-    }
-    
-    private func createLogFile() {
-        DDLog.allLoggers.forEach { logger in
-            if (logger.isKind(of: DDFileLogger.self)) {
-                let fl : DDFileLogger = logger as! DDFileLogger
-                do {
-                    if fl.currentLogFileInfo == nil {
-                        try fl.logFileManager.createNewLogFile()
-                    }
-                } catch {
-                    print("error logger")
-                }
-            }
-        }
-    }
-    
-    private func fetchLoggerFileInfo() -> DDLogFileInfo? {
-        var resultFileInfo : DDLogFileInfo? = nil
-        DDLog.allLoggers.forEach { logger in
-            if (logger.isKind(of: DDFileLogger.self)) {
-                let fileLogger : DDFileLogger = logger as! DDFileLogger
-                let fileInfos = fileLogger.logFileManager.sortedLogFileInfos
-                resultFileInfo =  (fileInfos.count > 0) ? fileInfos[0] : nil
-            }
-        }
-        
-        return resultFileInfo
-    }
-    
-    private func readContentsOfFile(from path: String) -> String? {
-        var string: String? = nil
-        let urlPath = URL(fileURLWithPath: path)
-        do {
-            string = try String(contentsOf:urlPath, encoding: .utf8)
-        } catch {
-            print("Could not read log file.")
-        }
-        return string
     }
 }
 
