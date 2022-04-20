@@ -19,6 +19,7 @@ public class ClearentPaymentProcessingViewController: UIViewController {
         static let margin = 16.0
         static let backgroundColor = ClearentConstants.Color.backgroundSecondary01
     }
+    private var initialTouchPoint = CGPoint.zero
 
 
     // MARK: - Init
@@ -38,6 +39,7 @@ public class ClearentPaymentProcessingViewController: UIViewController {
         super.viewDidLoad()
         setupStyle()
         presenter?.startBluetoothDevicePairing()
+        view.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handleDismiss)))
     }
     
     // MARK: - Private
@@ -99,6 +101,37 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
                 self?.dismissViewController()
             }
             stackView.addArrangedSubview(button)
+        }
+    }
+}
+
+// MARK: Dismiss
+
+extension ClearentPaymentProcessingViewController {
+    enum Constants {
+        static let dismissTreshold = 200.0
+        static let dismissAnimationDuration = 0.3
+    }
+
+    @objc func handleDismiss(sender: UIPanGestureRecognizer) {
+        let touchPoint = sender.location(in: view?.window)
+        switch sender.state {
+        case .began:
+            initialTouchPoint = touchPoint
+        case .changed:
+            if touchPoint.y > initialTouchPoint.y {
+                view.frame.origin.y = touchPoint.y - initialTouchPoint.y
+            }
+        case .ended, .cancelled:
+            if touchPoint.y - initialTouchPoint.y > Constants.dismissTreshold {
+                dismissViewController()
+            } else {
+                UIView.animate(withDuration: Constants.dismissAnimationDuration, animations: {
+                    self.view.frame = CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: self.view.frame.size.height)
+                })
+            }
+        default:
+            break
         }
     }
 }
