@@ -8,10 +8,10 @@
 import UIKit
 
 /// A custom UIView  that contains all the necessary methods for loading a view from nib. Could be used as a base class for UI components in order to avoid boilerplate code.
-class ClearentXibView: UIView {
+public class ClearentXibView: UIView {
     // MARK: - Lifecycle
 
-    override func awakeFromNib() {
+    public override func awakeFromNib() {
         super.awakeFromNib()
         configure()
     }

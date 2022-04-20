@@ -8,10 +8,10 @@
 import UIKit
 
 /// A custom UIStackView  that supports subviews with different margins between them.
-class ClearentAdaptiveStackView: UIStackView {
+public class ClearentAdaptiveStackView: UIStackView {
     // MARK: - Lifecycle
 
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
         handleSubviewsMargins()
     }

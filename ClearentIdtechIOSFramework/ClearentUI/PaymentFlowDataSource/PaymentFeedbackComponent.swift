@@ -30,45 +30,20 @@ struct PaymentFeedbackComponent: PaymentFeedbackComponentProtocol {
     }
 
     var readerName: String {
-        guard let readerName = feedbackItems[.readerName] as? String else {
+        guard let readerInfo = feedbackItems[.readerInfo] as? ReaderInfo else {
             return "xsdk_unknown_reader_name".localized
         }
-        return readerName
+        return readerInfo.readerName
     }
 
     var batteryStatus: (iconName: String?, title: String?) {
-        // if reader is not connected, battery should not be shown
-        guard let batteryLevel = feedbackItems[.readerBatteryLevel] as? Int,
-              let connected = feedbackItems[.readerConnected] as? Bool, connected else {
-                  return (nil, nil)
-              }
-        var iconName = ClearentConstants.IconName.batteryLow
-        if batteryLevel > 95 { iconName = ClearentConstants.IconName.batteryFull }
-        else if batteryLevel > 75 { iconName = ClearentConstants.IconName.batteryHigh }
-        else if batteryLevel > 50 { iconName = ClearentConstants.IconName.batteryMediumHigh }
-        else if batteryLevel > 25 { iconName = ClearentConstants.IconName.batteryMedium }
-        else if batteryLevel > 5 { iconName = ClearentConstants.IconName.batteryMediumLow }
-        return (iconName, "\(String(batteryLevel))%")
+        guard let readerInfo = feedbackItems[.readerInfo] as? ReaderInfo else { return (nil, nil) }
+        return readerInfo.batteryStatus
     }
 
     var signalStatus: (iconName: String, title: String) {
-        guard let connected = feedbackItems[.readerConnected] as? Bool, connected, let signalLevel = feedbackItems[.readerSignalLevel] as? Int else {
-            return (iconName: ClearentConstants.IconName.signalIdle, title: "xsdk_reader_signal_idle".localized)
-        }
-        
-        var icon = ClearentConstants.IconName.signalIdle
-        switch signalLevel {
-            case 0 :
-                icon =  ClearentConstants.IconName.goodSignal
-            case 1 :
-                icon =  ClearentConstants.IconName.mediumSignal
-            case 2 :
-                icon =  ClearentConstants.IconName.weakSignal
-            default:
-                icon =  ClearentConstants.IconName.signalIdle
-        }
-        
-        return (iconName: icon, title: "xsdk_reader_signal_connected".localized)
+        guard let readerInfo = feedbackItems[.readerInfo] as? ReaderInfo else { return  (iconName: ClearentConstants.IconName.signalIdle, title: "xsdk_reader_signal_idle".localized) }
+        return readerInfo.signalStatus
     }
 
     var iconName: String? {

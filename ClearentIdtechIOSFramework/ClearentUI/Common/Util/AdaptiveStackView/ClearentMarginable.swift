@@ -8,7 +8,7 @@
 import UIKit
 
 // Helper class used to create space between two views
-protocol ClearentMarginable {
+public protocol ClearentMarginable {
     var viewType: UIView.Type { get }
     var margins: [BottomMargin] { get }
     func handleBottomMargin(to neighbor: ClearentMarginable?)
@@ -16,7 +16,7 @@ protocol ClearentMarginable {
 }
 
 extension ClearentMarginable {
-    func handleBottomMargin(to neighbor: ClearentMarginable?) {
+    public func handleBottomMargin(to neighbor: ClearentMarginable?) {
         for margin in margins {
             if let relatedViewMargin = margin as? RelativeBottomMargin {
                 if neighbor != nil, neighbor?.viewType == relatedViewMargin.relatedViewType {
@@ -29,7 +29,7 @@ extension ClearentMarginable {
     }
 }
 
-class BottomMargin {
+public class BottomMargin {
     var constant: CGFloat
     
     init(contant: CGFloat) {

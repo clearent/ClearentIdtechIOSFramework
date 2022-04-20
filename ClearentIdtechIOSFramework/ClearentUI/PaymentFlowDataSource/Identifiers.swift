@@ -13,7 +13,7 @@ enum SignalLevel : Int {
 }
 
 enum FlowDataKeys {
-    case readerConnected, readerBatteryLevel, readerSignalLevel, readerName, graphicType, title, description, userAction
+    case readerInfo, graphicType, title, description, userAction
 }
 
 enum FlowFeedbackType {

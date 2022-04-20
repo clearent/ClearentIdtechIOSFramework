@@ -9,14 +9,13 @@
 import UIKit
 
 public protocol ClearentPaymentProcessingView: AnyObject {
-    func updateInfoLabel(message: String)
-    func updatePairingButton(shouldBeHidden: Bool)
     func updateContent(with component: PaymentFeedbackComponentProtocol)
 }
 
 public protocol PaymentProcessingProtocol {
     func startBluetoothDevicePairing()
     func pairAgainBluetoothDevice()
+    var dismissAction: (() -> Void)? { get set }
 }
 
 public class ClearentPaymentProcessingPresenter {
@@ -24,6 +23,7 @@ public class ClearentPaymentProcessingPresenter {
     private var amount: Double
     private let sdkWrapper: SDKWrapper
     private var sdkFeedbackProvider: FlowDataProvider
+    public var dismissAction: (() -> Void)?
 
     // MARK: Init
 
@@ -39,14 +39,9 @@ public class ClearentPaymentProcessingPresenter {
 extension ClearentPaymentProcessingPresenter: PaymentProcessingProtocol {
     public func startBluetoothDevicePairing() {
         sdkFeedbackProvider.delegate = self
-        guard let paymentProcessingView = paymentProcessingView else { return }
-        paymentProcessingView.updatePairingButton(shouldBeHidden: true)
-        
         if sdkWrapper.isReaderConnected() {
             sdkWrapper.startTransactionWithAmount(amount: String(amount))
         } else {
-            paymentProcessingView.updateInfoLabel(message: "SEARCHING FOR READER...")
-            
             sdkWrapper.startPairing()
         }
     }
@@ -58,14 +53,10 @@ extension ClearentPaymentProcessingPresenter: PaymentProcessingProtocol {
 
 extension ClearentPaymentProcessingPresenter: FlowDataProtocol {
     public func deviceDidDisconnect() {
-        guard let paymentProcessingView = paymentProcessingView else { return }
-        paymentProcessingView.updateInfoLabel(message: "Oops, Device Disconnected")
-        paymentProcessingView.updatePairingButton(shouldBeHidden: false)
+        // TODO
     }
     
     func didFinishedPairing() {
-        guard let paymentProcessingView = paymentProcessingView else { return }
-        paymentProcessingView.updateInfoLabel(message: "Device Successfully Paired")
         sdkWrapper.startTransactionWithAmount(amount: String(amount))
     }
 

@@ -8,14 +8,14 @@
 import UIKit
 
 /// A ClearentXibView subclass that adds custom bottom padding to the view
-class ClearentMarginableView: ClearentXibView, ClearentMarginable {
+public class ClearentMarginableView: ClearentXibView, ClearentMarginable {
 
     @IBOutlet var bottomLayoutConstraint: NSLayoutConstraint?
 
-    var viewType: UIView.Type { type(of: self) }
-    var margins: [BottomMargin] { [] }
+    public var viewType: UIView.Type { type(of: self) }
+    public var margins: [BottomMargin] { [] }
 
-    func setBottomMargin(margin: BottomMargin) {
+    public func setBottomMargin(margin: BottomMargin) {
         bottomLayoutConstraint?.constant = margin.constant
     }
 }
