@@ -33,12 +33,16 @@ public enum TransactionError {
 
 public protocol ClearentWrapperProtocol : AnyObject {
     func didStartPairing()
-    func didEncounteredGeneralError()
+    func deviceDidDisconnect()
     func didFinishPairing()
+    func didFoundReaders(readers:[ReaderInfo])
+    func didNotFoundReaders()
+    
+    func didEncounteredGeneralError()
     func didFinishTransaction(response: TransactionResponse, error: ResponseError?)
     func userActionNeeded(action: UserAction)
     func didReceiveInfo(info: UserInfo)
-    func deviceDidDisconnect()
+   
 }
 
 @objc public final class ClearentWrapper : NSObject {
@@ -49,9 +53,7 @@ public protocol ClearentWrapperProtocol : AnyObject {
     private var publicKey: String = ""
     private var clearentVP3300 = Clearent_VP3300()
     private var connection  = ClearentConnection(bluetoothSearch: ())
-    private var foundDevice = false
     weak var delegate: ClearentWrapperProtocol?
-    public var friendlyName : String?
     private var transactionAmount: String?
     
     private var bleManager : BluetoothScanner?
@@ -64,7 +66,7 @@ public protocol ClearentWrapperProtocol : AnyObject {
 
     // MARK - Public
     
-    @objc public func startPairing() {
+    public func startPairing() {
         let config = ClearentVP3300Config(noContactlessNoConfiguration: baseURL, publicKey: publicKey)
         clearentVP3300 = Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
         clearentVP3300.start(connection)
@@ -72,17 +74,23 @@ public protocol ClearentWrapperProtocol : AnyObject {
         self.delegate?.didStartPairing()
     }
     
+    public func selectReader(reader: ReaderInfo) {
+        if reader.uuid != nil {
+            self.updateConnectionWithDevice(readerInfo: reader)
+        }
+    }
+    
     public func cancelTransaction() {
         clearentVP3300.emv_cancelTransaction()
     }
     
-    @objc public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String) {
+    public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String) {
         self.baseURL = baseURL
         self.apiKey = apiKey
         self.publicKey = publicKey
     }
     
-    @objc public func startTransactionWithAmount(amount: String) {
+    public func startTransactionWithAmount(amount: String) {
         ClearentWrapper.shared.startDeviceInfoUpdate()
 
         let payment = ClearentPayment.init(sale: ())
@@ -94,7 +102,7 @@ public protocol ClearentWrapperProtocol : AnyObject {
         let _ : ClearentResponse = clearentVP3300.startTransaction(payment, clearentConnection: connection)
     }
     
-    @objc public func saleTransaction(jwt: String, amount: String) {
+    public func saleTransaction(jwt: String, amount: String) {
         let httpClient = ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
         httpClient.saleTransaction(jwt: jwt, amount: amount) { data, error in
             guard let responseData = data else { return }
@@ -116,7 +124,7 @@ public protocol ClearentWrapperProtocol : AnyObject {
         }
     }
     
-    @objc public func refundTransaction(jwt: String, amount: String) {
+    public func refundTransaction(jwt: String, amount: String) {
         let httpClient = ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
         httpClient.refundTransaction(jwt: jwt, amount: amount) { data, error in
             guard let responseData = data else { return }
@@ -138,7 +146,7 @@ public protocol ClearentWrapperProtocol : AnyObject {
         }
     }
     
-    @objc public func isReaderConnected() -> Bool {
+    public func isReaderConnected() -> Bool {
         return clearentVP3300.isConnected()
     }
     
@@ -169,7 +177,7 @@ public protocol ClearentWrapperProtocol : AnyObject {
         let maxim = 216.0
         let lvl = Double(level)
         var percentage: Double = Double((lvl - minim) / (maxim - minim) * 100.0)
-        // it seams that when the reader is charging we get higer values that the limit specified in the documentation
+        // It seams that when the reader is charging we get higer values that the limit specified in the documentation
         percentage = (percentage <= 100) ? percentage : 100
         return Int(percentage)
     }
@@ -177,27 +185,27 @@ public protocol ClearentWrapperProtocol : AnyObject {
     
     // MARK - Private
     
-    @objc private func updateConnectionWithDevice(bleDeviceID:String, friendly: String?) {
-        readerInfo = ReaderInfo(name: friendly, batterylevel: 0, signalLevel: 0, connected: false)
+    private func updateConnectionWithDevice(readerInfo: ReaderInfo) {
+        self.readerInfo = readerInfo
 
-        if let uuid = UUID(uuidString: bleDeviceID) {
-            readerInfo?.udid = uuid
+        if let uuid = readerInfo.uuid {
             bleManager = BluetoothScanner.init(udid: uuid, delegate: self)
+            connection?.bluetoothDeviceId = uuid.uuidString
+            connection?.fullFriendlyName = readerInfo.readerName
         }
-        foundDevice = true
-        connection?.bluetoothDeviceId = bleDeviceID
-        if let name = friendly {
-            connection?.fullFriendlyName = name
-            friendlyName = name
-        }
+        
         connection?.searchBluetooth = false
         clearentVP3300.start(connection)
+    }
+    
+    private func readerInfo(from clearentDevice:ClearentBluetoothDevice) -> ReaderInfo {
+        let uuidString: UUID? = UUID(uuidString: clearentDevice.deviceId)
+        return ReaderInfo(name: clearentDevice.friendlyName, batterylevel:nil , signalLevel: nil, connected: clearentDevice.connected, uuid: uuidString)
     }
 }
 
 extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     
-    // needs a way to transmit the amount
     public func successTransactionToken(_ clearentTransactionToken: ClearentTransactionToken!) {
         guard let amount = transactionAmount else { return }
         saleTransaction(jwt: clearentTransactionToken.jwt, amount: amount)
@@ -236,17 +244,15 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     }
     
     public func bluetoothDevices(_ bluetoothDevices: [ClearentBluetoothDevice]!) {
-        // for now we only handle the one device case
         if (bluetoothDevices.count == 1) {
-            updateConnectionWithDevice(bleDeviceID: bluetoothDevices[0].deviceId,
-                                       friendly: bluetoothDevices[0].friendlyName)
-        } else {
-            bluetoothDevices.forEach { device in
-                if (device.friendlyName == "IDTECH-VP3300-27224") {
-                    updateConnectionWithDevice(bleDeviceID: device.deviceId,
-                                               friendly: device.friendlyName)
-                }
+            updateConnectionWithDevice(readerInfo: readerInfo(from: bluetoothDevices[0]))
+        } else if (bluetoothDevices.count > 1) {
+            let readers = bluetoothDevices.map { device in
+                return readerInfo(from: device)
             }
+            self.delegate?.didFoundReaders(readers: readers)
+        } else {
+            self.delegate?.didNotFoundReaders()
         }
     }
 

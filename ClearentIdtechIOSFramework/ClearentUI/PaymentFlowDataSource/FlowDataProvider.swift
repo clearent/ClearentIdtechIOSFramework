@@ -25,9 +25,9 @@ public struct ReaderInfo {
     var batterylevel : Int?
     var signalLevel : Int?
     var isConnected : Bool
-    var udid: UUID?
+    var uuid: UUID?
     
-    init(name: String?, batterylevel: Int, signalLevel:Int, connected: Bool) {
+    init(name: String?, batterylevel: Int?, signalLevel:Int?, connected: Bool, uuid:UUID?) {
         self.readerName = "xsdk_unknown_reader_name".localized
         if let readerName = name {
             self.readerName = readerName
@@ -35,6 +35,7 @@ public struct ReaderInfo {
         self.batterylevel = batterylevel
         self.signalLevel = signalLevel
         self.isConnected = connected
+        self.uuid = uuid
     }
 }
 
@@ -83,20 +84,8 @@ class FlowDataProvider : NSObject {
 
 
 extension FlowDataProvider : ClearentWrapperProtocol {
-    
-    func didStartPairing() {
-        let pairingDict = [
-                           .description:"xsdk_searching_for_reader".localized,
-                           .userAction:"xsdk_user_action_cancel".localized,
-                           .graphicType:FlowGraphicType.loading] as [FlowDataKeys : Any]
         
-        let feedback = FlowDataFactory.component(with: .payment,
-                                                 type: .info,
-                                                 readerInfo: nil,
-                                                 payload: pairingDict)
-        
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
-    }
+    // MARK - Transaction related
     
     func didEncounteredGeneralError() {
         let errorDict = [.description:"xsdk_general_error_description".localized,
@@ -211,11 +200,36 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         }
     }
     
+    
+    // MARK - Pairing related
+    
     func didFinishPairing() {
         self.delegate?.didFinishedPairing()
     }
     
     func deviceDidDisconnect() {
         self.delegate?.deviceDidDisconnect()
+    }
+    
+    func didStartPairing() {
+        let pairingDict = [
+                           .description:"xsdk_searching_for_reader".localized,
+                           .userAction:"xsdk_user_action_cancel".localized,
+                           .graphicType:FlowGraphicType.loading] as [FlowDataKeys : Any]
+        
+        let feedback = FlowDataFactory.component(with: .payment,
+                                                 type: .info,
+                                                 readerInfo: nil,
+                                                 payload: pairingDict)
+        
+        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+    }
+    
+    func didFoundReaders(readers: [ReaderInfo]) {
+        //
+    }
+    
+    func didNotFoundReaders() {
+        // show Info to make sure the reader is not sleeping
     }
 }
