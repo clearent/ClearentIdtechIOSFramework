@@ -36,8 +36,7 @@ public protocol SDKWrapperProtocol : AnyObject {
     func didStartPairing()
     func didEncounteredGeneralError()
     func didFinishPairing()
-    func didFinishTransaction()
-    func didReceiveTransactionError(error:TransactionError)
+    func didFinishTransaction(response: TransactionResponse, error: ResponseError?)
     func userActionNeeded(action: UserAction)
     func didReceiveInfo(info: UserInfo)
     func deviceDidDisconnect()
@@ -46,20 +45,18 @@ public protocol SDKWrapperProtocol : AnyObject {
 @objc public final class SDKWrapper : NSObject {
     
     public static let shared = SDKWrapper()
-    weak var delegate: SDKWrapperProtocol?
-    private var bleManager : BluetoothScanner?
-    
     private var baseURL: String = ""
     private var apiKey: String = ""
     private var publicKey: String = ""
-    
     private var clearentVP3300 = Clearent_VP3300()
     private var connection  = ClearentConnection(bluetoothSearch: ())
-    public var readerInfo: ReaderInfo?
-    
     private var foundDevice = false
+    weak var delegate: SDKWrapperProtocol?
     public var friendlyName : String?
+    private var transactionAmount: String?
     
+    private var bleManager : BluetoothScanner?
+    public var readerInfo: ReaderInfo?
     
     @objc public override init() {
         super.init()
@@ -88,20 +85,56 @@ public protocol SDKWrapperProtocol : AnyObject {
     
     @objc public func startTransactionWithAmount(amount: String) {
         SDKWrapper.shared.startDeviceInfoUpdate()
-        
+
         let payment = ClearentPayment.init(sale: ())
         if (amount.canBeConverted(to: String.Encoding.utf8)) {
             payment?.amount = Double(amount) ?? 0
+            transactionAmount = amount
         }
         
         let _ : ClearentResponse = clearentVP3300.startTransaction(payment, clearentConnection: connection)
     }
     
-    @objc public func sendTransaction(jwt: String, amount: String) {
+    @objc public func saleTransaction(jwt: String, amount: String) {
         let httpClient = ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
         httpClient.saleTransaction(jwt: jwt, amount: amount) { data, error in
-            DispatchQueue.main.async {
-                self.delegate?.didFinishTransaction()
+            guard let responseData = data else { return }
+            
+            do {
+                let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
+                guard let transactionError = decodedResponse.payload.error else {
+                    DispatchQueue.main.async {
+                        self.delegate?.didFinishTransaction(response: decodedResponse, error: nil)
+                    }
+                    return
+                }
+                DispatchQueue.main.async {
+                    self.delegate?.didFinishTransaction(response: decodedResponse, error: transactionError)
+                }
+            } catch let jsonDecodingError {
+                print(jsonDecodingError)
+            }
+        }
+    }
+    
+    @objc public func refundTransaction(jwt: String, amount: String) {
+        let httpClient = ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
+        httpClient.refundTransaction(jwt: jwt, amount: amount) { data, error in
+            guard let responseData = data else { return }
+            
+            do {
+                let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
+                guard let transactionError = decodedResponse.payload.error else {
+                    DispatchQueue.main.async {
+                        self.delegate?.didFinishTransaction(response: decodedResponse, error: nil)
+                    }
+                    return
+                }
+                DispatchQueue.main.async {
+                    self.delegate?.didFinishTransaction(response: decodedResponse, error: transactionError)
+                }
+            } catch let jsonDecodingError {
+                print(jsonDecodingError)
             }
         }
     }
@@ -237,7 +270,8 @@ extension SDKWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     
     // needs a way to transmit the amount
     public func successTransactionToken(_ clearentTransactionToken: ClearentTransactionToken!) {
-        sendTransaction(jwt: clearentTransactionToken.jwt, amount: "21.00")
+        guard let amount = transactionAmount else { return }
+        saleTransaction(jwt: clearentTransactionToken.jwt, amount: amount)
     }
     
     public func feedback(_ clearentFeedback: ClearentFeedback!) {

@@ -87,6 +87,7 @@
 		BA40A34D27F1B38C0041CCF7 /* HttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA40A34A27F1B38C0041CCF7 /* HttpClient.swift */; };
 		BA475A442807FEA9002A003D /* BluetoothScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA475A432807FEA9002A003D /* BluetoothScanner.swift */; };
 		BA475A4628087EC1002A003D /* NSDataExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA475A4528087EC1002A003D /* NSDataExtension.swift */; };
+		BA475A57280FEB91002A003D /* Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA475A56280FEB91002A003D /* Entities.swift */; };
 		BAC4E3C227FC3E44001B5E6D /* Identifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC4E3C127FC3E44001B5E6D /* Identifiers.swift */; };
 		BAC4E3C427FC3E88001B5E6D /* FlowDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC4E3C327FC3E88001B5E6D /* FlowDataProvider.swift */; };
 		BAC4E3D127FED72B001B5E6D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BAC4E3D027FED72B001B5E6D /* Localizable.strings */; };
@@ -235,6 +236,7 @@
 		BA40A34A27F1B38C0041CCF7 /* HttpClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpClient.swift; sourceTree = "<group>"; };
 		BA475A432807FEA9002A003D /* BluetoothScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothScanner.swift; sourceTree = "<group>"; };
 		BA475A4528087EC1002A003D /* NSDataExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSDataExtension.swift; sourceTree = "<group>"; };
+		BA475A56280FEB91002A003D /* Entities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Entities.swift; sourceTree = "<group>"; };
 		BAC4E3C127FC3E44001B5E6D /* Identifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifiers.swift; sourceTree = "<group>"; };
 		BAC4E3C327FC3E88001B5E6D /* FlowDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowDataProvider.swift; sourceTree = "<group>"; };
 		BAC4E3D027FED72B001B5E6D /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
@@ -466,6 +468,7 @@
 		BA40A34727F1B38C0041CCF7 /* Wrapper */ = {
 			isa = PBXGroup;
 			children = (
+				BA475A55280FEB91002A003D /* Entities */,
 				BA40A34827F1B38C0041CCF7 /* ClearentHttpClient.swift */,
 				BA40A34927F1B38C0041CCF7 /* SDKWrapper.swift */,
 				BA40A34A27F1B38C0041CCF7 /* HttpClient.swift */,
@@ -479,6 +482,14 @@
 				BA475A432807FEA9002A003D /* BluetoothScanner.swift */,
 			);
 			path = BluetoothScanner;
+			sourceTree = "<group>";
+		};
+		BA475A55280FEB91002A003D /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				BA475A56280FEB91002A003D /* Entities.swift */,
+			);
+			path = Entities;
 			sourceTree = "<group>";
 		};
 		BAC4E3C027FC3DC9001B5E6D /* PaymentFlowDataSource */ = {
@@ -922,6 +933,7 @@
 				BA40A34D27F1B38C0041CCF7 /* HttpClient.swift in Sources */,
 				4BAEA888271C5F24007F5FCF /* ClearentLumberjackRemoteLogger.m in Sources */,
 				4B32C09824335D5500CCF9B9 /* ClearentBluetoothDevice.m in Sources */,
+				BA475A57280FEB91002A003D /* Entities.swift in Sources */,
 				19A61D672804129100E295B3 /* ClearentUserActionView.swift in Sources */,
 				0169C2DE27FF1A4000B8B4DB /* ClearentEmptySpace.swift in Sources */,
 				1937010A27F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.swift in Sources */,
