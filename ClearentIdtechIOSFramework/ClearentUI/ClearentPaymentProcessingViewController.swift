@@ -50,39 +50,6 @@ public class ClearentPaymentProcessingViewController: UIViewController {
         view.backgroundColor = .clear
         view.isOpaque = false
         stackView.addRoundedCorners(backgroundColor: ModalLayout.backgroundColor, radius: ModalLayout.cornerRadius, margin: ModalLayout.margin)
-        view.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handleDismiss)))
-    }
-}
-
-
-// MARK: Swipe down
-
-extension ClearentPaymentProcessingViewController {
-    enum Constants {
-        static let dismissTreshold = 200.0
-        static let dismissAnimationDuration = 0.3
-    }
-
-    @objc func handleDismiss(sender: UIPanGestureRecognizer) {
-        let touchPoint = sender.location(in: view?.window)
-        switch sender.state {
-        case .began:
-            initialTouchPoint = touchPoint
-        case .changed:
-            if touchPoint.y > initialTouchPoint.y {
-                view.frame.origin.y = touchPoint.y - initialTouchPoint.y
-            }
-        case .ended, .cancelled:
-            if touchPoint.y - initialTouchPoint.y > Constants.dismissTreshold {
-                dismissViewController()
-            } else {
-                UIView.animate(withDuration: Constants.dismissAnimationDuration, animations: {
-                    self.view.frame = CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: self.view.frame.size.height)
-                })
-            }
-        default:
-            break
-        }
     }
 }
 
