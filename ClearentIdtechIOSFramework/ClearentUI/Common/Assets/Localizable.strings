@@ -13,6 +13,7 @@
 "xsdk_press_reader_button" = "Press the button on reader";
 "xsdk_select_reader" = "Please select the reader you wish to pair with";
 "xsdk_connecting_reader" = "Connecting";
+"xsdk_connection_sucesfull" = "Connection successful";
 
 
 /* Payment Flow*/

@@ -21,7 +21,7 @@ enum FlowFeedbackType {
 }
 
 enum FlowGraphicType {
-    case insert_card, press_button, transaction_completed, loading, error, warning, readerButton, reader
+    case insert_card, press_button, transaction_completed, loading, error, warning, readerButton, reader, pairedReader
     
     var iconName: String? {
         switch self {
@@ -43,6 +43,8 @@ enum FlowGraphicType {
         case .reader:
             // TO DO - add the correct asset
             return nil
+        case .pairedReader
+            // TO DO - add the correct asset
         }
     }
 }
