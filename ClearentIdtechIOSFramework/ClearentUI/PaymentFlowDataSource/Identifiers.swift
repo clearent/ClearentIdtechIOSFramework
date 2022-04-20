@@ -45,6 +45,7 @@ enum FlowGraphicType {
             return nil
         case .pairedReader
             // TO DO - add the correct asset
+            return nil
         }
     }
 }
