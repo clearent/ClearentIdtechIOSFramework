@@ -7,7 +7,7 @@
 //
 
 public struct ReaderInfo {
-    var readerName : String
+    public var readerName : String
     var batterylevel : Int?
     var signalLevel : Int?
     var isConnected : Bool

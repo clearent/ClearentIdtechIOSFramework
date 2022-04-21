@@ -23,43 +23,55 @@ public protocol PaymentFeedbackComponentProtocol {
 }
 
 struct PaymentFeedbackComponent: PaymentFeedbackComponentProtocol {
-    var feedbackItems: [FlowDataKeys: Any]
+    var feedbackItems: [FlowDataItem]
 
-    init(feedbackItems: [FlowDataKeys: Any]) {
+    init(feedbackItems: [FlowDataItem]) {
         self.feedbackItems = feedbackItems
     }
 
     var readerName: String {
-        guard let readerInfo = feedbackItems[.readerInfo] as? ReaderInfo else {
+        guard let readerInfo = itemForKey(key: .readerInfo) as? ReaderInfo else {
             return "xsdk_unknown_reader_name".localized
         }
         return readerInfo.readerName
     }
 
     var batteryStatus: (iconName: String?, title: String?) {
-        guard let readerInfo = feedbackItems[.readerInfo] as? ReaderInfo else { return (nil, nil) }
+        guard let readerInfo = itemForKey(key: .readerInfo) as? ReaderInfo else { return (nil, nil) }
         return readerInfo.batteryStatus
     }
 
     var signalStatus: (iconName: String, title: String) {
-        guard let readerInfo = feedbackItems[.readerInfo] as? ReaderInfo else { return (iconName: ClearentConstants.IconName.signalIdle, title: "xsdk_reader_signal_idle".localized) }
+        guard let readerInfo = itemForKey(key: .readerInfo) as? ReaderInfo else { return (iconName: ClearentConstants.IconName.signalIdle, title: "xsdk_reader_signal_idle".localized) }
         return readerInfo.signalStatus
     }
 
     var iconName: String? {
-        guard let graphicType = feedbackItems[.graphicType] as? FlowGraphicType else { return nil }
+        guard let graphicType = itemForKey(key: .graphicType) as? FlowGraphicType else { return nil }
         return graphicType.iconName
     }
 
     var mainDescription: String? {
-        feedbackItems[.description] as? String
+        itemForKey(key: .description) as? String
     }
 
     var mainTitle: String? {
-        feedbackItems[.title] as? String
+        itemForKey(key: .title) as? String
     }
 
     var userAction: String? {
-        feedbackItems[.userAction] as? String
+        itemForKey(key: .userAction) as? String
+    }
+    
+    func itemForKey(key:FlowDataKeys) -> AnyObject? {
+        var result : AnyObject? = nil
+        feedbackItems.forEach { dataItem in
+            if (dataItem.type == key) {
+                result = dataItem.object as AnyObject
+                return
+            }
+        }
+        
+        return result
     }
 }

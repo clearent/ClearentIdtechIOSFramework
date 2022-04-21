@@ -8,12 +8,17 @@
 
 import Foundation
 
+struct FlowDataItem {
+  var type: FlowDataKeys
+  var object: Any
+}
+
 class FlowFeedback {
     var flow : ProcessType
     var type : FlowFeedbackType
-    var items = [FlowDataKeys: Any]()
+    var items = [FlowDataItem]()
     
-    init(flow: ProcessType, type: FlowFeedbackType, items: [FlowDataKeys:Any]) {
+    init(flow: ProcessType, type: FlowFeedbackType, items: [FlowDataItem]) {
         self.flow = flow
         self.type = type
         self.items = items
@@ -22,12 +27,12 @@ class FlowFeedback {
 
 class FlowDataFactory {
     
-    class func component(with flow: ProcessType, type: FlowFeedbackType, readerInfo: ReaderInfo?, payload:[FlowDataKeys:Any])-> FlowFeedback {
+    class func component(with flow: ProcessType, type: FlowFeedbackType, readerInfo: ReaderInfo?, payload:[FlowDataItem])-> FlowFeedback {
         
         if let readerInfo = readerInfo {
-            var dataDict = payload
-            dataDict[.readerInfo] = readerInfo
-            return FlowFeedback(flow: flow, type: type, items: dataDict)
+            var allItems = [FlowDataItem(type: .readerInfo, object: readerInfo)]
+            allItems.append(contentsOf: payload)
+            return FlowFeedback(flow: flow, type: type, items: allItems)
         }
       
         return FlowFeedback(flow: flow, type: type, items: payload)
@@ -62,14 +67,15 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     // MARK - Transaction related
     
     func didEncounteredGeneralError() {
-        let errorDict = [.description:"xsdk_general_error_description".localized,
-                         .userAction:"xsdk_user_action_ok".localized,
-                         .graphicType:FlowGraphicType.error] as [FlowDataKeys : Any]
+        
+        let items = [FlowDataItem(type: .description, object: "xsdk_general_error_description".localized),
+                     FlowDataItem(type: .userAction, object: "xsdk_user_action_ok".localized),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.error)]
         
         let feedback = FlowDataFactory.component(with: .payment,
                                                  type: .error,
                                                  readerInfo: fetchReaderInfo(),
-                                                 payload: errorDict)
+                                                 payload: items)
         
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
@@ -78,81 +84,73 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         let feedback: FlowFeedback
         
         if let error = error {
-            let errorDictionary = [.title:"xsdk_general_error_title".localized,
-                                   .description:error.message,
-                                   .userAction:"xsdk_user_action_ok".localized,
-                                   .graphicType:FlowGraphicType.error] as [FlowDataKeys : Any]
+            let errItems = [FlowDataItem(type: .title, object: "xsdk_general_error_title".localized),
+                            FlowDataItem(type: .description, object: error.message),
+                            FlowDataItem(type: .userAction, object: "xsdk_user_action_ok".localized),
+                            FlowDataItem(type: .graphicType, object: FlowGraphicType.error)]
             
             feedback = FlowDataFactory.component(with: .payment,
                                                      type: .error,
                                                      readerInfo: fetchReaderInfo(),
-                                                     payload: errorDictionary)
+                                                     payload: errItems)
         } else {
-            let transactionDictionary = [.description:"xsdk_transaction_completed_description".localized,
-                                         .graphicType:FlowGraphicType.transaction_completed] as [FlowDataKeys : Any]
+            let transactionItems = [FlowDataItem(type: .description, object: "xsdk_transaction_completed_description".localized),
+                                    FlowDataItem(type: .graphicType, object: FlowGraphicType.transaction_completed)]
             
             feedback = FlowDataFactory.component(with: .payment,
                                                  type: .info,
                                                  readerInfo: fetchReaderInfo(),
-                                                 payload: transactionDictionary)
+                                                 payload: transactionItems)
             
         }
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
     func userActionNeeded(action: UserAction) {
-        var infoDict : [FlowDataKeys:Any]? = nil
+        var items : [FlowDataItem]? = nil
         var type = FlowFeedbackType.info
         
         switch action {
         case .pleaseWait:
-            infoDict = [.description:"xsdk_processing_description".localized,
-                        .graphicType:FlowGraphicType.loading] as [FlowDataKeys : Any]
+            items = [FlowDataItem(type: .description, object: "xsdk_processing_description".localized),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.loading)]
         case .swipeInsert, .swipeTapOrInsert:
-            infoDict = [.description:"xsdk_tap_insert_swipe_description".localized,
-                        .userAction:"xsdk_user_action_cancel".localized,
-                        .graphicType:FlowGraphicType.insert_card] as [FlowDataKeys : Any]
+            items = [FlowDataItem(type: .description, object: "xsdk_tap_insert_swipe_description".localized),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
+                     FlowDataItem(type: .userAction, object: "xsdk_user_action_cancel".localized)]
         case .pressReaderButton:
-            infoDict = [.description:"xsdk_press_button_description".localized,
-                        .userAction:"xsdk_user_action_cancel".localized,
-                        .graphicType:FlowGraphicType.press_button] as [FlowDataKeys : Any]
+            items = [FlowDataItem(type: .description, object: "xsdk_press_button_description".localized),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.press_button)]
         case .tryICCAgain:
             type = .warning
-            infoDict = [.title:"xsdk_read_error_title".localized,
-                        .description:"xsdk_read_card_try_icc_again_description".localized,
-                        .userAction:"xsdk_user_action_cancel".localized,
-                        .graphicType:FlowGraphicType.insert_card] as [FlowDataKeys : Any]
+            items = [FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
+                     FlowDataItem(type: .description, object: "xsdk_read_card_try_icc_again_description".localized),
+                     FlowDataItem(type: .userAction, object: "xsdk_user_action_cancel".localized),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card)]
         case .cardHasChip:
             type = .warning
-            infoDict = [.title:"xsdk_read_error_title".localized,
-                        .description:"xsdk_read_card_has_chip_description".localized,
-                        .userAction:"xsdk_user_action_cancel".localized,
-                        .graphicType:FlowGraphicType.insert_card] as [FlowDataKeys : Any]
+            items = [FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
+                     FlowDataItem(type: .description, object: "xsdk_read_card_has_chip_description".localized),
+                     FlowDataItem(type: .userAction, object: "xsdk_user_action_cancel".localized),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card)]
         case .tryMSRAgain:
             type = .warning
-            infoDict = [.title:"xsdk_read_error_title".localized,
-                        .description:"xsdk_read_try_msr_again_description".localized,
-                        .userAction:"xsdk_user_action_cancel".localized,
-                        .graphicType:FlowGraphicType.insert_card] as [FlowDataKeys : Any]
+            items = [FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
+                     FlowDataItem(type: .description, object: "xsdk_read_try_msr_again_description".localized),
+                     FlowDataItem(type: .userAction, object: "xsdk_user_action_cancel".localized),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card)]
         case .removeCard, .cardSecured:
             print("nothing to do here")
         case .transactionStarted, .goingOnline:
-            let infoDict = [FlowDataKeys.description:"xsdk_processing_description".localized,
-                        FlowDataKeys.graphicType:FlowGraphicType.loading] as [FlowDataKeys : Any]
-            
-            let feedback = FlowDataFactory.component(with: .payment,
-                                                     type: .info,
-                                                     readerInfo: fetchReaderInfo(),
-                                                     payload: infoDict)
-            
-            self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+            items = [FlowDataItem(type: .description, object: "xsdk_processing_description".localized),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.loading)]
         }
         
-        if let dict = infoDict {
+        if let flowItems = items {
             let feedback = FlowDataFactory.component(with: .payment,
                                                 type: type,
                                                 readerInfo: fetchReaderInfo(),
-                                                payload: dict)
+                                                payload: flowItems)
             self.delegate?.didReceiveFlowFeedback(feedback: feedback)
         }
     }
@@ -162,13 +160,13 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         case .authorizing:
             print("nothing to do here")
         case .processing:
-            let infoDict = [FlowDataKeys.description:"xsdk_processing_description".localized,
-                        FlowDataKeys.graphicType:FlowGraphicType.loading] as [FlowDataKeys : Any]
+            let  items = [FlowDataItem(type: .description, object: "xsdk_processing_description".localized),
+                          FlowDataItem(type: .graphicType, object: FlowGraphicType.loading)]
             
             let feedback = FlowDataFactory.component(with: .payment,
                                                      type: .info,
                                                      readerInfo: fetchReaderInfo(),
-                                                     payload: infoDict)
+                                                     payload: items)
             
             self.delegate?.didReceiveFlowFeedback(feedback: feedback)
         }
@@ -178,14 +176,15 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     // MARK - Pairing related
     
     func didFinishPairing() {
-        let pairingDict = [.graphicType:FlowGraphicType.pairedReader] as [FlowDataKeys : Any]
+        let  items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.pairingSuccessful),
+                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader)]
         
         let feedback = FlowDataFactory.component(with: .pairing,
                                                  type: .searchDevices,
                                                  readerInfo: fetchReaderInfo(),
-                                                 payload: pairingDict)
-        
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+                                                 payload: items)
+       // commented temporarly so we do not mess up the current flow
+       // self.delegate?.didReceiveFlowFeedback(feedback: feedback)
         self.delegate?.didFinishedPairing()
     }
     
@@ -194,52 +193,56 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     }
     
     func didStartPairing() {
-        let pairingDict = [.description:"xsdk_searching_for_reader".localized,
-                           .userAction:"xsdk_user_action_cancel".localized,
-                           .graphicType:FlowGraphicType.loading] as [FlowDataKeys : Any]
+// commented temporarly so we do not mess up the current flow
+//        let  items = [FlowDataItem(type: .title, object: "xsdk_prepare_for_pairing".localized),
+//                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
+//                      FlowDataItem(type: .userAction, object: "xsdk_pair".localized)]
         
+        let  items = [FlowDataItem(type: .description, object: "xsdk_searching_for_reader".localized),
+                      FlowDataItem(type: .graphicType, object: FlowGraphicType.loading)]
+
         let feedback = FlowDataFactory.component(with: .payment,
                                                  type: .info,
                                                  readerInfo: nil,
-                                                 payload: pairingDict)
+                                                 payload: items)
         
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
     func didFindReaders(readers: [ReaderInfo]) {
-        let pairingDict = [.title:"xsdk_select_reader".localized,
-                           .graphicType:FlowGraphicType.loading,
-                           .devicesFound:readers] as [FlowDataKeys : Any]
+        let items = [FlowDataItem(type: .title, object: "xsdk_select_reader".localized),
+                    FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
+                    FlowDataItem(type: .devicesFound, object: readers)]
         
         let feedback = FlowDataFactory.component(with: .pairing,
                                                  type: .searchDevices,
                                                  readerInfo: nil,
-                                                 payload: pairingDict)
-        
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+                                                 payload: items)
+       // commented temporarly so we do not mess up the current flow
+       // self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
     func startedReaderConnection(with reader: ReaderInfo) {
-        let pairingDict = [.description:"xsdk_connecting_reader".localized,
-                           .graphicType:FlowGraphicType.loading] as [FlowDataKeys : Any]
-        
+        let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader)]
+    
         let feedback = FlowDataFactory.component(with: .pairing,
                                                  type: .searchDevices,
                                                  readerInfo: reader,
-                                                 payload: pairingDict)
-        
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+                                                 payload: items)
+       // commented temporarly so we do not mess up the current flow
+       // self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
     func didNotFindReaders() {
-        let pairingDict = [.description:"xsdk_press_reader_button".localized,
-                           .graphicType:FlowGraphicType.readerButton,] as [FlowDataKeys : Any]
+        let items = [FlowDataItem(type: .description, object: "xsdk_press_reader_button".localized),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader)]
         
         let feedback = FlowDataFactory.component(with: .pairing,
                                                  type: .info,
                                                  readerInfo: nil,
-                                                 payload: pairingDict)
-        
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+                                                 payload: items)
+       // commented temporarly so we do not mess up the current flow
+       // self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
 }
