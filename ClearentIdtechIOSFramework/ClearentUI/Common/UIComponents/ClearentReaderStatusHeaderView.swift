@@ -8,14 +8,14 @@
 
 import UIKit
 
-class ClearentReaderStatusHeaderView: ClearentMarginableView {
+public class ClearentReaderStatusHeaderView: ClearentMarginableView {
     
     @IBOutlet weak var stackView: UIStackView!
     @IBOutlet weak var readerNameLabel: UILabel!
     @IBOutlet weak var readerConnectivityStatusView: ClearentReaderConnectivityStatusView!
     @IBOutlet weak var readerBatteryStatusView: ClearentReaderConnectivityStatusView!
     
-    override var margins: [BottomMargin] {
+    public override var margins: [BottomMargin] {
         [
             RelativeBottomMargin(constant: 50.0, relatedViewType: ClearentUserActionView.self),
             RelativeBottomMargin(constant: 30.0, relatedViewType: ClearentReaderFeedbackView.self)
@@ -25,16 +25,17 @@ class ClearentReaderStatusHeaderView: ClearentMarginableView {
     // MARK: Public
     
     public func setup(readerName: String,
-                      connectivityStatusImageName: String,
-                      connectivityStatus: String,
-                      readerBatteryStatusImageName: String?,
-                      readerBatteryStatus: String?) {
+                      signalStatusIconName: String,
+                      signalStatusTitle: String,
+                      batteryStatusIconName: String?,
+                      batteryStatusTitle: String?) {
         readerNameLabel.text = readerName
-        readerConnectivityStatusView.setup(imageName: connectivityStatusImageName, status: connectivityStatus)
-        guard let batteryImage = readerBatteryStatusImageName, let batteryStatus = readerBatteryStatus else {
-            readerBatteryStatusView.isHidden = true
+        readerConnectivityStatusView.setup(imageName: signalStatusIconName, status: signalStatusTitle)
+        if let batteryImage = batteryStatusIconName, let batteryStatus = batteryStatusTitle {
+            readerBatteryStatusView.isHidden = false
+            readerBatteryStatusView.setup(imageName: batteryImage, status: batteryStatus)
             return
         }
-        readerBatteryStatusView.setup(imageName: batteryImage, status: batteryStatus)
+        readerBatteryStatusView.isHidden = true
     }
 }

@@ -35,6 +35,7 @@
 		0169C2E527FF1A4600B8B4DB /* ClearentMarginableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0169C2E127FF1A4600B8B4DB /* ClearentMarginableView.swift */; };
 		0169C2E627FF1A4600B8B4DB /* ClearentAdaptiveStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0169C2E227FF1A4600B8B4DB /* ClearentAdaptiveStackView.swift */; };
 		0169C2E727FF1A4600B8B4DB /* ClearentXibView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0169C2E327FF1A4600B8B4DB /* ClearentXibView.swift */; };
+		01D1ED6F280FFA680005FC71 /* ReaderInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D1ED6E280FFA680005FC71 /* ReaderInfo.swift */; };
 		01F6D5792805744E00310E01 /* PaymentFeedbackComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F6D5782805744E00310E01 /* PaymentFeedbackComponent.swift */; };
 		01F6D57B280580B200310E01 /* ClearentStringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F6D57A280580B200310E01 /* ClearentStringExtension.swift */; };
 		1937010A27F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1937010827F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.swift */; };
@@ -184,6 +185,7 @@
 		0169C2E127FF1A4600B8B4DB /* ClearentMarginableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentMarginableView.swift; sourceTree = "<group>"; };
 		0169C2E227FF1A4600B8B4DB /* ClearentAdaptiveStackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentAdaptiveStackView.swift; sourceTree = "<group>"; };
 		0169C2E327FF1A4600B8B4DB /* ClearentXibView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentXibView.swift; sourceTree = "<group>"; };
+		01D1ED6E280FFA680005FC71 /* ReaderInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderInfo.swift; sourceTree = "<group>"; };
 		01F6D5782805744E00310E01 /* PaymentFeedbackComponent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentFeedbackComponent.swift; sourceTree = "<group>"; };
 		01F6D57A280580B200310E01 /* ClearentStringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentStringExtension.swift; sourceTree = "<group>"; };
 		1937010827F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentPaymentProcessingViewController.swift; sourceTree = "<group>"; };
@@ -495,6 +497,7 @@
 		BAC4E3C027FC3DC9001B5E6D /* PaymentFlowDataSource */ = {
 			isa = PBXGroup;
 			children = (
+				01D1ED6E280FFA680005FC71 /* ReaderInfo.swift */,
 				BAC4E3C127FC3E44001B5E6D /* Identifiers.swift */,
 				BAC4E3C327FC3E88001B5E6D /* FlowDataProvider.swift */,
 				01F6D5782805744E00310E01 /* PaymentFeedbackComponent.swift */,
@@ -942,6 +945,7 @@
 				BA40A34C27F1B38C0041CCF7 /* SDKWrapper.swift in Sources */,
 				0169C2E527FF1A4600B8B4DB /* ClearentMarginableView.swift in Sources */,
 				01F6D57B280580B200310E01 /* ClearentStringExtension.swift in Sources */,
+				01D1ED6F280FFA680005FC71 /* ReaderInfo.swift in Sources */,
 				E75891FC225522AB00288032 /* ClearentLogging.m in Sources */,
 				010394962803462F000A7A94 /* UIStackViewExtension.swift in Sources */,
 				E75891F7225522AB00288032 /* ClearentLoggingRequest.m in Sources */,
