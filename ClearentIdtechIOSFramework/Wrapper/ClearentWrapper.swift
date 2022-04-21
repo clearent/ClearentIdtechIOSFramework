@@ -43,15 +43,15 @@ public protocol ClearentWrapperProtocol : AnyObject {
     func didFinishTransaction(response: TransactionResponse, error: ResponseError?)
     func userActionNeeded(action: UserAction)
     func didReceiveInfo(info: UserInfo)
-   
 }
 
-@objc public final class ClearentWrapper : NSObject {
+public final class ClearentWrapper : NSObject {
     
-    public static let shared = ClearentWrapper()
     private var baseURL: String = ""
     private var apiKey: String = ""
     private var publicKey: String = ""
+    
+    public static let shared = ClearentWrapper()
     private var clearentVP3300 = Clearent_VP3300()
     private var connection  = ClearentConnection(bluetoothSearch: ())
     weak var delegate: ClearentWrapperProtocol?
@@ -60,10 +60,11 @@ public protocol ClearentWrapperProtocol : AnyObject {
     private var bleManager : BluetoothScanner?
     public var readerInfo: ReaderInfo?
     
-    @objc public override init() {
+    public override init() {
         super.init()
         createLogFile()
     }
+    
 
     // MARK - Public
     
@@ -156,7 +157,30 @@ public protocol ClearentWrapperProtocol : AnyObject {
         getBatterylevel()
     }
     
-    public func getBatterylevel() {
+
+    // MARK - Private
+    
+    private func updateConnectionWithDevice(readerInfo: ReaderInfo) {
+        self.readerInfo = readerInfo
+
+        if let uuid = readerInfo.uuid {
+            bleManager = BluetoothScanner.init(udid: uuid, delegate: self)
+            connection?.bluetoothDeviceId = uuid.uuidString
+            connection?.fullFriendlyName = readerInfo.readerName
+        }
+        
+        connection?.searchBluetooth = false
+        clearentVP3300.start(connection)
+        
+        self.delegate?.startedReaderConnection(with: readerInfo)
+    }
+    
+    private func readerInfo(from clearentDevice:ClearentBluetoothDevice) -> ReaderInfo {
+        let uuidString: UUID? = UUID(uuidString: clearentDevice.deviceId)
+        return ReaderInfo(name: clearentDevice.friendlyName, batterylevel:nil , signalLevel: nil, connected: clearentDevice.connected, uuid: uuidString)
+    }
+    
+    private func getBatterylevel() {
         var response : NSData? = NSData()
         _ = clearentVP3300.device_sendIDGCommand(0xF0, subCommand: 0x02, data: nil, response: &response)
         guard let response = response else {
@@ -181,29 +205,6 @@ public protocol ClearentWrapperProtocol : AnyObject {
         // It seams that when the reader is charging we get higer values that the limit specified in the documentation
         percentage = (percentage <= 100) ? percentage : 100
         return Int(percentage)
-    }
-    
-    
-    // MARK - Private
-    
-    private func updateConnectionWithDevice(readerInfo: ReaderInfo) {
-        self.readerInfo = readerInfo
-
-        if let uuid = readerInfo.uuid {
-            bleManager = BluetoothScanner.init(udid: uuid, delegate: self)
-            connection?.bluetoothDeviceId = uuid.uuidString
-            connection?.fullFriendlyName = readerInfo.readerName
-        }
-        
-        connection?.searchBluetooth = false
-        clearentVP3300.start(connection)
-        
-        self.delegate?.startedReaderConnection(with: readerInfo)
-    }
-    
-    private func readerInfo(from clearentDevice:ClearentBluetoothDevice) -> ReaderInfo {
-        let uuidString: UUID? = UUID(uuidString: clearentDevice.deviceId)
-        return ReaderInfo(name: clearentDevice.friendlyName, batterylevel:nil , signalLevel: nil, connected: clearentDevice.connected, uuid: uuidString)
     }
 }
 
