@@ -20,43 +20,17 @@ class FlowFeedback {
     }
 }
 
-public struct ReaderInfo {
-    var readerName : String
-    var batterylevel : Int?
-    var signalLevel : Int?
-    var isConnected : Bool
-    var uuid: UUID?
-    
-    init(name: String?, batterylevel: Int?, signalLevel:Int?, connected: Bool, uuid:UUID?) {
-        self.readerName = "xsdk_unknown_reader_name".localized
-        if let readerName = name {
-            self.readerName = readerName
-        }
-        self.batterylevel = batterylevel
-        self.signalLevel = signalLevel
-        self.isConnected = connected
-        self.uuid = uuid
-    }
-}
-
 class FlowDataFactory {
     
     class func component(with flow: ProcessType, type: FlowFeedbackType, readerInfo: ReaderInfo?, payload:[FlowDataKeys:Any])-> FlowFeedback {
         
         if let readerInfo = readerInfo {
-            let readerInfoDict = createDictionaryWithDeviceInfo(readerInfo: readerInfo)
-            let dataDict = payload.merging(readerInfoDict) { (current, _) in current }
+            var dataDict = payload
+            dataDict[.readerInfo] = readerInfo
             return FlowFeedback(flow: flow, type: type, items: dataDict)
         }
       
         return FlowFeedback(flow: flow, type: type, items: payload)
-    }
-        
-    class func createDictionaryWithDeviceInfo(readerInfo:ReaderInfo) -> [FlowDataKeys:Any] {
-        return [.readerConnected : readerInfo.isConnected,
-                .readerName : readerInfo.readerName,
-                .readerBatteryLevel : readerInfo.batterylevel ?? 0,
-                .readerSignalLevel:readerInfo.signalLevel ?? 0]
     }
 }
 

@@ -9,16 +9,20 @@
 import UIKit
 
 public class ClearentPaymentProcessingViewController: UIViewController {
-    public var presenter: PaymentProcessingProtocol?
-    @IBOutlet weak var stackView: ClearentAdaptiveStackView!
     
-    enum ModalLayout {
+    // MARK: - Properties
+    
+    @IBOutlet var stackView: ClearentAdaptiveStackView!
+    public var presenter: PaymentProcessingProtocol?
+    private struct Layout {
         static let cornerRadius = 15.0
         static let margin = 16.0
         static let backgroundColor = ClearentConstants.Color.backgroundSecondary01
     }
+    private var initialTouchPoint = CGPoint.zero
 
-    // MARK: Init
+
+    // MARK: - Init
 
     public init() {
         super.init(nibName: String(describing: ClearentPaymentProcessingViewController.self), bundle: ClearentConstants.bundle)
@@ -29,46 +33,51 @@ public class ClearentPaymentProcessingViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    // MARK: Lifecycle
+    // MARK: - Lifecycle
 
     override public func viewDidLoad() {
         super.viewDidLoad()
-        customizeModalView()
+        setupStyle()
         presenter?.startBluetoothDevicePairing()
+        view.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handleDismiss)))
+    }
+    
+    // MARK: - Private
+    
+    private func dismissViewController() {
+        dismiss(animated: true, completion: nil)
+        ClearentWrapper.shared.cancelTransaction()
+        presenter?.dismissAction?()
     }
 
-    // MARK: Private
-
-    public override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-    }
-
-    private func customizeModalView() {
+    private func setupStyle() {
         view.backgroundColor = .clear
         view.isOpaque = false
-        stackView.addRoundedCorners(backgroundColor: ModalLayout.backgroundColor, radius: ModalLayout.cornerRadius, margin: ModalLayout.margin)
+        stackView.addRoundedCorners(backgroundColor: Layout.backgroundColor, radius: Layout.cornerRadius, margin: Layout.margin)
     }
 }
 
+// MARK: - ClearentPaymentProcessingView
+
 extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView {
-    public func updateInfoLabel(message: String) {
-        //paymentProcessingLabel.text = message
-    }
-
-    public func updatePairingButton(shouldBeHidden: Bool) {
-        //pairBluetoothDeviceButton.isHidden = shouldBeHidden
-    }
-
     public func updateContent(with component: PaymentFeedbackComponentProtocol) {
         stackView.removeAllArrangedSubviews()
+        createStatusHeader(with: component)
+        createMainInfoView(with: component)
+        createButton(with: component)
+    }
 
-        // ReaderStatusHeaderView
+    private func createStatusHeader(with component: PaymentFeedbackComponentProtocol) {
         let readerStatusHeader = ClearentReaderStatusHeaderView()
         readerStatusHeader.setup(readerName: component.readerName,
-                                 connectivityStatusImageName: component.signalStatus.iconName, connectivityStatus: component.signalStatus.title,
-                                 readerBatteryStatusImageName: component.batteryStatus.iconName, readerBatteryStatus: component.batteryStatus.title)
+                                 signalStatusIconName: component.signalStatus.iconName,
+                                 signalStatusTitle: component.signalStatus.title,
+                                 batteryStatusIconName: component.batteryStatus.iconName,
+                                 batteryStatusTitle: component.batteryStatus.title)
         stackView.addArrangedSubview(readerStatusHeader)
+    }
 
+    private func createMainInfoView(with component: PaymentFeedbackComponentProtocol) {
         if let description = component.mainDescription {
             if let iconName = component.iconName, let title = component.mainTitle {
                 // ReaderFeedbackView
@@ -82,16 +91,47 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
                 stackView.addArrangedSubview(actionView)
             }
         }
+    }
 
-        // PrimaryButton
+    private func createButton(with component: PaymentFeedbackComponentProtocol) {
         if let userAction = component.userAction {
             let button = ClearentPrimaryButton()
             button.title = userAction
             button.action = { [weak self] in
-                self?.dismiss(animated: true)
-                ClearentWrapper.shared.cancelTransaction()
+                self?.dismissViewController()
             }
             stackView.addArrangedSubview(button)
+        }
+    }
+}
+
+// MARK: Dismiss
+
+extension ClearentPaymentProcessingViewController {
+    enum Constants {
+        static let dismissTreshold = 200.0
+        static let dismissAnimationDuration = 0.3
+    }
+
+    @objc func handleDismiss(sender: UIPanGestureRecognizer) {
+        let touchPoint = sender.location(in: view?.window)
+        switch sender.state {
+        case .began:
+            initialTouchPoint = touchPoint
+        case .changed:
+            if touchPoint.y > initialTouchPoint.y {
+                view.frame.origin.y = touchPoint.y - initialTouchPoint.y
+            }
+        case .ended, .cancelled:
+            if touchPoint.y - initialTouchPoint.y > Constants.dismissTreshold {
+                dismissViewController()
+            } else {
+                UIView.animate(withDuration: Constants.dismissAnimationDuration, animations: {
+                    self.view.frame = CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: self.view.frame.size.height)
+                })
+            }
+        default:
+            break
         }
     }
 }
