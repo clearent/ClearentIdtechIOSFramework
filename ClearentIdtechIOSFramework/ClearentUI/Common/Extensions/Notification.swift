@@ -9,5 +9,5 @@
 import Foundation
 
 extension Notification.Name {
-    static let shouldChangeInterfaceOrientation = Notification.Name("shouldChangeInterfaceOrientation")
+    public static let shouldChangeInterfaceOrientation = Notification.Name("shouldChangeInterfaceOrientation")
 }
