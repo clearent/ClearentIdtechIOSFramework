@@ -7,20 +7,21 @@
 //
 
 public struct ReaderInfo {
-    public var readerName: String
-    var batterylevel: Int?
-    var signalLevel: Int?
-    var isConnected: Bool
-    var udid: UUID?
-
-    init(name: String?, batterylevel: Int, signalLevel: Int, connected: Bool) {
-        readerName = "xsdk_unknown_reader_name".localized
+    public var readerName : String
+    var batterylevel : Int?
+    var signalLevel : Int?
+    var isConnected : Bool
+    var uuid: UUID?
+    
+    init(name: String?, batterylevel: Int?, signalLevel:Int?, connected: Bool, uuid:UUID?) {
+        self.readerName = "xsdk_unknown_reader_name".localized
         if let readerName = name {
             self.readerName = readerName
         }
         self.batterylevel = batterylevel
         self.signalLevel = signalLevel
-        isConnected = connected
+        self.isConnected = connected
+        self.uuid = uuid
     }
 }
 

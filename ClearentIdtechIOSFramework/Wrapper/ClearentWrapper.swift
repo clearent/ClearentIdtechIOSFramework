@@ -8,7 +8,6 @@
 import Foundation
 import CocoaLumberjack
 
-
 public enum UserAction: String {
     case pleaseWait = "PLEASE WAIT...",
          swipeTapOrInsert = "PLEASE SWIPE, TAP, OR INSERT",
@@ -32,40 +31,44 @@ public enum TransactionError {
     case networkError, insuficientFunds, duplicateTransaction, generalError
 }
 
-public protocol SDKWrapperProtocol : AnyObject {
+public protocol ClearentWrapperProtocol : AnyObject {
     func didStartPairing()
-    func didEncounteredGeneralError()
     func didFinishPairing()
+    func didFindReaders(readers:[ReaderInfo])
+    func deviceDidDisconnect()
+    func didNotFindReaders()
+    func startedReaderConnection(with reader:ReaderInfo)
+    
+    func didEncounteredGeneralError()
     func didFinishTransaction(response: TransactionResponse, error: ResponseError?)
     func userActionNeeded(action: UserAction)
     func didReceiveInfo(info: UserInfo)
-    func deviceDidDisconnect()
 }
 
-@objc public final class SDKWrapper : NSObject {
+public final class ClearentWrapper : NSObject {
     
-    public static let shared = SDKWrapper()
     private var baseURL: String = ""
     private var apiKey: String = ""
     private var publicKey: String = ""
+    
+    public static let shared = ClearentWrapper()
     private var clearentVP3300 = Clearent_VP3300()
     private var connection  = ClearentConnection(bluetoothSearch: ())
-    private var foundDevice = false
-    weak var delegate: SDKWrapperProtocol?
-    public var friendlyName : String?
+    weak var delegate: ClearentWrapperProtocol?
     private var transactionAmount: String?
     
     private var bleManager : BluetoothScanner?
     public var readerInfo: ReaderInfo?
     
-    @objc public override init() {
+    public override init() {
         super.init()
         createLogFile()
     }
+    
 
     // MARK - Public
     
-    @objc public func startPairing() {
+    public func startPairing() {
         let config = ClearentVP3300Config(noContactlessNoConfiguration: baseURL, publicKey: publicKey)
         clearentVP3300 = Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
         clearentVP3300.start(connection)
@@ -73,18 +76,24 @@ public protocol SDKWrapperProtocol : AnyObject {
         self.delegate?.didStartPairing()
     }
     
+    public func selectReader(reader: ReaderInfo) {
+        if reader.uuid != nil {
+            self.updateConnectionWithDevice(readerInfo: reader)
+        }
+    }
+    
     public func cancelTransaction() {
         clearentVP3300.emv_cancelTransaction()
     }
     
-    @objc public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String) {
+    public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String) {
         self.baseURL = baseURL
         self.apiKey = apiKey
         self.publicKey = publicKey
     }
     
-    @objc public func startTransactionWithAmount(amount: String) {
-        SDKWrapper.shared.startDeviceInfoUpdate()
+    public func startTransactionWithAmount(amount: String) {
+        ClearentWrapper.shared.startDeviceInfoUpdate()
 
         let payment = ClearentPayment.init(sale: ())
         if (amount.canBeConverted(to: String.Encoding.utf8)) {
@@ -95,7 +104,7 @@ public protocol SDKWrapperProtocol : AnyObject {
         let _ : ClearentResponse = clearentVP3300.startTransaction(payment, clearentConnection: connection)
     }
     
-    @objc public func saleTransaction(jwt: String, amount: String) {
+    public func saleTransaction(jwt: String, amount: String) {
         let httpClient = ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
         httpClient.saleTransaction(jwt: jwt, amount: amount) { data, error in
             guard let responseData = data else { return }
@@ -117,7 +126,7 @@ public protocol SDKWrapperProtocol : AnyObject {
         }
     }
     
-    @objc public func refundTransaction(jwt: String, amount: String) {
+    public func refundTransaction(jwt: String, amount: String) {
         let httpClient = ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
         httpClient.refundTransaction(jwt: jwt, amount: amount) { data, error in
             guard let responseData = data else { return }
@@ -139,7 +148,7 @@ public protocol SDKWrapperProtocol : AnyObject {
         }
     }
     
-    @objc public func isReaderConnected() -> Bool {
+    public func isReaderConnected() -> Bool {
         return clearentVP3300.isConnected()
     }
     
@@ -148,7 +157,30 @@ public protocol SDKWrapperProtocol : AnyObject {
         getBatterylevel()
     }
     
-    public func getBatterylevel() {
+
+    // MARK - Private
+    
+    private func updateConnectionWithDevice(readerInfo: ReaderInfo) {
+        self.readerInfo = readerInfo
+
+        if let uuid = readerInfo.uuid {
+            bleManager = BluetoothScanner.init(udid: uuid, delegate: self)
+            connection?.bluetoothDeviceId = uuid.uuidString
+            connection?.fullFriendlyName = readerInfo.readerName
+        }
+        
+        connection?.searchBluetooth = false
+        clearentVP3300.start(connection)
+        
+        self.delegate?.startedReaderConnection(with: readerInfo)
+    }
+    
+    private func readerInfo(from clearentDevice:ClearentBluetoothDevice) -> ReaderInfo {
+        let uuidString: UUID? = UUID(uuidString: clearentDevice.deviceId)
+        return ReaderInfo(name: clearentDevice.friendlyName, batterylevel:nil , signalLevel: nil, connected: clearentDevice.connected, uuid: uuidString)
+    }
+    
+    private func getBatterylevel() {
         var response : NSData? = NSData()
         _ = clearentVP3300.device_sendIDGCommand(0xF0, subCommand: 0x02, data: nil, response: &response)
         guard let response = response else {
@@ -170,105 +202,14 @@ public protocol SDKWrapperProtocol : AnyObject {
         let maxim = 216.0
         let lvl = Double(level)
         var percentage: Double = Double((lvl - minim) / (maxim - minim) * 100.0)
-        // it seams that when the reader is charging we get higer values that the limit specified in the documentation
+        // It seams that when the reader is charging we get higer values that the limit specified in the documentation
         percentage = (percentage <= 100) ? percentage : 100
         return Int(percentage)
     }
-    
-    
-    // MARK - Private
-    
-    @objc private func updateConnectionWithDevice(bleDeviceID:String, friendly: String?) {
-        readerInfo = ReaderInfo(name: friendly, batterylevel: 0, signalLevel: 0, connected: false)
-
-        if let uuid = UUID(uuidString: bleDeviceID) {
-            readerInfo?.udid = uuid
-            bleManager = BluetoothScanner.init(udid: uuid, delegate: self)
-        }
-        foundDevice = true
-        connection?.bluetoothDeviceId = bleDeviceID
-        if let name = friendly {
-            connection?.fullFriendlyName = name
-            friendlyName = name
-        }
-        connection?.searchBluetooth = false
-        clearentVP3300.start(connection)
-    }
-    
-    
-    // MARK - Logger Related
-    
-    public func retriveLoggFileContents() -> String {
-        var logs = ""
-        let fileInfo = fetchLoggerFileInfo()
-        if let newFileInfo = fileInfo {
-            if let newLogs = readContentsOfFile(from: newFileInfo.filePath) {
-                logs = newLogs
-            }
-        }
-        return logs
-    }
-    
-    public func fetchLogFileURL() -> URL? {
-        if let fileInfo = fetchLoggerFileInfo() {
-            let urlPath = URL(fileURLWithPath: fileInfo.filePath)
-            return urlPath
-        }
-        return nil
-    }
-    
-    public func clearLogFile() {
-        DDLog.allLoggers.forEach { logger in
-            if (logger.isKind(of: DDFileLogger.self)) {
-                let fileLogger : DDFileLogger = logger as! DDFileLogger
-                fileLogger.rollLogFile(withCompletion: nil)
-            }
-        }
-    }
-    
-    private func createLogFile() {
-        DDLog.allLoggers.forEach { logger in
-            if (logger.isKind(of: DDFileLogger.self)) {
-                let fl : DDFileLogger = logger as! DDFileLogger
-                do {
-                    if fl.currentLogFileInfo == nil {
-                        try fl.logFileManager.createNewLogFile()
-                    }
-                } catch {
-                    print("error logger")
-                }
-            }
-        }
-    }
-    
-    private func fetchLoggerFileInfo() -> DDLogFileInfo? {
-        var resultFileInfo : DDLogFileInfo? = nil
-        DDLog.allLoggers.forEach { logger in
-            if (logger.isKind(of: DDFileLogger.self)) {
-                let fileLogger : DDFileLogger = logger as! DDFileLogger
-                let fileInfos = fileLogger.logFileManager.sortedLogFileInfos
-                resultFileInfo =  (fileInfos.count > 0) ? fileInfos[0] : nil
-            }
-        }
-        
-        return resultFileInfo
-    }
-    
-    private func readContentsOfFile(from path: String) -> String? {
-        var string: String? = nil
-        let urlPath = URL(fileURLWithPath: path)
-        do {
-            string = try String(contentsOf:urlPath, encoding: .utf8)
-        } catch {
-            print("Could not read log file.")
-        }
-        return string
-    }
 }
 
-extension SDKWrapper : Clearent_Public_IDTech_VP3300_Delegate {
+extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     
-    // needs a way to transmit the amount
     public func successTransactionToken(_ clearentTransactionToken: ClearentTransactionToken!) {
         guard let amount = transactionAmount else { return }
         saleTransaction(jwt: clearentTransactionToken.jwt, amount: amount)
@@ -307,17 +248,15 @@ extension SDKWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     }
     
     public func bluetoothDevices(_ bluetoothDevices: [ClearentBluetoothDevice]!) {
-        // for now we only handle the one device case
         if (bluetoothDevices.count == 1) {
-            updateConnectionWithDevice(bleDeviceID: bluetoothDevices[0].deviceId,
-                                       friendly: bluetoothDevices[0].friendlyName)
-        } else {
-            bluetoothDevices.forEach { device in
-                if (device.friendlyName == "IDTECH-VP3300-27224") {
-                    updateConnectionWithDevice(bleDeviceID: device.deviceId,
-                                               friendly: device.friendlyName)
-                }
+            updateConnectionWithDevice(readerInfo: readerInfo(from: bluetoothDevices[0]))
+        } else if (bluetoothDevices.count > 1) {
+            let readers = bluetoothDevices.map { device in
+                return readerInfo(from: device)
             }
+            self.delegate?.didFindReaders(readers: readers)
+        } else {
+            self.delegate?.didNotFindReaders()
         }
     }
 
@@ -339,7 +278,7 @@ extension SDKWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     }
 }
 
-extension SDKWrapper: BluetoothScannerProtocol {
+extension ClearentWrapper: BluetoothScannerProtocol {
     
     func didReceivedSignalStrength(level: SignalLevel) {
         readerInfo?.signalLevel = level.rawValue

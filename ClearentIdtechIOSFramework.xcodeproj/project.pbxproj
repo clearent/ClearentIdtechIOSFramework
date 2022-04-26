@@ -84,7 +84,7 @@
 		4BAEA888271C5F24007F5FCF /* ClearentLumberjackRemoteLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BAEA887271C5F24007F5FCF /* ClearentLumberjackRemoteLogger.m */; };
 		4BAEA898273410A6007F5FCF /* CocoaLumberjack.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BAEA897273410A6007F5FCF /* CocoaLumberjack.xcframework */; };
 		BA40A34B27F1B38C0041CCF7 /* ClearentHttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA40A34827F1B38C0041CCF7 /* ClearentHttpClient.swift */; };
-		BA40A34C27F1B38C0041CCF7 /* SDKWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA40A34927F1B38C0041CCF7 /* SDKWrapper.swift */; };
+		BA40A34C27F1B38C0041CCF7 /* ClearentWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA40A34927F1B38C0041CCF7 /* ClearentWrapper.swift */; };
 		BA40A34D27F1B38C0041CCF7 /* HttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA40A34A27F1B38C0041CCF7 /* HttpClient.swift */; };
 		BA475A442807FEA9002A003D /* BluetoothScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA475A432807FEA9002A003D /* BluetoothScanner.swift */; };
 		BA475A4628087EC1002A003D /* NSDataExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA475A4528087EC1002A003D /* NSDataExtension.swift */; };
@@ -92,6 +92,7 @@
 		BAC4E3C227FC3E44001B5E6D /* Identifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC4E3C127FC3E44001B5E6D /* Identifiers.swift */; };
 		BAC4E3C427FC3E88001B5E6D /* FlowDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC4E3C327FC3E88001B5E6D /* FlowDataProvider.swift */; };
 		BAC4E3D127FED72B001B5E6D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BAC4E3D027FED72B001B5E6D /* Localizable.strings */; };
+		BAEAD2D92810041100AA72F6 /* ClearentLoggerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAEAD2D82810041100AA72F6 /* ClearentLoggerExtension.swift */; };
 		E702E56523647D6B0032ED8D /* IDTech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E760460523645A61006CFB78 /* IDTech.framework */; };
 		E702E5702364835B0032ED8D /* ClearentVP3300Config.m in Sources */ = {isa = PBXBuildFile; fileRef = E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */; };
 		E702E572236488630032ED8D /* ClearentPayment.h in Headers */ = {isa = PBXBuildFile; fileRef = E746CB5F235896EC00C41DF1 /* ClearentPayment.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -193,7 +194,7 @@
 		1937011C27F31C8100BF48E5 /* ClearentPaymentProcessingPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentPaymentProcessingPresenter.swift; sourceTree = "<group>"; };
 		19A61D582804121400E295B3 /* SF-Pro-Text-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-Regular.otf"; sourceTree = "<group>"; };
 		19A61D592804121400E295B3 /* SF-Pro-Text-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-Bold.otf"; sourceTree = "<group>"; };
-		19A61D5A2804121400E295B3 /* SF-Pro-Text-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-Medium.otf"; sourceTree = "<group>"; };
+		19A61D5A2804121400E295B3 /* SF-Pro-Text-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = text; path = "SF-Pro-Text-Medium.otf"; sourceTree = "<group>"; };
 		19A61D5E2804129100E295B3 /* ClearentUserActionView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ClearentUserActionView.xib; sourceTree = "<group>"; };
 		19A61D5F2804129100E295B3 /* ClearentUserActionView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentUserActionView.swift; sourceTree = "<group>"; };
 		19A61D602804129100E295B3 /* ClearentReaderFeedbackView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentReaderFeedbackView.swift; sourceTree = "<group>"; };
@@ -234,7 +235,7 @@
 		4BAEA89327340E89007F5FCF /* CocoaLumberjack.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = CocoaLumberjack.framework; sourceTree = "<group>"; };
 		4BAEA897273410A6007F5FCF /* CocoaLumberjack.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = CocoaLumberjack.xcframework; sourceTree = "<group>"; };
 		BA40A34827F1B38C0041CCF7 /* ClearentHttpClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentHttpClient.swift; sourceTree = "<group>"; };
-		BA40A34927F1B38C0041CCF7 /* SDKWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SDKWrapper.swift; sourceTree = "<group>"; };
+		BA40A34927F1B38C0041CCF7 /* ClearentWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentWrapper.swift; sourceTree = "<group>"; };
 		BA40A34A27F1B38C0041CCF7 /* HttpClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpClient.swift; sourceTree = "<group>"; };
 		BA475A432807FEA9002A003D /* BluetoothScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothScanner.swift; sourceTree = "<group>"; };
 		BA475A4528087EC1002A003D /* NSDataExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSDataExtension.swift; sourceTree = "<group>"; };
@@ -242,6 +243,7 @@
 		BAC4E3C127FC3E44001B5E6D /* Identifiers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Identifiers.swift; sourceTree = "<group>"; };
 		BAC4E3C327FC3E88001B5E6D /* FlowDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowDataProvider.swift; sourceTree = "<group>"; };
 		BAC4E3D027FED72B001B5E6D /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
+		BAEAD2D82810041100AA72F6 /* ClearentLoggerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentLoggerExtension.swift; sourceTree = "<group>"; };
 		E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentVP3300Config.m; sourceTree = "<group>"; };
 		E702E571236485280032ED8D /* ClearentVP3300Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentVP3300Config.h; sourceTree = "<group>"; };
 		E726A0362258B5A400F3E8B7 /* ClearentCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentCache.h; sourceTree = "<group>"; };
@@ -472,8 +474,9 @@
 			children = (
 				BA475A55280FEB91002A003D /* Entities */,
 				BA40A34827F1B38C0041CCF7 /* ClearentHttpClient.swift */,
-				BA40A34927F1B38C0041CCF7 /* SDKWrapper.swift */,
+				BA40A34927F1B38C0041CCF7 /* ClearentWrapper.swift */,
 				BA40A34A27F1B38C0041CCF7 /* HttpClient.swift */,
+				BAEAD2D82810041100AA72F6 /* ClearentLoggerExtension.swift */,
 			);
 			path = Wrapper;
 			sourceTree = "<group>";
@@ -942,7 +945,7 @@
 				1937010A27F1CAB400BF48E5 /* ClearentPaymentProcessingViewController.swift in Sources */,
 				19A61D6D2804129100E295B3 /* ClearentReaderStatusHeaderView.swift in Sources */,
 				E702E5702364835B0032ED8D /* ClearentVP3300Config.m in Sources */,
-				BA40A34C27F1B38C0041CCF7 /* SDKWrapper.swift in Sources */,
+				BA40A34C27F1B38C0041CCF7 /* ClearentWrapper.swift in Sources */,
 				0169C2E527FF1A4600B8B4DB /* ClearentMarginableView.swift in Sources */,
 				01F6D57B280580B200310E01 /* ClearentStringExtension.swift in Sources */,
 				01D1ED6F280FFA680005FC71 /* ReaderInfo.swift in Sources */,
@@ -953,6 +956,7 @@
 				E75A5BEC20DD20580035B911 /* ClearentEmvConfigurator.m in Sources */,
 				4B32C0912432677F00CCF9B9 /* ClearentTransactionToken.m in Sources */,
 				E7CA494520E1753D0090CFFC /* ClearentConfigurator.m in Sources */,
+				BAEAD2D92810041100AA72F6 /* ClearentLoggerExtension.swift in Sources */,
 				4BAEA885271C5CD8007F5FCF /* ClearentLumberjack.m in Sources */,
 				E726A0382258B5B400F3E8B7 /* ClearentCache.m in Sources */,
 				0101EC2A2808249F00C533DE /* LoadingIndicatorView.swift in Sources */,

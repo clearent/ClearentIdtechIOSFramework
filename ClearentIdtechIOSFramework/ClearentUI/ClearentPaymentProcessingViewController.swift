@@ -46,7 +46,7 @@ public class ClearentPaymentProcessingViewController: UIViewController {
     
     private func dismissViewController() {
         dismiss(animated: true, completion: nil)
-        SDKWrapper.shared.cancelTransaction()
+        ClearentWrapper.shared.cancelTransaction()
         presenter?.dismissAction?()
     }
 
