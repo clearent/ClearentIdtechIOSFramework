@@ -64,14 +64,7 @@ struct PaymentFeedbackComponent: PaymentFeedbackComponentProtocol {
     }
     
     func itemForKey(key:FlowDataKeys) -> AnyObject? {
-        var result : AnyObject? = nil
-        feedbackItems.forEach { dataItem in
-            if (dataItem.type == key) {
-                result = dataItem.object as AnyObject
-                return
-            }
-        }
-        
-        return result
+        let item = feedbackItems.first { $0.type == key }
+        return item?.object as AnyObject
     }
 }
