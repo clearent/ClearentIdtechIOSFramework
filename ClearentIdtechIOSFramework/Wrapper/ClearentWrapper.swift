@@ -69,11 +69,16 @@ public final class ClearentWrapper : NSObject {
     // MARK - Public
     
     public func startPairing() {
-        let config = ClearentVP3300Config(noContactlessNoConfiguration: baseURL, publicKey: publicKey)
-        clearentVP3300 = Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
-        clearentVP3300.start(connection)
-        
-        self.delegate?.didStartPairing()
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let strongSelf = self else { return }
+            let config = ClearentVP3300Config(noContactlessNoConfiguration: strongSelf.baseURL, publicKey: strongSelf.publicKey)
+            strongSelf.clearentVP3300 = Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
+            strongSelf.clearentVP3300.start(strongSelf.connection)
+            
+            DispatchQueue.main.async {
+                strongSelf.delegate?.didStartPairing()
+            }
+        }
     }
     
     public func selectReader(reader: ReaderInfo) {
@@ -93,15 +98,18 @@ public final class ClearentWrapper : NSObject {
     }
     
     public func startTransactionWithAmount(amount: String) {
-        ClearentWrapper.shared.startDeviceInfoUpdate()
-
-        let payment = ClearentPayment.init(sale: ())
-        if (amount.canBeConverted(to: String.Encoding.utf8)) {
-            payment?.amount = Double(amount) ?? 0
-            transactionAmount = amount
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let strongSelf = self else { return }
+            ClearentWrapper.shared.startDeviceInfoUpdate()
+            
+            let payment = ClearentPayment.init(sale: ())
+            if (amount.canBeConverted(to: String.Encoding.utf8)) {
+                payment?.amount = Double(amount) ?? 0
+                strongSelf.transactionAmount = amount
+            }
+            
+            strongSelf.clearentVP3300.startTransaction(payment, clearentConnection: strongSelf.connection)
         }
-        
-        let _ : ClearentResponse = clearentVP3300.startTransaction(payment, clearentConnection: connection)
     }
     
     public func saleTransaction(jwt: String, amount: String) {
