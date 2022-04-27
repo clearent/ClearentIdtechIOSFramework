@@ -19,6 +19,7 @@ public enum UserAction: String {
          cardSecured = "CARD SECURED",
          cardHasChip = "CARD HAS CHIP. TRY INSERT",
          tryMSRAgain = "TRY MSR AGAIN",
+         useMagstripe = "USE MAGSTRIPE",
          transactionStarted = "TRANSACTION STARTED"
 }
 

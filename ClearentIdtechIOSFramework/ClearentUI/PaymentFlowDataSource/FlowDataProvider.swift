@@ -139,6 +139,12 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .description, object: "xsdk_read_try_msr_again_description".localized),
                      FlowDataItem(type: .userAction, object: "xsdk_user_action_cancel".localized),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card)]
+        case .useMagstripe:
+            type = .warning
+            items = [FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
+                     FlowDataItem(type: .description, object: "xsdk_read_try_use_magstripe_description".localized),
+                     FlowDataItem(type: .userAction, object: "xsdk_user_action_cancel".localized),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card)]
         case .removeCard, .cardSecured:
             print("nothing to do here")
         case .transactionStarted, .goingOnline:
