@@ -25,7 +25,8 @@ public enum UserAction: String {
 
 public enum UserInfo: String {
     case authorizing = "AUTHORIZING...",
-         processing = "PROCESSING..."
+         processing = "PROCESSING...",
+         goingOnline = "GOING ONLINE"
 }
 
 public enum TransactionError {

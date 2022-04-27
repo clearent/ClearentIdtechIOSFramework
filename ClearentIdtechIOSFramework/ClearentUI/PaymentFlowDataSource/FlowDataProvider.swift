@@ -165,7 +165,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         switch info {
         case .authorizing:
             print("nothing to do here")
-        case .processing:
+        case .processing, .goingOnline:
             let  items = [FlowDataItem(type: .description, object: "xsdk_processing_description".localized),
                           FlowDataItem(type: .graphicType, object: FlowGraphicType.loading)]
             
