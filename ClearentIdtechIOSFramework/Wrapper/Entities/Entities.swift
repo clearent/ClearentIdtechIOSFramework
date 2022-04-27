@@ -11,7 +11,7 @@ import Foundation
 public struct TransactionResponse: Codable {
     var code: String
     var status: String
-    var links: [Links]
+    var links: [Links]?
     var payload: Payload
 }
 

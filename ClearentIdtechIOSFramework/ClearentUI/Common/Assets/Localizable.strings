@@ -53,6 +53,9 @@
 // Read error (try MSR again)
 "xsdk_read_try_msr_again_description" = "Try MSR again";
 
+// Read error (use Magstripe)
+"xsdk_read_try_use_magstripe_description" = "Try use MAGSTRIPE";
+
 // Reader signal
 "xsdk_reader_signal_idle" = "Idle";
 "xsdk_reader_signal_connected" = "Connected";
