@@ -9,18 +9,17 @@
 import UIKit
 
 public class ClearentPaymentProcessingViewController: UIViewController {
-    
     // MARK: - Properties
-    
+
     @IBOutlet var stackView: ClearentAdaptiveStackView!
     public var presenter: PaymentProcessingProtocol?
-    private struct Layout {
+    private enum Layout {
         static let cornerRadius = 15.0
         static let margin = 16.0
         static let backgroundColor = ClearentConstants.Color.backgroundSecondary01
     }
-    private var initialTouchPoint = CGPoint.zero
 
+    private var initialTouchPoint = CGPoint.zero
 
     // MARK: - Init
 
@@ -35,19 +34,18 @@ public class ClearentPaymentProcessingViewController: UIViewController {
 
     // MARK: - Lifecycle
 
-    override public func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         setupStyle()
         presenter?.startBluetoothDevicePairing()
         view.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handleDismiss)))
     }
-    
+
     // MARK: - Private
-    
+
     private func dismissViewController() {
         dismiss(animated: true, completion: nil)
         ClearentWrapper.shared.cancelTransaction()
-        presenter?.dismissAction?()
     }
 
     private func setupStyle() {
@@ -105,7 +103,7 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
     }
 }
 
-// MARK: Dismiss
+// MARK: Swipe down screen
 
 extension ClearentPaymentProcessingViewController {
     enum Constants {

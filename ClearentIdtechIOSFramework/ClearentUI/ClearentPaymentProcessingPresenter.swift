@@ -15,7 +15,7 @@ public protocol ClearentPaymentProcessingView: AnyObject {
 public protocol PaymentProcessingProtocol {
     func startBluetoothDevicePairing()
     func pairAgainBluetoothDevice()
-    var dismissAction: (() -> Void)? { get set }
+    var flowFeedbackReceived: (() -> Void)? { get set }
 }
 
 public class ClearentPaymentProcessingPresenter {
@@ -23,7 +23,7 @@ public class ClearentPaymentProcessingPresenter {
     private var amount: Double
     private let sdkWrapper: ClearentWrapper
     private var sdkFeedbackProvider: FlowDataProvider
-    public var dismissAction: (() -> Void)?
+    public var flowFeedbackReceived: (() -> Void)?
 
     // MARK: Init
 
@@ -63,5 +63,6 @@ extension ClearentPaymentProcessingPresenter: FlowDataProtocol {
     func didReceiveFlowFeedback(feedback: FlowFeedback) {
         let component = PaymentFeedbackComponent(feedbackItems: feedback.items)
         paymentProcessingView?.updateContent(with: component)
+        flowFeedbackReceived?()
     }
 }
