@@ -94,9 +94,17 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
     private func createButton(with component: PaymentFeedbackComponentProtocol) {
         if let userAction = component.userAction {
             let button = ClearentPrimaryButton()
-            button.title = userAction
+            button.title = userAction.title
+            
             button.action = { [weak self] in
-                self?.dismissViewController()
+                guard let self = self else { return }
+                
+                switch userAction {
+                case .cancel:
+                    self.dismissViewController()
+                case .retry:
+                    self.presenter?.startBluetoothDevicePairing()
+                }
             }
             stackView.addArrangedSubview(button)
         }
