@@ -53,6 +53,19 @@ enum FlowGraphicType {
     }
 }
 
+public enum FlowButtonType {
+    case cancel, retry
+    
+    var title: String {
+        switch self {
+        case .cancel:
+            return "xsdk_user_action_cancel".localized
+        case .retry:
+            return "xsdk_user_action_retry".localized
+        }
+    }
+}
+
 enum ProcessType {
     case pairing
     case payment
