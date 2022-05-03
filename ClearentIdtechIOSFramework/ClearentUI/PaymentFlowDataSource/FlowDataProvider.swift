@@ -68,7 +68,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     func didEncounteredGeneralError() {
         
         let items = [FlowDataItem(type: .description, object: "xsdk_general_error_description".localized),
-                     FlowDataItem(type: .userAction, object: FlowFeedbackButtonType.retry),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.error)]
         
         let feedback = FlowDataFactory.component(with: .payment,
@@ -85,7 +85,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         if let error = error {
             let errItems = [FlowDataItem(type: .title, object: "xsdk_general_error_title".localized),
                             FlowDataItem(type: .description, object: error.message),
-                            FlowDataItem(type: .userAction, object: FlowFeedbackButtonType.retry),
+                            FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                             FlowDataItem(type: .graphicType, object: FlowGraphicType.error)]
             
             feedback = FlowDataFactory.component(with: .payment,
@@ -116,7 +116,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         case .swipeInsert, .swipeTapOrInsert:
             items = [FlowDataItem(type: .description, object: "xsdk_tap_insert_swipe_description".localized),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
-                     FlowDataItem(type: .userAction, object: FlowFeedbackButtonType.cancel)]
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .pressReaderButton:
             items = [FlowDataItem(type: .description, object: "xsdk_press_button_description".localized),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.press_button)]
@@ -124,25 +124,25 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             type = .warning
             items = [FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
                      FlowDataItem(type: .description, object: "xsdk_read_card_try_icc_again_description".localized),
-                     FlowDataItem(type: .userAction, object: FlowFeedbackButtonType.cancel),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card)]
         case .cardHasChip:
             type = .warning
             items = [FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
                      FlowDataItem(type: .description, object: "xsdk_read_card_has_chip_description".localized),
-                     FlowDataItem(type: .userAction, object: FlowFeedbackButtonType.cancel),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card)]
         case .tryMSRAgain:
             type = .warning
             items = [FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
                      FlowDataItem(type: .description, object: "xsdk_read_try_msr_again_description".localized),
-                     FlowDataItem(type: .userAction, object: FlowFeedbackButtonType.cancel),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card)]
         case .useMagstripe:
             type = .warning
             items = [FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
                      FlowDataItem(type: .description, object: "xsdk_read_try_use_magstripe_description".localized),
-                     FlowDataItem(type: .userAction, object: FlowFeedbackButtonType.cancel),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card)]
         case .removeCard, .cardSecured:
             print("nothing to do here")

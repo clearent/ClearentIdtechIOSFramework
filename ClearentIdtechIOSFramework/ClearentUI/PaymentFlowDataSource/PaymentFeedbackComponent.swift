@@ -19,7 +19,7 @@ public protocol PaymentFeedbackComponentProtocol {
 
     var mainDescription: String? { get }
 
-    var userAction: FlowFeedbackButtonType? { get }
+    var userAction: FlowButtonType? { get }
 }
 
 struct PaymentFeedbackComponent: PaymentFeedbackComponentProtocol {
@@ -59,8 +59,8 @@ struct PaymentFeedbackComponent: PaymentFeedbackComponentProtocol {
         itemForKey(key: .title) as? String
     }
 
-    var userAction: FlowFeedbackButtonType? {
-        itemForKey(key: .userAction) as? FlowFeedbackButtonType
+    var userAction: FlowButtonType? {
+        itemForKey(key: .userAction) as? FlowButtonType
     }
     
     func itemForKey(key:FlowDataKeys) -> AnyObject? {

@@ -53,7 +53,7 @@ enum FlowGraphicType {
     }
 }
 
-public enum FlowFeedbackButtonType {
+public enum FlowButtonType {
     case cancel, retry
     
     var title: String {
