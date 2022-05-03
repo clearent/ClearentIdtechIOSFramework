@@ -71,15 +71,22 @@ public final class ClearentWrapper : NSObject {
     // MARK - Public
     
     public func startPairing() {
+        
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let strongSelf = self else { return }
+            
             let config = ClearentVP3300Config(noContactlessNoConfiguration: strongSelf.baseURL, publicKey: strongSelf.publicKey)
             strongSelf.clearentVP3300 = Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
-            strongSelf.clearentVP3300.start(strongSelf.connection)
             
-            DispatchQueue.main.async {
-                strongSelf.delegate?.didStartPairing()
+            if let readerName = ClearentWrapperDefaults.pairedReaderFriendlyName {
+                strongSelf.connection = ClearentConnection(bluetoothWithFriendlyName: readerName)
+            } else {
+                DispatchQueue.main.async {
+                    strongSelf.delegate?.didStartPairing()
+                }
             }
+            
+            strongSelf.clearentVP3300.start(strongSelf.connection)
         }
     }
     
@@ -177,6 +184,7 @@ public final class ClearentWrapper : NSObject {
             bleManager = BluetoothScanner.init(udid: uuid, delegate: self)
             connection?.bluetoothDeviceId = uuid.uuidString
             connection?.fullFriendlyName = readerInfo.readerName
+            ClearentWrapperDefaults.pairedReaderFriendlyName = readerInfo.readerName
         }
         
         connection?.searchBluetooth = false
@@ -210,9 +218,9 @@ public final class ClearentWrapper : NSObject {
     private func batteryLevelPercentageFrom(level: Int) -> Int {
         let minim = 192.0
         let maxim = 210.0
-        let lvl = Double(level) > maxim ? maxim : Double(level)
+        let lvl = min(maxim, Double(level))
         var percentage: Double = Double((lvl - minim) / (maxim - minim) * 100.0)
-        percentage = (percentage <= 100) ? percentage : 100
+        percentage = min(percentage, 100)
         return Int(percentage)
     }
 }

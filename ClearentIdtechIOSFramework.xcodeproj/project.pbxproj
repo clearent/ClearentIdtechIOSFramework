@@ -94,6 +94,8 @@
 		BAC4E3C427FC3E88001B5E6D /* FlowDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC4E3C327FC3E88001B5E6D /* FlowDataProvider.swift */; };
 		BAC4E3D127FED72B001B5E6D /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BAC4E3D027FED72B001B5E6D /* Localizable.strings */; };
 		BAEAD2D92810041100AA72F6 /* ClearentLoggerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAEAD2D82810041100AA72F6 /* ClearentLoggerExtension.swift */; };
+		CC1953B728213ECC00DF3688 /* UserDefaultsPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1953B628213ECC00DF3688 /* UserDefaultsPersistence.swift */; };
+		CC1953B928213F5700DF3688 /* ClearentWrapperDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1953B828213F5700DF3688 /* ClearentWrapperDefaults.swift */; };
 		E702E56523647D6B0032ED8D /* IDTech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E760460523645A61006CFB78 /* IDTech.framework */; };
 		E702E5702364835B0032ED8D /* ClearentVP3300Config.m in Sources */ = {isa = PBXBuildFile; fileRef = E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */; };
 		E702E572236488630032ED8D /* ClearentPayment.h in Headers */ = {isa = PBXBuildFile; fileRef = E746CB5F235896EC00C41DF1 /* ClearentPayment.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -246,6 +248,8 @@
 		BAC4E3C327FC3E88001B5E6D /* FlowDataProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlowDataProvider.swift; sourceTree = "<group>"; };
 		BAC4E3D027FED72B001B5E6D /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		BAEAD2D82810041100AA72F6 /* ClearentLoggerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentLoggerExtension.swift; sourceTree = "<group>"; };
+		CC1953B628213ECC00DF3688 /* UserDefaultsPersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsPersistence.swift; sourceTree = "<group>"; };
+		CC1953B828213F5700DF3688 /* ClearentWrapperDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentWrapperDefaults.swift; sourceTree = "<group>"; };
 		E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentVP3300Config.m; sourceTree = "<group>"; };
 		E702E571236485280032ED8D /* ClearentVP3300Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentVP3300Config.h; sourceTree = "<group>"; };
 		E726A0362258B5A400F3E8B7 /* ClearentCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentCache.h; sourceTree = "<group>"; };
@@ -426,6 +430,8 @@
 				01F6D57C280585A300310E01 /* AdaptiveStackView */,
 				014B2BA9280090130056F7FD /* ClearentConstants.swift */,
 				014B2BAB280092F10056F7FD /* ClearentColorExtension.swift */,
+				CC1953B628213ECC00DF3688 /* UserDefaultsPersistence.swift */,
+				CC1953B828213F5700DF3688 /* ClearentWrapperDefaults.swift */,
 			);
 			path = Util;
 			sourceTree = "<group>";
@@ -972,9 +978,11 @@
 				E79A4D94204F14B000E4BBF6 /* ClearentDelegate.m in Sources */,
 				E71E309521F7A0E3001C950A /* ClearentCard.m in Sources */,
 				014B2BA6280087AD0056F7FD /* ClearentPrimaryButton.swift in Sources */,
+				CC1953B728213ECC00DF3688 /* UserDefaultsPersistence.swift in Sources */,
 				E7B89E3121F6A6A400078C73 /* ClearentManualEntry.m in Sources */,
 				E7CA497520E579190090CFFC /* ClearentConfigFetcher.m in Sources */,
 				0169C2E627FF1A4600B8B4DB /* ClearentAdaptiveStackView.swift in Sources */,
+				CC1953B928213F5700DF3688 /* ClearentWrapperDefaults.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
