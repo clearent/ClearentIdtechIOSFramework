@@ -184,13 +184,11 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         let  items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.pairingSuccessful),
                       FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader)]
         
-        //silenced this warning
-        let _ = FlowDataFactory.component(with: .pairing,
+        let feedback = FlowDataFactory.component(with: .pairing,
                                                  type: .searchDevices,
                                                  readerInfo: fetchReaderInfo(),
                                                  payload: items)
-       // commented temporarly so we do not mess up the current flow
-       // self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
         self.delegate?.didFinishedPairing()
     }
     
@@ -199,15 +197,11 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     }
     
     func didStartPairing() {
-// commented temporarly so we do not mess up the current flow
-//        let  items = [FlowDataItem(type: .title, object: "xsdk_prepare_for_pairing".localized),
-//                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
-//                      FlowDataItem(type: .userAction, object: "xsdk_pair".localized)]
+        let  items = [FlowDataItem(type: .title, object: "xsdk_select_reader".localized),
+                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
+                      FlowDataItem(type: .userAction, object: "xsdk_user_action_cancel".localized)]
         
-        let  items = [FlowDataItem(type: .description, object: "xsdk_searching_for_reader".localized),
-                      FlowDataItem(type: .graphicType, object: FlowGraphicType.loading)]
-
-        let feedback = FlowDataFactory.component(with: .payment,
+        let feedback = FlowDataFactory.component(with: .pairing,
                                                  type: .info,
                                                  readerInfo: nil,
                                                  payload: items)
@@ -218,37 +212,37 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     func didFindReaders(readers: [ReaderInfo]) {
         let items = [FlowDataItem(type: .title, object: "xsdk_select_reader".localized),
                     FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
-                    FlowDataItem(type: .devicesFound, object: readers)]
+                    FlowDataItem(type: .devicesFound, object: readers),
+                    FlowDataItem(type: .userAction, object: "xsdk_user_action_cancel".localized)]
         
-        let _ = FlowDataFactory.component(with: .pairing,
+        let feedback = FlowDataFactory.component(with: .pairing,
                                                  type: .searchDevices,
                                                  readerInfo: nil,
                                                  payload: items)
-       // commented temporarly so we do not mess up the current flow
-       // self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+       self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
     func startedReaderConnection(with reader: ReaderInfo) {
         let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader)]
     
-        let _ = FlowDataFactory.component(with: .pairing,
-                                                 type: .searchDevices,
-                                                 readerInfo: reader,
-                                                 payload: items)
-       // commented temporarly so we do not mess up the current flow
-       // self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        let feedback = FlowDataFactory.component(with: .pairing,
+                                          type: .searchDevices,
+                                    readerInfo: reader,
+                                       payload: items)
+       self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
     func didNotFindReaders() {
-        let items = [FlowDataItem(type: .description, object: "xsdk_press_reader_button".localized),
-                     FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader)]
+        let items = [FlowDataItem(type: .title, object: "xsdk_no_readers_found_title".localized),
+                     FlowDataItem(type: .description, object: "xsdk_no_readers_found_description".localized),
+                     FlowDataItem(type: .userAction, object: "xsdk_user_action_retry".localized),
+                     FlowDataItem(type: .userAction, object: "xsdk_user_action_cancel".localized)]
         
-        let _ = FlowDataFactory.component(with: .pairing,
-                                                 type: .info,
-                                                 readerInfo: nil,
-                                                 payload: items)
-       // commented temporarly so we do not mess up the current flow
-       // self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        let feedback = FlowDataFactory.component(with: .pairing,
+                                          type: .info,
+                                    readerInfo: nil,
+                                       payload: items)
+        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
 }
