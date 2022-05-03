@@ -209,10 +209,9 @@ public final class ClearentWrapper : NSObject {
         
     private func batteryLevelPercentageFrom(level: Int) -> Int {
         let minim = 192.0
-        let maxim = 216.0
-        let lvl = Double(level)
+        let maxim = 210.0
+        let lvl = Double(level) > maxim ? maxim : Double(level)
         var percentage: Double = Double((lvl - minim) / (maxim - minim) * 100.0)
-        // It seams that when the reader is charging we get higer values that the limit specified in the documentation
         percentage = (percentage <= 100) ? percentage : 100
         return Int(percentage)
     }
