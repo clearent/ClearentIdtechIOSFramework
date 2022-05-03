@@ -39,11 +39,7 @@ public class ClearentPaymentProcessingPresenter {
 extension ClearentPaymentProcessingPresenter: PaymentProcessingProtocol {
     public func startBluetoothDevicePairing() {
         sdkFeedbackProvider.delegate = self
-        if sdkWrapper.isReaderConnected() {
-            sdkWrapper.startTransactionWithAmount(amount: String(format: "%.2f", amount))
-        } else {
-            sdkWrapper.startPairing()
-        }
+        sdkWrapper.startPairing()
     }
 
     public func pairAgainBluetoothDevice() {
