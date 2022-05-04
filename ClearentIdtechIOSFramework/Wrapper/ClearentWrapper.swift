@@ -78,8 +78,9 @@ public final class ClearentWrapper : NSObject {
             let config = ClearentVP3300Config(noContactlessNoConfiguration: strongSelf.baseURL, publicKey: strongSelf.publicKey)
             strongSelf.clearentVP3300 = Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
             
-            if let readerName = ClearentWrapperDefaults.pairedReaderFriendlyName {
-                strongSelf.connection = ClearentConnection(bluetoothWithFriendlyName: readerName)
+            if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo {
+                strongSelf.connection = ClearentConnection(bluetoothWithFriendlyName: readerInfo.readerName)
+                strongSelf.readerInfo = readerInfo
             } else {
                 DispatchQueue.main.async {
                     strongSelf.delegate?.didStartPairing()
@@ -184,7 +185,6 @@ public final class ClearentWrapper : NSObject {
             bleManager = BluetoothScanner.init(udid: uuid, delegate: self)
             connection?.bluetoothDeviceId = uuid.uuidString
             connection?.fullFriendlyName = readerInfo.readerName
-            ClearentWrapperDefaults.pairedReaderFriendlyName = readerInfo.readerName
         }
         
         connection?.searchBluetooth = false
@@ -291,6 +291,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         readerInfo?.isConnected = true
         bleManager?.setupDevice()
         bleManager?.readRSSI()
+        ClearentWrapperDefaults.pairedReaderInfo = readerInfo
         self.delegate?.didFinishPairing()
     }
     
