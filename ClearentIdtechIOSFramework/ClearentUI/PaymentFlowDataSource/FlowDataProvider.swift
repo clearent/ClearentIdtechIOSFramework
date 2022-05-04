@@ -198,7 +198,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     
     func didStartPairing() {
         let  items = [FlowDataItem(type: .hint, object: "xsdk_select_reader".localized),
-                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
+                      FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
                       FlowDataItem(type: .userAction, object: "xsdk_user_action_cancel".localized)]
         
         let feedback = FlowDataFactory.component(with: .pairing,
@@ -227,9 +227,9 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader)]
     
         let feedback = FlowDataFactory.component(with: .pairing,
-                                          type: .searchDevices,
-                                    readerInfo: reader,
-                                       payload: items)
+                                                 type: .searchDevices,
+                                                 readerInfo: reader,
+                                                 payload: items)
        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
