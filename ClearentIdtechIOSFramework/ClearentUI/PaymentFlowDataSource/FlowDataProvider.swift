@@ -197,7 +197,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     }
     
     func didStartPairing() {
-        let  items = [FlowDataItem(type: .title, object: "xsdk_select_reader".localized),
+        let  items = [FlowDataItem(type: .hint, object: "xsdk_select_reader".localized),
                       FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
                       FlowDataItem(type: .userAction, object: "xsdk_user_action_cancel".localized)]
         
@@ -210,7 +210,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     }
     
     func didFindReaders(readers: [ReaderInfo]) {
-        let items = [FlowDataItem(type: .title, object: "xsdk_select_reader".localized),
+        let items = [FlowDataItem(type: .hint, object: "xsdk_select_reader".localized),
                     FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
                     FlowDataItem(type: .devicesFound, object: readers),
                     FlowDataItem(type: .userAction, object: "xsdk_user_action_cancel".localized)]
@@ -234,7 +234,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     }
     
     func didNotFindReaders() {
-        let items = [FlowDataItem(type: .title, object: "xsdk_no_readers_found_title".localized),
+        let items = [FlowDataItem(type: .hint, object: "xsdk_no_readers_found_title".localized),
                      FlowDataItem(type: .description, object: "xsdk_no_readers_found_description".localized),
                      FlowDataItem(type: .userAction, object: "xsdk_user_action_retry".localized),
                      FlowDataItem(type: .userAction, object: "xsdk_user_action_cancel".localized)]
