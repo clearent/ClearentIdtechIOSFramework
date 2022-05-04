@@ -221,7 +221,13 @@ public final class ClearentWrapper : NSObject {
         let lvl = min(maxim, Double(level))
         var percentage: Double = Double((lvl - minim) / (maxim - minim) * 100.0)
         percentage = min(percentage, 100)
-        return Int(percentage)
+        var result = 0
+        if percentage > 95 { result = 100 }
+        else if percentage > 75 { result = 75 }
+        else if percentage > 50 { result = 50 }
+        else if percentage > 25 { result = 25 }
+        else if percentage > 5 { result = 5 }
+        return result
     }
 }
 
