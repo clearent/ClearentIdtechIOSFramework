@@ -70,6 +70,23 @@ public final class ClearentWrapper : NSObject {
 
     // MARK - Public
     
+    public func retryLastTransaction() {
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let strongSelf = self else { return }
+            ClearentWrapper.shared.startDeviceInfoUpdate()
+            
+            let payment = ClearentPayment.init(sale: ())
+            
+            if let newamount = strongSelf.transactionAmount {
+                if (newamount.canBeConverted(to: String.Encoding.utf8)) {
+                    payment?.amount = Double(newamount) ?? 0
+                }
+            }
+            
+            strongSelf.clearentVP3300.startTransaction(payment, clearentConnection: strongSelf.connection)
+        }
+    }
+    
     public func startPairing() {
         
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
