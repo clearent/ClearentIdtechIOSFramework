@@ -103,7 +103,7 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
                 case .cancel:
                     self.dismissViewController()
                 case .retry:
-                    self.presenter?.startBluetoothDevicePairing()
+                    self.presenter?.retryLastTransaction()
                 }
             }
             stackView.addArrangedSubview(button)

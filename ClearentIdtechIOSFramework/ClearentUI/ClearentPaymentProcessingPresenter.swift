@@ -13,6 +13,7 @@ public protocol ClearentPaymentProcessingView: AnyObject {
 }
 
 public protocol PaymentProcessingProtocol {
+    func retryLastTransaction()
     func startBluetoothDevicePairing()
     func pairAgainBluetoothDevice()
     var flowFeedbackReceived: (() -> Void)? { get set }
@@ -37,6 +38,11 @@ public class ClearentPaymentProcessingPresenter {
 }
 
 extension ClearentPaymentProcessingPresenter: PaymentProcessingProtocol {
+    public func retryLastTransaction() {
+        sdkFeedbackProvider.delegate = self
+        sdkWrapper.retryLastTransaction()
+    }
+    
     public func startBluetoothDevicePairing() {
         sdkFeedbackProvider.delegate = self
         sdkWrapper.startPairing()

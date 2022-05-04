@@ -14,17 +14,23 @@ private struct DefaultKeys {
 
 class ClearentWrapperDefaults: UserDefaultsPersistence {
         
-    static var pairedReaderFriendlyName: String? {
+    static var pairedReaderInfo: ReaderInfo? {
            
            get {
-               guard let persistentValue = retrieveValue(forKey: DefaultKeys.readerFriendlyNameKey) as? String else {
-                   return nil
+               if let savedReaderData = retrieveValue(forKey: DefaultKeys.readerFriendlyNameKey) as? Data {
+                   let decoder = JSONDecoder()
+                   let loadedReaderInfo = try? decoder.decode(ReaderInfo.self, from: savedReaderData)
+                   return loadedReaderInfo
                }
-               return persistentValue
+               
+               return nil
            }
            
            set {
-               save(newValue as Any, forKey:  DefaultKeys.readerFriendlyNameKey)
+               let encoder = JSONEncoder()
+               if let encoded = try? encoder.encode(newValue) {
+                   save(encoded, forKey:  DefaultKeys.readerFriendlyNameKey)
+               }
            }
        }
 }

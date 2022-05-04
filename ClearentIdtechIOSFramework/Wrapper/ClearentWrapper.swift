@@ -69,7 +69,7 @@ public final class ClearentWrapper : NSObject {
     
 
     // MARK - Public
-    
+        
     public func startPairing() {
         
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
@@ -78,8 +78,9 @@ public final class ClearentWrapper : NSObject {
             let config = ClearentVP3300Config(noContactlessNoConfiguration: strongSelf.baseURL, publicKey: strongSelf.publicKey)
             strongSelf.clearentVP3300 = Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
             
-            if let readerName = ClearentWrapperDefaults.pairedReaderFriendlyName {
-                strongSelf.connection = ClearentConnection(bluetoothWithFriendlyName: readerName)
+            if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo {
+                strongSelf.connection = ClearentConnection(bluetoothWithFriendlyName: readerInfo.readerName)
+                strongSelf.readerInfo = readerInfo
             } else {
                 DispatchQueue.main.async {
                     strongSelf.delegate?.didStartPairing()
@@ -104,6 +105,11 @@ public final class ClearentWrapper : NSObject {
         self.baseURL = baseURL
         self.apiKey = apiKey
         self.publicKey = publicKey
+    }
+    
+    public func retryLastTransaction() {
+        guard let amount = transactionAmount else {return}
+        startTransactionWithAmount(amount: amount)
     }
     
     public func startTransactionWithAmount(amount: String) {
@@ -184,7 +190,6 @@ public final class ClearentWrapper : NSObject {
             bleManager = BluetoothScanner.init(udid: uuid, delegate: self)
             connection?.bluetoothDeviceId = uuid.uuidString
             connection?.fullFriendlyName = readerInfo.readerName
-            ClearentWrapperDefaults.pairedReaderFriendlyName = readerInfo.readerName
         }
         
         connection?.searchBluetooth = false
@@ -221,7 +226,13 @@ public final class ClearentWrapper : NSObject {
         let lvl = min(maxim, Double(level))
         var percentage: Double = Double((lvl - minim) / (maxim - minim) * 100.0)
         percentage = min(percentage, 100)
-        return Int(percentage)
+        var result = 0
+        if percentage > 95 { result = 100 }
+        else if percentage > 75 { result = 75 }
+        else if percentage > 50 { result = 50 }
+        else if percentage > 25 { result = 25 }
+        else if percentage > 5 { result = 5 }
+        return result
     }
 }
 
@@ -285,6 +296,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         readerInfo?.isConnected = true
         bleManager?.setupDevice()
         bleManager?.readRSSI()
+        ClearentWrapperDefaults.pairedReaderInfo = readerInfo
         self.delegate?.didFinishPairing()
     }
     
