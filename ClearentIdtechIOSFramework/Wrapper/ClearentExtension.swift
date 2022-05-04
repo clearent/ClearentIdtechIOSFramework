@@ -12,7 +12,10 @@ import CocoaLumberjack
 extension ClearentWrapper {
     
     private func addNewReader(reader:ReaderInfo) {
-        guard let existingReaders = ClearentWrapperDefaults.recentlyPairedReaders else { return }
+        guard let existingReaders = ClearentWrapperDefaults.recentlyPairedReaders else {
+            ClearentWrapperDefaults.recentlyPairedReaders = [reader]
+            return
+        }
         
         let readersWithSameName = existingReaders.filter { $0.readerName == reader.readerName }
         if (readersWithSameName.count == 0) {
