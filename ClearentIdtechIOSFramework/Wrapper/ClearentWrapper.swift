@@ -80,13 +80,14 @@ public final class ClearentWrapper : NSObject {
             
             if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo {
                 strongSelf.readerInfo = readerInfo
-                strongSelf.clearentVP3300.start(ClearentConnection(bluetoothWithFriendlyName: readerInfo.readerName))
+                strongSelf.connection  = ClearentConnection(bluetoothWithFriendlyName: readerInfo.readerName)
             } else {
                 DispatchQueue.main.async {
                     strongSelf.delegate?.didStartPairing()
                 }
-                strongSelf.clearentVP3300.start(strongSelf.connection)
             }
+            
+            strongSelf.clearentVP3300.start(strongSelf.connection)
         }
     }
     
