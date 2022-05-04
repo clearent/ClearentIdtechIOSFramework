@@ -11,7 +11,7 @@ import CocoaLumberjack
 
 extension ClearentWrapper {
     
-    private func addNewReader(reader:ReaderInfo) {
+    internal func addReaderToRecentlyUsed(reader:ReaderInfo) {
         guard let existingReaders = ClearentWrapperDefaults.recentlyPairedReaders else {
             ClearentWrapperDefaults.recentlyPairedReaders = [reader]
             return
@@ -25,7 +25,7 @@ extension ClearentWrapper {
         }
     }
     
-    private func removeReader(reader: ReaderInfo) {
+    internal func removeReaderFromRecentlyUsed(reader: ReaderInfo) {
         guard var existingReaders = ClearentWrapperDefaults.recentlyPairedReaders else { return }
         
         let readersWithSameName = existingReaders.filter { $0.readerName == reader.readerName }
@@ -36,6 +36,20 @@ extension ClearentWrapper {
         }
         
         ClearentWrapperDefaults.recentlyPairedReaders = existingReaders
+    }
+    
+    internal func fetchRecentlyAndAvailableReaders(devices: [ClearentBluetoothDevice]) -> [ReaderInfo] {
+        
+        let availableReaders = devices.compactMap { readerInfo(from: $0)}
+        guard let recentReaders = ClearentWrapperDefaults.recentlyPairedReaders else {return availableReaders}
+       
+        let result = availableReaders.filter {currentReader in recentReaders.contains(where: { $0.readerName == currentReader.readerName }) }
+        return result
+    }
+    
+    internal func readerInfo(from clearentDevice:ClearentBluetoothDevice) -> ReaderInfo {
+        let uuidString: UUID? = UUID(uuidString: clearentDevice.deviceId)
+        return ReaderInfo(name: clearentDevice.friendlyName, batterylevel:nil , signalLevel: nil, connected: clearentDevice.connected, uuid: uuidString)
     }
     
     // MARK - Public Logger related
