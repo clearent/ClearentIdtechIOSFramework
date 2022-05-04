@@ -11,7 +11,31 @@ import CocoaLumberjack
 
 extension ClearentWrapper {
     
-    // MARK - Public
+    private func addNewReader(reader:ReaderInfo) {
+        guard let existingReaders = ClearentWrapperDefaults.recentlyPairedReaders else { return }
+        
+        let readersWithSameName = existingReaders.filter { $0.readerName == reader.readerName }
+        if (readersWithSameName.count == 0) {
+            var newReaders : [ReaderInfo] = [reader]
+            newReaders.append(contentsOf: existingReaders)
+            ClearentWrapperDefaults.recentlyPairedReaders = newReaders
+        }
+    }
+    
+    private func removeReader(reader: ReaderInfo) {
+        guard var existingReaders = ClearentWrapperDefaults.recentlyPairedReaders else { return }
+        
+        let readersWithSameName = existingReaders.filter { $0.readerName == reader.readerName }
+        if (readersWithSameName.count == 1) {
+            existingReaders.removeAll { current in
+                current.readerName == reader.readerName
+            }
+        }
+        
+        ClearentWrapperDefaults.recentlyPairedReaders = existingReaders
+    }
+    
+    // MARK - Public Logger related
     
     public func retriveLoggFileContents() -> String {
         var logs = ""
@@ -42,7 +66,7 @@ extension ClearentWrapper {
     }
     
     
-    // MARK - Private
+    // MARK - Private Logger related
     
     internal func createLogFile() {
         DDLog.allLoggers.forEach { logger in
