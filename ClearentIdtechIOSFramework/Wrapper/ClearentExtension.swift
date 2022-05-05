@@ -9,17 +9,30 @@
 import Foundation
 import CocoaLumberjack
 
+extension ClearentWrapper: BluetoothScannerProtocol {
+    
+    internal func didReceivedSignalStrength(level: SignalLevel) {
+        readerInfo?.signalLevel = level.rawValue
+    }
+    
+    internal func didFinishWithError() {
+        self.delegate?.didFinishPairing()
+    }
+}
+
 extension ClearentWrapper {
     
     internal func addReaderToRecentlyUsed(reader:ReaderInfo) {
+        var newReader = reader
+        newReader.isConnected = false
         guard let existingReaders = ClearentWrapperDefaults.recentlyPairedReaders else {
-            ClearentWrapperDefaults.recentlyPairedReaders = [reader]
+            ClearentWrapperDefaults.recentlyPairedReaders = [newReader]
             return
         }
         
-        let readersWithSameName = existingReaders.filter { $0.readerName == reader.readerName }
+        let readersWithSameName = existingReaders.filter { $0.readerName == newReader.readerName }
         if (readersWithSameName.count == 0) {
-            var newReaders : [ReaderInfo] = [reader]
+            var newReaders : [ReaderInfo] = [newReader]
             newReaders.append(contentsOf: existingReaders)
             ClearentWrapperDefaults.recentlyPairedReaders = newReaders
         }
