@@ -40,7 +40,7 @@
 "xsdk_processing_description" = "Processing...";
 
 // Press button
-"xsdk_press_button_description" = "Please swipe, tap or insert the card";
+"xsdk_press_button_description" = "Press the button on the reader";
 
 // Read error (try ICC again)
 "xsdk_read_card_try_icc_again_title" = "Card read error";
