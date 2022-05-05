@@ -20,7 +20,7 @@ class ClearentPairingReaderItem: ClearentMarginableView {
 
     var containerBackgroundColor: UIColor? {
         didSet {
-            container.backgroundColor = ClearentConstants.Color.backgroundSecondary03
+            container.backgroundColor = containerBackgroundColor
         }
     }
 

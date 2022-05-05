@@ -30,8 +30,6 @@ class ClearentLoadingView: ClearentMarginableView {
         self.init()
         self.color = color
         self.lineWidth = lineWidth
-        containerView.backgroundColor = .red
-        backgroundColor = .blue
     }
 
     override func didMoveToWindow() {
