@@ -70,7 +70,7 @@ public final class ClearentWrapper : NSObject {
     
 
     // MARK - Public
-    
+        
     public func startPairing() {
         
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
@@ -80,8 +80,8 @@ public final class ClearentWrapper : NSObject {
             strongSelf.clearentVP3300 = Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
             
             if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo {
-                strongSelf.connection = ClearentConnection(bluetoothWithFriendlyName: readerInfo.readerName)
                 strongSelf.readerInfo = readerInfo
+                strongSelf.connection  = ClearentConnection(bluetoothWithFriendlyName: readerInfo.readerName)
             } else {
                 DispatchQueue.main.async {
                     strongSelf.delegate?.didStartPairing()
@@ -106,6 +106,11 @@ public final class ClearentWrapper : NSObject {
         self.baseURL = baseURL
         self.apiKey = apiKey
         self.publicKey = publicKey
+    }
+    
+    public func retryLastTransaction() {
+        guard let amount = transactionAmount else {return}
+        startTransactionWithAmount(amount: amount)
     }
     
     public func startTransactionWithAmount(amount: String) {
