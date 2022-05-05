@@ -8,37 +8,43 @@
 import Foundation
 import UIKit
 
-class LoadingIndicatorView: UIView {
+class ClearentLoadingView: ClearentMarginableView {
 
-    var color: UIColor = .black
-    var lineWidth: CGFloat = 4.0
+    @IBOutlet weak var containerView: UIView!
+    private var color: UIColor = ClearentConstants.Color.base01
+    private var lineWidth: CGFloat = 4.0
     private lazy var shapeLayer: ProgressShapeLayer = {
         return ProgressShapeLayer(strokeColor: color, lineWidth: lineWidth)
     }()
     
-    // MARK: Init
+    override var margins: [BottomMargin] {
+        [
+            RelativeBottomMargin(constant: 29, relatedViewType: ClearentIcon.self),
+            RelativeBottomMargin(constant: 165, relatedViewType: ClearentPrimaryButton.self),
+            RelativeBottomMargin(constant: 65, relatedViewType: ClearentSubtitleLabel.self)
+        ]
+    }
     
-    init(frame: CGRect, color: UIColor, lineWidth: CGFloat) {
+    // MARK: Lifecycle
+    
+    convenience init(color: UIColor, lineWidth: CGFloat) {
+        self.init()
         self.color = color
         self.lineWidth = lineWidth
-        super.init(frame: frame)
-        
-        self.backgroundColor = .clear
+        containerView.backgroundColor = .red
+        backgroundColor = .blue
     }
+    
     override func didMoveToWindow() {
         super.didMoveToWindow()
         animateStroke()
     }
     
-    required init?(coder: NSCoder) {
-        super.init(coder: coder)
-    }
-    
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        self.layer.cornerRadius = self.frame.width / 2
-        let path = UIBezierPath(ovalIn: CGRect(x: 0, y: 0, width: self.bounds.width, height: self.bounds.height))
+        containerView.layer.cornerRadius = containerView.frame.width / 2
+        let path = UIBezierPath(ovalIn: CGRect(x: 0, y: 0, width: containerView.bounds.width - lineWidth, height: containerView.bounds.height - lineWidth))
         shapeLayer.path = path.cgPath
     }
     
@@ -53,7 +59,6 @@ class LoadingIndicatorView: UIView {
         strokeAnimationGroup.repeatDuration = .infinity
         strokeAnimationGroup.animations = [startAnimation, endAnimation]
         shapeLayer.add(strokeAnimationGroup, forKey: nil)
-        
-        self.layer.addSublayer(shapeLayer)
+        containerView.layer.addSublayer(shapeLayer)
     }
 }

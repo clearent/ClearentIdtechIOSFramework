@@ -59,10 +59,10 @@ public class ClearentPaymentProcessingViewController: UIViewController {
 
 extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView {
     public func updateContent(with component: PaymentFeedbackComponentProtocol) {
-        stackView.removeAllArrangedSubviews()
-        createStatusHeader(with: component)
-        createMainInfoView(with: component)
-        createButton(with: component)
+//        stackView.removeAllArrangedSubviews()
+//        createStatusHeader(with: component)
+//        createMainInfoView(with: component)
+//        createButton(with: component)
     }
 
     private func createStatusHeader(with component: PaymentFeedbackComponentProtocol) {

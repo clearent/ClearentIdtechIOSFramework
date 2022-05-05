@@ -12,7 +12,7 @@ class ClearentUserActionView: ClearentMarginableView {
 
     @IBOutlet weak var userActionImageView: UIImageView!
     @IBOutlet weak var descriptionLabel: UILabel!
-    @IBOutlet weak var loadingView: LoadingIndicatorView!
+    @IBOutlet weak var loadingView: ClearentLoadingView!
     @IBOutlet weak var loadingTopLayoutConstraint: NSLayoutConstraint!
     
     override var margins: [BottomMargin] {
