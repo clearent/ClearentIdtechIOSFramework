@@ -9,19 +9,18 @@
 import UIKit
 
 class ClearentUserActionView: ClearentMarginableView {
+    @IBOutlet var userActionImageView: UIImageView!
+    @IBOutlet var descriptionLabel: UILabel!
+    @IBOutlet var loadingView: ClearentLoadingView!
+    @IBOutlet var loadingTopLayoutConstraint: NSLayoutConstraint!
 
-    @IBOutlet weak var userActionImageView: UIImageView!
-    @IBOutlet weak var descriptionLabel: UILabel!
-    @IBOutlet weak var loadingView: ClearentLoadingView!
-    @IBOutlet weak var loadingTopLayoutConstraint: NSLayoutConstraint!
-    
     override var margins: [BottomMargin] {
         [
             RelativeBottomMargin(constant: 24, relatedViewType: ClearentPrimaryButton.self),
             BottomMargin(contant: 80)
         ]
     }
-    
+
     var isLoading: Bool = false {
         didSet {
             loadingView.isHidden = !isLoading
@@ -30,9 +29,9 @@ class ClearentUserActionView: ClearentMarginableView {
             loadingTopLayoutConstraint.priority = UILayoutPriority(rawValue: priority)
         }
     }
-    
+
     // MARK: Public
-    
+
     public func setup(imageName: String?, description: String) {
         descriptionLabel.text = description
         isLoading = imageName == nil

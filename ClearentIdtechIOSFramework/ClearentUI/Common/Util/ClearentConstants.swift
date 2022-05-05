@@ -32,7 +32,7 @@ class ClearentConstants {
         private static let sfProBold = "SFProText-Bold"
         private static let sfProRegular = "SFProText-Regular"
         private static let sfProMedium = "SFProText-Medium"
-        
+
         static let regularExtraLarge = UIFont(name: sfProBold, size: 32)
         static let boldLarge = UIFont(name: sfProBold, size: 20)
         static let boldNormal = UIFont(name: sfProBold, size: 16)
@@ -66,7 +66,7 @@ class ClearentConstants {
         static let error = "error"
         static let warning = "warning"
         static let success = "success"
-        
+
         // Pairing
         static let rightArrow = "right-arrow"
         static let reader = "reader"

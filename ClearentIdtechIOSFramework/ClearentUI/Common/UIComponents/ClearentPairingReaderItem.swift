@@ -13,9 +13,9 @@ class ClearentPairingReaderItem: ClearentMarginableView {
     @IBOutlet var container: UIView!
     @IBOutlet var label: UILabel!
     @IBOutlet var rightIcon: UIImageView!
-    
+
     override var margins: [BottomMargin] {
-        [ RelativeBottomMargin(constant: 8, relatedViewType: ClearentPairingReaderItem.self) ]
+        [RelativeBottomMargin(constant: 8, relatedViewType: ClearentPairingReaderItem.self)]
     }
 
     var containerBackgroundColor: UIColor? {
@@ -23,6 +23,7 @@ class ClearentPairingReaderItem: ClearentMarginableView {
             container.backgroundColor = ClearentConstants.Color.backgroundSecondary03
         }
     }
+
     var textColor: UIColor? {
         didSet {
             label.textColor = textColor
@@ -40,7 +41,7 @@ class ClearentPairingReaderItem: ClearentMarginableView {
             label.text = title
         }
     }
-    
+
     var rightIconName: String? {
         didSet {
             guard let rightIconName = rightIconName else { return }
@@ -49,7 +50,7 @@ class ClearentPairingReaderItem: ClearentMarginableView {
     }
 
     // MARK: - Methods
-    
+
     override func configure() {
         container.layer.cornerRadius = container.bounds.height / 4
         container.layer.masksToBounds = true
@@ -58,8 +59,8 @@ class ClearentPairingReaderItem: ClearentMarginableView {
         containerBackgroundColor = ClearentConstants.Color.backgroundSecondary03
         rightIconName = ClearentConstants.IconName.rightArrow
     }
-    
-    @IBAction func viewWasPressed(_ sender: Any) {
+
+    @IBAction func viewWasPressed(_: Any) {
         action?()
     }
 }

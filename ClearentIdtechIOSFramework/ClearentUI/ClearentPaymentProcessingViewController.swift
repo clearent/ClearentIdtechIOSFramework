@@ -34,7 +34,7 @@ public class ClearentPaymentProcessingViewController: UIViewController {
 
     // MARK: - Lifecycle
 
-    public override func viewDidLoad() {
+    override public func viewDidLoad() {
         super.viewDidLoad()
         setupStyle()
         presenter?.startBluetoothDevicePairing()
@@ -95,10 +95,10 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
         if let userAction = component.userAction {
             let button = ClearentPrimaryButton()
             button.title = userAction.title
-            
+
             button.action = { [weak self] in
                 guard let self = self else { return }
-                
+
                 switch userAction {
                 case .cancel:
                     self.dismissViewController()

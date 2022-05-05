@@ -8,15 +8,14 @@
 
 @IBDesignable
 public class ClearentTitleLabel: ClearentMarginableView {
-    
     // MARK: - Properties
-    
+
     @IBOutlet var label: UILabel!
 
-    public override var margins: [BottomMargin] { 
-        [ RelativeBottomMargin(constant: 16, relatedViewType: ClearentSubtitleLabel.self) ]
+    override public var margins: [BottomMargin] {
+        [RelativeBottomMargin(constant: 16, relatedViewType: ClearentSubtitleLabel.self)]
     }
-    
+
     var textColor: UIColor? {
         didSet {
             label.textColor = textColor
@@ -33,7 +32,6 @@ public class ClearentTitleLabel: ClearentMarginableView {
         self.init()
         label.text = text
     }
-    
 
     override func configure() {
         label.textAlignment = .center

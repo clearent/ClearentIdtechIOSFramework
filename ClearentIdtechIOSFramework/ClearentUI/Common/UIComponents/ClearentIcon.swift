@@ -16,7 +16,7 @@ class ClearentIcon: ClearentMarginableView {
             RelativeBottomMargin(constant: 26, relatedViewType: ClearentSubtitleLabel.self)
         ]
     }
-    
+
     var iconName: String? {
         didSet {
             guard let iconName = iconName else { return }

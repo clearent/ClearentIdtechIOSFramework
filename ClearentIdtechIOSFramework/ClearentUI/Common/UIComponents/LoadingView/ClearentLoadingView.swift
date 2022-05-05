@@ -9,14 +9,13 @@ import Foundation
 import UIKit
 
 class ClearentLoadingView: ClearentMarginableView {
-
-    @IBOutlet weak var containerView: UIView!
+    // MARK: Properties
+    
+    @IBOutlet var containerView: UIView!
     private var color: UIColor = ClearentConstants.Color.base01
     private var lineWidth: CGFloat = 4.0
-    private lazy var shapeLayer: ProgressShapeLayer = {
-        return ProgressShapeLayer(strokeColor: color, lineWidth: lineWidth)
-    }()
-    
+    private lazy var shapeLayer: ProgressShapeLayer = .init(strokeColor: color, lineWidth: lineWidth)
+
     override var margins: [BottomMargin] {
         [
             RelativeBottomMargin(constant: 29, relatedViewType: ClearentIcon.self),
@@ -24,9 +23,9 @@ class ClearentLoadingView: ClearentMarginableView {
             RelativeBottomMargin(constant: 65, relatedViewType: ClearentSubtitleLabel.self)
         ]
     }
-    
+
     // MARK: Lifecycle
-    
+
     convenience init(color: UIColor, lineWidth: CGFloat) {
         self.init()
         self.color = color
@@ -34,26 +33,26 @@ class ClearentLoadingView: ClearentMarginableView {
         containerView.backgroundColor = .red
         backgroundColor = .blue
     }
-    
+
     override func didMoveToWindow() {
         super.didMoveToWindow()
         animateStroke()
     }
-    
+
     override func layoutSubviews() {
         super.layoutSubviews()
-        
+
         containerView.layer.cornerRadius = containerView.frame.width / 2
         let path = UIBezierPath(ovalIn: CGRect(x: 0, y: 0, width: containerView.bounds.width - lineWidth, height: containerView.bounds.height - lineWidth))
         shapeLayer.path = path.cgPath
     }
-    
+
     // MARK: Public
-    
+
     func animateStroke() {
         let startAnimation = StrokeAnimation(type: .start, beginTime: 0.25, fromValue: 0.0, toValue: 1.0, duration: 0.75)
         let endAnimation = StrokeAnimation(type: .end, fromValue: 0.0, toValue: 1.0, duration: 0.75)
-        
+
         let strokeAnimationGroup = CAAnimationGroup()
         strokeAnimationGroup.duration = 1
         strokeAnimationGroup.repeatDuration = .infinity

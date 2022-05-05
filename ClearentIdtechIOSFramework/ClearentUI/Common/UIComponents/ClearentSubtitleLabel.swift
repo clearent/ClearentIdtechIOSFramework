@@ -7,14 +7,14 @@
 //
 
 public class ClearentSubtitleLabel: ClearentTitleLabel {
-    public override var nibName: String? {
+    override public var nibName: String? {
         String(describing: ClearentTitleLabel.self)
     }
 
-    public override var margins: [BottomMargin] {
-        [ RelativeBottomMargin(constant: 24, relatedViewType: ClearentPrimaryButton.self) ]
+    override public var margins: [BottomMargin] {
+        [RelativeBottomMargin(constant: 24, relatedViewType: ClearentPrimaryButton.self)]
     }
-    
+
     override func configure() {
         label.textAlignment = .center
         font = ClearentConstants.Font.mediumSmall
