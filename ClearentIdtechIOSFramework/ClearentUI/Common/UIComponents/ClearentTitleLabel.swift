@@ -9,13 +9,10 @@
 @IBDesignable
 public class ClearentTitleLabel: ClearentMarginableView {
     
+    // MARK: - Properties
+    
     @IBOutlet var label: UILabel!
 
-    convenience init(text: String?) {
-        self.init()
-        label.text = text
-    }
-    
     public override var margins: [BottomMargin] { 
         [ RelativeBottomMargin(constant: 16, relatedViewType: ClearentSubtitleLabel.self) ]
     }
@@ -31,6 +28,12 @@ public class ClearentTitleLabel: ClearentMarginableView {
             label.font = font
         }
     }
+
+    convenience init(text: String?) {
+        self.init()
+        label.text = text
+    }
+    
 
     override func configure() {
         label.textAlignment = .center
