@@ -25,41 +25,29 @@
                     <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </view>
                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="78l-9c-DkQ" customClass="ClearentAdaptiveStackView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                    <rect key="frame" x="32" y="552" width="350" height="312"/>
+                    <rect key="frame" x="32" y="586" width="350" height="278"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3eb-xL-gFT" customClass="ClearentEmptySpace" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="0.0" width="350" height="104"/>
+                            <rect key="frame" x="0.0" y="0.0" width="350" height="114"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         </view>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pRV-qt-FW9" userLabel="Loading">
-                            <rect key="frame" x="0.0" y="104" width="350" height="104"/>
-                            <subviews>
-                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="huk-QG-7XB" customClass="LoadingIndicatorView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                                    <rect key="frame" x="158" y="35" width="34" height="34"/>
-                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                                    <constraints>
-                                        <constraint firstAttribute="width" constant="34" id="PGh-Hd-fSs"/>
-                                        <constraint firstAttribute="width" secondItem="huk-QG-7XB" secondAttribute="height" id="jOf-yA-tXT"/>
-                                    </constraints>
-                                </view>
-                            </subviews>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pRV-qt-FW9" userLabel="Loading" customClass="ClearentLoadingView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="114" width="350" height="50"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
-                                <constraint firstItem="huk-QG-7XB" firstAttribute="centerX" secondItem="pRV-qt-FW9" secondAttribute="centerX" id="opQ-m6-skf"/>
-                                <constraint firstItem="huk-QG-7XB" firstAttribute="centerY" secondItem="pRV-qt-FW9" secondAttribute="centerY" id="wwe-Yw-zx5"/>
+                                <constraint firstAttribute="height" constant="50" placeholder="YES" id="w1I-Sj-YFF"/>
                             </constraints>
                         </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PER-iX-fnC" customClass="ClearentEmptySpace" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="208" width="350" height="104"/>
+                            <rect key="frame" x="0.0" y="164" width="350" height="114"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
-                                <constraint firstAttribute="height" constant="104" id="byn-Ka-mPr"/>
+                                <constraint firstAttribute="height" constant="114" id="byn-Ka-mPr"/>
                             </constraints>
                         </view>
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
-                        <constraint firstItem="pRV-qt-FW9" firstAttribute="height" secondItem="3eb-xL-gFT" secondAttribute="height" id="kZf-f3-QMU"/>
                         <constraint firstItem="PER-iX-fnC" firstAttribute="height" secondItem="3eb-xL-gFT" secondAttribute="height" id="qid-LQ-XdR"/>
                     </constraints>
                 </stackView>

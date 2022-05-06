@@ -18,20 +18,27 @@ class ClearentConstants {
         static let backgroundPrimary = UIColor(hexString: "#E5E5E5")
         static let backgroundSecondary01 = UIColor(hexString: "#FFFFFF")
         static let backgroundSecondary02 = UIColor(hexString: "#E1E2E8")
+        static let backgroundSecondary03 = UIColor(hexString: "#EEEFF3")
         static let accent01 = UIColor(hexString: "#2FAC10")
         static let base01 = UIColor(hexString: "#272431")
         static let base02 = UIColor(hexString: "#6A6D7D")
         static let base03 = UIColor(hexString: "#000000")
+        static let base04 = UIColor(hexString: "#FFFFFF")
     }
 
     // MARK: - Fonts
 
     enum Font {
-        static let boldExtraLarge = UIFont.boldSystemFont(ofSize: 32)
-        static let boldLarge = UIFont.boldSystemFont(ofSize: 20)
-        static let regularLarge = UIFont.systemFont(ofSize: 16)
-        static let regularMedium = UIFont.systemFont(ofSize: 14)
-        static let regularSmall = UIFont.systemFont(ofSize: 10)
+        private static let sfProBold = "SFProText-Bold"
+        private static let sfProRegular = "SFProText-Regular"
+        private static let sfProMedium = "SFProText-Medium"
+
+        static let regularExtraLarge = UIFont(name: sfProBold, size: 32)
+        static let boldLarge = UIFont(name: sfProBold, size: 20)
+        static let boldNormal = UIFont(name: sfProBold, size: 16)
+        static let medium = UIFont(name: sfProMedium, size: 16)
+        static let mediumSmall = UIFont(name: sfProMedium, size: 14)
+        static let regularSmall = UIFont(name: sfProRegular, size: 14)
     }
 
     // MARK: Assets
@@ -59,5 +66,9 @@ class ClearentConstants {
         static let error = "error"
         static let warning = "warning"
         static let success = "success"
+
+        // Pairing
+        static let rightArrow = "right-arrow"
+        static let reader = "reader"
     }
 }

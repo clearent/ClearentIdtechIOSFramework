@@ -13,10 +13,10 @@ class ClearentPrimaryButton: ClearentMarginableView {
 
     public var action: (() -> Void)?
 
-    @IBOutlet weak var button: UIButton!
-    
+    @IBOutlet var button: UIButton!
+
     override var margins: [BottomMargin] {
-        [ BottomMargin(contant: 16) ]
+        [BottomMargin(contant: 16)]
     }
 
     var enabledBackgroundColor = ClearentConstants.Color.base01 {
@@ -35,7 +35,7 @@ class ClearentPrimaryButton: ClearentMarginableView {
         didSet { updateAppearence() }
     }
 
-    var textFont = ClearentConstants.Font.regularMedium {
+    var textFont = ClearentConstants.Font.mediumSmall {
         didSet {
             button.titleLabel?.font = textFont
         }
@@ -48,7 +48,7 @@ class ClearentPrimaryButton: ClearentMarginableView {
         }
         get { button.isEnabled }
     }
-    
+
     var title: String? {
         didSet {
             button.setTitle(title, for: .normal)
@@ -59,14 +59,13 @@ class ClearentPrimaryButton: ClearentMarginableView {
         updateAppearence()
         button.layer.cornerRadius = button.bounds.height / 2
         button.layer.masksToBounds = true
-        textFont = ClearentConstants.Font.regularMedium
+        textFont = ClearentConstants.Font.medium
     }
-    
-    
-    @IBAction func buttonWasPressed(_ sender: Any) {
+
+    @IBAction func buttonWasPressed(_: Any) {
         action?()
     }
-    
+
     // MARK: - Private
 
     private func updateAppearence() {
