@@ -16,6 +16,8 @@
 "xsdk_connecting_reader" = "Connecting";
 "xsdk_connection_sucesfull" = "Connection successful";
 "xsdk_prepare_for_pairing" = "Please make sure your reader is turned on and in range of the mobile device pairing it";
+"xsdk_no_readers_found_title" = "No reader has been found. Please check that your reader is turned on and in range of the device.";
+"xsdk_no_readers_found_description" = "No readers available"
 
 
 /* Payment Flow*/
