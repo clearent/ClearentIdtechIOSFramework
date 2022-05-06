@@ -240,7 +240,13 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     
     public func successTransactionToken(_ clearentTransactionToken: ClearentTransactionToken!) {
         guard let amount = transactionAmount else { return }
-        saleTransaction(jwt: clearentTransactionToken.jwt, amount: amount)
+        // make sure we have two decimals otherwise the API will return an error
+        var amountString = String(amount)
+        let amountArray = amountString.split(separator: ".")
+        if (amountArray.last?.count == 1) {
+            amountString = amountString + "0"
+        }
+        saleTransaction(jwt: clearentTransactionToken.jwt, amount: amountString)
     }
     
     public func feedback(_ clearentFeedback: ClearentFeedback!) {
