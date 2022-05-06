@@ -129,6 +129,7 @@ public final class ClearentWrapper : NSObject {
     
     public func saleTransaction(jwt: String, amount: String) {
         let httpClient = ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
+        
         httpClient.saleTransaction(jwt: jwt, amount: amount) { data, error in
             guard let responseData = data else { return }
             
@@ -152,6 +153,28 @@ public final class ClearentWrapper : NSObject {
     public func refundTransaction(jwt: String, amount: String) {
         let httpClient = ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
         httpClient.refundTransaction(jwt: jwt, amount: amount) { data, error in
+            guard let responseData = data else { return }
+            
+            do {
+                let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
+                guard let transactionError = decodedResponse.payload.error else {
+                    DispatchQueue.main.async {
+                        self.delegate?.didFinishTransaction(response: decodedResponse, error: nil)
+                    }
+                    return
+                }
+                DispatchQueue.main.async {
+                    self.delegate?.didFinishTransaction(response: decodedResponse, error: transactionError)
+                }
+            } catch let jsonDecodingError {
+                print(jsonDecodingError)
+            }
+        }
+    }
+    
+    public func voidTransaction(transactionID: String) {
+        let httpClient = ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
+        httpClient.voidTransaction(transactionID: transactionID) { data, error in
             guard let responseData = data else { return }
             
             do {
