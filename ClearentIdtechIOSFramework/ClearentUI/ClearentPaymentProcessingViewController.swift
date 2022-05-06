@@ -16,6 +16,7 @@ public class ClearentPaymentProcessingViewController: UIViewController {
     private enum Layout {
         static let cornerRadius = 15.0
         static let margin = 16.0
+        static let emptySpaceHeight = 104.0
         static let backgroundColor = ClearentConstants.Color.backgroundSecondary01
     }
 
@@ -58,6 +59,15 @@ public class ClearentPaymentProcessingViewController: UIViewController {
 // MARK: - ClearentPaymentProcessingView
 
 extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView {
+    public func updateContentWithLoadingIndicator() {
+        stackView.removeAllArrangedSubviews()
+        let actionView = ClearentUserActionView()
+        actionView.isLoading = true
+        let emptySpace = ClearentEmptySpace(height: Layout.emptySpaceHeight)
+        stackView.addArrangedSubview(emptySpace)
+        stackView.addArrangedSubview(actionView)
+    }
+        
     public func updateContent(with component: PaymentFeedbackComponentProtocol) {
         stackView.removeAllArrangedSubviews()
         createStatusHeader(with: component)

@@ -10,6 +10,7 @@ import UIKit
 
 public protocol ClearentPaymentProcessingView: AnyObject {
     func updateContent(with component: PaymentFeedbackComponentProtocol)
+    func updateContentWithLoadingIndicator()
 }
 
 public protocol PaymentProcessingProtocol {
@@ -40,6 +41,8 @@ public class ClearentPaymentProcessingPresenter {
 extension ClearentPaymentProcessingPresenter: PaymentProcessingProtocol {
     public func retryLastTransaction() {
         sdkFeedbackProvider.delegate = self
+        paymentProcessingView?.updateContentWithLoadingIndicator()
+        flowFeedbackReceived?()
         sdkWrapper.retryLastTransaction()
     }
     
