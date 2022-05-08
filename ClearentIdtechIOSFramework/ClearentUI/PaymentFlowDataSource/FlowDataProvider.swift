@@ -245,4 +245,24 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                        payload: items)
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
+    
+    func didNotFindRecentlyUsedReaders() {
+        let items = [FlowDataItem(type: .description, object: "xsdk_prepare_for_pairing".localized)]
+        
+        let feedback = FlowDataFactory.component(with: .pairing,
+                                                 type: .searchDevices,
+                                                 readerInfo: nil,
+                                                 payload: items)
+        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+    }
+    
+    func didFindRecentlyUsedReaders(readers: [ReaderInfo]) {
+        let items = [FlowDataItem(type: .devicesFound, object: readers)]
+        
+        let feedback = FlowDataFactory.component(with: .pairing,
+                                                 type: .searchDevices,
+                                                 readerInfo: nil,
+                                                 payload: items)
+        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+    }
 }

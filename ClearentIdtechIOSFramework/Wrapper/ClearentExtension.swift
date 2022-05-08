@@ -9,9 +9,63 @@
 import Foundation
 import CocoaLumberjack
 
+extension ClearentWrapper: BluetoothScannerProtocol {
+    
+    internal func didReceivedSignalStrength(level: SignalLevel) {
+        readerInfo?.signalLevel = level.rawValue
+    }
+    
+    internal func didFinishWithError() {
+        self.delegate?.didFinishPairing()
+    }
+}
+
 extension ClearentWrapper {
     
-    // MARK - Public
+    internal func addReaderToRecentlyUsed(reader:ReaderInfo) {
+        var newReader = reader
+        newReader.isConnected = false
+        guard let existingReaders = ClearentWrapperDefaults.recentlyPairedReaders else {
+            ClearentWrapperDefaults.recentlyPairedReaders = [newReader]
+            return
+        }
+        
+        let readersWithSameName = existingReaders.filter { $0.readerName == newReader.readerName }
+        if (readersWithSameName.count == 0) {
+            var newReaders : [ReaderInfo] = [newReader]
+            newReaders.append(contentsOf: existingReaders)
+            ClearentWrapperDefaults.recentlyPairedReaders = newReaders
+        }
+    }
+    
+    internal func removeReaderFromRecentlyUsed(reader: ReaderInfo) {
+        guard var existingReaders = ClearentWrapperDefaults.recentlyPairedReaders else { return }
+        
+        let readersWithSameName = existingReaders.filter { $0.readerName == reader.readerName }
+        if (readersWithSameName.count == 1) {
+            existingReaders.removeAll { current in
+                current.readerName == reader.readerName
+            }
+        }
+        
+        ClearentWrapperDefaults.recentlyPairedReaders = existingReaders
+    }
+    
+    internal func fetchRecentlyAndAvailableReaders(devices: [ClearentBluetoothDevice]) -> [ReaderInfo] {
+        
+        let availableReaders = devices.compactMap { readerInfo(from: $0)}
+        guard let recentReaders = ClearentWrapperDefaults.recentlyPairedReaders else {return availableReaders}
+       
+        let result = availableReaders.filter {currentReader in recentReaders.contains(where: { $0.readerName == currentReader.readerName }) }
+        return result
+    }
+    
+    internal func readerInfo(from clearentDevice:ClearentBluetoothDevice) -> ReaderInfo {
+        let uuidString: UUID? = UUID(uuidString: clearentDevice.deviceId)
+        return ReaderInfo(name: clearentDevice.friendlyName, batterylevel:nil , signalLevel: nil, connected: clearentDevice.connected, uuid: uuidString)
+    }
+    
+    // MARK - Public Logger related
     
     public func retriveLoggFileContents() -> String {
         var logs = ""
@@ -42,7 +96,7 @@ extension ClearentWrapper {
     }
     
     
-    // MARK - Private
+    // MARK - Private Logger related
     
     internal func createLogFile() {
         DDLog.allLoggers.forEach { logger in

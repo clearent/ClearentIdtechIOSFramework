@@ -10,6 +10,7 @@ import Foundation
 
 private struct DefaultKeys {
     static let readerFriendlyNameKey = "xsdk_reader_friendly_name_key"
+    static let recentlyPairedReadersKey = "xsdk_recently+paired_readers_key"
 }
 
 class ClearentWrapperDefaults: UserDefaultsPersistence {
@@ -30,6 +31,26 @@ class ClearentWrapperDefaults: UserDefaultsPersistence {
                let encoder = JSONEncoder()
                if let encoded = try? encoder.encode(newValue) {
                    save(encoded, forKey:  DefaultKeys.readerFriendlyNameKey)
+               }
+           }
+       }
+    
+    static var recentlyPairedReaders: [ReaderInfo]? {
+           
+           get {
+               if let savedReaderData = retrieveValue(forKey: DefaultKeys.recentlyPairedReadersKey) as? Data {
+                   let decoder = JSONDecoder()
+                   let loadedReaderInfo = try? decoder.decode([ReaderInfo].self, from: savedReaderData)
+                   return loadedReaderInfo
+               }
+               
+               return nil
+           }
+           
+           set {
+               let encoder = JSONEncoder()
+               if let encoded = try? encoder.encode(newValue) {
+                   save(encoded, forKey:  DefaultKeys.recentlyPairedReadersKey)
                }
            }
        }

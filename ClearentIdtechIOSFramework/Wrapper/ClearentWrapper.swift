@@ -41,6 +41,9 @@ public protocol ClearentWrapperProtocol : AnyObject {
     func didNotFindReaders()
     func startedReaderConnection(with reader:ReaderInfo)
     
+    func didFindRecentlyUsedReaders(readers:[ReaderInfo])
+    func didNotFindRecentlyUsedReaders()
+    
     func didEncounteredGeneralError()
     func didFinishTransaction(response: TransactionResponse, error: ResponseError?)
     func userActionNeeded(action: UserAction)
@@ -52,6 +55,7 @@ public final class ClearentWrapper : NSObject {
     private var baseURL: String = ""
     private var apiKey: String = ""
     private var publicKey: String = ""
+    private var searchingRecentlyUsedReadersInProgress = false
     
     public static let shared = ClearentWrapper()
     private var clearentVP3300 = Clearent_VP3300()
@@ -67,7 +71,6 @@ public final class ClearentWrapper : NSObject {
         createLogFile()
     }
     
-
     // MARK - Public
         
     public func startPairing() {
@@ -127,8 +130,14 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
+    public func searchRecentlyUsedReaders() {
+        searchingRecentlyUsedReadersInProgress = true
+        clearentVP3300.start(ClearentConnection(bluetoothSearch: ()))
+    }
+    
     public func saleTransaction(jwt: String, amount: String) {
         let httpClient = ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
+        
         httpClient.saleTransaction(jwt: jwt, amount: amount) { data, error in
             guard let responseData = data else { return }
             
@@ -152,6 +161,28 @@ public final class ClearentWrapper : NSObject {
     public func refundTransaction(jwt: String, amount: String) {
         let httpClient = ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
         httpClient.refundTransaction(jwt: jwt, amount: amount) { data, error in
+            guard let responseData = data else { return }
+            
+            do {
+                let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
+                guard let transactionError = decodedResponse.payload.error else {
+                    DispatchQueue.main.async {
+                        self.delegate?.didFinishTransaction(response: decodedResponse, error: nil)
+                    }
+                    return
+                }
+                DispatchQueue.main.async {
+                    self.delegate?.didFinishTransaction(response: decodedResponse, error: transactionError)
+                }
+            } catch let jsonDecodingError {
+                print(jsonDecodingError)
+            }
+        }
+    }
+    
+    public func voidTransaction(transactionID: String) {
+        let httpClient = ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
+        httpClient.voidTransaction(transactionID: transactionID) { data, error in
             guard let responseData = data else { return }
             
             do {
@@ -197,12 +228,7 @@ public final class ClearentWrapper : NSObject {
         
         self.delegate?.startedReaderConnection(with: readerInfo)
     }
-    
-    private func readerInfo(from clearentDevice:ClearentBluetoothDevice) -> ReaderInfo {
-        let uuidString: UUID? = UUID(uuidString: clearentDevice.deviceId)
-        return ReaderInfo(name: clearentDevice.friendlyName, batterylevel:nil , signalLevel: nil, connected: clearentDevice.connected, uuid: uuidString)
-    }
-    
+        
     private func getBatterylevel() {
         var response : NSData? = NSData()
         _ = clearentVP3300.device_sendIDGCommand(0xF0, subCommand: 0x02, data: nil, response: &response)
@@ -240,7 +266,13 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     
     public func successTransactionToken(_ clearentTransactionToken: ClearentTransactionToken!) {
         guard let amount = transactionAmount else { return }
-        saleTransaction(jwt: clearentTransactionToken.jwt, amount: amount)
+        // make sure we have two decimals otherwise the API will return an error
+        var amountString = String(amount)
+        let amountArray = amountString.split(separator: ".")
+        if (amountArray.last?.count == 1) {
+            amountString = amountString + "0"
+        }
+        saleTransaction(jwt: clearentTransactionToken.jwt, amount: amountString)
     }
     
     public func feedback(_ clearentFeedback: ClearentFeedback!) {
@@ -276,7 +308,15 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     }
     
     public func bluetoothDevices(_ bluetoothDevices: [ClearentBluetoothDevice]!) {
-        if (bluetoothDevices.count == 1) {
+        if (searchingRecentlyUsedReadersInProgress) {
+            searchingRecentlyUsedReadersInProgress = false
+            if (bluetoothDevices.count == 0) {
+                self.delegate?.didNotFindRecentlyUsedReaders()
+            } else {
+                let readers = fetchRecentlyAndAvailableReaders(devices: bluetoothDevices)
+                self.delegate?.didFindRecentlyUsedReaders(readers: readers)
+            }
+        } else if (bluetoothDevices.count == 1) {
             updateConnectionWithDevice(readerInfo: readerInfo(from: bluetoothDevices[0]))
         } else if (bluetoothDevices.count > 1) {
             let readers = bluetoothDevices.map { device in
@@ -297,23 +337,18 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         bleManager?.setupDevice()
         bleManager?.readRSSI()
         ClearentWrapperDefaults.pairedReaderInfo = readerInfo
+        if let newReader = readerInfo {
+            addReaderToRecentlyUsed(reader: newReader)
+        }
         self.delegate?.didFinishPairing()
     }
     
     public func deviceDisconnected() {
         DispatchQueue.main.async {
+            ClearentWrapperDefaults.pairedReaderInfo = nil
             self.delegate?.deviceDidDisconnect()
         }
     }
 }
 
-extension ClearentWrapper: BluetoothScannerProtocol {
-    
-    func didReceivedSignalStrength(level: SignalLevel) {
-        readerInfo?.signalLevel = level.rawValue
-    }
-    
-    func didFinishWithError() {
-        self.delegate?.didFinishPairing()
-    }
-}
+
