@@ -148,10 +148,10 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card)]
         case .tapFailed:
             type = .warning
-            items = [FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
+                     FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
                      FlowDataItem(type: .description, object: "xsdk_tap_failed_insert_swipe_description".localized),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel),
-                     FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card)]
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .removeCard, .cardSecured:
             print("nothing to do here")
         case .transactionStarted, .goingOnline:
