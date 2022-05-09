@@ -66,7 +66,7 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
         stackView.addArrangedSubview(emptySpace)
         stackView.addArrangedSubview(loadingView)
     }
-        
+
     public func updateContent(with feedback: FlowFeedback) {
         stackView.removeAllArrangedSubviews()
         feedback.items.forEach {
@@ -102,9 +102,9 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
             return ClearentHintView(text: text)
         }
     }
-    
+
     public func dismissView() {
-        self.dismissViewController()
+        dismissViewController()
     }
 
     private func readerInfoView(readerInfo: ReaderInfo) -> ClearentReaderStatusHeaderView {
@@ -115,8 +115,7 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
         statusHeader.setup(readerName: name, signalStatusIconName: signalStatus.iconName, signalStatusTitle: signalStatus.title, batteryStatusIconName: batteryStatus.iconName, batteryStatusTitle: batteryStatus.title)
         return statusHeader
     }
-    
-    
+
     private func icon(with graphic: FlowGraphicType) -> UIView? {
         if let iconName = graphic.iconName, graphic != .loading {
             return ClearentIcon(iconName: iconName)
@@ -124,9 +123,9 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
         return ClearentLoadingView()
     }
 
-    private func readersList(readersInfo:  [ReaderInfo]) -> ClearentPairingReadersList {
+    private func readersList(readersInfo: [ReaderInfo]) -> ClearentPairingReadersList {
         let items = readersInfo.map { item in
-           ClearentPairingReaderItem(title: item.readerName) {
+            ClearentPairingReaderItem(title: item.readerName) {
                 ClearentWrapper.shared.selectReader(reader: item)
             }
         }
@@ -134,7 +133,7 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
         list.layoutIfNeeded()
         return list
     }
-     
+
     private func button(userAction: FlowButtonType, proccessType: ProcessType) -> ClearentPrimaryButton {
         let button = ClearentPrimaryButton(title: userAction.title)
         button.action = { [weak self] in

@@ -7,16 +7,16 @@
 //
 
 class ClearentPairingReadersList: ClearentMarginableView {
-    @IBOutlet weak var stackView: ClearentAdaptiveStackView!
-    
+    @IBOutlet var stackView: ClearentAdaptiveStackView!
+
     convenience init(items: [ClearentPairingReaderItem]) {
         self.init()
         items.forEach {
             stackView.addArrangedSubview($0)
         }
     }
-    
-    public override var margins: [BottomMargin] {
+
+    override public var margins: [BottomMargin] {
         [RelativeBottomMargin(constant: 24, relatedViewType: ClearentPrimaryButton.self)]
     }
 }

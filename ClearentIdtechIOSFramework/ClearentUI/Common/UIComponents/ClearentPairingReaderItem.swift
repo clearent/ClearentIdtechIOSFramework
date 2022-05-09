@@ -44,7 +44,7 @@ class ClearentPairingReaderItem: ClearentMarginableView {
     }
 
     // MARK: - Methods
-    
+
     convenience init(title: String, action: (() -> Void)?) {
         self.init()
         label.text = title
@@ -52,7 +52,6 @@ class ClearentPairingReaderItem: ClearentMarginableView {
     }
 
     override func configure() {
-        label.text = "test"
         container.layer.cornerRadius = container.bounds.height / 4
         container.layer.masksToBounds = true
         textColor = ClearentConstants.Color.base01

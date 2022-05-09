@@ -38,7 +38,7 @@ public class ClearentPaymentProcessingPresenter {
         sdkFeedbackProvider = FlowDataProvider()
         sdkWrapper.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey)
     }
-    
+
     private func dissmissViewWithDelay() {
         let deadlineTime = DispatchTime.now() + .seconds(3)
         DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
@@ -48,7 +48,6 @@ public class ClearentPaymentProcessingPresenter {
 }
 
 extension ClearentPaymentProcessingPresenter: PaymentProcessingProtocol {
-
     public func restartProcess(processType: ProcessType) {
         sdkFeedbackProvider.delegate = self
         paymentProcessingView?.showLoadingView()
@@ -60,7 +59,7 @@ extension ClearentPaymentProcessingPresenter: PaymentProcessingProtocol {
             sdkWrapper.retryLastTransaction()
         }
     }
-    
+
     public func startFlow() {
         switch processType {
         case .pairing:
@@ -69,7 +68,7 @@ extension ClearentPaymentProcessingPresenter: PaymentProcessingProtocol {
             startTransactionFlow()
         }
     }
-    
+
     private func startTransactionFlow() {
         sdkFeedbackProvider.delegate = self
         if sdkWrapper.isReaderConnected(), let amount = amount {
@@ -78,14 +77,14 @@ extension ClearentPaymentProcessingPresenter: PaymentProcessingProtocol {
             sdkWrapper.startPairing()
         }
     }
-    
+
     private func startPairingFlow() {
         let items = [FlowDataItem(type: .hint, object: "xsdk_prepare_pairing_reader_range".localized),
-                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
-                      FlowDataItem(type: .description, object: "xsdk_prepare_pairing_reader_button".localized),
-                      FlowDataItem(type: .userAction, object: FlowButtonType.pair)]
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
+                     FlowDataItem(type: .description, object: "xsdk_prepare_pairing_reader_button".localized),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.pair)]
         let feedback = FlowFeedback(flow: .pairing, type: FlowFeedbackType.info, items: items)
-        self.paymentProcessingView?.updateContent(with: feedback)
+        paymentProcessingView?.updateContent(with: feedback)
     }
 }
 

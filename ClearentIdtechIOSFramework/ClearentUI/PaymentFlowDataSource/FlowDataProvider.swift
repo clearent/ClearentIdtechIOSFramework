@@ -26,15 +26,13 @@ public class FlowFeedback {
 }
 
 class FlowDataFactory {
-    
-    class func component(with flow: ProcessType, type: FlowFeedbackType, readerInfo: ReaderInfo?, payload:[FlowDataItem])-> FlowFeedback {
-        
+    class func component(with flow: ProcessType, type: FlowFeedbackType, readerInfo: ReaderInfo?, payload: [FlowDataItem]) -> FlowFeedback {
         if let readerInfo = readerInfo {
             var allItems = [FlowDataItem(type: .readerInfo, object: readerInfo)]
             allItems.append(contentsOf: payload)
             return FlowFeedback(flow: flow, type: type, items: allItems)
         }
-      
+        
         return FlowFeedback(flow: flow, type: type, items: payload)
     }
 }
@@ -43,7 +41,7 @@ protocol FlowDataProtocol : AnyObject {
     func didFinishTransaction(error: ResponseError?)
     func deviceDidDisconnect()
     func didFinishedPairing()
-    func didReceiveFlowFeedback(feedback:FlowFeedback)
+    func didReceiveFlowFeedback(feedback: FlowFeedback)
 }
 
 class FlowDataProvider : NSObject {
@@ -167,9 +165,9 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         case .authorizing:
             print("nothing to do here")
         case .processing, .goingOnline:
-            let  items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
-                          FlowDataItem(type: .description, object: "xsdk_processing_description".localized)]
-            
+            let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
+                         FlowDataItem(type: .description, object: "xsdk_processing_description".localized)]
+
             let feedback = FlowDataFactory.component(with: .payment,
                                                      type: .info,
                                                      readerInfo: fetchReaderInfo(),
@@ -183,26 +181,26 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     // MARK - Pairing related
     
     func didFinishPairing() {
-        let  items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.pairingSuccessful),
-                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader)]
-        
+        let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.pairingSuccessful),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader)]
+
         let feedback = FlowDataFactory.component(with: .pairing,
                                                  type: .searchDevices,
                                                  readerInfo: fetchReaderInfo(),
                                                  payload: items)
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
-        self.delegate?.didFinishedPairing()
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
+        delegate?.didFinishedPairing()
     }
-    
+
     func deviceDidDisconnect() {
-        self.delegate?.deviceDidDisconnect()
+        delegate?.deviceDidDisconnect()
     }
-    
+
     func didStartPairing() {
-        let  items = [FlowDataItem(type: .hint, object: "xsdk_select_reader".localized),
-                      FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
-                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
-        
+        let items = [FlowDataItem(type: .hint, object: "xsdk_select_reader".localized),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+
         let feedback = FlowDataFactory.component(with: .pairing,
                                                  type: .info,
                                                  readerInfo: nil,
@@ -213,16 +211,16 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     
     func didFindReaders(readers: [ReaderInfo]) {
         let items = [FlowDataItem(type: .hint, object: "xsdk_select_reader".localized),
-                    FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
-                    FlowDataItem(type: .devicesFound, object: readers),
-                    FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
-        
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
+                     FlowDataItem(type: .devicesFound, object: readers),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+
         let feedback = FlowDataFactory.component(with: .pairing,
                                                  type: .searchDevices,
                                                  readerInfo: nil,
                                                  payload: items)
-       self.delegate?.didReceiveFlowFeedback(feedback: feedback)
-    }
+        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+     }
     
     func startedReaderConnection(with reader: ReaderInfo) {
         let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
@@ -232,7 +230,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  type: .searchDevices,
                                                  readerInfo: reader,
                                                  payload: items)
-       self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
     func didNotFindReaders() {
@@ -240,11 +238,11 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .description, object: "xsdk_no_readers_found_description".localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
-        
+
         let feedback = FlowDataFactory.component(with: .pairing,
-                                          type: .info,
-                                    readerInfo: nil,
-                                       payload: items)
+                                                 type: .info,
+                                                 readerInfo: nil,
+                                                 payload: items)
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     

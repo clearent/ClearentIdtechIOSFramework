@@ -7,11 +7,10 @@
 //
 
 class ClearentHintView: ClearentTitleLabel {
-    
     override public var nibName: String? {
         String(describing: ClearentTitleLabel.self)
     }
-    
+
     override public var margins: [BottomMargin] {
         [
             RelativeBottomMargin(constant: 40, relatedViewType: ClearentIcon.self),
@@ -19,7 +18,7 @@ class ClearentHintView: ClearentTitleLabel {
             RelativeBottomMargin(constant: 64, relatedViewType: ClearentSubtitleLabel.self)
         ]
     }
-    
+
     override func configure() {
         super.configure()
         font = ClearentConstants.Font.mediumSmall
