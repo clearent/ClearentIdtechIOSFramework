@@ -38,15 +38,10 @@ public class ClearentPaymentProcessingPresenter {
         sdkWrapper.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey)
     }
     
-    private func dissmissViewIfNeeded(items:[FlowDataItem]) {
-        // check if the items contains 'Payment succesfull' string
-        let succesfullDataItem = items.first(where: {$0.object as? String == "xsdk_transaction_completed_description".localized})
-        
-        if ((succesfullDataItem) != nil) {
-            let deadlineTime = DispatchTime.now() + .seconds(3)
-            DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
-                self.paymentProcessingView?.dismissView()
-            }
+    private func dissmissViewWithDelay() {
+        let deadlineTime = DispatchTime.now() + .seconds(3)
+        DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
+            self.paymentProcessingView?.dismissView()
         }
     }
 }
@@ -86,7 +81,11 @@ extension ClearentPaymentProcessingPresenter: FlowDataProtocol {
         let component = PaymentFeedbackComponent(feedbackItems: feedback.items)
         paymentProcessingView?.updateContent(with: component)
         flowFeedbackReceived?()
-        
-        dissmissViewIfNeeded(items: feedback.items)
+    }
+    
+    func didFinishTransaction(error: ResponseError?) {
+        if (error == nil) {
+            dissmissViewWithDelay()
+        }
     }
 }
