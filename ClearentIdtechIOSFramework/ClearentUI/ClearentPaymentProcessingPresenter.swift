@@ -96,10 +96,11 @@ extension ClearentPaymentProcessingPresenter: FlowDataProtocol {
     func didFinishedPairing() {
         if processType == .pairing {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                // display successful pairing content
                 var items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.pairingSuccessful),
-                    FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
-                    FlowDataItem(type: .description, object: "xsdk_paired_successful".localized),
-                    FlowDataItem(type: .userAction, object: FlowButtonType.done)]
+                             FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
+                             FlowDataItem(type: .description, object: "xsdk_paired_successful".localized),
+                             FlowDataItem(type: .userAction, object: FlowButtonType.done)]
                 if let readerInfo = ClearentWrapper.shared.readerInfo {
                     items.insert(FlowDataItem(type: .readerInfo, object: readerInfo), at: 0)
                 }

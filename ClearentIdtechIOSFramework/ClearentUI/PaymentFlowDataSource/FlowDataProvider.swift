@@ -114,9 +114,9 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
                      FlowDataItem(type: .description, object: "xsdk_processing_description".localized)]
         case .swipeInsert, .swipeTapOrInsert:
-            items = [ FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
-                      FlowDataItem(type: .description, object: "xsdk_tap_insert_swipe_description".localized),
-                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
+                     FlowDataItem(type: .description, object: "xsdk_tap_insert_swipe_description".localized),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .pressReaderButton:
             items = [FlowDataItem(type: .description, object: "xsdk_press_button_description".localized),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.press_button)]

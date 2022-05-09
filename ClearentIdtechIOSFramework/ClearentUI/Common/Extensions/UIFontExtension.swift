@@ -20,7 +20,7 @@ extension UIFont {
         if CTFontManagerRegisterFontsForURL(url as CFURL, .none, &errorRef) {
             print("Did load font \(filenameString)")
         } else {
-            print("Failed to register font \(filenameString) - register graphics font failed - this font may have already been registered in the main bundle.")
+            print("Failed to register font \(filenameString). This font may have already been registered in the main bundle.")
         }
     }
 }
