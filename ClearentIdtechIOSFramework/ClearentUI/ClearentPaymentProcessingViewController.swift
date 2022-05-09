@@ -38,8 +38,8 @@ public class ClearentPaymentProcessingViewController: UIViewController {
     override public func viewDidLoad() {
         super.viewDidLoad()
         setupStyle()
-        presenter?.startBluetoothDevicePairing()
-        view.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(handleDismiss)))
+
+        presenter?.startFlow()
     }
 
     // MARK: - Private
@@ -59,99 +59,93 @@ public class ClearentPaymentProcessingViewController: UIViewController {
 // MARK: - ClearentPaymentProcessingView
 
 extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView {
-    public func updateContentWithLoadingIndicator() {
+    public func showLoadingView() {
         stackView.removeAllArrangedSubviews()
-        let actionView = ClearentUserActionView()
-        actionView.isLoading = true
+        let loadingView = ClearentLoadingView()
         let emptySpace = ClearentEmptySpace(height: Layout.emptySpaceHeight)
         stackView.addArrangedSubview(emptySpace)
-        stackView.addArrangedSubview(actionView)
+        stackView.addArrangedSubview(loadingView)
     }
         
-    public func updateContent(with component: PaymentFeedbackComponentProtocol) {
+    public func updateContent(with feedback: FlowFeedback) {
         stackView.removeAllArrangedSubviews()
-        createStatusHeader(with: component)
-        createMainInfoView(with: component)
-        createButton(with: component)
-    }
-
-    private func createStatusHeader(with component: PaymentFeedbackComponentProtocol) {
-        let readerStatusHeader = ClearentReaderStatusHeaderView()
-        readerStatusHeader.setup(readerName: component.readerName,
-                                 signalStatusIconName: component.signalStatus.iconName,
-                                 signalStatusTitle: component.signalStatus.title,
-                                 batteryStatusIconName: component.batteryStatus.iconName,
-                                 batteryStatusTitle: component.batteryStatus.title)
-        stackView.addArrangedSubview(readerStatusHeader)
-    }
-
-    private func createMainInfoView(with component: PaymentFeedbackComponentProtocol) {
-        if let description = component.mainDescription {
-            if let iconName = component.iconName, let title = component.mainTitle {
-                // ReaderFeedbackView
-                let readerFeedbackView = ClearentReaderFeedbackView()
-                readerFeedbackView.setup(imageName: iconName, title: title, description: description)
-                stackView.addArrangedSubview(readerFeedbackView)
-            } else {
-                // UserActionView
-                let actionView = ClearentUserActionView()
-                actionView.setup(imageName: component.iconName, description: description)
-                stackView.addArrangedSubview(actionView)
+        feedback.items.forEach {
+            if let component = uiComponent(for: $0, proccessType: feedback.flow) {
+                stackView.addArrangedSubview(component)
             }
         }
     }
 
-    private func createButton(with component: PaymentFeedbackComponentProtocol) {
-        if let userAction = component.userAction {
-            let button = ClearentPrimaryButton()
-            button.title = userAction.title
-
-            button.action = { [weak self] in
-                guard let self = self else { return }
-
-                switch userAction {
-                case .cancel:
-                    self.dismissViewController()
-                case .retry:
-                    self.presenter?.retryLastTransaction()
-                }
-            }
-            stackView.addArrangedSubview(button)
+    private func uiComponent(for item: FlowDataItem, proccessType: ProcessType) -> UIView? {
+        let object = item.object
+        switch item.type {
+        case .readerInfo:
+            guard let readerInfo = object as? ReaderInfo else { return nil }
+            return readerInfoView(readerInfo: readerInfo)
+        case .graphicType:
+            guard let graphic = object as? FlowGraphicType else { return nil }
+            return icon(with: graphic)
+        case .title:
+            guard let text = object as? String else { return nil }
+            return ClearentTitleLabel(text: text)
+        case .description:
+            guard let text = object as? String else { return nil }
+            return ClearentSubtitleLabel(text: text)
+        case .userAction:
+            guard let userAction = object as? FlowButtonType else { return nil }
+            return button(userAction: userAction, proccessType: proccessType)
+        case .devicesFound:
+            guard let readersInfo = object as? [ReaderInfo] else { return nil }
+            return readersList(readersInfo: readersInfo)
+        case .hint:
+            guard let text = object as? String else { return nil }
+            return ClearentHintView(text: text)
         }
     }
     
     public func dismissView() {
         self.dismissViewController()
     }
-}
 
-// MARK: Swipe down screen
-
-extension ClearentPaymentProcessingViewController {
-    enum Constants {
-        static let dismissTreshold = 200.0
-        static let dismissAnimationDuration = 0.3
+    private func readerInfoView(readerInfo: ReaderInfo) -> ClearentReaderStatusHeaderView {
+        let name = readerInfo.readerName
+        let signalStatus = readerInfo.signalStatus
+        let batteryStatus = readerInfo.batteryStatus
+        let statusHeader = ClearentReaderStatusHeaderView()
+        statusHeader.setup(readerName: name, signalStatusIconName: signalStatus.iconName, signalStatusTitle: signalStatus.title, batteryStatusIconName: batteryStatus.iconName, batteryStatusTitle: batteryStatus.title)
+        return statusHeader
+    }
+    
+    
+    private func icon(with graphic: FlowGraphicType) -> UIView? {
+        if let iconName = graphic.iconName, graphic != .loading {
+            return ClearentIcon(iconName: iconName)
+        }
+        return ClearentLoadingView()
     }
 
-    @objc func handleDismiss(sender: UIPanGestureRecognizer) {
-        let touchPoint = sender.location(in: view?.window)
-        switch sender.state {
-        case .began:
-            initialTouchPoint = touchPoint
-        case .changed:
-            if touchPoint.y > initialTouchPoint.y {
-                view.frame.origin.y = touchPoint.y - initialTouchPoint.y
+    private func readersList(readersInfo:  [ReaderInfo]) -> ClearentPairingReadersList {
+        let items = readersInfo.map { item in
+           ClearentPairingReaderItem(title: item.readerName) {
+                ClearentWrapper.shared.selectReader(reader: item)
             }
-        case .ended, .cancelled:
-            if touchPoint.y - initialTouchPoint.y > Constants.dismissTreshold {
-                dismissViewController()
-            } else {
-                UIView.animate(withDuration: Constants.dismissAnimationDuration, animations: {
-                    self.view.frame = CGRect(x: 0, y: 0, width: self.view.frame.size.width, height: self.view.frame.size.height)
-                })
-            }
-        default:
-            break
         }
+        let list = ClearentPairingReadersList(items: items)
+        list.layoutIfNeeded()
+        return list
+    }
+     
+    private func button(userAction: FlowButtonType, proccessType: ProcessType) -> ClearentPrimaryButton {
+        let button = ClearentPrimaryButton(title: userAction.title)
+        button.action = { [weak self] in
+            guard let strongSelf = self, let presenter = strongSelf.presenter else { return }
+            switch userAction {
+            case .cancel, .done:
+                strongSelf.dismissViewController()
+            case .retry, .pair:
+                presenter.restartProcess(processType: proccessType)
+            }
+        }
+        return button
     }
 }

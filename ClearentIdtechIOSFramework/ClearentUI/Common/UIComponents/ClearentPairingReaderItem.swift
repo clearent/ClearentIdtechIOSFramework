@@ -36,12 +36,6 @@ class ClearentPairingReaderItem: ClearentMarginableView {
         }
     }
 
-    var title: String? {
-        didSet {
-            label.text = title
-        }
-    }
-
     var rightIconName: String? {
         didSet {
             guard let rightIconName = rightIconName else { return }
@@ -50,8 +44,15 @@ class ClearentPairingReaderItem: ClearentMarginableView {
     }
 
     // MARK: - Methods
+    
+    convenience init(title: String, action: (() -> Void)?) {
+        self.init()
+        label.text = title
+        self.action = action
+    }
 
     override func configure() {
+        label.text = "test"
         container.layer.cornerRadius = container.bounds.height / 4
         container.layer.masksToBounds = true
         textColor = ClearentConstants.Color.base01

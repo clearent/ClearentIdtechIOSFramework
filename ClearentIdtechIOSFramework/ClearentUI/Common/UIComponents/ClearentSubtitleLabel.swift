@@ -12,7 +12,10 @@ public class ClearentSubtitleLabel: ClearentTitleLabel {
     }
 
     override public var margins: [BottomMargin] {
-        [RelativeBottomMargin(constant: 24, relatedViewType: ClearentPrimaryButton.self)]
+        [
+            RelativeBottomMargin(constant: 24, relatedViewType: ClearentPrimaryButton.self),
+            BottomMargin(constant: 80)
+        ]
     }
 
     override func configure() {

@@ -13,14 +13,13 @@ class ClearentIcon: ClearentMarginableView {
         [
             RelativeBottomMargin(constant: 24, relatedViewType: ClearentIcon.self),
             RelativeBottomMargin(constant: 26, relatedViewType: ClearentTitleLabel.self),
-            RelativeBottomMargin(constant: 26, relatedViewType: ClearentSubtitleLabel.self)
+            RelativeBottomMargin(constant: 48, relatedViewType: ClearentSubtitleLabel.self),
+            BottomMargin(constant: 40)
         ]
     }
 
-    var iconName: String? {
-        didSet {
-            guard let iconName = iconName else { return }
-            imageView.image = UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil)
-        }
+    convenience init(iconName: String) {
+        self.init()
+        imageView.image = UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil)
     }
 }

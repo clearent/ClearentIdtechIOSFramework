@@ -316,9 +316,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
                 let readers = fetchRecentlyAndAvailableReaders(devices: bluetoothDevices)
                 self.delegate?.didFindRecentlyUsedReaders(readers: readers)
             }
-        } else if (bluetoothDevices.count == 1) {
-            updateConnectionWithDevice(readerInfo: readerInfo(from: bluetoothDevices[0]))
-        } else if (bluetoothDevices.count > 1) {
+        } else if (bluetoothDevices.count > 0) {
             let readers = bluetoothDevices.map { device in
                 return readerInfo(from: device)
             }
