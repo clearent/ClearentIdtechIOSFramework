@@ -119,6 +119,10 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
             stackView.addArrangedSubview(button)
         }
     }
+    
+    public func dismissView() {
+        self.dismissViewController()
+    }
 }
 
 // MARK: Swipe down screen

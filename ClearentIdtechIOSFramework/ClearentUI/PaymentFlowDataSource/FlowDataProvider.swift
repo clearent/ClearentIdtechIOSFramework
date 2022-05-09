@@ -40,6 +40,7 @@ class FlowDataFactory {
 }
 
 protocol FlowDataProtocol : AnyObject {
+    func didFinishTransaction(error: ResponseError?)
     func deviceDidDisconnect()
     func didFinishedPairing()
     func didReceiveFlowFeedback(feedback:FlowFeedback)
@@ -103,6 +104,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             
         }
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        self.delegate?.didFinishTransaction(error: error)
     }
     
     func userActionNeeded(action: UserAction) {

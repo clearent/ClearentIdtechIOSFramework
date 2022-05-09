@@ -11,6 +11,7 @@ import UIKit
 public protocol ClearentPaymentProcessingView: AnyObject {
     func updateContent(with component: PaymentFeedbackComponentProtocol)
     func updateContentWithLoadingIndicator()
+    func dismissView()
 }
 
 public protocol PaymentProcessingProtocol {
@@ -35,6 +36,13 @@ public class ClearentPaymentProcessingPresenter {
         sdkWrapper = ClearentWrapper.shared
         sdkFeedbackProvider = FlowDataProvider()
         sdkWrapper.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey)
+    }
+    
+    private func dissmissViewWithDelay() {
+        let deadlineTime = DispatchTime.now() + .seconds(3)
+        DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
+            self.paymentProcessingView?.dismissView()
+        }
     }
 }
 
@@ -73,5 +81,11 @@ extension ClearentPaymentProcessingPresenter: FlowDataProtocol {
         let component = PaymentFeedbackComponent(feedbackItems: feedback.items)
         paymentProcessingView?.updateContent(with: component)
         flowFeedbackReceived?()
+    }
+    
+    func didFinishTransaction(error: ResponseError?) {
+        if (error == nil) {
+            dissmissViewWithDelay()
+        }
     }
 }
