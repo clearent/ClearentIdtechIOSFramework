@@ -144,13 +144,18 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
                      FlowDataItem(type: .description, object: "xsdk_read_try_use_magstripe_description".localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+        case .tapFailed:
+            type = .warning
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
+                     FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
+                     FlowDataItem(type: .description, object: "xsdk_tap_failed_insert_swipe_description".localized),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .removeCard, .cardSecured:
             print("nothing to do here")
         case .transactionStarted, .goingOnline:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
                      FlowDataItem(type: .description, object: "xsdk_processing_description".localized)]
         }
-        
         if let flowItems = items {
             let feedback = FlowDataFactory.component(with: .payment,
                                                 type: type,

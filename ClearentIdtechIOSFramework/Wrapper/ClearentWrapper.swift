@@ -20,7 +20,8 @@ public enum UserAction: String {
          cardHasChip = "CARD HAS CHIP. TRY INSERT",
          tryMSRAgain = "TRY MSR AGAIN",
          useMagstripe = "USE MAGSTRIPE",
-         transactionStarted = "TRANSACTION STARTED"
+         transactionStarted = "TRANSACTION STARTED",
+         tapFailed = "TAP FAILED. INSERT/SWIPE"
 }
 
 public enum UserInfo: String {
