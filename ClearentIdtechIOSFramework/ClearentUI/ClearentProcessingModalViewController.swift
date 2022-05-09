@@ -1,5 +1,5 @@
 //
-//  ClearentPaymentProcessingViewController.swift
+//  ClearentProcessingModalViewController.swift
 //  ClearentIdtechIOSFramework
 //
 //  Created by Ovidiu Pop on 28.03.2022.
@@ -8,11 +8,11 @@
 
 import UIKit
 
-public class ClearentPaymentProcessingViewController: UIViewController {
+public class ClearentProcessingModalViewController: UIViewController {
     // MARK: - Properties
 
     @IBOutlet var stackView: ClearentAdaptiveStackView!
-    public var presenter: PaymentProcessingProtocol?
+    public var presenter: ProcessingModalProtocol?
     private enum Layout {
         static let cornerRadius = 15.0
         static let margin = 16.0
@@ -25,7 +25,7 @@ public class ClearentPaymentProcessingViewController: UIViewController {
     // MARK: - Init
 
     public init() {
-        super.init(nibName: String(describing: ClearentPaymentProcessingViewController.self), bundle: ClearentConstants.bundle)
+        super.init(nibName: String(describing: ClearentProcessingModalViewController.self), bundle: ClearentConstants.bundle)
     }
 
     @available(*, unavailable)
@@ -58,7 +58,7 @@ public class ClearentPaymentProcessingViewController: UIViewController {
 
 // MARK: - ClearentPaymentProcessingView
 
-extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView {
+extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     public func showLoadingView() {
         stackView.removeAllArrangedSubviews()
         let loadingView = ClearentLoadingView()
@@ -129,9 +129,7 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
                 ClearentWrapper.shared.selectReader(reader: item)
             }
         }
-        let list = ClearentPairingReadersList(items: items)
-        list.layoutIfNeeded()
-        return list
+        return ClearentPairingReadersList(items: items)
     }
 
     private func button(userAction: FlowButtonType, proccessType: ProcessType) -> ClearentPrimaryButton {

@@ -1,5 +1,5 @@
 //
-//  ClearentPaymentProcessingPresenter.swift
+//  ClearentProcessingModalPresenter.swift
 //  ClearentIdtechIOSFramework
 //
 //  Created by Ovidiu Pop on 29.03.2022.
@@ -8,20 +8,20 @@
 
 import UIKit
 
-public protocol ClearentPaymentProcessingView: AnyObject {
+public protocol ClearentProcessingModalView: AnyObject {
     func updateContent(with feedback: FlowFeedback)
     func showLoadingView()
     func dismissView()
 }
 
-public protocol PaymentProcessingProtocol {
+public protocol ProcessingModalProtocol {
     func restartProcess(processType: ProcessType)
     func startFlow()
     var flowFeedbackReceived: (() -> Void)? { get set }
 }
 
-public class ClearentPaymentProcessingPresenter {
-    private weak var paymentProcessingView: ClearentPaymentProcessingView?
+public class ClearentProcessingModalPresenter {
+    private weak var paymentProcessingView: ClearentProcessingModalView?
     private var amount: Double?
     private let sdkWrapper: ClearentWrapper
     private var sdkFeedbackProvider: FlowDataProvider
@@ -30,7 +30,7 @@ public class ClearentPaymentProcessingPresenter {
 
     // MARK: Init
 
-    public init(paymentProcessingView: ClearentPaymentProcessingView, amount: Double?, baseURL: String, publicKey: String, apiKey: String, processType: ProcessType) {
+    public init(paymentProcessingView: ClearentProcessingModalView, amount: Double?, baseURL: String, publicKey: String, apiKey: String, processType: ProcessType) {
         self.paymentProcessingView = paymentProcessingView
         self.amount = amount
         self.processType = processType
@@ -47,7 +47,7 @@ public class ClearentPaymentProcessingPresenter {
     }
 }
 
-extension ClearentPaymentProcessingPresenter: PaymentProcessingProtocol {
+extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     public func restartProcess(processType: ProcessType) {
         sdkFeedbackProvider.delegate = self
         paymentProcessingView?.showLoadingView()
@@ -88,7 +88,7 @@ extension ClearentPaymentProcessingPresenter: PaymentProcessingProtocol {
     }
 }
 
-extension ClearentPaymentProcessingPresenter: FlowDataProtocol {
+extension ClearentProcessingModalPresenter: FlowDataProtocol {
     public func deviceDidDisconnect() {
         // TODO: implement method
     }
