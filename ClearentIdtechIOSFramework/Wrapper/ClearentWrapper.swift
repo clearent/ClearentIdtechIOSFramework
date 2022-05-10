@@ -21,7 +21,8 @@ public enum UserAction: String {
          tryMSRAgain = "TRY MSR AGAIN",
          useMagstripe = "USE MAGSTRIPE",
          transactionStarted = "TRANSACTION STARTED",
-         tapFailed = "TAP FAILED. INSERT/SWIPE"
+         tapFailed = "TAP FAILED. INSERT/SWIPE",
+         bleDisconnected = "BLUETOOTH DISCONNECTED"
 }
 
 public enum UserInfo: String {
@@ -296,7 +297,13 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
                 }
             }
         case .BLUETOOTH:
-            print("Some bluetooth Feedback")
+            if (ClearentWrapperDefaults.pairedReaderInfo != nil) {
+                if let action = UserAction(rawValue: clearentFeedback.message) {
+                    DispatchQueue.main.async {
+                        self.delegate?.userActionNeeded(action: action)
+                    }
+                }
+            }
         case .ERROR:
             DispatchQueue.main.async {
                 self.delegate?.didEncounteredGeneralError()
