@@ -9,7 +9,7 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ClearentPaymentProcessingViewController" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ClearentProcessingModalViewController" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
             <connections>
                 <outlet property="stackView" destination="78l-9c-DkQ" id="AVZ-7b-6ZL"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -55,6 +55,7 @@
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
+                <constraint firstItem="78l-9c-DkQ" firstAttribute="top" relation="greaterThanOrEqual" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="32" id="36k-9V-bl7"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="78l-9c-DkQ" secondAttribute="trailing" constant="32" id="AGU-Sp-bHr"/>
                 <constraint firstAttribute="bottom" secondItem="78l-9c-DkQ" secondAttribute="bottom" constant="32" id="Bkk-y5-4SR"/>
                 <constraint firstItem="5mq-8y-fNs" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="GqJ-mc-LAw"/>

@@ -74,5 +74,6 @@ class ClearentConstants {
         //Readers List
         static let expanded = "expanded"
         static let collapsed = "collapsed"
+        static let pairingSuccessful = "pairingSuccessful"
     }
 }
