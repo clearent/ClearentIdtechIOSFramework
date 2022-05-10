@@ -38,7 +38,8 @@ class ClearentConstants {
         static let boldNormal = UIFont(name: sfProBold, size: 16)
         static let medium = UIFont(name: sfProMedium, size: 16)
         static let mediumSmall = UIFont(name: sfProMedium, size: 14)
-        static let regularSmall = UIFont(name: sfProRegular, size: 14)
+        static let regularNormal = UIFont(name: sfProRegular, size: 14)
+        static let regularSmall = UIFont(name: sfProRegular, size: 10)
     }
 
     // MARK: Assets

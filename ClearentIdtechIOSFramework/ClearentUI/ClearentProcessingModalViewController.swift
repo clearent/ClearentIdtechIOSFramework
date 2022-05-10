@@ -44,11 +44,6 @@ public class ClearentProcessingModalViewController: UIViewController {
 
     // MARK: - Private
 
-    private func dismissViewController() {
-        dismiss(animated: true, completion: nil)
-        ClearentWrapper.shared.cancelTransaction()
-    }
-
     private func setupStyle() {
         view.backgroundColor = .clear
         view.isOpaque = false
@@ -66,22 +61,27 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         stackView.addArrangedSubview(emptySpace)
         stackView.addArrangedSubview(loadingView)
     }
+    
+    public func dismissView() {
+        dismiss(animated: true, completion: nil)
+        ClearentWrapper.shared.cancelTransaction()
+    }
 
     public func updateContent(with feedback: FlowFeedback) {
         stackView.removeAllArrangedSubviews()
         feedback.items.forEach {
-            if let component = uiComponent(for: $0, proccessType: feedback.flow) {
+            if let component = uiComponent(for: $0, processType: feedback.flow, feedbackType: feedback.type) {
                 stackView.addArrangedSubview(component)
             }
         }
     }
 
-    private func uiComponent(for item: FlowDataItem, proccessType: ProcessType) -> UIView? {
+    private func uiComponent(for item: FlowDataItem, processType: ProcessType, feedbackType: FlowFeedbackType) -> UIView? {
         let object = item.object
         switch item.type {
         case .readerInfo:
             guard let readerInfo = object as? ReaderInfo else { return nil }
-            return readerInfoView(readerInfo: readerInfo)
+            return readerInfoView(readerInfo: readerInfo, flowFeedbackType: feedbackType)
         case .graphicType:
             guard let graphic = object as? FlowGraphicType else { return nil }
             return icon(with: graphic)
@@ -93,7 +93,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             return ClearentSubtitleLabel(text: text)
         case .userAction:
             guard let userAction = object as? FlowButtonType else { return nil }
-            return button(userAction: userAction, proccessType: proccessType)
+            return button(userAction: userAction, proccessType: processType)
         case .devicesFound:
             guard let readersInfo = object as? [ReaderInfo] else { return nil }
             return readersList(readersInfo: readersInfo)
@@ -102,15 +102,11 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             return ClearentHintView(text: text)
         }
     }
-
-    public func dismissView() {
-        dismissViewController()
-    }
-
-    private func readerInfoView(readerInfo: ReaderInfo) -> ClearentReaderStatusHeaderView {
+    
+    private func readerInfoView(readerInfo: ReaderInfo, flowFeedbackType: FlowFeedbackType) -> ClearentReaderStatusHeaderView {
         let name = readerInfo.readerName
-        let signalStatus = readerInfo.signalStatus
-        let batteryStatus = readerInfo.batteryStatus
+        let signalStatus = readerInfo.signalStatus(flowFeedbackType: flowFeedbackType)
+        let batteryStatus = readerInfo.batteryStatus(flowFeedbackType: flowFeedbackType)
         let statusHeader = ClearentReaderStatusHeaderView()
         statusHeader.setup(readerName: name, signalStatusIconName: signalStatus.iconName, signalStatusTitle: signalStatus.title, batteryStatusIconName: batteryStatus.iconName, batteryStatusTitle: batteryStatus.title)
         return statusHeader
@@ -138,7 +134,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             guard let strongSelf = self, let presenter = strongSelf.presenter else { return }
             switch userAction {
             case .cancel, .done:
-                strongSelf.dismissViewController()
+                strongSelf.dismissView()
             case .retry, .pair:
                 presenter.restartProcess(processType: proccessType)
             }

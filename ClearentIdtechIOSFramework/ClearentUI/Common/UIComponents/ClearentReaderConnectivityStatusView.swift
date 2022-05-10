@@ -11,11 +11,31 @@ import UIKit
 class ClearentReaderConnectivityStatusView: ClearentXibView {
     @IBOutlet weak var statusImageView: UIImageView!
     @IBOutlet weak var statusLabel: UILabel!
+    
+    var textColor: UIColor? {
+        didSet {
+            statusLabel.textColor = textColor
+        }
+    }
 
+    public var font: UIFont? {
+        didSet {
+            statusLabel.font = font
+        }
+    }
+    override func configure() {
+        textColor = ClearentConstants.Color.base02
+        font = ClearentConstants.Font.regularSmall
+    }
+    
     // MARK: Public
 
-    public func setup(imageName: String, status: String) {
-        statusImageView.image = UIImage(named: imageName, in: ClearentConstants.bundle, compatibleWith: nil)
+    public func setup(imageName: String?, status: String) {
         statusLabel.text = status
+        guard let imageName = imageName else {
+            statusImageView.removeFromSuperview()
+            return
+        }
+        statusImageView.image = UIImage(named: imageName, in: ClearentConstants.bundle, compatibleWith: nil)
     }
 }
