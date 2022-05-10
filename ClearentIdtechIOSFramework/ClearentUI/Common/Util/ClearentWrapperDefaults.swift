@@ -13,9 +13,9 @@ private struct DefaultKeys {
     static let recentlyPairedReadersKey = "xsdk_recently+paired_readers_key"
 }
 
-class ClearentWrapperDefaults: UserDefaultsPersistence {
+public class ClearentWrapperDefaults: UserDefaultsPersistence {
         
-    static var pairedReaderInfo: ReaderInfo? {
+    public static var pairedReaderInfo: ReaderInfo? {
            
            get {
                if let savedReaderData = retrieveValue(forKey: DefaultKeys.readerFriendlyNameKey) as? Data {

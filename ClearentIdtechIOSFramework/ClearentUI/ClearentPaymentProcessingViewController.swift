@@ -78,6 +78,7 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
     private func createStatusHeader(with component: PaymentFeedbackComponentProtocol) {
         let readerStatusHeader = ClearentReaderStatusHeaderView()
         readerStatusHeader.setup(readerName: component.readerName,
+                                 dropDownIconName: nil,
                                  signalStatusIconName: component.signalStatus.iconName,
                                  signalStatusTitle: component.signalStatus.title,
                                  batteryStatusIconName: component.batteryStatus.iconName,

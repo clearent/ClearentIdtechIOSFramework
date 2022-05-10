@@ -12,8 +12,11 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
     
     @IBOutlet weak var stackView: UIStackView!
     @IBOutlet weak var readerNameLabel: UILabel!
+    @IBOutlet weak var dropDownImageView: UIImageView!
     @IBOutlet weak var readerConnectivityStatusView: ClearentReaderConnectivityStatusView!
     @IBOutlet weak var readerBatteryStatusView: ClearentReaderConnectivityStatusView!
+    
+    public var state: ReaderStatusHeaderViewState = .collapsed
     
     public override var margins: [BottomMargin] {
         [
@@ -25,17 +28,27 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
     // MARK: Public
     
     public func setup(readerName: String,
+                      dropDownIconName: String?,
                       signalStatusIconName: String,
                       signalStatusTitle: String,
                       batteryStatusIconName: String?,
                       batteryStatusTitle: String?) {
         readerNameLabel.text = readerName
+        
+        guard let dropDownIconName = dropDownIconName else { return }
+        dropDownImageView.image = UIImage(named: dropDownIconName, in: ClearentConstants.bundle, compatibleWith: nil)
         readerConnectivityStatusView.setup(imageName: signalStatusIconName, status: signalStatusTitle)
+        
         if let batteryImage = batteryStatusIconName, let batteryStatus = batteryStatusTitle {
             readerBatteryStatusView.isHidden = false
             readerBatteryStatusView.setup(imageName: batteryImage, status: batteryStatus)
             return
         }
         readerBatteryStatusView.isHidden = true
+    }
+    
+    public func updateDropDownIcon() {
+        dropDownImageView.image = state == .collapsed ? UIImage(named: ClearentConstants.IconName.collapsed, in: ClearentConstants.bundle, compatibleWith: nil) :
+        UIImage(named: ClearentConstants.IconName.expanded, in: ClearentConstants.bundle, compatibleWith: nil)
     }
 }

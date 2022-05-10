@@ -70,3 +70,8 @@ enum ProcessType {
     case pairing
     case payment
 }
+
+public enum ReaderStatusHeaderViewState {
+    case collapsed
+    case expanded
+}

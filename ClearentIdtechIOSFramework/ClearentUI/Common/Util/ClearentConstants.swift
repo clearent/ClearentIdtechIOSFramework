@@ -70,5 +70,9 @@ class ClearentConstants {
         // Pairing
         static let rightArrow = "right-arrow"
         static let reader = "reader"
+        
+        //Readers List
+        static let expanded = "expanded"
+        static let collapsed = "collapsed"
     }
 }

@@ -8,48 +8,54 @@
 
 import UIKit
 
-class ClearentPrimaryButton: ClearentMarginableView {
+public class ClearentPrimaryButton: ClearentMarginableView {
     // MARK: - Properties
 
     public var action: (() -> Void)?
-
-    @IBOutlet var button: UIButton!
-
-    override var margins: [BottomMargin] {
-        [BottomMargin(contant: 16)]
+    
+    @IBOutlet weak var button: UIButton!
+    
+    override public var margins: [BottomMargin] {
+        [ BottomMargin(contant: 16) ]
     }
 
-    var enabledBackgroundColor = ClearentConstants.Color.base01 {
+    public var enabledBackgroundColor = ClearentConstants.Color.base01 {
         didSet { updateAppearence() }
     }
 
-    var disabledBackgroundColor = ClearentConstants.Color.base01 {
+    public var disabledBackgroundColor = ClearentConstants.Color.base01 {
         didSet { updateAppearence() }
     }
 
-    var enabledTextColor = ClearentConstants.Color.backgroundSecondary01 {
+    public var enabledTextColor = ClearentConstants.Color.backgroundSecondary01 {
         didSet { updateAppearence() }
     }
 
-    var disabledTextColor = ClearentConstants.Color.backgroundSecondary01 {
+    public var disabledTextColor = ClearentConstants.Color.backgroundSecondary01 {
         didSet { updateAppearence() }
     }
 
-    var textFont = ClearentConstants.Font.mediumSmall {
+    public var textFont = ClearentConstants.Font.mediumSmall {
         didSet {
             button.titleLabel?.font = textFont
         }
     }
+    
+    public var borderColor = ClearentConstants.Color.backgroundSecondary01 {
+        didSet {
+            button.layer.borderColor = borderColor.cgColor
+        }
+    }
 
-    var isEnabled: Bool {
+    public var isEnabled: Bool {
         set {
             button.isEnabled = newValue
             updateAppearence()
         }
         get { button.isEnabled }
     }
-
-    var title: String? {
+    
+    public var title: String? {
         didSet {
             button.setTitle(title, for: .normal)
         }
@@ -57,12 +63,13 @@ class ClearentPrimaryButton: ClearentMarginableView {
 
     override func configure() {
         updateAppearence()
+        button.layer.borderWidth = 1
         button.layer.cornerRadius = button.bounds.height / 2
         button.layer.masksToBounds = true
         textFont = ClearentConstants.Font.medium
     }
-
-    @IBAction func buttonWasPressed(_: Any) {
+    
+    @IBAction func buttonWasPressed(_ sender: Any) {
         action?()
     }
 
