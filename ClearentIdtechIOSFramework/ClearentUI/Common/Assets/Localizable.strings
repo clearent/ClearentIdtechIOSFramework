@@ -10,7 +10,7 @@
 
 "xsdk_searching_for_reader" = "Searching for your reader...";
 "xsdk_pair_new_reader" = "Pair new reader";
-"xsdk_press_reader_button" = "Press the button on reader";
+"xsdk_press_reader_button" = "Press the button on reader to reconnect";
 "xsdk_select_reader" = "Please select the reader you wish to pair with";
 "xsdk_connecting_reader" = "Connecting...";
 "xsdk_connection_sucesfull" = "Connection successful";
