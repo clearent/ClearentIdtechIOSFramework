@@ -334,7 +334,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     public func deviceConnected() {
         readerInfo?.isConnected = true
         bleManager?.setupDevice()
-        bleManager?.readRSSI()
+        startDeviceInfoUpdate()
         ClearentWrapperDefaults.pairedReaderInfo = readerInfo
         if let newReader = readerInfo {
             addReaderToRecentlyUsed(reader: newReader)

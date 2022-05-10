@@ -11,7 +11,7 @@ import UIKit
 public protocol ClearentProcessingModalView: AnyObject {
     func updateContent(with feedback: FlowFeedback)
     func showLoadingView()
-    func dismissView()
+    func dismissViewController()
 }
 
 public protocol ProcessingModalProtocol {
@@ -42,7 +42,7 @@ public class ClearentProcessingModalPresenter {
     private func dissmissViewWithDelay() {
         let deadlineTime = DispatchTime.now() + .seconds(3)
         DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
-            self.paymentProcessingView?.dismissView()
+            self.paymentProcessingView?.dismissViewController()
         }
     }
 }

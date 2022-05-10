@@ -25,7 +25,7 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
     // MARK: Public
     
     public func setup(readerName: String,
-                      signalStatusIconName: String,
+                      signalStatusIconName: String?,
                       signalStatusTitle: String,
                       batteryStatusIconName: String?,
                       batteryStatusTitle: String?) {
