@@ -57,10 +57,11 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         }
         get { button.isEnabled }
     }
-
-    convenience init(title: String) {
-        self.init()
-        button.setTitle(title, for: .normal)
+    
+    public var title: String? {
+        didSet {
+            button.setTitle(title, for: .normal)
+        }
     }
 
     override func configure() {

@@ -133,7 +133,8 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     }
 
     private func button(userAction: FlowButtonType, proccessType: ProcessType) -> ClearentPrimaryButton {
-        let button = ClearentPrimaryButton(title: userAction.title)
+        let button = ClearentPrimaryButton()
+        button.title = userAction.title
         button.action = { [weak self] in
             guard let strongSelf = self, let presenter = strongSelf.presenter else { return }
             switch userAction {
