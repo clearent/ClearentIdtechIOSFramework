@@ -93,7 +93,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             return ClearentSubtitleLabel(text: text)
         case .userAction:
             guard let userAction = object as? FlowButtonType else { return nil }
-            return button(userAction: userAction, proccessType: processType)
+            return button(userAction: userAction, processType: processType)
         case .devicesFound:
             guard let readersInfo = object as? [ReaderInfo] else { return nil }
             return readersList(readersInfo: readersInfo)
@@ -128,7 +128,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         return ClearentPairingReadersList(items: items)
     }
 
-    private func button(userAction: FlowButtonType, proccessType: ProcessType) -> ClearentPrimaryButton {
+    private func button(userAction: FlowButtonType, processType: ProcessType) -> ClearentPrimaryButton {
         let button = ClearentPrimaryButton(title: userAction.title)
         button.action = { [weak self] in
             guard let strongSelf = self, let presenter = strongSelf.presenter else { return }
@@ -136,7 +136,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             case .cancel, .done:
                 strongSelf.dismissViewController()
             case .retry, .pair:
-                presenter.restartProcess(processType: proccessType)
+                presenter.restartProcess(processType: processType)
             }
         }
         return button
