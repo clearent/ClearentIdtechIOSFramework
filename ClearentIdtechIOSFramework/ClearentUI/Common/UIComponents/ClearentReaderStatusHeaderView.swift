@@ -17,8 +17,8 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
     
     public override var margins: [BottomMargin] {
         [
-            RelativeBottomMargin(constant: 50.0, relatedViewType: ClearentUserActionView.self),
-            RelativeBottomMargin(constant: 30.0, relatedViewType: ClearentReaderFeedbackView.self)
+            RelativeBottomMargin(constant: 30, relatedViewType: ClearentIcon.self),
+            RelativeBottomMargin(constant: 40, relatedViewType: ClearentLoadingView.self)
         ]
     }
     

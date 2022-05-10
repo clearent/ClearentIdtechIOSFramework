@@ -13,7 +13,7 @@ enum SignalLevel : Int {
 }
 
 enum FlowDataKeys {
-    case readerInfo, graphicType, title, description, userAction, devicesFound
+    case readerInfo, graphicType, title, description, userAction, devicesFound, hint
 }
 
 enum FlowFeedbackType {
@@ -44,17 +44,15 @@ enum FlowGraphicType {
             // TO DO - add the correct asset
             return nil
         case .pairedReader:
-            // TO DO - add the correct asset
-            return nil
+            return ClearentConstants.IconName.reader
         case .pairingSuccessful:
-            // TO DO - add the correct asset
-            return nil
+            return ClearentConstants.IconName.pairingSuccessful
         }
     }
 }
 
 public enum FlowButtonType {
-    case cancel, retry
+    case cancel, retry, pair, done
     
     var title: String {
         switch self {
@@ -62,11 +60,15 @@ public enum FlowButtonType {
             return "xsdk_user_action_cancel".localized
         case .retry:
             return "xsdk_user_action_retry".localized
+        case .pair:
+            return "xsdk_user_action_pair".localized
+        case .done:
+            return "xsdk_user_action_done".localized
         }
     }
 }
 
-enum ProcessType {
+public enum ProcessType {
     case pairing
     case payment
 }

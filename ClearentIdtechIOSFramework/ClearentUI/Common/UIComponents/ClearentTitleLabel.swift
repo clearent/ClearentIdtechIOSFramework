@@ -13,7 +13,10 @@ public class ClearentTitleLabel: ClearentMarginableView {
     @IBOutlet var label: UILabel!
 
     override public var margins: [BottomMargin] {
-        [RelativeBottomMargin(constant: 16, relatedViewType: ClearentSubtitleLabel.self)]
+        [
+            RelativeBottomMargin(constant: 16, relatedViewType: ClearentSubtitleLabel.self),
+            BottomMargin(constant: 80)
+        ]
     }
 
     var textColor: UIColor? {

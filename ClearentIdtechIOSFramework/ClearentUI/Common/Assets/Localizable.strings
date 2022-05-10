@@ -10,12 +10,17 @@
 
 "xsdk_searching_for_reader" = "Searching for your reader...";
 "xsdk_pair_new_reader" = "Pair new reader";
-"xsdk_pair" = "Pair";
 "xsdk_press_reader_button" = "Press the button on reader";
 "xsdk_select_reader" = "Please select the reader you wish to pair with";
 "xsdk_connecting_reader" = "Connecting";
 "xsdk_connection_sucesfull" = "Connection successful";
-"xsdk_prepare_for_pairing" = "Please make sure your reader is turned on and in range of the mobile device pairing it";
+"xsdk_prepare_pairing_reader_range" = "Please make sure your reader is turned on and in range of the mobile device pairing it";
+"xsdk_prepare_pairing_reader_button" = "Press and hold the button on the side of the reader to turn it on.";
+"xsdk_no_readers_found_title" = "No reader has been found. Please check that your reader is turned on and in range of the device.";
+"xsdk_no_readers_found_description" = "No readers available";
+"xsdk_paired_successful" = "Your reader is connected and ready to be used.";
+"xsdk_user_action_pair" = "Pair";
+"xsdk_user_action_done" = "Done";
 
 
 /* Payment Flow*/
@@ -31,7 +36,7 @@
 
 
 // Transaction completed
-"xsdk_transaction_completed_description" = "Payment succesful";
+"xsdk_transaction_completed_description" = "Payment successful";
 
 // Insert card
 "xsdk_tap_insert_swipe_description" = "Please swipe, tap or insert the card";

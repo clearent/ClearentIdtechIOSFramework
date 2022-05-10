@@ -70,5 +70,6 @@ class ClearentConstants {
         // Pairing
         static let rightArrow = "right-arrow"
         static let reader = "reader"
+        static let pairingSuccessful = "pairingSuccessful"
     }
 }
