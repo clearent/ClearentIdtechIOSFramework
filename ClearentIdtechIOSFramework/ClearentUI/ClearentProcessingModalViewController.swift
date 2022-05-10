@@ -62,7 +62,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         stackView.addArrangedSubview(loadingView)
     }
     
-    public func dismissView() {
+    public func dismissViewController() {
         dismiss(animated: true, completion: nil)
         ClearentWrapper.shared.cancelTransaction()
     }
@@ -134,7 +134,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             guard let strongSelf = self, let presenter = strongSelf.presenter else { return }
             switch userAction {
             case .cancel, .done:
-                strongSelf.dismissView()
+                strongSelf.dismissViewController()
             case .retry, .pair:
                 presenter.restartProcess(processType: proccessType)
             }
