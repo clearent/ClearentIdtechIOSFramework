@@ -12,6 +12,11 @@ public class ClearentProcessingModalViewController: UIViewController {
     // MARK: - Properties
 
     @IBOutlet var stackView: ClearentAdaptiveStackView!
+    
+    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
+    @IBOutlet weak var topConstraint: NSLayoutConstraint!
+    
+    
     public var presenter: ProcessingModalProtocol?
     private enum Layout {
         static let cornerRadius = 15.0
@@ -19,13 +24,15 @@ public class ClearentProcessingModalViewController: UIViewController {
         static let emptySpaceHeight = 104.0
         static let backgroundColor = ClearentConstants.Color.backgroundSecondary01
     }
-
+    
+    private var showOnTop: Bool = false
     private var initialTouchPoint = CGPoint.zero
 
     // MARK: - Init
 
-    public init() {
+    public init(showOnTop: Bool) {
         super.init(nibName: String(describing: ClearentProcessingModalViewController.self), bundle: ClearentConstants.bundle)
+        self.showOnTop = showOnTop
     }
 
     @available(*, unavailable)
@@ -38,7 +45,10 @@ public class ClearentProcessingModalViewController: UIViewController {
     override public func viewDidLoad() {
         super.viewDidLoad()
         setupStyle()
-
+        if (showOnTop) {
+            self.bottomConstraint.isActive = false
+            self.topConstraint.constant = 0
+        }
         presenter?.startFlow()
     }
 
