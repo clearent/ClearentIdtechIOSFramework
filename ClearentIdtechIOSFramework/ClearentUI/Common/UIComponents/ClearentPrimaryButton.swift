@@ -49,6 +49,13 @@ public class ClearentPrimaryButton: ClearentMarginableView {
             button.layer.borderColor = borderColor.cgColor
         }
     }
+    
+    public var borderWidth: CGFloat? {
+        didSet {
+            guard let borderWidth = borderWidth else { return }
+            button.layer.borderWidth = borderWidth
+        }
+    }
 
     public var isEnabled: Bool {
         set {
@@ -66,7 +73,6 @@ public class ClearentPrimaryButton: ClearentMarginableView {
 
     override func configure() {
         updateAppearence()
-        button.layer.borderWidth = 1
         button.layer.cornerRadius = button.bounds.height / 2
         button.layer.masksToBounds = true
         textFont = ClearentConstants.Font.mediumSmall

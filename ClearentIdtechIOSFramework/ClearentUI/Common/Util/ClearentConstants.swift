@@ -6,7 +6,7 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
-class ClearentConstants {
+public class ClearentConstants {
     // use a class from same package to identify the package
     class var bundle: Bundle {
         return Bundle(for: FlowDataProvider.self)
@@ -14,36 +14,36 @@ class ClearentConstants {
 
     // MARK: - Colors
 
-    enum Color {
-        static let backgroundPrimary = UIColor(hexString: "#E5E5E5")
-        static let backgroundSecondary01 = UIColor(hexString: "#FFFFFF")
-        static let backgroundSecondary02 = UIColor(hexString: "#E1E2E8")
-        static let backgroundSecondary03 = UIColor(hexString: "#EEEFF3")
-        static let accent01 = UIColor(hexString: "#2FAC10")
-        static let base01 = UIColor(hexString: "#272431")
-        static let base02 = UIColor(hexString: "#6A6D7D")
-        static let base03 = UIColor(hexString: "#000000")
-        static let base04 = UIColor(hexString: "#FFFFFF")
+    public enum Color {
+        public static let backgroundPrimary = UIColor(hexString: "#E5E5E5")
+        public static let backgroundSecondary01 = UIColor(hexString: "#FFFFFF")
+        public static let backgroundSecondary02 = UIColor(hexString: "#E1E2E8")
+        public static let backgroundSecondary03 = UIColor(hexString: "#EEEFF3")
+        public static let accent01 = UIColor(hexString: "#2FAC10")
+        public static let base01 = UIColor(hexString: "#272431")
+        public static let base02 = UIColor(hexString: "#6A6D7D")
+        public static let base03 = UIColor(hexString: "#000000")
+        public static let base04 = UIColor(hexString: "#FFFFFF")
     }
 
     // MARK: - Fonts
 
-    enum Font {
+    public enum Font {
         private static let sfProBold = "SFProText-Bold"
         private static let sfProRegular = "SFProText-Regular"
         private static let sfProMedium = "SFProText-Medium"
 
-        static let regularExtraLarge = UIFont(name: sfProBold, size: 32)
-        static let boldLarge = UIFont(name: sfProBold, size: 20)
-        static let boldNormal = UIFont(name: sfProBold, size: 16)
-        static let medium = UIFont(name: sfProMedium, size: 16)
-        static let mediumSmall = UIFont(name: sfProMedium, size: 14)
-        static let regularSmall = UIFont(name: sfProRegular, size: 14)
+        public static let regularExtraLarge = UIFont(name: sfProBold, size: 32)
+        public static let boldLarge = UIFont(name: sfProBold, size: 20)
+        public static let boldNormal = UIFont(name: sfProBold, size: 16)
+        public static let medium = UIFont(name: sfProMedium, size: 16)
+        public static let mediumSmall = UIFont(name: sfProMedium, size: 14)
+        public static let regularSmall = UIFont(name: sfProRegular, size: 14)
     }
 
     // MARK: Assets
 
-    enum IconName {
+    public enum IconName {
         // Reader Battery Status
         static let batteryFull = "full"
         static let batteryHigh = "high"
