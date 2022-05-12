@@ -32,7 +32,7 @@ public final class ClearentUIManager : NSObject {
     }
     
     private func viewController(processType: ProcessType, amount: Double? = nil) ->  UIViewController {
-          let paymentProcessingViewController = ClearentProcessingModalViewController()
+          let paymentProcessingViewController = ClearentProcessingModalViewController(nibName: String(describing: ClearentProcessingModalViewController.self), bundle: ClearentConstants.bundle)
           let paymentProcessingPresenter = ClearentProcessingModalPresenter(paymentProcessingView: paymentProcessingViewController, amount: amount, processType: processType)
           paymentProcessingViewController.presenter = paymentProcessingPresenter
           paymentProcessingViewController.modalPresentationStyle = .overFullScreen
