@@ -27,6 +27,14 @@ public class ClearentHintView: ClearentTitleLabel {
             label.backgroundColor = containerBackgroundColor
         }
     }
+    
+    public var cornerRadius: Double? {
+        didSet {
+            self.layer.cornerRadius = 10.0
+            self.layer.masksToBounds = true
+            self.clipsToBounds = true
+        }
+    }
 
     override func configure() {
         super.configure()
