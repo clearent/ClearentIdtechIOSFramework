@@ -16,7 +16,7 @@ public class ClearentProcessingModalViewController: ClearentBaseViewController {
 
     // MARK: - Lifecycle
 
-    override public func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         presenter?.startFlow()
     }
@@ -25,11 +25,10 @@ public class ClearentProcessingModalViewController: ClearentBaseViewController {
 // MARK: - ClearentPaymentProcessingView
 
 extension ClearentProcessingModalViewController: ClearentProcessingModalView {
-    
     public func showLoadingView() {
         stackView.showLoadingView()
     }
-    
+
     public func dismissViewController() {
         dismiss(animated: true, completion: nil)
         ClearentWrapper.shared.cancelTransaction()
@@ -70,7 +69,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             return ClearentHintView(text: text)
         }
     }
-    
+
     private func readerInfoView(readerInfo: ReaderInfo, flowFeedbackType: FlowFeedbackType) -> ClearentReaderStatusHeaderView {
         let name = readerInfo.readerName
         let signalStatus = readerInfo.signalStatus(flowFeedbackType: flowFeedbackType)

@@ -8,21 +8,21 @@
 
 class ClearentRoundedCornersStackView: ClearentAdaptiveStackView {
     public var action: (() -> Void)?
-    
+
     private enum Layout {
         static let cornerRadius = 15.0
         static let margin = 16.0
         static let emptySpaceHeight = 104.0
         static let backgroundColor = ClearentConstants.Color.backgroundSecondary1
     }
-    
+
     // MARK: - Lifecycle
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         setup()
     }
-    
+
     required init(coder: NSCoder) {
         super.init(coder: coder)
         setup()
@@ -35,7 +35,7 @@ class ClearentRoundedCornersStackView: ClearentAdaptiveStackView {
         backgroundColor = .white
         showLoadingView()
     }
-    
+
     public func showLoadingView() {
         removeAllArrangedSubviews()
         let loadingView = ClearentLoadingView()

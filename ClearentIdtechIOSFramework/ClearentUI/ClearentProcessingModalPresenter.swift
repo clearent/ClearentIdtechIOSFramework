@@ -116,9 +116,9 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
         paymentProcessingView?.updateContent(with: feedback)
         flowFeedbackReceived?()
     }
-    
+
     func didFinishTransaction(error: ResponseError?) {
-        if (error == nil) {
+        if error == nil {
             dissmissViewWithDelay()
         }
     }
