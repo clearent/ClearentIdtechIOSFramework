@@ -26,9 +26,11 @@ public final class ClearentUIManager : NSObject {
     public func paymentViewController(amount: Double) -> UIViewController {
         return viewController(processType: .payment, amount:amount)
     }
+    
     public func pairingViewController() -> UIViewController {
         return viewController(processType: .pairing)
     }
+    
     private func viewController(processType: ProcessType, amount: Double? = nil) ->  UIViewController {
           let paymentProcessingViewController = ClearentProcessingModalViewController()
           let paymentProcessingPresenter = ClearentProcessingModalPresenter(paymentProcessingView: paymentProcessingViewController, amount: amount, processType: processType)
@@ -39,5 +41,5 @@ public final class ClearentUIManager : NSObject {
           }
  
           return paymentProcessingViewController
-}
+    }
 }
