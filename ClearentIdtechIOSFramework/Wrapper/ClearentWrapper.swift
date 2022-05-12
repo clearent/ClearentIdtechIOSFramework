@@ -71,6 +71,7 @@ public final class ClearentWrapper : NSObject {
     public override init() {
         super.init()
         createLogFile()
+        self.readerInfo = ClearentWrapperDefaults.pairedReaderInfo
     }
     
     // MARK - Public
@@ -351,7 +352,10 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     
     public func deviceDisconnected() {
         DispatchQueue.main.async {
-            ClearentWrapperDefaults.pairedReaderInfo = nil
+            var reader =  ClearentWrapperDefaults.pairedReaderInfo
+            reader?.isConnected = false
+            ClearentWrapperDefaults.pairedReaderInfo = reader
+            self.readerInfo = reader
             self.delegate?.deviceDidDisconnect()
         }
     }
