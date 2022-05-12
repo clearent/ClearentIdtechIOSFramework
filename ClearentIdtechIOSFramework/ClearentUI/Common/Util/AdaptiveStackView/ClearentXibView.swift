@@ -14,7 +14,7 @@ public class ClearentXibView: UIView {
     public var nibName: String? {
         String(describing: type(of: self))
     }
-            
+
     public override func awakeFromNib() {
         super.awakeFromNib()
         configure()

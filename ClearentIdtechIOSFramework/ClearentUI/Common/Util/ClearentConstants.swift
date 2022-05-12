@@ -6,24 +6,28 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
-class ClearentConstants {
+
+public class ClearentConstants {
     // use a class from same package to identify the package
-    class var bundle: Bundle {
+    public class var bundle: Bundle {
         return Bundle(for: FlowDataProvider.self)
     }
 
     // MARK: - Colors
 
-    enum Color {
-        static let backgroundPrimary = UIColor(hexString: "#E5E5E5")
-        static let backgroundSecondary01 = UIColor(hexString: "#FFFFFF")
-        static let backgroundSecondary02 = UIColor(hexString: "#E1E2E8")
-        static let backgroundSecondary03 = UIColor(hexString: "#EEEFF3")
-        static let accent01 = UIColor(hexString: "#2FAC10")
-        static let base01 = UIColor(hexString: "#272431")
-        static let base02 = UIColor(hexString: "#6A6D7D")
-        static let base03 = UIColor(hexString: "#000000")
-        static let base04 = UIColor(hexString: "#FFFFFF")
+    public enum Color {
+        public static let backgroundPrimary01 = UIColor(hexString: "#E5E5E5")
+        public static let backgroundPrimary02 = UIColor(hexString: "#000000")
+        public static let backgroundSecondary01 = UIColor(hexString: "#FFFFFF")
+        public static let backgroundSecondary02 = UIColor(hexString: "#E1E2E8")
+        public static let backgroundSecondary03 = UIColor(hexString: "#EEEFF3")
+        public static let accent01 = UIColor(hexString: "#2FAC10")
+        public static let accent02 = UIColor(hexString: "#F44E27")
+        public static let base01 = UIColor(hexString: "#272431")
+        public static let base02 = UIColor(hexString: "#6A6D7D")
+        public static let base03 = UIColor(hexString: "#000000")
+        public static let base04 = UIColor(hexString: "#FFFFFF")
+        public static let warning = UIColor(hexString: "#C2210F")
     }
 
     // MARK: - Fonts
@@ -72,5 +76,9 @@ class ClearentConstants {
         static let rightArrow = "right-arrow"
         static let reader = "reader"
         static let pairingSuccessful = "pairingSuccessful"
+    }
+    
+    enum Size {
+        public static let primaryButtonBorderWidth = 2.0
     }
 }
