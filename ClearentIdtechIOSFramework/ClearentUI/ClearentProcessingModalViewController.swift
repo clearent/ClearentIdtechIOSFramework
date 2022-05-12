@@ -99,10 +99,10 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         let button = ClearentPrimaryButton(title: userAction.title)
         let color = ClearentConstants.Color.self
         let isCancelButton = userAction == .cancel
-        button.enabledBackgroundColor = isCancelButton ? color.backgroundSecondary1 : color.base01
-        button.enabledTextColor = isCancelButton ? color.base01 : color.backgroundSecondary1
-        button.borderColor = color.backgroundSecondary2
-        button.borderWidth = isCancelButton ? 2 : 0
+        button.enabledBackgroundColor = isCancelButton ? color.backgroundSecondary01 : color.base01
+        button.enabledTextColor = isCancelButton ? color.base01 : color.backgroundSecondary01
+        button.borderColor = color.backgroundSecondary02
+        button.borderWidth = isCancelButton ? ClearentConstants.Size.primaryButtonBorderWidth : 0
         button.action = { [weak self] in
             guard let strongSelf = self, let presenter = strongSelf.presenter else { return }
             switch userAction {

@@ -30,11 +30,11 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         didSet { updateAppearence() }
     }
 
-    public var enabledTextColor = ClearentConstants.Color.backgroundSecondary1 {
+    public var enabledTextColor = ClearentConstants.Color.backgroundSecondary01 {
         didSet { updateAppearence() }
     }
 
-    var disabledTextColor = ClearentConstants.Color.backgroundSecondary1 {
+    var disabledTextColor = ClearentConstants.Color.backgroundSecondary01 {
         didSet { updateAppearence() }
     }
     

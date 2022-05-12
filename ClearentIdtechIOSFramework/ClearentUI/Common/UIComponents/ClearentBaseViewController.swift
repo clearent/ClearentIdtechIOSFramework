@@ -1,5 +1,5 @@
 //
-//  PairReaderOnboardingViewController.swift
+//  ClearentBaseViewController.swift
 //  XplorPayMobile
 //
 //  Created by Carmen Jurcovan on 10.05.2022.
@@ -18,7 +18,7 @@ open class ClearentBaseViewController: UIViewController {
         view.backgroundColor = .clear
         view.isOpaque = false
         let backgroundView = UIView()
-        backgroundView.backgroundColor = ClearentConstants.Color.backgroundPrimary2
+        backgroundView.backgroundColor = ClearentConstants.Color.backgroundPrimary02
         backgroundView.alpha = 0.8
         view.addSubview(backgroundView)
         view.sendSubviewToBack(backgroundView)

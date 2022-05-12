@@ -31,7 +31,7 @@ extension ClearentMarginable {
 
 public class BottomMargin {
     var constant: CGFloat
-    
+
     init(constant: CGFloat) {
         self.constant = constant
     }
