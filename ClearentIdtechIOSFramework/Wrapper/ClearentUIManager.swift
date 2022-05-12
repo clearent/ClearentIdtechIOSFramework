@@ -23,27 +23,21 @@ public final class ClearentUIManager : NSObject {
         clearentWrapper.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey)
     }
     
-    public func paymentViewController(amount: Double?) -> UIViewController {
-        let paymentProcessingViewController = ClearentProcessingModalViewController()
-        let paymentProcessingPresenter = ClearentProcessingModalPresenter(paymentProcessingView: paymentProcessingViewController, amount: amount, processType: .payment)
-        paymentProcessingViewController.presenter = paymentProcessingPresenter
-        paymentProcessingViewController.modalPresentationStyle = .overFullScreen
-        if (clearentWrapper.readerInfo != nil) {
-            flowFeedbackReceived?(clearentWrapper.readerInfo)
-        }
-        
-        return paymentProcessingViewController
+    public func paymentViewController(amount: Double) -> UIViewController {
+         return viewController(processType: pairing, amount:amount)
     }
-    
-    public func pairingViewController(amount: Double?) -> UIViewController {
-        let paymentProcessingViewController = ClearentProcessingModalViewController()
-        let paymentProcessingPresenter = ClearentProcessingModalPresenter(paymentProcessingView: paymentProcessingViewController, amount: nil, processType: .pairing)
-        paymentProcessingViewController.presenter = paymentProcessingPresenter
-        paymentProcessingViewController.modalPresentationStyle = .overFullScreen
-        if (clearentWrapper.readerInfo != nil) {
-            flowFeedbackReceived?(clearentWrapper.readerInfo)
-        }
-        
-        return paymentProcessingViewController
+    public func pairingViewController() -> UIViewController {
+         return viewController(processType: pairing)
     }
+    private func viewController(processType: ProcessType, amount: Double? = nil) ->  UIViewController {
+          let paymentProcessingViewController = ClearentProcessingModalViewController()
+          let paymentProcessingPresenter = ClearentProcessingModalPresenter(paymentProcessingView: paymentProcessingViewController, amount: amount, processType: processType)
+          paymentProcessingViewController.presenter = paymentProcessingPresenter
+          paymentProcessingViewController.modalPresentationStyle = .overFullScreen
+          if (clearentWrapper.readerInfo != nil) {
+              flowFeedbackReceived?(clearentWrapper.readerInfo)
+          }
+ 
+          return paymentProcessingViewController
+}
 }
