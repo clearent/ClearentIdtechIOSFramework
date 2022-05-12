@@ -19,7 +19,7 @@ public class ClearentTitleLabel: ClearentMarginableView {
         ]
     }
 
-    var textColor: UIColor? {
+    public var textColor: UIColor? {
         didSet {
             label.textColor = textColor
         }
@@ -28,6 +28,12 @@ public class ClearentTitleLabel: ClearentMarginableView {
     public var font: UIFont? {
         didSet {
             label.font = font
+        }
+    }
+    
+    public var title: String? {
+        didSet {
+            label.text = title
         }
     }
 

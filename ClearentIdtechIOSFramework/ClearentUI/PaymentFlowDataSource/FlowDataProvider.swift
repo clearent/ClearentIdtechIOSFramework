@@ -218,7 +218,6 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     
     func didFindReaders(readers: [ReaderInfo]) {
         let items = [FlowDataItem(type: .hint, object: "xsdk_select_reader".localized),
-                     FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
                      FlowDataItem(type: .devicesFound, object: readers),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
 

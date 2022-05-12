@@ -56,7 +56,7 @@ class ClearentPairingReaderItem: ClearentMarginableView {
         container.layer.masksToBounds = true
         textColor = ClearentConstants.Color.base01
         textFont = ClearentConstants.Font.regularNormal
-        containerBackgroundColor = ClearentConstants.Color.backgroundSecondary03
+        containerBackgroundColor = ClearentConstants.Color.backgroundSecondary3
         rightIconName = ClearentConstants.IconName.rightArrow
     }
 

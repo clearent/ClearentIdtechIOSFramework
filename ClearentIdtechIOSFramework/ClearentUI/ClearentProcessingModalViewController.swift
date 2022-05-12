@@ -8,58 +8,26 @@
 
 import UIKit
 
-public class ClearentProcessingModalViewController: UIViewController {
+public class ClearentProcessingModalViewController: ClearentBaseViewController {
     // MARK: - Properties
 
-    @IBOutlet var stackView: ClearentAdaptiveStackView!
+    @IBOutlet var stackView: ClearentRoundedCornersStackView!
     public var presenter: ProcessingModalProtocol?
-    private enum Layout {
-        static let cornerRadius = 15.0
-        static let margin = 16.0
-        static let emptySpaceHeight = 104.0
-        static let backgroundColor = ClearentConstants.Color.backgroundSecondary01
-    }
-
-    private var initialTouchPoint = CGPoint.zero
-
-    // MARK: - Init
-
-    public init() {
-        super.init(nibName: String(describing: ClearentProcessingModalViewController.self), bundle: ClearentConstants.bundle)
-    }
-
-    @available(*, unavailable)
-    required init?(coder _: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
 
     // MARK: - Lifecycle
 
     override public func viewDidLoad() {
         super.viewDidLoad()
-        setupStyle()
-
         presenter?.startFlow()
-    }
-
-    // MARK: - Private
-
-    private func setupStyle() {
-        view.backgroundColor = .clear
-        view.isOpaque = false
-        stackView.addRoundedCorners(backgroundColor: Layout.backgroundColor, radius: Layout.cornerRadius, margin: Layout.margin)
     }
 }
 
 // MARK: - ClearentPaymentProcessingView
 
 extension ClearentProcessingModalViewController: ClearentProcessingModalView {
+    
     public func showLoadingView() {
-        stackView.removeAllArrangedSubviews()
-        let loadingView = ClearentLoadingView()
-        let emptySpace = ClearentEmptySpace(height: Layout.emptySpaceHeight)
-        stackView.addArrangedSubview(emptySpace)
-        stackView.addArrangedSubview(loadingView)
+        stackView.showLoadingView()
     }
     
     public func dismissViewController() {
@@ -130,6 +98,12 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
 
     private func button(userAction: FlowButtonType, processType: ProcessType) -> ClearentPrimaryButton {
         let button = ClearentPrimaryButton(title: userAction.title)
+        let color = ClearentConstants.Color.self
+        let isCancelButton = userAction == .cancel
+        button.enabledBackgroundColor = isCancelButton ? color.backgroundSecondary1 : color.base01
+        button.enabledTextColor = isCancelButton ? color.base01 : color.backgroundSecondary1
+        button.borderColor = color.backgroundSecondary2
+        button.borderWidth = isCancelButton ? 2 : 0
         button.action = { [weak self] in
             guard let strongSelf = self, let presenter = strongSelf.presenter else { return }
             switch userAction {

@@ -22,25 +22,44 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         ]
     }
 
-    var enabledBackgroundColor = ClearentConstants.Color.base01 {
+    public var enabledBackgroundColor = ClearentConstants.Color.accent01 {
         didSet { updateAppearence() }
     }
 
-    var disabledBackgroundColor = ClearentConstants.Color.base01 {
+    public var disabledBackgroundColor = ClearentConstants.Color.base01 {
         didSet { updateAppearence() }
     }
 
-    var enabledTextColor = ClearentConstants.Color.backgroundSecondary01 {
+    public var enabledTextColor = ClearentConstants.Color.backgroundSecondary1 {
         didSet { updateAppearence() }
     }
 
-    var disabledTextColor = ClearentConstants.Color.backgroundSecondary01 {
+    var disabledTextColor = ClearentConstants.Color.backgroundSecondary1 {
         didSet { updateAppearence() }
+    }
+    
+    var borderColor: UIColor? {
+        didSet {
+            button.layer.borderColor = borderColor?.cgColor
+        }
+    }
+    
+    var borderWidth: CGFloat? {
+        didSet {
+            guard let width = borderWidth else { return }
+            button.layer.borderWidth = width
+        }
     }
 
     var textFont = ClearentConstants.Font.mediumSmall {
         didSet {
             button.titleLabel?.font = textFont
+        }
+    }
+    
+    public var title: String? {
+        didSet {
+            button.setTitle(title, for: .normal)
         }
     }
 
