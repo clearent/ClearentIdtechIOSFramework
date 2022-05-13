@@ -72,6 +72,7 @@ public final class ClearentWrapper : NSObject {
         super.init()
         createLogFile()
         self.readerInfo = ClearentWrapperDefaults.pairedReaderInfo
+        self.readerInfo?.isConnected = false
     }
     
     // MARK - Public
