@@ -37,9 +37,14 @@ class ClearentReadersTableViewCell: UITableViewCell {
         tableView.register(UINib(nibName: ClearentReadersTableViewCell.nib, bundle: Bundle(for: ClearentReadersTableViewCell.self)), forCellReuseIdentifier: ClearentReadersTableViewCell.identifier)
     }
     
-    public func setup(readerName: String, isFirstCell: Bool? = nil) {
+    public func setup(readerName: String, isConnected: Bool? = nil, isFirstCell: Bool? = nil) {
         if let _ = isFirstCell {
-            readerStatusIcon.backgroundColor = ClearentConstants.Color.accent01
+            
+            if let readerIsConnected = isConnected, readerIsConnected {
+                readerStatusIcon.backgroundColor = ClearentConstants.Color.accent01
+            } else {
+                readerStatusIcon.backgroundColor = ClearentConstants.Color.accent02
+            }
             
             readerStatusIcon.layer.cornerRadius = readerStatusIcon.frame.width / 2
             readerStatusIcon.layer.masksToBounds = true

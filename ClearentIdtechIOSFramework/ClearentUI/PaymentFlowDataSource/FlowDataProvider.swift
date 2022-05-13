@@ -30,9 +30,10 @@ class FlowDataFactory {
         if let readerInfo = readerInfo {
             var allItems = [FlowDataItem(type: .readerInfo, object: readerInfo)]
             allItems.append(contentsOf: payload)
+            
             return FlowFeedback(flow: flow, type: type, items: allItems)
         }
-        
+    
         return FlowFeedback(flow: flow, type: type, items: payload)
     }
 }
@@ -252,21 +253,22 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     }
     
     func didNotFindRecentlyUsedReaders() {
-        let items = [FlowDataItem(type: .description, object: "xsdk_prepare_for_pairing".localized)]
-        
-        let feedback = FlowDataFactory.component(with: .pairing,
+        let items = [FlowDataItem(type: .description, object: "xsdk_no_readers_found_description".localized),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
+        let feedback = FlowDataFactory.component(with: .showReaders,
                                                  type: .searchDevices,
-                                                 readerInfo: nil,
+                                                 readerInfo: ClearentWrapperDefaults.pairedReaderInfo,
                                                  payload: items)
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
     func didFindRecentlyUsedReaders(readers: [ReaderInfo]) {
-        let items = [FlowDataItem(type: .devicesFound, object: readers)]
+        let items = [FlowDataItem(type: .recentlyPaired, object: readers),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
         
-        let feedback = FlowDataFactory.component(with: .pairing,
+        let feedback = FlowDataFactory.component(with: .showReaders,
                                                  type: .searchDevices,
-                                                 readerInfo: nil,
+                                                 readerInfo: ClearentWrapperDefaults.pairedReaderInfo,
                                                  payload: items)
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }

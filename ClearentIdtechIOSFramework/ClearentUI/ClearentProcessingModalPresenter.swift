@@ -37,6 +37,7 @@ public class ClearentProcessingModalPresenter {
         self.processType = processType
         sdkWrapper = ClearentWrapper.shared
         sdkFeedbackProvider = FlowDataProvider()
+        sdkFeedbackProvider.delegate = self
         sdkWrapper.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey)
     }
 
@@ -100,11 +101,12 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         guard let connectedReader = ClearentWrapperDefaults.pairedReaderInfo else { return }
         
         let items = [FlowDataItem(type: .readerInfo, object: connectedReader),
-                     FlowDataItem(type: .devicesFound2, object: [connectedReader, ReaderInfo(name: "ABC", batterylevel: nil, signalLevel: nil, connected: false, uuid: nil)]),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
                      FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
         let feedback = FlowFeedback(flow: .showReaders, type: .searchDevices, items: items)
-        
         paymentProcessingView?.updateContent(with: feedback)
+        
+        sdkWrapper.searchRecentlyUsedReaders()
     }
 }
 

@@ -48,7 +48,7 @@ public class ClearentProcessingModalViewController: UIViewController {
         
         if (showOnTop) {
             self.bottomConstraint.isActive = false
-            self.topConstraint.constant = 0
+            self.topConstraint.constant = 16
         }
         presenter?.startFlow()
     }
@@ -120,7 +120,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             guard let text = object as? String else { return nil }
             
             return ClearentHintView(text: text)
-        case .devicesFound2:
+        case .recentlyPaired:
             guard let readersInfo = object as? [ReaderInfo] else { return nil }
             let clearentReadersDataSource = ClearentReadersTableViewDataSource(dataSource: readersInfo)
             let clearentReadersDelegate = ClearentReadersTableViewDelegate(with: self)
@@ -138,6 +138,8 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         let signalStatus = readerInfo.signalStatus
         let batteryStatus = readerInfo.batteryStatus
         let statusHeader = ClearentReaderStatusHeaderView()
+        
+        showOnTop ? statusHeader.setup(readerName: name, dropDownIconName: ClearentConstants.IconName.expanded, signalStatusIconName: signalStatus.iconName, signalStatusTitle: signalStatus.title, batteryStatusIconName: batteryStatus.iconName, batteryStatusTitle: batteryStatus.title) : statusHeader.setup(readerName: name, signalStatusIconName: signalStatus.iconName, signalStatusTitle: signalStatus.title, batteryStatusIconName: batteryStatus.iconName, batteryStatusTitle: batteryStatus.title)
         statusHeader.setup(readerName: name, signalStatusIconName: signalStatus.iconName, signalStatusTitle: signalStatus.title, batteryStatusIconName: batteryStatus.iconName, batteryStatusTitle: batteryStatus.title)
         return statusHeader
     }

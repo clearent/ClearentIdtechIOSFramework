@@ -36,8 +36,9 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
                       batteryStatusTitle: String?) {
         readerNameLabel.text = readerName
         
-        guard let dropDownIconName = dropDownIconName else { return }
-        dropDownImageView.image = UIImage(named: dropDownIconName, in: ClearentConstants.bundle, compatibleWith: nil)
+        if let dropDownIconName = dropDownIconName {
+            dropDownImageView.image = UIImage(named: dropDownIconName, in: ClearentConstants.bundle, compatibleWith: nil)
+        }
         readerConnectivityStatusView.setup(imageName: signalStatusIconName, status: signalStatusTitle)
         
         if let batteryImage = batteryStatusIconName, let batteryStatus = batteryStatusTitle {

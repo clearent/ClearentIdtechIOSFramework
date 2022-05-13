@@ -32,7 +32,8 @@ extension ClearentReadersTableViewDataSource: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: ClearentReadersTableViewCell.identifier,
                                                        for: indexPath) as? ClearentReadersTableViewCell else { return UITableViewCell() }
-        indexPath.row == 0 ? cell.setup(readerName: dataSource[indexPath.row].readerName, isFirstCell: true) : cell.setup(readerName: dataSource[indexPath.row].readerName)
+        indexPath.row == 0 ? cell.setup(readerName: dataSource[indexPath.row].readerName, isConnected: dataSource[indexPath.row].isConnected, isFirstCell: true) : cell.setup(readerName: dataSource[indexPath.row].readerName)
+        cell.isUserInteractionEnabled = indexPath.row == 0 ? false : true
         
         return cell
     }

@@ -132,6 +132,9 @@ public final class ClearentWrapper : NSObject {
     }
     
     public func searchRecentlyUsedReaders() {
+        let config = ClearentVP3300Config(noContactlessNoConfiguration: baseURL, publicKey: publicKey)
+        clearentVP3300 = Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
+        
         searchingRecentlyUsedReadersInProgress = true
         clearentVP3300.start(ClearentConnection(bluetoothSearch: ()))
     }
