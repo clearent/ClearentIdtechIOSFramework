@@ -17,6 +17,7 @@ public protocol ClearentProcessingModalView: AnyObject {
 public protocol ProcessingModalProtocol {
     func restartProcess(processType: ProcessType)
     func startFlow()
+    func startNewPairing()
     var flowFeedbackReceived: (() -> Void)? { get set }
 }
 
@@ -57,6 +58,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             sdkWrapper.startPairing()
         case .payment:
             sdkWrapper.retryLastTransaction()
+        case .showReaders:
+            break
         }
     }
 
@@ -66,7 +69,13 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             startPairingFlow()
         case .payment:
             startTransactionFlow()
+        case .showReaders:
+            showReadersList()
         }
+    }
+    
+    public func startNewPairing() {
+        startPairingFlow()
     }
 
     private func startTransactionFlow() {
@@ -84,6 +93,17 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                      FlowDataItem(type: .description, object: "xsdk_prepare_pairing_reader_button".localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.pair)]
         let feedback = FlowFeedback(flow: .pairing, type: FlowFeedbackType.info, items: items)
+        paymentProcessingView?.updateContent(with: feedback)
+    }
+    
+    private func showReadersList() {
+        guard let connectedReader = ClearentWrapperDefaults.pairedReaderInfo else { return }
+        
+        let items = [FlowDataItem(type: .readerInfo, object: connectedReader),
+                     FlowDataItem(type: .devicesFound2, object: [connectedReader, ReaderInfo(name: "ABC", batterylevel: nil, signalLevel: nil, connected: false, uuid: nil)]),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
+        let feedback = FlowFeedback(flow: .showReaders, type: .searchDevices, items: items)
+        
         paymentProcessingView?.updateContent(with: feedback)
     }
 }

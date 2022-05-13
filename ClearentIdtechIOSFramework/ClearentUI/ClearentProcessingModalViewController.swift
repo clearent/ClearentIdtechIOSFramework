@@ -45,6 +45,7 @@ public class ClearentProcessingModalViewController: UIViewController {
     override public func viewDidLoad() {
         super.viewDidLoad()
         setupStyle()
+        
         if (showOnTop) {
             self.bottomConstraint.isActive = false
             self.topConstraint.constant = 0
@@ -79,6 +80,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
 
     public func updateContent(with feedback: FlowFeedback) {
         stackView.removeAllArrangedSubviews()
+        
         feedback.items.forEach {
             if let component = uiComponent(for: $0, proccessType: feedback.flow) {
                 stackView.addArrangedSubview(component)
@@ -88,28 +90,42 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
 
     private func uiComponent(for item: FlowDataItem, proccessType: ProcessType) -> UIView? {
         let object = item.object
+        
         switch item.type {
         case .readerInfo:
             guard let readerInfo = object as? ReaderInfo else { return nil }
+            
             return readerInfoView(readerInfo: readerInfo)
         case .graphicType:
             guard let graphic = object as? FlowGraphicType else { return nil }
+            
             return icon(with: graphic)
         case .title:
             guard let text = object as? String else { return nil }
+            
             return ClearentTitleLabel(text: text)
         case .description:
             guard let text = object as? String else { return nil }
+            
             return ClearentSubtitleLabel(text: text)
         case .userAction:
             guard let userAction = object as? FlowButtonType else { return nil }
-            return button(userAction: userAction, proccessType: proccessType)
+            
+            return actionButton(userAction: userAction, proccessType: proccessType)
         case .devicesFound:
             guard let readersInfo = object as? [ReaderInfo] else { return nil }
+            
             return readersList(readersInfo: readersInfo)
         case .hint:
             guard let text = object as? String else { return nil }
+            
             return ClearentHintView(text: text)
+        case .devicesFound2:
+            guard let readersInfo = object as? [ReaderInfo] else { return nil }
+            let clearentReadersDataSource = ClearentReadersTableViewDataSource(dataSource: readersInfo)
+            let clearentReadersDelegate = ClearentReadersTableViewDelegate(with: self)
+            
+            return ClearentReadersTableView(dataSource: clearentReadersDataSource, delegate: clearentReadersDelegate)
         }
     }
 
@@ -142,9 +158,14 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         return ClearentPairingReadersList(items: items)
     }
 
-    private func button(userAction: FlowButtonType, proccessType: ProcessType) -> ClearentPrimaryButton {
+    private func actionButton(userAction: FlowButtonType, proccessType: ProcessType) -> ClearentPrimaryButton {
         let button = ClearentPrimaryButton()
         button.title = userAction.title
+        button.enabledBackgroundColor = userAction == .pairNewReader ? ClearentConstants.Color.backgroundSecondary01 : ClearentConstants.Color.base01
+        button.enabledTextColor = userAction == .pairNewReader ? ClearentConstants.Color.base01 : ClearentConstants.Color.base04
+        button.borderWidth = userAction == .pairNewReader ? 1 : 0
+        button.borderColor = userAction == .pairNewReader ? ClearentConstants.Color.backgroundSecondary02 : ClearentConstants.Color.backgroundSecondary01
+        
         button.action = { [weak self] in
             guard let strongSelf = self, let presenter = strongSelf.presenter else { return }
             switch userAction {
@@ -152,8 +173,16 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
                 strongSelf.dismissViewController()
             case .retry, .pair:
                 presenter.restartProcess(processType: proccessType)
+            case .pairNewReader:
+                presenter.startNewPairing()
             }
         }
         return button
+    }
+}
+
+extension ClearentProcessingModalViewController: ClearentReadersTableViewProtocol {
+    func didSelectCell(from indexPath: IndexPath) {
+        
     }
 }
