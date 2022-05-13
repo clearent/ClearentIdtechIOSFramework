@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -18,15 +18,11 @@
                 <rect key="frame" x="0.0" y="0.0" width="372" height="155"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Dl2-0Z-zMj">
-                        <rect key="frame" x="16" y="4" width="340" height="147"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                    </view>
                     <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="e2y-tG-9d3">
-                        <rect key="frame" x="29" y="0.0" width="340" height="155"/>
+                        <rect key="frame" x="13" y="4" width="346" height="147"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IIl-tH-neQ">
-                                <rect key="frame" x="0.0" y="73.5" width="8" height="8"/>
+                                <rect key="frame" x="0.0" y="69.5" width="8" height="8"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="8" id="GJT-Rd-Npe"/>
@@ -34,13 +30,13 @@
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ypq-JQ-AO0">
-                                <rect key="frame" x="16" y="67.5" width="304" height="20.5"/>
+                                <rect key="frame" x="16" y="63.5" width="310" height="20.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yIZ-hP-Hz0">
-                                <rect key="frame" x="328" y="71.5" width="12" height="12"/>
+                                <rect key="frame" x="334" y="67.5" width="12" height="12"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="12" id="FQh-uz-819"/>
                                     <constraint firstAttribute="width" constant="12" id="MQF-1S-PaK"/>
@@ -53,19 +49,14 @@
                     </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="bottom" secondItem="e2y-tG-9d3" secondAttribute="bottom" id="2eQ-2n-tRM"/>
-                    <constraint firstAttribute="trailing" secondItem="Dl2-0Z-zMj" secondAttribute="trailing" constant="16" id="7Et-q4-vo3"/>
-                    <constraint firstItem="e2y-tG-9d3" firstAttribute="trailing" secondItem="Dl2-0Z-zMj" secondAttribute="trailing" constant="13" id="UXp-O2-O2E"/>
-                    <constraint firstItem="Dl2-0Z-zMj" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="4" id="YVr-2H-Ob9"/>
-                    <constraint firstItem="Dl2-0Z-zMj" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="jbI-6p-32Z"/>
-                    <constraint firstAttribute="bottom" secondItem="Dl2-0Z-zMj" secondAttribute="bottom" constant="4" id="tRI-DR-74R"/>
-                    <constraint firstItem="e2y-tG-9d3" firstAttribute="leading" secondItem="Dl2-0Z-zMj" secondAttribute="leading" constant="13" id="u2V-Tl-QN5"/>
-                    <constraint firstItem="e2y-tG-9d3" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="uzG-KH-Kni"/>
+                    <constraint firstItem="e2y-tG-9d3" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="4" id="4uY-4f-I9y"/>
+                    <constraint firstAttribute="bottom" secondItem="e2y-tG-9d3" secondAttribute="bottom" constant="4" id="AI4-OM-226"/>
+                    <constraint firstItem="e2y-tG-9d3" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="13" id="QdI-JI-Gmf"/>
+                    <constraint firstAttribute="trailing" secondItem="e2y-tG-9d3" secondAttribute="trailing" constant="13" id="q7f-yP-nei"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
-                <outlet property="backgroundRoundedView" destination="Dl2-0Z-zMj" id="I1f-fW-1jt"/>
                 <outlet property="detailsButton" destination="yIZ-hP-Hz0" id="cbb-1f-HFe"/>
                 <outlet property="readerNameLabel" destination="Ypq-JQ-AO0" id="Jrb-Td-cb7"/>
                 <outlet property="readerStatusIcon" destination="IIl-tH-neQ" id="Cux-Rd-P1w"/>

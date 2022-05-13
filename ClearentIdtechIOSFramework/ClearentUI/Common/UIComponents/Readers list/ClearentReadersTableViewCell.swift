@@ -17,7 +17,6 @@ class ClearentReadersTableViewCell: UITableViewCell {
     static let identifier = "ClearentReadersTableViewCellIdentifier"
     static let nib = "ClearentReadersTableViewCell"
     
-    @IBOutlet weak var backgroundRoundedView: UIView!
     @IBOutlet weak var stackView: UIStackView!
     @IBOutlet weak var readerStatusIcon: UIView!
     @IBOutlet weak var readerNameLabel: UILabel!
@@ -58,9 +57,9 @@ class ClearentReadersTableViewCell: UITableViewCell {
     // MARK: Private
     
     private func configure() {
-        backgroundRoundedView.backgroundColor = ClearentConstants.Color.backgroundSecondary03
-        backgroundRoundedView.layer.cornerRadius = 8
-        backgroundRoundedView.layer.masksToBounds = true
+        contentView.backgroundColor = ClearentConstants.Color.backgroundSecondary03
+        contentView.layer.cornerRadius = 8
+        contentView.layer.masksToBounds = true
         
         readerNameLabel.font = ClearentConstants.Font.regularSmall
         detailsButton.titleLabel?.isHidden = true
