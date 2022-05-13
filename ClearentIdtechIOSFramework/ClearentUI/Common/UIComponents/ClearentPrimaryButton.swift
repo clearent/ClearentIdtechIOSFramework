@@ -38,13 +38,13 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         didSet { updateAppearence() }
     }
     
-    var borderColor: UIColor? {
+    public  var borderColor: UIColor? {
         didSet {
             button.layer.borderColor = borderColor?.cgColor
         }
     }
     
-    var borderWidth: CGFloat? {
+    public var borderWidth: CGFloat? {
         didSet {
             guard let width = borderWidth else { return }
             button.layer.borderWidth = width

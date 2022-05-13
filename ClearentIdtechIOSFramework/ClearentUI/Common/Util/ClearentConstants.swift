@@ -78,7 +78,7 @@ public class ClearentConstants {
         static let pairingSuccessful = "pairingSuccessful"
     }
     
-    enum Size {
+   public enum Size {
         public static let primaryButtonBorderWidth = 2.0
     }
 }
