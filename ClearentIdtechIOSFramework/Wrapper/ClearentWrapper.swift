@@ -278,6 +278,12 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         saleTransaction(jwt: clearentTransactionToken.jwt, amount: amountString)
     }
     
+    public func disconnectFromReader() {
+        self.clearentVP3300.device_disconnectBLE()
+        ClearentWrapperDefaults.pairedReaderInfo = nil
+        self.readerInfo = nil
+    }
+    
     public func feedback(_ clearentFeedback: ClearentFeedback!) {
         
         switch clearentFeedback.feedBackMessageType {
@@ -352,10 +358,8 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     
     public func deviceDisconnected() {
         DispatchQueue.main.async {
-            var reader =  ClearentWrapperDefaults.pairedReaderInfo
-            reader?.isConnected = false
-            ClearentWrapperDefaults.pairedReaderInfo = reader
-            self.readerInfo = reader
+            ClearentWrapperDefaults.pairedReaderInfo = nil
+            self.readerInfo = nil
             self.delegate?.deviceDidDisconnect()
         }
     }
