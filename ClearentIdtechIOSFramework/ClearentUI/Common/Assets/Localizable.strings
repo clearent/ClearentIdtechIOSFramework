@@ -21,6 +21,7 @@
 "xsdk_paired_successful" = "Your reader is connected and ready to be used.";
 "xsdk_user_action_pair" = "Pair";
 "xsdk_user_action_done" = "Done";
+"xsdk_user_action_settings" = "Settings";
 
 
 /* Payment Flow*/
@@ -67,4 +68,11 @@
 // Reader signal
 "xsdk_reader_signal_idle" = "Idle";
 "xsdk_reader_signal_connected" = "Connected";
+
+
+// Internet Connection
+"xsdk_internet_error_title" = "Check your connection";
+"xsdk_internet_error_description" = "You don’t seem to have an active internet connection. Please check connection and try again";
+
+//Bluetoth connection
 

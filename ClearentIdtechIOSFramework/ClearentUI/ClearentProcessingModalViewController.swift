@@ -110,6 +110,9 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
                 strongSelf.dismissViewController()
             case .retry, .pair:
                 presenter.restartProcess(processType: processType)
+            case .settings:
+                let url = URL(string: UIApplication.openSettingsURLString + Bundle.main.bundleIdentifier!)!
+                UIApplication.shared.open(url)
             }
         }
         return button

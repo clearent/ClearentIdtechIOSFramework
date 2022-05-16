@@ -157,6 +157,13 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         case .transactionStarted, .goingOnline:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
                      FlowDataItem(type: .description, object: "xsdk_processing_description".localized)]
+        case .noInternet:
+            type = .warning
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
+                     FlowDataItem(type: .title, object: "xsdk_internet_error_title".localized),
+                     FlowDataItem(type: .description, object: "xsdk_internet_error_description".localized),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.settings),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         }
         if let flowItems = items {
             let feedback = FlowDataFactory.component(with: .payment,
