@@ -126,6 +126,10 @@ public final class ClearentWrapper : NSObject {
     }
     
     public func startTransactionWithAmount(amount: String) {
+
+        if (amount.canBeConverted(to: String.Encoding.utf8)) {
+            self.transactionAmount = amount
+        }
         
         if (!isInternetOn) {
             if let action = UserAction(rawValue: UserAction.noInternet.rawValue) {
@@ -138,13 +142,8 @@ public final class ClearentWrapper : NSObject {
             DispatchQueue.global(qos: .userInitiated).async { [weak self] in
                 guard let strongSelf = self else { return }
                 ClearentWrapper.shared.startDeviceInfoUpdate()
-                
                 let payment = ClearentPayment.init(sale: ())
-                if (amount.canBeConverted(to: String.Encoding.utf8)) {
-                    payment?.amount = Double(amount) ?? 0
-                    strongSelf.transactionAmount = amount
-                }
-                
+                payment?.amount = Double(amount) ?? 0
                 strongSelf.clearentVP3300.startTransaction(payment, clearentConnection: strongSelf.connection)
             }
         }

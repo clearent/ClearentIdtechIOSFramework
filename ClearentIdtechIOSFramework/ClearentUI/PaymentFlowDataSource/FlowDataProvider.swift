@@ -162,7 +162,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
                      FlowDataItem(type: .title, object: "xsdk_internet_error_title".localized),
                      FlowDataItem(type: .description, object: "xsdk_internet_error_description".localized),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.settings),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         }
         if let flowItems = items {
