@@ -13,10 +13,6 @@ public class ClearentProcessingModalViewController: UIViewController {
 
     @IBOutlet var stackView: ClearentAdaptiveStackView!
     
-    @IBOutlet weak var bottomConstraint: NSLayoutConstraint!
-    @IBOutlet weak var topConstraint: NSLayoutConstraint!
-    
-    
     public var presenter: ProcessingModalProtocol?
     private enum Layout {
         static let cornerRadius = 15.0
@@ -46,10 +42,7 @@ public class ClearentProcessingModalViewController: UIViewController {
         super.viewDidLoad()
         setupStyle()
         
-        if (showOnTop) {
-            self.bottomConstraint.isActive = false
-            self.topConstraint.constant = 16
-        }
+        stackView.positionView(onTop: showOnTop, of: view)
         presenter?.startFlow()
     }
 
@@ -70,6 +63,7 @@ public class ClearentProcessingModalViewController: UIViewController {
 // MARK: - ClearentPaymentProcessingView
 
 extension ClearentProcessingModalViewController: ClearentProcessingModalView {
+    
     public func showLoadingView() {
         stackView.removeAllArrangedSubviews()
         let loadingView = ClearentLoadingView()
@@ -176,6 +170,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             case .retry, .pair:
                 presenter.restartProcess(processType: proccessType)
             case .pairNewReader:
+                strongSelf.stackView.positionView(onTop: false, of: strongSelf.view)
                 presenter.startNewPairing()
             }
         }
