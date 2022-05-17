@@ -25,7 +25,8 @@ public enum UserAction: String {
          tapFailed = "TAP FAILED. INSERT/SWIPE",
          bleDisconnected = "BLUETOOTH DISCONNECTED",
          noInternet = "NO INTERNET",
-         noBluetooth = "Bluetooth on this device is currently powered off."
+         noBluetooth = "Bluetooth on this device is currently powered off.",
+         noBluetoothPermission = "This app is not authorized to use Bluetooth Low Energy."
 }
 
 public enum UserInfo: String {
@@ -364,6 +365,10 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
                         DispatchQueue.main.async {
                             self.delegate?.userActionNeeded(action: action)
                         }
+                    }
+                } else  if let action = UserAction(rawValue: clearentFeedback.message) {
+                    DispatchQueue.main.async {
+                        self.delegate?.userActionNeeded(action: action)
                     }
                 } else {
                     DispatchQueue.main.async {
