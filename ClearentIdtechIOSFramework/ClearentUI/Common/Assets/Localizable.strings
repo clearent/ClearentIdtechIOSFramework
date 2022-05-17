@@ -73,6 +73,7 @@
 // Internet Connection
 "xsdk_internet_error_title" = "Check your connection";
 "xsdk_internet_error_description" = "You don’t seem to have an active internet connection. Please check connection and try again";
+"xsdk_bluetooth_error_description" = "You don’t seem to have bluetooth active. Please check the bluetooth state and try again";
 
 //Bluetoth connection
 

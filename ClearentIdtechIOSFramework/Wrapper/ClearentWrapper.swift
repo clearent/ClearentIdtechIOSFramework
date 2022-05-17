@@ -24,7 +24,8 @@ public enum UserAction: String {
          transactionStarted = "TRANSACTION STARTED",
          tapFailed = "TAP FAILED. INSERT/SWIPE",
          bleDisconnected = "BLUETOOTH DISCONNECTED",
-         noInternet = "NO INTERNET"
+         noInternet = "NO INTERNET",
+         noBluetooth = "Bluetooth on this device is currently powered off."
 }
 
 public enum UserInfo: String {
@@ -71,6 +72,7 @@ public final class ClearentWrapper : NSObject {
     public var readerInfo: ReaderInfo?
     private let monitor = NWPathMonitor()
     private var isInternetOn = false
+    internal var isBluetoothOn = false
     
     public override init() {
         super.init()
@@ -78,6 +80,7 @@ public final class ClearentWrapper : NSObject {
         self.readerInfo = ClearentWrapperDefaults.pairedReaderInfo
         self.readerInfo?.isConnected = false
         self.startConnectionListener()
+        bleManager = BluetoothScanner.init(udid: nil, delegate: self)
     }
     
     // MARK - Public
@@ -134,7 +137,12 @@ public final class ClearentWrapper : NSObject {
         if (!isInternetOn) {
             if let action = UserAction(rawValue: UserAction.noInternet.rawValue) {
                 DispatchQueue.main.async {
-                    self.cancelTransaction()
+                    self.delegate?.userActionNeeded(action: action)
+                }
+            }
+        } else if (!isBluetoothOn) {
+            if let action = UserAction(rawValue: UserAction.noBluetooth.rawValue) {
+                DispatchQueue.main.async {
                     self.delegate?.userActionNeeded(action: action)
                 }
             }
@@ -223,7 +231,8 @@ public final class ClearentWrapper : NSObject {
     }
     
     public func isReaderConnected() -> Bool {
-        return clearentVP3300.isConnected()
+        // TO DO check why isConnected not working properly
+        return (self.readerInfo != nil && self.readerInfo?.isConnected == true)
     }
     
     public func startDeviceInfoUpdate() {
@@ -257,7 +266,8 @@ public final class ClearentWrapper : NSObject {
         self.readerInfo = readerInfo
 
         if let uuid = readerInfo.uuid {
-            bleManager = BluetoothScanner.init(udid: uuid, delegate: self)
+            bleManager?.udid? = uuid
+            bleManager?.setupDevice()
             connection?.bluetoothDeviceId = uuid.uuidString
             connection?.fullFriendlyName = readerInfo.readerName
         }
@@ -349,8 +359,16 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
                     }
                 }
             case .ERROR:
-                DispatchQueue.main.async {
-                    self.delegate?.didEncounteredGeneralError()
+                if (ClearentWrapperDefaults.pairedReaderInfo != nil && clearentFeedback.message == UserAction.noBluetooth.rawValue) {
+                    if let action = UserAction(rawValue: clearentFeedback.message) {
+                        DispatchQueue.main.async {
+                            self.delegate?.userActionNeeded(action: action)
+                        }
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        self.delegate?.didEncounteredGeneralError()
+                    }
                 }
             @unknown default:
                 DispatchQueue.main.async {
@@ -385,6 +403,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     
     public func deviceConnected() {
         readerInfo?.isConnected = true
+        bleManager?.udid = readerInfo?.uuid
         bleManager?.setupDevice()
         startDeviceInfoUpdate()
         ClearentWrapperDefaults.pairedReaderInfo = readerInfo
