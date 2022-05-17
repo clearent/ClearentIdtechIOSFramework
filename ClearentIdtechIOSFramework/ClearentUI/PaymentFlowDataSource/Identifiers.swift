@@ -17,7 +17,7 @@ enum FlowDataKeys {
 }
 
 public enum FlowFeedbackType {
-    case error, info, warning, searchDevices
+    case error, info, warning, searchDevices, showReaders
 }
 
 enum FlowGraphicType {

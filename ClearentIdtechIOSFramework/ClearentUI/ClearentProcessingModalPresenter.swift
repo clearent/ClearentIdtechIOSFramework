@@ -34,6 +34,7 @@ public class ClearentProcessingModalPresenter {
         self.amount = amount
         self.processType = processType
         sdkFeedbackProvider = FlowDataProvider()
+        sdkFeedbackProvider.delegate = self
     }
 
     private func dissmissViewWithDelay() {
@@ -93,9 +94,9 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         let items = [FlowDataItem(type: .readerInfo, object: connectedReader),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
                      FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
-        let feedback = FlowFeedback(flow: .showReaders, type: .searchDevices, items: items)
-        paymentProcessingView?.updateContent(with: feedback)
+        let feedback = FlowFeedback(flow: .showReaders, type: .showReaders, items: items)
         
+        paymentProcessingView?.updateContent(with: feedback)
         sdkWrapper.searchRecentlyUsedReaders()
     }
 }

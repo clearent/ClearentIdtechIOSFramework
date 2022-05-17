@@ -59,7 +59,7 @@ public extension ReaderInfo {
         default:
             icon = ClearentConstants.IconName.signalIdle
         }
-        let title = flowFeedbackType == .searchDevices ? "xsdk_connection_sucesfull".localized : "xsdk_reader_signal_connected".localized
+        let title = flowFeedbackType == .searchDevices ? "xsdk_connection_sucessful".localized : "xsdk_reader_signal_connected".localized
         return (iconName: icon, title: title)
     }
 }

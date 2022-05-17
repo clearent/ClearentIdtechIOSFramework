@@ -268,7 +268,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
         
         let feedback = FlowDataFactory.component(with: .showReaders,
-                                                 type: .searchDevices,
+                                                 type: .showReaders,
                                                  readerInfo: ClearentWrapperDefaults.pairedReaderInfo,
                                                  payload: items)
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)

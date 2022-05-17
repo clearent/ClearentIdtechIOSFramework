@@ -40,6 +40,7 @@ public final class ClearentUIManager : NSObject {
           let paymentProcessingPresenter = ClearentProcessingModalPresenter(paymentProcessingView: paymentProcessingViewController, amount: amount, processType: processType)
           paymentProcessingViewController.presenter = paymentProcessingPresenter
           paymentProcessingViewController.modalPresentationStyle = .overFullScreen
+        
           if (clearentWrapper.readerInfo != nil) {
               flowFeedbackReceived?(clearentWrapper.readerInfo)
           }
