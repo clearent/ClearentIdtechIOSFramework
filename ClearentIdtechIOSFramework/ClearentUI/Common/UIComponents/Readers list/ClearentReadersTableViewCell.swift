@@ -61,7 +61,7 @@ class ClearentReadersTableViewCell: UITableViewCell {
         contentView.layer.cornerRadius = 8
         contentView.layer.masksToBounds = true
         
-        readerNameLabel.font = ClearentConstants.Font.regularSmall
+        readerNameLabel.font = ClearentConstants.Font.regularNormal
         detailsButton.titleLabel?.isHidden = true
     }
 }

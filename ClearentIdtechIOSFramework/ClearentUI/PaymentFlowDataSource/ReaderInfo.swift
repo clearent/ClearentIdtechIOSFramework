@@ -43,7 +43,7 @@ public extension ReaderInfo {
     func signalStatus(flowFeedbackType: FlowFeedbackType? = nil) -> (iconName: String?, title: String) {
         var icon = ClearentConstants.IconName.signalIdle
         guard let signalLevel = signalLevel, isConnected else {
-            if flowFeedbackType == .searchDevices {
+            if flowFeedbackType == .searchDevices || flowFeedbackType == .showReaders {
                 return (iconName: nil, title: "xsdk_connecting_reader".localized)
             }
             return (iconName: icon, title: "xsdk_reader_signal_idle".localized)

@@ -60,13 +60,13 @@ public final class ClearentWrapper : NSObject {
     private var searchingRecentlyUsedReadersInProgress = false
     
     public static let shared = ClearentWrapper()
+    public var readerInfo: ReaderInfo?
+    public var flowType: ProcessType?
+    weak var delegate: ClearentWrapperProtocol?
     private var clearentVP3300 = Clearent_VP3300()
     private var connection  = ClearentConnection(bluetoothSearch: ())
-    weak var delegate: ClearentWrapperProtocol?
     private var transactionAmount: String?
-    
     private var bleManager : BluetoothScanner?
-    public var readerInfo: ReaderInfo?
     
     public override init() {
         super.init()
@@ -98,7 +98,7 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
-    public func selectReader(reader: ReaderInfo) {
+    public func connectTo(reader: ReaderInfo) {
         if reader.uuid != nil {
             self.updateConnectionWithDevice(readerInfo: reader)
         }
@@ -218,7 +218,6 @@ public final class ClearentWrapper : NSObject {
         getBatterylevel()
     }
     
-
     // MARK - Private
     
     private func updateConnectionWithDevice(readerInfo: ReaderInfo) {
@@ -354,6 +353,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         bleManager?.setupDevice()
         startDeviceInfoUpdate()
         ClearentWrapperDefaults.pairedReaderInfo = readerInfo
+        
         if let newReader = readerInfo {
             addReaderToRecentlyUsed(reader: newReader)
         }
@@ -368,5 +368,3 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         }
     }
 }
-
-

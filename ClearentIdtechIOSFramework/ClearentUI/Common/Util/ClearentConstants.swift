@@ -22,8 +22,8 @@ public class ClearentConstants {
         public static let backgroundSecondary03 = UIColor(hexString: "#EEEFF3")
         
         public static let accent01 = UIColor(hexString: "#2FAC10")
-        public static let accent02 = UIColor(hexString: "#F44E27")
-        public static let accent03 = UIColor(hexString: "#F4C15F")
+        public static let accent02 = UIColor(hexString: "#F4C15F")
+        public static let accent03 = UIColor(hexString: "#F44E27")
         
         public static let base01 = UIColor(hexString: "#272431")
         public static let base02 = UIColor(hexString: "#6A6D7D")

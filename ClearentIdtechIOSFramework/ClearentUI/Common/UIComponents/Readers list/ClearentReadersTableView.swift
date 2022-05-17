@@ -7,13 +7,18 @@
 //
 
 import UIKit
+import CoreMedia
+
+protocol ClearentReadersTableViewDelegate: AnyObject {
+    func didSelectReader(_ reader: ReaderInfo)
+}
 
 class ClearentReadersTableView: ClearentMarginableView {
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var heightConstraint: NSLayoutConstraint!
-    private var dataSource: ClearentReadersTableViewDataSource?
-    private var delegate: ClearentReadersTableViewDelegate?
+    private var dataSource: [ReaderInfo]?
+    private weak var delegate: ClearentReadersTableViewDelegate?
     
     override var margins: [BottomMargin] {
         [
@@ -23,7 +28,7 @@ class ClearentReadersTableView: ClearentMarginableView {
     
     // MARK: Init
     
-    convenience init(dataSource: ClearentReadersTableViewDataSource, delegate: ClearentReadersTableViewDelegate) {
+    convenience init(dataSource: [ReaderInfo], delegate: ClearentReadersTableViewDelegate) {
         self.init()
         
         self.dataSource = dataSource
@@ -36,12 +41,41 @@ class ClearentReadersTableView: ClearentMarginableView {
     // MARK: Private
     
     private func setupTableView() {
-        tableView.dataSource = dataSource
-        tableView.delegate = delegate
+        tableView.dataSource = self
+        tableView.delegate = self
         
         ClearentReadersTableViewCell.register(tableView: tableView)
         
         guard let dataSource = dataSource else { return }
-        heightConstraint.constant = CGFloat(dataSource.numberOfElements()) * ClearentReadersTableViewCell.Layout.cellHeight
+        heightConstraint.constant = CGFloat(dataSource.count) * ClearentReadersTableViewCell.Layout.cellHeight
+    }
+}
+
+extension ClearentReadersTableView: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        guard let dataSource = dataSource else { return 0 }
+        return dataSource.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: ClearentReadersTableViewCell.identifier,
+                                                       for: indexPath) as? ClearentReadersTableViewCell,
+              let dataSource = dataSource else { return UITableViewCell() }
+        indexPath.row == 0 ? cell.setup(readerName: dataSource[indexPath.row].readerName, isConnected: dataSource[indexPath.row].isConnected, isFirstCell: true) : cell.setup(readerName: dataSource[indexPath.row].readerName)
+        
+        return cell
+    }
+}
+
+extension ClearentReadersTableView: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let dataSource = dataSource else { return }
+        
+        delegate?.didSelectReader(dataSource[indexPath.row])
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        ClearentReadersTableViewCell.Layout.cellHeight
     }
 }
