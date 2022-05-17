@@ -17,6 +17,7 @@ public protocol ClearentProcessingModalView: AnyObject {
 public protocol ProcessingModalProtocol {
     func restartProcess(processType: ProcessType)
     func startFlow()
+    func startPairingFlow()
 }
 
 public class ClearentProcessingModalPresenter {
@@ -33,6 +34,7 @@ public class ClearentProcessingModalPresenter {
         self.amount = amount
         self.processType = processType
         sdkFeedbackProvider = FlowDataProvider()
+        sdkFeedbackProvider.delegate = self
     }
 
     private func dissmissViewWithDelay() {
@@ -52,6 +54,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             sdkWrapper.startPairing()
         case .payment:
             sdkWrapper.retryLastTransaction()
+        case .showReaders:
+            break
         }
     }
 
@@ -61,9 +65,20 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             startPairingFlow()
         case .payment:
             startTransactionFlow()
+        case .showReaders:
+            showReadersList()
         }
     }
 
+    public func startPairingFlow() {
+        let items = [FlowDataItem(type: .hint, object: "xsdk_prepare_pairing_reader_range".localized),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
+                     FlowDataItem(type: .description, object: "xsdk_prepare_pairing_reader_button".localized),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.pair)]
+        let feedback = FlowFeedback(flow: .pairing, type: FlowFeedbackType.info, items: items)
+        paymentProcessingView?.updateContent(with: feedback)
+    }
+    
     private func startTransactionFlow() {
         sdkFeedbackProvider.delegate = self
         if sdkWrapper.isReaderConnected(), let amount = amount {
@@ -72,14 +87,17 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             sdkWrapper.startPairing()
         }
     }
-
-    private func startPairingFlow() {
-        let items = [FlowDataItem(type: .hint, object: "xsdk_prepare_pairing_reader_range".localized),
-                     FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
-                     FlowDataItem(type: .description, object: "xsdk_prepare_pairing_reader_button".localized),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.pair)]
-        let feedback = FlowFeedback(flow: .pairing, type: FlowFeedbackType.info, items: items)
+    
+    private func showReadersList() {
+        guard let connectedReader = ClearentWrapperDefaults.pairedReaderInfo else { return }
+        
+        let items = [FlowDataItem(type: .readerInfo, object: connectedReader),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
+        let feedback = FlowFeedback(flow: .showReaders, type: .showReaders, items: items)
+        
         paymentProcessingView?.updateContent(with: feedback)
+        sdkWrapper.searchRecentlyUsedReaders()
     }
 }
 

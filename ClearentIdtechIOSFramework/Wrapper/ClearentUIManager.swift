@@ -24,18 +24,23 @@ public final class ClearentUIManager : NSObject {
     }
     
     public func paymentViewController(amount: Double) -> UIViewController {
-        return viewController(processType: .payment, amount:amount)
+        viewController(processType: .payment, amount:amount)
     }
     
     public func pairingViewController() -> UIViewController {
-        return viewController(processType: .pairing)
+        viewController(processType: .pairing)
+    }
+    
+    public func readersViewController() -> UIViewController {
+        viewController(processType: .showReaders)
     }
     
     private func viewController(processType: ProcessType, amount: Double? = nil) ->  UIViewController {
-          let paymentProcessingViewController = ClearentProcessingModalViewController(nibName: String(describing: ClearentProcessingModalViewController.self), bundle: ClearentConstants.bundle)
+        let paymentProcessingViewController = ClearentProcessingModalViewController(showOnTop: processType == .showReaders)
           let paymentProcessingPresenter = ClearentProcessingModalPresenter(paymentProcessingView: paymentProcessingViewController, amount: amount, processType: processType)
           paymentProcessingViewController.presenter = paymentProcessingPresenter
           paymentProcessingViewController.modalPresentationStyle = .overFullScreen
+        
           if (clearentWrapper.readerInfo != nil) {
               flowFeedbackReceived?(clearentWrapper.readerInfo)
           }

@@ -9,15 +9,30 @@
 import UIKit
 
 public class ClearentProcessingModalViewController: ClearentBaseViewController {
+    
     // MARK: - Properties
 
+    private var showOnTop: Bool = false
     @IBOutlet var stackView: ClearentRoundedCornersStackView!
     public var presenter: ProcessingModalProtocol?
 
+    // MARK: - Init
+
+    public init(showOnTop: Bool) {
+        super.init(nibName: String(describing: ClearentProcessingModalViewController.self), bundle: ClearentConstants.bundle)
+        self.showOnTop = showOnTop
+    }
+    
+    public required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // MARK: - Lifecycle
 
     public override func viewDidLoad() {
         super.viewDidLoad()
+        
+        stackView.positionView(onTop: showOnTop, of: view)
         presenter?.startFlow()
     }
 }
@@ -25,6 +40,7 @@ public class ClearentProcessingModalViewController: ClearentBaseViewController {
 // MARK: - ClearentPaymentProcessingView
 
 extension ClearentProcessingModalViewController: ClearentProcessingModalView {
+    
     public func showLoadingView() {
         stackView.showLoadingView()
     }
@@ -36,6 +52,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
 
     public func updateContent(with feedback: FlowFeedback) {
         stackView.removeAllArrangedSubviews()
+        
         feedback.items.forEach {
             if let component = uiComponent(for: $0, processType: feedback.flow, feedbackType: feedback.type) {
                 stackView.addArrangedSubview(component)
@@ -45,28 +62,42 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
 
     private func uiComponent(for item: FlowDataItem, processType: ProcessType, feedbackType: FlowFeedbackType) -> UIView? {
         let object = item.object
+        
         switch item.type {
         case .readerInfo:
             guard let readerInfo = object as? ReaderInfo else { return nil }
+
             return readerInfoView(readerInfo: readerInfo, flowFeedbackType: feedbackType)
         case .graphicType:
             guard let graphic = object as? FlowGraphicType else { return nil }
+            
             return icon(with: graphic)
         case .title:
             guard let text = object as? String else { return nil }
+            
             return ClearentTitleLabel(text: text)
         case .description:
             guard let text = object as? String else { return nil }
+            
             return ClearentSubtitleLabel(text: text)
         case .userAction:
             guard let userAction = object as? FlowButtonType else { return nil }
-            return button(userAction: userAction, processType: processType)
+
+            return actionButton(userAction: userAction, processType: processType)
         case .devicesFound:
             guard let readersInfo = object as? [ReaderInfo] else { return nil }
+            
             return readersList(readersInfo: readersInfo)
         case .hint:
             guard let text = object as? String else { return nil }
+            
             return ClearentHintView(text: text)
+        case .recentlyPaired:
+            guard let readersInfo = object as? [ReaderInfo] else { return nil }
+            let clearentReadersDataSource = ClearentReadersTableViewDataSource(dataSource: readersInfo)
+            let clearentReadersDelegate = ClearentReadersTableViewDelegate(with: self)
+            
+            return ClearentReadersTableView(dataSource: clearentReadersDataSource, delegate: clearentReadersDelegate)
         }
     }
 
@@ -75,6 +106,8 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         let signalStatus = readerInfo.signalStatus(flowFeedbackType: flowFeedbackType)
         let batteryStatus = readerInfo.batteryStatus(flowFeedbackType: flowFeedbackType)
         let statusHeader = ClearentReaderStatusHeaderView()
+        
+        showOnTop ? statusHeader.setup(readerName: name, dropDownIconName: ClearentConstants.IconName.expanded, signalStatusIconName: signalStatus.iconName, signalStatusTitle: signalStatus.title, batteryStatusIconName: batteryStatus.iconName, batteryStatusTitle: batteryStatus.title) : statusHeader.setup(readerName: name, signalStatusIconName: signalStatus.iconName, signalStatusTitle: signalStatus.title, batteryStatusIconName: batteryStatus.iconName, batteryStatusTitle: batteryStatus.title)
         statusHeader.setup(readerName: name, signalStatusIconName: signalStatus.iconName, signalStatusTitle: signalStatus.title, batteryStatusIconName: batteryStatus.iconName, batteryStatusTitle: batteryStatus.title)
         return statusHeader
     }
@@ -95,14 +128,16 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         return ClearentPairingReadersList(items: items)
     }
 
-    private func button(userAction: FlowButtonType, processType: ProcessType) -> ClearentPrimaryButton {
-        let button = ClearentPrimaryButton(title: userAction.title)
+    private func actionButton(userAction: FlowButtonType, processType: ProcessType) -> ClearentPrimaryButton {
+        let button = ClearentPrimaryButton()
+        button.title = userAction.title
         let color = ClearentConstants.Color.self
-        let isCancelButton = userAction == .cancel
-        button.enabledBackgroundColor = isCancelButton ? color.backgroundSecondary01 : color.base01
-        button.enabledTextColor = isCancelButton ? color.base01 : color.backgroundSecondary01
+        let isBorderedButton = userAction == .cancel || userAction == .pairNewReader
+        button.enabledBackgroundColor = isBorderedButton ? color.backgroundSecondary01 : color.base01
+        button.enabledTextColor = isBorderedButton ? color.base01 : color.backgroundSecondary01
         button.borderColor = color.backgroundSecondary02
-        button.borderWidth = isCancelButton ? ClearentConstants.Size.primaryButtonBorderWidth : 0
+        button.borderWidth = isBorderedButton ? ClearentConstants.Size.primaryButtonBorderWidth : 0
+        
         button.action = { [weak self] in
             guard let strongSelf = self, let presenter = strongSelf.presenter else { return }
             switch userAction {
@@ -110,8 +145,17 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
                 strongSelf.dismissViewController()
             case .retry, .pair:
                 presenter.restartProcess(processType: processType)
+            case .pairNewReader:
+                strongSelf.stackView.positionView(onTop: false, of: strongSelf.view)
+                presenter.startPairingFlow()
             }
         }
         return button
+    }
+}
+
+extension ClearentProcessingModalViewController: ClearentReadersTableViewProtocol {
+    func didSelectCell(from indexPath: IndexPath) {
+        
     }
 }

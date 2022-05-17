@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="Stack View standard spacing" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -18,6 +18,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ClearentReaderStatusHeaderView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
             <connections>
                 <outlet property="bottomLayoutConstraint" destination="aUt-13-icG" id="qhZ-EC-6AI"/>
+                <outlet property="dropDownImageView" destination="0PG-r4-gVB" id="h8F-EX-lZB"/>
                 <outlet property="readerBatteryStatusView" destination="3q1-WZ-ap3" id="4ZV-MW-ac8"/>
                 <outlet property="readerConnectivityStatusView" destination="387-wB-aty" id="NdB-C6-TIr"/>
                 <outlet property="readerNameLabel" destination="Mxb-gX-Hn6" id="fhr-Mc-dzt"/>
@@ -30,7 +31,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mxb-gX-Hn6">
-                    <rect key="frame" x="0.0" y="0.0" width="352" height="20"/>
+                    <rect key="frame" x="0.0" y="0.0" width="330" height="20"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="20" id="Ygf-U4-Z2A"/>
@@ -41,14 +42,14 @@
                     <color key="shadowColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </label>
                 <stackView opaque="NO" contentMode="scaleToFill" spacingType="standard" translatesAutoresizingMaskIntoConstraints="NO" id="QCv-p8-D5F">
-                    <rect key="frame" x="76" y="25" width="200" height="193"/>
+                    <rect key="frame" x="65" y="25" width="200" height="193"/>
                     <subviews>
-                        <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="387-wB-aty" customClass="ClearentReaderConnectivityStatusView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="0.0" width="59" height="193"/>
+                        <view contentMode="scaleToFill" placeholderIntrinsicWidth="108.5" placeholderIntrinsicHeight="193" translatesAutoresizingMaskIntoConstraints="NO" id="387-wB-aty" customClass="ClearentReaderConnectivityStatusView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="108.5" height="193"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         </view>
-                        <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3q1-WZ-ap3" customClass="ClearentReaderConnectivityStatusView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="67" y="0.0" width="133" height="193"/>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3q1-WZ-ap3" customClass="ClearentReaderConnectivityStatusView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                            <rect key="frame" x="116.5" y="0.0" width="83.5" height="193"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         </view>
                     </subviews>
@@ -57,13 +58,22 @@
                         <constraint firstAttribute="width" constant="200" placeholder="YES" id="rLZ-zm-aVY"/>
                     </constraints>
                 </stackView>
+                <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="0PG-r4-gVB">
+                    <rect key="frame" x="340" y="6.5" width="12" height="7"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="12" id="bnk-es-YgA"/>
+                        <constraint firstAttribute="height" constant="7" id="c9r-kx-zVe"/>
+                    </constraints>
+                </imageView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
+                <constraint firstAttribute="trailing" secondItem="0PG-r4-gVB" secondAttribute="trailing" id="4iG-Pa-fXY"/>
                 <constraint firstItem="QCv-p8-D5F" firstAttribute="centerX" secondItem="Mxb-gX-Hn6" secondAttribute="centerX" id="BGG-pc-P6y"/>
+                <constraint firstItem="0PG-r4-gVB" firstAttribute="centerY" secondItem="Mxb-gX-Hn6" secondAttribute="centerY" id="CjX-kj-bcf"/>
                 <constraint firstItem="Mxb-gX-Hn6" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="IKE-0A-ysA"/>
-                <constraint firstAttribute="trailing" secondItem="Mxb-gX-Hn6" secondAttribute="trailing" id="J84-Ey-gK7"/>
+                <constraint firstItem="0PG-r4-gVB" firstAttribute="leading" secondItem="Mxb-gX-Hn6" secondAttribute="trailing" constant="10" id="Yuv-4b-T5t"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="QCv-p8-D5F" secondAttribute="bottom" id="aUt-13-icG"/>
                 <constraint firstAttribute="top" secondItem="Mxb-gX-Hn6" secondAttribute="top" id="ghl-oU-bUS"/>
                 <constraint firstItem="QCv-p8-D5F" firstAttribute="top" secondItem="Mxb-gX-Hn6" secondAttribute="bottom" constant="5" id="x42-Yz-Yu1"/>
