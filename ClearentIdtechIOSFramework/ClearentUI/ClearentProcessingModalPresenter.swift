@@ -18,6 +18,7 @@ public protocol ProcessingModalProtocol {
     func restartProcess(processType: ProcessType)
     func startFlow()
     func startPairingFlow()
+    func connectTo(reader: ReaderInfo)
 }
 
 public class ClearentProcessingModalPresenter {
@@ -69,7 +70,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             showReadersList()
         }
     }
-
+    
     public func startPairingFlow() {
         let items = [FlowDataItem(type: .hint, object: "xsdk_prepare_pairing_reader_range".localized),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
@@ -77,6 +78,11 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                      FlowDataItem(type: .userAction, object: FlowButtonType.pair)]
         let feedback = FlowFeedback(flow: .pairing, type: FlowFeedbackType.info, items: items)
         paymentProcessingView?.updateContent(with: feedback)
+    }
+    
+    public func connectTo(reader: ReaderInfo) {
+        ClearentWrapper.shared.flowType = processType
+        sdkWrapper.connectTo(reader: reader)
     }
     
     private func startTransactionFlow() {

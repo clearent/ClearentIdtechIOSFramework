@@ -94,10 +94,8 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             return ClearentHintView(text: text)
         case .recentlyPaired:
             guard let readersInfo = object as? [ReaderInfo] else { return nil }
-            let clearentReadersDataSource = ClearentReadersTableViewDataSource(dataSource: readersInfo)
-            let clearentReadersDelegate = ClearentReadersTableViewDelegate(with: self)
             
-            return ClearentReadersTableView(dataSource: clearentReadersDataSource, delegate: clearentReadersDelegate)
+            return ClearentReadersTableView(dataSource: readersInfo, delegate: self)
         }
     }
 
@@ -122,7 +120,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     private func readersList(readersInfo: [ReaderInfo]) -> ClearentPairingReadersList {
         let items = readersInfo.map { item in
             ClearentPairingReaderItem(title: item.readerName) {
-                ClearentWrapper.shared.selectReader(reader: item)
+                self.presenter?.connectTo(reader: item)
             }
         }
         return ClearentPairingReadersList(items: items)
@@ -154,8 +152,8 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     }
 }
 
-extension ClearentProcessingModalViewController: ClearentReadersTableViewProtocol {
-    func didSelectCell(from indexPath: IndexPath) {
-        
+extension ClearentProcessingModalViewController: ClearentReadersTableViewDelegate {
+    func didSelectReader(_ reader: ReaderInfo) {
+        presenter?.connectTo(reader: reader)
     }
 }

@@ -63,8 +63,6 @@
 		19116EB0282BC3D60042CE8E /* ClearentReadersTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19116EAF282BC3D60042CE8E /* ClearentReadersTableView.swift */; };
 		19116EB7282BDB820042CE8E /* ClearentReadersTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19116EB5282BDB820042CE8E /* ClearentReadersTableViewCell.swift */; };
 		19116EB8282BDB820042CE8E /* ClearentReadersTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19116EB6282BDB820042CE8E /* ClearentReadersTableViewCell.xib */; };
-		19116EBB282CDE230042CE8E /* ClearentReadersTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19116EBA282CDE230042CE8E /* ClearentReadersTableViewDataSource.swift */; };
-		19116EBD282CDE340042CE8E /* ClearentReadersTableViewDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19116EBC282CDE340042CE8E /* ClearentReadersTableViewDelegate.swift */; };
 		1937010A27F1CAB400BF48E5 /* ClearentProcessingModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1937010827F1CAB400BF48E5 /* ClearentProcessingModalViewController.swift */; };
 		1937010B27F1CAB400BF48E5 /* ClearentProcessingModalViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1937010927F1CAB400BF48E5 /* ClearentProcessingModalViewController.xib */; };
 		1937011D27F31C8100BF48E5 /* ClearentProcessingModalPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1937011C27F31C8100BF48E5 /* ClearentProcessingModalPresenter.swift */; };
@@ -242,8 +240,6 @@
 		19116EAF282BC3D60042CE8E /* ClearentReadersTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentReadersTableView.swift; sourceTree = "<group>"; };
 		19116EB5282BDB820042CE8E /* ClearentReadersTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentReadersTableViewCell.swift; sourceTree = "<group>"; };
 		19116EB6282BDB820042CE8E /* ClearentReadersTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentReadersTableViewCell.xib; sourceTree = "<group>"; };
-		19116EBA282CDE230042CE8E /* ClearentReadersTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentReadersTableViewDataSource.swift; sourceTree = "<group>"; };
-		19116EBC282CDE340042CE8E /* ClearentReadersTableViewDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentReadersTableViewDelegate.swift; sourceTree = "<group>"; };
 		1937010827F1CAB400BF48E5 /* ClearentProcessingModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentProcessingModalViewController.swift; sourceTree = "<group>"; };
 		1937010927F1CAB400BF48E5 /* ClearentProcessingModalViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentProcessingModalViewController.xib; sourceTree = "<group>"; };
 		1937011C27F31C8100BF48E5 /* ClearentProcessingModalPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentProcessingModalPresenter.swift; sourceTree = "<group>"; };
@@ -531,8 +527,6 @@
 				1973B531282CE3EF0062FB07 /* ClearentReadersTableView.xib */,
 				19116EB5282BDB820042CE8E /* ClearentReadersTableViewCell.swift */,
 				19116EB6282BDB820042CE8E /* ClearentReadersTableViewCell.xib */,
-				19116EBA282CDE230042CE8E /* ClearentReadersTableViewDataSource.swift */,
-				19116EBC282CDE340042CE8E /* ClearentReadersTableViewDelegate.swift */,
 			);
 			path = "Readers list";
 			sourceTree = "<group>";
@@ -1046,7 +1040,6 @@
 				011181AA2832735E0025750A /* ClearentLabelWithIcon.swift in Sources */,
 				4B32C0A22436612900CCF9B9 /* ClearentTransactions.m in Sources */,
 				0193D455282554DB002B04B9 /* ClearentPairingReadersList.swift in Sources */,
-				19116EBD282CDE340042CE8E /* ClearentReadersTableViewDelegate.swift in Sources */,
 				BA475A442807FEA9002A003D /* BluetoothScanner.swift in Sources */,
 				014B2BAA280090130056F7FD /* ClearentConstants.swift in Sources */,
 				0129F7E92823ACCC00027BCE /* ClearentIcon.swift in Sources */,
@@ -1075,7 +1068,6 @@
 				4B32C0912432677F00CCF9B9 /* ClearentTransactionToken.m in Sources */,
 				E7CA494520E1753D0090CFFC /* ClearentConfigurator.m in Sources */,
 				BAEAD2D92810041100AA72F6 /* ClearentExtension.swift in Sources */,
-				19116EBB282CDE230042CE8E /* ClearentReadersTableViewDataSource.swift in Sources */,
 				4BAEA885271C5CD8007F5FCF /* ClearentLumberjack.m in Sources */,
 				19C6EBD1281127E400762CD4 /* Notification.swift in Sources */,
 				E726A0382258B5B400F3E8B7 /* ClearentCache.m in Sources */,

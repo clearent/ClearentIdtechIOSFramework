@@ -230,13 +230,26 @@ extension FlowDataProvider : ClearentWrapperProtocol {
      }
     
     func startedReaderConnection(with reader: ReaderInfo) {
-        let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
+        let items: [FlowDataItem]
+        let feedback: FlowFeedback
+        
+        if ClearentWrapper.shared.flowType == .pairing {
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader)]
-    
-        let feedback = FlowDataFactory.component(with: .pairing,
+            feedback = FlowDataFactory.component(with: .pairing,
                                                  type: .searchDevices,
                                                  readerInfo: reader,
                                                  payload: items)
+        } else {
+            guard let recentlyPairedDevices = ClearentWrapperDefaults.recentlyPairedReaders else { return }
+            
+            items = [FlowDataItem(type: .recentlyPaired, object: recentlyPairedDevices),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
+            feedback = FlowDataFactory.component(with: .showReaders,
+                                                 type: .showReaders,
+                                                 readerInfo: reader,
+                                                 payload: items)
+        }
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
@@ -257,7 +270,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         let items = [FlowDataItem(type: .description, object: "xsdk_no_readers_found_description".localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
         let feedback = FlowDataFactory.component(with: .showReaders,
-                                                 type: .searchDevices,
+                                                 type: .showReaders,
                                                  readerInfo: ClearentWrapperDefaults.pairedReaderInfo,
                                                  payload: items)
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
