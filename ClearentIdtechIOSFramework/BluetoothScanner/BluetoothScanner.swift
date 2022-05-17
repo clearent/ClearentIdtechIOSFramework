@@ -12,18 +12,17 @@ import CoreBluetooth
 protocol BluetoothScannerProtocol : AnyObject {
     func didReceivedSignalStrength(level:SignalLevel)
     func didFinishWithError()
-    func bluetoothIsPoweredOff()
 }
 
 class BluetoothScanner: NSObject {
 
     private var centralManager: CBCentralManager!
     private var readerUDID: String?
-    internal var udid: UUID?
+    private var udid: UUID?
     private weak var delegate: BluetoothScannerProtocol?
     private var device: CBPeripheral?
     
-    init(udid:UUID?, delegate: BluetoothScannerProtocol) {
+    init(udid:UUID, delegate: BluetoothScannerProtocol) {
         super.init()
         self.udid = udid
         self.delegate = delegate
@@ -73,9 +72,8 @@ extension BluetoothScanner: CBCentralManagerDelegate, CBPeripheralDelegate {
         case .unauthorized:
             self.delegate?.didFinishWithError()
         case .poweredOff:
-            self.delegate?.bluetoothIsPoweredOff()
+            self.delegate?.didFinishWithError()
         case .poweredOn:
-            guard let _ = self.udid else { return }
             setupDevice()
             central.scanForPeripherals(withServices: nil, options: nil)
             DispatchQueue.main.asyncAfter(deadline: .now() + 6) { [self] in

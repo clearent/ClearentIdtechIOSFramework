@@ -24,8 +24,7 @@ public enum UserAction: String {
          transactionStarted = "TRANSACTION STARTED",
          tapFailed = "TAP FAILED. INSERT/SWIPE",
          bleDisconnected = "BLUETOOTH DISCONNECTED",
-         noInternet = "NO INTERNET",
-         noBluetooth = "NO BLUETOOTH"
+         noInternet = "NO INTERNET"
 }
 
 public enum UserInfo: String {
@@ -71,8 +70,7 @@ public final class ClearentWrapper : NSObject {
     private var bleManager : BluetoothScanner?
     public var readerInfo: ReaderInfo?
     private let monitor = NWPathMonitor()
-    private var isInternetOn = true
-    internal var isBluetoothOn = true
+    private var isInternetOn = false
     
     public override init() {
         super.init()
@@ -80,7 +78,6 @@ public final class ClearentWrapper : NSObject {
         self.readerInfo = ClearentWrapperDefaults.pairedReaderInfo
         self.readerInfo?.isConnected = false
         self.startConnectionListener()
-        self.bleManager = BluetoothScanner.init(udid: nil, delegate: self)
     }
     
     // MARK - Public
@@ -141,14 +138,7 @@ public final class ClearentWrapper : NSObject {
                     self.delegate?.userActionNeeded(action: action)
                 }
             }
-        } else if (!isBluetoothOn) {
-            if let action = UserAction(rawValue: UserAction.noBluetooth.rawValue) {
-                DispatchQueue.main.async {
-                    self.cancelTransaction()
-                    self.delegate?.userActionNeeded(action: action)
-                }
-            }
-        }  else {
+        } else {
             DispatchQueue.global(qos: .userInitiated).async { [weak self] in
                 guard let strongSelf = self else { return }
                 ClearentWrapper.shared.startDeviceInfoUpdate()
@@ -157,6 +147,7 @@ public final class ClearentWrapper : NSObject {
                 strongSelf.clearentVP3300.startTransaction(payment, clearentConnection: strongSelf.connection)
             }
         }
+        
     }
     
     public func searchRecentlyUsedReaders() {
@@ -266,7 +257,7 @@ public final class ClearentWrapper : NSObject {
         self.readerInfo = readerInfo
 
         if let uuid = readerInfo.uuid {
-            bleManager?.udid = uuid
+            bleManager = BluetoothScanner.init(udid: uuid, delegate: self)
             connection?.bluetoothDeviceId = uuid.uuidString
             connection?.fullFriendlyName = readerInfo.readerName
         }
