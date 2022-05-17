@@ -213,6 +213,8 @@ public final class ClearentWrapper : NSObject {
     public func startDeviceInfoUpdate() {
         bleManager?.readRSSI()
         getBatterylevel()
+        getReaderVersion()
+        getSerialNumber()
     }
     
 
@@ -248,6 +250,20 @@ public final class ClearentWrapper : NSObject {
         } else {
             self.readerInfo?.batterylevel = nil
         }
+    }
+    
+    private func getReaderVersion() {
+        var response: NSString? = NSString()
+        _ = clearentVP3300.device_getFirmwareVersion(&response)
+        guard let response = response else { return }
+        self.readerInfo?.version = response.description
+    }
+    
+    private func getSerialNumber() {
+        var response: NSString? = NSString()
+        _ = clearentVP3300.config_getSerialNumber(&response)
+        guard let response = response else { return }
+        self.readerInfo?.serialNumber = response.description
     }
         
     private func batteryLevelPercentageFrom(level: Int) -> Int {

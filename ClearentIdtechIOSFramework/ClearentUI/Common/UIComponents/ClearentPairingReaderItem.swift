@@ -55,7 +55,7 @@ class ClearentPairingReaderItem: ClearentMarginableView {
         container.layer.cornerRadius = container.bounds.height / 4
         container.layer.masksToBounds = true
         textColor = ClearentConstants.Color.base01
-        textFont = ClearentConstants.Font.regularNormal
+        textFont = ClearentConstants.Font.regularMedium
         containerBackgroundColor = ClearentConstants.Color.backgroundSecondary03
         rightIconName = ClearentConstants.IconName.rightArrow
     }

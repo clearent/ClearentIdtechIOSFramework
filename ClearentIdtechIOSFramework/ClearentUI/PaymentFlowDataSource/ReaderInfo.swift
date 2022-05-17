@@ -8,21 +8,13 @@
 
 public struct ReaderInfo : Codable {
     public var readerName : String
-    var batterylevel : Int?
-    var signalLevel : Int?
-    var isConnected : Bool
+    var batterylevel: Int?
+    var signalLevel: Int?
+    var isConnected: Bool
+    var autojoin: Bool
     var uuid: UUID?
-    
-    init(name: String?, batterylevel: Int?, signalLevel:Int?, connected: Bool, uuid:UUID?) {
-        self.readerName = "xsdk_unknown_reader_name".localized
-        if let readerName = name {
-            self.readerName = readerName
-        }
-        self.batterylevel = batterylevel
-        self.signalLevel = signalLevel
-        self.isConnected = connected
-        self.uuid = uuid
-    }
+    var serialNumber: String?
+    var version: String?
 }
 
 public extension ReaderInfo {

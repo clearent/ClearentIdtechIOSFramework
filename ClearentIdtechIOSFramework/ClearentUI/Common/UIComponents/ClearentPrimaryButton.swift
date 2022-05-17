@@ -51,7 +51,7 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         }
     }
 
-    var textFont = ClearentConstants.Font.mediumSmall {
+    var textFont = ClearentConstants.Font.regularMedium {
         didSet {
             button.titleLabel?.font = textFont
         }
@@ -80,7 +80,7 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         updateAppearence()
         button.layer.cornerRadius = button.bounds.height / 2
         button.layer.masksToBounds = true
-        textFont = ClearentConstants.Font.mediumSmall
+        textFont = ClearentConstants.Font.regularMedium
     }
 
     @IBAction func buttonWasPressed(_: Any) {

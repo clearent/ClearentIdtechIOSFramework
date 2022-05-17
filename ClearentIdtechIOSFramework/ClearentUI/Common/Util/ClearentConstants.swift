@@ -21,6 +21,7 @@ public class ClearentConstants {
         public static let backgroundSecondary01 = UIColor(hexString: "#FFFFFF")
         public static let backgroundSecondary02 = UIColor(hexString: "#E1E2E8")
         public static let backgroundSecondary03 = UIColor(hexString: "#EEEFF3")
+        public static let backgroundSecondary04 = UIColor(hexString: "#E1E2E8")
         public static let accent01 = UIColor(hexString: "#2FAC10")
         public static let accent02 = UIColor(hexString: "#F44E27")
         public static let base01 = UIColor(hexString: "#272431")
@@ -36,13 +37,8 @@ public class ClearentConstants {
         private static let sfProBold = "SFProText-Bold"
         private static let sfProRegular = "SFProText-Regular"
         private static let sfProMedium = "SFProText-Medium"
-
-        static let regularExtraLarge = UIFont(name: sfProBold, size: 32)
-        static let boldLarge = UIFont(name: sfProBold, size: 20)
-        static let boldNormal = UIFont(name: sfProBold, size: 16)
-        static let medium = UIFont(name: sfProMedium, size: 16)
-        static let mediumSmall = UIFont(name: sfProMedium, size: 14)
-        static let regularNormal = UIFont(name: sfProRegular, size: 14)
+        
+        static let regularMedium = UIFont(name: sfProMedium, size: 14)
         static let regularSmall = UIFont(name: sfProRegular, size: 10)
     }
 
@@ -79,6 +75,6 @@ public class ClearentConstants {
     }
     
    public enum Size {
-        public static let primaryButtonBorderWidth = 2.0
+        public static let primaryButtonBorderWidth = 1.0
     }
 }
