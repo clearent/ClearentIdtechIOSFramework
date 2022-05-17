@@ -21,7 +21,8 @@ public enum UserAction: String {
          tryMSRAgain = "TRY MSR AGAIN",
          useMagstripe = "USE MAGSTRIPE",
          transactionStarted = "TRANSACTION STARTED",
-         tapFailed = "TAP FAILED. INSERT/SWIPE"
+         tapFailed = "TAP FAILED. INSERT/SWIPE",
+         bleDisconnected = "BLUETOOTH DISCONNECTED"
 }
 
 public enum UserInfo: String {
@@ -70,6 +71,8 @@ public final class ClearentWrapper : NSObject {
     public override init() {
         super.init()
         createLogFile()
+        self.readerInfo = ClearentWrapperDefaults.pairedReaderInfo
+        self.readerInfo?.isConnected = false
     }
     
     // MARK - Public
@@ -279,6 +282,12 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         saleTransaction(jwt: clearentTransactionToken.jwt, amount: amountString)
     }
     
+    public func disconnectFromReader() {
+        self.clearentVP3300.device_disconnectBLE()
+        ClearentWrapperDefaults.pairedReaderInfo = nil
+        self.readerInfo = nil
+    }
+    
     public func feedback(_ clearentFeedback: ClearentFeedback!) {
         
         switch clearentFeedback.feedBackMessageType {
@@ -299,7 +308,13 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
                 }
             }
         case .BLUETOOTH:
-            print("Some bluetooth Feedback")
+            if (ClearentWrapperDefaults.pairedReaderInfo != nil) {
+                if let action = UserAction(rawValue: clearentFeedback.message) {
+                    DispatchQueue.main.async {
+                        self.delegate?.userActionNeeded(action: action)
+                    }
+                }
+            }
         case .ERROR:
             DispatchQueue.main.async {
                 self.delegate?.didEncounteredGeneralError()
@@ -337,7 +352,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     public func deviceConnected() {
         readerInfo?.isConnected = true
         bleManager?.setupDevice()
-        bleManager?.readRSSI()
+        startDeviceInfoUpdate()
         ClearentWrapperDefaults.pairedReaderInfo = readerInfo
         if let newReader = readerInfo {
             addReaderToRecentlyUsed(reader: newReader)
@@ -348,6 +363,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     public func deviceDisconnected() {
         DispatchQueue.main.async {
             ClearentWrapperDefaults.pairedReaderInfo = nil
+            self.readerInfo = nil
             self.delegate?.deviceDidDisconnect()
         }
     }

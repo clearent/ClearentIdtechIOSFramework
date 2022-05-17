@@ -29,7 +29,7 @@ public struct Payload: Codable {
 public struct ResponseError: Codable {
     var code: String
     var message: String
-    
+
     enum CodingKeys: String, CodingKey {
         case code = "result-code"
         case message = "error-message"

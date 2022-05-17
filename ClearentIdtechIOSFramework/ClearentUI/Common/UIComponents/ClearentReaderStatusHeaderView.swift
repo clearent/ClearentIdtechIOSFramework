@@ -30,7 +30,7 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
     
     public func setup(readerName: String,
                       dropDownIconName: String? = nil,
-                      signalStatusIconName: String,
+                      signalStatusIconName: String?,
                       signalStatusTitle: String,
                       batteryStatusIconName: String?,
                       batteryStatusTitle: String?) {

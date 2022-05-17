@@ -69,7 +69,8 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         
         let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
                      FlowDataItem(type: .description, object: "xsdk_general_error_description".localized),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.retry)]
+                     FlowDataItem(type: .userAction, object: FlowButtonType.retry),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         
         let feedback = FlowDataFactory.component(with: .payment,
                                                  type: .error,
@@ -86,7 +87,8 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             let errItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
                             FlowDataItem(type: .title, object: "xsdk_general_error_title".localized),
                             FlowDataItem(type: .description, object: error.message),
-                            FlowDataItem(type: .userAction, object: FlowButtonType.retry)]
+                            FlowDataItem(type: .userAction, object: FlowButtonType.retry),
+                            FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
             
             feedback = FlowDataFactory.component(with: .payment,
                                                      type: .error,
@@ -118,9 +120,9 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
                      FlowDataItem(type: .description, object: "xsdk_tap_insert_swipe_description".localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
-        case .pressReaderButton:
-            items = [FlowDataItem(type: .description, object: "xsdk_press_button_description".localized),
-                     FlowDataItem(type: .graphicType, object: FlowGraphicType.press_button)]
+        case .pressReaderButton, .bleDisconnected:
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.press_button),
+                    FlowDataItem(type: .description, object: "xsdk_press_button_description".localized)]
         case .tryICCAgain:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
@@ -217,7 +219,6 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     
     func didFindReaders(readers: [ReaderInfo]) {
         let items = [FlowDataItem(type: .hint, object: "xsdk_select_reader".localized),
-                     FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
                      FlowDataItem(type: .devicesFound, object: readers),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
 

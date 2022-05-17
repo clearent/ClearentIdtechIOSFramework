@@ -6,7 +6,9 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
-class ClearentHintView: ClearentTitleLabel {
+import UIKit
+
+public class ClearentHintView: ClearentTitleLabel {
     override public var nibName: String? {
         String(describing: ClearentTitleLabel.self)
     }
@@ -15,8 +17,23 @@ class ClearentHintView: ClearentTitleLabel {
         [
             RelativeBottomMargin(constant: 40, relatedViewType: ClearentIcon.self),
             RelativeBottomMargin(constant: 29, relatedViewType: ClearentLoadingView.self),
-            RelativeBottomMargin(constant: 64, relatedViewType: ClearentSubtitleLabel.self)
+            RelativeBottomMargin(constant: 64, relatedViewType: ClearentSubtitleLabel.self),
+            RelativeBottomMargin(constant: 45, relatedViewType: ClearentPairingReadersList.self)
         ]
+    }
+    
+    public var containerBackgroundColor: UIColor? {
+        didSet {
+            label.backgroundColor = containerBackgroundColor
+        }
+    }
+    
+    public var cornerRadius: Double? {
+        didSet {
+            self.layer.cornerRadius = 10.0
+            self.layer.masksToBounds = true
+            self.clipsToBounds = true
+        }
     }
 
     override func configure() {

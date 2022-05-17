@@ -10,9 +10,9 @@
 
 "xsdk_searching_for_reader" = "Searching for your reader...";
 "xsdk_pair_new_reader" = "Pair new reader";
-"xsdk_press_reader_button" = "Press the button on reader";
+"xsdk_press_reader_button" = "Press the button on reader to reconnect";
 "xsdk_select_reader" = "Please select the reader you wish to pair with";
-"xsdk_connecting_reader" = "Connecting";
+"xsdk_connecting_reader" = "Connecting...";
 "xsdk_connection_sucesfull" = "Connection successful";
 "xsdk_prepare_pairing_reader_range" = "Please make sure your reader is turned on and in range of the mobile device pairing it";
 "xsdk_prepare_pairing_reader_button" = "Press and hold the button on the side of the reader to turn it on.";

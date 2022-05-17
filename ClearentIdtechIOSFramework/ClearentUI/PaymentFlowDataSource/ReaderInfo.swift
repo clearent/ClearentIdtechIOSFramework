@@ -26,9 +26,9 @@ public struct ReaderInfo : Codable {
 }
 
 public extension ReaderInfo {
-    var batteryStatus: (iconName: String?, title: String?) {
+    func batteryStatus(flowFeedbackType: FlowFeedbackType? = nil) -> (iconName: String?, title: String?) {
         // if reader is not connected, battery should not be shown
-        guard let batteryLevel = batterylevel, isConnected else {
+        guard let batteryLevel = batterylevel, isConnected, flowFeedbackType != .searchDevices else {
             return (nil, nil)
         }
         var iconName = ClearentConstants.IconName.batteryLow
@@ -40,12 +40,15 @@ public extension ReaderInfo {
         return (iconName, "\(String(batteryLevel))%")
     }
 
-    var signalStatus: (iconName: String, title: String) {
+    func signalStatus(flowFeedbackType: FlowFeedbackType? = nil) -> (iconName: String?, title: String) {
+        var icon = ClearentConstants.IconName.signalIdle
         guard let signalLevel = signalLevel, isConnected else {
-            return (iconName: ClearentConstants.IconName.signalIdle, title: "xsdk_reader_signal_idle".localized)
+            if flowFeedbackType == .searchDevices {
+                return (iconName: nil, title: "xsdk_connecting_reader".localized)
+            }
+            return (iconName: icon, title: "xsdk_reader_signal_idle".localized)
         }
 
-        var icon = ClearentConstants.IconName.signalIdle
         switch signalLevel {
         case 0:
             icon = ClearentConstants.IconName.goodSignal
@@ -56,7 +59,7 @@ public extension ReaderInfo {
         default:
             icon = ClearentConstants.IconName.signalIdle
         }
-
-        return (iconName: icon, title: "xsdk_reader_signal_connected".localized)
+        let title = flowFeedbackType == .searchDevices ? "xsdk_connection_sucesfull".localized : "xsdk_reader_signal_connected".localized
+        return (iconName: icon, title: title)
     }
 }

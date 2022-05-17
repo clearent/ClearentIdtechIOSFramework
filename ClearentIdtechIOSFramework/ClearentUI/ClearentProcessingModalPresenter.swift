@@ -11,40 +11,35 @@ import UIKit
 public protocol ClearentProcessingModalView: AnyObject {
     func updateContent(with feedback: FlowFeedback)
     func showLoadingView()
-    func dismissView()
+    func dismissViewController()
 }
 
 public protocol ProcessingModalProtocol {
     func restartProcess(processType: ProcessType)
     func startFlow()
-    func startNewPairing()
-    var flowFeedbackReceived: (() -> Void)? { get set }
+    func startPairingFlow()
 }
 
 public class ClearentProcessingModalPresenter {
     private weak var paymentProcessingView: ClearentProcessingModalView?
     private var amount: Double?
-    private let sdkWrapper: ClearentWrapper
+    private let sdkWrapper = ClearentWrapper.shared
     private var sdkFeedbackProvider: FlowDataProvider
-    public var flowFeedbackReceived: (() -> Void)?
     private let processType: ProcessType
 
     // MARK: Init
 
-    public init(paymentProcessingView: ClearentProcessingModalView, amount: Double?, baseURL: String, publicKey: String, apiKey: String, processType: ProcessType) {
+    public init(paymentProcessingView: ClearentProcessingModalView, amount: Double?, processType: ProcessType) {
         self.paymentProcessingView = paymentProcessingView
         self.amount = amount
         self.processType = processType
-        sdkWrapper = ClearentWrapper.shared
         sdkFeedbackProvider = FlowDataProvider()
-        sdkFeedbackProvider.delegate = self
-        sdkWrapper.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey)
     }
 
     private func dissmissViewWithDelay() {
         let deadlineTime = DispatchTime.now() + .seconds(3)
         DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
-            self.paymentProcessingView?.dismissView()
+            self.paymentProcessingView?.dismissViewController()
         }
     }
 }
@@ -53,7 +48,6 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     public func restartProcess(processType: ProcessType) {
         sdkFeedbackProvider.delegate = self
         paymentProcessingView?.showLoadingView()
-        flowFeedbackReceived?()
         switch processType {
         case .pairing:
             sdkWrapper.startPairing()
@@ -74,11 +68,16 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             showReadersList()
         }
     }
-    
-    public func startNewPairing() {
-        startPairingFlow()
-    }
 
+    public func startPairingFlow() {
+        let items = [FlowDataItem(type: .hint, object: "xsdk_prepare_pairing_reader_range".localized),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
+                     FlowDataItem(type: .description, object: "xsdk_prepare_pairing_reader_button".localized),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.pair)]
+        let feedback = FlowFeedback(flow: .pairing, type: FlowFeedbackType.info, items: items)
+        paymentProcessingView?.updateContent(with: feedback)
+    }
+    
     private func startTransactionFlow() {
         sdkFeedbackProvider.delegate = self
         if sdkWrapper.isReaderConnected(), let amount = amount {
@@ -86,15 +85,6 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         } else {
             sdkWrapper.startPairing()
         }
-    }
-
-    private func startPairingFlow() {
-        let items = [FlowDataItem(type: .hint, object: "xsdk_prepare_pairing_reader_range".localized),
-                     FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
-                     FlowDataItem(type: .description, object: "xsdk_prepare_pairing_reader_button".localized),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.pair)]
-        let feedback = FlowFeedback(flow: .pairing, type: FlowFeedbackType.info, items: items)
-        paymentProcessingView?.updateContent(with: feedback)
     }
     
     private func showReadersList() {
@@ -112,7 +102,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 
 extension ClearentProcessingModalPresenter: FlowDataProtocol {
     public func deviceDidDisconnect() {
-        // TODO: implement method
+        ClearentUIManager.shared.flowFeedbackReceived?(nil)
     }
 
     func didFinishedPairing() {
@@ -136,11 +126,11 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
 
     func didReceiveFlowFeedback(feedback: FlowFeedback) {
         paymentProcessingView?.updateContent(with: feedback)
-        flowFeedbackReceived?()
+        ClearentUIManager.shared.flowFeedbackReceived?(ClearentWrapper.shared.readerInfo)
     }
-    
+
     func didFinishTransaction(error: ResponseError?) {
-        if (error == nil) {
+        if error == nil {
             dissmissViewWithDelay()
         }
     }

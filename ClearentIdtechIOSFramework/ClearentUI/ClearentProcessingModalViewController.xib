@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
@@ -11,7 +9,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ClearentProcessingModalViewController" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
             <connections>
-                <outlet property="stackView" destination="78l-9c-DkQ" id="AVZ-7b-6ZL"/>
+                <outlet property="stackView" destination="78l-9c-DkQ" id="WXk-mh-EzE"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>
@@ -20,48 +18,17 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <view alpha="0.69999999999999996" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5mq-8y-fNs">
-                    <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
-                    <color key="backgroundColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                </view>
-                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="78l-9c-DkQ" customClass="ClearentAdaptiveStackView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                <stackView opaque="NO" contentMode="scaleToFill" placeholderIntrinsicWidth="350" placeholderIntrinsicHeight="278" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="78l-9c-DkQ" customClass="ClearentRoundedCornersStackView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
                     <rect key="frame" x="32" y="586" width="350" height="278"/>
-                    <subviews>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3eb-xL-gFT" customClass="ClearentEmptySpace" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="0.0" width="350" height="114"/>
-                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                        </view>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="pRV-qt-FW9" userLabel="Loading" customClass="ClearentLoadingView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="114" width="350" height="50"/>
-                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="50" placeholder="YES" id="w1I-Sj-YFF"/>
-                            </constraints>
-                        </view>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PER-iX-fnC" customClass="ClearentEmptySpace" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="164" width="350" height="114"/>
-                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
-                            <constraints>
-                                <constraint firstAttribute="height" constant="114" id="byn-Ka-mPr"/>
-                            </constraints>
-                        </view>
-                    </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    <constraints>
-                        <constraint firstItem="PER-iX-fnC" firstAttribute="height" secondItem="3eb-xL-gFT" secondAttribute="height" id="qid-LQ-XdR"/>
-                    </constraints>
                 </stackView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="78l-9c-DkQ" secondAttribute="trailing" constant="32" id="AGU-Sp-bHr"/>
-                <constraint firstAttribute="bottom" secondItem="78l-9c-DkQ" secondAttribute="bottom" constant="32" placeholder="YES" id="Bkk-y5-4SR"/>
-                <constraint firstItem="5mq-8y-fNs" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="GqJ-mc-LAw"/>
-                <constraint firstItem="5mq-8y-fNs" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="LrC-bP-8vo"/>
+                <constraint firstAttribute="bottom" secondItem="78l-9c-DkQ" secondAttribute="bottom" constant="32" id="Bkk-y5-4SR"/>
                 <constraint firstItem="78l-9c-DkQ" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="32" id="Uhx-44-AlM"/>
-                <constraint firstAttribute="bottom" secondItem="5mq-8y-fNs" secondAttribute="bottom" id="bie-Hp-qk2"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="5mq-8y-fNs" secondAttribute="trailing" id="vuw-iD-w7x"/>
             </constraints>
             <point key="canvasLocation" x="131.8840579710145" y="131.91964285714286"/>
         </view>

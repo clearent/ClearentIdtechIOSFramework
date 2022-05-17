@@ -16,7 +16,7 @@ enum FlowDataKeys {
     case readerInfo, graphicType, title, description, userAction, devicesFound, recentlyPaired, hint
 }
 
-enum FlowFeedbackType {
+public enum FlowFeedbackType {
     case error, info, warning, searchDevices
 }
 

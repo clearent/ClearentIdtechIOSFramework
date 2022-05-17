@@ -9,6 +9,7 @@
 import UIKit
 
 public class ClearentPrimaryButton: ClearentMarginableView {
+    
     // MARK: - Properties
 
     public var action: (() -> Void)?
@@ -22,7 +23,7 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         ]
     }
 
-    public var enabledBackgroundColor = ClearentConstants.Color.base01 {
+    public var enabledBackgroundColor = ClearentConstants.Color.accent01 {
         didSet { updateAppearence() }
     }
 
@@ -37,6 +38,12 @@ public class ClearentPrimaryButton: ClearentMarginableView {
     public var disabledTextColor = ClearentConstants.Color.backgroundSecondary01 {
         didSet { updateAppearence() }
     }
+    
+    public  var borderColor: UIColor? {
+        didSet {
+            button.layer.borderColor = borderColor?.cgColor
+        }
+    }
 
     public var textFont = ClearentConstants.Font.mediumSmall {
         didSet {
@@ -44,16 +51,16 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         }
     }
     
-    public var borderColor = ClearentConstants.Color.backgroundSecondary01 {
-        didSet {
-            button.layer.borderColor = borderColor.cgColor
-        }
-    }
-    
     public var borderWidth: CGFloat? {
         didSet {
             guard let borderWidth = borderWidth else { return }
             button.layer.borderWidth = borderWidth
+        }
+    }
+            
+    public var title: String? {
+        didSet {
+            button.setTitle(title, for: .normal)
         }
     }
 
@@ -64,12 +71,7 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         }
         get { button.isEnabled }
     }
-    
-    public var title: String? {
-        didSet {
-            button.setTitle(title, for: .normal)
-        }
-    }
+
 
     override func configure() {
         updateAppearence()
