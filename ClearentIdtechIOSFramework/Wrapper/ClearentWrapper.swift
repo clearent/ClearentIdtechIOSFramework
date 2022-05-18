@@ -64,6 +64,7 @@ public final class ClearentWrapper : NSObject {
     private var connection  = ClearentConnection(bluetoothSearch: ())
     weak var delegate: ClearentWrapperProtocol?
     private var transactionAmount: String?
+    public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
     
     private var bleManager : BluetoothScanner?
     public var readerInfo: ReaderInfo?
@@ -283,6 +284,12 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         self.clearentVP3300.device_disconnectBLE()
         ClearentWrapperDefaults.pairedReaderInfo = nil
         self.readerInfo = nil
+        if let readerInfo = self.readerInfo {
+            self.readerInfoReceived?(readerInfo)
+        }
+        if let readerInfo = self.readerInfo {
+            self.readerInfoReceived?(readerInfo)
+        }
     }
     
     public func feedback(_ clearentFeedback: ClearentFeedback!) {
@@ -306,6 +313,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
             }
         case .BLUETOOTH:
             if (ClearentWrapperDefaults.pairedReaderInfo != nil) {
+                readerInfo?.isConnected = false                
                 if let action = UserAction(rawValue: clearentFeedback.message) {
                     DispatchQueue.main.async {
                         self.delegate?.userActionNeeded(action: action)
@@ -320,6 +328,10 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
             DispatchQueue.main.async {
                 self.delegate?.didEncounteredGeneralError()
             }
+        }
+        
+        if let readerInfo = self.readerInfo {
+            self.readerInfoReceived?(readerInfo)
         }
     }
     
@@ -340,6 +352,10 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         } else {
             self.delegate?.didNotFindReaders()
         }
+        
+        if let readerInfo = self.readerInfo {
+            self.readerInfoReceived?(readerInfo)
+        }
     }
 
     public func deviceMessage(_ message: String!) {
@@ -354,6 +370,9 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         if let newReader = readerInfo {
             addReaderToRecentlyUsed(reader: newReader)
         }
+        if let readerInfo = self.readerInfo {
+            self.readerInfoReceived?(readerInfo)
+        }
         self.delegate?.didFinishPairing()
     }
     
@@ -361,6 +380,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         DispatchQueue.main.async {
             ClearentWrapperDefaults.pairedReaderInfo = nil
             self.readerInfo = nil
+            self.readerInfoReceived?(nil)
             self.delegate?.deviceDidDisconnect()
         }
     }
