@@ -25,6 +25,8 @@ extension ClearentWrapper {
     internal func addReaderToRecentlyUsed(reader:ReaderInfo) {
         var newReader = reader
         newReader.isConnected = false
+        newReader.batterylevel = nil
+        newReader.signalLevel = nil
         guard let existingReaders = ClearentWrapperDefaults.recentlyPairedReaders else {
             ClearentWrapperDefaults.recentlyPairedReaders = [newReader]
             return
@@ -56,7 +58,12 @@ extension ClearentWrapper {
         let availableReaders = devices.compactMap { readerInfo(from: $0)}
         guard let recentReaders = ClearentWrapperDefaults.recentlyPairedReaders else {return availableReaders}
        
-        let result = availableReaders.filter {currentReader in recentReaders.contains(where: { $0.readerName == currentReader.readerName }) }
+        var result = availableReaders.filter {currentReader in recentReaders.contains(where: { $0.readerName == currentReader.readerName }) }
+        if let savedReader = ClearentWrapperDefaults.pairedReaderInfo, let currentreader = self.readerInfo {
+            removeReaderFromRecentlyUsed(reader:savedReader)
+            result.append(currentreader)
+        }
+        
         return result
     }
     
