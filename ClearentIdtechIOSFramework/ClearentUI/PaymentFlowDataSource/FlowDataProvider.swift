@@ -168,7 +168,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         case .noBluetooth:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
-                     FlowDataItem(type: .title, object: "xsdk_internet_error_title".localized),
+                     FlowDataItem(type: .title, object: "xsdk_bluetooth_error_title".localized),
                      FlowDataItem(type: .description, object: "xsdk_bluetooth_error_description".localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .noBluetoothPermission:
