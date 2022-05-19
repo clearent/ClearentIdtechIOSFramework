@@ -57,7 +57,7 @@ class FlowDataProvider : NSObject {
     }
     
     func fetchReaderInfo() -> ReaderInfo? {
-        return sdkWrapper.readerInfo
+        return ClearentWrapperDefaults.pairedReaderInfo
     }
 }
 
