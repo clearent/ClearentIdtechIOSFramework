@@ -151,6 +151,9 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             case .pairNewReader:
                 strongSelf.stackView.positionView(onTop: false, of: strongSelf.view)
                 presenter.startPairingFlow()
+            case .settings:
+                let url = URL(string: UIApplication.openSettingsURLString + Bundle.main.bundleIdentifier!)!
+                UIApplication.shared.open(url)
             }
         }
         return button

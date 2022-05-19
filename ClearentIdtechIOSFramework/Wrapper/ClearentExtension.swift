@@ -11,6 +11,17 @@ import CocoaLumberjack
 
 extension ClearentWrapper: BluetoothScannerProtocol {
     
+    func didUpdateBluetoothState(isOn: Bool) {
+        isBluetoothOn = isOn
+        if (!isBluetoothOn) {
+            if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
+                currentReader.isConnected = false
+                currentReader.batterylevel = nil
+                ClearentWrapperDefaults.pairedReaderInfo = currentReader
+            }
+        }
+    }
+    
     internal func didReceivedSignalStrength(level: SignalLevel) {
         if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
             currentReader.signalLevel = level.rawValue

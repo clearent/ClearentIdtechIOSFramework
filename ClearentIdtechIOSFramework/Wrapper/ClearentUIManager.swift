@@ -12,11 +12,15 @@ public final class ClearentUIManager : NSObject {
     
     private let clearentWrapper = ClearentWrapper.shared
     public static let shared = ClearentUIManager()
-    public var flowFeedbackReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
+    public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
     
     public override init() {
         super.init()
-        _ = ClearentWrapper.shared
+        ClearentWrapper.shared.readerInfoReceived = {[weak self] _ in
+            DispatchQueue.main.async {
+                self?.readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
+            }
+        }
     }
     
     public func updateWith(baseURL: String, apiKey: String, publicKey: String) {
@@ -40,11 +44,11 @@ public final class ClearentUIManager : NSObject {
           let paymentProcessingPresenter = ClearentProcessingModalPresenter(paymentProcessingView: paymentProcessingViewController, amount: amount, processType: processType)
           paymentProcessingViewController.presenter = paymentProcessingPresenter
           paymentProcessingViewController.modalPresentationStyle = .overFullScreen
-        
+    
           if (ClearentWrapperDefaults.pairedReaderInfo != nil) {
-              flowFeedbackReceived?(ClearentWrapperDefaults.pairedReaderInfo)
+              readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
           }
- 
+
           return paymentProcessingViewController
     }
 }

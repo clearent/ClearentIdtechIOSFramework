@@ -122,7 +122,8 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .pressReaderButton, .bleDisconnected:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.press_button),
-                    FlowDataItem(type: .description, object: "xsdk_press_button_description".localized)]
+                     FlowDataItem(type: .description, object: "xsdk_press_button_description".localized),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .tryICCAgain:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
@@ -158,7 +159,28 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         case .transactionStarted, .goingOnline:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
                      FlowDataItem(type: .description, object: "xsdk_processing_description".localized)]
+        case .noInternet:
+            type = .warning
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
+                     FlowDataItem(type: .title, object: "xsdk_internet_error_title".localized),
+                     FlowDataItem(type: .description, object: "xsdk_internet_error_description".localized),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.retry),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+        case .noBluetooth:
+            type = .warning
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
+                     FlowDataItem(type: .title, object: "xsdk_bluetooth_error_title".localized),
+                     FlowDataItem(type: .description, object: "xsdk_bluetooth_error_description".localized),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+        case .noBluetoothPermission:
+            type = .warning
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
+                     FlowDataItem(type: .title, object: "xsdk_bluetooth_permission_error_title".localized),
+                     FlowDataItem(type: .description, object: "xsdk_bluetooth__permission_error_description".localized),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.settings),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         }
+        
         if let flowItems = items {
             let feedback = FlowDataFactory.component(with: .payment,
                                                 type: type,

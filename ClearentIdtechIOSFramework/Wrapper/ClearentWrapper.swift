@@ -7,6 +7,7 @@
 
 import Foundation
 import CocoaLumberjack
+import Network
 
 public enum UserAction: String {
     case pleaseWait = "PLEASE WAIT...",
@@ -22,7 +23,10 @@ public enum UserAction: String {
          useMagstripe = "USE MAGSTRIPE",
          transactionStarted = "TRANSACTION STARTED",
          tapFailed = "TAP FAILED. INSERT/SWIPE",
-         bleDisconnected = "BLUETOOTH DISCONNECTED"
+         bleDisconnected = "BLUETOOTH DISCONNECTED",
+         noInternet = "NO INTERNET",
+         noBluetooth = "Bluetooth on this device is currently powered off.",
+         noBluetoothPermission = "This app is not authorized to use Bluetooth Low Energy."
 }
 
 public enum UserInfo: String {
@@ -65,7 +69,11 @@ public final class ClearentWrapper : NSObject {
     private var clearentVP3300 = Clearent_VP3300()
     private var connection  = ClearentConnection(bluetoothSearch: ())
     private var transactionAmount: String?
+    public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
     private var bleManager : BluetoothScanner?
+    private let monitor = NWPathMonitor()
+    private var isInternetOn = false
+    internal var isBluetoothOn = false
     
     public override init() {
         super.init()
@@ -74,6 +82,8 @@ public final class ClearentWrapper : NSObject {
             currentReader.isConnected = false
             ClearentWrapperDefaults.pairedReaderInfo = currentReader
         }
+        self.startConnectionListener()
+        bleManager = BluetoothScanner.init(udid: nil, delegate: self)
     }
     
     // MARK - Public
@@ -107,6 +117,7 @@ public final class ClearentWrapper : NSObject {
     
     public func cancelTransaction() {
         clearentVP3300.emv_cancelTransaction()
+        clearentVP3300.device_cancelTransaction()
     }
     
     public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String) {
@@ -121,17 +132,24 @@ public final class ClearentWrapper : NSObject {
     }
     
     public func startTransactionWithAmount(amount: String) {
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let strongSelf = self else { return }
-            ClearentWrapper.shared.startDeviceInfoUpdate()
-            
-            let payment = ClearentPayment.init(sale: ())
-            if (amount.canBeConverted(to: String.Encoding.utf8)) {
-                payment?.amount = Double(amount) ?? 0
-                strongSelf.transactionAmount = amount
+
+        if (amount.canBeConverted(to: String.Encoding.utf8)) {
+            self.transactionAmount = amount
+        }
+        
+        let userActionNeeded: UserAction? = isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : .noInternet
+        if let action = userActionNeeded {
+            DispatchQueue.main.async {
+                  self.delegate?.userActionNeeded(action: action)
             }
-            
-            strongSelf.clearentVP3300.startTransaction(payment, clearentConnection: strongSelf.connection)
+        } else {
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                guard let strongSelf = self else { return }
+                ClearentWrapper.shared.startDeviceInfoUpdate()
+                let payment = ClearentPayment.init(sale: ())
+                payment?.amount = Double(amount) ?? 0
+                strongSelf.clearentVP3300.startTransaction(payment, clearentConnection: strongSelf.connection)
+            }
         }
     }
     
@@ -211,7 +229,7 @@ public final class ClearentWrapper : NSObject {
     }
     
     public func isReaderConnected() -> Bool {
-        return clearentVP3300.isConnected()
+        return (ClearentWrapperDefaults.pairedReaderInfo != nil && ClearentWrapperDefaults.pairedReaderInfo?.isConnected == true)
     }
     
     public func startDeviceInfoUpdate() {
@@ -221,11 +239,31 @@ public final class ClearentWrapper : NSObject {
     
     // MARK - Private
     
+    private func startConnectionListener() {
+        monitor.pathUpdateHandler = { [weak self] path in
+            if path.status == .satisfied {
+                self?.isInternetOn = true
+            } else {
+                if let action = UserAction(rawValue: UserAction.noInternet.rawValue) {
+                    DispatchQueue.main.async {
+                        self?.delegate?.userActionNeeded(action: action)
+                    }
+                }
+                
+                self?.isInternetOn = false
+            }
+        }
+        
+        let queue = DispatchQueue(label: "Monitor")
+        monitor.start(queue: queue)
+    }
+    
     private func updateConnectionWithDevice(readerInfo: ReaderInfo) {
         ClearentWrapperDefaults.pairedReaderInfo = readerInfo
 
         if let uuid = readerInfo.uuid {
-            bleManager = BluetoothScanner.init(udid: uuid, delegate: self)
+            bleManager?.udid? = uuid
+            bleManager?.setupDevice()
             connection?.bluetoothDeviceId = uuid.uuidString
             connection?.fullFriendlyName = readerInfo.readerName
         }
@@ -294,43 +332,66 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     public func disconnectFromReader() {
         self.clearentVP3300.device_disconnectBLE()
         ClearentWrapperDefaults.pairedReaderInfo = nil
+        self.readerInfoReceived?(nil)
     }
     
     public func feedback(_ clearentFeedback: ClearentFeedback!) {
         
-        switch clearentFeedback.feedBackMessageType {
-        case .TYPE_UNKNOWN:
-            DispatchQueue.main.async {
-                self.delegate?.didEncounteredGeneralError()
-            }
-        case .USER_ACTION:
-            if let action = UserAction(rawValue: clearentFeedback.message) {
+        if (isInternetOn) {
+            switch clearentFeedback.feedBackMessageType {
+            case .TYPE_UNKNOWN:
                 DispatchQueue.main.async {
-                    self.delegate?.userActionNeeded(action: action)
+                    self.delegate?.didEncounteredGeneralError()
                 }
-            }
-        case .INFO:
-            if let info = UserInfo(rawValue: clearentFeedback.message) {
-                DispatchQueue.main.async {
-                 self.delegate?.didReceiveInfo(info: info)
+            case .USER_ACTION:
+                   if let action = UserAction(rawValue: clearentFeedback.message) {
+                       DispatchQueue.main.async {
+                           self.delegate?.userActionNeeded(action: action)
+                       }
+                   }
+            case .INFO:
+                if let info = UserInfo(rawValue: clearentFeedback.message) {
+                    DispatchQueue.main.async {
+                     self.delegate?.didReceiveInfo(info: info)
+                    }
                 }
-            }
-        case .BLUETOOTH:
-            if (ClearentWrapperDefaults.pairedReaderInfo != nil) {
-                if let action = UserAction(rawValue: clearentFeedback.message) {
+            case .BLUETOOTH:
+                if (ClearentWrapperDefaults.pairedReaderInfo != nil) {
+                    if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
+                        currentReader.isConnected = false
+                        ClearentWrapperDefaults.pairedReaderInfo = currentReader
+                    }
+                    if let action = UserAction(rawValue: clearentFeedback.message) {
+                        DispatchQueue.main.async {
+                            self.delegate?.userActionNeeded(action: action)
+                        }
+                    }
+                }
+            case .ERROR:
+                if (ClearentWrapperDefaults.pairedReaderInfo != nil && clearentFeedback.message == UserAction.noBluetooth.rawValue) {
+                    if let action = UserAction(rawValue: clearentFeedback.message) {
+                        DispatchQueue.main.async {
+                            self.delegate?.userActionNeeded(action: action)
+                        }
+                    }
+                } else  if let action = UserAction(rawValue: clearentFeedback.message) {
                     DispatchQueue.main.async {
                         self.delegate?.userActionNeeded(action: action)
                     }
+                } else {
+                    DispatchQueue.main.async {
+                        self.delegate?.didEncounteredGeneralError()
+                    }
+                }
+            @unknown default:
+                DispatchQueue.main.async {
+                    self.delegate?.didEncounteredGeneralError()
                 }
             }
-        case .ERROR:
-            DispatchQueue.main.async {
-                self.delegate?.didEncounteredGeneralError()
-            }
-        @unknown default:
-            DispatchQueue.main.async {
-                self.delegate?.didEncounteredGeneralError()
-            }
+        }
+        
+        if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo {
+            self.readerInfoReceived?(readerInfo)
         }
     }
     
@@ -355,6 +416,10 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         } else {
             self.delegate?.didNotFindReaders()
         }
+        
+        if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo {
+            self.readerInfoReceived?(readerInfo)
+        }
     }
 
     public func deviceMessage(_ message: String!) {
@@ -366,7 +431,9 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
             currentReader.isConnected = true
             ClearentWrapperDefaults.pairedReaderInfo = currentReader
             addReaderToRecentlyUsed(reader: currentReader)
+            self.readerInfoReceived?(currentReader)
         }
+        bleManager?.udid = ClearentWrapperDefaults.pairedReaderInfo?.uuid
         bleManager?.setupDevice()
         startDeviceInfoUpdate()
         self.delegate?.didFinishPairing()
@@ -375,6 +442,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     public func deviceDisconnected() {
         DispatchQueue.main.async {
             ClearentWrapperDefaults.pairedReaderInfo = nil
+            self.readerInfoReceived?(nil)
             self.delegate?.deviceDidDisconnect()
         }
     }
