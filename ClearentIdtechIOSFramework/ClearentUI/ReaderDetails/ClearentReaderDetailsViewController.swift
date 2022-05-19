@@ -70,15 +70,16 @@ public class ClearentReaderDetailsViewController: UIViewController {
 
     private func setupReaderStatus() {
         if let signalLevel = readerInfo.signalLevel {
-            let signal = String(signalLevel)
-            signalStatusView.title = String(format: "xsdk_reader_details_signal_status".localized, signal)
+            let signalStatus = readerInfo.signalStatus()
+            signalStatusView.title = String(format: "xsdk_reader_details_signal_status".localized, signalLevel)
+            signalStatusView.iconName = signalStatus.iconName
         } else {
             signalStatusView.removeFromSuperview()
         }
 
-        if let batteryLevel = readerInfo.batterylevel {
-            let battery = String(batteryLevel)
-            batteryStatusView.title = String(format: "xsdk_reader_details_battery_status".localized, battery)
+        if let batteryIcon = readerInfo.batteryStatus().iconName, let batteryTitle = readerInfo.batteryStatus().title {
+            batteryStatusView.title = String(format: "xsdk_reader_details_battery_status".localized, batteryTitle)
+            batteryStatusView.iconName = batteryIcon
         } else {
             batteryStatusView.removeFromSuperview()
         }

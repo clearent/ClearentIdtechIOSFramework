@@ -128,7 +128,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                              FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
                              FlowDataItem(type: .description, object: "xsdk_paired_successful".localized),
                              FlowDataItem(type: .userAction, object: FlowButtonType.done)]
-                if let readerInfo = ClearentWrapper.shared.readerInfo {
+                if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo {
                     items.insert(FlowDataItem(type: .readerInfo, object: readerInfo), at: 0)
                 }
                 let feedback = FlowFeedback(flow: self.processType, type: FlowFeedbackType.info, items: items)
@@ -141,7 +141,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
 
     func didReceiveFlowFeedback(feedback: FlowFeedback) {
         modalProcessingView?.updateContent(with: feedback)
-        ClearentUIManager.shared.readerInfoReceived?(ClearentWrapper.shared.readerInfo)
+        ClearentUIManager.shared.readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
     }
 
     func didFinishTransaction(error: ResponseError?) {

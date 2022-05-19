@@ -18,7 +18,7 @@ public final class ClearentUIManager : NSObject {
         super.init()
         ClearentWrapper.shared.readerInfoReceived = {[weak self] _ in
             DispatchQueue.main.async {
-                self?.readerInfoReceived?(ClearentWrapper.shared.readerInfo)
+                self?.readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
             }
         }
     }
@@ -41,16 +41,16 @@ public final class ClearentUIManager : NSObject {
     
     private func viewController(processType: ProcessType, amount: Double? = nil) ->  UINavigationController {
         let viewController = ClearentProcessingModalViewController(showOnTop: processType == .showReaders)
-          let presenter = ClearentProcessingModalPresenter(paymentProcessingView: viewController, amount: amount, processType: processType)
-         viewController.presenter = presenter
+        let presenter = ClearentProcessingModalPresenter(paymentProcessingView: viewController, amount: amount, processType: processType)
+        viewController.presenter = presenter
         
-          if (clearentWrapper.readerInfo != nil) {
-              readerInfoReceived?(clearentWrapper.readerInfo)
-          }
- 
-          let navigationController = UINavigationController(rootViewController: viewController)
-          navigationController.isNavigationBarHidden = true
-          navigationController.modalPresentationStyle = .overFullScreen
-          return navigationController
+        if (ClearentWrapperDefaults.pairedReaderInfo != nil) {
+            readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
+        }
+        
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.isNavigationBarHidden = true
+        navigationController.modalPresentationStyle = .overFullScreen
+        return navigationController
     }
 }

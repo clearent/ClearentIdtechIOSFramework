@@ -12,6 +12,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ClearentLabelWithIcon" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
             <connections>
                 <outlet property="bottomLayoutConstraint" destination="ZHF-ZP-KF4" id="QpE-ow-6IL"/>
+                <outlet property="icon" destination="QHg-pT-luq" id="1eg-EF-6Uu"/>
                 <outlet property="label" destination="LC8-Bi-dBr" id="Pna-rD-gsI"/>
             </connections>
         </placeholder>

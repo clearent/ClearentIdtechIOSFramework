@@ -14,14 +14,19 @@ extension ClearentWrapper: BluetoothScannerProtocol {
     func didUpdateBluetoothState(isOn: Bool) {
         isBluetoothOn = isOn
         if (!isBluetoothOn) {
-            readerInfo?.isConnected = false
-            readerInfo?.batterylevel = nil
-            ClearentWrapperDefaults.pairedReaderInfo = readerInfo
+            if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
+                currentReader.isConnected = false
+                currentReader.batterylevel = nil
+                ClearentWrapperDefaults.pairedReaderInfo = currentReader
+            }
         }
     }
     
     internal func didReceivedSignalStrength(level: SignalLevel) {
-        readerInfo?.signalLevel = level.rawValue
+        if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
+            currentReader.signalLevel = level.rawValue
+            ClearentWrapperDefaults.pairedReaderInfo = currentReader
+        }
     }
     
     internal func didFinishWithError() {
@@ -65,9 +70,9 @@ extension ClearentWrapper {
     internal func fetchRecentlyAndAvailableReaders(devices: [ClearentBluetoothDevice]) -> [ReaderInfo] {
         
         let availableReaders = devices.compactMap { readerInfo(from: $0)}
-        if let savedReader = ClearentWrapperDefaults.pairedReaderInfo, let currentreader = self.readerInfo {
+        if let savedReader = ClearentWrapperDefaults.pairedReaderInfo {
             removeReaderFromRecentlyUsed(reader:savedReader)
-            addReaderToRecentlyUsed(reader: currentreader)
+            addReaderToRecentlyUsed(reader: savedReader)
         }
         guard let recentReaders = ClearentWrapperDefaults.recentlyPairedReaders else {return []}
        
