@@ -9,6 +9,7 @@
 import UIKit
 
 class ClearentReadersTableViewCell: UITableViewCell {
+    
     enum Layout {
         static let cellHeight: CGFloat = 48
     }
@@ -16,10 +17,11 @@ class ClearentReadersTableViewCell: UITableViewCell {
     static let identifier = "ClearentReadersTableViewCellIdentifier"
     static let nib = "ClearentReadersTableViewCell"
 
-    @IBOutlet var stackView: UIStackView!
-    @IBOutlet var readerStatusIcon: UIView!
-    @IBOutlet var readerNameLabel: UILabel!
-    @IBOutlet var detailsButton: UIButton!
+    @IBOutlet weak var stackView: UIStackView!
+    @IBOutlet weak var readerStatusIcon: UIView!
+    @IBOutlet weak var readerNameLabel: UILabel!
+    @IBOutlet weak var detailsButton: UIButton!
+
 
     var detailsAction: (() -> Void)?
 
@@ -39,6 +41,7 @@ class ClearentReadersTableViewCell: UITableViewCell {
     
     public func setup(readerName: String, isConnected: Bool? = nil, isFirstCell: Bool? = nil) {
         if let _ = isFirstCell {
+            
             if let readerIsConnected = isConnected, readerIsConnected {
                 readerStatusIcon.backgroundColor = ClearentConstants.Color.accent01
             } else {

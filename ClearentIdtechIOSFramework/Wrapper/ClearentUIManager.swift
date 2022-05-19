@@ -23,28 +23,30 @@ public final class ClearentUIManager : NSObject {
         clearentWrapper.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey)
     }
     
-    public func paymentViewController(amount: Double) -> UIViewController {
+    public func paymentViewController(amount: Double) -> UINavigationController {
         viewController(processType: .payment, amount:amount)
     }
     
-    public func pairingViewController() -> UIViewController {
+    public func pairingViewController() -> UINavigationController {
         viewController(processType: .pairing)
     }
     
-    public func readersViewController() -> UIViewController {
+    public func readersViewController() -> UINavigationController {
         viewController(processType: .showReaders)
     }
     
-    private func viewController(processType: ProcessType, amount: Double? = nil) ->  UIViewController {
-        let paymentProcessingViewController = ClearentProcessingModalViewController(showOnTop: processType == .showReaders)
-          let paymentProcessingPresenter = ClearentProcessingModalPresenter(paymentProcessingView: paymentProcessingViewController, amount: amount, processType: processType)
-          paymentProcessingViewController.presenter = paymentProcessingPresenter
-          paymentProcessingViewController.modalPresentationStyle = .overFullScreen
+    private func viewController(processType: ProcessType, amount: Double? = nil) ->  UINavigationController {
+        let viewController = ClearentProcessingModalViewController(showOnTop: processType == .showReaders)
+          let presenter = ClearentProcessingModalPresenter(paymentProcessingView: viewController, amount: amount, processType: processType)
+         viewController.presenter = presenter
         
           if (clearentWrapper.readerInfo != nil) {
               flowFeedbackReceived?(clearentWrapper.readerInfo)
           }
  
-          return paymentProcessingViewController
+          let navigationController = UINavigationController(rootViewController: viewController)
+          navigationController.isNavigationBarHidden = true
+          navigationController.modalPresentationStyle = .overFullScreen
+          return navigationController
     }
 }
