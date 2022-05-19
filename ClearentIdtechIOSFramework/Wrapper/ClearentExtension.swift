@@ -56,7 +56,7 @@ extension ClearentWrapper {
     internal func fetchRecentlyAndAvailableReaders(devices: [ClearentBluetoothDevice]) -> [ReaderInfo] {
         
         let availableReaders = devices.compactMap { readerInfo(from: $0)}
-        guard let recentReaders = ClearentWrapperDefaults.recentlyPairedReaders else {return availableReaders}
+        guard let recentReaders = ClearentWrapperDefaults.recentlyPairedReaders else {return []}
        
         var result = availableReaders.filter {currentReader in recentReaders.contains(where: { $0.readerName == currentReader.readerName }) }
         if let savedReader = ClearentWrapperDefaults.pairedReaderInfo, let currentreader = self.readerInfo {
