@@ -106,7 +106,12 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         let statusHeader = ClearentReaderStatusHeaderView()
         
         showOnTop ? statusHeader.setup(readerName: name, dropDownIconName: ClearentConstants.IconName.expanded, signalStatusIconName: signalStatus.iconName, signalStatusTitle: signalStatus.title, batteryStatusIconName: batteryStatus.iconName, batteryStatusTitle: batteryStatus.title) : statusHeader.setup(readerName: name, signalStatusIconName: signalStatus.iconName, signalStatusTitle: signalStatus.title, batteryStatusIconName: batteryStatus.iconName, batteryStatusTitle: batteryStatus.title)
-        statusHeader.setup(readerName: name, signalStatusIconName: signalStatus.iconName, signalStatusTitle: signalStatus.title, batteryStatusIconName: batteryStatus.iconName, batteryStatusTitle: batteryStatus.title)
+        
+        statusHeader.action = { [weak self] in
+            if self?.showOnTop == true {
+                self?.dismiss(animated: true, completion: nil)
+            }
+        }
         return statusHeader
     }
 

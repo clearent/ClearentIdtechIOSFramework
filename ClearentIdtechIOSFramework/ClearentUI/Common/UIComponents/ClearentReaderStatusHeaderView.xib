@@ -68,6 +68,7 @@
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+            <gestureRecognizers/>
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="0PG-r4-gVB" secondAttribute="trailing" id="4iG-Pa-fXY"/>
                 <constraint firstItem="QCv-p8-D5F" firstAttribute="centerX" secondItem="Mxb-gX-Hn6" secondAttribute="centerX" id="BGG-pc-P6y"/>
@@ -79,8 +80,16 @@
                 <constraint firstItem="QCv-p8-D5F" firstAttribute="top" secondItem="Mxb-gX-Hn6" secondAttribute="bottom" constant="5" id="x42-Yz-Yu1"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outletCollection property="gestureRecognizers" destination="Y6K-b8-8ZJ" appends="YES" id="ivD-Vd-RWy"/>
+            </connections>
             <point key="canvasLocation" x="73.913043478260875" y="-94.419642857142847"/>
         </view>
+        <tapGestureRecognizer id="Y6K-b8-8ZJ">
+            <connections>
+                <action selector="didTapOnReaderStatusHeaderView:" destination="-1" id="l1y-kv-Dyl"/>
+            </connections>
+        </tapGestureRecognizer>
     </objects>
     <resources>
         <systemColor name="systemBackgroundColor">
