@@ -195,7 +195,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             print("nothing to do here")
         case .processing, .goingOnline:
             let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
-                         FlowDataItem(type: .description, object: "xsdk_bluetooth_error_description".localized)]
+                         FlowDataItem(type: .description, object: "xsdk_processing_description".localized)]
 
             let feedback = FlowDataFactory.component(with: .payment,
                                                      type: .info,
