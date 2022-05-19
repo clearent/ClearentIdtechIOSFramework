@@ -287,9 +287,6 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         if let readerInfo = self.readerInfo {
             self.readerInfoReceived?(readerInfo)
         }
-        if let readerInfo = self.readerInfo {
-            self.readerInfoReceived?(readerInfo)
-        }
     }
     
     public func feedback(_ clearentFeedback: ClearentFeedback!) {
