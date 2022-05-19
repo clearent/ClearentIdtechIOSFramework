@@ -35,7 +35,7 @@ public class ClearentPaymentProcessingViewController: UIViewController {
 
     // MARK: - Lifecycle
 
-    override public func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         setupStyle()
         presenter?.startBluetoothDevicePairing()
@@ -67,7 +67,7 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
         stackView.addArrangedSubview(emptySpace)
         stackView.addArrangedSubview(actionView)
     }
-        
+
     public func updateContent(with component: PaymentFeedbackComponentProtocol) {
         stackView.removeAllArrangedSubviews()
         createStatusHeader(with: component)
@@ -120,9 +120,9 @@ extension ClearentPaymentProcessingViewController: ClearentPaymentProcessingView
             stackView.addArrangedSubview(button)
         }
     }
-    
+
     public func dismissView() {
-        self.dismissViewController()
+        dismissViewController()
     }
 }
 

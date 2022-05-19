@@ -51,6 +51,6 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
     
     public func updateDropDownIcon() {
         dropDownImageView.image = state == .collapsed ? UIImage(named: ClearentConstants.IconName.collapsed, in: ClearentConstants.bundle, compatibleWith: nil) :
-        UIImage(named: ClearentConstants.IconName.expanded, in: ClearentConstants.bundle, compatibleWith: nil)
+            UIImage(named: ClearentConstants.IconName.expanded, in: ClearentConstants.bundle, compatibleWith: nil)
     }
 }

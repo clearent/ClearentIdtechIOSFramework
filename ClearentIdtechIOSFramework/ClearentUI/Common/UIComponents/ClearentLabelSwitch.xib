@@ -42,6 +42,9 @@
                                         <constraint firstAttribute="height" constant="31" id="yAb-UY-zOy"/>
                                     </constraints>
                                     <color key="onTintColor" systemColor="systemGreenColor"/>
+                                    <connections>
+                                        <action selector="valueChanged:" destination="-1" eventType="valueChanged" id="UFp-fd-DWc"/>
+                                    </connections>
                                 </switch>
                             </subviews>
                             <constraints>

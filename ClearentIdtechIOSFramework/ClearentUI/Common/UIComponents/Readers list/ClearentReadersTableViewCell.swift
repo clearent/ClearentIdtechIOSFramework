@@ -9,19 +9,20 @@
 import UIKit
 
 class ClearentReadersTableViewCell: UITableViewCell {
-    
     enum Layout {
         static let cellHeight: CGFloat = 48
     }
     
     static let identifier = "ClearentReadersTableViewCellIdentifier"
     static let nib = "ClearentReadersTableViewCell"
-    
-    @IBOutlet weak var stackView: UIStackView!
-    @IBOutlet weak var readerStatusIcon: UIView!
-    @IBOutlet weak var readerNameLabel: UILabel!
-    @IBOutlet weak var detailsButton: UIButton!
-    
+
+    @IBOutlet var stackView: UIStackView!
+    @IBOutlet var readerStatusIcon: UIView!
+    @IBOutlet var readerNameLabel: UILabel!
+    @IBOutlet var detailsButton: UIButton!
+
+    var detailsAction: (() -> Void)?
+
     // MARK: Lifecycle
     
     override func awakeFromNib() {
@@ -38,7 +39,6 @@ class ClearentReadersTableViewCell: UITableViewCell {
     
     public func setup(readerName: String, isConnected: Bool? = nil, isFirstCell: Bool? = nil) {
         if let _ = isFirstCell {
-            
             if let readerIsConnected = isConnected, readerIsConnected {
                 readerStatusIcon.backgroundColor = ClearentConstants.Color.accent01
             } else {
@@ -61,7 +61,11 @@ class ClearentReadersTableViewCell: UITableViewCell {
         contentView.layer.cornerRadius = 8
         contentView.layer.masksToBounds = true
         
-        readerNameLabel.font = ClearentConstants.Font.regularNormal
+        readerNameLabel.font = ClearentConstants.Font.proTextNormal
         detailsButton.titleLabel?.isHidden = true
+    }
+
+    @IBAction func detailsButtonWasPressed(_: Any) {
+        detailsAction?()
     }
 }

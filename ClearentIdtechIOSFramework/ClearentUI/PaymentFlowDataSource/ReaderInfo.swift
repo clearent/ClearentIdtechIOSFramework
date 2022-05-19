@@ -6,8 +6,8 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
-public struct ReaderInfo : Codable {
-    public var readerName : String
+public struct ReaderInfo: Codable {
+    public var readerName: String
     var batterylevel: Int?
     var signalLevel: Int?
     var isConnected: Bool

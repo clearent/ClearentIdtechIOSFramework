@@ -9,7 +9,6 @@
 import Foundation
 
 public class UserDefaultsPersistence {
-    
     private static let userDefaults = UserDefaults(suiteName: "xsdk_user_default_container_key")
     
     static func save(_ value: Any, forKey key: String) {

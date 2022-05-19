@@ -69,7 +69,7 @@ extension ClearentWrapper {
     
     internal func readerInfo(from clearentDevice:ClearentBluetoothDevice) -> ReaderInfo {
         let uuidString: UUID? = UUID(uuidString: clearentDevice.deviceId)
-        return ReaderInfo(readerName: clearentDevice.friendlyName, batterylevel:nil , signalLevel: nil, isConnected: clearentDevice.connected, autojoin: false, uuid: uuidString, serialNumber: nil, version: nil)
+        return ReaderInfo(readerName: clearentDevice.friendlyName, batterylevel: nil, signalLevel: nil, isConnected: clearentDevice.connected, autojoin: false, uuid: uuidString, serialNumber: nil, version: nil)
     }
     
     // MARK - Public Logger related

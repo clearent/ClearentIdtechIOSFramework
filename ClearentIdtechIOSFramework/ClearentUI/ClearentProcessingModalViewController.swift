@@ -153,6 +153,11 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
 }
 
 extension ClearentProcessingModalViewController: ClearentReadersTableViewDelegate {
+    func didSelectReaderDetails(reader: ReaderInfo) {
+        guard let navigationController = navigationController else { return }
+        presenter?.showDetailsScreen(with: reader, on: navigationController)
+    }
+
     func didSelectReader(_ reader: ReaderInfo) {
         presenter?.connectTo(reader: reader)
     }

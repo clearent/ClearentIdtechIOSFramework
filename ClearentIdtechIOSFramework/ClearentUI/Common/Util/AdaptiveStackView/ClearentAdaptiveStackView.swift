@@ -25,7 +25,7 @@ public class ClearentAdaptiveStackView: UIStackView {
             bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -margin).isActive = !onTop
             leftAnchor.constraint(equalTo: view.leftAnchor, constant: margin).isActive = true
             rightAnchor.constraint(equalTo: view.rightAnchor, constant: -margin).isActive = true
-            heightAnchor.constraint(lessThanOrEqualToConstant: view.frame.height/1.3).isActive = true
+            heightAnchor.constraint(lessThanOrEqualToConstant: view.frame.height / 1.3).isActive = true
             UIView.animate(withDuration: 0.5, delay: 0.1) { [weak self] in
                 self?.alpha = 1.0
             }

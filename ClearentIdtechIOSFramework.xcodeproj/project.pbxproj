@@ -34,6 +34,7 @@
 		011181AC28329ECD0025750A /* ClearentInfoWithIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011181AB28329ECD0025750A /* ClearentInfoWithIcon.swift */; };
 		011181AE28329ED80025750A /* ClearentInfoWithIcon.xib in Resources */ = {isa = PBXBuildFile; fileRef = 011181AD28329ED80025750A /* ClearentInfoWithIcon.xib */; };
 		011181B32833B4450025750A /* ClearentReaderDetailsPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 011181B22833B4450025750A /* ClearentReaderDetailsPresenter.swift */; };
+		011181B72835154F0025750A /* SF-Pro-Display-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 011181B62835154F0025750A /* SF-Pro-Display-Medium.otf */; };
 		0129F7E12822D05200027BCE /* ClearentTitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0129F7E02822D05200027BCE /* ClearentTitleLabel.swift */; };
 		0129F7E32822D05A00027BCE /* ClearentTitleLabel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0129F7E22822D05A00027BCE /* ClearentTitleLabel.xib */; };
 		0129F7E52823A83000027BCE /* ClearentSubtitleLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0129F7E42823A83000027BCE /* ClearentSubtitleLabel.swift */; };
@@ -68,7 +69,6 @@
 		1937011D27F31C8100BF48E5 /* ClearentProcessingModalPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1937011C27F31C8100BF48E5 /* ClearentProcessingModalPresenter.swift */; };
 		1973B532282CE3EF0062FB07 /* ClearentReadersTableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1973B531282CE3EF0062FB07 /* ClearentReadersTableView.xib */; };
 		19A61D5B2804121400E295B3 /* SF-Pro-Text-Regular.otf in Resources */ = {isa = PBXBuildFile; fileRef = 19A61D582804121400E295B3 /* SF-Pro-Text-Regular.otf */; };
-		19A61D5C2804121400E295B3 /* SF-Pro-Text-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 19A61D592804121400E295B3 /* SF-Pro-Text-Bold.otf */; };
 		19A61D5D2804121400E295B3 /* SF-Pro-Text-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 19A61D5A2804121400E295B3 /* SF-Pro-Text-Medium.otf */; };
 		19A61D692804129100E295B3 /* ClearentReaderConnectivityStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A61D612804129100E295B3 /* ClearentReaderConnectivityStatusView.swift */; };
 		19A61D6A2804129100E295B3 /* ClearentReaderConnectivityStatusView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19A61D622804129100E295B3 /* ClearentReaderConnectivityStatusView.xib */; };
@@ -211,6 +211,7 @@
 		011181AB28329ECD0025750A /* ClearentInfoWithIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentInfoWithIcon.swift; sourceTree = "<group>"; };
 		011181AD28329ED80025750A /* ClearentInfoWithIcon.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentInfoWithIcon.xib; sourceTree = "<group>"; };
 		011181B22833B4450025750A /* ClearentReaderDetailsPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentReaderDetailsPresenter.swift; sourceTree = "<group>"; };
+		011181B62835154F0025750A /* SF-Pro-Display-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Display-Medium.otf"; sourceTree = "<group>"; };
 		0129F7E02822D05200027BCE /* ClearentTitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentTitleLabel.swift; sourceTree = "<group>"; };
 		0129F7E22822D05A00027BCE /* ClearentTitleLabel.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentTitleLabel.xib; sourceTree = "<group>"; };
 		0129F7E42823A83000027BCE /* ClearentSubtitleLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentSubtitleLabel.swift; sourceTree = "<group>"; };
@@ -245,7 +246,6 @@
 		1937011C27F31C8100BF48E5 /* ClearentProcessingModalPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentProcessingModalPresenter.swift; sourceTree = "<group>"; };
 		1973B531282CE3EF0062FB07 /* ClearentReadersTableView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentReadersTableView.xib; sourceTree = "<group>"; };
 		19A61D582804121400E295B3 /* SF-Pro-Text-Regular.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-Regular.otf"; sourceTree = "<group>"; };
-		19A61D592804121400E295B3 /* SF-Pro-Text-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-Bold.otf"; sourceTree = "<group>"; };
 		19A61D5A2804121400E295B3 /* SF-Pro-Text-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = text; path = "SF-Pro-Text-Medium.otf"; sourceTree = "<group>"; };
 		19A61D612804129100E295B3 /* ClearentReaderConnectivityStatusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentReaderConnectivityStatusView.swift; sourceTree = "<group>"; };
 		19A61D622804129100E295B3 /* ClearentReaderConnectivityStatusView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ClearentReaderConnectivityStatusView.xib; sourceTree = "<group>"; };
@@ -534,8 +534,8 @@
 		19A61D572804121400E295B3 /* Fonts */ = {
 			isa = PBXGroup;
 			children = (
+				011181B62835154F0025750A /* SF-Pro-Display-Medium.otf */,
 				19A61D582804121400E295B3 /* SF-Pro-Text-Regular.otf */,
-				19A61D592804121400E295B3 /* SF-Pro-Text-Bold.otf */,
 				19A61D5A2804121400E295B3 /* SF-Pro-Text-Medium.otf */,
 			);
 			path = Fonts;
@@ -962,10 +962,10 @@
 				011181A8283272310025750A /* ClearentLabelWithIcon.xib in Resources */,
 				1973B532282CE3EF0062FB07 /* ClearentReadersTableView.xib in Resources */,
 				19A61D5B2804121400E295B3 /* SF-Pro-Text-Regular.otf in Resources */,
-				19A61D5C2804121400E295B3 /* SF-Pro-Text-Bold.otf in Resources */,
 				19116EB8282BDB820042CE8E /* ClearentReadersTableViewCell.xib in Resources */,
 				019F92922827C9F10068E3FA /* ClearentPairingReadersList.xib in Resources */,
 				0129F7E32822D05A00027BCE /* ClearentTitleLabel.xib in Resources */,
+				011181B72835154F0025750A /* SF-Pro-Display-Medium.otf in Resources */,
 				19A61D70280412CD00E295B3 /* Asset Catalog.xcassets in Resources */,
 				0129F7ED2823D53E00027BCE /* ClearentLoadingView.xib in Resources */,
 				014B2BA8280087C10056F7FD /* ClearentPrimaryButton.xib in Resources */,

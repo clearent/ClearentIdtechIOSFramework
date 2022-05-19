@@ -7,8 +7,8 @@
 //
 
 class ClearentLabelWithIcon: ClearentTitleLabel {
-    @IBOutlet weak var icon: UIImageView!
-    
+    @IBOutlet var icon: UIImageView!
+
     override var margins: [BottomMargin] {
         [
             RelativeBottomMargin(constant: 14, relatedViewType: ClearentLabelWithIcon.self),
@@ -17,7 +17,7 @@ class ClearentLabelWithIcon: ClearentTitleLabel {
     }
 
     override func configure() {
-        font = ClearentConstants.Font.regularSmall
+        font = ClearentConstants.Font.proTextSmall
         textColor = ClearentConstants.Color.base02
     }
 }

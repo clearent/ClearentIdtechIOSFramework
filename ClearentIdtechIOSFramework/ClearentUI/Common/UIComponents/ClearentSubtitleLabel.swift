@@ -20,7 +20,7 @@ public class ClearentSubtitleLabel: ClearentTitleLabel {
 
     override func configure() {
         label.textAlignment = .center
-        font = ClearentConstants.Font.regularMedium
+        font = ClearentConstants.Font.proTextNormal
         textColor = ClearentConstants.Color.base02
     }
 }

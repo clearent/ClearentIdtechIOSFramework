@@ -13,6 +13,7 @@
             <connections>
                 <outlet property="bottomLayoutConstraint" destination="aDG-7h-4UT" id="97W-iO-u1z"/>
                 <outlet property="descriptionLabel" destination="1tT-We-w07" id="oEt-WM-JOt"/>
+                <outlet property="icon" destination="p37-fV-Mm0" id="b7W-W3-9r7"/>
                 <outlet property="separatorView" destination="YCy-Np-oaG" id="kQ8-9K-EwB"/>
                 <outlet property="titleLabel" destination="9wu-cf-sMc" id="Z6y-93-27s"/>
             </connections>
@@ -37,7 +38,7 @@
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="p37-fV-Mm0">
+                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="goodSignal" translatesAutoresizingMaskIntoConstraints="NO" id="p37-fV-Mm0">
                             <rect key="frame" x="358" y="0.0" width="18" height="16"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="16" id="EwJ-8F-KWV"/>
@@ -73,6 +74,7 @@
         </view>
     </objects>
     <resources>
+        <image name="goodSignal" width="16" height="16"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

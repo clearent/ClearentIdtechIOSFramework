@@ -38,6 +38,6 @@ public class ClearentHintView: ClearentTitleLabel {
 
     override func configure() {
         super.configure()
-        font = ClearentConstants.Font.regularMedium
+        font = ClearentConstants.Font.proTextNormal
     }
 }

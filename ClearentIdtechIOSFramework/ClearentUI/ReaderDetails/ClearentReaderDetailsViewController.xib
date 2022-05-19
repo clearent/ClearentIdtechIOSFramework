@@ -16,9 +16,9 @@
                 <outlet property="connectedView" destination="mMf-Rb-yxr" id="o91-XM-9bA"/>
                 <outlet property="readerName" destination="o6o-lI-X3o" id="Zw8-EU-AUv"/>
                 <outlet property="removeReaderButton" destination="RMX-cF-dCe" id="aJ4-BJ-dP1"/>
-                <outlet property="serialNumber" destination="gEZ-PY-iki" id="80s-ji-mZE"/>
+                <outlet property="serialNumberView" destination="gEZ-PY-iki" id="80s-ji-mZE"/>
                 <outlet property="signalStatusView" destination="qTP-SH-KEI" id="cGu-mN-BlH"/>
-                <outlet property="versionNumber" destination="6bw-yV-xhb" id="NWA-La-7rA"/>
+                <outlet property="versionNumberView" destination="6bw-yV-xhb" id="NWA-La-7rA"/>
                 <outlet property="view" destination="iN0-l3-epB" id="S2B-t5-vOG"/>
             </connections>
         </placeholder>
@@ -28,7 +28,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="irp-yA-dbn">
-                    <rect key="frame" x="16" y="44" width="382" height="748"/>
+                    <rect key="frame" x="16" y="78" width="382" height="714"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="ndA-by-iyK" customClass="ClearentAdaptiveStackView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="0.0" width="382" height="740"/>
@@ -83,7 +83,7 @@
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="irp-yA-dbn" secondAttribute="trailing" constant="16" id="dGS-Jb-b9j"/>
-                <constraint firstItem="irp-yA-dbn" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" id="q6P-k0-TzR"/>
+                <constraint firstItem="irp-yA-dbn" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="34" id="q6P-k0-TzR"/>
                 <constraint firstItem="RMX-cF-dCe" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="32" id="qfh-KY-jE0"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="RMX-cF-dCe" secondAttribute="bottom" constant="16" id="rJJ-Ly-8hC"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="RMX-cF-dCe" secondAttribute="trailing" constant="32" id="v4k-T6-Jev"/>

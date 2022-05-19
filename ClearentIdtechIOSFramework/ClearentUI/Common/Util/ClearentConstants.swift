@@ -6,6 +6,8 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
+import UIKit
+
 public class ClearentConstants {
     // use a class from same package to identify the package
     public class var bundle: Bundle {
@@ -36,13 +38,14 @@ public class ClearentConstants {
     // MARK: - Fonts
 
     public enum Font {
-        private static let sfProBold = "SFProText-Bold"
-        private static let sfProRegular = "SFProText-Regular"
-        private static let sfProMedium = "SFProText-Medium"
-        
-        public static let regularExtraLarge = UIFont(name: sfProRegular, size: 32)
-        static let regularMedium = UIFont(name: sfProRegular, size: 14)
-        static let regularSmall = UIFont(name: sfProRegular, size: 10)
+        private static let sfProDisplayMedium = "SFProDisplay-Medium"
+        private static let sfProTextMedium = "SFProText-Medium"
+
+        public static let proDisplayExtraLarge = UIFont(name: sfProDisplayMedium, size: 32)
+        public static let proDisplayLarge = UIFont(name: sfProDisplayMedium, size: 20) ?? UIFont.systemFont(ofSize: 20)
+        public static let proTextLarge = UIFont(name: sfProTextMedium, size: 16)
+        public static let proTextNormal = UIFont(name: sfProTextMedium, size: 14)
+        public static let proTextSmall = UIFont(name: sfProTextMedium, size: 10)
     }
 
     // MARK: Assets
@@ -74,14 +77,16 @@ public class ClearentConstants {
         // Pairing
         static let rightArrow = "right-arrow"
         static let reader = "reader"
-        
-        //Readers List
+
+        // Readers List
         static let expanded = "expanded"
         static let collapsed = "collapsed"
         static let pairingSuccessful = "pairingSuccessful"
+
+        static let navigationArrow = "left-arrow"
     }
-    
-   public enum Size {
+
+    public enum Size {
         public static let primaryButtonBorderWidth = 1.0
     }
 }

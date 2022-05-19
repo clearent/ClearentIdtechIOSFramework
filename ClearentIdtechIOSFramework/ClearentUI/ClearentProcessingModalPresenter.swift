@@ -18,11 +18,12 @@ public protocol ProcessingModalProtocol {
     func restartProcess(processType: ProcessType)
     func startFlow()
     func startPairingFlow()
+    func showDetailsScreen(with readerInfo: ReaderInfo, on navigationController: UINavigationController)
     func connectTo(reader: ReaderInfo)
 }
 
 public class ClearentProcessingModalPresenter {
-    private weak var paymentProcessingView: ClearentProcessingModalView?
+    private weak var modalProcessingView: ClearentProcessingModalView?
     private var amount: Double?
     private let sdkWrapper = ClearentWrapper.shared
     private var sdkFeedbackProvider: FlowDataProvider
@@ -31,7 +32,7 @@ public class ClearentProcessingModalPresenter {
     // MARK: Init
 
     public init(paymentProcessingView: ClearentProcessingModalView, amount: Double?, processType: ProcessType) {
-        self.paymentProcessingView = paymentProcessingView
+        modalProcessingView = paymentProcessingView
         self.amount = amount
         self.processType = processType
         sdkFeedbackProvider = FlowDataProvider()
@@ -41,15 +42,21 @@ public class ClearentProcessingModalPresenter {
     private func dissmissViewWithDelay() {
         let deadlineTime = DispatchTime.now() + .seconds(3)
         DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
-            self.paymentProcessingView?.dismissViewController()
+            self.modalProcessingView?.dismissViewController()
         }
     }
 }
 
 extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
+    public func showDetailsScreen(with readerInfo: ReaderInfo, on navigationController: UINavigationController) {
+        let vc = ClearentReaderDetailsViewController(nibName: String(describing: ClearentReaderDetailsViewController.self), bundle: ClearentConstants.bundle)
+        vc.detailsPresenter = ClearentReaderDetailsPresenter(readerInfo: readerInfo)
+        navigationController.pushViewController(vc, animated: true)
+    }
+
     public func restartProcess(processType: ProcessType) {
         sdkFeedbackProvider.delegate = self
-        paymentProcessingView?.showLoadingView()
+        modalProcessingView?.showLoadingView()
         switch processType {
         case .pairing:
             sdkWrapper.startPairing()
@@ -77,7 +84,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                      FlowDataItem(type: .description, object: "xsdk_prepare_pairing_reader_button".localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.pair)]
         let feedback = FlowFeedback(flow: .pairing, type: FlowFeedbackType.info, items: items)
-        paymentProcessingView?.updateContent(with: feedback)
+        modalProcessingView?.updateContent(with: feedback)
     }
     
     public func connectTo(reader: ReaderInfo) {
@@ -101,8 +108,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
                      FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
         let feedback = FlowFeedback(flow: .showReaders, type: .showReaders, items: items)
-        
-        paymentProcessingView?.updateContent(with: feedback)
+
+        modalProcessingView?.updateContent(with: feedback)
         sdkWrapper.searchRecentlyUsedReaders()
     }
 }
@@ -124,7 +131,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                     items.insert(FlowDataItem(type: .readerInfo, object: readerInfo), at: 0)
                 }
                 let feedback = FlowFeedback(flow: self.processType, type: FlowFeedbackType.info, items: items)
-                self.paymentProcessingView?.updateContent(with: feedback)
+                self.modalProcessingView?.updateContent(with: feedback)
             }
         } else if let amount = amount {
             sdkWrapper.startTransactionWithAmount(amount: String(amount))
@@ -132,7 +139,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
     }
 
     func didReceiveFlowFeedback(feedback: FlowFeedback) {
-        paymentProcessingView?.updateContent(with: feedback)
+        modalProcessingView?.updateContent(with: feedback)
         ClearentUIManager.shared.flowFeedbackReceived?(ClearentWrapper.shared.readerInfo)
     }
 
