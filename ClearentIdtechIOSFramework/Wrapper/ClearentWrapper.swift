@@ -135,17 +135,10 @@ public final class ClearentWrapper : NSObject {
             self.transactionAmount = amount
         }
         
-        if (!isInternetOn) {
-            if let action = UserAction(rawValue: UserAction.noInternet.rawValue) {
-                DispatchQueue.main.async {
-                    self.delegate?.userActionNeeded(action: action)
-                }
-            }
-        } else if (!isBluetoothOn) {
-            if let action = UserAction(rawValue: UserAction.noBluetooth.rawValue) {
-                DispatchQueue.main.async {
-                    self.delegate?.userActionNeeded(action: action)
-                }
+        let userActionNeeded: UserAction? = isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : .noInternet
+        if let action = userActionNeeded {
+            DispatchQueue.main.async {
+                  self.delegate?.userActionNeeded(action: action)
             }
         } else {
             DispatchQueue.global(qos: .userInitiated).async { [weak self] in
@@ -156,7 +149,6 @@ public final class ClearentWrapper : NSObject {
                 strongSelf.clearentVP3300.startTransaction(payment, clearentConnection: strongSelf.connection)
             }
         }
-        
     }
     
     public func searchRecentlyUsedReaders() {
@@ -232,7 +224,6 @@ public final class ClearentWrapper : NSObject {
     }
     
     public func isReaderConnected() -> Bool {
-        // TO DO check why isConnected not working properly
         return (self.readerInfo != nil && self.readerInfo?.isConnected == true)
     }
     

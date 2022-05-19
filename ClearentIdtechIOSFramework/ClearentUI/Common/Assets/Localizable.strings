@@ -78,8 +78,5 @@
 "xsdk_bluetooth_error_title" = "Bluetooth is not on";
 "xsdk_bluetooth_error_description" = "You don’t seem to have bluetooth active. Please check the bluetooth state and try again";
 
-"xsdk_bluetooth_error_title" = "No bluetooth permission";
-"xsdk_bluetooth_error_description" = "In order to use the app you need to accept the bluetooth permission.";
-
-//Bluetoth connection
-
+"xsdk_bluetooth_permission_error_title" = "No bluetooth permission";
+"xsdk_bluetooth__permission_error_description" = "In order to use the app you need to accept the bluetooth permission.";
