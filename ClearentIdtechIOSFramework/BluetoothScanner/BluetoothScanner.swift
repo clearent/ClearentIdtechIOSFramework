@@ -11,6 +11,7 @@ import CoreBluetooth
 
 protocol BluetoothScannerProtocol : AnyObject {
     func didReceivedSignalStrength(level:SignalLevel)
+    func didUpdateBluetoothState(isOn: Bool)
     func didFinishWithError()
 }
 
@@ -18,11 +19,20 @@ class BluetoothScanner: NSObject {
 
     private var centralManager: CBCentralManager!
     private var readerUDID: String?
-    private var udid: UUID?
     private weak var delegate: BluetoothScannerProtocol?
     private var device: CBPeripheral?
     
-    init(udid:UUID, delegate: BluetoothScannerProtocol) {
+    internal var udid: UUID? {
+        didSet {
+            setupDevice()
+            centralManager.scanForPeripherals(withServices: nil, options: nil)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 6) { [self] in
+                centralManager.stopScan()
+            }
+        }
+    }
+    
+    init(udid:UUID?, delegate: BluetoothScannerProtocol) {
         super.init()
         self.udid = udid
         self.delegate = delegate
@@ -72,13 +82,9 @@ extension BluetoothScanner: CBCentralManagerDelegate, CBPeripheralDelegate {
         case .unauthorized:
             self.delegate?.didFinishWithError()
         case .poweredOff:
-            self.delegate?.didFinishWithError()
+            self.delegate?.didUpdateBluetoothState(isOn: false)
         case .poweredOn:
-            setupDevice()
-            central.scanForPeripherals(withServices: nil, options: nil)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 6) { [self] in
-                centralManager.stopScan()
-            }
+            self.delegate?.didUpdateBluetoothState(isOn: true)
         @unknown default:
             print("Unknown")
         }
