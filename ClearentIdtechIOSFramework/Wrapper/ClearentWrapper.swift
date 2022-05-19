@@ -357,9 +357,11 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
                 }
             case .BLUETOOTH:
                 if (ClearentWrapperDefaults.pairedReaderInfo != nil) {
-                    if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
-                        currentReader.isConnected = false
-                        ClearentWrapperDefaults.pairedReaderInfo = currentReader
+                    if (clearentFeedback.message == UserAction.noBluetooth.rawValue) {
+                        if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
+                            currentReader.isConnected = false
+                            ClearentWrapperDefaults.pairedReaderInfo = currentReader
+                        }
                     }
                     if let action = UserAction(rawValue: clearentFeedback.message) {
                         DispatchQueue.main.async {
@@ -415,10 +417,6 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
             self.delegate?.didFindReaders(readers: readers)
         } else {
             self.delegate?.didNotFindReaders()
-        }
-        
-        if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo {
-            self.readerInfoReceived?(readerInfo)
         }
     }
 
