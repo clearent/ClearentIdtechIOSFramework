@@ -106,7 +106,12 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         let statusHeader = ClearentReaderStatusHeaderView()
         
         showOnTop ? statusHeader.setup(readerName: name, dropDownIconName: ClearentConstants.IconName.expanded, signalStatusIconName: signalStatus.iconName, signalStatusTitle: signalStatus.title, batteryStatusIconName: batteryStatus.iconName, batteryStatusTitle: batteryStatus.title) : statusHeader.setup(readerName: name, signalStatusIconName: signalStatus.iconName, signalStatusTitle: signalStatus.title, batteryStatusIconName: batteryStatus.iconName, batteryStatusTitle: batteryStatus.title)
-        statusHeader.setup(readerName: name, signalStatusIconName: signalStatus.iconName, signalStatusTitle: signalStatus.title, batteryStatusIconName: batteryStatus.iconName, batteryStatusTitle: batteryStatus.title)
+        
+        statusHeader.action = { [weak self] in
+            if self?.showOnTop == true {
+                self?.dismiss(animated: true, completion: nil)
+            }
+        }
         return statusHeader
     }
 
@@ -146,6 +151,9 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             case .pairNewReader:
                 strongSelf.stackView.positionView(onTop: false, of: strongSelf.view)
                 presenter.startPairingFlow()
+            case .settings:
+                let url = URL(string: UIApplication.openSettingsURLString + Bundle.main.bundleIdentifier!)!
+                UIApplication.shared.open(url)
             }
         }
         return button

@@ -17,6 +17,7 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
     @IBOutlet weak var readerBatteryStatusView: ClearentReaderConnectivityStatusView!
     
     public var state: ReaderStatusHeaderViewState = .collapsed
+    public var action: (() -> Void)?
     
     public override var margins: [BottomMargin] {
         [
@@ -52,5 +53,14 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
     public func updateDropDownIcon() {
         dropDownImageView.image = state == .collapsed ? UIImage(named: ClearentConstants.IconName.collapsed, in: ClearentConstants.bundle, compatibleWith: nil) :
         UIImage(named: ClearentConstants.IconName.expanded, in: ClearentConstants.bundle, compatibleWith: nil)
+    }
+    
+    // MARK: Private
+    
+    @IBAction func didTapOnReaderStatusHeaderView(_ sender: Any) {
+        state = state == .collapsed ? .expanded : .collapsed
+        updateDropDownIcon()
+        
+        action?()
     }
 }

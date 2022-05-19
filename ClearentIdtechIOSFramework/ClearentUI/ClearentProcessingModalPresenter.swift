@@ -115,8 +115,9 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 }
 
 extension ClearentProcessingModalPresenter: FlowDataProtocol {
+    
     public func deviceDidDisconnect() {
-        ClearentUIManager.shared.flowFeedbackReceived?(nil)
+        ClearentUIManager.shared.readerInfoReceived?(nil)
     }
 
     func didFinishedPairing() {
@@ -140,7 +141,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
 
     func didReceiveFlowFeedback(feedback: FlowFeedback) {
         modalProcessingView?.updateContent(with: feedback)
-        ClearentUIManager.shared.flowFeedbackReceived?(ClearentWrapper.shared.readerInfo)
+        ClearentUIManager.shared.readerInfoReceived?(ClearentWrapper.shared.readerInfo)
     }
 
     func didFinishTransaction(error: ResponseError?) {

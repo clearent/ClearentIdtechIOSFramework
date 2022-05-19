@@ -12,11 +12,15 @@ public final class ClearentUIManager : NSObject {
     
     private let clearentWrapper = ClearentWrapper.shared
     public static let shared = ClearentUIManager()
-    public var flowFeedbackReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
+    public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
     
     public override init() {
         super.init()
-        _ = ClearentWrapper.shared
+        ClearentWrapper.shared.readerInfoReceived = {[weak self] _ in
+            DispatchQueue.main.async {
+                self?.readerInfoReceived?(ClearentWrapper.shared.readerInfo)
+            }
+        }
     }
     
     public func updateWith(baseURL: String, apiKey: String, publicKey: String) {
@@ -41,7 +45,7 @@ public final class ClearentUIManager : NSObject {
          viewController.presenter = presenter
         
           if (clearentWrapper.readerInfo != nil) {
-              flowFeedbackReceived?(clearentWrapper.readerInfo)
+              readerInfoReceived?(clearentWrapper.readerInfo)
           }
  
           let navigationController = UINavigationController(rootViewController: viewController)
