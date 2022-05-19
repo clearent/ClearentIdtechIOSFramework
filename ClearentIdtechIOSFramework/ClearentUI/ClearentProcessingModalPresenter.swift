@@ -59,7 +59,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         modalProcessingView?.showLoadingView()
         switch processType {
         case .pairing:
-            sdkWrapper.startPairing()
+            sdkWrapper.startPairing(reconnectIfPossible: true)
         case .payment:
             sdkWrapper.retryLastTransaction()
         case .showReaders:
@@ -97,7 +97,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         if sdkWrapper.isReaderConnected(), let amount = amount {
             sdkWrapper.startTransactionWithAmount(amount: String(amount))
         } else {
-            sdkWrapper.startPairing()
+            sdkWrapper.startPairing(reconnectIfPossible: true)
         }
     }
     

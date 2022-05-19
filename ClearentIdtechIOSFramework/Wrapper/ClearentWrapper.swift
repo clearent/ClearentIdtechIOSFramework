@@ -88,7 +88,7 @@ public final class ClearentWrapper : NSObject {
     
     // MARK - Public
         
-    public func startPairing() {
+    public func startPairing(reconnectIfPossible: Bool) {
         
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let strongSelf = self else { return }
@@ -96,8 +96,7 @@ public final class ClearentWrapper : NSObject {
             let config = ClearentVP3300Config(noContactlessNoConfiguration: strongSelf.baseURL, publicKey: strongSelf.publicKey)
             strongSelf.clearentVP3300 = Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
             
-            if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo {
-                ClearentWrapperDefaults.pairedReaderInfo = readerInfo
+            if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo, reconnectIfPossible == true   {
                 strongSelf.connection  = ClearentConnection(bluetoothWithFriendlyName: readerInfo.readerName)
             } else {
                 DispatchQueue.main.async {
