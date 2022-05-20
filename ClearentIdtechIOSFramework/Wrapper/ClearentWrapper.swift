@@ -75,9 +75,12 @@ public final class ClearentWrapper : NSObject {
     private var isInternetOn = false
     internal var isBluetoothOn = false
     
+    // MARK: Init
+    
     public override init() {
         super.init()
         createLogFile()
+        
         if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
             currentReader.isConnected = false
             ClearentWrapperDefaults.pairedReaderInfo = currentReader

@@ -14,6 +14,8 @@ public final class ClearentUIManager : NSObject {
     public static let shared = ClearentUIManager()
     public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
     
+    // MARK: Init
+    
     public override init() {
         super.init()
         ClearentWrapper.shared.readerInfoReceived = {[weak self] _ in
@@ -22,6 +24,8 @@ public final class ClearentUIManager : NSObject {
             }
         }
     }
+    
+    // MARK: Public
     
     public func updateWith(baseURL: String, apiKey: String, publicKey: String) {
         clearentWrapper.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey)
@@ -38,6 +42,8 @@ public final class ClearentUIManager : NSObject {
     public func readersViewController() -> UIViewController {
         viewController(processType: .showReaders)
     }
+    
+    // MARK: Private
     
     private func viewController(processType: ProcessType, amount: Double? = nil) ->  UIViewController {
         let paymentProcessingViewController = ClearentProcessingModalViewController(showOnTop: processType == .showReaders)
