@@ -87,9 +87,9 @@
     [[IDT_VP3300 sharedController] close];
 }
 
--(void) device_connectToUSB {
-    [[IDT_VP3300 sharedController] device_connectToUSB];
-}
+//-(void) device_connectToUSB {
+//    [[IDT_VP3300 sharedController] device_connectToUSB];
+//}
 
 -(RETURN_CODE) ctls_cancelTransaction {
     [self clearCurrentRequest];

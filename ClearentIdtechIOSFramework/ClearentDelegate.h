@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "IDT_VP3300.h"
+
 #import "ClearentPublicVP3300Delegate.h"
 #import "ClearentTransactionTokenRequest.h"
 #import "ClearentPaymentRequest.h"
@@ -128,6 +129,8 @@ During a Contactless transaction, if events are enabled, they will be sent to th
 - (void) disableCardRemovalTimer;
 
 - (void) updatePublicKey:(NSString *)publicKey;
+
+- (void) resetTransaction;
 
 @end
 

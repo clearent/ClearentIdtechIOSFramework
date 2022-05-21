@@ -14,7 +14,8 @@
 #import "ClearentDelegate.h"
 #import "Clearent_VP3300.h"
 #import "ClearentBluetoothDevice.h"
-#import "IDTUtility.h"
+#import <IDTech/IDTUtility.h>
+#import <IDTech/IDT_VP3300.h>
 
 @implementation ClearentDeviceConnector
 
@@ -414,7 +415,7 @@ NSTimer *bluetoothSearchDisableTimer;
 }
 
 -(void) disableBluetoothSearch:(id) sender {
-    
+   //TODO do we need to cancel search if searchBluetooth is not  enabled ?
     if(_clearentDelegate.clearentConnection.searchBluetooth) {
     
         [ClearentLumberjack logInfo:@"disableBluetoothSearch: device_disableBLEDeviceSearch only when in search mode"];
@@ -682,6 +683,9 @@ NSTimer *bluetoothSearchDisableTimer;
     if(!device_enableBLEDeviceSearchReturnCode) {
         [ClearentLumberjack logInfo:@"BLUETOOTH SCAN FAILED WITH FULL FRIENDLY NAME"];
     }
+    //TODO
+    //NSString* SPS_SERVICE_3300 =  @"1820";
+    //[[IDT_VP3300 sharedController] scanForBLEDevices:2.0 serviceUUIDs:@[[CBUUID UUIDWithString:SPS_SERVICE_3300]/] options:nil];
     
 }
 

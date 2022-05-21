@@ -22,7 +22,7 @@ Code references are in objective-c since the framework was built in that languag
 
 You can use our [Clearent Cocoapod](https://github.com/clearent/CocoaPods) or [Carthage](https://github.com/Carthage/Carthage).
 
-:new: CocoaPods latest version is 2.0.15.
+:new: CocoaPods latest version is 3.2.9. We now support XCFrameworks.
 
 ### Carthage ###
 

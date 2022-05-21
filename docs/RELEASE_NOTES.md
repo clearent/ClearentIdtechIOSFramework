@@ -1,5 +1,28 @@
 ![Screenshot](clearent_logo.jpg)
 
+# Release Notes (Current Release is 3.1, Pod 3.2.9)
+
+Support IDTech framework version 1.1.166.019
+
+IDTech fixed an issue with a subset of return codes that had been mapped for their Windows solution instead of iOS. We removed some extra logic that was trying to fix this issue.
+
+Add setPublicKey so the Clearent_VP3300 object can be treated as a singleton. This allows you to update the public key if you are supporting multiple Merchants.
+
+The framework used to check a cache first when deciding what reader to connect to when the IDTech framework sends back readers found during a scan. This has changed
+to favoring the reader described in the ClearentConnection object first.
+
+We've continued to follow IDTech's 'Less is more' approach to reducing the interaction with the bluetooth reader by limiting the requests to get device serial number and firmware version  
+information after every connection. Utilizing the ClearentConnection object has simplified our approach. The firmare version was only required to support a workaround
+put in place to address a contactless bug with firmware version .151. This issue has since been resolved.
+
+Our remote logging solution would sometiems crash so we swapped it out with a CocoaLumberjack solution.
+
+We removed some logic that was attempting a retry of the bluetooth scan when no readers were found. You have the ability to send in the maximum amount of time you want to scan
+and this logic was working against that. So, instead of doubling the time we'll just tell you the reader was not found.
+This logic was put in place because of a scenario where the IDTech framework will sometimes not find the reader during a scan even though we see the bluelight flashing slowly on the reader.
+Our logic would call the IDTech method to force a bluetooth disconnect which would help the next scan.    
+
+
 # Release Notes (Current Release is 2.0.5)
 
 2.0.4 - There was an unrecoverable file exception that produced a crash in our remote logging solution.
@@ -25,11 +48,7 @@ When this happens we will cancel the current transaction and restart a transacti
 
 ### Known Issues & different behavior ###
 
-* The idtech framework is calling back with a new message when you start a transaction using the device_startTransaction method. "PLEASE SWIPE, TAP,OR INSERT"
-
 * Some times when you attempt contactless the reader sends back a generic response. When this happens the framework doesn't know whether to keep retrying the tap or fallback to a contact/swipe.
 A 'Card read error' is returned. A new transaction will need to be tried.
 
 * The idtech framework will sometimes not send back a message we can display to you instructing you there was an error during contactless/tap. Instead it relies on audio beeps. Usually if you here 3 beeps or two beeps instead of the long beep it indicates an issue. See docs for more details.
-
-* There was an issue related to how the reader was behaving when you pressed the button after it was disconnected for a while. The firmware was incorrectly determining that a card was inserted or not. This made logic in the idtech framework think a card was inserted and as a result would not enable contactless mode. A firmware fix was made (bluetooth version 151). To avoid forcing everyone to upgrade their firmware we put a workaround in that starts up the transaction and immediately cancels it, then starts up the transaction again. This somehow resets the firmware switch that is having a problem so when the new transaction is started contactless mode is also enabled. The fallout from this is you might get a second callback message sent instructing you to PLEASE SWIPE, TAP, OR INSERT, or the INSERT/SWIPE message.

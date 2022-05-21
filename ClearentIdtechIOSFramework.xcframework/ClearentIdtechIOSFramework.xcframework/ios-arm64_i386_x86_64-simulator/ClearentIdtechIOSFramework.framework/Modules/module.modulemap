@@ -1,0 +1,6 @@
+framework module ClearentIdtechIOSFramework {
+  umbrella header "ClearentIdtechIOSFramework.h"
+
+  export *
+  module * { export * }
+}
