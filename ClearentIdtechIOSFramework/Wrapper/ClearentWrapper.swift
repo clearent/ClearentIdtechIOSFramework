@@ -99,6 +99,7 @@ public final class ClearentWrapper : NSObject {
             if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo, reconnectIfPossible == true   {
                 strongSelf.connection  = ClearentConnection(bluetoothWithFriendlyName: readerInfo.readerName)
             } else {
+                strongSelf.connection = ClearentConnection(bluetoothSearch: ())
                 DispatchQueue.main.async {
                     strongSelf.delegate?.didStartPairing()
                 }
@@ -115,8 +116,10 @@ public final class ClearentWrapper : NSObject {
     }
     
     public func cancelTransaction() {
-        clearentVP3300.emv_cancelTransaction()
-        clearentVP3300.device_cancelTransaction()
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            self?.clearentVP3300.emv_cancelTransaction()
+            self?.clearentVP3300.device_cancelTransaction()
+        }
     }
     
     public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String) {
@@ -345,9 +348,10 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     }
     
     public func disconnectFromReader() {
-        self.clearentVP3300.device_disconnectBLE()
-        ClearentWrapperDefaults.pairedReaderInfo = nil
-        self.readerInfoReceived?(nil)
+        clearentVP3300.device_disconnectBLE()
+        bleManager?.cancelPeripheralConnection()
+        ClearentWrapperDefaults.pairedReaderInfo?.isConnected = false
+        self.readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
     }
     
     public func feedback(_ clearentFeedback: ClearentFeedback!) {
@@ -454,9 +458,9 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     
     public func deviceDisconnected() {
         DispatchQueue.main.async {
-            ClearentWrapperDefaults.pairedReaderInfo = nil
-            self.readerInfoReceived?(nil)
+            self.readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
             self.delegate?.deviceDidDisconnect()
+            print("Device Disconnected")
         }
     }
 }

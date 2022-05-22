@@ -15,6 +15,7 @@ public class ClearentProcessingModalViewController: ClearentBaseViewController {
     private var showOnTop: Bool = false
     @IBOutlet var stackView: ClearentRoundedCornersStackView!
     public var presenter: ProcessingModalProtocol?
+    var dismissCompletion: (() -> Void)?
 
     // MARK: - Init
 
@@ -46,8 +47,11 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     }
 
     public func dismissViewController() {
-        dismiss(animated: true, completion: nil)
         ClearentWrapper.shared.cancelTransaction()
+        DispatchQueue.main.async { [weak self] in
+            self?.dismiss(animated: true, completion: nil)
+            self?.dismissCompletion?()
+        }
     }
 
     public func updateContent(with feedback: FlowFeedback) {

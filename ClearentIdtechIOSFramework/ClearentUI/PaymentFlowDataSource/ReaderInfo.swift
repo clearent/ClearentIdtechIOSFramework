@@ -10,7 +10,14 @@ public struct ReaderInfo: Codable {
     public var readerName: String
     var batterylevel: Int?
     var signalLevel: Int?
-    var isConnected: Bool
+    var isConnected: Bool {
+        didSet {
+            if isConnected == false {
+                signalLevel = nil
+                batterylevel = nil
+            }
+        }
+    }
     var autojoin: Bool
     var uuid: UUID?
     var serialNumber: String?

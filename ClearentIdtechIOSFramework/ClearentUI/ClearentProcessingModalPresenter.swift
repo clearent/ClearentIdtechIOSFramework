@@ -68,9 +68,16 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
 
     public func startFlow() {
+        sdkFeedbackProvider = FlowDataProvider()
+        sdkFeedbackProvider.delegate = self
         switch processType {
-        case .pairing:
-            startPairingFlow()
+        case let .pairing(withReader: readerInfo):
+            if let readerInfo = readerInfo {
+                // automatically connect to this reader
+                connectTo(reader: readerInfo)
+            } else {
+                startPairingFlow()
+            }
         case .payment:
             startTransactionFlow()
         case .showReaders:
@@ -83,7 +90,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
                      FlowDataItem(type: .description, object: "xsdk_prepare_pairing_reader_button".localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.pair)]
-        let feedback = FlowFeedback(flow: .pairing, type: FlowFeedbackType.info, items: items)
+        let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.info, items: items)
         modalProcessingView?.updateContent(with: feedback)
     }
     
@@ -121,7 +128,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
     }
 
     func didFinishedPairing() {
-        if processType == .pairing {
+        if case .pairing = processType {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 // display successful pairing content
                 var items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.pairingSuccessful),
@@ -133,6 +140,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                 }
                 let feedback = FlowFeedback(flow: self.processType, type: FlowFeedbackType.info, items: items)
                 self.modalProcessingView?.updateContent(with: feedback)
+                
             }
         } else if let amount = amount {
             sdkWrapper.startTransactionWithAmount(amount: String(amount))

@@ -43,7 +43,7 @@
                                     </constraints>
                                     <color key="onTintColor" systemColor="systemGreenColor"/>
                                     <connections>
-                                        <action selector="valueChanged:" destination="-1" eventType="valueChanged" id="UFp-fd-DWc"/>
+                                        <action selector="switchValueDidChange:" destination="-1" eventType="valueChanged" id="Ex8-Ry-91z"/>
                                     </connections>
                                 </switch>
                             </subviews>

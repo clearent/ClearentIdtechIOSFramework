@@ -81,6 +81,9 @@
 "xsdk_reader_details_version_title" = "Version";
 "xsdk_reader_details_remove_reader" = "Remove reader";
 "xsdk_reader_details_nav_title" = "Reader details";
+"xsdk_reader_details_signal_good" = "Good";
+"xsdk_reader_details_signal_medium" = "Medium";
+"xsdk_reader_details_signal_weak" = "Weak";
 
 // Internet Connection
 "xsdk_internet_error_title" = "Check your connection";

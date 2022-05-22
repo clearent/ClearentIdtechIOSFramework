@@ -111,7 +111,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     func userActionNeeded(action: UserAction) {
         var items : [FlowDataItem]? = nil
         var type = FlowFeedbackType.info
-        
+        print("🍎 userActionNeeded: \(action.rawValue)")
         switch action {
         case .pleaseWait:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
@@ -214,7 +214,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.pairingSuccessful),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader)]
 
-        let feedback = FlowDataFactory.component(with: .pairing,
+        let feedback = FlowDataFactory.component(with: .pairing(),
                                                  type: .searchDevices,
                                                  readerInfo: fetchReaderInfo(),
                                                  payload: items)
@@ -231,7 +231,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
 
-        let feedback = FlowDataFactory.component(with: .pairing,
+        let feedback = FlowDataFactory.component(with: .pairing(),
                                                  type: .info,
                                                  readerInfo: nil,
                                                  payload: items)
@@ -244,7 +244,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .devicesFound, object: readers),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
 
-        let feedback = FlowDataFactory.component(with: .pairing,
+        let feedback = FlowDataFactory.component(with: .pairing(),
                                                  type: .searchDevices,
                                                  readerInfo: nil,
                                                  payload: items)
@@ -255,10 +255,10 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         let items: [FlowDataItem]
         let feedback: FlowFeedback
         
-        if ClearentWrapper.shared.flowType == .pairing {
+        if case .pairing = ClearentWrapper.shared.flowType {
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader)]
-            feedback = FlowDataFactory.component(with: .pairing,
+            feedback = FlowDataFactory.component(with: .pairing(),
                                                  type: .searchDevices,
                                                  readerInfo: reader,
                                                  payload: items)
@@ -281,7 +281,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
 
-        let feedback = FlowDataFactory.component(with: .pairing,
+        let feedback = FlowDataFactory.component(with: .pairing(),
                                                  type: .info,
                                                  readerInfo: nil,
                                                  payload: items)

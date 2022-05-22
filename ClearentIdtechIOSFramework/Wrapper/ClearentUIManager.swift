@@ -32,17 +32,20 @@ public final class ClearentUIManager : NSObject {
     }
     
     public func pairingViewController() -> UINavigationController {
-        viewController(processType: .pairing)
+        viewController(processType: .pairing())
     }
     
     public func readersViewController() -> UINavigationController {
         viewController(processType: .showReaders)
     }
     
-    private func viewController(processType: ProcessType, amount: Double? = nil) ->  UINavigationController {
+    internal func viewController(processType: ProcessType, amount: Double? = nil, dismissCompletion: (() -> Void)? = nil) ->  UINavigationController {
+
         let viewController = ClearentProcessingModalViewController(showOnTop: processType == .showReaders)
+    
         let presenter = ClearentProcessingModalPresenter(paymentProcessingView: viewController, amount: amount, processType: processType)
         viewController.presenter = presenter
+        viewController.dismissCompletion = dismissCompletion
         
         if (ClearentWrapperDefaults.pairedReaderInfo != nil) {
             readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)

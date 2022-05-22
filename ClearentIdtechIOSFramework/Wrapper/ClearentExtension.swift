@@ -16,7 +16,6 @@ extension ClearentWrapper: BluetoothScannerProtocol {
         if (!isBluetoothOn) {
             if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
                 currentReader.isConnected = false
-                currentReader.batterylevel = nil
                 ClearentWrapperDefaults.pairedReaderInfo = currentReader
             }
         }
@@ -54,7 +53,7 @@ extension ClearentWrapper {
         }
     }
     
-    internal func removeReaderFromRecentlyUsed(reader: ReaderInfo) {
+    public func removeReaderFromRecentlyUsed(reader: ReaderInfo) {
         guard var existingReaders = ClearentWrapperDefaults.recentlyPairedReaders else { return }
         
         let readersWithSameName = existingReaders.filter { $0.readerName == reader.readerName }

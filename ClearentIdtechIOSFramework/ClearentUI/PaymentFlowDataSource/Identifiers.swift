@@ -72,10 +72,21 @@ public enum FlowButtonType {
     }
 }
 
-public enum ProcessType {
-    case pairing
+public enum ProcessType: Equatable {
+    
+    case pairing(withReader: ReaderInfo? = nil)
     case payment
     case showReaders
+    
+    public static func == (lhs: ProcessType, rhs: ProcessType) -> Bool {
+        switch (lhs,rhs) {
+        case (.pairing, .pairing): return true
+        case (.payment, .payment): return true
+        case (.showReaders, .showReaders): return true
+        default:
+            return false
+        }
+    }
 }
 
 public enum ReaderStatusHeaderViewState {

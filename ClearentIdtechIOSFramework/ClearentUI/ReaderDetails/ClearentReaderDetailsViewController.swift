@@ -6,9 +6,42 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
-public class ClearentReaderDetailsViewController: UIViewController {
+import UIKit
+
+protocol LoadingViewProtocol {
+    var loadingView: UIView { get }
+    func showFullScreenLoadingView()
+    func removeLoadingView()
+}
+
+extension LoadingViewProtocol where Self: UIViewController {
+    func showFullScreenLoadingView() {
+        if let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow } )  {
+            loadingView.frame = window.bounds
+            loadingView.backgroundColor = ClearentConstants.Color.backgroundPrimary02.withAlphaComponent(0.6)
+            window.addSubview(loadingView)
+            let activityIndicator = ClearentLoadingView(color: ClearentConstants.Color.backgroundPrimary02, lineWidth: 4)
+            activityIndicator.center = loadingView.center
+            loadingView.translatesAutoresizingMaskIntoConstraints = true
+            DispatchQueue.main.async {
+                self.loadingView.addSubview(activityIndicator)
+            }
+        }
+    }
+    
+    func removeLoadingView() {
+        DispatchQueue.main.async {
+            self.loadingView.removeFromSuperview()
+        }
+    }
+}
+
+public class ClearentReaderDetailsViewController: UIViewController, LoadingViewProtocol {
+    public lazy var loadingView: UIView = UIView(frame: .zero)
+    
     public var detailsPresenter: ClearentReaderDetailsProtocol!
 
+    @IBOutlet weak var stackView: ClearentAdaptiveStackView!
     @IBOutlet var connectedView: ClearentLabelSwitch!
     @IBOutlet var signalStatusView: ClearentLabelWithIcon!
     @IBOutlet var batteryStatusView: ClearentLabelWithIcon!
@@ -24,10 +57,8 @@ public class ClearentReaderDetailsViewController: UIViewController {
         super.viewDidLoad()
         setupNavigationBar()
         setupSwitches()
-        setupReaderStatus()
+        updateReaderInfo()
         setupReaderName()
-        setupSerialNumber()
-        setupVersion()
         setupButton()
     }
 
@@ -57,58 +88,79 @@ public class ClearentReaderDetailsViewController: UIViewController {
         connectedView.descriptionText = ""
         connectedView.isOn = readerInfo.isConnected
         connectedView.valueChangedAction = { [weak self] isOn in
-            self?.detailsPresenter.handleConnection(shouldConnect: isOn)
+            guard let strongSelf = self else { return }
+            if isOn {
+                let modalVC = ClearentUIManager.shared.viewController(processType: .pairing(withReader: strongSelf.readerInfo)) {
+                    strongSelf.didChangedConnectionStatus(reader: strongSelf.readerInfo)
+                }
+                strongSelf.navigationController?.present(modalVC, animated: false)
+            } else {
+                strongSelf.detailsPresenter.disconnectFromReader()
+                strongSelf.didChangedConnectionStatus(reader: strongSelf.readerInfo)
+            }
         }
 
         autojoinView.titleText = "xsdk_reader_details_autojoin_title".localized
         autojoinView.descriptionText = "xsdk_reader_details_autojoin_description".localized
         autojoinView.isOn = readerInfo.autojoin
         autojoinView.valueChangedAction = { [weak self] isOn in
+            self?.showFullScreenLoadingView()
             self?.detailsPresenter.handleAutojoin(markAsAutojoin: isOn)
         }
     }
+    
+    private func didChangedConnectionStatus(reader: ReaderInfo) {
+        if let defaultReader = ClearentWrapperDefaults.pairedReaderInfo,
+           defaultReader.uuid == reader.uuid {
+            detailsPresenter.readerInfo = defaultReader
+            connectedView.isOn = defaultReader.isConnected
+        }
+        updateReaderInfo()
+    }
 
+    private func updateReaderInfo() {
+        setupReaderStatus()
+        setupSerialNumber()
+        setupVersion()
+    }
+    
     private func setupReaderStatus() {
-        if let signalLevel = readerInfo.signalLevel {
-            let signalStatus = readerInfo.signalStatus()
-            signalStatusView.title = String(format: "xsdk_reader_details_signal_status".localized, signalLevel)
+        if let signalStatus = detailsPresenter.readerSignalStatus {
             signalStatusView.iconName = signalStatus.iconName
-        } else {
-            signalStatusView.removeFromSuperview()
+            signalStatusView.title = signalStatus.title
         }
+        signalStatusView.isHidden = detailsPresenter.readerSignalStatus == nil
 
-        if let batteryIcon = readerInfo.batteryStatus().iconName, let batteryTitle = readerInfo.batteryStatus().title {
-            batteryStatusView.title = String(format: "xsdk_reader_details_battery_status".localized, batteryTitle)
-            batteryStatusView.iconName = batteryIcon
-        } else {
-            batteryStatusView.removeFromSuperview()
+        if let batteryStatus = detailsPresenter.readerBatteryStatus {
+            batteryStatusView.title = batteryStatus.title
+            batteryStatusView.iconName = batteryStatus.iconName
         }
+        batteryStatusView.isHidden = detailsPresenter.readerBatteryStatus == nil
+
     }
 
     private func setupReaderName() {
         readerName.titleText = "xsdk_reader_details_readername_title".localized
         readerName.descriptionText = readerInfo.readerName
-        readerName.icon.removeFromSuperview()
+        readerName.icon.isHidden = true
     }
 
     private func setupSerialNumber() {
         if let serialNumber = readerInfo.serialNumber {
             serialNumberView.titleText = "xsdk_reader_details_serialnumber_title".localized
             serialNumberView.descriptionText = serialNumber
-            serialNumberView.icon.removeFromSuperview()
-        } else {
-            serialNumberView.removeFromSuperview()
+            serialNumberView.icon.isHidden = true
         }
+        serialNumberView.isHidden = readerInfo.serialNumber == nil
     }
 
     private func setupVersion() {
         if let versionNumber = readerInfo.version {
             versionNumberView.titleText = "xsdk_reader_details_version_title".localized
             versionNumberView.descriptionText = versionNumber
-            versionNumberView.icon.removeFromSuperview()
-        } else {
-            versionNumberView.removeFromSuperview()
+            versionNumberView.icon.isHidden = true
         }
+        versionNumberView.isHidden = readerInfo.version == nil
     }
 
     private func setupButton() {

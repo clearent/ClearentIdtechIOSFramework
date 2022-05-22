@@ -18,6 +18,7 @@
                 <outlet property="removeReaderButton" destination="RMX-cF-dCe" id="aJ4-BJ-dP1"/>
                 <outlet property="serialNumberView" destination="gEZ-PY-iki" id="80s-ji-mZE"/>
                 <outlet property="signalStatusView" destination="qTP-SH-KEI" id="cGu-mN-BlH"/>
+                <outlet property="stackView" destination="ndA-by-iyK" id="uzg-JE-FZk"/>
                 <outlet property="versionNumberView" destination="6bw-yV-xhb" id="NWA-La-7rA"/>
                 <outlet property="view" destination="iN0-l3-epB" id="S2B-t5-vOG"/>
             </connections>
