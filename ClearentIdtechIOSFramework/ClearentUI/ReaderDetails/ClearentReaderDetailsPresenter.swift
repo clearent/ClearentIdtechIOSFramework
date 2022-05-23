@@ -79,7 +79,7 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
     
     func handleBackAction() {
         if let recentReaders = ClearentWrapperDefaults.recentlyPairedReaders, let defaultReader = ClearentWrapperDefaults.pairedReaderInfo {
-            // create list of available and recently used readere, including default reader
+            // create list of available and recently used readers, including default reader
             var result: [ReaderInfo] = recentReaders.filter { recentReader in
                 allReaders.contains(where: {
                     $0.uuid == currentReader.uuid && $0.uuid != ClearentWrapperDefaults.pairedReaderInfo?.uuid

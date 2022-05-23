@@ -22,12 +22,8 @@ class ClearentLabelSwitch: ClearentInfoWithIcon {
     }
 
     var isOn: Bool {
-        get {
-            switchView.isOn
-        }
-        set {
-            switchView.isOn = newValue
-        }
+        get { switchView.isOn }
+        set { switchView.isOn = newValue }
     }
 
     override func configure() {

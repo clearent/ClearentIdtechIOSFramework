@@ -15,9 +15,7 @@ class ClearentInfoWithIcon: ClearentMarginableView {
     @IBOutlet var separatorView: UIView!
 
     override var margins: [BottomMargin] {
-        [
-            RelativeBottomMargin(constant: 24, relatedViewType: ClearentInfoWithIcon.self)
-        ]
+        [RelativeBottomMargin(constant: 24, relatedViewType: ClearentInfoWithIcon.self)]
     }
 
     public var titleTextColor: UIColor? {

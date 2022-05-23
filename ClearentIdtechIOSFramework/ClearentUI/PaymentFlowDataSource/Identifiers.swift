@@ -83,8 +83,7 @@ public enum ProcessType: Equatable {
         case (.pairing, .pairing): return true
         case (.payment, .payment): return true
         case (.showReaders, .showReaders): return true
-        default:
-            return false
+        default: return false
         }
     }
 }
