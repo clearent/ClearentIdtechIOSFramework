@@ -17,7 +17,7 @@ class ClearentReadersTableView: ClearentMarginableView {
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var heightConstraint: NSLayoutConstraint!
-    private var dataSource: [ReaderInfo]?
+    private var dataSource: [ReaderItem]?
     private weak var delegate: ClearentReadersTableViewDelegate?
     
     override var margins: [BottomMargin] {
@@ -28,7 +28,7 @@ class ClearentReadersTableView: ClearentMarginableView {
     
     // MARK: Init
     
-    convenience init(dataSource: [ReaderInfo], delegate: ClearentReadersTableViewDelegate) {
+    convenience init(dataSource: [ReaderItem], delegate: ClearentReadersTableViewDelegate) {
         self.init()
         
         self.dataSource = dataSource
@@ -61,7 +61,7 @@ extension ClearentReadersTableView: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: ClearentReadersTableViewCell.identifier,
                                                        for: indexPath) as? ClearentReadersTableViewCell,
               let dataSource = dataSource else { return UITableViewCell() }
-        indexPath.row == 0 ? cell.setup(readerName: dataSource[indexPath.row].readerName, isConnected: dataSource[indexPath.row].isConnected, isFirstCell: true) : cell.setup(readerName: dataSource[indexPath.row].readerName)
+        cell.setup(reader: dataSource[indexPath.row])
         
         return cell
     }
@@ -71,7 +71,7 @@ extension ClearentReadersTableView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let dataSource = dataSource else { return }
         
-        delegate?.didSelectReader(dataSource[indexPath.row])
+        delegate?.didSelectReader(dataSource[indexPath.row].readerInfo)
         tableView.deselectRow(at: indexPath, animated: true)
     }
     

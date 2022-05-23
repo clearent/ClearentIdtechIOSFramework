@@ -20,6 +20,14 @@ public enum FlowFeedbackType {
     case error, info, warning, searchDevices, showReaders
 }
 
+public enum ProcessType {
+    case pairing, payment, showReaders
+}
+
+public enum ReaderStatusHeaderViewState {
+    case collapsed, expanded
+}
+
 enum FlowGraphicType {
     case insert_card, press_button, transaction_completed, loading, error, warning, readerButton, reader, pairedReader, pairingSuccessful
     
@@ -70,15 +78,4 @@ public enum FlowButtonType {
             return "xsdk_user_action_settings".localized
         }
     }
-}
-
-public enum ProcessType {
-    case pairing
-    case payment
-    case showReaders
-}
-
-public enum ReaderStatusHeaderViewState {
-    case collapsed
-    case expanded
 }

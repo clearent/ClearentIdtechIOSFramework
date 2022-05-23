@@ -6,6 +6,11 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
+public struct ReaderItem {
+    var readerInfo: ReaderInfo
+    var isConnecting: Bool = false
+}
+
 public struct ReaderInfo : Codable {
     public var readerName : String
     var batterylevel : Int?
@@ -40,15 +45,19 @@ public extension ReaderInfo {
         return (iconName, "\(String(batteryLevel))%")
     }
 
-    func signalStatus(flowFeedbackType: FlowFeedbackType? = nil) -> (iconName: String?, title: String) {
-        var icon = ClearentConstants.IconName.signalIdle
-        guard let signalLevel = signalLevel, isConnected else {
-            if flowFeedbackType == .searchDevices || flowFeedbackType == .showReaders {
+    func signalStatus(flowFeedbackType: FlowFeedbackType? = nil, isConnecting: Bool? = nil) -> (iconName: String?, title: String) {
+        var icon: String? = ClearentConstants.IconName.signalIdle
+        
+        guard isConnected else {
+            
+            if flowFeedbackType == .searchDevices {
+                return (iconName: nil, title: "xsdk_connecting_reader".localized)
+            } else if flowFeedbackType == .showReaders, let isConnecting = isConnecting, isConnecting {
                 return (iconName: nil, title: "xsdk_connecting_reader".localized)
             }
             return (iconName: icon, title: "xsdk_reader_signal_idle".localized)
         }
-
+        
         switch signalLevel {
         case 0:
             icon = ClearentConstants.IconName.goodSignal
@@ -57,9 +66,10 @@ public extension ReaderInfo {
         case 2:
             icon = ClearentConstants.IconName.weakSignal
         default:
-            icon = ClearentConstants.IconName.signalIdle
+            icon = flowFeedbackType == .searchDevices ? nil : ClearentConstants.IconName.signalIdle
         }
         let title = flowFeedbackType == .searchDevices ? "xsdk_connection_sucessful".localized : "xsdk_reader_signal_connected".localized
+        
         return (iconName: icon, title: title)
     }
 }

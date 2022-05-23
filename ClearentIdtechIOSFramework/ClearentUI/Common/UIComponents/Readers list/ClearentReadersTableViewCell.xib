@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -21,12 +21,12 @@
                     <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="e2y-tG-9d3">
                         <rect key="frame" x="13" y="4" width="346" height="147"/>
                         <subviews>
-                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IIl-tH-neQ">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="4uy-hP-9zq">
                                 <rect key="frame" x="0.0" y="69.5" width="8" height="8"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="8" id="GJT-Rd-Npe"/>
-                                    <constraint firstAttribute="width" constant="8" id="xac-nB-Qc8"/>
+                                    <constraint firstAttribute="height" constant="8" id="ABm-xc-T27"/>
+                                    <constraint firstAttribute="width" constant="8" id="Lms-pE-B9l"/>
                                 </constraints>
                             </view>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ypq-JQ-AO0">
@@ -59,7 +59,7 @@
             <connections>
                 <outlet property="detailsButton" destination="yIZ-hP-Hz0" id="cbb-1f-HFe"/>
                 <outlet property="readerNameLabel" destination="Ypq-JQ-AO0" id="Jrb-Td-cb7"/>
-                <outlet property="readerStatusIcon" destination="IIl-tH-neQ" id="Cux-Rd-P1w"/>
+                <outlet property="readerStatusIcon" destination="4uy-hP-9zq" id="EyU-Jj-sJp"/>
                 <outlet property="stackView" destination="e2y-tG-9d3" id="ZEE-fu-52i"/>
             </connections>
             <point key="canvasLocation" x="-114.49275362318842" y="-128.23660714285714"/>

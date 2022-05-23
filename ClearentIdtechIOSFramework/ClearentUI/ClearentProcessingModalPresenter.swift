@@ -19,6 +19,8 @@ public protocol ProcessingModalProtocol {
     func startFlow()
     func startPairingFlow()
     func connectTo(reader: ReaderInfo)
+    func getSelectedReaderFromReadersList() -> ReaderItem?
+    func setSelectedReaderFromReadersList(_ readerItem: ReaderItem?)
 }
 
 public class ClearentProcessingModalPresenter {
@@ -27,6 +29,7 @@ public class ClearentProcessingModalPresenter {
     private let sdkWrapper = ClearentWrapper.shared
     private var sdkFeedbackProvider: FlowDataProvider
     private let processType: ProcessType
+    private var selectedReaderFromReadersList: ReaderItem?
 
     // MARK: Init
 
@@ -81,9 +84,20 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     public func connectTo(reader: ReaderInfo) {
+        selectedReaderFromReadersList = ReaderItem(readerInfo: reader, isConnecting: true)
         ClearentWrapper.shared.flowType = processType
         sdkWrapper.connectTo(reader: reader)
     }
+    
+    public func getSelectedReaderFromReadersList() -> ReaderItem? {
+        selectedReaderFromReadersList ?? nil
+    }
+    
+    public func setSelectedReaderFromReadersList(_ readerItem: ReaderItem?) {
+        selectedReaderFromReadersList = readerItem
+    }
+    
+    // MARK: Private
     
     private func startTransactionFlow() {
         sdkFeedbackProvider.delegate = self
@@ -124,7 +138,9 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                 if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo {
                     items.insert(FlowDataItem(type: .readerInfo, object: readerInfo), at: 0)
                 }
-                let feedback = FlowFeedback(flow: self.processType, type: FlowFeedbackType.info, items: items)
+                let feedback = FlowFeedback(flow: self.processType,
+                                            type: FlowFeedbackType.info,
+                                            items: items)
                 self.paymentProcessingView?.updateContent(with: feedback)
             }
         } else if let amount = amount {
