@@ -44,7 +44,7 @@ public class ClearentTitleLabel: ClearentMarginableView {
 
     override func configure() {
         label.textAlignment = .center
-        font = ClearentConstants.Font.proTextNormal
+        font = ClearentConstants.Font.proTextBoldNormal
         textColor = ClearentConstants.Color.base01
     }
 }

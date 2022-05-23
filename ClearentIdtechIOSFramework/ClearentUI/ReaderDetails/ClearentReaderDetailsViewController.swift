@@ -79,7 +79,7 @@ class ClearentReaderDetailsViewController: UIViewController, LoadingViewProtocol
         navigationController?.navigationBar.barTintColor = view.backgroundColor
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.navigationBar.tintColor = ClearentConstants.Color.backgroundPrimary02
-        navigationController?.navigationBar.titleTextAttributes = [.font: ClearentConstants.Font.proDisplayLarge]
+        navigationController?.navigationBar.titleTextAttributes = [.font: ClearentConstants.Font.proDisplayBoldLarge]
         navigationItem.title = "xsdk_reader_details_nav_title".localized
     }
 

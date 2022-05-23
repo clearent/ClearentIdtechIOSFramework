@@ -75,13 +75,11 @@ public final class ClearentWrapper : NSObject {
     private var isInternetOn = false
     internal var isBluetoothOn = false
     
-    public override init() {
+    // MARK: Init
+    
+    private override init() {
         super.init()
         createLogFile()
-        if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
-            currentReader.isConnected = false
-            ClearentWrapperDefaults.pairedReaderInfo = currentReader
-        }
         self.startConnectionListener()
         bleManager = BluetoothScanner.init(udid: nil, delegate: self)
     }
@@ -350,12 +348,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     public func disconnectFromReader() {
         clearentVP3300.device_disconnectBLE()
         bleManager?.cancelPeripheralConnection()
-        bleManager?.udid = nil
-        
-        print("🍎disconnectFromReader: BEFORE \(ClearentWrapperDefaults.pairedReaderInfo)")
         ClearentWrapperDefaults.pairedReaderInfo?.isConnected = false
-        print("🍎disconnectFromReader: AFTER \(ClearentWrapperDefaults.pairedReaderInfo)")
-   
     }
     
     public func feedback(_ clearentFeedback: ClearentFeedback!) {

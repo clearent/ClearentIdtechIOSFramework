@@ -15,14 +15,19 @@ public final class ClearentUIManager : NSObject {
     public static let shared = ClearentUIManager()
     public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
     
+    // MARK: Init
+    
     public override init() {
         super.init()
-        ClearentWrapper.shared.readerInfoReceived = {[weak self] _ in
+        ClearentWrapperDefaults.pairedReaderInfo?.isConnected = false
+        ClearentWrapper.shared.readerInfoReceived = { [weak self] _ in
             DispatchQueue.main.async {
                 self?.readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
             }
         }
     }
+    
+    // MARK: Public
     
     public func updateWith(baseURL: String, apiKey: String, publicKey: String) {
         clearentWrapper.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey)

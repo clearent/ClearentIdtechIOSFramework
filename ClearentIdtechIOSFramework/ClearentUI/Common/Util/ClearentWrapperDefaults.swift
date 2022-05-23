@@ -58,9 +58,12 @@ public class ClearentWrapperDefaults: UserDefaultsPersistence {
 
 extension ClearentWrapperDefaults {
     public static var pairedReaderInfo: ReaderInfo? {
-        didSet {
-            ClearentWrapper.shared.readerInfoReceived?(pairedReaderInfo)
-            ClearentWrapperDefaults.defaultReaderInfo = pairedReaderInfo
+        get {
+            defaultReaderInfo
+        }
+        set {
+            ClearentWrapper.shared.readerInfoReceived?(newValue)
+            defaultReaderInfo = newValue
         }
     }
 }

@@ -28,6 +28,8 @@ class ClearentHttpClient {
     let baseURL: String
     let apiKey: String
     
+    // MARK: Init
+    
     public init(baseURL: String, apiKey: String) {
         self.baseURL = baseURL
         self.apiKey = apiKey

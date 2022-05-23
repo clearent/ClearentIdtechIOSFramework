@@ -32,6 +32,8 @@ class BluetoothScanner: NSObject {
         }
     }
     
+    // MARK: Init
+    
     init(udid:UUID?, delegate: BluetoothScannerProtocol) {
         super.init()
         self.udid = udid
@@ -39,7 +41,9 @@ class BluetoothScanner: NSObject {
         
         centralManager = CBCentralManager(delegate: self, queue: nil)
     }
-        
+
+    // MARK: Public
+
     public func setupDevice() {
         guard let udid = self.udid else {return}
         let devices = centralManager.retrievePeripherals(withIdentifiers: [udid])
@@ -56,7 +60,9 @@ class BluetoothScanner: NSObject {
         device?.readRSSI()
     }
     
-    func levelForRSSI(RSSI: NSNumber) -> SignalLevel {
+    // MARK: Private
+    
+    private func levelForRSSI(RSSI: NSNumber) -> SignalLevel {
         var signal = SignalLevel.good
         
         if (RSSI.intValue > -60) {
@@ -73,7 +79,7 @@ class BluetoothScanner: NSObject {
     func cancelPeripheralConnection() {
         guard let device = device else { return }
         centralManager.cancelPeripheralConnection(device)
-        
+        udid = nil
     }
 }
 
