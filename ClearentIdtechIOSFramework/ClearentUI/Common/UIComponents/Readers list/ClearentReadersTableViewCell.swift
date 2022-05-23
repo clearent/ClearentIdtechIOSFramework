@@ -62,6 +62,6 @@ class ClearentReadersTableViewCell: UITableViewCell {
         contentView.layer.masksToBounds = true
         
         readerNameLabel.font = ClearentConstants.Font.regularNormal
-        detailsButton.titleLabel?.isHidden = true
+        detailsButton.setTitle("", for: .normal)
     }
 }
