@@ -8,14 +8,14 @@
 
 import UIKit
 
-public class ClearentProcessingModalViewController: ClearentBaseViewController {
+class ClearentProcessingModalViewController: ClearentBaseViewController {
     
     // MARK: - Properties
 
     private var showOnTop: Bool = false
     @IBOutlet var stackView: ClearentRoundedCornersStackView!
-    public var presenter: ProcessingModalProtocol?
-    var dismissCompletion: (() -> Void)?
+    var presenter: ProcessingModalProtocol?
+    var dismissCompletion: ((_ isConnected: Bool) -> Void)?
 
     // MARK: - Init
 
@@ -32,7 +32,7 @@ public class ClearentProcessingModalViewController: ClearentBaseViewController {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         stackView.positionView(onTop: showOnTop, of: view)
         presenter?.startFlow()
     }
@@ -46,11 +46,11 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         stackView.showLoadingView()
     }
 
-    public func dismissViewController() {
+    public func dismissViewController(isConnected: Bool) {
         ClearentWrapper.shared.cancelTransaction()
         DispatchQueue.main.async { [weak self] in
             self?.dismiss(animated: true, completion: nil)
-            self?.dismissCompletion?()
+            self?.dismissCompletion?(isConnected)
         }
     }
 
@@ -149,7 +149,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             guard let strongSelf = self, let presenter = strongSelf.presenter else { return }
             switch userAction {
             case .cancel, .done:
-                strongSelf.dismissViewController()
+                strongSelf.dismissViewController(isConnected: userAction == .done)
             case .retry, .pair:
                 presenter.restartProcess(processType: processType)
             case .pairNewReader:
@@ -165,9 +165,9 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
 }
 
 extension ClearentProcessingModalViewController: ClearentReadersTableViewDelegate {
-    func didSelectReaderDetails(reader: ReaderInfo) {
-        guard let navigationController = navigationController else { return }
-        presenter?.showDetailsScreen(with: reader, on: navigationController)
+    func didSelectReaderDetails(currentReader: ReaderInfo, allReaders: [ReaderInfo]) {
+        guard let navigationController = navigationController, let flowDataProvider = presenter?.sdkFeedbackProvider else { return }
+        presenter?.showDetailsScreen(for: currentReader, allReaders: allReaders, flowDataProvider: flowDataProvider, on: navigationController)
     }
 
     func didSelectReader(_ reader: ReaderInfo) {

@@ -6,21 +6,25 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
-public protocol ClearentReaderDetailsProtocol {
-    var readerInfo: ReaderInfo { get set }
+protocol ClearentReaderDetailsProtocol {
+    var currentReader: ReaderInfo { get set }
     var readerSignalStatus: (title: String, iconName: String)? { get }
     var readerBatteryStatus: (title: String, iconName: String)? { get }
     func removeReader()
     func disconnectFromReader()
     func handleAutojoin(markAsAutojoin: Bool)
+    func handleBackAction()
 }
 
-public class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
-    public var readerInfo: ReaderInfo
+class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
+    public var currentReader: ReaderInfo
+    private var allReaders: [ReaderInfo]
+    private var flowDataProvider: FlowDataProvider
+    private var navigationController: UINavigationController?
     
-    public var readerSignalStatus: (title: String, iconName: String)? {
-        guard let signalLevel = readerInfo.signalLevel,
-                let iconName = readerInfo.signalStatus().iconName else { return nil }
+    var readerSignalStatus: (title: String, iconName: String)? {
+        guard let signalLevel = currentReader.signalLevel,
+                let iconName = currentReader.signalStatus().iconName else { return nil }
         
         var signalStrength = "xsdk_reader_details_signal_weak".localized
         if signalLevel == 0 {
@@ -33,36 +37,59 @@ public class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
         return (title, iconName)
     }
     
-    public var readerBatteryStatus: (title: String, iconName: String)? {
-        guard let batteryIcon = readerInfo.batteryStatus().iconName,
-                let batteryTitle = readerInfo.batteryStatus().title else { return nil }
+    var readerBatteryStatus: (title: String, iconName: String)? {
+        guard let batteryIcon = currentReader.batteryStatus().iconName,
+                let batteryTitle = currentReader.batteryStatus().title else { return nil }
         let title = String(format: "xsdk_reader_details_battery_status".localized, batteryTitle)
         return (title, batteryIcon)
     }
 
-    public init(readerInfo: ReaderInfo) {
-        self.readerInfo = readerInfo
+    init(currentReader: ReaderInfo, allReaders: [ReaderInfo], flowDataProvider: FlowDataProvider, navigationController: UINavigationController) {
+        self.currentReader = currentReader
+        self.allReaders = allReaders
+        self.flowDataProvider = flowDataProvider
+        self.navigationController = navigationController
     }
 
-    public func removeReader() {
+    func removeReader() {
         // if default reader
-        if readerInfo.uuid == ClearentWrapperDefaults.pairedReaderInfo?.uuid {
-            if readerInfo.isConnected {
+        if currentReader.uuid == ClearentWrapperDefaults.pairedReaderInfo?.uuid {
+            ClearentWrapperDefaults.pairedReaderInfo = nil
+            if currentReader.isConnected {
                 disconnectFromReader()
             }
-            ClearentWrapperDefaults.pairedReaderInfo = nil
-            ClearentWrapper.shared.readerInfoReceived?(nil)
         }
-        ClearentWrapper.shared.removeReaderFromRecentlyUsed(reader: readerInfo)
+        ClearentWrapper.shared.removeReaderFromRecentlyUsed(reader: currentReader)
+        if let recentlyPairedReaders = ClearentWrapperDefaults.recentlyPairedReaders, !recentlyPairedReaders.isEmpty {
+            handleBackAction()
+        } else {
+            navigationController?.dismiss(animated: true)
+        }
     }
 
-    public func disconnectFromReader() {
+    func disconnectFromReader() {
         ClearentWrapper.shared.disconnectFromReader()
     }
 
     public func handleAutojoin(markAsAutojoin: Bool) {
         var previousReaderWithAutojoin = ClearentWrapperDefaults.recentlyPairedReaders?.first { $0.autojoin == true }
         previousReaderWithAutojoin?.autojoin = false
-        readerInfo.autojoin = markAsAutojoin
+        currentReader.autojoin = markAsAutojoin
+    }
+    
+    func handleBackAction() {
+        if let recentReaders = ClearentWrapperDefaults.recentlyPairedReaders, let defaultReader = ClearentWrapperDefaults.pairedReaderInfo {
+            // create list of available and recently used readere, including default reader
+            var result: [ReaderInfo] = recentReaders.filter { recentReader in
+                allReaders.contains(where: {
+                    $0.uuid == currentReader.uuid && $0.uuid != ClearentWrapperDefaults.pairedReaderInfo?.uuid
+                })
+            }
+            result.insert(defaultReader, at: 0)
+            flowDataProvider.didFindRecentlyUsedReaders(readers: result)
+            navigationController?.popViewController(animated: true)
+        } else {
+            navigationController?.dismiss(animated: true)
+        }
     }
 }

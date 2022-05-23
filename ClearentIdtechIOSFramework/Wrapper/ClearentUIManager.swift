@@ -8,6 +8,7 @@
 
 import Foundation
 
+
 public final class ClearentUIManager : NSObject {
     
     private let clearentWrapper = ClearentWrapper.shared
@@ -39,17 +40,12 @@ public final class ClearentUIManager : NSObject {
         viewController(processType: .showReaders)
     }
     
-    internal func viewController(processType: ProcessType, amount: Double? = nil, dismissCompletion: (() -> Void)? = nil) ->  UINavigationController {
+    internal func viewController(processType: ProcessType, amount: Double? = nil, dismissCompletion: ((_ isConnected: Bool) -> Void)? = nil) ->  UINavigationController {
 
         let viewController = ClearentProcessingModalViewController(showOnTop: processType == .showReaders)
-    
-        let presenter = ClearentProcessingModalPresenter(paymentProcessingView: viewController, amount: amount, processType: processType)
+        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, amount: amount, processType: processType)
         viewController.presenter = presenter
         viewController.dismissCompletion = dismissCompletion
-        
-        if (ClearentWrapperDefaults.pairedReaderInfo != nil) {
-            readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
-        }
         
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.isNavigationBarHidden = true

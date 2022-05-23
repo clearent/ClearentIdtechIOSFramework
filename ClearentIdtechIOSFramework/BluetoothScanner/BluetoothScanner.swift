@@ -73,7 +73,7 @@ class BluetoothScanner: NSObject {
     func cancelPeripheralConnection() {
         guard let device = device else { return }
         centralManager.cancelPeripheralConnection(device)
-        udid = nil
+        
     }
 }
 

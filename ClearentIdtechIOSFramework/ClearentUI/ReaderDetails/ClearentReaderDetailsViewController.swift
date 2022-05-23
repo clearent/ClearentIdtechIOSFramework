@@ -36,10 +36,10 @@ extension LoadingViewProtocol where Self: UIViewController {
     }
 }
 
-public class ClearentReaderDetailsViewController: UIViewController, LoadingViewProtocol {
+class ClearentReaderDetailsViewController: UIViewController, LoadingViewProtocol {
     public lazy var loadingView: UIView = UIView(frame: .zero)
     
-    public var detailsPresenter: ClearentReaderDetailsProtocol!
+    var detailsPresenter: ClearentReaderDetailsProtocol!
 
     @IBOutlet weak var stackView: ClearentAdaptiveStackView!
     @IBOutlet var connectedView: ClearentLabelSwitch!
@@ -51,7 +51,7 @@ public class ClearentReaderDetailsViewController: UIViewController, LoadingViewP
     @IBOutlet var versionNumberView: ClearentInfoWithIcon!
     @IBOutlet var removeReaderButton: ClearentPrimaryButton!
 
-    var readerInfo: ReaderInfo { detailsPresenter.readerInfo }
+    var readerInfo: ReaderInfo { detailsPresenter.currentReader }
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -75,7 +75,7 @@ public class ClearentReaderDetailsViewController: UIViewController, LoadingViewP
     private func setupNavigationBar() {
         let image = UIImage(named: ClearentConstants.IconName.navigationArrow, in: ClearentConstants.bundle, compatibleWith: nil)
         navigationItem.leftBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(didPressBackButton))
-        navigationController?.navigationBar.isTranslucent = false
+        navigationController?.navigationBar.isTranslucent = true
         navigationController?.navigationBar.barTintColor = view.backgroundColor
         navigationController?.navigationBar.shadowImage = UIImage()
         navigationController?.navigationBar.tintColor = ClearentConstants.Color.backgroundPrimary02
@@ -90,13 +90,13 @@ public class ClearentReaderDetailsViewController: UIViewController, LoadingViewP
         connectedView.valueChangedAction = { [weak self] isOn in
             guard let strongSelf = self else { return }
             if isOn {
-                let modalVC = ClearentUIManager.shared.viewController(processType: .pairing(withReader: strongSelf.readerInfo)) {
-                    strongSelf.didChangedConnectionStatus(reader: strongSelf.readerInfo)
+                let modalVC = ClearentUIManager.shared.viewController(processType: .pairing(withReader: strongSelf.readerInfo)) { isConnected in
+                    strongSelf.didChangedConnectionStatus(reader: strongSelf.readerInfo, isConnected: isConnected)
                 }
                 strongSelf.navigationController?.present(modalVC, animated: false)
             } else {
                 strongSelf.detailsPresenter.disconnectFromReader()
-                strongSelf.didChangedConnectionStatus(reader: strongSelf.readerInfo)
+                strongSelf.didChangedConnectionStatus(reader: strongSelf.readerInfo, isConnected: false)
             }
         }
 
@@ -109,16 +109,15 @@ public class ClearentReaderDetailsViewController: UIViewController, LoadingViewP
         }
     }
     
-    private func didChangedConnectionStatus(reader: ReaderInfo) {
-        if let defaultReader = ClearentWrapperDefaults.pairedReaderInfo,
-           defaultReader.uuid == reader.uuid {
-            detailsPresenter.readerInfo = defaultReader
-            connectedView.isOn = defaultReader.isConnected
+    private func didChangedConnectionStatus(reader: ReaderInfo, isConnected: Bool) {
+        if let defaultReader = ClearentWrapperDefaults.pairedReaderInfo {
+            detailsPresenter.currentReader = defaultReader
         }
+        connectedView.isOn = isConnected
         updateReaderInfo()
     }
 
-    private func updateReaderInfo() {
+    func updateReaderInfo() {
         setupReaderStatus()
         setupSerialNumber()
         setupVersion()
@@ -172,11 +171,10 @@ public class ClearentReaderDetailsViewController: UIViewController, LoadingViewP
         removeReaderButton.borderWidth = ClearentConstants.Size.primaryButtonBorderWidth
         removeReaderButton.action = { [weak self] in
             self?.detailsPresenter.removeReader()
-            self?.navigationController?.popViewController(animated: true)
         }
     }
 
     @objc func didPressBackButton() {
-        navigationController?.popViewController(animated: true)
+        detailsPresenter.handleBackAction()
     }
 }

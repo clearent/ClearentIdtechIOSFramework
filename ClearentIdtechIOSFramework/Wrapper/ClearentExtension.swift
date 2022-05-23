@@ -35,47 +35,36 @@ extension ClearentWrapper: BluetoothScannerProtocol {
 
 extension ClearentWrapper {
     
-    internal func addReaderToRecentlyUsed(reader:ReaderInfo) {
-        var newReader = reader
-        newReader.isConnected = false
-        newReader.batterylevel = nil
-        newReader.signalLevel = nil
-        guard let existingReaders = ClearentWrapperDefaults.recentlyPairedReaders else {
-            ClearentWrapperDefaults.recentlyPairedReaders = [newReader]
+    internal func addReaderToRecentlyUsed(reader: ReaderInfo) {
+        var reader = reader
+        reader.isConnected = false
+        guard var existingReaders = ClearentWrapperDefaults.recentlyPairedReaders else {
+            ClearentWrapperDefaults.recentlyPairedReaders = [reader]
             return
         }
         
-        let readersWithSameName = existingReaders.filter { $0.readerName == newReader.readerName }
-        if (readersWithSameName.count == 0) {
-            var newReaders : [ReaderInfo] = [newReader]
-            newReaders.append(contentsOf: existingReaders)
-            ClearentWrapperDefaults.recentlyPairedReaders = newReaders
+        if existingReaders.first(where:{ $0.uuid == reader.uuid }) == nil {
+            existingReaders.insert(reader, at: 0)
+            ClearentWrapperDefaults.recentlyPairedReaders = existingReaders
         }
     }
     
     public func removeReaderFromRecentlyUsed(reader: ReaderInfo) {
         guard var existingReaders = ClearentWrapperDefaults.recentlyPairedReaders else { return }
-        
-        let readersWithSameName = existingReaders.filter { $0.readerName == reader.readerName }
-        if (readersWithSameName.count == 1) {
-            existingReaders.removeAll { current in
-                current.readerName == reader.readerName
-            }
-        }
-        
+        existingReaders.removeAll(where: { $0.uuid == reader.uuid })
         ClearentWrapperDefaults.recentlyPairedReaders = existingReaders
     }
     
     internal func fetchRecentlyAndAvailableReaders(devices: [ClearentBluetoothDevice]) -> [ReaderInfo] {
-        
+        guard let recentReaders = ClearentWrapperDefaults.recentlyPairedReaders else { return [] }
         let availableReaders = devices.compactMap { readerInfo(from: $0)}
-        if let savedReader = ClearentWrapperDefaults.pairedReaderInfo {
-            removeReaderFromRecentlyUsed(reader:savedReader)
-            addReaderToRecentlyUsed(reader: savedReader)
+        var result = availableReaders.filter { currentReader in recentReaders.contains(where: {
+            $0.uuid == currentReader.uuid && $0.uuid != ClearentWrapperDefaults.pairedReaderInfo?.uuid
+        })}
+        // always include default reader
+        if let defaultReader = ClearentWrapperDefaults.pairedReaderInfo {
+            result.insert(defaultReader, at: 0)
         }
-        guard let recentReaders = ClearentWrapperDefaults.recentlyPairedReaders else {return []}
-       
-        let result = availableReaders.filter {currentReader in recentReaders.contains(where: { $0.readerName == currentReader.readerName }) }
         return result
     }
     

@@ -40,8 +40,8 @@ public extension ReaderInfo {
     }
 
     func signalStatus(flowFeedbackType: FlowFeedbackType? = nil) -> (iconName: String?, title: String) {
-        var icon = ClearentConstants.IconName.signalIdle
-        guard let signalLevel = signalLevel, isConnected else {
+        var icon: String? = ClearentConstants.IconName.signalIdle
+        guard isConnected else {
             if flowFeedbackType == .searchDevices || flowFeedbackType == .showReaders {
                 return (iconName: nil, title: "xsdk_connecting_reader".localized)
             }
@@ -56,7 +56,7 @@ public extension ReaderInfo {
         case 2:
             icon = ClearentConstants.IconName.weakSignal
         default:
-            icon = ClearentConstants.IconName.signalIdle
+            icon = flowFeedbackType == .searchDevices ? nil : ClearentConstants.IconName.signalIdle
         }
         let title = flowFeedbackType == .searchDevices ? "xsdk_connection_sucessful".localized : "xsdk_reader_signal_connected".localized
         return (iconName: icon, title: title)

@@ -8,17 +8,18 @@
 
 import UIKit
 
-public protocol ClearentProcessingModalView: AnyObject {
+protocol ClearentProcessingModalView: AnyObject {
     func updateContent(with feedback: FlowFeedback)
     func showLoadingView()
-    func dismissViewController()
+    func dismissViewController(isConnected: Bool)
 }
 
-public protocol ProcessingModalProtocol {
+protocol ProcessingModalProtocol {
+    var sdkFeedbackProvider: FlowDataProvider { get set }
     func restartProcess(processType: ProcessType)
     func startFlow()
     func startPairingFlow()
-    func showDetailsScreen(with readerInfo: ReaderInfo, on navigationController: UINavigationController)
+    func showDetailsScreen(for reader: ReaderInfo, allReaders: [ReaderInfo], flowDataProvider: FlowDataProvider, on navigationController: UINavigationController)
     func connectTo(reader: ReaderInfo)
 }
 
@@ -26,13 +27,13 @@ public class ClearentProcessingModalPresenter {
     private weak var modalProcessingView: ClearentProcessingModalView?
     private var amount: Double?
     private let sdkWrapper = ClearentWrapper.shared
-    private var sdkFeedbackProvider: FlowDataProvider
     private let processType: ProcessType
+    var sdkFeedbackProvider: FlowDataProvider
 
     // MARK: Init
 
-    public init(paymentProcessingView: ClearentProcessingModalView, amount: Double?, processType: ProcessType) {
-        modalProcessingView = paymentProcessingView
+    init(modalProcessingView: ClearentProcessingModalView, amount: Double?, processType: ProcessType) {
+        self.modalProcessingView = modalProcessingView
         self.amount = amount
         self.processType = processType
         sdkFeedbackProvider = FlowDataProvider()
@@ -42,19 +43,19 @@ public class ClearentProcessingModalPresenter {
     private func dissmissViewWithDelay() {
         let deadlineTime = DispatchTime.now() + .seconds(3)
         DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
-            self.modalProcessingView?.dismissViewController()
+            self.modalProcessingView?.dismissViewController(isConnected: true)
         }
     }
 }
 
 extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
-    public func showDetailsScreen(with readerInfo: ReaderInfo, on navigationController: UINavigationController) {
+    func showDetailsScreen(for reader: ReaderInfo, allReaders: [ReaderInfo], flowDataProvider: FlowDataProvider, on navigationController: UINavigationController)  {
         let vc = ClearentReaderDetailsViewController(nibName: String(describing: ClearentReaderDetailsViewController.self), bundle: ClearentConstants.bundle)
-        vc.detailsPresenter = ClearentReaderDetailsPresenter(readerInfo: readerInfo)
+        vc.detailsPresenter = ClearentReaderDetailsPresenter(currentReader: reader, allReaders: allReaders, flowDataProvider: flowDataProvider, navigationController: navigationController)
         navigationController.pushViewController(vc, animated: true)
     }
 
-    public func restartProcess(processType: ProcessType) {
+    func restartProcess(processType: ProcessType) {
         sdkFeedbackProvider.delegate = self
         modalProcessingView?.showLoadingView()
         switch processType {
@@ -67,7 +68,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         }
     }
 
-    public func startFlow() {
+    func startFlow() {
         sdkFeedbackProvider = FlowDataProvider()
         sdkFeedbackProvider.delegate = self
         switch processType {
@@ -85,7 +86,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         }
     }
     
-    public func startPairingFlow() {
+    func startPairingFlow() {
         let items = [FlowDataItem(type: .hint, object: "xsdk_prepare_pairing_reader_range".localized),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
                      FlowDataItem(type: .description, object: "xsdk_prepare_pairing_reader_button".localized),
@@ -123,9 +124,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 
 extension ClearentProcessingModalPresenter: FlowDataProtocol {
     
-    public func deviceDidDisconnect() {
-        ClearentUIManager.shared.readerInfoReceived?(nil)
-    }
+    func deviceDidDisconnect() {}
 
     func didFinishedPairing() {
         if case .pairing = processType {
@@ -149,7 +148,6 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
 
     func didReceiveFlowFeedback(feedback: FlowFeedback) {
         modalProcessingView?.updateContent(with: feedback)
-        ClearentUIManager.shared.readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
     }
 
     func didFinishTransaction(error: ResponseError?) {

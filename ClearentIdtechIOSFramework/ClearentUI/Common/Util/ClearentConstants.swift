@@ -82,7 +82,10 @@ public class ClearentConstants {
         static let expanded = "expanded"
         static let collapsed = "collapsed"
         static let pairingSuccessful = "pairingSuccessful"
+        static let details = "details"
+        
 
+        // Reader details
         static let navigationArrow = "left-arrow"
     }
 

@@ -350,8 +350,12 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     public func disconnectFromReader() {
         clearentVP3300.device_disconnectBLE()
         bleManager?.cancelPeripheralConnection()
+        bleManager?.udid = nil
+        
+        print("🍎disconnectFromReader: BEFORE \(ClearentWrapperDefaults.pairedReaderInfo)")
         ClearentWrapperDefaults.pairedReaderInfo?.isConnected = false
-        self.readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
+        print("🍎disconnectFromReader: AFTER \(ClearentWrapperDefaults.pairedReaderInfo)")
+   
     }
     
     public func feedback(_ clearentFeedback: ClearentFeedback!) {
@@ -410,10 +414,6 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
                 }
             }
         }
-        
-        if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo {
-            self.readerInfoReceived?(readerInfo)
-        }
     }
     
     public func bluetoothDevices(_ bluetoothDevices: [ClearentBluetoothDevice]!) {
@@ -448,7 +448,6 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
             currentReader.isConnected = true
             ClearentWrapperDefaults.pairedReaderInfo = currentReader
             addReaderToRecentlyUsed(reader: currentReader)
-            self.readerInfoReceived?(currentReader)
         }
         bleManager?.udid = ClearentWrapperDefaults.pairedReaderInfo?.uuid
         bleManager?.setupDevice()
@@ -458,9 +457,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     
     public func deviceDisconnected() {
         DispatchQueue.main.async {
-            self.readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
             self.delegate?.deviceDidDisconnect()
-            print("Device Disconnected")
         }
     }
 }

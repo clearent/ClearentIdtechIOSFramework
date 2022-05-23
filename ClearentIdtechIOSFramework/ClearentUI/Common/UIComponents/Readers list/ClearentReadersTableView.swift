@@ -11,7 +11,7 @@ import UIKit
 
 protocol ClearentReadersTableViewDelegate: AnyObject {
     func didSelectReader(_ reader: ReaderInfo)
-    func didSelectReaderDetails(reader: ReaderInfo)
+    func didSelectReaderDetails(currentReader: ReaderInfo, allReaders: [ReaderInfo])
 }
 
 class ClearentReadersTableView: ClearentMarginableView {
@@ -65,7 +65,7 @@ extension ClearentReadersTableView: UITableViewDataSource {
         indexPath.row == 0 ? cell.setup(readerName: dataSource[indexPath.row].readerName, isConnected: dataSource[indexPath.row].isConnected, isFirstCell: true) : cell.setup(readerName: dataSource[indexPath.row].readerName)
         cell.detailsAction = { [weak self] in
             guard let delegate = self?.delegate else { return }
-            delegate.didSelectReaderDetails(reader: dataSource[indexPath.row])
+            delegate.didSelectReaderDetails(currentReader: dataSource[indexPath.row], allReaders: dataSource)
         }
 
         return cell
