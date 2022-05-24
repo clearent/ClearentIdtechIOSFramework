@@ -98,14 +98,34 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             return ClearentHintView(text: text)
         case .recentlyPaired:
             guard let readersInfo = object as? [ReaderInfo] else { return nil }
+            guard let pairedReaderInfo = ClearentWrapperDefaults.pairedReaderInfo else { return nil }
+            var readersTableViewDataSource: [ReaderItem] = readersInfo.map { item -> ReaderItem in
+                    return ReaderItem(readerInfo: item)
+            }
             
-            return ClearentReadersTableView(dataSource: readersInfo, delegate: self)
+            if !pairedReaderInfo.isConnected {
+                guard let selectedReaderFromReadersList = presenter?.getSelectedReaderFromReadersList() else {
+                    return ClearentReadersTableView(dataSource: readersTableViewDataSource, delegate: self)
+                }
+                guard let indexOfSelectedReader = readersTableViewDataSource.firstIndex(where: {$0.readerInfo.readerName == selectedReaderFromReadersList.readerInfo.readerName}) else { return nil }
+                readersTableViewDataSource[indexOfSelectedReader].isConnecting = true
+                return ClearentReadersTableView(dataSource: readersTableViewDataSource, delegate: self)
+            } else {
+                presenter?.setSelectedReaderFromReadersList(nil)
+                return ClearentReadersTableView(dataSource: readersTableViewDataSource, delegate: self)
+            }
         }
     }
 
     private func readerInfoView(readerInfo: ReaderInfo, flowFeedbackType: FlowFeedbackType) -> ClearentReaderStatusHeaderView {
         let name = readerInfo.readerName
-        let signalStatus = readerInfo.signalStatus(flowFeedbackType: flowFeedbackType)
+        let signalStatus: (iconName: String?, title: String)
+        
+        if let _ = presenter?.getSelectedReaderFromReadersList() {
+            signalStatus = readerInfo.signalStatus(flowFeedbackType: flowFeedbackType, isConnecting: true)
+        } else {
+            signalStatus = readerInfo.signalStatus(flowFeedbackType: flowFeedbackType)
+        }
         let batteryStatus = readerInfo.batteryStatus(flowFeedbackType: flowFeedbackType)
         let statusHeader = ClearentReaderStatusHeaderView()
         
@@ -165,7 +185,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
 }
 
 extension ClearentProcessingModalViewController: ClearentReadersTableViewDelegate {
-    func didSelectReaderDetails(currentReader: ReaderInfo, allReaders: [ReaderInfo]) {
+    func didSelectReaderDetails(currentReader: ReaderItem, allReaders: [ReaderItem]) {
         guard let navigationController = navigationController, let flowDataProvider = presenter?.sdkFeedbackProvider else { return }
         presenter?.showDetailsScreen(for: currentReader, allReaders: allReaders, flowDataProvider: flowDataProvider, on: navigationController)
     }

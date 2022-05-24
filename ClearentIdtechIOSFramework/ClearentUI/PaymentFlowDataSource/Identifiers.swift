@@ -20,6 +20,23 @@ public enum FlowFeedbackType {
     case error, info, warning, searchDevices, showReaders
 }
 
+public enum ProcessType {
+    case pairing(withReader: ReaderInfo? = nil), payment, showReaders
+    
+    public static func == (lhs: ProcessType, rhs: ProcessType) -> Bool {
+        switch (lhs,rhs) {
+        case (.pairing, .pairing): return true
+        case (.payment, .payment): return true
+        case (.showReaders, .showReaders): return true
+        default: return false
+        }
+    }
+}
+
+public enum ReaderStatusHeaderViewState {
+    case collapsed, expanded
+}
+
 enum FlowGraphicType {
     case insert_card, press_button, transaction_completed, loading, error, warning, readerButton, reader, pairedReader, pairingSuccessful
     
@@ -70,25 +87,4 @@ public enum FlowButtonType {
             return "xsdk_user_action_settings".localized
         }
     }
-}
-
-public enum ProcessType: Equatable {
-    
-    case pairing(withReader: ReaderInfo? = nil)
-    case payment
-    case showReaders
-    
-    public static func == (lhs: ProcessType, rhs: ProcessType) -> Bool {
-        switch (lhs,rhs) {
-        case (.pairing, .pairing): return true
-        case (.payment, .payment): return true
-        case (.showReaders, .showReaders): return true
-        default: return false
-        }
-    }
-}
-
-public enum ReaderStatusHeaderViewState {
-    case collapsed
-    case expanded
 }

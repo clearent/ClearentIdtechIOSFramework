@@ -18,7 +18,7 @@ protocol ClearentReaderDetailsProtocol {
 
 class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
     public var currentReader: ReaderInfo
-    private var allReaders: [ReaderInfo]
+    private var allReaders: [ReaderItem]
     private var flowDataProvider: FlowDataProvider
     private var navigationController: UINavigationController?
 
@@ -44,8 +44,8 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
         return (title, batteryIcon)
     }
 
-    init(currentReader: ReaderInfo, allReaders: [ReaderInfo], flowDataProvider: FlowDataProvider, navigationController: UINavigationController) {
-        self.currentReader = currentReader
+    init(currentReader: ReaderItem, allReaders: [ReaderItem], flowDataProvider: FlowDataProvider, navigationController: UINavigationController) {
+        self.currentReader = currentReader.readerInfo
         self.allReaders = allReaders
         self.flowDataProvider = flowDataProvider
         self.navigationController = navigationController
@@ -81,8 +81,8 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
         if let recentReaders = ClearentWrapperDefaults.recentlyPairedReaders, let defaultReader = ClearentWrapperDefaults.pairedReaderInfo {
             // create list of available and recently used readers, including default reader
             var result: [ReaderInfo] = recentReaders.filter { _ in
-                allReaders.contains(where: {
-                    $0.uuid == currentReader.uuid && $0.uuid != ClearentWrapperDefaults.pairedReaderInfo?.uuid
+                allReaders.map { $0.readerInfo }.contains(where: { readerInfo in
+                    readerInfo.uuid == currentReader.uuid && readerInfo.uuid != ClearentWrapperDefaults.pairedReaderInfo?.uuid
                 })
             }
             result.insert(defaultReader, at: 0)

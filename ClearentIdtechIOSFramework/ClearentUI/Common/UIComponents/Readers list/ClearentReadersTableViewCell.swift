@@ -39,22 +39,29 @@ class ClearentReadersTableViewCell: UITableViewCell {
         tableView.register(UINib(nibName: ClearentReadersTableViewCell.nib, bundle: Bundle(for: ClearentReadersTableViewCell.self)), forCellReuseIdentifier: ClearentReadersTableViewCell.identifier)
     }
     
-    public func setup(readerName: String, isConnected: Bool? = nil, isFirstCell: Bool? = nil) {
-        if let _ = isFirstCell {
-            
-            if let readerIsConnected = isConnected, readerIsConnected {
-                readerStatusIcon.backgroundColor = ClearentConstants.Color.accent01
+    public func setup(reader: ReaderItem) {
+        guard let pairedReaderInfo = ClearentWrapperDefaults.pairedReaderInfo else { return }
+        
+        if reader.readerInfo.readerName == pairedReaderInfo.readerName {
+            if reader.isConnecting {
+                readerStatusIcon.removeFromSuperview()
+                
+                let loadingIndicatorView = UIActivityIndicatorView()
+                stackView.insertArrangedSubview(loadingIndicatorView, at: 0)
+                
+                loadingIndicatorView.translatesAutoresizingMaskIntoConstraints = false
+                loadingIndicatorView.widthAnchor.constraint(equalToConstant: 12).isActive = true
+                loadingIndicatorView.heightAnchor.constraint(equalToConstant: 12).isActive = true
+                loadingIndicatorView.startAnimating()
             } else {
-                readerStatusIcon.backgroundColor = ClearentConstants.Color.accent02
+                readerStatusIcon.backgroundColor = pairedReaderInfo.isConnected ? ClearentConstants.Color.accent01 : ClearentConstants.Color.accent02
+                readerStatusIcon.layer.cornerRadius = readerStatusIcon.frame.width / 2
+                readerStatusIcon.layer.masksToBounds = true
             }
-            
-            readerStatusIcon.layer.cornerRadius = readerStatusIcon.frame.width / 2
-            readerStatusIcon.layer.masksToBounds = true
         } else {
             readerStatusIcon.removeFromSuperview()
         }
-        
-        readerNameLabel.text = readerName
+        readerNameLabel.text = reader.readerInfo.readerName
     }
     
     // MARK: Private

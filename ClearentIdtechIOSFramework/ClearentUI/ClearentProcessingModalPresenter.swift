@@ -19,8 +19,10 @@ protocol ProcessingModalProtocol {
     func restartProcess(processType: ProcessType)
     func startFlow()
     func startPairingFlow()
-    func showDetailsScreen(for reader: ReaderInfo, allReaders: [ReaderInfo], flowDataProvider: FlowDataProvider, on navigationController: UINavigationController)
+    func showDetailsScreen(for reader: ReaderItem, allReaders: [ReaderItem], flowDataProvider: FlowDataProvider, on navigationController: UINavigationController)
     func connectTo(reader: ReaderInfo)
+    func getSelectedReaderFromReadersList() -> ReaderItem?
+    func setSelectedReaderFromReadersList(_ readerItem: ReaderItem?)
 }
 
 public class ClearentProcessingModalPresenter {
@@ -28,6 +30,7 @@ public class ClearentProcessingModalPresenter {
     private var amount: Double?
     private let sdkWrapper = ClearentWrapper.shared
     private let processType: ProcessType
+    private var selectedReaderFromReadersList: ReaderItem?
     var sdkFeedbackProvider: FlowDataProvider
 
     // MARK: Init
@@ -49,7 +52,7 @@ public class ClearentProcessingModalPresenter {
 }
 
 extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
-    func showDetailsScreen(for reader: ReaderInfo, allReaders: [ReaderInfo], flowDataProvider: FlowDataProvider, on navigationController: UINavigationController)  {
+    func showDetailsScreen(for reader: ReaderItem, allReaders: [ReaderItem], flowDataProvider: FlowDataProvider, on navigationController: UINavigationController)  {
         let vc = ClearentReaderDetailsViewController(nibName: String(describing: ClearentReaderDetailsViewController.self), bundle: ClearentConstants.bundle)
         vc.detailsPresenter = ClearentReaderDetailsPresenter(currentReader: reader, allReaders: allReaders, flowDataProvider: flowDataProvider, navigationController: navigationController)
         navigationController.pushViewController(vc, animated: true)
@@ -94,9 +97,20 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     public func connectTo(reader: ReaderInfo) {
+        selectedReaderFromReadersList = ReaderItem(readerInfo: reader, isConnecting: true)
         ClearentWrapper.shared.flowType = processType
         sdkWrapper.connectTo(reader: reader)
     }
+    
+    public func getSelectedReaderFromReadersList() -> ReaderItem? {
+        selectedReaderFromReadersList ?? nil
+    }
+    
+    public func setSelectedReaderFromReadersList(_ readerItem: ReaderItem?) {
+        selectedReaderFromReadersList = readerItem
+    }
+    
+    // MARK: Private
     
     private func startTransactionFlow() {
         sdkFeedbackProvider.delegate = self
@@ -137,7 +151,6 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                 }
                 let feedback = FlowFeedback(flow: self.processType, type: FlowFeedbackType.info, items: items)
                 self.modalProcessingView?.updateContent(with: feedback)
-                
             }
         } else if let amount = amount {
             sdkWrapper.startTransactionWithAmount(amount: String(amount))
