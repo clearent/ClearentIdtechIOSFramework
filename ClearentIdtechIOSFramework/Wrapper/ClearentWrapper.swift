@@ -439,6 +439,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     public func deviceConnected() {
         if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
             currentReader.isConnected = true
+            currentReader.autojoin = true
             ClearentWrapperDefaults.pairedReaderInfo = currentReader
             addReaderToRecentlyUsed(reader: currentReader)
         }

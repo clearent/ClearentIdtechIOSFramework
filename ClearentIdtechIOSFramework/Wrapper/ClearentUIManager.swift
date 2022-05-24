@@ -19,7 +19,16 @@ public final class ClearentUIManager : NSObject {
     
     public override init() {
         super.init()
-        ClearentWrapperDefaults.pairedReaderInfo?.isConnected = false
+        setupReaderInfo()
+    }
+    
+    func setupReaderInfo() {
+        if let autojoinReader = ClearentWrapperDefaults.recentlyPairedReaders?.first(where: {$0.autojoin == true}) {
+            ClearentWrapperDefaults.pairedReaderInfo = autojoinReader
+            ClearentWrapperDefaults.pairedReaderInfo?.isConnected = false
+        } else {
+            ClearentWrapperDefaults.pairedReaderInfo = nil
+        }
         ClearentWrapper.shared.readerInfoReceived = { [weak self] _ in
             DispatchQueue.main.async {
                 self?.readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)

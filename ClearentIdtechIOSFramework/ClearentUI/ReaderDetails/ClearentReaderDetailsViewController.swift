@@ -8,35 +8,7 @@
 
 import UIKit
 
-protocol LoadingViewProtocol {
-    var loadingView: UIView { get }
-    func showFullScreenLoadingView()
-    func removeLoadingView()
-}
-
-extension LoadingViewProtocol where Self: UIViewController {
-    func showFullScreenLoadingView() {
-        if let window = UIApplication.shared.windows.first(where: { $0.isKeyWindow } )  {
-            loadingView.frame = window.bounds
-            loadingView.backgroundColor = ClearentConstants.Color.backgroundPrimary02.withAlphaComponent(0.6)
-            window.addSubview(loadingView)
-            let activityIndicator = ClearentLoadingView(color: ClearentConstants.Color.backgroundPrimary02, lineWidth: 4)
-            activityIndicator.center = loadingView.center
-            loadingView.translatesAutoresizingMaskIntoConstraints = true
-            DispatchQueue.main.async {
-                self.loadingView.addSubview(activityIndicator)
-            }
-        }
-    }
-    
-    func removeLoadingView() {
-        DispatchQueue.main.async {
-            self.loadingView.removeFromSuperview()
-        }
-    }
-}
-
-class ClearentReaderDetailsViewController: UIViewController, LoadingViewProtocol {
+class ClearentReaderDetailsViewController: UIViewController {
     public lazy var loadingView: UIView = UIView(frame: .zero)
     
     var detailsPresenter: ClearentReaderDetailsProtocol!
@@ -104,7 +76,6 @@ class ClearentReaderDetailsViewController: UIViewController, LoadingViewProtocol
         autojoinView.descriptionText = "xsdk_reader_details_autojoin_description".localized
         autojoinView.isOn = readerInfo.autojoin
         autojoinView.valueChangedAction = { [weak self] isOn in
-            self?.showFullScreenLoadingView()
             self?.detailsPresenter.handleAutojoin(markAsAutojoin: isOn)
         }
     }
