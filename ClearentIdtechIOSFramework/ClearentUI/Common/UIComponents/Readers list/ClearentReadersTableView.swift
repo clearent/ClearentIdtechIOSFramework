@@ -70,6 +70,9 @@ extension ClearentReadersTableView: UITableViewDataSource {
 extension ClearentReadersTableView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard let dataSource = dataSource else { return }
+        guard !dataSource[indexPath.row].readerInfo.isConnected else {
+            return
+        }
         
         delegate?.didSelectReader(dataSource[indexPath.row].readerInfo)
         tableView.deselectRow(at: indexPath, animated: true)
