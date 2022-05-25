@@ -407,10 +407,6 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
                 }
             }
         }
-        
-//        if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo {
-//            self.readerInfoReceived?(readerInfo)
-//        }
     }
     
     public func bluetoothDevices(_ bluetoothDevices: [ClearentBluetoothDevice]!) {

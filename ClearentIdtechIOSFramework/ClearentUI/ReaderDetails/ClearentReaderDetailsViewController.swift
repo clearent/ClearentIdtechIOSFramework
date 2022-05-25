@@ -104,7 +104,6 @@ class ClearentReaderDetailsViewController: UIViewController {
             batteryStatusView.iconName = batteryStatus.iconName
         }
         batteryStatusView.isHidden = detailsPresenter.readerBatteryStatus == nil
-
     }
 
     private func setupReaderName() {

@@ -8,7 +8,6 @@
 
 import Foundation
 
-
 public final class ClearentUIManager : NSObject {
     
     private let clearentWrapper = ClearentWrapper.shared

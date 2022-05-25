@@ -18,37 +18,37 @@ class ClearentInfoWithIcon: ClearentMarginableView {
         [RelativeBottomMargin(constant: 24, relatedViewType: ClearentInfoWithIcon.self)]
     }
 
-    public var titleTextColor: UIColor? {
+    var titleTextColor: UIColor? {
         didSet {
             titleLabel.textColor = titleTextColor
         }
     }
 
-    public var titleFont: UIFont? {
+    var titleFont: UIFont? {
         didSet {
             titleLabel.font = titleFont
         }
     }
 
-    public var titleText: String? {
+    var titleText: String? {
         didSet {
             titleLabel.text = titleText
         }
     }
 
-    public var descriptionTextColor: UIColor? {
+    var descriptionTextColor: UIColor? {
         didSet {
             descriptionLabel.textColor = descriptionTextColor
         }
     }
 
-    public var descriptionFont: UIFont? {
+    var descriptionFont: UIFont? {
         didSet {
             descriptionLabel.font = descriptionFont
         }
     }
 
-    public var descriptionText: String? {
+    var descriptionText: String? {
         didSet {
             guard let descriptionText = descriptionText else {
                 descriptionLabel.removeFromSuperview()
