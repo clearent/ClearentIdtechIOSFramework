@@ -42,11 +42,12 @@ extension ClearentWrapper {
             ClearentWrapperDefaults.recentlyPairedReaders = [reader]
             return
         }
-        
-        if existingReaders.first(where:{ $0.uuid == reader.uuid }) == nil {
+        if let defaultReaderIndex = existingReaders.firstIndex(where: {$0.uuid == reader.uuid}) {
+            existingReaders[defaultReaderIndex] = reader
+        } else {
             existingReaders.insert(reader, at: 0)
-            ClearentWrapperDefaults.recentlyPairedReaders = existingReaders
         }
+        ClearentWrapperDefaults.recentlyPairedReaders = existingReaders
     }
     
     public func removeReaderFromRecentlyUsed(reader: ReaderInfo) {

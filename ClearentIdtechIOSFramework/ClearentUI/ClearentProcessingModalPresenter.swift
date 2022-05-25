@@ -159,6 +159,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
 
     func didReceiveFlowFeedback(feedback: FlowFeedback) {
         modalProcessingView?.updateContent(with: feedback)
+      //  ClearentUIManager.shared.readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
     }
 
     func didFinishTransaction(error: ResponseError?) {

@@ -36,7 +36,7 @@
                                     <nil key="highlightedColor"/>
                                 </label>
                                 <switch opaque="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="right" contentVerticalAlignment="fill" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="HEI-oB-uNm">
-                                    <rect key="frame" x="344" y="55.5" width="53" height="31"/>
+                                    <rect key="frame" x="348" y="55.5" width="53" height="31"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="51" id="JCK-ky-dw7"/>
                                         <constraint firstAttribute="height" constant="31" id="yAb-UY-zOy"/>
@@ -50,7 +50,7 @@
                             <constraints>
                                 <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="HEI-oB-uNm" secondAttribute="bottom" id="5h6-Fq-g0I"/>
                                 <constraint firstItem="HEI-oB-uNm" firstAttribute="top" relation="greaterThanOrEqual" secondItem="bz2-UL-fHU" secondAttribute="top" id="Ewb-W8-dtM"/>
-                                <constraint firstAttribute="trailing" secondItem="HEI-oB-uNm" secondAttribute="trailing" id="Fgk-f0-ZWG"/>
+                                <constraint firstAttribute="trailing" secondItem="HEI-oB-uNm" secondAttribute="trailing" constant="-4" id="Fgk-f0-ZWG"/>
                                 <constraint firstItem="3HO-ws-RDU" firstAttribute="centerY" secondItem="bz2-UL-fHU" secondAttribute="centerY" id="YJc-5Y-UXi"/>
                                 <constraint firstAttribute="bottom" relation="greaterThanOrEqual" secondItem="3HO-ws-RDU" secondAttribute="bottom" id="dmg-oi-TXg"/>
                                 <constraint firstItem="3HO-ws-RDU" firstAttribute="top" relation="greaterThanOrEqual" secondItem="bz2-UL-fHU" secondAttribute="top" id="mvn-pC-otE"/>

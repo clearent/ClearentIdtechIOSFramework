@@ -9,11 +9,12 @@
 import UIKit
 
 class ClearentReaderDetailsViewController: UIViewController {
-    public lazy var loadingView: UIView = UIView(frame: .zero)
-    
+    var readerInfo: ReaderInfo { detailsPresenter.currentReader }
     var detailsPresenter: ClearentReaderDetailsProtocol!
-
-    @IBOutlet weak var stackView: ClearentAdaptiveStackView!
+    
+    // MARK: - IBOutlets
+    
+    @IBOutlet var stackView: ClearentAdaptiveStackView!
     @IBOutlet var connectedView: ClearentLabelSwitch!
     @IBOutlet var signalStatusView: ClearentLabelWithIcon!
     @IBOutlet var batteryStatusView: ClearentLabelWithIcon!
@@ -22,8 +23,8 @@ class ClearentReaderDetailsViewController: UIViewController {
     @IBOutlet var serialNumberView: ClearentInfoWithIcon!
     @IBOutlet var versionNumberView: ClearentInfoWithIcon!
     @IBOutlet var removeReaderButton: ClearentPrimaryButton!
-
-    var readerInfo: ReaderInfo { detailsPresenter.currentReader }
+    @IBOutlet var navigationBar: UINavigationBar!
+    @IBOutlet var customNavigationItem: UINavigationItem!
 
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,23 +37,20 @@ class ClearentReaderDetailsViewController: UIViewController {
 
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        navigationController?.isNavigationBarHidden = false
-    }
-
-    public override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
         navigationController?.isNavigationBarHidden = true
     }
-
+    
+    // MARK: - Private
+    
     private func setupNavigationBar() {
         let image = UIImage(named: ClearentConstants.IconName.navigationArrow, in: ClearentConstants.bundle, compatibleWith: nil)
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(didPressBackButton))
-        navigationController?.navigationBar.isTranslucent = true
-        navigationController?.navigationBar.barTintColor = view.backgroundColor
-        navigationController?.navigationBar.shadowImage = UIImage()
-        navigationController?.navigationBar.tintColor = ClearentConstants.Color.backgroundPrimary02
-        navigationController?.navigationBar.titleTextAttributes = [.font: ClearentConstants.Font.proDisplayBoldLarge]
-        navigationItem.title = "xsdk_reader_details_nav_title".localized
+        customNavigationItem.leftBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(didPressBackButton))
+        navigationBar.isTranslucent = true
+        navigationBar.barTintColor = view.backgroundColor
+        navigationBar.shadowImage = UIImage()
+        navigationBar.tintColor = ClearentConstants.Color.backgroundPrimary02
+        navigationBar.titleTextAttributes = [.font: ClearentConstants.Font.proDisplayBoldLarge]
+        customNavigationItem.title = "xsdk_reader_details_nav_title".localized
     }
 
     private func setupSwitches() {

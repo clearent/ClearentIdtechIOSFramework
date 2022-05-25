@@ -407,6 +407,10 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
                 }
             }
         }
+        
+//        if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo {
+//            self.readerInfoReceived?(readerInfo)
+//        }
     }
     
     public func bluetoothDevices(_ bluetoothDevices: [ClearentBluetoothDevice]!) {
@@ -451,7 +455,10 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     
     public func deviceDisconnected() {
         DispatchQueue.main.async {
-            self.delegate?.deviceDidDisconnect()
+            if !self.searchingRecentlyUsedReadersInProgress {
+                ClearentWrapperDefaults.pairedReaderInfo?.isConnected = false
+                self.delegate?.deviceDidDisconnect()
+            }
         }
     }
 }

@@ -111,7 +111,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     func userActionNeeded(action: UserAction) {
         var items : [FlowDataItem]? = nil
         var type = FlowFeedbackType.info
-        print("🍎 userActionNeeded: \(action.rawValue)")
+
         switch action {
         case .pleaseWait:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),

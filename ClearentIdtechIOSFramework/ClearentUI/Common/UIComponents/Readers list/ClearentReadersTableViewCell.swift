@@ -22,7 +22,6 @@ class ClearentReadersTableViewCell: UITableViewCell {
     @IBOutlet weak var readerNameLabel: UILabel!
     @IBOutlet weak var detailsButton: UIButton!
 
-
     var detailsAction: (() -> Void)?
 
     // MARK: Lifecycle

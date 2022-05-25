@@ -82,6 +82,9 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
             existingReaders[currentIndex].autojoin = markAsAutojoin
         }
         ClearentWrapperDefaults.recentlyPairedReaders = existingReaders
+        if currentReader.uuid == ClearentWrapperDefaults.pairedReaderInfo?.uuid {
+            ClearentWrapperDefaults.pairedReaderInfo?.autojoin = markAsAutojoin
+        }
     }
 
     func handleBackAction() {

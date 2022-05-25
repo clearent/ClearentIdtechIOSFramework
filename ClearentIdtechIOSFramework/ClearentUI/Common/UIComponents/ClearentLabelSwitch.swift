@@ -27,6 +27,7 @@ class ClearentLabelSwitch: ClearentInfoWithIcon {
     }
 
     override func configure() {
+        switchView.transform = CGAffineTransform(scaleX: 0.83, y: 0.77)
         titleFont = ClearentConstants.Font.proTextNormal
         titleTextColor = ClearentConstants.Color.base02
         descriptionFont = ClearentConstants.Font.proTextSmall
