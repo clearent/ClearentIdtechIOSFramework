@@ -16,12 +16,15 @@ class ClearentReadersTableViewCell: UITableViewCell {
     
     static let identifier = "ClearentReadersTableViewCellIdentifier"
     static let nib = "ClearentReadersTableViewCell"
-    
+
     @IBOutlet weak var stackView: UIStackView!
     @IBOutlet weak var readerStatusIcon: UIView!
     @IBOutlet weak var readerNameLabel: UILabel!
     @IBOutlet weak var detailsButton: UIButton!
-    
+
+    @IBOutlet weak var roundedCornersView: UIView!
+    var detailsAction: (() -> Void)?
+
     // MARK: Lifecycle
     
     override func awakeFromNib() {
@@ -40,9 +43,8 @@ class ClearentReadersTableViewCell: UITableViewCell {
         guard let pairedReaderInfo = ClearentWrapperDefaults.pairedReaderInfo else { return }
         
         if reader.readerInfo.readerName == pairedReaderInfo.readerName {
+            
             if reader.isConnecting {
-                readerStatusIcon.removeFromSuperview()
-                
                 let loadingIndicatorView = UIActivityIndicatorView()
                 stackView.insertArrangedSubview(loadingIndicatorView, at: 0)
                 
@@ -55,20 +57,24 @@ class ClearentReadersTableViewCell: UITableViewCell {
                 readerStatusIcon.layer.cornerRadius = readerStatusIcon.frame.width / 2
                 readerStatusIcon.layer.masksToBounds = true
             }
-        } else {
-            readerStatusIcon.removeFromSuperview()
+            readerStatusIcon.isHidden = reader.isConnecting
         }
         readerNameLabel.text = reader.readerInfo.readerName
+        readerStatusIcon.isHidden = reader.readerInfo.readerName != pairedReaderInfo.readerName
     }
     
     // MARK: Private
     
     private func configure() {
-        contentView.backgroundColor = ClearentConstants.Color.backgroundSecondary03
-        contentView.layer.cornerRadius = 8
-        contentView.layer.masksToBounds = true
+        roundedCornersView.backgroundColor = ClearentConstants.Color.backgroundSecondary03
+        roundedCornersView.layer.cornerRadius = 8
+        roundedCornersView.layer.masksToBounds = true
         
         readerNameLabel.font = ClearentConstants.Font.regularNormal
         detailsButton.setTitle("", for: .normal)
+    }
+
+    @IBAction func detailsButtonWasPressed(_: Any) {
+        detailsAction?()
     }
 }
