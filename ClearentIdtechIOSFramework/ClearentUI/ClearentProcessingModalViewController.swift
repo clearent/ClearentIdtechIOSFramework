@@ -119,13 +119,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
 
     private func readerInfoView(readerInfo: ReaderInfo, flowFeedbackType: FlowFeedbackType) -> ClearentReaderStatusHeaderView {
         let name = readerInfo.readerName
-        let signalStatus: (iconName: String?, title: String)
-        
-        if let _ = presenter?.getSelectedReaderFromReadersList() {
-            signalStatus = readerInfo.signalStatus(flowFeedbackType: flowFeedbackType, isConnecting: true)
-        } else {
-            signalStatus = readerInfo.signalStatus(flowFeedbackType: flowFeedbackType)
-        }
+        let signalStatus = (presenter?.getSelectedReaderFromReadersList() != nil) ? readerInfo.signalStatus(flowFeedbackType: flowFeedbackType, isConnecting: true) : readerInfo.signalStatus(flowFeedbackType: flowFeedbackType)
         let batteryStatus = readerInfo.batteryStatus(flowFeedbackType: flowFeedbackType)
         let statusHeader = ClearentReaderStatusHeaderView()
         

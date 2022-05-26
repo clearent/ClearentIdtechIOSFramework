@@ -156,11 +156,14 @@ public final class ClearentWrapper : NSObject {
     }
     
     public func searchRecentlyUsedReaders() {
-        let config = ClearentVP3300Config(noContactlessNoConfiguration: baseURL, publicKey: publicKey)
-        clearentVP3300 = Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
-        
-        searchingRecentlyUsedReadersInProgress = true
-        clearentVP3300.start(ClearentConnection(bluetoothSearch: ()))
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let strongSelf = self else { return }
+            let config = ClearentVP3300Config(noContactlessNoConfiguration: strongSelf.baseURL, publicKey: strongSelf.publicKey)
+            strongSelf.clearentVP3300 = Clearent_VP3300.init(connectionHandling: strongSelf, clearentVP3300Configuration: config)
+            
+            strongSelf.searchingRecentlyUsedReadersInProgress = true
+            strongSelf.clearentVP3300.start(ClearentConnection(bluetoothSearch: ()))
+        }
     }
     
     public func saleTransaction(jwt: String, amount: String) {
