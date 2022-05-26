@@ -113,21 +113,23 @@ class ClearentReaderDetailsViewController: UIViewController {
     }
 
     private func setupSerialNumber() {
-        if let serialNumber = readerInfo.serialNumber {
+        serialNumberView.isHidden = true
+        if let serialNumber = readerInfo.serialNumber, !serialNumber.isEmpty {
             serialNumberView.titleText = "xsdk_reader_details_serialnumber_title".localized
             serialNumberView.descriptionText = serialNumber
             serialNumberView.icon.isHidden = true
+            serialNumberView.isHidden = false
         }
-        serialNumberView.isHidden = readerInfo.serialNumber == nil
     }
 
     private func setupVersion() {
-        if let versionNumber = readerInfo.version {
+        versionNumberView.isHidden = true
+        if let versionNumber = readerInfo.version, !versionNumber.isEmpty {
             versionNumberView.titleText = "xsdk_reader_details_version_title".localized
             versionNumberView.descriptionText = versionNumber
             versionNumberView.icon.isHidden = true
+            versionNumberView.isHidden = false
         }
-        versionNumberView.isHidden = readerInfo.version == nil
     }
 
     private func setupButton() {
