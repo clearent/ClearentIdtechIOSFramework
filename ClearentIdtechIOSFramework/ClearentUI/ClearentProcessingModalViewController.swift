@@ -109,9 +109,14 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
                 }
                 guard let indexOfSelectedReader = readersTableViewDataSource.firstIndex(where: {$0.readerInfo.readerName == selectedReaderFromReadersList.readerInfo.readerName}) else { return nil }
                 readersTableViewDataSource[indexOfSelectedReader].isConnecting = true
+                
                 return ClearentReadersTableView(dataSource: readersTableViewDataSource, delegate: self)
             } else {
+                guard let connectedReaderFromReadersList = presenter?.getSelectedReaderFromReadersList() else { return nil }
+                guard let indexOfConnectedReader = readersTableViewDataSource.firstIndex(where: {$0.readerInfo.readerName == connectedReaderFromReadersList.readerInfo.readerName}) else { return nil }
+                readersTableViewDataSource.insert(readersTableViewDataSource.remove(at: indexOfConnectedReader), at: 0)
                 presenter?.setSelectedReaderFromReadersList(nil)
+                
                 return ClearentReadersTableView(dataSource: readersTableViewDataSource, delegate: self)
             }
         }
