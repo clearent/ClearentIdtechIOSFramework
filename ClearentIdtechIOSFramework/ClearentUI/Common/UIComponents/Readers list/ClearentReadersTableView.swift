@@ -75,7 +75,6 @@ extension ClearentReadersTableView: UITableViewDelegate {
         }
         
         delegate?.didSelectReader(dataSource[indexPath.row].readerInfo)
-        tableView.deselectRow(at: indexPath, animated: true)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
