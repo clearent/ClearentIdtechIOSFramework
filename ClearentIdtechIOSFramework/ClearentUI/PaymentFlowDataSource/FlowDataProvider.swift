@@ -219,9 +219,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             guard let pairedReaderInfo = ClearentWrapperDefaults.pairedReaderInfo else { return }
             guard let indexOfSelectedReader = recentlyPairedReaders.firstIndex(where: {$0.readerName == pairedReaderInfo.readerName}) else { return }
             
-            recentlyPairedReaders[indexOfSelectedReader].signalLevel = pairedReaderInfo.signalLevel
-            recentlyPairedReaders[indexOfSelectedReader].batterylevel = pairedReaderInfo.batterylevel
-            recentlyPairedReaders[indexOfSelectedReader].isConnected = pairedReaderInfo.isConnected
+            recentlyPairedReaders[indexOfSelectedReader] = pairedReaderInfo
             
             items = [FlowDataItem(type: .recentlyPaired, object: recentlyPairedReaders),
                      FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]

@@ -31,18 +31,16 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
     
     public func setup(readerName: String,
                       dropDownIconName: String? = nil,
-                      signalStatusIconName: String?,
-                      signalStatusTitle: String,
-                      batteryStatusIconName: String?,
-                      batteryStatusTitle: String?) {
+                      signalStatus: (iconName: String?, title: String),
+                      batteryStatus: (iconName: String?, title: String?)) {
         readerNameLabel.text = readerName
         
         if let dropDownIconName = dropDownIconName {
             dropDownImageView.image = UIImage(named: dropDownIconName, in: ClearentConstants.bundle, compatibleWith: nil)
         }
-        readerConnectivityStatusView.setup(imageName: signalStatusIconName, status: signalStatusTitle)
+        readerConnectivityStatusView.setup(imageName: signalStatus.iconName, status: signalStatus.title)
         
-        if let batteryImage = batteryStatusIconName, let batteryStatus = batteryStatusTitle {
+        if let batteryImage = batteryStatus.iconName, let batteryStatus = batteryStatus.title {
             readerBatteryStatusView.isHidden = false
             readerBatteryStatusView.setup(imageName: batteryImage, status: batteryStatus)
             return
@@ -51,8 +49,8 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
     }
     
     public func updateDropDownIcon() {
-        dropDownImageView.image = state == .collapsed ? UIImage(named: ClearentConstants.IconName.collapsed, in: ClearentConstants.bundle, compatibleWith: nil) :
-        UIImage(named: ClearentConstants.IconName.expanded, in: ClearentConstants.bundle, compatibleWith: nil)
+        let iconName = state == .collapsed ? ClearentConstants.IconName.collapsed : ClearentConstants.IconName.expanded
+        dropDownImageView.image = UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil)
     }
     
     // MARK: Private

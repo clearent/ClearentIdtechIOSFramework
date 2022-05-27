@@ -95,12 +95,12 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         case .recentlyPaired:
             guard let readersInfo = object as? [ReaderInfo] else { return nil }
             guard let pairedReaderInfo = ClearentWrapperDefaults.pairedReaderInfo else { return nil }
-            var readersTableViewDataSource: [ReaderItem] = readersInfo.map { item -> ReaderItem in
-                    return ReaderItem(readerInfo: item)
+            var readersTableViewDataSource: [ReaderItem] = readersInfo.map {
+                    ReaderItem(readerInfo: $0)
             }
             
             if !pairedReaderInfo.isConnected {
-                guard let selectedReaderFromReadersList = presenter?.getSelectedReaderFromReadersList() else {
+                guard let selectedReaderFromReadersList = presenter?.selectedReaderFromReadersList else {
                     return ClearentReadersTableView(dataSource: readersTableViewDataSource, delegate: self)
                 }
                 guard let indexOfSelectedReader = readersTableViewDataSource.firstIndex(where: {$0.readerInfo.readerName == selectedReaderFromReadersList.readerInfo.readerName}) else { return nil }
@@ -110,7 +110,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             } else {
                 guard let indexOfConnectedReader = readersTableViewDataSource.firstIndex(where: {$0.readerInfo.readerName == pairedReaderInfo.readerName}) else { return nil }
                 readersTableViewDataSource.insert(readersTableViewDataSource.remove(at: indexOfConnectedReader), at: 0)
-                presenter?.setSelectedReaderFromReadersList(nil)
+                presenter?.selectedReaderFromReadersList = nil
                 
                 return ClearentReadersTableView(dataSource: readersTableViewDataSource, delegate: self)
             }
@@ -119,11 +119,12 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
 
     private func readerInfoView(readerInfo: ReaderInfo, flowFeedbackType: FlowFeedbackType) -> ClearentReaderStatusHeaderView {
         let name = readerInfo.readerName
-        let signalStatus = (presenter?.getSelectedReaderFromReadersList() != nil) ? readerInfo.signalStatus(flowFeedbackType: flowFeedbackType, isConnecting: true) : readerInfo.signalStatus(flowFeedbackType: flowFeedbackType)
+        let signalStatus = presenter?.selectedReaderFromReadersList != nil ? readerInfo.signalStatus(flowFeedbackType: flowFeedbackType, isConnecting: true) : readerInfo.signalStatus(flowFeedbackType: flowFeedbackType)
         let batteryStatus = readerInfo.batteryStatus(flowFeedbackType: flowFeedbackType)
         let statusHeader = ClearentReaderStatusHeaderView()
+        let iconName = showOnTop ? ClearentConstants.IconName.expanded : nil
         
-        showOnTop ? statusHeader.setup(readerName: name, dropDownIconName: ClearentConstants.IconName.expanded, signalStatusIconName: signalStatus.iconName, signalStatusTitle: signalStatus.title, batteryStatusIconName: batteryStatus.iconName, batteryStatusTitle: batteryStatus.title) : statusHeader.setup(readerName: name, signalStatusIconName: signalStatus.iconName, signalStatusTitle: signalStatus.title, batteryStatusIconName: batteryStatus.iconName, batteryStatusTitle: batteryStatus.title)
+        statusHeader.setup(readerName: name, dropDownIconName: iconName, signalStatus: signalStatus, batteryStatus: batteryStatus)
         
         statusHeader.action = { [weak self] in
             if self?.showOnTop == true {
