@@ -33,10 +33,8 @@ class ClearentReaderConnectivityStatusView: ClearentXibView {
 
     public func setup(imageName: String?, status: String) {
         statusLabel.text = status
-        guard let imageName = imageName else {
-            statusImageView.removeFromSuperview()
-            return
-        }
+        statusImageView.isHidden = imageName == nil
+        guard let imageName = imageName else { return }
         statusImageView.image = UIImage(named: imageName, in: ClearentConstants.bundle, compatibleWith: nil)
     }
 }

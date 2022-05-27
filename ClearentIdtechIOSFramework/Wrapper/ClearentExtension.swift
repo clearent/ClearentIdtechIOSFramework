@@ -38,7 +38,9 @@ extension ClearentWrapper {
     internal func addReaderToRecentlyUsed(reader: ReaderInfo) {
         var reader = reader
         reader.isConnected = false
-        guard var existingReaders = ClearentWrapperDefaults.recentlyPairedReaders else {
+        guard var existingReaders = ClearentWrapperDefaults.recentlyPairedReaders, !existingReaders.isEmpty else {
+            reader.autojoin = true
+            ClearentWrapperDefaults.pairedReaderInfo?.autojoin = true
             ClearentWrapperDefaults.recentlyPairedReaders = [reader]
             return
         }
@@ -50,17 +52,21 @@ extension ClearentWrapper {
         ClearentWrapperDefaults.recentlyPairedReaders = existingReaders
     }
     
-    public func removeReaderFromRecentlyUsed(reader: ReaderInfo) {
+    internal func removeReaderFromRecentlyUsed(reader: ReaderInfo) {
         guard var existingReaders = ClearentWrapperDefaults.recentlyPairedReaders else { return }
         existingReaders.removeAll(where: { $0.uuid == reader.uuid })
         ClearentWrapperDefaults.recentlyPairedReaders = existingReaders
     }
     
     internal func fetchRecentlyAndAvailableReaders(devices: [ClearentBluetoothDevice]) -> [ReaderInfo] {
-        guard let recentReaders = ClearentWrapperDefaults.recentlyPairedReaders else { return [] }
         let availableReaders = devices.compactMap { readerInfo(from: $0)}
-        var result = availableReaders.filter { currentReader in recentReaders.contains(where: {
-            $0.uuid == currentReader.uuid && $0.uuid != ClearentWrapperDefaults.pairedReaderInfo?.uuid
+        return fetchRecentlyAndAvailableReaders(availableReaders: availableReaders)
+    }
+    
+    internal func fetchRecentlyAndAvailableReaders(availableReaders: [ReaderInfo]) -> [ReaderInfo] {
+        guard let recentReaders = ClearentWrapperDefaults.recentlyPairedReaders else { return [] }
+        var result = recentReaders.filter { recentReader in availableReaders.contains(where: {
+            $0.uuid == recentReader.uuid && $0.uuid != ClearentWrapperDefaults.pairedReaderInfo?.uuid
         })}
         // always include default reader
         if let defaultReader = ClearentWrapperDefaults.pairedReaderInfo {

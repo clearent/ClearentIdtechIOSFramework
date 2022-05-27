@@ -21,6 +21,7 @@ class ClearentReadersTableViewCell: UITableViewCell {
     @IBOutlet weak var readerStatusIcon: UIView!
     @IBOutlet weak var readerNameLabel: UILabel!
     @IBOutlet weak var detailsButton: UIButton!
+    @IBOutlet weak var roundedCornersView: UIView!
 
     var detailsAction: (() -> Void)?
 
@@ -40,11 +41,10 @@ class ClearentReadersTableViewCell: UITableViewCell {
     
     public func setup(reader: ReaderItem) {
         guard let pairedReaderInfo = ClearentWrapperDefaults.pairedReaderInfo else { return }
-        
+        readerStatusIcon.isHidden = reader.readerInfo.readerName != pairedReaderInfo.readerName
         if reader.readerInfo.readerName == pairedReaderInfo.readerName {
+            
             if reader.isConnecting {
-                readerStatusIcon.removeFromSuperview()
-                
                 let loadingIndicatorView = UIActivityIndicatorView()
                 stackView.insertArrangedSubview(loadingIndicatorView, at: 0)
                 
@@ -57,8 +57,7 @@ class ClearentReadersTableViewCell: UITableViewCell {
                 readerStatusIcon.layer.cornerRadius = readerStatusIcon.frame.width / 2
                 readerStatusIcon.layer.masksToBounds = true
             }
-        } else {
-            readerStatusIcon.removeFromSuperview()
+            readerStatusIcon.isHidden = reader.isConnecting
         }
         readerNameLabel.text = reader.readerInfo.readerName
     }
@@ -66,9 +65,9 @@ class ClearentReadersTableViewCell: UITableViewCell {
     // MARK: Private
     
     private func configure() {
-        contentView.backgroundColor = ClearentConstants.Color.backgroundSecondary03
-        contentView.layer.cornerRadius = 8
-        contentView.layer.masksToBounds = true
+        roundedCornersView.backgroundColor = ClearentConstants.Color.backgroundSecondary03
+        roundedCornersView.layer.cornerRadius = 8
+        roundedCornersView.layer.masksToBounds = true
         
         readerNameLabel.font = ClearentConstants.Font.proTextNormal
         detailsButton.setTitle("", for: .normal)

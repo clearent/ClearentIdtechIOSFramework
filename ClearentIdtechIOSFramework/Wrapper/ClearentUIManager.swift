@@ -28,6 +28,7 @@ public final class ClearentUIManager : NSObject {
         } else {
             ClearentWrapperDefaults.pairedReaderInfo = nil
         }
+        
         ClearentWrapper.shared.readerInfoReceived = { [weak self] _ in
             DispatchQueue.main.async {
                 self?.readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)

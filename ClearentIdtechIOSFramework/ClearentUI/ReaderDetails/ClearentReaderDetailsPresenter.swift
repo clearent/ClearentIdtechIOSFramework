@@ -81,21 +81,18 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
         if let currentIndex = existingReaders.firstIndex(where: {$0.uuid == currentReader.uuid}) {
             existingReaders[currentIndex].autojoin = markAsAutojoin
         }
-        ClearentWrapperDefaults.recentlyPairedReaders = existingReaders
         if currentReader.uuid == ClearentWrapperDefaults.pairedReaderInfo?.uuid {
             ClearentWrapperDefaults.pairedReaderInfo?.autojoin = markAsAutojoin
+        } else {
+            ClearentWrapperDefaults.pairedReaderInfo?.autojoin = !markAsAutojoin
         }
+        ClearentWrapperDefaults.recentlyPairedReaders = existingReaders
     }
 
     func handleBackAction() {
-        if let recentReaders = ClearentWrapperDefaults.recentlyPairedReaders, let defaultReader = ClearentWrapperDefaults.pairedReaderInfo {
-            // create list of available and recently used readers, including default reader
-            var result: [ReaderInfo] = recentReaders.filter { _ in
-                allReaders.map { $0.readerInfo }.contains(where: { readerInfo in
-                    readerInfo.uuid == currentReader.uuid && readerInfo.uuid != ClearentWrapperDefaults.pairedReaderInfo?.uuid
-                })
-            }
-            result.insert(defaultReader, at: 0)
+        if ClearentWrapperDefaults.pairedReaderInfo != nil {
+            let readerInfoList = allReaders.map { $0.readerInfo }
+            let result = ClearentWrapper.shared.fetchRecentlyAndAvailableReaders(availableReaders: readerInfoList)
             flowDataProvider.didFindRecentlyUsedReaders(readers: result)
             navigationController?.popViewController(animated: true)
         } else {

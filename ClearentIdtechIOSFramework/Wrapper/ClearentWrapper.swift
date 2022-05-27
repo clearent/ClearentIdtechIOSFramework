@@ -62,7 +62,9 @@ public final class ClearentWrapper : NSObject {
     private var apiKey: String = ""
     private var publicKey: String = ""
     private var searchingRecentlyUsedReadersInProgress = false
-    
+    public var previouslyPairedReaders: [ReaderInfo]? {
+        ClearentWrapperDefaults.recentlyPairedReaders
+    }
     public static let shared = ClearentWrapper()
     public var flowType: ProcessType?
     weak var delegate: ClearentWrapperProtocol?
@@ -154,11 +156,14 @@ public final class ClearentWrapper : NSObject {
     }
     
     public func searchRecentlyUsedReaders() {
-        let config = ClearentVP3300Config(noContactlessNoConfiguration: baseURL, publicKey: publicKey)
-        clearentVP3300 = Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
-        
-        searchingRecentlyUsedReadersInProgress = true
-        clearentVP3300.start(ClearentConnection(bluetoothSearch: ()))
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let strongSelf = self else { return }
+            let config = ClearentVP3300Config(noContactlessNoConfiguration: strongSelf.baseURL, publicKey: strongSelf.publicKey)
+            strongSelf.clearentVP3300 = Clearent_VP3300.init(connectionHandling: strongSelf, clearentVP3300Configuration: config)
+            
+            strongSelf.searchingRecentlyUsedReadersInProgress = true
+            strongSelf.clearentVP3300.start(ClearentConnection(bluetoothSearch: ()))
+        }
     }
     
     public func saleTransaction(jwt: String, amount: String) {
@@ -439,7 +444,6 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     public func deviceConnected() {
         if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
             currentReader.isConnected = true
-            currentReader.autojoin = true
             ClearentWrapperDefaults.pairedReaderInfo = currentReader
             addReaderToRecentlyUsed(reader: currentReader)
         }

@@ -35,7 +35,7 @@ public class ClearentWrapperDefaults: UserDefaultsPersistence {
            }
        }
     
-    static var recentlyPairedReaders: [ReaderInfo]? {
+    internal static var recentlyPairedReaders: [ReaderInfo]? {
            
            get {
                if let savedReaderData = retrieveValue(forKey: DefaultKeys.recentlyPairedReadersKey) as? Data {
@@ -57,7 +57,7 @@ public class ClearentWrapperDefaults: UserDefaultsPersistence {
 }
 
 extension ClearentWrapperDefaults {
-    public static var pairedReaderInfo: ReaderInfo? {
+    internal static var pairedReaderInfo: ReaderInfo? {
         get {
             defaultReaderInfo
         }

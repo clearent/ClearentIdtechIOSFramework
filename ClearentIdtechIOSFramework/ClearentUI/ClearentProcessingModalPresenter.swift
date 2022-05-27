@@ -25,7 +25,7 @@ protocol ProcessingModalProtocol {
     func setSelectedReaderFromReadersList(_ readerItem: ReaderItem?)
 }
 
-public class ClearentProcessingModalPresenter {
+class ClearentProcessingModalPresenter {
     private weak var modalProcessingView: ClearentProcessingModalView?
     private var amount: Double?
     private let sdkWrapper = ClearentWrapper.shared
@@ -96,7 +96,10 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         modalProcessingView?.updateContent(with: feedback)
     }
     
-    public func connectTo(reader: ReaderInfo) {
+    func connectTo(reader: ReaderInfo) {
+        // reset sdk provider to make sure the sdkWrapper is not nil
+        sdkFeedbackProvider = FlowDataProvider()
+        sdkFeedbackProvider.delegate = self
         selectedReaderFromReadersList = ReaderItem(readerInfo: reader, isConnecting: true)
         ClearentWrapper.shared.flowType = processType
         sdkWrapper.connectTo(reader: reader)
