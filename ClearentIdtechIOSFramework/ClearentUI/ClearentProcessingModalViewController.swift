@@ -123,9 +123,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
 
     private func readerInfoView(readerInfo: ReaderInfo, flowFeedbackType: FlowFeedbackType) -> ClearentReaderStatusHeaderView {
         let name = readerInfo.readerName
-
         let signalStatus = readerInfo.signalStatus(flowFeedbackType: flowFeedbackType, isConnecting: presenter?.selectedReaderFromReadersList != nil)
-
         let batteryStatus = readerInfo.batteryStatus(flowFeedbackType: flowFeedbackType)
         let statusHeader = ClearentReaderStatusHeaderView()
         let iconName = showOnTop ? ClearentConstants.IconName.expanded : nil
