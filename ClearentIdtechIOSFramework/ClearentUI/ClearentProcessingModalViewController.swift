@@ -115,6 +115,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
                 guard let indexOfConnectedReader = readersTableViewDataSource.firstIndex(where: {$0.readerInfo.readerName == pairedReaderInfo.readerName}) else { return nil }
                 readersTableViewDataSource.insert(readersTableViewDataSource.remove(at: indexOfConnectedReader), at: 0)
                 presenter?.selectedReaderFromReadersList = nil
+                stackView.isUserInteractionEnabled = true
                 
                 return ClearentReadersTableView(dataSource: readersTableViewDataSource, delegate: self)
             }
