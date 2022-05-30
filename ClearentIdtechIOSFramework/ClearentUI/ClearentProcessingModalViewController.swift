@@ -191,9 +191,6 @@ extension ClearentProcessingModalViewController: ClearentReadersTableViewDelegat
 
     func didSelectReader(_ reader: ReaderInfo) {
         presenter?.connectTo(reader: reader)
-        
-        stackView.arrangedSubviews.forEach {
-            $0.isUserInteractionEnabled = false
-        }
+        stackView.isUserInteractionEnabled = false
     }
 }
