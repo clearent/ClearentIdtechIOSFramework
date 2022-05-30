@@ -39,7 +39,17 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         didSet { updateAppearence() }
     }
 
-    public var borderColor: UIColor? {
+    public var isBorderedButton: Bool = false {
+        didSet {
+            let color = ClearentConstants.Color.self
+            enabledBackgroundColor = isBorderedButton ? color.backgroundSecondary01 : color.base01
+            enabledTextColor = isBorderedButton ? color.base01 : color.backgroundSecondary01
+            borderColor = color.backgroundSecondary02
+            borderWidth = isBorderedButton ? ClearentConstants.Size.primaryButtonBorderWidth : 0
+        }
+    }
+    
+    var borderColor: UIColor? {
         didSet {
             button.layer.borderColor = borderColor?.cgColor
         }
@@ -51,7 +61,7 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         }
     }
     
-    public var borderWidth: CGFloat? {
+    var borderWidth: CGFloat? {
         didSet {
             guard let borderWidth = borderWidth else { return }
             button.layer.borderWidth = borderWidth

@@ -38,10 +38,9 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
     }
 
     var readerBatteryStatus: (title: String, iconName: String)? {
-        guard let batteryIcon = currentReader.batteryStatus().iconName,
-              let batteryTitle = currentReader.batteryStatus().title else { return nil }
-        let title = String(format: "xsdk_reader_details_battery_status".localized, batteryTitle)
-        return (title, batteryIcon)
+        guard let batteryStatus = currentReader.batteryStatus() else { return nil }
+        let title = String(format: "xsdk_reader_details_battery_status".localized, batteryStatus.title)
+        return (title, batteryStatus.iconName)
     }
 
     init(currentReader: ReaderItem, allReaders: [ReaderItem], flowDataProvider: FlowDataProvider, navigationController: UINavigationController) {
@@ -53,7 +52,7 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
 
     func removeReader() {
         // if default reader
-        if currentReader.uuid == ClearentWrapperDefaults.pairedReaderInfo?.uuid {
+        if currentReader == ClearentWrapperDefaults.pairedReaderInfo {
             ClearentWrapperDefaults.pairedReaderInfo = nil
             if currentReader.isConnected {
                 disconnectFromReader()
@@ -78,10 +77,10 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
         if let oldAutojoinIndex = existingReaders.firstIndex(where: {$0.autojoin == true}) {
             existingReaders[oldAutojoinIndex].autojoin = false
         }
-        if let currentIndex = existingReaders.firstIndex(where: {$0.uuid == currentReader.uuid}) {
+        if let currentIndex = existingReaders.firstIndex(where: {$0 == currentReader}) {
             existingReaders[currentIndex].autojoin = markAsAutojoin
         }
-        if currentReader.uuid == ClearentWrapperDefaults.pairedReaderInfo?.uuid {
+        if currentReader == ClearentWrapperDefaults.pairedReaderInfo {
             ClearentWrapperDefaults.pairedReaderInfo?.autojoin = markAsAutojoin
         } else {
             ClearentWrapperDefaults.pairedReaderInfo?.autojoin = !markAsAutojoin

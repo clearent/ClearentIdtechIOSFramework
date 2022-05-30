@@ -29,11 +29,17 @@ public struct ReaderInfo : Codable {
     var version: String?
 }
 
+extension ReaderInfo: Equatable {
+    public static func == (lhs: ReaderInfo, rhs: ReaderInfo) -> Bool {
+        return lhs.uuid == rhs.uuid
+    }
+}
+
 public extension ReaderInfo {
-    func batteryStatus(flowFeedbackType: FlowFeedbackType? = nil) -> (iconName: String?, title: String?) {
+    func batteryStatus(flowFeedbackType: FlowFeedbackType? = nil) -> (iconName: String, title: String)? {
         // if reader is not connected, battery should not be shown
         guard let batteryLevel = batterylevel, isConnected, flowFeedbackType != .searchDevices else {
-            return (nil, nil)
+            return nil
         }
         var iconName = ClearentConstants.IconName.batteryLow
         if batteryLevel > 95 { iconName = ClearentConstants.IconName.batteryFull }

@@ -10,7 +10,7 @@ import Foundation
 
 public struct FlowDataItem {
   var type: FlowDataKeys
-  var object: Any
+  var object: Any?
 }
 
 public class FlowFeedback {
@@ -27,14 +27,10 @@ public class FlowFeedback {
 
 class FlowDataFactory {
     class func component(with flow: ProcessType, type: FlowFeedbackType, readerInfo: ReaderInfo?, payload: [FlowDataItem]) -> FlowFeedback {
-        if let readerInfo = readerInfo {
-            var allItems = [FlowDataItem(type: .readerInfo, object: readerInfo)]
-            allItems.append(contentsOf: payload)
-            
-            return FlowFeedback(flow: flow, type: type, items: allItems)
-        }
-    
-        return FlowFeedback(flow: flow, type: type, items: payload)
+        var allItems = [FlowDataItem(type: .readerInfo, object: readerInfo)]
+        allItems.append(contentsOf: payload)
+        
+        return FlowFeedback(flow: flow, type: type, items: allItems)
     }
 }
 
@@ -217,7 +213,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         if case .showReaders = ClearentWrapper.shared.flowType {
             guard var recentlyPairedReaders = ClearentWrapperDefaults.recentlyPairedReaders else { return }
             guard let pairedReaderInfo = ClearentWrapperDefaults.pairedReaderInfo else { return }
-            guard let indexOfSelectedReader = recentlyPairedReaders.firstIndex(where: {$0.readerName == pairedReaderInfo.readerName}) else { return }
+            guard let indexOfSelectedReader = recentlyPairedReaders.firstIndex(where: {$0 == pairedReaderInfo}) else { return }
             
             recentlyPairedReaders[indexOfSelectedReader] = pairedReaderInfo
             
