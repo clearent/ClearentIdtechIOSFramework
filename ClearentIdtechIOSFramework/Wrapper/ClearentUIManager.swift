@@ -22,6 +22,7 @@ public final class ClearentUIManager : NSObject {
     }
     
     func setupReaderInfo() {
+        // check if there is an auto-join reader
         if let autojoinReader = ClearentWrapperDefaults.recentlyPairedReaders?.first(where: {$0.autojoin == true}) {
             ClearentWrapperDefaults.pairedReaderInfo = autojoinReader
             ClearentWrapperDefaults.pairedReaderInfo?.isConnected = false

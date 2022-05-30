@@ -15,6 +15,7 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
     @IBOutlet weak var dropDownImageView: UIImageView!
     @IBOutlet weak var readerConnectivityStatusView: ClearentReaderConnectivityStatusView!
     @IBOutlet weak var readerBatteryStatusView: ClearentReaderConnectivityStatusView!
+    @IBOutlet weak var descriptionLabel: UILabel!
     
     public var state: ReaderStatusHeaderViewState = .collapsed
     public var action: (() -> Void)?
@@ -27,33 +28,45 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
         ]
     }
     
+    override func configure() {
+        descriptionLabel.font = ClearentConstants.Font.proTextSmall
+        descriptionLabel.textColor = ClearentConstants.Color.base02
+    }
+    
     // MARK: Public
     
     public func setup(readerName: String,
                       dropDownIconName: String? = nil,
-                      signalStatus: (iconName: String?, title: String),
-                      batteryStatus: (iconName: String?, title: String?)) {
+                      description: String? = nil,
+                      signalStatus: (iconName: String?, title: String)? = nil,
+                      batteryStatus: (iconName: String, title: String)? = nil) {
         readerNameLabel.text = readerName
+        
+        if let description = description {
+            descriptionLabel.text = description
+        }
+        descriptionLabel.isHidden = description == nil
         
         if let dropDownIconName = dropDownIconName {
             dropDownImageView.image = UIImage(named: dropDownIconName, in: ClearentConstants.bundle, compatibleWith: nil)
         }
-        readerConnectivityStatusView.setup(imageName: signalStatus.iconName, status: signalStatus.title)
-        
-        if let batteryImage = batteryStatus.iconName, let batteryStatus = batteryStatus.title {
-            readerBatteryStatusView.isHidden = false
-            readerBatteryStatusView.setup(imageName: batteryImage, status: batteryStatus)
-            return
+        if let signalStatus = signalStatus {
+            readerConnectivityStatusView.setup(imageName: signalStatus.iconName, status: signalStatus.title)
         }
-        readerBatteryStatusView.isHidden = true
+        readerConnectivityStatusView.isHidden = signalStatus == nil
+        
+        if let batteryStatus = batteryStatus {
+            readerBatteryStatusView.setup(imageName: batteryStatus.iconName, status: batteryStatus.title)
+        }
+        readerBatteryStatusView.isHidden = batteryStatus == nil
     }
+
+    // MARK: Private
     
-    public func updateDropDownIcon() {
+    private func updateDropDownIcon() {
         let iconName = state == .collapsed ? ClearentConstants.IconName.collapsed : ClearentConstants.IconName.expanded
         dropDownImageView.image = UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil)
     }
-    
-    // MARK: Private
     
     @IBAction func didTapOnReaderStatusHeaderView(_ sender: Any) {
         state = state == .collapsed ? .expanded : .collapsed

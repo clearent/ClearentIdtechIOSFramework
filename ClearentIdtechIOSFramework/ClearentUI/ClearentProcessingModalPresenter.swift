@@ -116,9 +116,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     private func showReadersList() {
-        guard let connectedReader = ClearentWrapperDefaults.pairedReaderInfo else { return }
-        
-        let items = [FlowDataItem(type: .readerInfo, object: connectedReader),
+        let items = [FlowDataItem(type: .readerInfo, object: ClearentWrapperDefaults.pairedReaderInfo),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
                      FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
         let feedback = FlowFeedback(flow: .showReaders, type: .showReaders, items: items)

@@ -62,8 +62,8 @@ public final class ClearentWrapper : NSObject {
     private var apiKey: String = ""
     private var publicKey: String = ""
     private var searchingRecentlyUsedReadersInProgress = false
-    public var previouslyPairedReaders: [ReaderInfo]? {
-        ClearentWrapperDefaults.recentlyPairedReaders
+    public var previouslyPairedReaders: [ReaderInfo] {
+        ClearentWrapperDefaults.recentlyPairedReaders ?? []
     }
     public static let shared = ClearentWrapper()
     public var flowType: ProcessType?

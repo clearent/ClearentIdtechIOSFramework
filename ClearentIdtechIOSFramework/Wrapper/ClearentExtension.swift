@@ -44,7 +44,7 @@ extension ClearentWrapper {
             ClearentWrapperDefaults.recentlyPairedReaders = [reader]
             return
         }
-        if let defaultReaderIndex = existingReaders.firstIndex(where: {$0.uuid == reader.uuid}) {
+        if let defaultReaderIndex = existingReaders.firstIndex(where: { $0 == reader }) {
             existingReaders[defaultReaderIndex] = reader
         } else {
             existingReaders.insert(reader, at: 0)
@@ -54,7 +54,7 @@ extension ClearentWrapper {
     
     internal func removeReaderFromRecentlyUsed(reader: ReaderInfo) {
         guard var existingReaders = ClearentWrapperDefaults.recentlyPairedReaders else { return }
-        existingReaders.removeAll(where: { $0.uuid == reader.uuid })
+        existingReaders.removeAll(where: { $0 == reader })
         ClearentWrapperDefaults.recentlyPairedReaders = existingReaders
     }
     
@@ -66,7 +66,7 @@ extension ClearentWrapper {
     internal func fetchRecentlyAndAvailableReaders(availableReaders: [ReaderInfo]) -> [ReaderInfo] {
         guard let recentReaders = ClearentWrapperDefaults.recentlyPairedReaders else { return [] }
         var result = recentReaders.filter { recentReader in availableReaders.contains(where: {
-            $0.uuid == recentReader.uuid && $0.uuid != ClearentWrapperDefaults.pairedReaderInfo?.uuid
+            $0 == recentReader && $0 != ClearentWrapperDefaults.pairedReaderInfo
         })}
         // always include default reader
         if let defaultReader = ClearentWrapperDefaults.pairedReaderInfo {

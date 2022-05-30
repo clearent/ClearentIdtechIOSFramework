@@ -40,29 +40,36 @@ class ClearentReadersTableViewCell: UITableViewCell {
     }
     
     public func setup(reader: ReaderItem) {
-        guard let pairedReaderInfo = ClearentWrapperDefaults.pairedReaderInfo else { return }
-        readerStatusIcon.isHidden = reader.readerInfo.readerName != pairedReaderInfo.readerName
-        if reader.readerInfo.readerName == pairedReaderInfo.readerName {
-            
+        if let pairedReaderInfo = ClearentWrapperDefaults.pairedReaderInfo, reader.readerInfo == pairedReaderInfo {
             if reader.isConnecting {
-                let loadingIndicatorView = UIActivityIndicatorView()
-                stackView.insertArrangedSubview(loadingIndicatorView, at: 0)
-                
-                loadingIndicatorView.translatesAutoresizingMaskIntoConstraints = false
-                loadingIndicatorView.widthAnchor.constraint(equalToConstant: 12).isActive = true
-                loadingIndicatorView.heightAnchor.constraint(equalToConstant: 12).isActive = true
-                loadingIndicatorView.startAnimating()
+                setupLoadingIdicator()
             } else {
-                readerStatusIcon.backgroundColor = pairedReaderInfo.isConnected ? ClearentConstants.Color.accent01 : ClearentConstants.Color.accent02
-                readerStatusIcon.layer.cornerRadius = readerStatusIcon.frame.width / 2
-                readerStatusIcon.layer.masksToBounds = true
+                setupReaderStatusIcon(isConnected: pairedReaderInfo.isConnected)
             }
             readerStatusIcon.isHidden = reader.isConnecting
+        } else {
+            readerStatusIcon.isHidden = true
         }
         readerNameLabel.text = reader.readerInfo.readerName
     }
     
     // MARK: Private
+    
+    private func setupLoadingIdicator() {
+        let loadingIndicatorView = UIActivityIndicatorView()
+        stackView.insertArrangedSubview(loadingIndicatorView, at: 0)
+        
+        loadingIndicatorView.translatesAutoresizingMaskIntoConstraints = false
+        loadingIndicatorView.widthAnchor.constraint(equalToConstant: 12).isActive = true
+        loadingIndicatorView.heightAnchor.constraint(equalToConstant: 12).isActive = true
+        loadingIndicatorView.startAnimating()
+    }
+    
+    private func setupReaderStatusIcon(isConnected: Bool) {
+        readerStatusIcon.backgroundColor = isConnected ? ClearentConstants.Color.accent01 : ClearentConstants.Color.accent02
+        readerStatusIcon.layer.cornerRadius = readerStatusIcon.frame.width / 2
+        readerStatusIcon.layer.masksToBounds = true
+    }
     
     private func configure() {
         roundedCornersView.backgroundColor = ClearentConstants.Color.backgroundSecondary03
