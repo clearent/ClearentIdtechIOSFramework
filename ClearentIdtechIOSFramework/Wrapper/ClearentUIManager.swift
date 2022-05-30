@@ -14,36 +14,47 @@ public final class ClearentUIManager : NSObject {
     public static let shared = ClearentUIManager()
     public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
     
+    // MARK: Init
+    
     public override init() {
         super.init()
         ClearentWrapper.shared.readerInfoReceived = {[weak self] _ in
             DispatchQueue.main.async {
-                self?.readerInfoReceived?(ClearentWrapper.shared.readerInfo)
+                self?.readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
             }
         }
     }
+    
+    // MARK: Public
     
     public func updateWith(baseURL: String, apiKey: String, publicKey: String) {
         clearentWrapper.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey)
     }
     
     public func paymentViewController(amount: Double) -> UIViewController {
-        return viewController(processType: .payment, amount:amount)
+        viewController(processType: .payment, amount:amount)
     }
     
     public func pairingViewController() -> UIViewController {
-        return viewController(processType: .pairing)
+        viewController(processType: .pairing)
     }
     
+    public func readersViewController() -> UIViewController {
+        viewController(processType: .showReaders)
+    }
+    
+    // MARK: Private
+    
     private func viewController(processType: ProcessType, amount: Double? = nil) ->  UIViewController {
-          let paymentProcessingViewController = ClearentProcessingModalViewController(nibName: String(describing: ClearentProcessingModalViewController.self), bundle: ClearentConstants.bundle)
+        let paymentProcessingViewController = ClearentProcessingModalViewController(showOnTop: processType == .showReaders)
           let paymentProcessingPresenter = ClearentProcessingModalPresenter(paymentProcessingView: paymentProcessingViewController, amount: amount, processType: processType)
           paymentProcessingViewController.presenter = paymentProcessingPresenter
           paymentProcessingViewController.modalPresentationStyle = .overFullScreen
-          if (clearentWrapper.readerInfo != nil) {
-              readerInfoReceived?(clearentWrapper.readerInfo)
+    
+          if (ClearentWrapperDefaults.pairedReaderInfo != nil) {
+              readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
           }
- 
+
           return paymentProcessingViewController
     }
 }

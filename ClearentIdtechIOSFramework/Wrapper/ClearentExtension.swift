@@ -14,14 +14,19 @@ extension ClearentWrapper: BluetoothScannerProtocol {
     func didUpdateBluetoothState(isOn: Bool) {
         isBluetoothOn = isOn
         if (!isBluetoothOn) {
-            readerInfo?.isConnected = false
-            readerInfo?.batterylevel = nil
-            ClearentWrapperDefaults.pairedReaderInfo = readerInfo
+            if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
+                currentReader.isConnected = false
+                currentReader.batterylevel = nil
+                ClearentWrapperDefaults.pairedReaderInfo = currentReader
+            }
         }
     }
     
     internal func didReceivedSignalStrength(level: SignalLevel) {
-        readerInfo?.signalLevel = level.rawValue
+        if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
+            currentReader.signalLevel = level.rawValue
+            ClearentWrapperDefaults.pairedReaderInfo = currentReader
+        }
     }
     
     internal func didFinishWithError() {
@@ -34,6 +39,8 @@ extension ClearentWrapper {
     internal func addReaderToRecentlyUsed(reader:ReaderInfo) {
         var newReader = reader
         newReader.isConnected = false
+        newReader.batterylevel = nil
+        newReader.signalLevel = nil
         guard let existingReaders = ClearentWrapperDefaults.recentlyPairedReaders else {
             ClearentWrapperDefaults.recentlyPairedReaders = [newReader]
             return
@@ -63,7 +70,11 @@ extension ClearentWrapper {
     internal func fetchRecentlyAndAvailableReaders(devices: [ClearentBluetoothDevice]) -> [ReaderInfo] {
         
         let availableReaders = devices.compactMap { readerInfo(from: $0)}
-        guard let recentReaders = ClearentWrapperDefaults.recentlyPairedReaders else {return availableReaders}
+        if let savedReader = ClearentWrapperDefaults.pairedReaderInfo {
+            removeReaderFromRecentlyUsed(reader:savedReader)
+            addReaderToRecentlyUsed(reader: savedReader)
+        }
+        guard let recentReaders = ClearentWrapperDefaults.recentlyPairedReaders else {return []}
        
         let result = availableReaders.filter {currentReader in recentReaders.contains(where: { $0.readerName == currentReader.readerName }) }
         return result

@@ -15,8 +15,11 @@ public protocol ClearentProcessingModalView: AnyObject {
 }
 
 public protocol ProcessingModalProtocol {
+    var selectedReaderFromReadersList: ReaderItem? { get set }
     func restartProcess(processType: ProcessType)
     func startFlow()
+    func startPairingFlow()
+    func connectTo(reader: ReaderInfo)
 }
 
 public class ClearentProcessingModalPresenter {
@@ -25,6 +28,7 @@ public class ClearentProcessingModalPresenter {
     private let sdkWrapper = ClearentWrapper.shared
     private var sdkFeedbackProvider: FlowDataProvider
     private let processType: ProcessType
+    public var selectedReaderFromReadersList: ReaderItem?
 
     // MARK: Init
 
@@ -33,6 +37,7 @@ public class ClearentProcessingModalPresenter {
         self.amount = amount
         self.processType = processType
         sdkFeedbackProvider = FlowDataProvider()
+        sdkFeedbackProvider.delegate = self
     }
 
     private func dissmissViewWithDelay() {
@@ -49,9 +54,11 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         paymentProcessingView?.showLoadingView()
         switch processType {
         case .pairing:
-            sdkWrapper.startPairing()
+            sdkWrapper.startPairing(reconnectIfPossible: true)
         case .payment:
             sdkWrapper.retryLastTransaction()
+        case .showReaders:
+            break
         }
     }
 
@@ -61,25 +68,47 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             startPairingFlow()
         case .payment:
             startTransactionFlow()
+        case .showReaders:
+            showReadersList()
         }
     }
-
-    private func startTransactionFlow() {
-        sdkFeedbackProvider.delegate = self
-        if sdkWrapper.isReaderConnected(), let amount = amount {
-            sdkWrapper.startTransactionWithAmount(amount: String(amount))
-        } else {
-            sdkWrapper.startPairing()
-        }
-    }
-
-    private func startPairingFlow() {
+    
+    public func startPairingFlow() {
         let items = [FlowDataItem(type: .hint, object: "xsdk_prepare_pairing_reader_range".localized),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
                      FlowDataItem(type: .description, object: "xsdk_prepare_pairing_reader_button".localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.pair)]
         let feedback = FlowFeedback(flow: .pairing, type: FlowFeedbackType.info, items: items)
         paymentProcessingView?.updateContent(with: feedback)
+    }
+    
+    public func connectTo(reader: ReaderInfo) {
+        selectedReaderFromReadersList = ReaderItem(readerInfo: reader, isConnecting: true)
+        ClearentWrapper.shared.flowType = processType
+        sdkWrapper.connectTo(reader: reader)
+    }
+    
+    // MARK: Private
+    
+    private func startTransactionFlow() {
+        sdkFeedbackProvider.delegate = self
+        if sdkWrapper.isReaderConnected(), let amount = amount {
+            sdkWrapper.startTransactionWithAmount(amount: String(amount))
+        } else {
+            sdkWrapper.startPairing(reconnectIfPossible: true)
+        }
+    }
+    
+    private func showReadersList() {
+        guard let connectedReader = ClearentWrapperDefaults.pairedReaderInfo else { return }
+        
+        let items = [FlowDataItem(type: .readerInfo, object: connectedReader),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
+        let feedback = FlowFeedback(flow: .showReaders, type: .showReaders, items: items)
+        
+        paymentProcessingView?.updateContent(with: feedback)
+        sdkWrapper.searchRecentlyUsedReaders()
     }
 }
 
@@ -97,10 +126,12 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                              FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
                              FlowDataItem(type: .description, object: "xsdk_paired_successful".localized),
                              FlowDataItem(type: .userAction, object: FlowButtonType.done)]
-                if let readerInfo = ClearentWrapper.shared.readerInfo {
+                if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo {
                     items.insert(FlowDataItem(type: .readerInfo, object: readerInfo), at: 0)
                 }
-                let feedback = FlowFeedback(flow: self.processType, type: FlowFeedbackType.info, items: items)
+                let feedback = FlowFeedback(flow: self.processType,
+                                            type: FlowFeedbackType.info,
+                                            items: items)
                 self.paymentProcessingView?.updateContent(with: feedback)
             }
         } else if let amount = amount {
@@ -110,7 +141,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
 
     func didReceiveFlowFeedback(feedback: FlowFeedback) {
         paymentProcessingView?.updateContent(with: feedback)
-        ClearentUIManager.shared.readerInfoReceived?(ClearentWrapper.shared.readerInfo)
+        ClearentUIManager.shared.readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
     }
 
     func didFinishTransaction(error: ResponseError?) {

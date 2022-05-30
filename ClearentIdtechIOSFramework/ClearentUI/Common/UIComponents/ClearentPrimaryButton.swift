@@ -9,6 +9,7 @@
 import UIKit
 
 public class ClearentPrimaryButton: ClearentMarginableView {
+    
     // MARK: - Properties
 
     public var action: (() -> Void)?
@@ -34,7 +35,7 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         didSet { updateAppearence() }
     }
 
-    var disabledTextColor = ClearentConstants.Color.backgroundSecondary01 {
+    public var disabledTextColor = ClearentConstants.Color.backgroundSecondary01 {
         didSet { updateAppearence() }
     }
     
@@ -43,27 +44,27 @@ public class ClearentPrimaryButton: ClearentMarginableView {
             button.layer.borderColor = borderColor?.cgColor
         }
     }
-    
-    public var borderWidth: CGFloat? {
-        didSet {
-            guard let width = borderWidth else { return }
-            button.layer.borderWidth = width
-        }
-    }
 
-    var textFont = ClearentConstants.Font.mediumSmall {
+    public var textFont = ClearentConstants.Font.mediumSmall {
         didSet {
             button.titleLabel?.font = textFont
         }
     }
     
+    public var borderWidth: CGFloat? {
+        didSet {
+            guard let borderWidth = borderWidth else { return }
+            button.layer.borderWidth = borderWidth
+        }
+    }
+            
     public var title: String? {
         didSet {
             button.setTitle(title, for: .normal)
         }
     }
 
-    var isEnabled: Bool {
+    public var isEnabled: Bool {
         set {
             button.isEnabled = newValue
             updateAppearence()
@@ -71,10 +72,6 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         get { button.isEnabled }
     }
 
-    convenience init(title: String) {
-        self.init()
-        button.setTitle(title, for: .normal)
-    }
 
     override func configure() {
         updateAppearence()
@@ -82,8 +79,8 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         button.layer.masksToBounds = true
         textFont = ClearentConstants.Font.mediumSmall
     }
-
-    @IBAction func buttonWasPressed(_: Any) {
+    
+    @IBAction func buttonWasPressed(_ sender: Any) {
         action?()
     }
 

@@ -30,9 +30,10 @@ class FlowDataFactory {
         if let readerInfo = readerInfo {
             var allItems = [FlowDataItem(type: .readerInfo, object: readerInfo)]
             allItems.append(contentsOf: payload)
+            
             return FlowFeedback(flow: flow, type: type, items: allItems)
         }
-        
+    
         return FlowFeedback(flow: flow, type: type, items: payload)
     }
 }
@@ -56,7 +57,7 @@ class FlowDataProvider : NSObject {
     }
     
     func fetchReaderInfo() -> ReaderInfo? {
-        return sdkWrapper.readerInfo
+        return ClearentWrapperDefaults.pairedReaderInfo
     }
 }
 
@@ -210,15 +211,33 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     // MARK - Pairing related
     
     func didFinishPairing() {
-        let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.pairingSuccessful),
-                     FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader)]
-
-        let feedback = FlowDataFactory.component(with: .pairing,
-                                                 type: .searchDevices,
-                                                 readerInfo: fetchReaderInfo(),
+        let items: [FlowDataItem]
+        let feedback: FlowFeedback
+        
+        if ClearentWrapper.shared.flowType == .showReaders {
+            guard var recentlyPairedReaders = ClearentWrapperDefaults.recentlyPairedReaders else { return }
+            guard let pairedReaderInfo = ClearentWrapperDefaults.pairedReaderInfo else { return }
+            guard let indexOfSelectedReader = recentlyPairedReaders.firstIndex(where: {$0.readerName == pairedReaderInfo.readerName}) else { return }
+            
+            recentlyPairedReaders[indexOfSelectedReader] = pairedReaderInfo
+            
+            items = [FlowDataItem(type: .recentlyPaired, object: recentlyPairedReaders),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
+            feedback = FlowDataFactory.component(with: .showReaders,
+                                                 type: .showReaders,
+                                                 readerInfo: ClearentWrapperDefaults.pairedReaderInfo,
                                                  payload: items)
-        delegate?.didReceiveFlowFeedback(feedback: feedback)
-        delegate?.didFinishedPairing()
+            delegate?.didReceiveFlowFeedback(feedback: feedback)
+        } else {
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.pairingSuccessful),
+                         FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader)]
+            feedback = FlowDataFactory.component(with: .pairing,
+                                                     type: .searchDevices,
+                                                     readerInfo: fetchReaderInfo(),
+                                                     payload: items)
+            delegate?.didReceiveFlowFeedback(feedback: feedback)
+            delegate?.didFinishedPairing()
+        }
     }
 
     func deviceDidDisconnect() {
@@ -251,13 +270,26 @@ extension FlowDataProvider : ClearentWrapperProtocol {
      }
     
     func startedReaderConnection(with reader: ReaderInfo) {
-        let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
+        let items: [FlowDataItem]
+        let feedback: FlowFeedback
+        
+        if ClearentWrapper.shared.flowType == .pairing {
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader)]
-    
-        let feedback = FlowDataFactory.component(with: .pairing,
+            feedback = FlowDataFactory.component(with: .pairing,
                                                  type: .searchDevices,
                                                  readerInfo: reader,
                                                  payload: items)
+        } else {
+            guard let recentlyPairedDevices = ClearentWrapperDefaults.recentlyPairedReaders else { return }
+            
+            items = [FlowDataItem(type: .recentlyPaired, object: recentlyPairedDevices),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
+            feedback = FlowDataFactory.component(with: .showReaders,
+                                                 type: .showReaders,
+                                                 readerInfo: reader,
+                                                 payload: items)
+        }
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
@@ -275,21 +307,22 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     }
     
     func didNotFindRecentlyUsedReaders() {
-        let items = [FlowDataItem(type: .description, object: "xsdk_prepare_for_pairing".localized)]
-        
-        let feedback = FlowDataFactory.component(with: .pairing,
-                                                 type: .searchDevices,
-                                                 readerInfo: nil,
+        let items = [FlowDataItem(type: .description, object: "xsdk_no_readers_found_description".localized),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
+        let feedback = FlowDataFactory.component(with: .showReaders,
+                                                 type: .showReaders,
+                                                 readerInfo: ClearentWrapperDefaults.pairedReaderInfo,
                                                  payload: items)
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
     func didFindRecentlyUsedReaders(readers: [ReaderInfo]) {
-        let items = [FlowDataItem(type: .devicesFound, object: readers)]
+        let items = [FlowDataItem(type: .recentlyPaired, object: readers),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
         
-        let feedback = FlowDataFactory.component(with: .pairing,
-                                                 type: .searchDevices,
-                                                 readerInfo: nil,
+        let feedback = FlowDataFactory.component(with: .showReaders,
+                                                 type: .showReaders,
+                                                 readerInfo: ClearentWrapperDefaults.pairedReaderInfo,
                                                  payload: items)
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
