@@ -6,6 +6,8 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
+import UIKit
+
 public class ClearentConstants {
     // use a class from same package to identify the package
     public class var bundle: Bundle {
@@ -20,7 +22,7 @@ public class ClearentConstants {
         public static let backgroundSecondary01 = UIColor(hexString: "#FFFFFF")
         public static let backgroundSecondary02 = UIColor(hexString: "#E1E2E8")
         public static let backgroundSecondary03 = UIColor(hexString: "#EEEFF3")
-        
+        public static let backgroundSecondary04 = UIColor(hexString: "#E1E2E8")
         public static let accent01 = UIColor(hexString: "#2FAC10")
         public static let accent02 = UIColor(hexString: "#F4C15F")
         public static let accent03 = UIColor(hexString: "#F44E27")
@@ -36,17 +38,17 @@ public class ClearentConstants {
     // MARK: - Fonts
 
     public enum Font {
-        private static let sfProBold = "SFProText-Bold"
-        private static let sfProRegular = "SFProText-Regular"
-        private static let sfProMedium = "SFProText-Medium"
+        private static let sfProDisplayBold = "SFProDisplay-Bold"
+        private static let sfProTextBold = "SFProText-Bold"
+        private static let sfProTextMedium = "SFProText-Medium"
 
-        public static let regularExtraLarge = UIFont(name: sfProBold, size: 32)
-        public static let boldLarge = UIFont(name: sfProBold, size: 20)
-        public static let boldNormal = UIFont(name: sfProBold, size: 16)
-        public static let medium = UIFont(name: sfProMedium, size: 16)
-        public static let mediumSmall = UIFont(name: sfProMedium, size: 14)
-        public static let regularNormal = UIFont(name: sfProRegular, size: 14)
-        public static let regularSmall = UIFont(name: sfProRegular, size: 10)
+        public static let proDisplayBoldExtraLarge = UIFont(name: sfProDisplayBold, size: 32)
+        public static let proDisplayBoldLarge = UIFont(name: sfProDisplayBold, size: 20) ?? UIFont.systemFont(ofSize: 20)
+        
+        public static let proTextBoldNormal = UIFont(name: sfProTextBold, size: 14)
+        public static let proTextLarge = UIFont(name: sfProTextMedium, size: 16)
+        public static let proTextNormal = UIFont(name: sfProTextMedium, size: 14)
+        public static let proTextSmall = UIFont(name: sfProTextMedium, size: 10)
     }
 
     // MARK: Assets
@@ -78,14 +80,19 @@ public class ClearentConstants {
         // Pairing
         static let rightArrow = "right-arrow"
         static let reader = "reader"
-        
-        //Readers List
+
+        // Readers List
         static let expanded = "expanded"
         static let collapsed = "collapsed"
         static let pairingSuccessful = "pairingSuccessful"
+        static let details = "details"
+        
+
+        // Reader details
+        static let navigationArrow = "left-arrow"
     }
-    
-   public enum Size {
-        public static let primaryButtonBorderWidth = 2.0
+
+    public enum Size {
+        public static let primaryButtonBorderWidth = 1.0
     }
 }

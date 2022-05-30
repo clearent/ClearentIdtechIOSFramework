@@ -23,19 +23,18 @@ class ClearentReaderConnectivityStatusView: ClearentXibView {
             statusLabel.font = font
         }
     }
+
     override func configure() {
         textColor = ClearentConstants.Color.base02
-        font = ClearentConstants.Font.regularSmall
+        font = ClearentConstants.Font.proTextSmall
     }
     
     // MARK: Public
 
     public func setup(imageName: String?, status: String) {
         statusLabel.text = status
-        guard let imageName = imageName else {
-            statusImageView.removeFromSuperview()
-            return
-        }
+        statusImageView.isHidden = imageName == nil
+        guard let imageName = imageName else { return }
         statusImageView.image = UIImage(named: imageName, in: ClearentConstants.bundle, compatibleWith: nil)
     }
 }

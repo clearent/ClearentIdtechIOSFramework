@@ -15,7 +15,7 @@ private struct DefaultKeys {
 
 public class ClearentWrapperDefaults: UserDefaultsPersistence {
         
-    public static var pairedReaderInfo: ReaderInfo? {
+    private static var defaultReaderInfo: ReaderInfo? {
            
            get {
                if let savedReaderData = retrieveValue(forKey: DefaultKeys.readerFriendlyNameKey) as? Data {
@@ -35,7 +35,7 @@ public class ClearentWrapperDefaults: UserDefaultsPersistence {
            }
        }
     
-    static var recentlyPairedReaders: [ReaderInfo]? {
+    internal static var recentlyPairedReaders: [ReaderInfo]? {
            
            get {
                if let savedReaderData = retrieveValue(forKey: DefaultKeys.recentlyPairedReadersKey) as? Data {
@@ -54,4 +54,16 @@ public class ClearentWrapperDefaults: UserDefaultsPersistence {
                }
            }
        }
+}
+
+extension ClearentWrapperDefaults {
+    internal static var pairedReaderInfo: ReaderInfo? {
+        get {
+            defaultReaderInfo
+        }
+        set {
+            ClearentWrapper.shared.readerInfoReceived?(newValue)
+            defaultReaderInfo = newValue
+        }
+    }
 }

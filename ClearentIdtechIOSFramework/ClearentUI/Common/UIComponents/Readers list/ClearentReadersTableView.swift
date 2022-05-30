@@ -6,11 +6,12 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
-import UIKit
 import CoreMedia
+import UIKit
 
 protocol ClearentReadersTableViewDelegate: AnyObject {
     func didSelectReader(_ reader: ReaderInfo)
+    func didSelectReaderDetails(currentReader: ReaderItem, allReaders: [ReaderItem])
 }
 
 class ClearentReadersTableView: ClearentMarginableView {
@@ -62,6 +63,10 @@ extension ClearentReadersTableView: UITableViewDataSource {
                                                        for: indexPath) as? ClearentReadersTableViewCell,
               let dataSource = dataSource else { return UITableViewCell() }
         cell.setup(reader: dataSource[indexPath.row])
+        cell.detailsAction = { [weak self] in
+            guard let delegate = self?.delegate else { return }
+            delegate.didSelectReaderDetails(currentReader: dataSource[indexPath.row], allReaders: dataSource)
+        }
         
         return cell
     }

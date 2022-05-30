@@ -69,6 +69,21 @@
 "xsdk_reader_signal_idle" = "Idle";
 "xsdk_reader_signal_connected" = "Connected";
 
+/* Reader Details */
+
+"xsdk_reader_details_connected" = "Connected";
+"xsdk_reader_details_signal_status" = "Signal status (%@)";
+"xsdk_reader_details_battery_status" = "Battery status (%@)";
+"xsdk_reader_details_autojoin_title" = "Auto-join";
+"xsdk_reader_details_autojoin_description" = "Everytime you log in, it will join this reader automatically";
+"xsdk_reader_details_readername_title" = "Reader name";
+"xsdk_reader_details_serialnumber_title" = "Serial number";
+"xsdk_reader_details_version_title" = "Version";
+"xsdk_reader_details_remove_reader" = "Remove reader";
+"xsdk_reader_details_nav_title" = "Reader details";
+"xsdk_reader_details_signal_good" = "Good";
+"xsdk_reader_details_signal_medium" = "Medium";
+"xsdk_reader_details_signal_weak" = "Weak";
 
 // Internet Connection
 "xsdk_internet_error_title" = "Check your connection";

@@ -21,7 +21,16 @@ public enum FlowFeedbackType {
 }
 
 public enum ProcessType {
-    case pairing, payment, showReaders
+    case pairing(withReader: ReaderInfo? = nil), payment, showReaders
+    
+    public static func == (lhs: ProcessType, rhs: ProcessType) -> Bool {
+        switch (lhs,rhs) {
+        case (.pairing, .pairing): return true
+        case (.payment, .payment): return true
+        case (.showReaders, .showReaders): return true
+        default: return false
+        }
+    }
 }
 
 public enum ReaderStatusHeaderViewState {

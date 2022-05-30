@@ -18,7 +18,18 @@ public final class ClearentUIManager : NSObject {
     
     public override init() {
         super.init()
-        ClearentWrapper.shared.readerInfoReceived = {[weak self] _ in
+        setupReaderInfo()
+    }
+    
+    func setupReaderInfo() {
+        if let autojoinReader = ClearentWrapperDefaults.recentlyPairedReaders?.first(where: {$0.autojoin == true}) {
+            ClearentWrapperDefaults.pairedReaderInfo = autojoinReader
+            ClearentWrapperDefaults.pairedReaderInfo?.isConnected = false
+        } else {
+            ClearentWrapperDefaults.pairedReaderInfo = nil
+        }
+        
+        ClearentWrapper.shared.readerInfoReceived = { [weak self] _ in
             DispatchQueue.main.async {
                 self?.readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
             }
@@ -31,30 +42,28 @@ public final class ClearentUIManager : NSObject {
         clearentWrapper.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey)
     }
     
-    public func paymentViewController(amount: Double) -> UIViewController {
+    public func paymentViewController(amount: Double) -> UINavigationController {
         viewController(processType: .payment, amount:amount)
     }
     
-    public func pairingViewController() -> UIViewController {
-        viewController(processType: .pairing)
+    public func pairingViewController() -> UINavigationController {
+        viewController(processType: .pairing())
     }
     
-    public func readersViewController() -> UIViewController {
+    public func readersViewController() -> UINavigationController {
         viewController(processType: .showReaders)
     }
     
-    // MARK: Private
-    
-    private func viewController(processType: ProcessType, amount: Double? = nil) ->  UIViewController {
-        let paymentProcessingViewController = ClearentProcessingModalViewController(showOnTop: processType == .showReaders)
-          let paymentProcessingPresenter = ClearentProcessingModalPresenter(paymentProcessingView: paymentProcessingViewController, amount: amount, processType: processType)
-          paymentProcessingViewController.presenter = paymentProcessingPresenter
-          paymentProcessingViewController.modalPresentationStyle = .overFullScreen
-    
-          if (ClearentWrapperDefaults.pairedReaderInfo != nil) {
-              readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
-          }
+    internal func viewController(processType: ProcessType, amount: Double? = nil, dismissCompletion: ((_ isConnected: Bool) -> Void)? = nil) ->  UINavigationController {
 
-          return paymentProcessingViewController
+        let viewController = ClearentProcessingModalViewController(showOnTop: processType == .showReaders)
+        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, amount: amount, processType: processType)
+        viewController.presenter = presenter
+        viewController.dismissCompletion = dismissCompletion
+        
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.isNavigationBarHidden = true
+        navigationController.modalPresentationStyle = .overFullScreen
+        return navigationController
     }
 }

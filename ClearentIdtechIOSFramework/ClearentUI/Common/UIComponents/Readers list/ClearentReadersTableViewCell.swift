@@ -21,8 +21,8 @@ class ClearentReadersTableViewCell: UITableViewCell {
     @IBOutlet weak var readerStatusIcon: UIView!
     @IBOutlet weak var readerNameLabel: UILabel!
     @IBOutlet weak var detailsButton: UIButton!
-
     @IBOutlet weak var roundedCornersView: UIView!
+
     var detailsAction: (() -> Void)?
 
     // MARK: Lifecycle
@@ -41,7 +41,7 @@ class ClearentReadersTableViewCell: UITableViewCell {
     
     public func setup(reader: ReaderItem) {
         guard let pairedReaderInfo = ClearentWrapperDefaults.pairedReaderInfo else { return }
-        
+        readerStatusIcon.isHidden = reader.readerInfo.readerName != pairedReaderInfo.readerName
         if reader.readerInfo.readerName == pairedReaderInfo.readerName {
             
             if reader.isConnecting {
@@ -60,7 +60,6 @@ class ClearentReadersTableViewCell: UITableViewCell {
             readerStatusIcon.isHidden = reader.isConnecting
         }
         readerNameLabel.text = reader.readerInfo.readerName
-        readerStatusIcon.isHidden = reader.readerInfo.readerName != pairedReaderInfo.readerName
     }
     
     // MARK: Private
@@ -70,7 +69,7 @@ class ClearentReadersTableViewCell: UITableViewCell {
         roundedCornersView.layer.cornerRadius = 8
         roundedCornersView.layer.masksToBounds = true
         
-        readerNameLabel.font = ClearentConstants.Font.regularNormal
+        readerNameLabel.font = ClearentConstants.Font.proTextNormal
         detailsButton.setTitle("", for: .normal)
     }
 

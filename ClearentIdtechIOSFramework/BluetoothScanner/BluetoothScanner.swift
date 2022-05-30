@@ -41,9 +41,9 @@ class BluetoothScanner: NSObject {
         
         centralManager = CBCentralManager(delegate: self, queue: nil)
     }
-    
+
     // MARK: Public
-    
+
     public func setupDevice() {
         guard let udid = self.udid else {return}
         let devices = centralManager.retrievePeripherals(withIdentifiers: [udid])
@@ -74,6 +74,12 @@ class BluetoothScanner: NSObject {
         }
         
         return signal
+    }
+    
+    func cancelPeripheralConnection() {
+        guard let device = device else { return }
+        centralManager.cancelPeripheralConnection(device)
+        udid = nil
     }
 }
 

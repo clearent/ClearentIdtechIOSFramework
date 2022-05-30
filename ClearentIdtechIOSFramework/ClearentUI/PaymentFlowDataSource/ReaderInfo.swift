@@ -12,22 +12,21 @@ public struct ReaderItem {
 }
 
 public struct ReaderInfo : Codable {
-    public var readerName : String
-    var batterylevel : Int?
-    var signalLevel : Int?
-    var isConnected : Bool
-    var uuid: UUID?
-    
-    init(name: String?, batterylevel: Int?, signalLevel:Int?, connected: Bool, uuid:UUID?) {
-        self.readerName = "xsdk_unknown_reader_name".localized
-        if let readerName = name {
-            self.readerName = readerName
+    public var readerName: String
+    var batterylevel: Int?
+    var signalLevel: Int?
+    var isConnected: Bool {
+        didSet {
+            if isConnected == false {
+                signalLevel = nil
+                batterylevel = nil
+            }
         }
-        self.batterylevel = batterylevel
-        self.signalLevel = signalLevel
-        self.isConnected = connected
-        self.uuid = uuid
     }
+    var autojoin: Bool
+    var uuid: UUID?
+    var serialNumber: String?
+    var version: String?
 }
 
 public extension ReaderInfo {
@@ -45,11 +44,11 @@ public extension ReaderInfo {
         return (iconName, "\(String(batteryLevel))%")
     }
 
+
     func signalStatus(flowFeedbackType: FlowFeedbackType? = nil, isConnecting: Bool? = nil) -> (iconName: String?, title: String) {
         var icon: String? = ClearentConstants.IconName.signalIdle
         
         guard isConnected else {
-            
             if flowFeedbackType == .searchDevices {
                 return (iconName: nil, title: "xsdk_connecting_reader".localized)
             } else if flowFeedbackType == .showReaders, let isConnecting = isConnecting, isConnecting {
