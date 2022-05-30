@@ -44,7 +44,7 @@ extension ClearentWrapper {
             ClearentWrapperDefaults.recentlyPairedReaders = [reader]
             return
         }
-        if let defaultReaderIndex = existingReaders.firstIndex(where: {$0 == reader }) {
+        if let defaultReaderIndex = existingReaders.firstIndex(where: { $0 == reader }) {
             existingReaders[defaultReaderIndex] = reader
         } else {
             existingReaders.insert(reader, at: 0)
