@@ -27,12 +27,17 @@ public class FlowFeedback {
 
 class FlowDataFactory {
     class func component(with flow: ProcessType, type: FlowFeedbackType, readerInfo: ReaderInfo?, payload: [FlowDataItem]) -> FlowFeedback {
-        var allItems = [FlowDataItem(type: .readerInfo, object: readerInfo)]
-        allItems.append(contentsOf: payload)
-        
-        return FlowFeedback(flow: flow, type: type, items: allItems)
+        if readerInfo != nil || !ClearentWrapper.shared.previouslyPairedReaders.isEmpty {
+            var allItems = [FlowDataItem(type: .readerInfo, object: readerInfo)]
+            allItems.append(contentsOf: payload)
+            
+            return FlowFeedback(flow: flow, type: type, items: allItems)
+        }
+    
+        return FlowFeedback(flow: flow, type: type, items: payload)
     }
 }
+
 
 protocol FlowDataProtocol : AnyObject {
     func didFinishTransaction(error: ResponseError?)

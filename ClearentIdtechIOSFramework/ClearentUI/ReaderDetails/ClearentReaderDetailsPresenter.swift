@@ -59,11 +59,7 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
             }
         }
         ClearentWrapper.shared.removeReaderFromRecentlyUsed(reader: currentReader)
-        if let recentlyPairedReaders = ClearentWrapperDefaults.recentlyPairedReaders, !recentlyPairedReaders.isEmpty {
-            handleBackAction()
-        } else {
-            navigationController?.dismiss(animated: true)
-        }
+        handleBackAction()
     }
 
     func disconnectFromReader() {
@@ -89,12 +85,13 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
     }
 
     func handleBackAction() {
-        if ClearentWrapperDefaults.pairedReaderInfo != nil {
+        if ClearentWrapperDefaults.pairedReaderInfo != nil || !ClearentWrapper.shared.previouslyPairedReaders.isEmpty {
             let readerInfoList = allReaders.map { $0.readerInfo }
             let result = ClearentWrapper.shared.fetchRecentlyAndAvailableReaders(availableReaders: readerInfoList)
             flowDataProvider.didFindRecentlyUsedReaders(readers: result)
             navigationController?.popViewController(animated: true)
         } else {
+            ClearentWrapper.shared.readerInfoReceived?(nil)
             navigationController?.dismiss(animated: true)
         }
     }
