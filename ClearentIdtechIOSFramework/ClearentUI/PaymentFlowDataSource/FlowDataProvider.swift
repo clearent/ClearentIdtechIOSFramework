@@ -274,20 +274,20 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         let items: [FlowDataItem]
         let feedback: FlowFeedback
         
-        if case .pairing = ClearentWrapper.shared.flowType {
-            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
-                     FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader)]
-            feedback = FlowDataFactory.component(with: .pairing(),
-                                                 type: .searchDevices,
-                                                 readerInfo: reader,
-                                                 payload: items)
-        } else {
+        if case .showReaders = ClearentWrapper.shared.flowType {
             guard let recentlyPairedDevices = ClearentWrapperDefaults.recentlyPairedReaders else { return }
             
             items = [FlowDataItem(type: .recentlyPaired, object: recentlyPairedDevices),
                      FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
             feedback = FlowDataFactory.component(with: .showReaders,
                                                  type: .showReaders,
+                                                 readerInfo: reader,
+                                                 payload: items)
+        } else {
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader)]
+            feedback = FlowDataFactory.component(with: .pairing(),
+                                                 type: .searchDevices,
                                                  readerInfo: reader,
                                                  payload: items)
         }

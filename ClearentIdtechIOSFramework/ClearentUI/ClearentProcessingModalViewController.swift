@@ -114,7 +114,8 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         }
     }
 
-    private func readerInfoView(readerInfo: ReaderInfo?, flowFeedbackType: FlowFeedbackType) -> ClearentReaderStatusHeaderView {
+    private func readerInfoView(readerInfo: ReaderInfo?, flowFeedbackType: FlowFeedbackType) -> ClearentReaderStatusHeaderView? {
+        if readerInfo == nil && flowFeedbackType != .showReaders { return nil }
         let name = readerInfo?.readerName ?? "xsdk_readers_list_no_reader_connected".localized
         let description = readerInfo == nil ? "xsdk_readers_list_select_reader".localized : nil
         let signalStatus = readerInfo?.signalStatus(flowFeedbackType: flowFeedbackType, isConnecting: presenter?.selectedReaderFromReadersList != nil)
