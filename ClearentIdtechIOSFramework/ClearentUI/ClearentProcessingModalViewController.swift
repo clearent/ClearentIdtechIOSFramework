@@ -56,6 +56,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
 
     public func updateContent(with feedback: FlowFeedback) {
         stackView.removeAllArrangedSubviews()
+        stackView.isUserInteractionEnabled = true
         
         feedback.items.forEach {
             if let component = uiComponent(for: $0, processType: feedback.flow, feedbackType: feedback.type) {
@@ -102,7 +103,6 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
                 guard let indexOfConnectedReader = readersTableViewDataSource.firstIndex(where: {$0.readerInfo == pairedReaderInfo}) else { return nil }
                 readersTableViewDataSource.insert(readersTableViewDataSource.remove(at: indexOfConnectedReader), at: 0)
                 presenter?.selectedReaderFromReadersList = nil
-                stackView.isUserInteractionEnabled = true
             } else {
                 guard let selectedReaderFromReadersList = presenter?.selectedReaderFromReadersList else {
                     return ClearentReadersTableView(dataSource: readersTableViewDataSource, delegate: self)
