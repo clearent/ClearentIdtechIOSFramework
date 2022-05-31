@@ -56,6 +56,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
 
     public func updateContent(with feedback: FlowFeedback) {
         stackView.removeAllArrangedSubviews()
+        stackView.isUserInteractionEnabled = true
         
         feedback.items.forEach {
             if let component = uiComponent(for: $0, processType: feedback.flow, feedbackType: feedback.type) {
