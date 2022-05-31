@@ -93,6 +93,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         case .hint:
             guard let text = object as? String else { return nil }
             
+            return ClearentHintView(text: text)
         case .recentlyPaired:
             guard let readersInfo = object as? [ReaderInfo] else { return nil }
             var readersTableViewDataSource: [ReaderItem] = readersInfo.map { ReaderItem(readerInfo: $0) }
