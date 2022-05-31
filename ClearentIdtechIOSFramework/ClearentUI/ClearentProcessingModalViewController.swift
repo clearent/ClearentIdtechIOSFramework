@@ -93,7 +93,6 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         case .hint:
             guard let text = object as? String else { return nil }
             
-            return ClearentHintView(text: text)
         case .recentlyPaired:
             guard let readersInfo = object as? [ReaderInfo] else { return nil }
             var readersTableViewDataSource: [ReaderItem] = readersInfo.map { ReaderItem(readerInfo: $0) }
@@ -114,7 +113,8 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         }
     }
 
-    private func readerInfoView(readerInfo: ReaderInfo?, flowFeedbackType: FlowFeedbackType) -> ClearentReaderStatusHeaderView {
+    private func readerInfoView(readerInfo: ReaderInfo?, flowFeedbackType: FlowFeedbackType) -> ClearentReaderStatusHeaderView? {
+        if readerInfo == nil && flowFeedbackType != .showReaders { return nil }
         let name = readerInfo?.readerName ?? "xsdk_readers_list_no_reader_connected".localized
         let description = readerInfo == nil ? "xsdk_readers_list_select_reader".localized : nil
         let signalStatus = readerInfo?.signalStatus(flowFeedbackType: flowFeedbackType, isConnecting: presenter?.selectedReaderFromReadersList != nil)
