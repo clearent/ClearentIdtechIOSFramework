@@ -118,6 +118,8 @@
 		BAEAD2D92810041100AA72F6 /* ClearentExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAEAD2D82810041100AA72F6 /* ClearentExtension.swift */; };
 		CC1953B728213ECC00DF3688 /* UserDefaultsPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1953B628213ECC00DF3688 /* UserDefaultsPersistence.swift */; };
 		CC1953B928213F5700DF3688 /* ClearentWrapperDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC1953B828213F5700DF3688 /* ClearentWrapperDefaults.swift */; };
+		CC836ABF2848C2AC00DB4CBA /* ClearentTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC836ABE2848C2AC00DB4CBA /* ClearentTextField.swift */; };
+		CC836AC12848C2F900DB4CBA /* ClearentTextField.xib in Resources */ = {isa = PBXBuildFile; fileRef = CC836AC02848C2F900DB4CBA /* ClearentTextField.xib */; };
 		CC9FF466282BC127004B2185 /* ClearentUIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC9FF465282BC127004B2185 /* ClearentUIManager.swift */; };
 		E702E56523647D6B0032ED8D /* IDTech.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E760460523645A61006CFB78 /* IDTech.framework */; };
 		E702E5702364835B0032ED8D /* ClearentVP3300Config.m in Sources */ = {isa = PBXBuildFile; fileRef = E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */; };
@@ -295,6 +297,8 @@
 		BAEAD2D82810041100AA72F6 /* ClearentExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentExtension.swift; sourceTree = "<group>"; };
 		CC1953B628213ECC00DF3688 /* UserDefaultsPersistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsPersistence.swift; sourceTree = "<group>"; };
 		CC1953B828213F5700DF3688 /* ClearentWrapperDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentWrapperDefaults.swift; sourceTree = "<group>"; };
+		CC836ABE2848C2AC00DB4CBA /* ClearentTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentTextField.swift; sourceTree = "<group>"; };
+		CC836AC02848C2F900DB4CBA /* ClearentTextField.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentTextField.xib; sourceTree = "<group>"; };
 		CC9FF465282BC127004B2185 /* ClearentUIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentUIManager.swift; sourceTree = "<group>"; };
 		E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentVP3300Config.m; sourceTree = "<group>"; };
 		E702E571236485280032ED8D /* ClearentVP3300Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentVP3300Config.h; sourceTree = "<group>"; };
@@ -493,6 +497,8 @@
 				011181A5283267960025750A /* ClearentLabelSwitch.xib */,
 				011181AB28329ECD0025750A /* ClearentInfoWithIcon.swift */,
 				011181AD28329ED80025750A /* ClearentInfoWithIcon.xib */,
+				CC836ABE2848C2AC00DB4CBA /* ClearentTextField.swift */,
+				CC836AC02848C2F900DB4CBA /* ClearentTextField.xib */,
 			);
 			path = UIComponents;
 			sourceTree = "<group>";
@@ -976,6 +982,7 @@
 				19A61D5D2804121400E295B3 /* SF-Pro-Text-Medium.otf in Resources */,
 				19A61D6C2804129100E295B3 /* ClearentReaderStatusHeaderView.xib in Resources */,
 				E77687472062B66300284FF4 /* .gitignore in Resources */,
+				CC836AC12848C2F900DB4CBA /* ClearentTextField.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1089,6 +1096,7 @@
 				E7B89E3121F6A6A400078C73 /* ClearentManualEntry.m in Sources */,
 				E7CA497520E579190090CFFC /* ClearentConfigFetcher.m in Sources */,
 				0169C2E627FF1A4600B8B4DB /* ClearentAdaptiveStackView.swift in Sources */,
+				CC836ABF2848C2AC00DB4CBA /* ClearentTextField.swift in Sources */,
 				CC1953B928213F5700DF3688 /* ClearentWrapperDefaults.swift in Sources */,
 				011181B32833B4450025750A /* ClearentReaderDetailsPresenter.swift in Sources */,
 			);

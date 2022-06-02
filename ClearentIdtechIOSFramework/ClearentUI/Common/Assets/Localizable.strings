@@ -19,9 +19,13 @@
 "xsdk_no_readers_found_title" = "No reader has been found. Please check that your reader is turned on and in range of the device.";
 "xsdk_no_readers_found_description" = "No readers available";
 "xsdk_paired_successful" = "Your reader is connected and ready to be used.";
+"xsdk_add_name_to_reader" = "Add a name to your reader";
+"xsdk_rename_your_reader" = "Rename your reader";
 "xsdk_user_action_pair" = "Pair";
 "xsdk_user_action_done" = "Done";
 "xsdk_user_action_settings" = "Settings";
+"xsdk_user_action_addName" = "Add";
+"xsdk_reader_name" = "Reader name";
 
 
 /* Payment Flow*/

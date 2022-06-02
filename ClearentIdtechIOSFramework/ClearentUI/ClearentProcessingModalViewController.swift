@@ -85,7 +85,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         case .userAction:
             guard let userAction = object as? FlowButtonType else { return nil }
 
-            return actionButton(userAction: userAction, processType: processType)
+            return actionButton(userAction: userAction, processType: processType, flowPFeedbackType: feedbackType)
         case .devicesFound:
             guard let readersInfo = object as? [ReaderInfo] else { return nil }
             
@@ -111,6 +111,8 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
                 readersTableViewDataSource[indexOfSelectedReader].isConnecting = true
             }
             return ClearentReadersTableView(dataSource: readersTableViewDataSource, delegate: self)
+        case .input:
+            return ClearentTextField(inputName: "xsdk_reader_name".localized)
         }
     }
 
@@ -147,7 +149,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         return ClearentPairingReadersList(items: items)
     }
 
-    private func actionButton(userAction: FlowButtonType, processType: ProcessType) -> ClearentPrimaryButton {
+    private func actionButton(userAction: FlowButtonType, processType: ProcessType, flowPFeedbackType: FlowFeedbackType) -> ClearentPrimaryButton {
         let button = ClearentPrimaryButton()
         button.title = userAction.title
         button.isBorderedButton = userAction == .cancel || userAction == .pairNewReader
@@ -156,7 +158,11 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             guard let strongSelf = self, let presenter = strongSelf.presenter else { return }
             switch userAction {
             case .cancel, .done:
-                strongSelf.dismissViewController(isConnected: userAction == .done)
+                if (flowPFeedbackType == .pairingDoneInfo) {
+                    strongSelf.presenter?.showReaderNameOption()
+                } else {
+                    strongSelf.dismissViewController(isConnected: userAction == .done)
+                }
             case .retry, .pair:
                 presenter.restartProcess(processType: processType)
             case .pairNewReader:
@@ -165,6 +171,8 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             case .settings:
                 let url = URL(string: UIApplication.openSettingsURLString + Bundle.main.bundleIdentifier!)!
                 UIApplication.shared.open(url)
+            case .addReaderName:
+                presenter.showRenameReader()
             }
         }
         return button

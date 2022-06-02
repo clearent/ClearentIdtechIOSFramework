@@ -20,6 +20,8 @@ protocol ProcessingModalProtocol {
     func restartProcess(processType: ProcessType)
     func startFlow()
     func startPairingFlow()
+    func showReaderNameOption()
+    func showRenameReader()
     func showDetailsScreen(for reader: ReaderItem, allReaders: [ReaderItem], flowDataProvider: FlowDataProvider, on navigationController: UINavigationController)
     func connectTo(reader: ReaderInfo)
 }
@@ -124,6 +126,23 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         modalProcessingView?.updateContent(with: feedback)
         sdkWrapper.searchRecentlyUsedReaders()
     }
+    
+    func showReaderNameOption() {
+        let items = [FlowDataItem(type: .hint, object: "xsdk_add_name_to_reader".localized),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.addReaderName),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+        let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.info, items: items)
+        modalProcessingView?.updateContent(with: feedback)
+    }
+    
+    func showRenameReader() {
+        let items = [FlowDataItem(type: .hint, object: "xsdk_rename_your_reader".localized),
+                     FlowDataItem(type: .input, object: FlowInputType.nameInput),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.done)]
+        let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.info, items: items)
+        modalProcessingView?.updateContent(with: feedback)
+    }
 }
 
 extension ClearentProcessingModalPresenter: FlowDataProtocol {
@@ -141,7 +160,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                 if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo {
                     items.insert(FlowDataItem(type: .readerInfo, object: readerInfo), at: 0)
                 }
-                let feedback = FlowFeedback(flow: self.processType, type: FlowFeedbackType.info, items: items)
+                let feedback = FlowFeedback(flow: self.processType, type: FlowFeedbackType.pairingDoneInfo, items: items)
                 self.modalProcessingView?.updateContent(with: feedback)
             }
         } else if let amount = amount {
