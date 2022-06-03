@@ -67,4 +67,16 @@ public final class ClearentUIManager : NSObject {
         navigationController.modalPresentationStyle = .overFullScreen
         return navigationController
     }
+    
+    internal func viewControllerForAddingCustomName(processType: ProcessType, amount: Double? = nil, dismissCompletion: ((_ isConnected: Bool) -> Void)? = nil) ->  UINavigationController {
+        let viewController = ClearentProcessingModalViewController(showOnTop: processType == .renameReader)
+        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, amount: amount, processType: processType)
+        viewController.presenter = presenter
+        viewController.dismissCompletion = dismissCompletion
+       
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.isNavigationBarHidden = true
+        navigationController.modalPresentationStyle = .overFullScreen
+        return navigationController
+    }
 }

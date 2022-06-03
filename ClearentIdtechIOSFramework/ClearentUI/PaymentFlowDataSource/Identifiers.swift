@@ -17,17 +17,18 @@ enum FlowDataKeys {
 }
 
 public enum FlowFeedbackType {
-    case error, info, warning, searchDevices, showReaders, pairingDoneInfo
+    case error, info, warning, searchDevices, showReaders, pairingDoneInfo, renameReaderDone
 }
 
 public enum ProcessType {
-    case pairing(withReader: ReaderInfo? = nil), payment, showReaders
+    case pairing(withReader: ReaderInfo? = nil), payment, showReaders, renameReader
     
     public static func == (lhs: ProcessType, rhs: ProcessType) -> Bool {
         switch (lhs,rhs) {
         case (.pairing, .pairing): return true
         case (.payment, .payment): return true
         case (.showReaders, .showReaders): return true
+        case (.renameReader, .renameReader): return true
         default: return false
         }
     }

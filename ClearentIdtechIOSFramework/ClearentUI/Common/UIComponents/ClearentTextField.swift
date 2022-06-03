@@ -8,30 +8,38 @@
 
 import UIKit
 
-class ClearentTextField: ClearentMarginableView {
+protocol ClearenttextFieldProtocol {
+    func didFinishWithResult(name: String?)
+}
+
+class ClearentTextField: ClearentMarginableView, UITextFieldDelegate {
 
     @IBOutlet weak var infoLabel: UILabel!
+    @IBOutlet weak var inputField: UITextField!
+    var delegate: ClearenttextFieldProtocol?
+
+    private var readerName: String?
     
-    override public var margins: [BottomMargin] {
+        override public var margins: [BottomMargin] {
         [
-            RelativeBottomMargin(constant: 16, relatedViewType: ClearentSubtitleLabel.self),
             BottomMargin(constant: 80)
         ]
     }
     
-    var hintName: String? {
-        didSet {
-            guard let hintName = hintName else { return }
-            infoLabel.text = hintName
-        }
-    }
-    
-    convenience init(inputName: String) {
+    convenience init(inputName: String, hint: String, delegate: ClearenttextFieldProtocol) {
         self.init()
-        self.hintName = inputName
+        self.infoLabel.text = inputName
+        self.inputField.placeholder = hint
+        self.inputField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: .editingChanged)
+        self.delegate = delegate
     }
 
     override func configure() {
-       
+        self.infoLabel.font = ClearentConstants.Font.proTextSmall
+        self.inputField.font = ClearentConstants.Font.proTextNormal
+    }
+    
+    @objc final private func textFieldDidChange(textField: UITextField) {
+        self.delegate?.didFinishWithResult(name: self.inputField.text)
     }
 }

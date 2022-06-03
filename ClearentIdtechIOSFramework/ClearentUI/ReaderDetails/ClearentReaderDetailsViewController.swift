@@ -20,6 +20,7 @@ class ClearentReaderDetailsViewController: UIViewController {
     @IBOutlet var batteryStatusView: ClearentLabelWithIcon!
     @IBOutlet var autojoinView: ClearentLabelSwitch!
     @IBOutlet var readerName: ClearentInfoWithIcon!
+    @IBOutlet var customReaderName: ClearentLabelWithButton!
     @IBOutlet var serialNumberView: ClearentInfoWithIcon!
     @IBOutlet var versionNumberView: ClearentInfoWithIcon!
     @IBOutlet var removeReaderButton: ClearentPrimaryButton!
@@ -32,6 +33,7 @@ class ClearentReaderDetailsViewController: UIViewController {
         setupSwitches()
         updateReaderInfo()
         setupReaderName()
+        setupCustomReaderName()
         setupButton()
     }
 
@@ -110,6 +112,23 @@ class ClearentReaderDetailsViewController: UIViewController {
         readerName.titleText = "xsdk_reader_details_readername_title".localized
         readerName.descriptionText = readerInfo.readerName
         readerName.icon.isHidden = true
+    }
+    
+    private func setupCustomReaderName() {
+        if let friendlyreaderName = readerInfo.customReaderName {
+            customReaderName.titleText = "xsdk_reader_details_custom_readername_title".localized
+            customReaderName.descriptionText = friendlyreaderName
+            customReaderName.iconName = "smallEditButton"
+            customReaderName.editButtonPressed = { [weak self] in
+                guard let strongSelf = self else { return }
+                let modalVC = ClearentUIManager.shared.viewControllerForAddingCustomName(processType: .renameReader) { isConnected in
+                    strongSelf.didChangedConnectionStatus(reader: strongSelf.readerInfo, isConnected: isConnected)
+                }
+                strongSelf.navigationController?.present(modalVC, animated: false)
+            }
+        } else {
+            customReaderName.isHidden = true
+        }
     }
 
     private func setupSerialNumber() {

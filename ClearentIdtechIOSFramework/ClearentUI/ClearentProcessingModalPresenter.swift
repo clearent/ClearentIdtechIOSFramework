@@ -24,16 +24,19 @@ protocol ProcessingModalProtocol {
     func showRenameReader()
     func showDetailsScreen(for reader: ReaderItem, allReaders: [ReaderItem], flowDataProvider: FlowDataProvider, on navigationController: UINavigationController)
     func connectTo(reader: ReaderInfo)
+    func updateTemporaryReaderName(name: String?)
+    func updateReaderName()
 }
 
 class ClearentProcessingModalPresenter {
     private weak var modalProcessingView: ClearentProcessingModalView?
     private var amount: Double?
+    private var temporaryReaderName: String?
     private let sdkWrapper = ClearentWrapper.shared
     private let processType: ProcessType
     var selectedReaderFromReadersList: ReaderItem?
     var sdkFeedbackProvider: FlowDataProvider
-
+    
     // MARK: Init
 
     init(modalProcessingView: ClearentProcessingModalView, amount: Double?, processType: ProcessType) {
@@ -63,6 +66,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         sdkFeedbackProvider.delegate = self
         modalProcessingView?.showLoadingView()
         switch processType {
+        case .renameReader:
+            showRenameReader()
         case .pairing:
             sdkWrapper.startPairing(reconnectIfPossible: true)
         case .payment:
@@ -85,6 +90,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             startTransactionFlow()
         case .showReaders:
             showReadersList()
+        case .renameReader:
+            showRenameReader()
         }
     }
     
@@ -140,8 +147,23 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         let items = [FlowDataItem(type: .hint, object: "xsdk_rename_your_reader".localized),
                      FlowDataItem(type: .input, object: FlowInputType.nameInput),
                      FlowDataItem(type: .userAction, object: FlowButtonType.done)]
-        let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.info, items: items)
+        let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.renameReaderDone, items: items)
         modalProcessingView?.updateContent(with: feedback)
+    }
+    
+    func updateTemporaryReaderName(name: String?) {
+        temporaryReaderName = name
+    }
+    
+    func updateReaderName() {
+        if var reader = ClearentWrapperDefaults.pairedReaderInfo {
+            if let newName = temporaryReaderName, newName != "" {
+                reader.customReaderName = newName
+            } else {
+                reader.customReaderName = temporaryReaderName
+            }
+            ClearentWrapperDefaults.pairedReaderInfo = reader
+        }
     }
 }
 

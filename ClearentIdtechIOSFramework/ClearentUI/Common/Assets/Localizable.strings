@@ -26,6 +26,7 @@
 "xsdk_user_action_settings" = "Settings";
 "xsdk_user_action_addName" = "Add";
 "xsdk_reader_name" = "Reader name";
+"xsdk_reader_name_input_hint" = "Input a custom name";
 
 
 /* Payment Flow*/
@@ -80,6 +81,7 @@
 "xsdk_reader_details_autojoin_title" = "Auto-join";
 "xsdk_reader_details_autojoin_description" = "Everytime you log in, it will join this reader automatically";
 "xsdk_reader_details_readername_title" = "Reader name";
+"xsdk_reader_details_custom_readername_title" = "Custom reader name";
 "xsdk_reader_details_serialnumber_title" = "Serial number";
 "xsdk_reader_details_version_title" = "Version";
 "xsdk_reader_details_remove_reader" = "Remove reader";
