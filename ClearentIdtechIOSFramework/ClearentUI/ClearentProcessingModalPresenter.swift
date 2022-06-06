@@ -163,6 +163,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                 reader.customReaderName = temporaryReaderName
             }
             ClearentWrapperDefaults.pairedReaderInfo = reader
+            sdkWrapper.addReaderToRecentlyUsed(reader: reader)
         }
     }
 }
