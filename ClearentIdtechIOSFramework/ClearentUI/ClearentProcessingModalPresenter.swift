@@ -161,7 +161,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             if let newName = temporaryReaderName, newName != "" {
                 reader.customReaderName = newName
             } else {
-                reader.customReaderName = temporaryReaderName
+                reader.customReaderName = nil
             }
             ClearentWrapperDefaults.pairedReaderInfo = reader
             sdkWrapper.addReaderToRecentlyUsed(reader: reader)
