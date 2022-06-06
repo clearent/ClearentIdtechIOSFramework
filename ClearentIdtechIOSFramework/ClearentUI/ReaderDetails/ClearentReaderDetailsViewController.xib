@@ -64,7 +64,7 @@
                                     <rect key="frame" x="0.0" y="450" width="382" height="112.5"/>
                                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 </view>
-                                <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dwA-ol-9Ru" customClass="ClearentLabelWithButton" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                                <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dwA-ol-9Ru" customClass="ClearentInfoWithIcon" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
                                     <rect key="frame" x="0.0" y="562.5" width="382" height="128"/>
                                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 </view>

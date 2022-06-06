@@ -82,6 +82,7 @@
 "xsdk_reader_details_autojoin_description" = "Everytime you log in, it will join this reader automatically";
 "xsdk_reader_details_readername_title" = "Reader name";
 "xsdk_reader_details_custom_readername_title" = "Custom reader name";
+"xsdk_reader_details_add_custom_readername_title" = "Add a custom name to your reader";
 "xsdk_reader_details_serialnumber_title" = "Serial number";
 "xsdk_reader_details_version_title" = "Version";
 "xsdk_reader_details_remove_reader" = "Remove reader";

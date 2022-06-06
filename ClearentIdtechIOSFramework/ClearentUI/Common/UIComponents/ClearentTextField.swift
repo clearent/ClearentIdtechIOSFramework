@@ -19,17 +19,20 @@ class ClearentTextField: ClearentMarginableView, UITextFieldDelegate {
     var delegate: ClearenttextFieldProtocol?
 
     private var readerName: String?
-    
         override public var margins: [BottomMargin] {
         [
             BottomMargin(constant: 80)
         ]
     }
     
-    convenience init(inputName: String, hint: String, delegate: ClearenttextFieldProtocol) {
+    convenience init(currentReaderName: String?, inputName: String, hint: String, delegate: ClearenttextFieldProtocol) {
         self.init()
+        self.readerName = currentReaderName
         self.infoLabel.text = inputName
         self.inputField.placeholder = hint
+        if let readerName = self.readerName {
+            self.inputField.text = readerName
+        }
         self.inputField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: .editingChanged)
         self.delegate = delegate
     }
