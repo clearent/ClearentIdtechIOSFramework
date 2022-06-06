@@ -35,6 +35,7 @@ class ClearentTextField: ClearentMarginableView, UITextFieldDelegate {
         }
         self.inputField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: .editingChanged)
         self.delegate = delegate
+        self.delegate?.didFinishWithResult(name: self.inputField.text)
     }
 
     override func configure() {

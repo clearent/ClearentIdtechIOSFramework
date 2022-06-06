@@ -84,8 +84,6 @@ public final class ClearentWrapper : NSObject {
         createLogFile()
         self.startConnectionListener()
         bleManager = BluetoothScanner.init(udid: nil, delegate: self)
-        let x = ClearentWrapperDefaults.pairedReaderInfo
-        print("X\(x)")
     }
     
     // MARK - Public
