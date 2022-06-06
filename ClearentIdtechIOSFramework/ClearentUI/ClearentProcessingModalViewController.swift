@@ -56,6 +56,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
 
     public func updateContent(with feedback: FlowFeedback) {
         stackView.removeAllArrangedSubviews()
+        stackView.isUserInteractionEnabled = true
         
         feedback.items.forEach {
             if let component = uiComponent(for: $0, processType: feedback.flow, feedbackType: feedback.type) {
@@ -92,8 +93,11 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             return readersList(readersInfo: readersInfo)
         case .hint:
             guard let text = object as? String else { return nil }
-            
-            return ClearentHintView(text: text)
+            let hint = ClearentHintView(text: text)
+            if case let .pairing(_, firstPairing) = presenter?.processType {
+                hint.isHighlighted = firstPairing
+            }
+            return hint
         case .recentlyPaired:
             guard let readersInfo = object as? [ReaderInfo] else { return nil }
             var readersTableViewDataSource: [ReaderItem] = readersInfo.map { ReaderItem(readerInfo: $0) }
@@ -102,7 +106,6 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
                 guard let indexOfConnectedReader = readersTableViewDataSource.firstIndex(where: {$0.readerInfo == pairedReaderInfo}) else { return nil }
                 readersTableViewDataSource.insert(readersTableViewDataSource.remove(at: indexOfConnectedReader), at: 0)
                 presenter?.selectedReaderFromReadersList = nil
-                stackView.isUserInteractionEnabled = true
             } else {
                 guard let selectedReaderFromReadersList = presenter?.selectedReaderFromReadersList else {
                     return ClearentReadersTableView(dataSource: readersTableViewDataSource, delegate: self)
@@ -116,7 +119,8 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         }
     }
 
-    private func readerInfoView(readerInfo: ReaderInfo?, flowFeedbackType: FlowFeedbackType) -> ClearentReaderStatusHeaderView {
+    private func readerInfoView(readerInfo: ReaderInfo?, flowFeedbackType: FlowFeedbackType) -> ClearentReaderStatusHeaderView? {
+        if readerInfo == nil && flowFeedbackType != .showReaders { return nil }
         var name = readerInfo?.readerName ?? "xsdk_readers_list_no_reader_connected".localized
         if let customName = readerInfo?.customReaderName {
             name = customName

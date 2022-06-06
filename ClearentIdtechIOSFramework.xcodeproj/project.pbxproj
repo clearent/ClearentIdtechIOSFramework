@@ -62,6 +62,7 @@
 		019F92922827C9F10068E3FA /* ClearentPairingReadersList.xib in Resources */ = {isa = PBXBuildFile; fileRef = 019F92912827C9F10068E3FA /* ClearentPairingReadersList.xib */; };
 		01D1ED6F280FFA680005FC71 /* ReaderInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D1ED6E280FFA680005FC71 /* ReaderInfo.swift */; };
 		01F6D57B280580B200310E01 /* ClearentStringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F6D57A280580B200310E01 /* ClearentStringExtension.swift */; };
+		01F7CA502846226100345A24 /* ClearentHintView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01F7CA4F2846226100345A24 /* ClearentHintView.xib */; };
 		19116EB0282BC3D60042CE8E /* ClearentReadersTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19116EAF282BC3D60042CE8E /* ClearentReadersTableView.swift */; };
 		19116EB7282BDB820042CE8E /* ClearentReadersTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19116EB5282BDB820042CE8E /* ClearentReadersTableViewCell.swift */; };
 		19116EB8282BDB820042CE8E /* ClearentReadersTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19116EB6282BDB820042CE8E /* ClearentReadersTableViewCell.xib */; };
@@ -241,6 +242,7 @@
 		019F92912827C9F10068E3FA /* ClearentPairingReadersList.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentPairingReadersList.xib; sourceTree = "<group>"; };
 		01D1ED6E280FFA680005FC71 /* ReaderInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderInfo.swift; sourceTree = "<group>"; };
 		01F6D57A280580B200310E01 /* ClearentStringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentStringExtension.swift; sourceTree = "<group>"; };
+		01F7CA4F2846226100345A24 /* ClearentHintView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentHintView.xib; sourceTree = "<group>"; };
 		19116EAF282BC3D60042CE8E /* ClearentReadersTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentReadersTableView.swift; sourceTree = "<group>"; };
 		19116EB5282BDB820042CE8E /* ClearentReadersTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentReadersTableViewCell.swift; sourceTree = "<group>"; };
 		19116EB6282BDB820042CE8E /* ClearentReadersTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentReadersTableViewCell.xib; sourceTree = "<group>"; };
@@ -490,6 +492,7 @@
 				0129F7E82823ACCC00027BCE /* ClearentIcon.swift */,
 				0129F7EA2823BF8600027BCE /* ClearentIcon.xib */,
 				0129F82D2825238300027BCE /* ClearentHintView.swift */,
+				01F7CA4F2846226100345A24 /* ClearentHintView.xib */,
 				0193D454282554DB002B04B9 /* ClearentPairingReadersList.swift */,
 				019F92912827C9F10068E3FA /* ClearentPairingReadersList.xib */,
 				01913F13282AECF100A71CF6 /* ClearentRoundedCornersStackView.swift */,
@@ -966,6 +969,7 @@
 				1937010B27F1CAB400BF48E5 /* ClearentProcessingModalViewController.xib in Resources */,
 				013AB9B9282264C100771FAC /* ClearentPairingReaderItem.xib in Resources */,
 				011181A8283272310025750A /* ClearentLabelWithIcon.xib in Resources */,
+				01F7CA502846226100345A24 /* ClearentHintView.xib in Resources */,
 				1973B532282CE3EF0062FB07 /* ClearentReadersTableView.xib in Resources */,
 				19116EB8282BDB820042CE8E /* ClearentReadersTableViewCell.xib in Resources */,
 				01949F6C283BEC3E0041292A /* SF-Pro-Text-Bold.otf in Resources */,
