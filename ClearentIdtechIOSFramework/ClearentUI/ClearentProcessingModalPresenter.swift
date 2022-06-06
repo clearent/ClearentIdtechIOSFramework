@@ -11,7 +11,7 @@ import UIKit
 protocol ClearentProcessingModalView: AnyObject {
     func updateContent(with feedback: FlowFeedback)
     func showLoadingView()
-    func dismissViewController(isConnected: Bool)
+    func dismissViewController(isConnected: Bool, customName: String?)
 }
 
 protocol ProcessingModalProtocol {
@@ -50,7 +50,7 @@ class ClearentProcessingModalPresenter {
     private func dissmissViewWithDelay() {
         let deadlineTime = DispatchTime.now() + .seconds(3)
         DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
-            self.modalProcessingView?.dismissViewController(isConnected: true)
+            self.modalProcessingView?.dismissViewController(isConnected: true, customName: ClearentWrapperDefaults.pairedReaderInfo?.customReaderName)
         }
     }
 }

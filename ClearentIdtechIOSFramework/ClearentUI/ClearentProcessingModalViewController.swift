@@ -15,7 +15,7 @@ class ClearentProcessingModalViewController: ClearentBaseViewController {
     private var showOnTop: Bool = false
     @IBOutlet var stackView: ClearentRoundedCornersStackView!
     var presenter: ProcessingModalProtocol?
-    var dismissCompletion: ((_ isConnected: Bool) -> Void)?
+    var dismissCompletion: ((_ isConnected: Bool, _ customName: String?) -> Void)?
 
     // MARK: - Init
 
@@ -46,11 +46,11 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         stackView.showLoadingView()
     }
 
-    public func dismissViewController(isConnected: Bool) {
+    public func dismissViewController(isConnected: Bool, customName: String?) {
         ClearentWrapper.shared.cancelTransaction()
         DispatchQueue.main.async { [weak self] in
             self?.dismiss(animated: true, completion: nil)
-            self?.dismissCompletion?(isConnected)
+            self?.dismissCompletion?(isConnected, customName)
         }
     }
 
@@ -117,7 +117,10 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     }
 
     private func readerInfoView(readerInfo: ReaderInfo?, flowFeedbackType: FlowFeedbackType) -> ClearentReaderStatusHeaderView {
-        let name = readerInfo?.readerName ?? "xsdk_readers_list_no_reader_connected".localized
+        var name = readerInfo?.readerName ?? "xsdk_readers_list_no_reader_connected".localized
+        if let customName = readerInfo?.customReaderName {
+            name = customName
+        }
         let description = readerInfo == nil ? "xsdk_readers_list_select_reader".localized : nil
         let signalStatus = readerInfo?.signalStatus(flowFeedbackType: flowFeedbackType, isConnecting: presenter?.selectedReaderFromReadersList != nil)
         let batteryStatus = readerInfo?.batteryStatus(flowFeedbackType: flowFeedbackType)
@@ -162,9 +165,9 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
                     strongSelf.presenter?.showReaderNameOption()
                 } else if (flowFeedbackType == .renameReaderDone) {
                     strongSelf.presenter?.updateReaderName()
-                    strongSelf.dismissViewController(isConnected: userAction == .done)
+                    strongSelf.dismissViewController(isConnected: userAction == .done, customName: ClearentWrapperDefaults.pairedReaderInfo?.customReaderName)
                 } else {
-                    strongSelf.dismissViewController(isConnected: userAction == .done)
+                    strongSelf.dismissViewController(isConnected: userAction == .done, customName: ClearentWrapperDefaults.pairedReaderInfo?.customReaderName)
                 }
             case .retry, .pair:
                 presenter.restartProcess(processType: processType)

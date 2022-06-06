@@ -62,7 +62,7 @@ class ClearentReaderDetailsViewController: UIViewController {
         connectedView.valueChangedAction = { [weak self] isOn in
             guard let strongSelf = self else { return }
             if isOn {
-                let modalVC = ClearentUIManager.shared.viewController(processType: .pairing(withReader: strongSelf.readerInfo)) { isConnected in
+                let modalVC = ClearentUIManager.shared.viewController(processType: .pairing(withReader: strongSelf.readerInfo)) { isConnected, customName in
                     strongSelf.didChangedConnectionStatus(reader: strongSelf.readerInfo, isConnected: isConnected)
                 }
                 strongSelf.navigationController?.present(modalVC, animated: false)
@@ -87,10 +87,19 @@ class ClearentReaderDetailsViewController: UIViewController {
         connectedView.isOn = isConnected
         updateReaderInfo()
     }
+    
+    private func didChangedCustomReaderName(reader: ReaderInfo, customName: String?) {
+        if let defaultReader = ClearentWrapperDefaults.pairedReaderInfo {
+            detailsPresenter.currentReader = defaultReader
+        }
+        connectedView.descriptionText = customName
+        updateReaderInfo()
+    }
 
     func updateReaderInfo() {
         setupReaderStatus()
         setupSerialNumber()
+        setupCustomReaderName()
         setupVersion()
     }
     
@@ -119,8 +128,8 @@ class ClearentReaderDetailsViewController: UIViewController {
         customReaderName.iconName = "smallEditButton"
         customReaderName.editButtonPressed = { [weak self] in
             guard let strongSelf = self else { return }
-            let modalVC = ClearentUIManager.shared.viewControllerForAddingCustomName(processType: .renameReader) { isConnected in
-                strongSelf.didChangedConnectionStatus(reader: strongSelf.readerInfo, isConnected: isConnected)
+            let modalVC = ClearentUIManager.shared.viewController(processType: .renameReader) { isConnected, customName in
+                strongSelf.didChangedCustomReaderName(reader: strongSelf.readerInfo, customName: customName)
             }
             strongSelf.navigationController?.present(modalVC, animated: false)
         }
