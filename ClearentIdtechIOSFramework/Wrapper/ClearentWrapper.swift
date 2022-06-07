@@ -453,6 +453,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     public func deviceDisconnected() {
         DispatchQueue.main.async {
             ClearentWrapperDefaults.pairedReaderInfo?.isConnected = false
+            self.bleManager?.cancelPeripheralConnection()
             self.delegate?.deviceDidDisconnect()
         }
     }
