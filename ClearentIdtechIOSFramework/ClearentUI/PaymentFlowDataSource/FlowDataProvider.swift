@@ -327,4 +327,10 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  payload: items)
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
+
+    func didReceiveSignalStrength() {
+        if case .showReaders = ClearentWrapper.shared.flowType {
+            self.didFinishPairing()
+        }
+    }
 }

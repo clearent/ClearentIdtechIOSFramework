@@ -42,6 +42,7 @@ public enum TransactionError {
 public protocol ClearentWrapperProtocol : AnyObject {
     func didStartPairing()
     func didFinishPairing()
+    func didReceiveSignalStrength()
     func didFindReaders(readers:[ReaderInfo])
     func deviceDidDisconnect()
     func didNotFindReaders()

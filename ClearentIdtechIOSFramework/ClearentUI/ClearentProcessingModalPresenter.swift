@@ -72,6 +72,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
 
     func startFlow() {
+        ClearentWrapper.shared.flowType = processType
         switch processType {
         case let .pairing(withReader: readerInfo, _):
             if let readerInfo = readerInfo {
@@ -101,7 +102,6 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         sdkFeedbackProvider = FlowDataProvider()
         sdkFeedbackProvider.delegate = self
         selectedReaderFromReadersList = ReaderItem(readerInfo: reader, isConnecting: true)
-        ClearentWrapper.shared.flowType = processType
         sdkWrapper.connectTo(reader: reader)
     }
     
