@@ -10,6 +10,7 @@ import UIKit
 
 protocol ClearentProcessingModalView: AnyObject {
     func updateContent(with feedback: FlowFeedback)
+    func updateCurrentContentWithLoadingView()
     func showLoadingView()
     func dismissViewController(isConnected: Bool)
 }
@@ -51,12 +52,6 @@ class ClearentProcessingModalPresenter {
 }
 
 extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
-    func showDetailsScreen(for reader: ReaderItem, allReaders: [ReaderItem], flowDataProvider: FlowDataProvider, on navigationController: UINavigationController)  {
-        let vc = ClearentReaderDetailsViewController(nibName: String(describing: ClearentReaderDetailsViewController.self), bundle: ClearentConstants.bundle)
-        vc.detailsPresenter = ClearentReaderDetailsPresenter(currentReader: reader, allReaders: allReaders, flowDataProvider: flowDataProvider, navigationController: navigationController)
-        navigationController.pushViewController(vc, animated: true)
-    }
-
     func restartProcess(processType: ProcessType) {
         sdkFeedbackProvider.delegate = self
         modalProcessingView?.showLoadingView()
@@ -69,7 +64,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             break
         }
     }
-
+    
     func startFlow() {
         switch processType {
         case let .pairing(withReader: readerInfo):
@@ -93,6 +88,12 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                      FlowDataItem(type: .userAction, object: FlowButtonType.pair)]
         let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.info, items: items)
         modalProcessingView?.updateContent(with: feedback)
+    }
+    
+    func showDetailsScreen(for reader: ReaderItem, allReaders: [ReaderItem], flowDataProvider: FlowDataProvider, on navigationController: UINavigationController)  {
+        let vc = ClearentReaderDetailsViewController(nibName: String(describing: ClearentReaderDetailsViewController.self), bundle: ClearentConstants.bundle)
+        vc.detailsPresenter = ClearentReaderDetailsPresenter(currentReader: reader, allReaders: allReaders, flowDataProvider: flowDataProvider, navigationController: navigationController)
+        navigationController.pushViewController(vc, animated: true)
     }
     
     func connectTo(reader: ReaderInfo) {
@@ -157,5 +158,9 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
         if error == nil {
             dissmissViewWithDelay()
         }
+    }
+    
+    func didBeginContinuousSearching() {
+        modalProcessingView?.updateCurrentContentWithLoadingView()
     }
 }

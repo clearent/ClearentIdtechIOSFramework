@@ -38,12 +38,12 @@ class FlowDataFactory {
     }
 }
 
-
 protocol FlowDataProtocol : AnyObject {
     func didFinishTransaction(error: ResponseError?)
     func deviceDidDisconnect()
     func didFinishedPairing()
     func didReceiveFlowFeedback(feedback: FlowFeedback)
+    func didBeginContinuousSearching()
 }
 
 class FlowDataProvider : NSObject {
@@ -229,6 +229,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  readerInfo: ClearentWrapperDefaults.pairedReaderInfo,
                                                  payload: items)
             delegate?.didReceiveFlowFeedback(feedback: feedback)
+            ClearentWrapper.shared.shouldBeginContinuousSearchingForReaders?(true)
         } else {
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.pairingSuccessful),
                          FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader)]
@@ -326,5 +327,9 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  readerInfo: ClearentWrapperDefaults.pairedReaderInfo,
                                                  payload: items)
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+    }
+    
+    func didBeginContinuousSearching() {
+        self.delegate?.didBeginContinuousSearching()
     }
 }

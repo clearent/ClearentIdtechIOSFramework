@@ -42,6 +42,21 @@ class ClearentProcessingModalViewController: ClearentBaseViewController {
 
 extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     
+    public func updateContent(with feedback: FlowFeedback) {
+        stackView.removeAllArrangedSubviews()
+        stackView.isUserInteractionEnabled = true
+        
+        feedback.items.forEach {
+            if let component = uiComponent(for: $0, processType: feedback.flow, feedbackType: feedback.type) {
+                stackView.addArrangedSubview(component)
+            }
+        }
+    }
+    
+    public func updateCurrentContentWithLoadingView() {
+        stackView.insertArrangedSubview(ClearentLoadingView(), at: 1)
+    }
+    
     public func showLoadingView() {
         stackView.showLoadingView()
     }
@@ -51,17 +66,6 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         DispatchQueue.main.async { [weak self] in
             self?.dismiss(animated: true, completion: nil)
             self?.dismissCompletion?(isConnected)
-        }
-    }
-
-    public func updateContent(with feedback: FlowFeedback) {
-        stackView.removeAllArrangedSubviews()
-        stackView.isUserInteractionEnabled = true
-        
-        feedback.items.forEach {
-            if let component = uiComponent(for: $0, processType: feedback.flow, feedbackType: feedback.type) {
-                stackView.addArrangedSubview(component)
-            }
         }
     }
 
@@ -77,7 +81,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             return icon(with: graphic)
         case .title:
             guard let text = object as? String else { return nil }
-            
+             
             return ClearentTitleLabel(text: text)
         case .description:
             guard let text = object as? String else { return nil }
@@ -127,6 +131,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         statusHeaderView.action = { [weak self] in
             if self?.showOnTop == true {
                 self?.dismiss(animated: true, completion: nil)
+                ClearentWrapper.shared.shouldBeginContinuousSearchingForReaders?(false)
             }
         }
         return statusHeaderView
@@ -163,6 +168,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             case .pairNewReader:
                 strongSelf.stackView.positionView(onTop: false, of: strongSelf.view)
                 presenter.startPairingFlow()
+                ClearentWrapper.shared.shouldBeginContinuousSearchingForReaders?(false)
             case .settings:
                 let url = URL(string: UIApplication.openSettingsURLString + Bundle.main.bundleIdentifier!)!
                 UIApplication.shared.open(url)
@@ -181,5 +187,6 @@ extension ClearentProcessingModalViewController: ClearentReadersTableViewDelegat
     func didSelectReader(_ reader: ReaderInfo) {
         presenter?.connectTo(reader: reader)
         stackView.isUserInteractionEnabled = false
+        ClearentWrapper.shared.shouldBeginContinuousSearchingForReaders?(false)
     }
 }
