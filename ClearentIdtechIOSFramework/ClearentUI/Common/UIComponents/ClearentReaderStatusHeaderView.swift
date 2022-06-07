@@ -50,6 +50,7 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
         if let dropDownIconName = dropDownIconName {
             dropDownImageView.image = UIImage(named: dropDownIconName, in: ClearentConstants.bundle, compatibleWith: nil)
         }
+        dropDownImageView.isHidden = dropDownIconName == nil
         if let signalStatus = signalStatus {
             readerConnectivityStatusView.setup(imageName: signalStatus.iconName, status: signalStatus.title)
         }
