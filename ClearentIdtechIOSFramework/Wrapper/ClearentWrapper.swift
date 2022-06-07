@@ -424,7 +424,6 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
                 let readers = fetchRecentlyAndAvailableReaders(devices: bluetoothDevices)
                 self.delegate?.didFindRecentlyUsedReaders(readers: readers)
             }
-            
             self.flowType = nil
         } else if (bluetoothDevices.count > 0) {
             let readers = bluetoothDevices.map { device in
@@ -454,6 +453,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     
     public func deviceDisconnected() {
         DispatchQueue.main.async {
+            self.flowType = nil
             ClearentWrapperDefaults.pairedReaderInfo?.isConnected = false
             self.bleManager?.cancelPeripheralConnection()
             self.delegate?.deviceDidDisconnect()
