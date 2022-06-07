@@ -154,7 +154,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     private func actionButton(userAction: FlowButtonType, processType: ProcessType) -> ClearentPrimaryButton {
         let button = ClearentPrimaryButton()
         button.title = userAction.title
-        button.isBorderedButton = userAction == .cancel || userAction == .pairNewReader
+        button.isBorderedButton = userAction == .cancel || userAction == .startPairNewReader
         
         button.action = { [weak self] in
             guard let strongSelf = self, let presenter = strongSelf.presenter else { return }
@@ -162,8 +162,10 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             case .cancel, .done:
                 strongSelf.dismissViewController(isConnected: userAction == .done)
             case .retry, .pair:
-                presenter.restartProcess(processType: processType)
-            case .pairNewReader:
+                presenter.restartProcess(processType: processType, newPair: false)
+            case .newPairing:
+                presenter.restartProcess(processType: processType, newPair: true)
+            case .startPairNewReader:
                 strongSelf.stackView.positionView(onTop: false, of: strongSelf.view)
                 presenter.startPairingFlow()
             case .settings:

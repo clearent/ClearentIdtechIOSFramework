@@ -69,7 +69,7 @@ enum FlowGraphicType {
 }
 
 public enum FlowButtonType {
-    case cancel, retry, pair, done, pairNewReader, settings
+    case cancel, retry, pair, done, startPairNewReader, settings, newPairing
     
     var title: String {
         switch self {
@@ -77,11 +77,11 @@ public enum FlowButtonType {
             return "xsdk_user_action_cancel".localized
         case .retry:
             return "xsdk_user_action_retry".localized
-        case .pair:
+        case .pair, .newPairing:
             return "xsdk_user_action_pair".localized
         case .done:
             return "xsdk_user_action_done".localized
-        case .pairNewReader:
+        case .startPairNewReader:
             return "xsdk_pair_new_reader".localized
         case .settings:
             return "xsdk_user_action_settings".localized
