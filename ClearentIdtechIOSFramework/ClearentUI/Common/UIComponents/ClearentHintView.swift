@@ -86,6 +86,7 @@ public class ClearentHintView: ClearentMarginableView {
 
     private func setupLabel() {
         textFont = ClearentConstants.Font.proTextNormal
+        label.textAlignment = .center
         label.layer.cornerRadius = 10
         label.layer.masksToBounds = true
         label.clipsToBounds = true
