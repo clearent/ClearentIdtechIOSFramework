@@ -79,7 +79,7 @@ public final class ClearentWrapper : NSObject {
     private var continuousSearchingTimer: Timer?
     private var shouldStopUpdatingReadersListDuringContinuousSearching: Bool = true
     private var shouldAddLoadingViewDuringContinuousSearching: Bool = false
-    public var shouldBeginContinuousSearchingForReaders: ((_ shouldStart: Bool) -> Void)?
+    internal var shouldBeginContinuousSearchingForReaders: ((_ searchingEnabled: Bool) -> Void)?
     
     // MARK: Init
     
@@ -89,8 +89,8 @@ public final class ClearentWrapper : NSObject {
         self.startConnectionListener()
         bleManager = BluetoothScanner.init(udid: nil, delegate: self)
         
-        shouldBeginContinuousSearchingForReaders = { shouldStart in
-            if shouldStart {
+        shouldBeginContinuousSearchingForReaders = { searchingEnabled in
+            if searchingEnabled {
                 self.continuousSearchingTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { [weak self] _ in
                     guard let strongSelf = self else { return }
                     
