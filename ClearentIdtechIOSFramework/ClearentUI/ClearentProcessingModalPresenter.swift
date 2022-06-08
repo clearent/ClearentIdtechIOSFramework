@@ -18,7 +18,7 @@ protocol ProcessingModalProtocol {
     var processType: ProcessType { get set }
     var sdkFeedbackProvider: FlowDataProvider { get set }
     var selectedReaderFromReadersList: ReaderItem? { get set }
-    func restartProcess(processType: ProcessType)
+    func restartProcess(processType: ProcessType, newPair: Bool)
     func startFlow()
     func startPairingFlow()
     func showReaderNameOption()
@@ -64,14 +64,16 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         navigationController.pushViewController(vc, animated: true)
     }
 
-    func restartProcess(processType: ProcessType) {
+    func restartProcess(processType: ProcessType, newPair: Bool) {
+        ClearentWrapper.shared.flowType = processType
+        self.processType = processType
         sdkFeedbackProvider.delegate = self
         modalProcessingView?.showLoadingView()
         switch processType {
         case .renameReader:
             showRenameReader()
         case .pairing:
-            sdkWrapper.startPairing(reconnectIfPossible: true)
+            sdkWrapper.startPairing(reconnectIfPossible: !newPair)
         case .payment:
             sdkWrapper.retryLastTransaction()
         case .showReaders:
@@ -80,6 +82,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
 
     func startFlow() {
+        ClearentWrapper.shared.flowType = processType
         switch processType {
         case let .pairing(withReader: readerInfo, _):
             if let readerInfo = readerInfo {
@@ -101,7 +104,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         let items = [FlowDataItem(type: .hint, object: "xsdk_prepare_pairing_reader_range".localized),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
                      FlowDataItem(type: .description, object: "xsdk_prepare_pairing_reader_button".localized),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.pair)]
+                     FlowDataItem(type: .userAction, object: FlowButtonType.pairInFlow)]
         let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.info, items: items)
         modalProcessingView?.updateContent(with: feedback)
     }
@@ -111,7 +114,6 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         sdkFeedbackProvider = FlowDataProvider()
         sdkFeedbackProvider.delegate = self
         selectedReaderFromReadersList = ReaderItem(readerInfo: reader, isConnecting: true)
-        ClearentWrapper.shared.flowType = processType
         sdkWrapper.connectTo(reader: reader)
     }
     
@@ -127,9 +129,11 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     private func showReadersList() {
-        let items = [FlowDataItem(type: .readerInfo, object: ClearentWrapperDefaults.pairedReaderInfo),
-                     FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
+        // when the search starts the reader will be disconnected so we need to show the proper state
+        var reader = ClearentWrapperDefaults.pairedReaderInfo
+        reader?.isConnected = false
+        let items = [FlowDataItem(type: .readerInfo, object: reader),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.loading)]
         let feedback = FlowFeedback(flow: .showReaders, type: .showReaders, items: items)
 
         modalProcessingView?.updateContent(with: feedback)

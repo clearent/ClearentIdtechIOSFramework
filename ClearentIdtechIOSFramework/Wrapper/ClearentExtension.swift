@@ -25,6 +25,7 @@ extension ClearentWrapper: BluetoothScannerProtocol {
         if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
             currentReader.signalLevel = level.rawValue
             ClearentWrapperDefaults.pairedReaderInfo = currentReader
+            delegate?.didReceiveSignalStrength()
         }
     }
     
