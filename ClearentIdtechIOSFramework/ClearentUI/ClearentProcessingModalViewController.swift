@@ -97,8 +97,11 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             return readersList(readersInfo: readersInfo)
         case .hint:
             guard let text = object as? String else { return nil }
-            
-            return ClearentHintView(text: text)
+            let hint = ClearentHintView(text: text)
+            if case let .pairing(_, firstPairing) = presenter?.processType {
+                hint.isHighlighted = firstPairing
+            }
+            return hint
         case .recentlyPaired:
             guard let readersInfo = object as? [ReaderInfo] else { return nil }
             var readersTableViewDataSource: [ReaderItem] = readersInfo.map { ReaderItem(readerInfo: $0) }

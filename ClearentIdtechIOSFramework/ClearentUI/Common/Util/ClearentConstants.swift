@@ -30,7 +30,6 @@ public class ClearentConstants {
         public static let base01 = UIColor(hexString: "#272431")
         public static let base02 = UIColor(hexString: "#6A6D7D")
         public static let base03 = UIColor(hexString: "#000000")
-        public static let base04 = UIColor(hexString: "#FFFFFF")
         
         public static let warning = UIColor(hexString: "#C2210F")
     }
@@ -80,6 +79,7 @@ public class ClearentConstants {
         // Pairing
         static let rightArrow = "right-arrow"
         static let reader = "reader"
+        static let bubbleTail = "bubbleTail"
 
         // Readers List
         static let expanded = "expanded"

@@ -42,6 +42,7 @@ public enum TransactionError {
 public protocol ClearentWrapperProtocol : AnyObject {
     func didStartPairing()
     func didFinishPairing()
+    func didReceiveSignalStrength()
     func didFindReaders(readers:[ReaderInfo])
     func deviceDidDisconnect()
     func didNotFindReaders()
@@ -382,59 +383,56 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     }
     
     public func feedback(_ clearentFeedback: ClearentFeedback!) {
-        
-        if (isInternetOn) {
-            switch clearentFeedback.feedBackMessageType {
-            case .TYPE_UNKNOWN:
+        switch clearentFeedback.feedBackMessageType {
+        case .TYPE_UNKNOWN:
+            DispatchQueue.main.async {
+                self.delegate?.didEncounteredGeneralError()
+            }
+        case .USER_ACTION:
+            if let action = UserAction(rawValue: clearentFeedback.message) {
                 DispatchQueue.main.async {
-                    self.delegate?.didEncounteredGeneralError()
+                    self.delegate?.userActionNeeded(action: action)
                 }
-            case .USER_ACTION:
-                   if let action = UserAction(rawValue: clearentFeedback.message) {
-                       DispatchQueue.main.async {
-                           self.delegate?.userActionNeeded(action: action)
-                       }
-                   }
-            case .INFO:
-                if let info = UserInfo(rawValue: clearentFeedback.message) {
-                    DispatchQueue.main.async {
-                     self.delegate?.didReceiveInfo(info: info)
-                    }
+            }
+        case .INFO:
+            if let info = UserInfo(rawValue: clearentFeedback.message) {
+                DispatchQueue.main.async {
+                    self.delegate?.didReceiveInfo(info: info)
                 }
-            case .BLUETOOTH:
-                if (ClearentWrapperDefaults.pairedReaderInfo != nil) {
-                    if (clearentFeedback.message == UserAction.noBluetooth.rawValue) {
-                        if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
-                            currentReader.isConnected = false
-                            ClearentWrapperDefaults.pairedReaderInfo = currentReader
-                        }
-                    }
-                    if let action = UserAction(rawValue: clearentFeedback.message) {
-                        DispatchQueue.main.async {
-                            self.delegate?.userActionNeeded(action: action)
-                        }
+            }
+        case .BLUETOOTH:
+            if (ClearentWrapperDefaults.pairedReaderInfo != nil) {
+                if (clearentFeedback.message == UserAction.noBluetooth.rawValue) {
+                    if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
+                        currentReader.isConnected = false
+                        ClearentWrapperDefaults.pairedReaderInfo = currentReader
                     }
                 }
-            case .ERROR:
-                if (ClearentWrapperDefaults.pairedReaderInfo != nil && clearentFeedback.message == UserAction.noBluetooth.rawValue) {
-                    if let action = UserAction(rawValue: clearentFeedback.message) {
-                        DispatchQueue.main.async {
-                            self.delegate?.userActionNeeded(action: action)
-                        }
-                    }
-                } else  if let action = UserAction(rawValue: clearentFeedback.message) {
+                if let action = UserAction(rawValue: clearentFeedback.message) {
                     DispatchQueue.main.async {
                         self.delegate?.userActionNeeded(action: action)
                     }
-                } else {
+                }
+            }
+        case .ERROR:
+            if (ClearentWrapperDefaults.pairedReaderInfo != nil && clearentFeedback.message == UserAction.noBluetooth.rawValue) {
+                if let action = UserAction(rawValue: clearentFeedback.message) {
                     DispatchQueue.main.async {
-                        self.delegate?.didEncounteredGeneralError()
+                        self.delegate?.userActionNeeded(action: action)
                     }
                 }
-            @unknown default:
+            } else  if let action = UserAction(rawValue: clearentFeedback.message) {
+                DispatchQueue.main.async {
+                    self.delegate?.userActionNeeded(action: action)
+                }
+            } else {
                 DispatchQueue.main.async {
                     self.delegate?.didEncounteredGeneralError()
                 }
+            }
+        @unknown default:
+            DispatchQueue.main.async {
+                self.delegate?.didEncounteredGeneralError()
             }
         }
     }

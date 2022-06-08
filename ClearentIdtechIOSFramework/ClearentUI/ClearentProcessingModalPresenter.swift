@@ -16,6 +16,7 @@ protocol ClearentProcessingModalView: AnyObject {
 }
 
 protocol ProcessingModalProtocol {
+    var processType: ProcessType { get set }
     var sdkFeedbackProvider: FlowDataProvider { get set }
     var selectedReaderFromReadersList: ReaderItem? { get set }
     func restartProcess(processType: ProcessType)
@@ -29,7 +30,7 @@ class ClearentProcessingModalPresenter {
     private weak var modalProcessingView: ClearentProcessingModalView?
     private var amount: Double?
     private let sdkWrapper = ClearentWrapper.shared
-    private let processType: ProcessType
+    var processType: ProcessType
     var selectedReaderFromReadersList: ReaderItem?
     var sdkFeedbackProvider: FlowDataProvider
 
@@ -70,7 +71,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         ClearentWrapper.shared.flowType = processType
         
         switch processType {
-        case let .pairing(withReader: readerInfo):
+        case let .pairing(withReader: readerInfo, _):
             if let readerInfo = readerInfo {
                 // automatically connect to this reader
                 connectTo(reader: readerInfo)

@@ -332,4 +332,11 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     func didBeginContinuousSearching() {
         self.delegate?.didBeginContinuousSearching()
     }
+
+    func didReceiveSignalStrength() {
+        // when signal strength is received, content should be reloaded
+        if case .showReaders = ClearentWrapper.shared.flowType {
+            self.didFinishPairing()
+        }
+    }
 }
