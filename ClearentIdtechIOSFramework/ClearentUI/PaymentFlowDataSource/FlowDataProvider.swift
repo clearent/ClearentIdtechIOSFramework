@@ -223,7 +223,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             recentlyPairedReaders[indexOfSelectedReader] = pairedReaderInfo
             
             items = [FlowDataItem(type: .recentlyPaired, object: recentlyPairedReaders),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.startPairNewReader)]
+                     FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
             feedback = FlowDataFactory.component(with: .showReaders,
                                                  type: .showReaders,
                                                  readerInfo: ClearentWrapperDefaults.pairedReaderInfo,
@@ -278,7 +278,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             guard let recentlyPairedDevices = ClearentWrapperDefaults.recentlyPairedReaders else { return }
             
             items = [FlowDataItem(type: .recentlyPaired, object: recentlyPairedDevices),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.startPairNewReader)]
+                     FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
             feedback = FlowDataFactory.component(with: .showReaders,
                                                  type: .showReaders,
                                                  readerInfo: reader,
@@ -309,7 +309,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     
     func didNotFindRecentlyUsedReaders() {
         let items = [FlowDataItem(type: .description, object: "xsdk_no_readers_found_description".localized),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.startPairNewReader)]
+                     FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
         let feedback = FlowDataFactory.component(with: .showReaders,
                                                  type: .showReaders,
                                                  readerInfo: ClearentWrapperDefaults.pairedReaderInfo,
@@ -319,7 +319,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     
     func didFindRecentlyUsedReaders(readers: [ReaderInfo]) {
         let items = [FlowDataItem(type: .recentlyPaired, object: readers),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.startPairNewReader)]
+                     FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
         
         let feedback = FlowDataFactory.component(with: .showReaders,
                                                  type: .showReaders,
