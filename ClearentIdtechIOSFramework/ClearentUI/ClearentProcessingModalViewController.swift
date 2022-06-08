@@ -53,7 +53,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         }
     }
     
-    public func updateCurrentContentWithLoadingView() {
+    public func addLoadingViewToCurrentContent() {
         stackView.insertArrangedSubview(ClearentLoadingView(), at: 1)
     }
     

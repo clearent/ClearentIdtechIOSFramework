@@ -10,7 +10,7 @@ import UIKit
 
 protocol ClearentProcessingModalView: AnyObject {
     func updateContent(with feedback: FlowFeedback)
-    func updateCurrentContentWithLoadingView()
+    func addLoadingViewToCurrentContent()
     func showLoadingView()
     func dismissViewController(isConnected: Bool)
 }
@@ -169,6 +169,6 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
     }
     
     func didBeginContinuousSearching() {
-        modalProcessingView?.updateCurrentContentWithLoadingView()
+        modalProcessingView?.addLoadingViewToCurrentContent()
     }
 }
