@@ -150,6 +150,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     private func readersList(readersInfo: [ReaderInfo]) -> ClearentPairingReadersList {
         let items = readersInfo.map { item in
             ClearentPairingReaderItem(title: item.readerName) {
+                ClearentWrapper.shared.shouldBeginContinuousSearchingForReaders?(false)
                 self.presenter?.connectTo(reader: item)
             }
         }
