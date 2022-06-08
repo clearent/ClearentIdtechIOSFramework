@@ -123,8 +123,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         var reader = ClearentWrapperDefaults.pairedReaderInfo
         reader?.isConnected = false
         let items = [FlowDataItem(type: .readerInfo, object: reader),
-                     FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.loading)]
         let feedback = FlowFeedback(flow: .showReaders, type: .showReaders, items: items)
 
         modalProcessingView?.updateContent(with: feedback)
