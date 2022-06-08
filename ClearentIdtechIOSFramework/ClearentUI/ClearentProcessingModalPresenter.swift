@@ -103,7 +103,6 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         sdkFeedbackProvider = FlowDataProvider()
         sdkFeedbackProvider.delegate = self
         selectedReaderFromReadersList = ReaderItem(readerInfo: reader, isConnecting: true)
-        ClearentWrapper.shared.flowType = processType
         sdkWrapper.connectTo(reader: reader)
     }
     
