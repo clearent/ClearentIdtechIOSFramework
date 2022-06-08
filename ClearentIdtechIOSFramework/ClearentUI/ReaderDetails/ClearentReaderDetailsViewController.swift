@@ -92,7 +92,7 @@ class ClearentReaderDetailsViewController: UIViewController {
         if let defaultReader = ClearentWrapperDefaults.pairedReaderInfo {
             detailsPresenter.currentReader = defaultReader
         }
-        connectedView.descriptionText = customName
+        customReaderName.descriptionText = customName
         updateReaderInfo()
     }
 
@@ -125,10 +125,10 @@ class ClearentReaderDetailsViewController: UIViewController {
     
     private func setupCustomReaderName() {
         customReaderName.titleText = "xsdk_reader_details_custom_readername_title".localized
-        customReaderName.iconName = "smallEditButton"
+        customReaderName.iconName = ClearentConstants.IconName.editButton
         customReaderName.editButtonPressed = { [weak self] in
             guard let strongSelf = self else { return }
-            let modalVC = ClearentUIManager.shared.viewController(processType: .renameReader) { isConnected, customName in
+            let modalVC = ClearentUIManager.shared.viewController(processType: .renameReader, editableReader: self?.detailsPresenter.currentReader) { isConnected, customName in
                 strongSelf.didChangedCustomReaderName(reader: strongSelf.readerInfo, customName: customName)
             }
             strongSelf.navigationController?.present(modalVC, animated: false)

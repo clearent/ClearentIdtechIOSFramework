@@ -37,6 +37,7 @@ class ClearentProcessingModalPresenter {
     var processType: ProcessType
     var selectedReaderFromReadersList: ReaderItem?
     var sdkFeedbackProvider: FlowDataProvider
+    var editableReader: ReaderInfo?
     
     // MARK: Init
 
@@ -139,7 +140,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         let items = [FlowDataItem(type: .hint, object: "xsdk_add_name_to_reader".localized),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
                      FlowDataItem(type: .userAction, object: FlowButtonType.addReaderName),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+                     FlowDataItem(type: .userAction, object: FlowButtonType.renameReaderLater)]
         let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.info, items: items)
         modalProcessingView?.updateContent(with: feedback)
     }
@@ -153,17 +154,21 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     func updateTemporaryReaderName(name: String?) {
+        if (editableReader == nil) { editableReader = ClearentWrapperDefaults.pairedReaderInfo }
         temporaryReaderName = name
     }
     
     func updateReaderName() {
-        if var reader = ClearentWrapperDefaults.pairedReaderInfo {
+        if var reader = editableReader {
             if let newName = temporaryReaderName, newName != "" {
                 reader.customReaderName = newName
             } else {
                 reader.customReaderName = nil
             }
-            ClearentWrapperDefaults.pairedReaderInfo = reader
+            if (ClearentWrapperDefaults.pairedReaderInfo?.readerName == reader.readerName){
+                ClearentWrapperDefaults.pairedReaderInfo?.customReaderName = reader.customReaderName
+            }
+            sdkWrapper.removeReaderFromRecentlyUsed(reader: reader)
             sdkWrapper.addReaderToRecentlyUsed(reader: reader)
         }
     }

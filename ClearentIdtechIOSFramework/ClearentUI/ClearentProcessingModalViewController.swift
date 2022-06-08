@@ -159,18 +159,18 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     private func actionButton(userAction: FlowButtonType, processType: ProcessType, flowFeedbackType: FlowFeedbackType) -> ClearentPrimaryButton {
         let button = ClearentPrimaryButton()
         button.title = userAction.title
-        button.isBorderedButton = userAction == .cancel || userAction == .pairNewReader
+        button.isBorderedButton = userAction == .cancel || userAction == .pairNewReader || userAction == .renameReaderLater
         
         button.action = { [weak self] in
             guard let strongSelf = self, let presenter = strongSelf.presenter else { return }
             switch userAction {
-            case .cancel, .done:
+            case .cancel, .done, .renameReaderLater:
                 if (flowFeedbackType == .pairingDoneInfo) {
                     strongSelf.presenter?.showReaderNameOption()
-                } else if (flowFeedbackType == .renameReaderDone) {
-                    strongSelf.presenter?.updateReaderName()
-                    strongSelf.dismissViewController(isConnected: userAction == .done, customName: ClearentWrapperDefaults.pairedReaderInfo?.customReaderName)
                 } else {
+                    if (flowFeedbackType == .renameReaderDone) {
+                        presenter.updateReaderName()
+                    }
                     strongSelf.dismissViewController(isConnected: userAction == .done, customName: ClearentWrapperDefaults.pairedReaderInfo?.customReaderName)
                 }
             case .retry, .pair:

@@ -25,6 +25,7 @@
 "xsdk_user_action_done" = "Done";
 "xsdk_user_action_settings" = "Settings";
 "xsdk_user_action_addName" = "Add";
+"xsdk_user_action_later" = "Maybe later";
 "xsdk_reader_name" = "Reader name";
 "xsdk_reader_name_input_hint" = "Input a custom name";
 
