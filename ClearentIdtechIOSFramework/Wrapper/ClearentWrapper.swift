@@ -76,7 +76,8 @@ public final class ClearentWrapper : NSObject {
     private var isInternetOn = false
     internal var isBluetoothOn = false
     private var continuousSearchingTimer: Timer?
-    private var shouldUpdateUI: Bool = false
+    private var shouldStopUpdatingReadersListDuringContinuousSearching: Bool = true
+    private var shouldAddLoadingViewDuringContinuousSearching: Bool = false
     public var shouldBeginContinuousSearchingForReaders: ((_ shouldStart: Bool) -> Void)?
     
     // MARK: Init
@@ -89,14 +90,22 @@ public final class ClearentWrapper : NSObject {
         
         shouldBeginContinuousSearchingForReaders = { shouldStart in
             if shouldStart {
-                self.continuousSearchingTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { _ in
-                    self.searchRecentlyUsedReaders()
-                    self.delegate?.didBeginContinuousSearching()
+                self.continuousSearchingTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { [weak self] _ in
+                    guard let strongSelf = self else { return }
+                    
+                    if let flow = strongSelf.flowType, flow == .showReaders {
+                        strongSelf.searchRecentlyUsedReaders()
+                        strongSelf.delegate?.didBeginContinuousSearching()
+                    } else {
+                        strongSelf.shouldAddLoadingViewDuringContinuousSearching = true
+                        strongSelf.startPairing(reconnectIfPossible: true)
+                    }
                 }
             } else {
                 self.continuousSearchingTimer?.invalidate()
                 self.continuousSearchingTimer = nil
-                self.shouldUpdateUI = false
+                self.shouldStopUpdatingReadersListDuringContinuousSearching = false
+                self.shouldAddLoadingViewDuringContinuousSearching = false
             }
         }
     }
@@ -116,7 +125,7 @@ public final class ClearentWrapper : NSObject {
             } else {
                 strongSelf.connection = ClearentConnection(bluetoothSearch: ())
                 DispatchQueue.main.async {
-                    strongSelf.delegate?.didStartPairing()
+                    strongSelf.shouldAddLoadingViewDuringContinuousSearching ? strongSelf.delegate?.didBeginContinuousSearching() : strongSelf.delegate?.didStartPairing()
                 }
             }
             
@@ -177,7 +186,7 @@ public final class ClearentWrapper : NSObject {
             strongSelf.clearentVP3300 = Clearent_VP3300.init(connectionHandling: strongSelf, clearentVP3300Configuration: config)
             
             strongSelf.searchingRecentlyUsedReadersInProgress = true
-            strongSelf.shouldUpdateUI = true
+            strongSelf.shouldStopUpdatingReadersListDuringContinuousSearching = true
             strongSelf.clearentVP3300.start(ClearentConnection(bluetoothSearch: ()))
         }
     }
@@ -431,7 +440,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     }
     
     public func bluetoothDevices(_ bluetoothDevices: [ClearentBluetoothDevice]!) {
-        guard shouldUpdateUI else { return }
+        guard shouldStopUpdatingReadersListDuringContinuousSearching else { return }
         
         if (searchingRecentlyUsedReadersInProgress) {
             searchingRecentlyUsedReadersInProgress = false

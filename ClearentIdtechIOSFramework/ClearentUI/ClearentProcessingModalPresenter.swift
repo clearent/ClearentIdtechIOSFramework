@@ -55,6 +55,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     func restartProcess(processType: ProcessType) {
         sdkFeedbackProvider.delegate = self
         modalProcessingView?.showLoadingView()
+        
         switch processType {
         case .pairing:
             sdkWrapper.startPairing(reconnectIfPossible: true)
@@ -66,6 +67,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     func startFlow() {
+        ClearentWrapper.shared.flowType = processType
+        
         switch processType {
         case let .pairing(withReader: readerInfo):
             if let readerInfo = readerInfo {
@@ -101,7 +104,6 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         sdkFeedbackProvider = FlowDataProvider()
         sdkFeedbackProvider.delegate = self
         selectedReaderFromReadersList = ReaderItem(readerInfo: reader, isConnecting: true)
-        ClearentWrapper.shared.flowType = processType
         sdkWrapper.connectTo(reader: reader)
     }
     
