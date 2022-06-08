@@ -61,7 +61,7 @@ public final class ClearentWrapper : NSObject {
     private var baseURL: String = ""
     private var apiKey: String = ""
     private var publicKey: String = ""
-    private var searchingRecentlyUsedReadersInProgress = false
+    var searchingRecentlyUsedReadersInProgress = false
     public var previouslyPairedReaders: [ReaderInfo] {
         ClearentWrapperDefaults.recentlyPairedReaders ?? []
     }
@@ -438,9 +438,9 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     }
     
     public func bluetoothDevices(_ bluetoothDevices: [ClearentBluetoothDevice]!) {
-        guard shouldStopUpdatingReadersListDuringContinuousSearching else { return }
         
         if (searchingRecentlyUsedReadersInProgress) {
+            guard shouldStopUpdatingReadersListDuringContinuousSearching else { return }
             searchingRecentlyUsedReadersInProgress = false
             
             if (bluetoothDevices.count == 0) {
