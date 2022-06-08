@@ -51,6 +51,9 @@ class ClearentReadersTableViewCell: UITableViewCell {
             readerStatusIcon.isHidden = true
         }
         readerNameLabel.text = reader.readerInfo.readerName
+        if let customName = reader.readerInfo.customReaderName {
+            readerNameLabel.text = customName
+        }
     }
     
     // MARK: Private

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -15,6 +15,7 @@
                 <outlet property="batteryStatusView" destination="hii-ez-GMs" id="Hyf-wB-4NI"/>
                 <outlet property="connectedView" destination="mMf-Rb-yxr" id="o91-XM-9bA"/>
                 <outlet property="customNavigationItem" destination="B8m-5H-x4X" id="w5J-nt-NOs"/>
+                <outlet property="customReaderName" destination="dwA-ol-9Ru" id="sM0-nn-vUr"/>
                 <outlet property="navigationBar" destination="xbO-d2-hVQ" id="AAc-b9-hfE"/>
                 <outlet property="readerName" destination="o6o-lI-X3o" id="Zw8-EU-AUv"/>
                 <outlet property="removeReaderButton" destination="RMX-cF-dCe" id="aJ4-BJ-dP1"/>
@@ -37,11 +38,11 @@
                         <navigationItem title="Details" id="B8m-5H-x4X"/>
                     </items>
                 </navigationBar>
-                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="irp-yA-dbn">
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="irp-yA-dbn">
                     <rect key="frame" x="16" y="146" width="382" height="646"/>
                     <subviews>
-                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="ndA-by-iyK" customClass="ClearentAdaptiveStackView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="0.0" width="382" height="740"/>
+                        <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="ndA-by-iyK" customClass="ClearentAdaptiveStackView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="382" height="868"/>
                             <subviews>
                                 <view contentMode="scaleToFill" placeholderIntrinsicWidth="382" placeholderIntrinsicHeight="112.5" translatesAutoresizingMaskIntoConstraints="NO" id="mMf-Rb-yxr" customClass="ClearentLabelSwitch" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
                                     <rect key="frame" x="0.0" y="0.0" width="382" height="112.5"/>
@@ -63,12 +64,16 @@
                                     <rect key="frame" x="0.0" y="450" width="382" height="112.5"/>
                                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 </view>
-                                <view contentMode="scaleToFill" placeholderIntrinsicWidth="382" placeholderIntrinsicHeight="65" translatesAutoresizingMaskIntoConstraints="NO" id="gEZ-PY-iki" customClass="ClearentInfoWithIcon" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="562.5" width="382" height="65"/>
+                                <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dwA-ol-9Ru" customClass="ClearentInfoWithIcon" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="562.5" width="382" height="128"/>
                                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 </view>
-                                <view contentMode="scaleToFill" placeholderIntrinsicWidth="382" placeholderIntrinsicHeight="112.5" translatesAutoresizingMaskIntoConstraints="NO" id="6bw-yV-xhb" customClass="ClearentInfoWithIcon" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                                    <rect key="frame" x="0.0" y="627.5" width="382" height="112.5"/>
+                                <view contentMode="scaleToFill" ambiguous="YES" placeholderIntrinsicWidth="382" placeholderIntrinsicHeight="65" translatesAutoresizingMaskIntoConstraints="NO" id="gEZ-PY-iki" customClass="ClearentInfoWithIcon" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="690.5" width="382" height="65"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                </view>
+                                <view contentMode="scaleToFill" ambiguous="YES" placeholderIntrinsicWidth="382" placeholderIntrinsicHeight="112.5" translatesAutoresizingMaskIntoConstraints="NO" id="6bw-yV-xhb" customClass="ClearentInfoWithIcon" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="755.5" width="382" height="112.5"/>
                                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 </view>
                             </subviews>
