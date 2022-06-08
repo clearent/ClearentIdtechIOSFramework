@@ -167,7 +167,9 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             case .cancel, .done:
                 strongSelf.dismissViewController(isConnected: userAction == .done)
             case .retry, .pair:
-                presenter.restartProcess(processType: processType)
+                presenter.restartProcess(processType: processType, newPair: false)
+            case .pairInFlow:
+                presenter.restartProcess(processType: processType, newPair: true)
             case .pairNewReader:
                 strongSelf.stackView.positionView(onTop: false, of: strongSelf.view)
                 presenter.startPairingFlow()
