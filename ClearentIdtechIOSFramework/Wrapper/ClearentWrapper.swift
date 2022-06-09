@@ -79,8 +79,7 @@ public final class ClearentWrapper : NSObject {
     private var isInternetOn = false
     internal var isBluetoothOn = false
     private var continuousSearchingTimer: Timer?
-    private var shouldStopUpdatingReadersListDuringContinuousSearching: Bool = true
-    private var shouldAddLoadingViewDuringContinuousSearching: Bool = false
+    private var shouldStopUpdatingReadersListDuringContinuousSearching: Bool = false
     internal var shouldBeginContinuousSearchingForReaders: ((_ searchingEnabled: Bool) -> Void)?
     
     // MARK: Init
@@ -95,20 +94,13 @@ public final class ClearentWrapper : NSObject {
             if searchingEnabled {
                 self.continuousSearchingTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { [weak self] _ in
                     guard let strongSelf = self else { return }
-                    
-                    if let flow = strongSelf.flowType, flow == .showReaders {
-                        strongSelf.searchRecentlyUsedReaders()
-                        strongSelf.delegate?.didBeginContinuousSearching()
-                    } else {
-                        strongSelf.shouldAddLoadingViewDuringContinuousSearching = true
-                        strongSelf.startPairing(reconnectIfPossible: true)
-                    }
+                    strongSelf.shouldStopUpdatingReadersListDuringContinuousSearching = true
+                    strongSelf.startPairing(reconnectIfPossible: false)
                 }
             } else {
                 self.continuousSearchingTimer?.invalidate()
                 self.continuousSearchingTimer = nil
                 self.shouldStopUpdatingReadersListDuringContinuousSearching = false
-                self.shouldAddLoadingViewDuringContinuousSearching = false
             }
         }
     }
@@ -125,10 +117,9 @@ public final class ClearentWrapper : NSObject {
             } else {
                 strongSelf.connection = ClearentConnection(bluetoothSearch: ())
                 DispatchQueue.main.async {
-                    strongSelf.shouldAddLoadingViewDuringContinuousSearching ? strongSelf.delegate?.didBeginContinuousSearching() : strongSelf.delegate?.didStartPairing()
+                    strongSelf.shouldStopUpdatingReadersListDuringContinuousSearching ? strongSelf.delegate?.didBeginContinuousSearching() : strongSelf.delegate?.didStartPairing()
                 }
             }
-            
             strongSelf.clearentVP3300.start(strongSelf.connection)
         }
     }

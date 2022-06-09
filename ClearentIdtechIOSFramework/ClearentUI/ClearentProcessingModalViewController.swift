@@ -139,7 +139,6 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         statusHeaderView.action = { [weak self] in
             if self?.showOnTop == true {
                 self?.dismiss(animated: true, completion: nil)
-                ClearentWrapper.shared.shouldBeginContinuousSearchingForReaders?(false)
             }
         }
         return statusHeaderView
@@ -186,7 +185,6 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             case .pairNewReader:
                 strongSelf.stackView.positionView(onTop: false, of: strongSelf.view)
                 presenter.startPairingFlow()
-                ClearentWrapper.shared.shouldBeginContinuousSearchingForReaders?(false)
             case .settings:
                 let url = URL(string: UIApplication.openSettingsURLString + Bundle.main.bundleIdentifier!)!
                 UIApplication.shared.open(url)
@@ -208,7 +206,6 @@ extension ClearentProcessingModalViewController: ClearentReadersTableViewDelegat
     func didSelectReader(_ reader: ReaderInfo) {
         presenter?.connectTo(reader: reader)
         stackView.isUserInteractionEnabled = false
-        ClearentWrapper.shared.shouldBeginContinuousSearchingForReaders?(false)
     }
 }
 

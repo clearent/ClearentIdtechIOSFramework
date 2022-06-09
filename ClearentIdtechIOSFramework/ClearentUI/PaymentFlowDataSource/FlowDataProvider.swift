@@ -214,7 +214,6 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     func didFinishPairing() {
         if case .showReaders = ClearentWrapper.shared.flowType {
             createFeedbackForSuccessfulPairing()
-            ClearentWrapper.shared.shouldBeginContinuousSearchingForReaders?(true)
         } else {
             let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.pairingSuccessful),
                          FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader)]
