@@ -61,7 +61,6 @@ public final class ClearentWrapper : NSObject {
     private var baseURL: String = ""
     private var apiKey: String = ""
     private var publicKey: String = ""
-    var searchingRecentlyUsedReadersInProgress = false
     public var previouslyPairedReaders: [ReaderInfo] {
         ClearentWrapperDefaults.recentlyPairedReaders ?? []
     }
@@ -181,14 +180,13 @@ public final class ClearentWrapper : NSObject {
     }
     
     public func searchRecentlyUsedReaders() {
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let strongSelf = self else { return }
-            let config = ClearentVP3300Config(noContactlessNoConfiguration: strongSelf.baseURL, publicKey: strongSelf.publicKey)
-            strongSelf.clearentVP3300 = Clearent_VP3300.init(connectionHandling: strongSelf, clearentVP3300Configuration: config)
-            
-            strongSelf.searchingRecentlyUsedReadersInProgress = true
-            strongSelf.shouldStopUpdatingReadersListDuringContinuousSearching = true
-            strongSelf.clearentVP3300.start(ClearentConnection(bluetoothSearch: ()))
+        let usedReaders = ClearentWrapperDefaults.recentlyPairedReaders
+        if (usedReaders?.count == 0) {
+            self.delegate?.didNotFindRecentlyUsedReaders()
+        } else {
+            if let usedReaders = usedReaders {
+                self.delegate?.didFindRecentlyUsedReaders(readers: usedReaders)
+            }
         }
     }
     
@@ -438,23 +436,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     }
     
     public func bluetoothDevices(_ bluetoothDevices: [ClearentBluetoothDevice]!) {
-        
-        if (searchingRecentlyUsedReadersInProgress) {
-            guard shouldStopUpdatingReadersListDuringContinuousSearching else { return }
-            searchingRecentlyUsedReadersInProgress = false
-            
-            if (bluetoothDevices.count == 0) {
-                
-                if let pairedReader = ClearentWrapperDefaults.pairedReaderInfo {
-                    self.delegate?.didFindRecentlyUsedReaders(readers: [pairedReader])
-                } else {
-                    self.delegate?.didNotFindRecentlyUsedReaders()
-                }
-            } else {
-                let readers = fetchRecentlyAndAvailableReaders(devices: bluetoothDevices)
-                self.delegate?.didFindRecentlyUsedReaders(readers: readers)
-            }
-        } else if (bluetoothDevices.count > 0) {
+        if (bluetoothDevices.count > 0) {
             let readers = bluetoothDevices.map { device in
                 return readerInfo(from: device)
             }
