@@ -12,7 +12,7 @@ protocol ClearentProcessingModalView: AnyObject {
     func updateContent(with feedback: FlowFeedback)
     func addLoadingViewToCurrentContent()
     func showLoadingView()
-    func dismissViewController(isConnected: Bool)
+    func dismissViewController(isConnected: Bool, customName: String?)
 }
 
 protocol ProcessingModalProtocol {
@@ -22,18 +22,24 @@ protocol ProcessingModalProtocol {
     func restartProcess(processType: ProcessType, newPair: Bool)
     func startFlow()
     func startPairingFlow()
+    func showReaderNameOption()
+    func showRenameReader()
     func showDetailsScreen(for reader: ReaderItem, allReaders: [ReaderItem], flowDataProvider: FlowDataProvider, on navigationController: UINavigationController)
     func connectTo(reader: ReaderInfo)
+    func updateTemporaryReaderName(name: String?)
+    func updateReaderName()
 }
 
 class ClearentProcessingModalPresenter {
     private weak var modalProcessingView: ClearentProcessingModalView?
     private var amount: Double?
+    private var temporaryReaderName: String?
     private let sdkWrapper = ClearentWrapper.shared
     var processType: ProcessType
     var selectedReaderFromReadersList: ReaderItem?
     var sdkFeedbackProvider: FlowDataProvider
-
+    var editableReader: ReaderInfo?
+    
     // MARK: Init
 
     init(modalProcessingView: ClearentProcessingModalView, amount: Double?, processType: ProcessType) {
@@ -47,7 +53,7 @@ class ClearentProcessingModalPresenter {
     private func dissmissViewWithDelay() {
         let deadlineTime = DispatchTime.now() + .seconds(3)
         DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
-            self.modalProcessingView?.dismissViewController(isConnected: true)
+            self.modalProcessingView?.dismissViewController(isConnected: true, customName: ClearentWrapperDefaults.pairedReaderInfo?.customReaderName)
         }
     }
 }
@@ -61,6 +67,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         modalProcessingView?.showLoadingView()
         
         switch processType {
+        case .renameReader:
+            showRenameReader()
         case .pairing:
             sdkWrapper.startPairing(reconnectIfPossible: !newPair)
         case .payment:
@@ -85,6 +93,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             startTransactionFlow()
         case .showReaders:
             showReadersList()
+        case .renameReader:
+            showRenameReader()
         }
     }
     
@@ -133,6 +143,43 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         modalProcessingView?.updateContent(with: feedback)
         sdkWrapper.searchRecentlyUsedReaders()
     }
+    
+    func showReaderNameOption() {
+        let items = [FlowDataItem(type: .hint, object: "xsdk_add_name_to_reader".localized),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.addReaderName),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.renameReaderLater)]
+        let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.info, items: items)
+        modalProcessingView?.updateContent(with: feedback)
+    }
+    
+    func showRenameReader() {
+        let items = [FlowDataItem(type: .hint, object: "xsdk_rename_your_reader".localized),
+                     FlowDataItem(type: .input, object: FlowInputType.nameInput),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.done)]
+        let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.renameReaderDone, items: items)
+        modalProcessingView?.updateContent(with: feedback)
+    }
+    
+    func updateTemporaryReaderName(name: String?) {
+        if (editableReader == nil) { editableReader = ClearentWrapperDefaults.pairedReaderInfo }
+        temporaryReaderName = name
+    }
+    
+    func updateReaderName() {
+        if var reader = editableReader {
+            if let newName = temporaryReaderName, newName != "" {
+                reader.customReaderName = newName
+            } else {
+                reader.customReaderName = nil
+            }
+            if (ClearentWrapperDefaults.pairedReaderInfo?.readerName == reader.readerName){
+                ClearentWrapperDefaults.pairedReaderInfo?.customReaderName = reader.customReaderName
+            }
+            sdkWrapper.removeReaderFromRecentlyUsed(reader: reader)
+            sdkWrapper.addReaderToRecentlyUsed(reader: reader)
+        }
+    }
 }
 
 extension ClearentProcessingModalPresenter: FlowDataProtocol {
@@ -150,7 +197,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                 if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo {
                     items.insert(FlowDataItem(type: .readerInfo, object: readerInfo), at: 0)
                 }
-                let feedback = FlowFeedback(flow: self.processType, type: FlowFeedbackType.info, items: items)
+                let feedback = FlowFeedback(flow: self.processType, type: FlowFeedbackType.pairingDoneInfo, items: items)
                 self.modalProcessingView?.updateContent(with: feedback)
             }
         } else if let amount = amount {

@@ -13,21 +13,22 @@ enum SignalLevel : Int {
 }
 
 enum FlowDataKeys {
-    case readerInfo, graphicType, title, description, userAction, devicesFound, recentlyPaired, hint
+    case readerInfo, graphicType, title, description, userAction, devicesFound, recentlyPaired, hint, input
 }
 
 public enum FlowFeedbackType {
-    case error, info, warning, searchDevices, showReaders
+    case error, info, warning, searchDevices, showReaders, pairingDoneInfo, renameReaderDone
 }
 
 public enum ProcessType {
-    case pairing(withReader: ReaderInfo? = nil, firstPairing: Bool = false), payment, showReaders
+    case pairing(withReader: ReaderInfo? = nil, firstPairing: Bool = false), payment, showReaders, renameReader
     
     public static func == (lhs: ProcessType, rhs: ProcessType) -> Bool {
         switch (lhs,rhs) {
         case (.pairing, .pairing): return true
         case (.payment, .payment): return true
         case (.showReaders, .showReaders): return true
+        case (.renameReader, .renameReader): return true
         default: return false
         }
     }
@@ -69,8 +70,9 @@ enum FlowGraphicType {
 }
 
 public enum FlowButtonType {
-    case cancel, retry, pair, done, pairNewReader, settings, pairInFlow
-    
+
+    case cancel, retry, pair, done, pairNewReader, settings, pairInFlow, addReaderName, renameReaderLater
+
     var title: String {
         switch self {
         case .cancel:
@@ -85,6 +87,14 @@ public enum FlowButtonType {
             return "xsdk_pair_new_reader".localized
         case .settings:
             return "xsdk_user_action_settings".localized
+        case .addReaderName:
+            return "xsdk_user_action_addName".localized
+        case .renameReaderLater:
+            return "xsdk_user_action_later".localized
         }
     }
+}
+
+public enum FlowInputType {
+    case nameInput
 }

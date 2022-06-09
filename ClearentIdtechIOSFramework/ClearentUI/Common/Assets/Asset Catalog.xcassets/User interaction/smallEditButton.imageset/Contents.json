@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "smallEditButton.pdf",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

@@ -13,6 +13,7 @@ public struct ReaderItem {
 
 public struct ReaderInfo : Codable {
     public var readerName: String
+    public var customReaderName: String?
     var batterylevel: Int?
     var signalLevel: Int?
     var isConnected: Bool {
