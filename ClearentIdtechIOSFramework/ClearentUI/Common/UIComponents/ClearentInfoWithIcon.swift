@@ -72,7 +72,7 @@ class ClearentInfoWithIcon: ClearentMarginableView {
         titleTextColor = ClearentConstants.Color.base02
         descriptionFont = ClearentConstants.Font.proTextNormal
         descriptionTextColor = ClearentConstants.Color.base01
-        separatorView.backgroundColor = ClearentConstants.Color.backgroundSecondary04
+        separatorView.backgroundColor = ClearentConstants.Color.backgroundSecondary02
     }
     
     @IBAction func buttonAction(_ sender: Any) {

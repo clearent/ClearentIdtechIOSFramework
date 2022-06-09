@@ -16,6 +16,7 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
     @IBOutlet weak var readerConnectivityStatusView: ClearentReaderConnectivityStatusView!
     @IBOutlet weak var readerBatteryStatusView: ClearentReaderConnectivityStatusView!
     @IBOutlet weak var descriptionLabel: UILabel!
+    @IBOutlet weak var verticalSeparator: UIView!
     
     public var state: ReaderStatusHeaderViewState = .collapsed
     public var action: (() -> Void)?
@@ -31,6 +32,7 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
     override func configure() {
         descriptionLabel.font = ClearentConstants.Font.proTextSmall
         descriptionLabel.textColor = ClearentConstants.Color.base02
+        verticalSeparator.backgroundColor = ClearentConstants.Color.backgroundSecondary02
     }
     
     // MARK: Public
@@ -51,18 +53,27 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
             dropDownImageView.image = UIImage(named: dropDownIconName, in: ClearentConstants.bundle, compatibleWith: nil)
         }
         dropDownImageView.isHidden = dropDownIconName == nil
+
+        setupConnectivityComponent(signalStatus: signalStatus)
+        setupBatteryComponent(batteryStatus: batteryStatus)
+    }
+
+    // MARK: Private
+    
+    private func setupConnectivityComponent(signalStatus: (iconName: String?, title: String)? = nil) {
         if let signalStatus = signalStatus {
             readerConnectivityStatusView.setup(imageName: signalStatus.iconName, status: signalStatus.title)
         }
         readerConnectivityStatusView.isHidden = signalStatus == nil
-        
+    }
+    
+    private func setupBatteryComponent(batteryStatus: (iconName: String, title: String)? = nil) {
         if let batteryStatus = batteryStatus {
             readerBatteryStatusView.setup(imageName: batteryStatus.iconName, status: batteryStatus.title)
         }
         readerBatteryStatusView.isHidden = batteryStatus == nil
+        verticalSeparator.isHidden = readerBatteryStatusView.isHidden
     }
-
-    // MARK: Private
     
     private func updateDropDownIcon() {
         let iconName = state == .collapsed ? ClearentConstants.IconName.collapsed : ClearentConstants.IconName.expanded
