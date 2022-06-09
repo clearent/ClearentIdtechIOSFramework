@@ -36,7 +36,7 @@
 
 // General error
 "xsdk_general_error_title" = "Transaction failed";
-"xsdk_general_error_description" = "Something Went wrong";
+"xsdk_general_error_description" = "Something went wrong";
 "xsdk_user_action_retry" = "Try Again";
 "xsdk_user_action_cancel" = "Cancel";
 "xsdk_user_action_ok" = "OK";
@@ -45,7 +45,7 @@
 "xsdk_transaction_completed_description" = "Payment successful";
 
 // Insert card
-"xsdk_tap_insert_swipe_description" = "Please swipe, tap or insert the card";
+"xsdk_tap_insert_swipe_description" = "Please swipe, tap, or insert the card";
 
 // Processing
 "xsdk_processing_description" = "Processing...";
@@ -71,7 +71,7 @@
 "xsdk_tap_failed_insert_swipe_description" = "Tap failed. Please insert or swipe the card";
 
 // Reader signal
-"xsdk_reader_signal_idle" = "Idle";
+"xsdk_reader_signal_idle" = "Not connected";
 "xsdk_reader_signal_connected" = "Connected";
 
 /* Reader Details */

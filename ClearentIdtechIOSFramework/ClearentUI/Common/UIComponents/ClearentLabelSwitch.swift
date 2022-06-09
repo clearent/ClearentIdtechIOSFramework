@@ -32,7 +32,7 @@ class ClearentLabelSwitch: ClearentInfoWithIcon {
         titleTextColor = ClearentConstants.Color.base02
         descriptionFont = ClearentConstants.Font.proTextSmall
         descriptionTextColor = ClearentConstants.Color.base02
-        separatorView.backgroundColor = ClearentConstants.Color.backgroundSecondary04
+        separatorView.backgroundColor = ClearentConstants.Color.backgroundSecondary02
     }
 
     @IBAction func switchValueDidChange(_ sender: UISwitch) {
