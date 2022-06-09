@@ -69,8 +69,11 @@ public final class ClearentWrapper : NSObject {
     public static let shared = ClearentWrapper()
     public var flowType: ProcessType?
     weak var delegate: ClearentWrapperProtocol?
-    private var clearentVP3300 = Clearent_VP3300()
     private var connection  = ClearentConnection(bluetoothSearch: ())
+    lazy var clearentVP3300: Clearent_VP3300 = {
+        let config = ClearentVP3300Config(noContactlessNoConfiguration: baseURL, publicKey: publicKey)
+        return Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
+    }()
     private var transactionAmount: String?
     public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
     private var bleManager : BluetoothScanner?
@@ -94,9 +97,6 @@ public final class ClearentWrapper : NSObject {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let strongSelf = self else { return }
             
-            let config = ClearentVP3300Config(noContactlessNoConfiguration: strongSelf.baseURL, publicKey: strongSelf.publicKey)
-            strongSelf.clearentVP3300 = Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
-            
             if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo, reconnectIfPossible == true   {
                 strongSelf.connection  = ClearentConnection(bluetoothWithFriendlyName: readerInfo.readerName)
             } else {
@@ -112,6 +112,7 @@ public final class ClearentWrapper : NSObject {
     
     public func connectTo(reader: ReaderInfo) {
         if reader.uuid != nil {
+            connection  = ClearentConnection(bluetoothWithFriendlyName: reader.readerName)
             self.updateConnectionWithDevice(readerInfo: reader)
         }
     }
