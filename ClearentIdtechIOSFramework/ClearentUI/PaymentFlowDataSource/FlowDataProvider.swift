@@ -325,9 +325,9 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     }
     
     private func createFeedbackForSuccessfulPairing() {
-        guard var recentlyPairedReaders = ClearentWrapperDefaults.recentlyPairedReaders else { return }
-        guard let pairedReaderInfo = ClearentWrapperDefaults.pairedReaderInfo else { return }
-        guard let indexOfSelectedReader = recentlyPairedReaders.firstIndex(where: {$0 == pairedReaderInfo}) else { return }
+        guard var recentlyPairedReaders = ClearentWrapperDefaults.recentlyPairedReaders,
+              let pairedReaderInfo = ClearentWrapperDefaults.pairedReaderInfo,
+              let indexOfSelectedReader = recentlyPairedReaders.firstIndex(where: {$0 == pairedReaderInfo}) else { return }
         
         recentlyPairedReaders[indexOfSelectedReader] = pairedReaderInfo
         

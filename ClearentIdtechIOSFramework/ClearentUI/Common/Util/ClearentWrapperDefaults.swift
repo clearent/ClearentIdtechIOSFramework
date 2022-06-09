@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import AVFAudio
 
 private struct DefaultKeys {
     static let readerFriendlyNameKey = "xsdk_reader_friendly_name_key"
@@ -63,6 +64,14 @@ extension ClearentWrapperDefaults {
         }
         set {
             ClearentWrapper.shared.readerInfoReceived?(newValue)
+            // previously paired readers list should be in sync with the current paired reader
+            if let pairedReader = newValue {
+                ClearentWrapper.shared.addReaderToRecentlyUsed(reader: pairedReader)
+            } else if var oldPairedReader = defaultReaderInfo {
+                oldPairedReader.isConnected = false
+                oldPairedReader.autojoin = false
+                ClearentWrapper.shared.updateReaderInRecentlyUsed(reader: oldPairedReader)
+            }
             defaultReaderInfo = newValue
         }
     }

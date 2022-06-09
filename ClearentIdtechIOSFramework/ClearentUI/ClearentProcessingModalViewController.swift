@@ -176,7 +176,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
                     if (flowFeedbackType == .renameReaderDone) {
                         presenter.updateReaderName()
                     }
-                    strongSelf.dismissViewController(isConnected: userAction == .done, customName: ClearentWrapperDefaults.pairedReaderInfo?.customReaderName)
+                    strongSelf.dismissViewController(isConnected: userAction != .cancel, customName: ClearentWrapperDefaults.pairedReaderInfo?.customReaderName)
                 }
             case .retry, .pair:
                 presenter.restartProcess(processType: processType, newPair: false)
