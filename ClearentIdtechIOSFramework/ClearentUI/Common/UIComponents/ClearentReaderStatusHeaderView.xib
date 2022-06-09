@@ -24,6 +24,7 @@
                 <outlet property="readerConnectivityStatusView" destination="387-wB-aty" id="NdB-C6-TIr"/>
                 <outlet property="readerNameLabel" destination="Mxb-gX-Hn6" id="fhr-Mc-dzt"/>
                 <outlet property="stackView" destination="QCv-p8-D5F" id="2kx-fi-bdD"/>
+                <outlet property="verticalSeparator" destination="Sy8-jV-PQc" id="Yzj-k0-c7L"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -55,8 +56,15 @@
                             <rect key="frame" x="49.5" y="0.0" width="108.5" height="193"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         </view>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Sy8-jV-PQc" userLabel="Separator">
+                            <rect key="frame" x="166" y="0.0" width="1" height="193"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <constraints>
+                                <constraint firstAttribute="width" constant="1" id="8L0-gI-WsC"/>
+                            </constraints>
+                        </view>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3q1-WZ-ap3" customClass="ClearentReaderConnectivityStatusView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="166" y="0.0" width="34" height="193"/>
+                            <rect key="frame" x="175" y="0.0" width="25" height="193"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         </view>
                     </subviews>
