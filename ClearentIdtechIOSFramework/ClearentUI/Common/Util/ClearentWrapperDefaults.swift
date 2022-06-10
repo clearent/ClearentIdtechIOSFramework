@@ -11,6 +11,7 @@ import Foundation
 private struct DefaultKeys {
     static let readerFriendlyNameKey = "xsdk_reader_friendly_name_key"
     static let recentlyPairedReadersKey = "xsdk_recently+paired_readers_key"
+    static let skipOnboarding = "xsdk_skip_onboarding_key"
 }
 
 public class ClearentWrapperDefaults: UserDefaultsPersistence {
@@ -54,6 +55,15 @@ public class ClearentWrapperDefaults: UserDefaultsPersistence {
                }
            }
        }
+    
+    internal static var skipOnboarding: Bool {
+        get {
+            return UserDefaults.standard.bool(forKey: DefaultKeys.skipOnboarding)
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: DefaultKeys.skipOnboarding)
+        }
+    }
 }
 
 extension ClearentWrapperDefaults {

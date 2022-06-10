@@ -47,6 +47,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     }
 
     public func dismissViewController(isConnected: Bool, customName: String?) {
+        ClearentWrapperDefaults.skipOnboarding = true
         ClearentWrapper.shared.cancelTransaction()
         DispatchQueue.main.async { [weak self] in
             self?.dismiss(animated: true, completion: nil)
@@ -94,9 +95,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         case .hint:
             guard let text = object as? String else { return nil }
             let hint = ClearentHintView(text: text)
-            if case let .pairing(_, firstPairing) = presenter?.processType {
-                hint.isHighlighted = firstPairing
-            }
+            hint.isHighlighted = !ClearentWrapperDefaults.skipOnboarding
             return hint
         case .recentlyPaired:
             guard let readersInfo = object as? [ReaderInfo] else { return nil }
