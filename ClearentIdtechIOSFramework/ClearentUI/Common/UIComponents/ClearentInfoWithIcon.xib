@@ -44,8 +44,8 @@
                                 <constraint firstAttribute="width" constant="20" id="DG5-n0-i7O"/>
                                 <constraint firstAttribute="height" constant="20" id="fMs-9A-Grr"/>
                             </constraints>
+                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                             <state key="normal" title="Button"/>
-                            <buttonConfiguration key="configuration" style="plain"/>
                             <connections>
                                 <action selector="buttonAction:" destination="-1" eventType="touchUpInside" id="Vc1-5a-bIh"/>
                             </connections>
