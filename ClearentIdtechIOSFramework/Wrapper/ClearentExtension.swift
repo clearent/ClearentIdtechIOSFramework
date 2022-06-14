@@ -37,11 +37,7 @@ extension ClearentWrapper: BluetoothScannerProtocol {
 extension ClearentWrapper {
     
     internal func addReaderToRecentlyUsed(reader: ReaderInfo) {
-        var reader = reader
-        reader.isConnected = false
         guard var existingReaders = ClearentWrapperDefaults.recentlyPairedReaders, !existingReaders.isEmpty else {
-            reader.autojoin = true
-            ClearentWrapperDefaults.pairedReaderInfo?.autojoin = true
             ClearentWrapperDefaults.recentlyPairedReaders = [reader]
             return
         }
@@ -53,27 +49,18 @@ extension ClearentWrapper {
         ClearentWrapperDefaults.recentlyPairedReaders = existingReaders
     }
     
+    internal func updateReaderInRecentlyUsed(reader: ReaderInfo) {
+        guard var existingReaders = ClearentWrapperDefaults.recentlyPairedReaders, !existingReaders.isEmpty else { return }
+        if let defaultReaderIndex = existingReaders.firstIndex(where: { $0 == reader }) {
+            existingReaders[defaultReaderIndex] = reader
+        }
+        ClearentWrapperDefaults.recentlyPairedReaders = existingReaders
+    }
+    
     internal func removeReaderFromRecentlyUsed(reader: ReaderInfo) {
         guard var existingReaders = ClearentWrapperDefaults.recentlyPairedReaders else { return }
         existingReaders.removeAll(where: { $0 == reader })
         ClearentWrapperDefaults.recentlyPairedReaders = existingReaders
-    }
-    
-    internal func fetchRecentlyAndAvailableReaders(devices: [ClearentBluetoothDevice]) -> [ReaderInfo] {
-        let availableReaders = devices.compactMap { readerInfo(from: $0)}
-        return fetchRecentlyAndAvailableReaders(availableReaders: availableReaders)
-    }
-    
-    internal func fetchRecentlyAndAvailableReaders(availableReaders: [ReaderInfo]) -> [ReaderInfo] {
-        guard let recentReaders = ClearentWrapperDefaults.recentlyPairedReaders else { return [] }
-        var result = recentReaders.filter { recentReader in availableReaders.contains(where: {
-            $0 == recentReader && $0 != ClearentWrapperDefaults.pairedReaderInfo
-        })}
-        // always include default reader
-        if let defaultReader = ClearentWrapperDefaults.pairedReaderInfo {
-            result.insert(defaultReader, at: 0)
-        }
-        return result
     }
     
     internal func readerInfo(from clearentDevice:ClearentBluetoothDevice) -> ReaderInfo {
