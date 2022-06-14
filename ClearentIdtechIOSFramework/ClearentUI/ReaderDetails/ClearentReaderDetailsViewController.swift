@@ -89,9 +89,8 @@ class ClearentReaderDetailsViewController: UIViewController {
     }
     
     private func didChangedCustomReaderName(reader: ReaderInfo, customName: String?) {
-        if let defaultReader = ClearentWrapperDefaults.pairedReaderInfo {
-            detailsPresenter.currentReader = defaultReader
-        }
+        detailsPresenter.currentReader = reader
+        detailsPresenter.currentReader.customReaderName = customName
         updateReaderInfo()
     }
 
@@ -131,7 +130,7 @@ class ClearentReaderDetailsViewController: UIViewController {
             }
             strongSelf.navigationController?.present(modalVC, animated: false)
         }
-        if let friendlyreaderName = readerInfo.customReaderName {
+        if let friendlyreaderName = detailsPresenter.currentReader.customReaderName {
             customReaderName.descriptionText = friendlyreaderName
         } else {
             customReaderName.descriptionText = "xsdk_reader_details_add_custom_readername_title".localized
