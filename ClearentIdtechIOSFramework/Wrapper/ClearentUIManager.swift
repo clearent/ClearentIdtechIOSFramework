@@ -13,7 +13,8 @@ public final class ClearentUIManager : NSObject {
     private let clearentWrapper = ClearentWrapper.shared
     public static let shared = ClearentUIManager()
     public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
-    
+    public var tipEnabled: Bool = false
+    public var tipAmounts: [Double]? = nil
     // MARK: Init
     
     public override init() {
@@ -43,6 +44,13 @@ public final class ClearentUIManager : NSObject {
         clearentWrapper.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey)
     }
     
+    public func setTipsEnabled(tipsEnabled: Bool, tipAmounts:[Double]?) {
+        self.tipEnabled = tipsEnabled
+        if let tips = tipAmounts {
+            self.tipAmounts = tips
+        }
+    }
+    
     public func paymentViewController(amount: Double) -> UINavigationController {
         viewController(processType: .payment, amount:amount)
     }
@@ -58,7 +66,7 @@ public final class ClearentUIManager : NSObject {
     internal func viewController(processType: ProcessType, amount: Double? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((_ isConnected: Bool, _ customName: String?) -> Void)? = nil) ->  UINavigationController {
 
         let viewController = ClearentProcessingModalViewController(showOnTop: (processType == .showReaders || processType == .renameReader))
-        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, amount: amount, processType: processType)
+        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, amount: amount, processType: processType, tipEnabled: self.tipEnabled, tipAmounts: self.tipAmounts)
         presenter.editableReader = editableReader
         viewController.presenter = presenter
         viewController.dismissCompletion = dismissCompletion

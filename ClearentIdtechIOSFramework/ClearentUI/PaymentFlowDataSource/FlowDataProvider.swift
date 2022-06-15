@@ -49,6 +49,8 @@ protocol FlowDataProtocol : AnyObject {
 class FlowDataProvider : NSObject {
     weak var delegate: FlowDataProtocol?
     static let shared = FlowDataProvider()
+    var tipEnabled: Bool = false
+    var tipAmounts: [Double] = []
     
     let sdkWrapper = ClearentWrapper.shared
     
@@ -60,10 +62,28 @@ class FlowDataProvider : NSObject {
     func fetchReaderInfo() -> ReaderInfo? {
         return ClearentWrapperDefaults.pairedReaderInfo
     }
+    
+    func updateTipSettings(tipEnabled: Bool, tipAmounts: [Double]) {
+        self.tipEnabled = true
+        self.tipAmounts = tipAmounts
+    }
+    
+    public func startTipTransaction() {
+        let items = [FlowDataItem(type: .title, object: "xsdk_user_transaction_tip_title".localized),
+                     FlowDataItem(type: .tips, object: self.tipAmounts),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.transactionWithTip),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.transactionWithoutTip)]
+        
+        let feedback = FlowDataFactory.component(with: .payment,
+                                                 type: .error,
+                                                 readerInfo: fetchReaderInfo(),
+                                                 payload: items)
+        
+        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+    }
 }
 
 extension FlowDataProvider : ClearentWrapperProtocol {
-    
     // MARK - Transaction related
     
     func didEncounteredGeneralError() {

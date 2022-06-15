@@ -18,6 +18,7 @@ protocol ProcessingModalProtocol {
     var processType: ProcessType { get set }
     var sdkFeedbackProvider: FlowDataProvider { get set }
     var selectedReaderFromReadersList: ReaderItem? { get set }
+    func updateTipAndContinue(tip: Double?)
     func restartProcess(processType: ProcessType, newPair: Bool)
     func startFlow()
     func startPairingFlow()
@@ -32,21 +33,26 @@ protocol ProcessingModalProtocol {
 class ClearentProcessingModalPresenter {
     private weak var modalProcessingView: ClearentProcessingModalView?
     private var amount: Double?
+    private var tip: Double?
     private var temporaryReaderName: String?
     private let sdkWrapper = ClearentWrapper.shared
     var processType: ProcessType
     var selectedReaderFromReadersList: ReaderItem?
     var sdkFeedbackProvider: FlowDataProvider
     var editableReader: ReaderInfo?
-    
     // MARK: Init
 
-    init(modalProcessingView: ClearentProcessingModalView, amount: Double?, processType: ProcessType) {
+    init(modalProcessingView: ClearentProcessingModalView, amount: Double?, processType: ProcessType, tipEnabled: Bool, tipAmounts: [Double]?) {
         self.modalProcessingView = modalProcessingView
         self.amount = amount
         self.processType = processType
         sdkFeedbackProvider = FlowDataProvider()
         sdkFeedbackProvider.delegate = self
+        var newAmounts = ClearentConstants.DefaultTipAmounts
+        if let amounts = tipAmounts {
+            newAmounts = amounts
+        }
+        sdkFeedbackProvider.updateTipSettings(tipEnabled: tipEnabled, tipAmounts: newAmounts)
     }
 
     private func dissmissViewWithDelay() {
@@ -58,6 +64,7 @@ class ClearentProcessingModalPresenter {
 }
 
 extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
+    
     func showDetailsScreen(for reader: ReaderItem, allReaders: [ReaderItem], flowDataProvider: FlowDataProvider, on navigationController: UINavigationController)  {
         let vc = ClearentReaderDetailsViewController(nibName: String(describing: ClearentReaderDetailsViewController.self), bundle: ClearentConstants.bundle)
         vc.detailsPresenter = ClearentReaderDetailsPresenter(currentReader: reader, allReaders: allReaders, flowDataProvider: flowDataProvider, navigationController: navigationController)
@@ -121,10 +128,15 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     
     private func startTransactionFlow() {
         sdkFeedbackProvider.delegate = self
-        if sdkWrapper.isReaderConnected(), let amount = amount {
-            sdkWrapper.startTransactionWithAmount(amount: String(amount))
+        
+        if (self.sdkFeedbackProvider.tipEnabled) {
+            self.sdkFeedbackProvider.startTipTransaction()
         } else {
-            sdkWrapper.startPairing(reconnectIfPossible: true)
+            if sdkWrapper.isReaderConnected(), let amount = amount, let tip = self.tip {
+                sdkWrapper.startTransactionWithAmount(amount: String(amount), tip: String(tip))
+            } else {
+                sdkWrapper.startPairing(reconnectIfPossible: true)
+            }
         }
     }
     
@@ -176,6 +188,22 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             sdkWrapper.addReaderToRecentlyUsed(reader: reader)
         }
     }
+    
+    func updateTipAndContinue(tip: Double?) {
+        self.tip = tip
+        var currentTip: String? = nil
+        if let tip = self.tip {
+            currentTip = String(tip)
+        }
+        
+        self.modalProcessingView?.showLoadingView()
+        
+        if sdkWrapper.isReaderConnected(), let amount = amount{
+            sdkWrapper.startTransactionWithAmount(amount: String(amount), tip: currentTip)
+        } else {
+            sdkWrapper.startPairing(reconnectIfPossible: true)
+        }
+    }
 }
 
 extension ClearentProcessingModalPresenter: FlowDataProtocol {
@@ -196,8 +224,12 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                 let feedback = FlowFeedback(flow: self.processType, type: FlowFeedbackType.pairingDoneInfo, items: items)
                 self.modalProcessingView?.updateContent(with: feedback)
             }
-        } else if let amount = amount {
-            sdkWrapper.startTransactionWithAmount(amount: String(amount))
+        } else {
+            if (self.sdkFeedbackProvider.tipEnabled) {
+                self.sdkFeedbackProvider.startTipTransaction()
+            } else if let amount = amount {
+                sdkWrapper.startTransactionWithAmount(amount: String(amount), tip: nil)
+            }
         }
     }
 

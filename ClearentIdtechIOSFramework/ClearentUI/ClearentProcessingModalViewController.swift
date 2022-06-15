@@ -115,6 +115,9 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             return ClearentReadersTableView(dataSource: readersTableViewDataSource, delegate: self)
         case .input:
             return ClearentTextField(currentReaderName: ClearentWrapperDefaults.pairedReaderInfo?.customReaderName, inputName: "xsdk_reader_name".localized, hint: "xsdk_reader_name_input_hint".localized, delegate: self)
+        case .tips:
+            //guard let text = object as? String else { return nil }
+            return ClearentSubtitleLabel(text: "OLLA")
         }
     }
 
@@ -186,6 +189,10 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             case .addReaderName:
                 strongSelf.stackView.positionView(onTop: true, of: strongSelf.view)
                 presenter.showRenameReader()
+            case .transactionWithTip:
+                presenter.updateTipAndContinue(tip: 2.0)
+            case .transactionWithoutTip:
+                presenter.updateTipAndContinue(tip: nil)
             }
         }
         return button

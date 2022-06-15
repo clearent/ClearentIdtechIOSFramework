@@ -75,6 +75,7 @@ public final class ClearentWrapper : NSObject {
         return Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
     }()
     private var transactionAmount: String?
+    private var tipAmount: String?
     public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
     private var bleManager : BluetoothScanner?
     private let monitor = NWPathMonitor()
@@ -132,13 +133,17 @@ public final class ClearentWrapper : NSObject {
     
     public func retryLastTransaction() {
         guard let amount = transactionAmount else {return}
-        startTransactionWithAmount(amount: amount)
+        startTransactionWithAmount(amount: amount, tip: tipAmount)
     }
     
-    public func startTransactionWithAmount(amount: String) {
+    public func startTransactionWithAmount(amount: String, tip: String?) {
 
         if (amount.canBeConverted(to: String.Encoding.utf8)) {
             self.transactionAmount = amount
+        }
+        
+        if let newTip = tip, newTip.canBeConverted(to: String.Encoding.utf8) {
+            self.tipAmount = newTip
         }
         
         let userActionNeeded: UserAction? = isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : .noInternet

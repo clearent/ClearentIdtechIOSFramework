@@ -95,4 +95,6 @@ public class ClearentConstants {
     public enum Size {
         public static let primaryButtonBorderWidth = 1.0
     }
+    
+    public static let DefaultTipAmounts = [5.0,10.0,15.0]
 }

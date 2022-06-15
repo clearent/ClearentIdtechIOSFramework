@@ -29,6 +29,10 @@
 "xsdk_reader_name" = "Reader name";
 "xsdk_reader_name_input_hint" = "Input a custom name";
 
+"xsdk_user_transaction_tip_title" = "Would you like to add a tip?";
+"xsdk_user_action_transaction_with_tip" = "Charge %.2f";
+"xsdk_user_action_transaction_without_tip" = "Maybe next time";
+
 
 /* Payment Flow*/
 
