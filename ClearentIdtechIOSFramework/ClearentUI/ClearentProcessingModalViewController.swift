@@ -117,7 +117,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             return ClearentTextField(currentReaderName: ClearentWrapperDefaults.pairedReaderInfo?.customReaderName, inputName: "xsdk_reader_name".localized, hint: "xsdk_reader_name_input_hint".localized, delegate: self)
         case .tips:
             //guard let text = object as? String else { return nil }
-            return ClearentSubtitleLabel(text: "OLLA")
+            return ClearentSubtitleLabel(text: "TIPS SELECTION HERE")
         }
     }
 

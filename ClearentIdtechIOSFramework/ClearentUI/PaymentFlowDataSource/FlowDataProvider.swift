@@ -74,11 +74,8 @@ class FlowDataProvider : NSObject {
                      FlowDataItem(type: .userAction, object: FlowButtonType.transactionWithTip),
                      FlowDataItem(type: .userAction, object: FlowButtonType.transactionWithoutTip)]
         
-        let feedback = FlowDataFactory.component(with: .payment,
-                                                 type: .error,
-                                                 readerInfo: fetchReaderInfo(),
-                                                 payload: items)
-        
+        let feedback = FlowFeedback(flow: .payment, type: FlowFeedbackType.info, items: items)
+
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
 }

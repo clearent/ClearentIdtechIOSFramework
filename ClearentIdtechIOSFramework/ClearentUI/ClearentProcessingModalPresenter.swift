@@ -48,10 +48,7 @@ class ClearentProcessingModalPresenter {
         self.processType = processType
         sdkFeedbackProvider = FlowDataProvider()
         sdkFeedbackProvider.delegate = self
-        var newAmounts = ClearentConstants.DefaultTipAmounts
-        if let amounts = tipAmounts {
-            newAmounts = amounts
-        }
+        let newAmounts = tipAmounts ?? ClearentConstants.DefaultTipAmounts
         sdkFeedbackProvider.updateTipSettings(tipEnabled: tipEnabled, tipAmounts: newAmounts)
     }
 
@@ -132,8 +129,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         if (self.sdkFeedbackProvider.tipEnabled) {
             self.sdkFeedbackProvider.startTipTransaction()
         } else {
-            if sdkWrapper.isReaderConnected(), let amount = amount, let tip = self.tip {
-                sdkWrapper.startTransactionWithAmount(amount: String(amount), tip: String(tip))
+            if sdkWrapper.isReaderConnected(), let amount = amount {
+                sdkWrapper.startTransactionWithAmount(amount: String(amount), tip: nil)
             } else {
                 sdkWrapper.startPairing(reconnectIfPossible: true)
             }
@@ -191,15 +188,11 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     
     func updateTipAndContinue(tip: Double?) {
         self.tip = tip
-        var currentTip: String? = nil
-        if let tip = self.tip {
-            currentTip = String(tip)
-        }
+        let currentTip = self.tip ?? 0
         
         self.modalProcessingView?.showLoadingView()
-        
-        if sdkWrapper.isReaderConnected(), let amount = amount{
-            sdkWrapper.startTransactionWithAmount(amount: String(amount), tip: currentTip)
+        if sdkWrapper.isReaderConnected(), let amount = amount {
+            sdkWrapper.startTransactionWithAmount(amount: String(amount), tip: String(currentTip))
         } else {
             sdkWrapper.startPairing(reconnectIfPossible: true)
         }
@@ -225,10 +218,9 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                 self.modalProcessingView?.updateContent(with: feedback)
             }
         } else {
-            if (self.sdkFeedbackProvider.tipEnabled) {
-                self.sdkFeedbackProvider.startTipTransaction()
-            } else if let amount = amount {
-                sdkWrapper.startTransactionWithAmount(amount: String(amount), tip: nil)
+            let currentTip = self.tip ?? 0
+            if let amount = amount {
+                sdkWrapper.startTransactionWithAmount(amount: String(amount), tip: String(currentTip))
             }
         }
     }
