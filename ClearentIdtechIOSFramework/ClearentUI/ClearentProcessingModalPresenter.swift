@@ -82,7 +82,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         ClearentWrapper.shared.flowType = processType
         
         switch processType {
-        case let .pairing(withReader: readerInfo, _):
+        case let .pairing(withReader: readerInfo):
             if let readerInfo = readerInfo {
                 // automatically connect to this reader
                 connectTo(reader: readerInfo)

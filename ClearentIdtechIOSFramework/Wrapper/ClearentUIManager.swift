@@ -47,8 +47,8 @@ public final class ClearentUIManager : NSObject {
         viewController(processType: .payment, amount:amount)
     }
     
-    public func pairingViewController(processType: ProcessType = .pairing()) -> UINavigationController {
-        viewController(processType: processType)
+    public func pairingViewController() -> UINavigationController {
+        viewController(processType: .pairing())
     }
     
     public func readersViewController() -> UINavigationController {

@@ -111,14 +111,6 @@
             <point key="canvasLocation" x="374" y="102"/>
         </view>
     </objects>
-    <designables>
-        <designable name="hii-ez-GMs">
-            <size key="intrinsicContentSize" width="382" height="112.5"/>
-        </designable>
-        <designable name="qTP-SH-KEI">
-            <size key="intrinsicContentSize" width="382" height="112.5"/>
-        </designable>
-    </designables>
     <resources>
         <image name="left-arrow" width="8" height="12"/>
         <systemColor name="systemBackgroundColor">
