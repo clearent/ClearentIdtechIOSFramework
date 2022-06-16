@@ -114,7 +114,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             }
             return ClearentReadersTableView(dataSource: readersTableViewDataSource, delegate: self)
         case .input:
-            return ClearentTextField(currentReaderName: ClearentWrapperDefaults.pairedReaderInfo?.customReaderName, inputName: "xsdk_reader_name".localized, hint: "xsdk_reader_name_input_hint".localized, delegate: self)
+            return ClearentTextField(currentReaderName: presenter?.editableReader?.customReaderName, inputName: "xsdk_reader_name".localized, hint: "xsdk_reader_name_input_hint".localized, delegate: self)
         case .tips:
             //guard let text = object as? String else { return nil }
             return ClearentSubtitleLabel(text: "TIPS SELECTION HERE")
@@ -174,7 +174,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
                     if (flowFeedbackType == .renameReaderDone) {
                         presenter.updateReaderName()
                     }
-                    strongSelf.dismissViewController(isConnected: userAction == .done, customName: ClearentWrapperDefaults.pairedReaderInfo?.customReaderName)
+                    strongSelf.dismissViewController(isConnected: userAction == .done, customName: strongSelf.presenter?.editableReader?.customReaderName)
                 }
             case .retry, .pair:
                 presenter.restartProcess(processType: processType, newPair: false)

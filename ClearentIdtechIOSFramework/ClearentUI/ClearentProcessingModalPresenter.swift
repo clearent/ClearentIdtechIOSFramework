@@ -15,6 +15,7 @@ protocol ClearentProcessingModalView: AnyObject {
 }
 
 protocol ProcessingModalProtocol {
+    var editableReader: ReaderInfo? { get set }
     var processType: ProcessType { get set }
     var sdkFeedbackProvider: FlowDataProvider { get set }
     var selectedReaderFromReadersList: ReaderItem? { get set }
@@ -162,6 +163,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     func showRenameReader() {
+        temporaryReaderName = nil
         let items = [FlowDataItem(type: .hint, object: "xsdk_rename_your_reader".localized),
                      FlowDataItem(type: .input, object: FlowInputType.nameInput),
                      FlowDataItem(type: .userAction, object: FlowButtonType.done)]
@@ -186,6 +188,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             }
             sdkWrapper.removeReaderFromRecentlyUsed(reader: reader)
             sdkWrapper.addReaderToRecentlyUsed(reader: reader)
+            editableReader = reader
         }
     }
     
