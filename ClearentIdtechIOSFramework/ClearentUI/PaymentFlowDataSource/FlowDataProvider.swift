@@ -214,7 +214,6 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     func didFinishPairing() {
         if case .showReaders = ClearentWrapper.shared.flowType {
             createFeedbackForSuccessfulPairing()
-            ClearentWrapper.shared.shouldBeginContinuousSearchingForReaders?(true)
         } else {
             let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.pairingSuccessful),
                          FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader)]
@@ -283,7 +282,6 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     func didNotFindReaders() {
         let items = [FlowDataItem(type: .hint, object: "xsdk_no_readers_found_title".localized),
                      FlowDataItem(type: .description, object: "xsdk_no_readers_found_description".localized),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
 
         let feedback = FlowDataFactory.component(with: .pairing(),
@@ -326,9 +324,9 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     }
     
     private func createFeedbackForSuccessfulPairing() {
-        guard var recentlyPairedReaders = ClearentWrapperDefaults.recentlyPairedReaders else { return }
-        guard let pairedReaderInfo = ClearentWrapperDefaults.pairedReaderInfo else { return }
-        guard let indexOfSelectedReader = recentlyPairedReaders.firstIndex(where: {$0 == pairedReaderInfo}) else { return }
+        guard var recentlyPairedReaders = ClearentWrapperDefaults.recentlyPairedReaders,
+              let pairedReaderInfo = ClearentWrapperDefaults.pairedReaderInfo,
+              let indexOfSelectedReader = recentlyPairedReaders.firstIndex(where: {$0 == pairedReaderInfo}) else { return }
         
         recentlyPairedReaders[indexOfSelectedReader] = pairedReaderInfo
         
