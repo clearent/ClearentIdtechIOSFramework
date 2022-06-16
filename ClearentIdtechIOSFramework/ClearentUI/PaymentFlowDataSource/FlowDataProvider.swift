@@ -282,7 +282,6 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     func didNotFindReaders() {
         let items = [FlowDataItem(type: .hint, object: "xsdk_no_readers_found_title".localized),
                      FlowDataItem(type: .description, object: "xsdk_no_readers_found_description".localized),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
 
         let feedback = FlowDataFactory.component(with: .pairing(),
