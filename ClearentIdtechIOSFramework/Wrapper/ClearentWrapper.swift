@@ -132,11 +132,11 @@ public final class ClearentWrapper : NSObject {
     }
     
     public func retryLastTransaction() {
-        guard let amount = transactionAmount else {return}
-        startTransactionWithAmount(amount: amount, tip: tipAmount)
+        guard let amount = transactionAmount else {return}        
+        startTransaction(with: amount, and: tipAmount)
     }
     
-    public func startTransactionWithAmount(amount: String, tip: String?) {
+    public func startTransaction(with amount: String, and tip: String?) {
 
         if (amount.canBeConverted(to: String.Encoding.utf8)) {
             self.transactionAmount = amount

@@ -133,7 +133,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             self.sdkFeedbackProvider.startTipTransaction()
         } else {
             if sdkWrapper.isReaderConnected(), let amount = amount {
-                sdkWrapper.startTransactionWithAmount(amount: String(amount), tip: nil)
+                sdkWrapper.startTransaction(with: String(amount), and: nil)
             } else {
                 sdkWrapper.startPairing(reconnectIfPossible: true)
             }
@@ -195,7 +195,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         
         self.modalProcessingView?.showLoadingView()
         if sdkWrapper.isReaderConnected(), let amount = amount {
-            sdkWrapper.startTransactionWithAmount(amount: String(amount), tip: String(currentTip))
+            sdkWrapper.startTransaction(with: String(amount), and: String(currentTip))
         } else {
             sdkWrapper.startPairing(reconnectIfPossible: true)
         }
@@ -226,7 +226,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
             } else {
                 let currentTip = self.tip ?? 0
                 if let amount = amount {
-                    sdkWrapper.startTransactionWithAmount(amount: String(amount), tip: String(currentTip))
+                    sdkWrapper.startTransaction(with: String(amount), and: String(currentTip))
                 }
             }
         }
