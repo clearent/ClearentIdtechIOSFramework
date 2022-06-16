@@ -173,10 +173,10 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
-    public func saleTransaction(jwt: String, amount: String) {
+    public func saleTransaction(jwt: String, amount: String, tipAmount: String) {
         let httpClient = ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
         
-        httpClient.saleTransaction(jwt: jwt, amount: amount) { data, error in
+        httpClient.saleTransaction(jwt: jwt, amount: amount, tipAmount: tipAmount) { data, error in
             guard let responseData = data else { return }
             
             do {
@@ -354,7 +354,14 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         if (amountArray.last?.count == 1) {
             amountString = amountString + "0"
         }
-        saleTransaction(jwt: clearentTransactionToken.jwt, amount: amountString)
+        
+        var tipAmountString = self.tipAmount ?? "0.00"
+        let tipAmountArray = tipAmountString.split(separator: ".")
+        if (tipAmountArray.last?.count == 1) {
+            tipAmountString = tipAmountString + "0"
+        }
+        
+        saleTransaction(jwt: clearentTransactionToken.jwt, amount: amountString, tipAmount: tipAmountString)
     }
     
     public func disconnectFromReader() {
