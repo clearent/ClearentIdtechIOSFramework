@@ -15,7 +15,7 @@ class ClearentProcessingModalViewController: ClearentBaseViewController {
     private var showOnTop: Bool = false
     @IBOutlet var stackView: ClearentRoundedCornersStackView!
     var presenter: ProcessingModalProtocol?
-    var dismissCompletion: ((_ isConnected: Bool) -> Void)?
+    var dismissCompletion: ((_ isConnected: Bool, _ customName: String?) -> Void)?
 
     // MARK: - Init
 
@@ -61,11 +61,12 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         stackView.showLoadingView()
     }
 
-    public func dismissViewController(isConnected: Bool) {
+    public func dismissViewController(isConnected: Bool, customName: String?) {
+        ClearentWrapperDefaults.skipOnboarding = true
         ClearentWrapper.shared.cancelTransaction()
         DispatchQueue.main.async { [weak self] in
             self?.dismiss(animated: true, completion: nil)
-            self?.dismissCompletion?(isConnected)
+            self?.dismissCompletion?(isConnected, customName)
         }
     }
 
@@ -90,7 +91,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         case .userAction:
             guard let userAction = object as? FlowButtonType else { return nil }
 
-            return actionButton(userAction: userAction, processType: processType)
+            return actionButton(userAction: userAction, processType: processType, flowFeedbackType: feedbackType)
         case .devicesFound:
             guard let readersInfo = object as? [ReaderInfo] else { return nil }
             
@@ -98,9 +99,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         case .hint:
             guard let text = object as? String else { return nil }
             let hint = ClearentHintView(text: text)
-            if case let .pairing(_, firstPairing) = presenter?.processType {
-                hint.isHighlighted = firstPairing
-            }
+            hint.isHighlighted = !ClearentWrapperDefaults.skipOnboarding
             return hint
         case .recentlyPaired:
             guard let readersInfo = object as? [ReaderInfo] else { return nil }
@@ -118,12 +117,17 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
                 readersTableViewDataSource[indexOfSelectedReader].isConnecting = true
             }
             return ClearentReadersTableView(dataSource: readersTableViewDataSource, delegate: self)
+        case .input:
+            return ClearentTextField(currentReaderName: ClearentWrapperDefaults.pairedReaderInfo?.customReaderName, inputName: "xsdk_reader_name".localized, hint: "xsdk_reader_name_input_hint".localized, delegate: self)
         }
     }
 
     private func readerInfoView(readerInfo: ReaderInfo?, flowFeedbackType: FlowFeedbackType) -> ClearentReaderStatusHeaderView? {
         if readerInfo == nil && flowFeedbackType != .showReaders { return nil }
-        let name = readerInfo?.readerName ?? "xsdk_readers_list_no_reader_connected".localized
+        var name = readerInfo?.readerName ?? "xsdk_readers_list_no_reader_connected".localized
+        if let customName = readerInfo?.customReaderName {
+            name = customName
+        }
         let description = readerInfo == nil ? "xsdk_readers_list_select_reader".localized : nil
         let signalStatus = readerInfo?.signalStatus(flowFeedbackType: flowFeedbackType, isConnecting: presenter?.selectedReaderFromReadersList != nil)
         let batteryStatus = readerInfo?.batteryStatus(flowFeedbackType: flowFeedbackType)
@@ -148,25 +152,32 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     }
 
     private func readersList(readersInfo: [ReaderInfo]) -> ClearentPairingReadersList {
-        let items = readersInfo.map { item in
-            ClearentPairingReaderItem(title: item.readerName) {
-                ClearentWrapper.shared.shouldBeginContinuousSearchingForReaders?(false)
-                self.presenter?.connectTo(reader: item)
+        let items = readersInfo.map { item -> ClearentPairingReaderItem in
+           let readerName = item.customReaderName ?? item.readerName
+           return ClearentPairingReaderItem(title: readerName) {
+               self.presenter?.connectTo(reader: item)
             }
         }
         return ClearentPairingReadersList(items: items)
     }
 
-    private func actionButton(userAction: FlowButtonType, processType: ProcessType) -> ClearentPrimaryButton {
+    private func actionButton(userAction: FlowButtonType, processType: ProcessType, flowFeedbackType: FlowFeedbackType) -> ClearentPrimaryButton {
         let button = ClearentPrimaryButton()
         button.title = userAction.title
-        button.isBorderedButton = userAction == .cancel || userAction == .pairNewReader
+        button.isBorderedButton = userAction == .cancel || userAction == .pairNewReader || userAction == .renameReaderLater
         
         button.action = { [weak self] in
             guard let strongSelf = self, let presenter = strongSelf.presenter else { return }
             switch userAction {
-            case .cancel, .done:
-                strongSelf.dismissViewController(isConnected: userAction == .done)
+            case .cancel, .done, .renameReaderLater:
+                if (flowFeedbackType == .pairingDoneInfo) {
+                    strongSelf.presenter?.showReaderNameOption()
+                } else {
+                    if (flowFeedbackType == .renameReaderDone) {
+                        presenter.updateReaderName()
+                    }
+                    strongSelf.dismissViewController(isConnected: userAction == .done, customName: ClearentWrapperDefaults.pairedReaderInfo?.customReaderName)
+                }
             case .retry, .pair:
                 presenter.restartProcess(processType: processType, newPair: false)
             case .pairInFlow:
@@ -178,6 +189,9 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             case .settings:
                 let url = URL(string: UIApplication.openSettingsURLString + Bundle.main.bundleIdentifier!)!
                 UIApplication.shared.open(url)
+            case .addReaderName:
+                strongSelf.stackView.positionView(onTop: true, of: strongSelf.view)
+                presenter.showRenameReader()
             }
         }
         return button
@@ -194,5 +208,11 @@ extension ClearentProcessingModalViewController: ClearentReadersTableViewDelegat
         presenter?.connectTo(reader: reader)
         stackView.isUserInteractionEnabled = false
         ClearentWrapper.shared.shouldBeginContinuousSearchingForReaders?(false)
+    }
+}
+
+extension ClearentProcessingModalViewController: ClearenttextFieldProtocol {
+    func didFinishWithResult(name: String?) {
+        presenter?.updateTemporaryReaderName(name: name)
     }
 }

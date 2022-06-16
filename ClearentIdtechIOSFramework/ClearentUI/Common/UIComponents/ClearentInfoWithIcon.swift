@@ -11,9 +11,10 @@ import UIKit
 class ClearentInfoWithIcon: ClearentMarginableView {
     @IBOutlet var titleLabel: UILabel!
     @IBOutlet var descriptionLabel: UILabel!
-    @IBOutlet var icon: UIImageView!
+    @IBOutlet weak var button: UIButton!
     @IBOutlet var separatorView: UIView!
-
+    public var editButtonPressed: (() -> Void)?
+    
     override var margins: [BottomMargin] {
         [RelativeBottomMargin(constant: 24, relatedViewType: ClearentInfoWithIcon.self)]
     }
@@ -61,7 +62,8 @@ class ClearentInfoWithIcon: ClearentMarginableView {
     var iconName: String? {
         didSet {
             guard let iconName = iconName else { return }
-            icon.image = UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil)
+            button.setBackgroundImage(UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil), for: .normal)
+            button.setTitle(nil, for: .normal)
         }
     }
 
@@ -70,6 +72,11 @@ class ClearentInfoWithIcon: ClearentMarginableView {
         titleTextColor = ClearentConstants.Color.base02
         descriptionFont = ClearentConstants.Font.proTextNormal
         descriptionTextColor = ClearentConstants.Color.base01
-        separatorView.backgroundColor = ClearentConstants.Color.backgroundSecondary04
+        separatorView.backgroundColor = ClearentConstants.Color.backgroundSecondary02
     }
+    
+    @IBAction func buttonAction(_ sender: Any) {
+        editButtonPressed?()
+    }
+    
 }

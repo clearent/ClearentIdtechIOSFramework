@@ -22,7 +22,6 @@ public class ClearentConstants {
         public static let backgroundSecondary01 = UIColor(hexString: "#FFFFFF")
         public static let backgroundSecondary02 = UIColor(hexString: "#E1E2E8")
         public static let backgroundSecondary03 = UIColor(hexString: "#EEEFF3")
-        public static let backgroundSecondary04 = UIColor(hexString: "#E1E2E8")
         public static let accent01 = UIColor(hexString: "#2FAC10")
         public static let accent02 = UIColor(hexString: "#F4C15F")
         public static let accent03 = UIColor(hexString: "#F44E27")
@@ -90,6 +89,7 @@ public class ClearentConstants {
 
         // Reader details
         static let navigationArrow = "left-arrow"
+        static let editButton = "smallEditButton"
     }
 
     public enum Size {

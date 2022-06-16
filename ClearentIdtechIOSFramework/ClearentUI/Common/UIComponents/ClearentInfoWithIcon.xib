@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -12,8 +12,8 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ClearentInfoWithIcon">
             <connections>
                 <outlet property="bottomLayoutConstraint" destination="aDG-7h-4UT" id="97W-iO-u1z"/>
+                <outlet property="button" destination="4Ih-PK-Bhx" id="LZw-Yz-6lW"/>
                 <outlet property="descriptionLabel" destination="1tT-We-w07" id="oEt-WM-JOt"/>
-                <outlet property="icon" destination="p37-fV-Mm0" id="b7W-W3-9r7"/>
                 <outlet property="separatorView" destination="YCy-Np-oaG" id="kQ8-9K-EwB"/>
                 <outlet property="titleLabel" destination="9wu-cf-sMc" id="Z6y-93-27s"/>
             </connections>
@@ -24,27 +24,32 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9wu-cf-sMc" userLabel="title">
-                    <rect key="frame" x="0.0" y="0.0" width="561" height="220"/>
+                    <rect key="frame" x="0.0" y="0.0" width="561" height="216"/>
                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PoJ-Gi-HH0">
-                    <rect key="frame" x="0.0" y="224" width="561" height="16"/>
+                <stackView autoresizesSubviews="NO" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PoJ-Gi-HH0">
+                    <rect key="frame" x="0.0" y="220" width="561" height="20"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1tT-We-w07" userLabel="description">
-                            <rect key="frame" x="0.0" y="0.0" width="543" height="16"/>
+                            <rect key="frame" x="0.0" y="0.0" width="541" height="20"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
-                        <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="mediumHigh" translatesAutoresizingMaskIntoConstraints="NO" id="p37-fV-Mm0">
-                            <rect key="frame" x="543" y="0.0" width="18" height="16"/>
+                        <button opaque="NO" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4Ih-PK-Bhx">
+                            <rect key="frame" x="541" y="0.0" width="20" height="20"/>
                             <constraints>
-                                <constraint firstAttribute="height" constant="16" id="EwJ-8F-KWV"/>
-                                <constraint firstAttribute="width" constant="18" id="LGx-PF-Oey"/>
+                                <constraint firstAttribute="width" constant="20" id="DG5-n0-i7O"/>
+                                <constraint firstAttribute="height" constant="20" id="fMs-9A-Grr"/>
                             </constraints>
-                        </imageView>
+                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                            <state key="normal" title="Button"/>
+                            <connections>
+                                <action selector="buttonAction:" destination="-1" eventType="touchUpInside" id="Vc1-5a-bIh"/>
+                            </connections>
+                        </button>
                     </subviews>
                 </stackView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YCy-Np-oaG" userLabel="separator">
@@ -74,7 +79,6 @@
         </view>
     </objects>
     <resources>
-        <image name="mediumHigh" width="13" height="6"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

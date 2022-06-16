@@ -76,9 +76,17 @@ extension ClearentWrapper {
         return result
     }
     
+    internal func readerFromRecentlyPaired(name: String) -> ReaderInfo? {
+       return ClearentWrapperDefaults.recentlyPairedReaders?.first {
+            $0.readerName == name
+        }
+    }
+    
     internal func readerInfo(from clearentDevice:ClearentBluetoothDevice) -> ReaderInfo {
         let uuidString: UUID? = UUID(uuidString: clearentDevice.deviceId)
-        return ReaderInfo(readerName: clearentDevice.friendlyName, batterylevel: nil, signalLevel: nil, isConnected: clearentDevice.connected, autojoin: false, uuid: uuidString, serialNumber: nil, version: nil)
+        let customReader = readerFromRecentlyPaired(name: clearentDevice.friendlyName)
+            
+        return ReaderInfo(readerName: clearentDevice.friendlyName, customReaderName: customReader?.customReaderName, batterylevel: nil, signalLevel: nil, isConnected: clearentDevice.connected, autojoin: false, uuid: uuidString, serialNumber: nil, version: nil)
     }
     
     // MARK - Public Logger related
