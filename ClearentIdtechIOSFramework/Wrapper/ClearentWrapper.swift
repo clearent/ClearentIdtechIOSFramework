@@ -398,7 +398,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
                         ClearentWrapperDefaults.pairedReaderInfo = currentReader
                     }
                 }
-                if let action = UserAction(rawValue: clearentFeedback.message), isBluetoothOn {
+                if let action = UserAction(rawValue: clearentFeedback.message), isBluetoothOn, flowType != .pairing() {
                     DispatchQueue.main.async {
                         self.delegate?.userActionNeeded(action: action)
                     }
