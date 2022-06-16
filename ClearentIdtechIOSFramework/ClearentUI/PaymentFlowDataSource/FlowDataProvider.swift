@@ -48,7 +48,6 @@ protocol FlowDataProtocol : AnyObject {
 
 class FlowDataProvider : NSObject {
     weak var delegate: FlowDataProtocol?
-    static let shared = FlowDataProvider()
     var tipEnabled: Bool = false
     var tipAmounts: [Double] = []
     

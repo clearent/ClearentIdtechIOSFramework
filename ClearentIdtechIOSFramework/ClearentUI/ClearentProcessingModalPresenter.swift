@@ -115,7 +115,10 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     
     func connectTo(reader: ReaderInfo) {
         // reset sdk provider to make sure the sdkWrapper is not nil
+        let tipEnabled = sdkFeedbackProvider.tipEnabled
+        let tipAmounts = sdkFeedbackProvider.tipAmounts
         sdkFeedbackProvider = FlowDataProvider()
+        sdkFeedbackProvider.updateTipSettings(tipEnabled: tipEnabled, tipAmounts: tipAmounts)
         sdkFeedbackProvider.delegate = self
         selectedReaderFromReadersList = ReaderItem(readerInfo: reader, isConnecting: true)
         sdkWrapper.connectTo(reader: reader)
@@ -126,7 +129,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     private func startTransactionFlow() {
         sdkFeedbackProvider.delegate = self
         
-        if (self.sdkFeedbackProvider.tipEnabled) {
+        if (self.sdkFeedbackProvider.tipEnabled && sdkWrapper.isReaderConnected()) {
             self.sdkFeedbackProvider.startTipTransaction()
         } else {
             if sdkWrapper.isReaderConnected(), let amount = amount {
@@ -218,9 +221,13 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                 self.modalProcessingView?.updateContent(with: feedback)
             }
         } else {
-            let currentTip = self.tip ?? 0
-            if let amount = amount {
-                sdkWrapper.startTransactionWithAmount(amount: String(amount), tip: String(currentTip))
+            if (self.sdkFeedbackProvider.tipEnabled) {
+                self.sdkFeedbackProvider.startTipTransaction()
+            } else {
+                let currentTip = self.tip ?? 0
+                if let amount = amount {
+                    sdkWrapper.startTransactionWithAmount(amount: String(amount), tip: String(currentTip))
+                }
             }
         }
     }
