@@ -167,7 +167,11 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         let button = ClearentPrimaryButton()
         button.title = userAction.title
         button.isBorderedButton = [.cancel, .pairNewReader, .renameReaderLater].contains(userAction)
-        button.isTransparentButton = userAction == .transactionWithoutTip
+        if userAction == .transactionWithTip {
+            button.title = userAction.transactionWithTipTitle(for: presenter?.amountWithoutTip)
+        } else if userAction == .transactionWithoutTip {
+            button.isTransparentButton = true
+        }
         button.type = userAction
         button.action = { [weak self] in
             guard let strongSelf = self, let presenter = strongSelf.presenter else { return }
@@ -184,7 +188,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
                 if let button = self?.stackView.findButtonInStack(with: .transactionWithTip) {
                     var amountInfo = amountInfo
                     amountInfo.selectedTipValue = value
-                    button.title = String(format: "xsdk_user_action_transaction_with_tip".localized, ClearentMoneyFormatter.formattedText(from: amountInfo.finalAmount))
+                    button.title = button.type?.transactionWithTipTitle(for: amountInfo.finalAmount)
                 }
             }
             return tipElement

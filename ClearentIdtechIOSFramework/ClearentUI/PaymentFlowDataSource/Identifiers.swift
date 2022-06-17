@@ -92,10 +92,16 @@ public enum FlowButtonType {
         case .renameReaderLater:
             return "xsdk_user_action_later".localized
         case .transactionWithTip:
-            return "xsdk_user_action_transaction_with_tip".localized
+            return transactionWithTipTitle()
         case .transactionWithoutTip:
             return "xsdk_user_action_transaction_without_tip".localized
         }
+    }
+
+    func transactionWithTipTitle(for amount: Double? = nil) -> String {
+        guard let amount = amount else { return "" }
+        let formattedText = ClearentMoneyFormatter.formattedText(from: amount)
+        return String(format: "xsdk_user_action_transaction_with_tip".localized, formattedText)
     }
 }
 

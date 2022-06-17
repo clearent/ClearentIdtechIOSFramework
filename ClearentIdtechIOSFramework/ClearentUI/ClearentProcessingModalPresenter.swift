@@ -18,6 +18,7 @@ protocol ClearentProcessingModalView: AnyObject {
 protocol ProcessingModalProtocol {
     var editableReader: ReaderInfo? { get set }
     var processType: ProcessType { get set }
+    var amountWithoutTip: Double? { get set }
     var tip: Double? { get set }
     var sdkFeedbackProvider: FlowDataProvider { get set }
     var selectedReaderFromReadersList: ReaderItem? { get set }
@@ -35,9 +36,9 @@ class ClearentProcessingModalPresenter {
     // MARK: - Properties
     
     private weak var modalProcessingView: ClearentProcessingModalView?
-    private var amount: Double?
     private var temporaryReaderName: String?
     private let sdkWrapper = ClearentWrapper.shared
+    var amountWithoutTip: Double?
     var tip: Double?
     var processType: ProcessType
     var selectedReaderFromReadersList: ReaderItem?
@@ -47,7 +48,7 @@ class ClearentProcessingModalPresenter {
 
     init(modalProcessingView: ClearentProcessingModalView, amount: Double?, processType: ProcessType) {
         self.modalProcessingView = modalProcessingView
-        self.amount = amount
+        self.amountWithoutTip = amount
         self.processType = processType
         sdkFeedbackProvider = FlowDataProvider()
         sdkFeedbackProvider.delegate = self
@@ -163,7 +164,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         sdkFeedbackProvider.delegate = self
         
         if (ClearentUIManager.shared.tipEnabled && sdkWrapper.isReaderConnected()) {
-            self.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: amount ?? 0)
+            self.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: amountWithoutTip ?? 0)
         } else {
             continueTransaction()
         }
@@ -216,7 +217,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     private func continueTransaction() {
-        if sdkWrapper.isReaderConnected(), let amount = amount {
+        if sdkWrapper.isReaderConnected(), let amount = amountWithoutTip {
             let formattedAmount = String(ClearentMoneyFormatter.formattedText(from: amount).double)
             let formattedTip = String(ClearentMoneyFormatter.formattedText(from: tip ?? 0).double)
             sdkWrapper.startTransaction(with: formattedAmount, and: formattedTip)
@@ -246,7 +247,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
             }
         } else {
             if (ClearentUIManager.shared.tipEnabled) {
-                self.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: amount ?? 0)
+                self.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: amountWithoutTip ?? 0)
             } else {
                 continueTransaction()
             }
