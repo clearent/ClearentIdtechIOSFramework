@@ -44,14 +44,12 @@ class ClearentProcessingModalPresenter {
     var editableReader: ReaderInfo?
     // MARK: Init
 
-    init(modalProcessingView: ClearentProcessingModalView, amount: Double?, processType: ProcessType, tipEnabled: Bool, tipAmounts: [Double]?) {
+    init(modalProcessingView: ClearentProcessingModalView, amount: Double?, processType: ProcessType) {
         self.modalProcessingView = modalProcessingView
         self.amount = amount
         self.processType = processType
         sdkFeedbackProvider = FlowDataProvider()
         sdkFeedbackProvider.delegate = self
-        let newAmounts = tipAmounts ?? ClearentConstants.DefaultTipAmounts
-        sdkFeedbackProvider.updateTipSettings(tipEnabled: tipEnabled, tipAmounts: newAmounts)
     }
 
     private func dissmissViewWithDelay() {
@@ -117,10 +115,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     
     func connectTo(reader: ReaderInfo) {
         // reset sdk provider to make sure the sdkWrapper is not nil
-        let tipEnabled = sdkFeedbackProvider.tipEnabled
-        let tipAmounts = sdkFeedbackProvider.tipAmounts
         sdkFeedbackProvider = FlowDataProvider()
-        sdkFeedbackProvider.updateTipSettings(tipEnabled: tipEnabled, tipAmounts: tipAmounts)
         sdkFeedbackProvider.delegate = self
         selectedReaderFromReadersList = ReaderItem(readerInfo: reader, isConnecting: true)
         sdkWrapper.connectTo(reader: reader)

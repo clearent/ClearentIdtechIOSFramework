@@ -66,7 +66,7 @@ public final class ClearentUIManager : NSObject {
     internal func viewController(processType: ProcessType, amount: Double? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((_ isConnected: Bool, _ customName: String?) -> Void)? = nil) ->  UINavigationController {
 
         let viewController = ClearentProcessingModalViewController(showOnTop: (processType == .showReaders || processType == .renameReader))
-        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, amount: amount, processType: processType, tipEnabled: self.tipEnabled, tipAmounts: self.tipAmounts)
+        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, amount: amount, processType: processType)
         presenter.editableReader = editableReader
         viewController.presenter = presenter
         viewController.dismissCompletion = dismissCompletion
