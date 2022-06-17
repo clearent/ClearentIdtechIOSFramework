@@ -173,13 +173,10 @@ public final class ClearentWrapper : NSObject {
     }
     
     public func searchRecentlyUsedReaders() {
-        let usedReaders = ClearentWrapperDefaults.recentlyPairedReaders
-        if (usedReaders?.count == 0) {
-            self.delegate?.didNotFindRecentlyUsedReaders()
+        if let recentlyUsedReaders = ClearentWrapperDefaults.recentlyPairedReaders, recentlyUsedReaders.count > 0 {
+            delegate?.didFindRecentlyUsedReaders(readers: recentlyUsedReaders)
         } else {
-            if let usedReaders = usedReaders {
-                self.delegate?.didFindRecentlyUsedReaders(readers: usedReaders)
-            }
+            delegate?.didNotFindRecentlyUsedReaders()
         }
     }
     
@@ -434,9 +431,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     
     public func bluetoothDevices(_ bluetoothDevices: [ClearentBluetoothDevice]!) {
         if (bluetoothDevices.count > 0) {
-            let readers = bluetoothDevices.map { device in
-                return readerInfo(from: device)
-            }
+            let readers = bluetoothDevices.map { readerInfo(from: $0) }
             self.delegate?.didFindReaders(readers: readers)
         } else {
             self.delegate?.didNotFindReaders()

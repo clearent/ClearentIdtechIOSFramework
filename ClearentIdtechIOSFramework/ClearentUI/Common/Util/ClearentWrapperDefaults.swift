@@ -77,7 +77,7 @@ extension ClearentWrapperDefaults {
             // current paired reader should be in sync with the corresponding item from previously paired readers
             if let pairedReader = newValue {
                 ClearentWrapper.shared.addReaderToRecentlyUsed(reader: pairedReader)
-            } // if pairedReader is nil, we need to set connected and autojoin to false in the previously paired readers
+            } // if pairedReader is nil, we need to set connected and autojoin to false for the corresponding item from the previously paired readers
             else if var oldPairedReader = defaultReaderInfo {
                 oldPairedReader.isConnected = false
                 oldPairedReader.autojoin = false
