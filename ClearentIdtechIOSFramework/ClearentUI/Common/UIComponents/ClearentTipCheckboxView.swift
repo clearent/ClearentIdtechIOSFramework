@@ -51,14 +51,16 @@ class ClearentTipCheckboxView: ClearentMarginableView {
     @IBAction func tipWasPressed() {
         guard let superview = superview else { return }
 
-        // deselect all tip options
+        // deselect the last selected option
         superview.subviews.forEach {
-            if let tipOption = $0 as? ClearentTipCheckboxView {
+            if let tipOption = $0 as? ClearentTipCheckboxView, !tipOption.isEqual(self) {
                 tipOption.isSelected = false
             }
         }
+
         isSelected = !isSelected
-        tipSelectedAction?(tipValue)
+        let value = isSelected ? tipValue : 0
+        tipSelectedAction?(value)
     }
 
     @IBAction func decreaseTipValue() {

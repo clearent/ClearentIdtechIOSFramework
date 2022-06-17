@@ -12,27 +12,28 @@ protocol ClearentProcessingModalView: AnyObject {
     func updateContent(with feedback: FlowFeedback)
     func showLoadingView()
     func dismissViewController(isConnected: Bool, customName: String?)
+    func positionViewOnTop(flag: Bool)
 }
 
 protocol ProcessingModalProtocol {
     var editableReader: ReaderInfo? { get set }
     var processType: ProcessType { get set }
+    var tip: Double? { get set }
     var sdkFeedbackProvider: FlowDataProvider { get set }
     var selectedReaderFromReadersList: ReaderItem? { get set }
-    var tip: Double? { get set }
-    func continueTransaction()
+    func handleUserAction(userAction: FlowButtonType, flowFeedbackType: FlowFeedbackType)
     func restartProcess(processType: ProcessType, newPair: Bool)
     func startFlow()
     func startPairingFlow()
-    func showReaderNameOption()
-    func showRenameReader()
     func showDetailsScreen(for reader: ReaderItem, allReaders: [ReaderItem], flowDataProvider: FlowDataProvider, on navigationController: UINavigationController)
     func connectTo(reader: ReaderInfo)
     func updateTemporaryReaderName(name: String?)
-    func updateReaderName()
 }
 
 class ClearentProcessingModalPresenter {
+    
+    // MARK: - Properties
+    
     private weak var modalProcessingView: ClearentProcessingModalView?
     private var amount: Double?
     private var temporaryReaderName: String?
@@ -121,6 +122,41 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         sdkWrapper.connectTo(reader: reader)
     }
     
+    func updateTemporaryReaderName(name: String?) {
+        if (editableReader == nil) { editableReader = ClearentWrapperDefaults.pairedReaderInfo }
+        temporaryReaderName = name
+    }
+    
+    func handleUserAction(userAction: FlowButtonType, flowFeedbackType: FlowFeedbackType) {
+        switch userAction {
+        case .cancel, .done, .renameReaderLater:
+            if (flowFeedbackType == .pairingDoneInfo) {
+                showReaderNameOption()
+            } else {
+                if (flowFeedbackType == .renameReaderDone) {
+                    updateReaderName()
+                }
+                modalProcessingView?.dismissViewController(isConnected: userAction == .done, customName: editableReader?.customReaderName)
+            }
+        case .retry, .pair:
+            restartProcess(processType: processType, newPair: false)
+        case .pairInFlow:
+            restartProcess(processType: processType, newPair: true)
+        case .pairNewReader:
+            modalProcessingView?.positionViewOnTop(flag: false)
+            startPairingFlow()
+        case .settings:
+            let url = URL(string: UIApplication.openSettingsURLString + Bundle.main.bundleIdentifier!)!
+            UIApplication.shared.open(url)
+        case .addReaderName:
+            modalProcessingView?.positionViewOnTop(flag: true)
+            showRenameReader()
+        case .transactionWithTip, .transactionWithoutTip:
+            modalProcessingView?.showLoadingView()
+            continueTransaction()
+        }
+    }
+    
     // MARK: Private
     
     private func startTransactionFlow() {
@@ -145,7 +181,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         sdkWrapper.searchRecentlyUsedReaders()
     }
     
-    func showReaderNameOption() {
+    private func showReaderNameOption() {
         let items = [FlowDataItem(type: .hint, object: "xsdk_add_name_to_reader".localized),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
                      FlowDataItem(type: .userAction, object: FlowButtonType.addReaderName),
@@ -154,7 +190,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         modalProcessingView?.updateContent(with: feedback)
     }
     
-    func showRenameReader() {
+    private func showRenameReader() {
         temporaryReaderName = nil
         let items = [FlowDataItem(type: .hint, object: "xsdk_rename_your_reader".localized),
                      FlowDataItem(type: .input, object: FlowInputType.nameInput),
@@ -163,12 +199,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         modalProcessingView?.updateContent(with: feedback)
     }
     
-    func updateTemporaryReaderName(name: String?) {
-        if (editableReader == nil) { editableReader = ClearentWrapperDefaults.pairedReaderInfo }
-        temporaryReaderName = name
-    }
-    
-    func updateReaderName() {
+    private func updateReaderName() {
         if var reader = editableReader {
             if let newName = temporaryReaderName, newName != "" {
                 reader.customReaderName = newName
@@ -184,9 +215,11 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         }
     }
     
-    func continueTransaction() {
+    private func continueTransaction() {
         if sdkWrapper.isReaderConnected(), let amount = amount {
-            sdkWrapper.startTransaction(with: String(amount), and: String(tip ?? 0))
+            let formattedAmount = String(ClearentMoneyFormatter.formattedText(from: amount).double)
+            let formattedTip = String(ClearentMoneyFormatter.formattedText(from: tip ?? 0).double)
+            sdkWrapper.startTransaction(with: formattedAmount, and: formattedTip)
         } else {
             sdkWrapper.startPairing(reconnectIfPossible: true)
         }
@@ -212,10 +245,10 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                 self.modalProcessingView?.updateContent(with: feedback)
             }
         } else {
-            if ClearentUIManager.shared.tipEnabled {
-                sdkFeedbackProvider.startTipTransaction(amountWithoutTip: amount ?? 0)
-            } else if let amount = amount {
-                sdkWrapper.startTransaction(with: String(amount), and: String(tip ?? 0))
+            if (ClearentUIManager.shared.tipEnabled) {
+                self.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: amount ?? 0)
+            } else {
+                continueTransaction()
             }
         }
     }

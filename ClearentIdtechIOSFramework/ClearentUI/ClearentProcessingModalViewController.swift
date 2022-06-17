@@ -33,7 +33,7 @@ class ClearentProcessingModalViewController: ClearentBaseViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        stackView.positionView(onTop: showOnTop, of: view)
+        positionViewOnTop(flag: showOnTop)
         presenter?.startFlow()
     }
 }
@@ -41,6 +41,9 @@ class ClearentProcessingModalViewController: ClearentBaseViewController {
 // MARK: - ClearentPaymentProcessingView
 
 extension ClearentProcessingModalViewController: ClearentProcessingModalView {
+    func positionViewOnTop(flag: Bool) {
+        stackView.positionView(onTop: flag, of: view)
+    }
     
     public func showLoadingView() {
         stackView.showLoadingView()
@@ -116,19 +119,9 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         case .input:
             return ClearentTextField(currentReaderName: presenter?.editableReader?.customReaderName, inputName: "xsdk_reader_name".localized, hint: "xsdk_reader_name_input_hint".localized, delegate: self)
         case .tips:
-            guard var amountInfo = object as? AmountInfo else { return nil }
-            let tipViews = amountInfo.tipOptions.map { tip -> ClearentTipCheckboxView in
-                let tipView = ClearentTipCheckboxView(percentageText: "\(tip.percentageText)", tipValue: tip.value, isCustomTip: tip.isCustom)
-                tipView.tipSelectedAction = { [weak self] value in
-                    self?.presenter?.tip = value
-                    if let button = self?.stackView.findButtonInStack(with: .transactionWithTip) {
-                        amountInfo.selectedTipValue = value
-                        button.title = String(format: "xsdk_user_action_transaction_with_tip".localized, ClearentMoneyFormatter.formattedText(from: amountInfo.finalAmount))
-                    }
-                }
-                return tipView
-            }
-            return ClearentListView(items: tipViews)
+            guard let amountInfo = object as? AmountInfo else { return nil }
+            
+            return tipOptionsListView(with: amountInfo)
         }
     }
 
@@ -178,34 +171,25 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         button.type = userAction
         button.action = { [weak self] in
             guard let strongSelf = self, let presenter = strongSelf.presenter else { return }
-            switch userAction {
-            case .cancel, .done, .renameReaderLater:
-                if (flowFeedbackType == .pairingDoneInfo) {
-                    strongSelf.presenter?.showReaderNameOption()
-                } else {
-                    if (flowFeedbackType == .renameReaderDone) {
-                        presenter.updateReaderName()
-                    }
-                    strongSelf.dismissViewController(isConnected: userAction == .done, customName: strongSelf.presenter?.editableReader?.customReaderName)
-                }
-            case .retry, .pair:
-                presenter.restartProcess(processType: processType, newPair: false)
-            case .pairInFlow:
-                presenter.restartProcess(processType: processType, newPair: true)
-            case .pairNewReader:
-                strongSelf.stackView.positionView(onTop: false, of: strongSelf.view)
-                presenter.startPairingFlow()
-            case .settings:
-                let url = URL(string: UIApplication.openSettingsURLString + Bundle.main.bundleIdentifier!)!
-                UIApplication.shared.open(url)
-            case .addReaderName:
-                strongSelf.stackView.positionView(onTop: true, of: strongSelf.view)
-                presenter.showRenameReader()
-            case .transactionWithTip, .transactionWithoutTip:
-                presenter.continueTransaction()
-            }
+            presenter.handleUserAction(userAction: userAction, flowFeedbackType: flowFeedbackType)
         }
         return button
+    }
+    
+    private func tipOptionsListView(with amountInfo: AmountInfo) -> ClearentListView {
+        let tipOptionsList = amountInfo.tipOptions.map { tip -> ClearentTipCheckboxView in
+            let tipElement = ClearentTipCheckboxView(percentageText: "\(tip.percentageText)", tipValue: tip.value, isCustomTip: tip.isCustom)
+            tipElement.tipSelectedAction = { [weak self] value in
+                self?.presenter?.tip = value
+                if let button = self?.stackView.findButtonInStack(with: .transactionWithTip) {
+                    var amountInfo = amountInfo
+                    amountInfo.selectedTipValue = value
+                    button.title = String(format: "xsdk_user_action_transaction_with_tip".localized, ClearentMoneyFormatter.formattedText(from: amountInfo.finalAmount))
+                }
+            }
+            return tipElement
+        }
+        return ClearentListView(items: tipOptionsList)
     }
 }
 
