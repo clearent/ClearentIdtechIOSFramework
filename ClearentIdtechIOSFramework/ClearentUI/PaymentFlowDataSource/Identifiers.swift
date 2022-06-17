@@ -20,7 +20,7 @@ public enum FlowFeedbackType {
     case error, info, warning, searchDevices, showReaders, pairingDoneInfo, renameReaderDone
 }
 
-public enum ProcessType {
+public enum ProcessType: Equatable {
     case pairing(withReader: ReaderInfo? = nil), payment, showReaders, renameReader
     
     public static func == (lhs: ProcessType, rhs: ProcessType) -> Bool {

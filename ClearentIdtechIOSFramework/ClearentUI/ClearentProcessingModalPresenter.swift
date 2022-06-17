@@ -10,6 +10,7 @@ import UIKit
 
 protocol ClearentProcessingModalView: AnyObject {
     func updateContent(with feedback: FlowFeedback)
+    func addLoadingViewToCurrentContent()
     func showLoadingView()
     func dismissViewController(isConnected: Bool, customName: String?)
 }
@@ -59,17 +60,13 @@ class ClearentProcessingModalPresenter {
 }
 
 extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
-    func showDetailsScreen(for reader: ReaderItem, allReaders: [ReaderItem], flowDataProvider: FlowDataProvider, on navigationController: UINavigationController)  {
-        let vc = ClearentReaderDetailsViewController(nibName: String(describing: ClearentReaderDetailsViewController.self), bundle: ClearentConstants.bundle)
-        vc.detailsPresenter = ClearentReaderDetailsPresenter(currentReader: reader, allReaders: allReaders, flowDataProvider: flowDataProvider, navigationController: navigationController)
-        navigationController.pushViewController(vc, animated: true)
-    }
 
     func restartProcess(processType: ProcessType, newPair: Bool) {
         ClearentWrapper.shared.flowType = processType
         self.processType = processType
         sdkFeedbackProvider.delegate = self
         modalProcessingView?.showLoadingView()
+        
         switch processType {
         case .renameReader:
             showRenameReader()
@@ -81,9 +78,10 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             break
         }
     }
-
+    
     func startFlow() {
         ClearentWrapper.shared.flowType = processType
+        
         switch processType {
         case let .pairing(withReader: readerInfo):
             if let readerInfo = readerInfo {
@@ -108,6 +106,12 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                      FlowDataItem(type: .userAction, object: FlowButtonType.pairInFlow)]
         let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.info, items: items)
         modalProcessingView?.updateContent(with: feedback)
+    }
+    
+    func showDetailsScreen(for reader: ReaderItem, allReaders: [ReaderItem], flowDataProvider: FlowDataProvider, on navigationController: UINavigationController)  {
+        let vc = ClearentReaderDetailsViewController(nibName: String(describing: ClearentReaderDetailsViewController.self), bundle: ClearentConstants.bundle)
+        vc.detailsPresenter = ClearentReaderDetailsPresenter(currentReader: reader, flowDataProvider: flowDataProvider, navigationController: navigationController)
+        navigationController.pushViewController(vc, animated: true)
     }
     
     func connectTo(reader: ReaderInfo) {
@@ -212,5 +216,9 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
         if error == nil {
             dissmissViewWithDelay()
         }
+    }
+    
+    func didBeginContinuousSearching() {
+        modalProcessingView?.addLoadingViewToCurrentContent()
     }
 }

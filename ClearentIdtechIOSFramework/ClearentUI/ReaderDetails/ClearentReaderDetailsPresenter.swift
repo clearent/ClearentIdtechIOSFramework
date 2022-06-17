@@ -18,7 +18,6 @@ protocol ClearentReaderDetailsProtocol {
 
 class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
     public var currentReader: ReaderInfo
-    private var allReaders: [ReaderItem]
     private var flowDataProvider: FlowDataProvider
     private var navigationController: UINavigationController?
 
@@ -43,9 +42,8 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
         return (title, batteryStatus.iconName)
     }
 
-    init(currentReader: ReaderItem, allReaders: [ReaderItem], flowDataProvider: FlowDataProvider, navigationController: UINavigationController) {
+    init(currentReader: ReaderItem, flowDataProvider: FlowDataProvider, navigationController: UINavigationController) {
         self.currentReader = currentReader.readerInfo
-        self.allReaders = allReaders
         self.flowDataProvider = flowDataProvider
         self.navigationController = navigationController
     }
@@ -86,9 +84,7 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
 
     func handleBackAction() {
         if ClearentWrapperDefaults.pairedReaderInfo != nil || !ClearentWrapper.shared.previouslyPairedReaders.isEmpty {
-            let readerInfoList = allReaders.map { $0.readerInfo }
-            let result = ClearentWrapper.shared.fetchRecentlyAndAvailableReaders(availableReaders: readerInfoList)
-            flowDataProvider.didFindRecentlyUsedReaders(readers: result)
+            flowDataProvider.didFindRecentlyUsedReaders(readers: ClearentWrapper.shared.previouslyPairedReaders)
             navigationController?.popViewController(animated: true)
         } else {
             ClearentWrapper.shared.readerInfoReceived?(nil)
