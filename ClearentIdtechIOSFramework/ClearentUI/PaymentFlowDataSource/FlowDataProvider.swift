@@ -48,6 +48,7 @@ protocol FlowDataProtocol : AnyObject {
 
 class FlowDataProvider : NSObject {
     weak var delegate: FlowDataProtocol?
+    
     let sdkWrapper = ClearentWrapper.shared
     
     public override init() {
@@ -57,11 +58,6 @@ class FlowDataProvider : NSObject {
     
     func fetchReaderInfo() -> ReaderInfo? {
         return ClearentWrapperDefaults.pairedReaderInfo
-    }
-    
-    func updateTipSettings(tipEnabled: Bool, tipAmounts: [Double]) {
-        self.tipEnabled = true
-        self.tipAmounts = tipAmounts
     }
     
     public func startTipTransaction(amountWithoutTip: Double) {

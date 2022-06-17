@@ -14,7 +14,7 @@ public final class ClearentUIManager : NSObject {
     public static let shared = ClearentUIManager()
     public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
     public var tipEnabled: Bool = false
-    public var tipAmounts: [Double]? = nil
+    public var tipAmounts: [Double] = ClearentConstants.Tips.defaultTipPercentages
     // MARK: Init
     
     public override init() {
@@ -66,7 +66,7 @@ public final class ClearentUIManager : NSObject {
     internal func viewController(processType: ProcessType, amount: Double? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((_ isConnected: Bool, _ customName: String?) -> Void)? = nil) ->  UINavigationController {
 
         let viewController = ClearentProcessingModalViewController(showOnTop: (processType == .showReaders || processType == .renameReader))
-        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, amount: amount, processType: processType)
+        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, amount: amount, processType: processType, tipEnabled: self.tipEnabled, tipAmounts: self.tipAmounts)
         presenter.editableReader = editableReader
         viewController.presenter = presenter
         viewController.dismissCompletion = dismissCompletion
