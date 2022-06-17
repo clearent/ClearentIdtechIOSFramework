@@ -164,7 +164,7 @@ class ClearentReaderDetailsViewController: UIViewController {
         removeReaderButton.enabledBackgroundColor = color.backgroundSecondary01
         removeReaderButton.enabledTextColor = color.warning
         removeReaderButton.borderColor = color.warning
-        removeReaderButton.borderWidth = ClearentConstants.Size.primaryButtonBorderWidth
+        removeReaderButton.borderWidth = ClearentConstants.Size.defaultButtonBorderWidth
         removeReaderButton.action = { [weak self] in
             self?.detailsPresenter.removeReader()
         }

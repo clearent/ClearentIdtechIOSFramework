@@ -48,9 +48,6 @@ protocol FlowDataProtocol : AnyObject {
 
 class FlowDataProvider : NSObject {
     weak var delegate: FlowDataProtocol?
-    var tipEnabled: Bool = false
-    var tipAmounts: [Double] = []
-    
     let sdkWrapper = ClearentWrapper.shared
     
     public override init() {
@@ -67,9 +64,11 @@ class FlowDataProvider : NSObject {
         self.tipAmounts = tipAmounts
     }
     
-    public func startTipTransaction() {
+    public func startTipTransaction(amountWithoutTip: Double) {
+        let amountInfo = AmountInfo(amountWithoutTip: amountWithoutTip, availableTipPercentages: ClearentUIManager.shared.tipAmounts)
+        
         let items = [FlowDataItem(type: .title, object: "xsdk_user_transaction_tip_title".localized),
-                     FlowDataItem(type: .tips, object: self.tipAmounts),
+                     FlowDataItem(type: .tips, object: amountInfo),
                      FlowDataItem(type: .userAction, object: FlowButtonType.transactionWithTip),
                      FlowDataItem(type: .userAction, object: FlowButtonType.transactionWithoutTip)]
         

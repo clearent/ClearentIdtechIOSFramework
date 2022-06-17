@@ -30,13 +30,15 @@
 "xsdk_reader_name_input_hint" = "Input a custom name";
 
 "xsdk_user_transaction_tip_title" = "Would you like to add a tip?";
-"xsdk_user_action_transaction_with_tip" = "Charge %.2f";
+"xsdk_user_action_transaction_with_tip" = "Charge %@";
 "xsdk_user_action_transaction_without_tip" = "Maybe next time";
 
 
 /* Payment Flow*/
 
 "xsdk_unknown_reader_name" = "Unknown";
+// Tips
+"xsdk_tips_custom_amount" = "Custom amount";
 
 // General error
 "xsdk_general_error_title" = "Transaction failed";
@@ -110,3 +112,4 @@
 
 "xsdk_bluetooth_permission_error_title" = "No bluetooth permission";
 "xsdk_bluetooth__permission_error_description" = "In order to use the app you need to accept the bluetooth permission.";
+

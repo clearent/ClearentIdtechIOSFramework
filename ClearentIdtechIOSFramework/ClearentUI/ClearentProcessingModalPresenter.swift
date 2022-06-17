@@ -19,7 +19,8 @@ protocol ProcessingModalProtocol {
     var processType: ProcessType { get set }
     var sdkFeedbackProvider: FlowDataProvider { get set }
     var selectedReaderFromReadersList: ReaderItem? { get set }
-    func updateTipAndContinue(tip: Double?)
+    var tip: Double? { get set }
+    func continueTransaction()
     func restartProcess(processType: ProcessType, newPair: Bool)
     func startFlow()
     func startPairingFlow()
@@ -34,9 +35,9 @@ protocol ProcessingModalProtocol {
 class ClearentProcessingModalPresenter {
     private weak var modalProcessingView: ClearentProcessingModalView?
     private var amount: Double?
-    private var tip: Double?
     private var temporaryReaderName: String?
     private let sdkWrapper = ClearentWrapper.shared
+    var tip: Double?
     var processType: ProcessType
     var selectedReaderFromReadersList: ReaderItem?
     var sdkFeedbackProvider: FlowDataProvider
@@ -130,14 +131,10 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     private func startTransactionFlow() {
         sdkFeedbackProvider.delegate = self
         
-        if (self.sdkFeedbackProvider.tipEnabled && sdkWrapper.isReaderConnected()) {
-            self.sdkFeedbackProvider.startTipTransaction()
+        if (ClearentUIManager.shared.tipEnabled && sdkWrapper.isReaderConnected()) {
+            self.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: amount ?? 0)
         } else {
-            if sdkWrapper.isReaderConnected(), let amount = amount {
-                sdkWrapper.startTransaction(with: String(amount), and: nil)
-            } else {
-                sdkWrapper.startPairing(reconnectIfPossible: true)
-            }
+            continueTransaction()
         }
     }
     
@@ -192,13 +189,9 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         }
     }
     
-    func updateTipAndContinue(tip: Double?) {
-        self.tip = tip
-        let currentTip = self.tip ?? 0
-        
-        self.modalProcessingView?.showLoadingView()
+    func continueTransaction() {
         if sdkWrapper.isReaderConnected(), let amount = amount {
-            sdkWrapper.startTransaction(with: String(amount), and: String(currentTip))
+            sdkWrapper.startTransaction(with: String(amount), and: String(tip ?? 0))
         } else {
             sdkWrapper.startPairing(reconnectIfPossible: true)
         }
@@ -224,13 +217,10 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                 self.modalProcessingView?.updateContent(with: feedback)
             }
         } else {
-            if (self.sdkFeedbackProvider.tipEnabled) {
-                self.sdkFeedbackProvider.startTipTransaction()
-            } else {
-                let currentTip = self.tip ?? 0
-                if let amount = amount {
-                    sdkWrapper.startTransaction(with: String(amount), and: String(currentTip))
-                }
+            if ClearentUIManager.shared.tipEnabled {
+                sdkFeedbackProvider.startTipTransaction(amountWithoutTip: amount ?? 0)
+            } else if let amount = amount {
+                sdkWrapper.startTransaction(with: String(amount), and: String(tip ?? 0))
             }
         }
     }

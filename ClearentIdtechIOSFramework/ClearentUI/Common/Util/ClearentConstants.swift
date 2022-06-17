@@ -29,6 +29,7 @@ public class ClearentConstants {
         public static let base01 = UIColor(hexString: "#272431")
         public static let base02 = UIColor(hexString: "#6A6D7D")
         public static let base03 = UIColor(hexString: "#000000")
+        public static let base04 = UIColor(hexString: "#999BA8")
         
         public static let warning = UIColor(hexString: "#C2210F")
     }
@@ -69,6 +70,8 @@ public class ClearentConstants {
         // User Interaction
         static let pressButtonOnReader = "pressButtonOnReader"
         static let cardInteraction = "cardInteraction"
+        static let decreaseTip = "decreaseTipButton"
+        static let increaseTip = "increaseTipButton"
 
         // Information
         static let error = "error"
@@ -85,7 +88,6 @@ public class ClearentConstants {
         static let collapsed = "collapsed"
         static let pairingSuccessful = "pairingSuccessful"
         static let details = "details"
-        
 
         // Reader details
         static let navigationArrow = "left-arrow"
@@ -93,8 +95,12 @@ public class ClearentConstants {
     }
 
     public enum Size {
-        public static let primaryButtonBorderWidth = 1.0
+        public static let defaultButtonBorderWidth = 1.0
     }
     
-    public static let DefaultTipAmounts = [5.0,10.0,15.0]
+    public enum Tips {
+        public static let defaultTipPercentages = [5.0, 10.0, 15.0]
+        public static let customTipAdjustFactor: Double = 1.0
+        public static let defaultCustomTipValue: Double = 5.0
+    }
 }

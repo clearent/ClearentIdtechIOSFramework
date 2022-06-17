@@ -116,8 +116,19 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         case .input:
             return ClearentTextField(currentReaderName: presenter?.editableReader?.customReaderName, inputName: "xsdk_reader_name".localized, hint: "xsdk_reader_name_input_hint".localized, delegate: self)
         case .tips:
-            //guard let text = object as? String else { return nil }
-            return ClearentSubtitleLabel(text: "TIPS SELECTION HERE")
+            guard var amountInfo = object as? AmountInfo else { return nil }
+            let tipViews = amountInfo.tipOptions.map { tip -> ClearentTipCheckboxView in
+                let tipView = ClearentTipCheckboxView(percentageText: "\(tip.percentageText)", tipValue: tip.value, isCustomTip: tip.isCustom)
+                tipView.tipSelectedAction = { [weak self] value in
+                    self?.presenter?.tip = value
+                    if let button = self?.stackView.findButtonInStack(with: .transactionWithTip) {
+                        amountInfo.selectedTipValue = value
+                        button.title = String(format: "xsdk_user_action_transaction_with_tip".localized, ClearentMoneyFormatter.formattedText(from: amountInfo.finalAmount))
+                    }
+                }
+                return tipView
+            }
+            return ClearentListView(items: tipViews)
         }
     }
 
@@ -149,21 +160,22 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         return ClearentLoadingView()
     }
 
-    private func readersList(readersInfo: [ReaderInfo]) -> ClearentPairingReadersList {
+    private func readersList(readersInfo: [ReaderInfo]) -> ClearentListView {
         let items = readersInfo.map { item -> ClearentPairingReaderItem in
            let readerName = item.customReaderName ?? item.readerName
            return ClearentPairingReaderItem(title: readerName) {
                 self.presenter?.connectTo(reader: item)
             }
         }
-        return ClearentPairingReadersList(items: items)
+        return ClearentListView(items: items)
     }
 
     private func actionButton(userAction: FlowButtonType, processType: ProcessType, flowFeedbackType: FlowFeedbackType) -> ClearentPrimaryButton {
         let button = ClearentPrimaryButton()
         button.title = userAction.title
-        button.isBorderedButton = userAction == .cancel || userAction == .pairNewReader || userAction == .renameReaderLater
-        
+        button.isBorderedButton = [.cancel, .pairNewReader, .renameReaderLater].contains(userAction)
+        button.isTransparentButton = userAction == .transactionWithoutTip
+        button.type = userAction
         button.action = { [weak self] in
             guard let strongSelf = self, let presenter = strongSelf.presenter else { return }
             switch userAction {
@@ -189,10 +201,8 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             case .addReaderName:
                 strongSelf.stackView.positionView(onTop: true, of: strongSelf.view)
                 presenter.showRenameReader()
-            case .transactionWithTip:
-                presenter.updateTipAndContinue(tip: 2.0)
-            case .transactionWithoutTip:
-                presenter.updateTipAndContinue(tip: nil)
+            case .transactionWithTip, .transactionWithoutTip:
+                presenter.continueTransaction()
             }
         }
         return button
