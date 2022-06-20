@@ -179,7 +179,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         button.type = userAction
         button.action = { [weak self] in
             guard let strongSelf = self, let presenter = strongSelf.presenter else { return }
-            presenter.handleUserAction(userAction: userAction, flowFeedbackType: flowFeedbackType)
+            presenter.handleUserAction(userAction: userAction, processType: processType, flowFeedbackType: flowFeedbackType)
         }
         return button
     }

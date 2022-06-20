@@ -23,7 +23,7 @@ protocol ProcessingModalProtocol {
     var tip: Double? { get set }
     var sdkFeedbackProvider: FlowDataProvider { get set }
     var selectedReaderFromReadersList: ReaderItem? { get set }
-    func handleUserAction(userAction: FlowButtonType, flowFeedbackType: FlowFeedbackType)
+    func handleUserAction(userAction: FlowButtonType, processType: ProcessType, flowFeedbackType: FlowFeedbackType)
     func restartProcess(processType: ProcessType, newPair: Bool)
     func startFlow()
     func startPairingFlow()
@@ -131,7 +131,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         temporaryReaderName = name
     }
     
-    func handleUserAction(userAction: FlowButtonType, flowFeedbackType: FlowFeedbackType) {
+    func handleUserAction(userAction: FlowButtonType, processType: ProcessType, flowFeedbackType: FlowFeedbackType) {
         switch userAction {
         case .cancel, .done, .renameReaderLater:
             if (flowFeedbackType == .pairingDoneInfo) {
