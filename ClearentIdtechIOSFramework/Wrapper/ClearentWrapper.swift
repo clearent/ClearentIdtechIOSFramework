@@ -80,6 +80,7 @@ public final class ClearentWrapper : NSObject {
     private var isInternetOn = false
     internal var isBluetoothOn = false
     private var continuousSearchingTimer: Timer?
+    private var connectToReaderTimer: Timer?
     private var shouldStopUpdatingReadersListDuringContinuousSearching: Bool? = false
     internal var shouldBeginContinuousSearchingForReaders: ((_ searchingEnabled: Bool) -> Void)?
     
@@ -115,6 +116,9 @@ public final class ClearentWrapper : NSObject {
             
             if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo, reconnectIfPossible == true   {
                 strongSelf.connection = ClearentConnection(bluetoothWithFriendlyName: readerInfo.readerName)
+                DispatchQueue.main.async {
+                    strongSelf.startConnectionTimeoutTimer()
+                }
             } else {
                 strongSelf.connection = ClearentConnection(bluetoothSearch: ())
                 DispatchQueue.main.async {
@@ -125,9 +129,10 @@ public final class ClearentWrapper : NSObject {
             strongSelf.clearentVP3300.start(strongSelf.connection)
         }
     }
-    
+        
     public func connectTo(reader: ReaderInfo) {
         if reader.uuid != nil {
+            startConnectionTimeoutTimer()
             shouldStopUpdatingReadersListDuringContinuousSearching = nil
             connection  = ClearentConnection(bluetoothWithFriendlyName: reader.readerName)
             updateConnectionWithDevice(readerInfo: reader)
@@ -286,6 +291,11 @@ public final class ClearentWrapper : NSObject {
     }
     
     private func updateConnectionWithDevice(readerInfo: ReaderInfo) {
+        var current = ClearentWrapperDefaults.pairedReaderInfo
+        current?.isConnected = false
+        if let reader = current {
+            addReaderToRecentlyUsed(reader: reader)
+        }
         ClearentWrapperDefaults.pairedReaderInfo = readerInfo
 
         if let uuid = readerInfo.uuid {
@@ -355,6 +365,16 @@ public final class ClearentWrapper : NSObject {
         else if percentage > 5 { result = 5 }
         return result
     }
+    
+    private func startConnectionTimeoutTimer() {
+        self.connectToReaderTimer?.invalidate()
+        self.connectToReaderTimer = nil
+        connectToReaderTimer = Timer.scheduledTimer(withTimeInterval: 8.0, repeats: false) { [weak self] _ in
+                DispatchQueue.main.async {
+                    self?.delegate?.userActionNeeded(action: .connectionTiemout)
+                }
+            }
+        }
 }
 
 extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
@@ -404,18 +424,10 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
             }
         case .BLUETOOTH:
             if (ClearentWrapperDefaults.pairedReaderInfo != nil) {
-                
                 if (clearentFeedback.message == UserAction.noBluetooth.rawValue) {
-                    
                     if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
                         currentReader.isConnected = false
                         ClearentWrapperDefaults.pairedReaderInfo = currentReader
-                    }
-                }
-                
-                if let action = UserAction(rawValue: clearentFeedback.message), isBluetoothOn, flowType != .pairing() {
-                    DispatchQueue.main.async {
-                        self.delegate?.userActionNeeded(action: action)
                     }
                 }
             }
@@ -459,6 +471,8 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     }
     
     public func deviceConnected() {
+        self.connectToReaderTimer?.invalidate()
+        self.connectToReaderTimer = nil
         bleManager?.udid = ClearentWrapperDefaults.pairedReaderInfo?.uuid
         bleManager?.setupDevice()
         startDeviceInfoUpdate()
