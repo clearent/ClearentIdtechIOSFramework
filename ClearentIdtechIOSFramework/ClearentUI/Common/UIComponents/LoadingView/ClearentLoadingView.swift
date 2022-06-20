@@ -22,6 +22,7 @@ class ClearentLoadingView: ClearentMarginableView {
             RelativeBottomMargin(constant: 165, relatedViewType: ClearentPrimaryButton.self),
             RelativeBottomMargin(constant: 65, relatedViewType: ClearentSubtitleLabel.self),
             RelativeBottomMargin(constant: 29, relatedViewType: ClearentListView.self),
+            RelativeBottomMargin(constant: 27, relatedViewType: ClearentReadersTableView.self),
             BottomMargin(constant: 104)
         ]
     }

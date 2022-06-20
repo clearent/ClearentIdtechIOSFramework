@@ -47,10 +47,9 @@ public protocol ClearentWrapperProtocol : AnyObject {
     func deviceDidDisconnect()
     func didNotFindReaders()
     func startedReaderConnection(with reader:ReaderInfo)
-    
     func didFindRecentlyUsedReaders(readers:[ReaderInfo])
     func didNotFindRecentlyUsedReaders()
-    
+    func didBeginContinuousSearching()
     func didEncounteredGeneralError()
     func didFinishTransaction(response: TransactionResponse, error: ResponseError?)
     func userActionNeeded(action: UserAction)
@@ -62,12 +61,12 @@ public final class ClearentWrapper : NSObject {
     private var baseURL: String = ""
     private var apiKey: String = ""
     private var publicKey: String = ""
-    private var searchingRecentlyUsedReadersInProgress = false
     public var previouslyPairedReaders: [ReaderInfo] {
         ClearentWrapperDefaults.recentlyPairedReaders ?? []
     }
     public static let shared = ClearentWrapper()
     public var flowType: ProcessType?
+    public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
     weak var delegate: ClearentWrapperProtocol?
     private var connection  = ClearentConnection(bluetoothSearch: ())
     lazy var clearentVP3300: Clearent_VP3300 = {
@@ -76,45 +75,62 @@ public final class ClearentWrapper : NSObject {
     }()
     private var transactionAmount: String?
     private var tipAmount: String?
-    public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
     private var bleManager : BluetoothScanner?
     private let monitor = NWPathMonitor()
     private var isInternetOn = false
     internal var isBluetoothOn = false
+    private var continuousSearchingTimer: Timer?
+    private var shouldStopUpdatingReadersListDuringContinuousSearching: Bool? = false
+    internal var shouldBeginContinuousSearchingForReaders: ((_ searchingEnabled: Bool) -> Void)?
     
     // MARK: Init
     
     private override init() {
         super.init()
+        
         createLogFile()
         self.startConnectionListener()
         bleManager = BluetoothScanner.init(udid: nil, delegate: self)
+        
+        shouldBeginContinuousSearchingForReaders = { searchingEnabled in
+            if searchingEnabled {
+                self.continuousSearchingTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { [weak self] _ in
+                    guard let strongSelf = self, let _ = strongSelf.shouldStopUpdatingReadersListDuringContinuousSearching else { return }
+                    strongSelf.shouldStopUpdatingReadersListDuringContinuousSearching = true
+                    strongSelf.startPairing(reconnectIfPossible: false)
+                }
+            } else {
+                self.continuousSearchingTimer?.invalidate()
+                self.continuousSearchingTimer = nil
+                self.shouldStopUpdatingReadersListDuringContinuousSearching = false
+            }
+        }
     }
     
     // MARK - Public
         
     public func startPairing(reconnectIfPossible: Bool) {
-        
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let strongSelf = self else { return }
             
             if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo, reconnectIfPossible == true   {
-                strongSelf.connection  = ClearentConnection(bluetoothWithFriendlyName: readerInfo.readerName)
+                strongSelf.connection = ClearentConnection(bluetoothWithFriendlyName: readerInfo.readerName)
             } else {
                 strongSelf.connection = ClearentConnection(bluetoothSearch: ())
                 DispatchQueue.main.async {
-                    strongSelf.delegate?.didStartPairing()
+                    guard let shouldStopUpdatingReadersListDuringContinuousSearching = strongSelf.shouldStopUpdatingReadersListDuringContinuousSearching else { return }
+                    shouldStopUpdatingReadersListDuringContinuousSearching ? strongSelf.delegate?.didBeginContinuousSearching() : strongSelf.delegate?.didStartPairing()
                 }
             }
-            
             strongSelf.clearentVP3300.start(strongSelf.connection)
         }
     }
     
     public func connectTo(reader: ReaderInfo) {
         if reader.uuid != nil {
+            shouldStopUpdatingReadersListDuringContinuousSearching = nil
             connection  = ClearentConnection(bluetoothWithFriendlyName: reader.readerName)
-            self.updateConnectionWithDevice(readerInfo: reader)
+            updateConnectionWithDevice(readerInfo: reader)
         }
     }
     
@@ -145,8 +161,9 @@ public final class ClearentWrapper : NSObject {
         if let newTip = tip, newTip.canBeConverted(to: String.Encoding.utf8) {
             self.tipAmount = newTip
         }
-        
+
         let userActionNeeded: UserAction? = isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : .noInternet
+        
         if let action = userActionNeeded {
             DispatchQueue.main.async {
                   self.delegate?.userActionNeeded(action: action)
@@ -163,13 +180,10 @@ public final class ClearentWrapper : NSObject {
     }
     
     public func searchRecentlyUsedReaders() {
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let strongSelf = self else { return }
-            let config = ClearentVP3300Config(noContactlessNoConfiguration: strongSelf.baseURL, publicKey: strongSelf.publicKey)
-            strongSelf.clearentVP3300 = Clearent_VP3300.init(connectionHandling: strongSelf, clearentVP3300Configuration: config)
-            
-            strongSelf.searchingRecentlyUsedReadersInProgress = true
-            strongSelf.clearentVP3300.start(ClearentConnection(bluetoothSearch: ()))
+        if let recentlyUsedReaders = ClearentWrapperDefaults.recentlyPairedReaders, recentlyUsedReaders.count > 0 {
+            delegate?.didFindRecentlyUsedReaders(readers: recentlyUsedReaders)
+        } else {
+            delegate?.didNotFindRecentlyUsedReaders()
         }
     }
     
@@ -263,7 +277,6 @@ public final class ClearentWrapper : NSObject {
                         self?.delegate?.userActionNeeded(action: action)
                     }
                 }
-                
                 self?.isInternetOn = false
             }
         }
@@ -284,7 +297,6 @@ public final class ClearentWrapper : NSObject {
         
         connection?.searchBluetooth = false
         clearentVP3300.start(connection)
-        
         self.delegate?.startedReaderConnection(with: readerInfo)
     }
         
@@ -298,8 +310,8 @@ public final class ClearentWrapper : NSObject {
             }
             return
         }
-
         let curentLevel = response.int
+        
         if (curentLevel > 0) {
             let batteryLevel = batteryLevelPercentageFrom(level: response.int)
             if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
@@ -335,6 +347,7 @@ public final class ClearentWrapper : NSObject {
         var percentage: Double = Double((lvl - minim) / (maxim - minim) * 100.0)
         percentage = min(percentage, 100)
         var result = 0
+        
         if percentage > 95 { result = 100 }
         else if percentage > 75 { result = 75 }
         else if percentage > 50 { result = 50 }
@@ -351,6 +364,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         // make sure we have two decimals otherwise the API will return an error
         var amountString = String(amount)
         let amountArray = amountString.split(separator: ".")
+        
         if (amountArray.last?.count == 1) {
             amountString = amountString + "0"
         }
@@ -390,13 +404,16 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
             }
         case .BLUETOOTH:
             if (ClearentWrapperDefaults.pairedReaderInfo != nil) {
+                
                 if (clearentFeedback.message == UserAction.noBluetooth.rawValue) {
+                    
                     if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
                         currentReader.isConnected = false
                         ClearentWrapperDefaults.pairedReaderInfo = currentReader
                     }
                 }
-                if let action = UserAction(rawValue: clearentFeedback.message), isBluetoothOn {
+                
+                if let action = UserAction(rawValue: clearentFeedback.message), isBluetoothOn, flowType != .pairing() {
                     DispatchQueue.main.async {
                         self.delegate?.userActionNeeded(action: action)
                     }
@@ -404,6 +421,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
             }
         case .ERROR:
             if (ClearentWrapperDefaults.pairedReaderInfo != nil && clearentFeedback.message == UserAction.noBluetooth.rawValue) {
+                
                 if let action = UserAction(rawValue: clearentFeedback.message) {
                     DispatchQueue.main.async {
                         self.delegate?.userActionNeeded(action: action)
@@ -426,26 +444,14 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     }
     
     public func bluetoothDevices(_ bluetoothDevices: [ClearentBluetoothDevice]!) {
-        if (searchingRecentlyUsedReadersInProgress) {
-            searchingRecentlyUsedReadersInProgress = false
-            if (bluetoothDevices.count == 0) {
-                if let pairedReader = ClearentWrapperDefaults.pairedReaderInfo {
-                    self.delegate?.didFindRecentlyUsedReaders(readers: [pairedReader])
-                } else {
-                    self.delegate?.didNotFindRecentlyUsedReaders()
-                }
-            } else {
-                let readers = fetchRecentlyAndAvailableReaders(devices: bluetoothDevices)
-                self.delegate?.didFindRecentlyUsedReaders(readers: readers)
-            }
-        } else if (bluetoothDevices.count > 0) {
-            let readers = bluetoothDevices.map { device in
-                return readerInfo(from: device)
-            }
+        if (bluetoothDevices.count > 0) {
+            let readers = bluetoothDevices.map { readerInfo(from: $0) }
             self.delegate?.didFindReaders(readers: readers)
         } else {
             self.delegate?.didNotFindReaders()
         }
+        
+        shouldBeginContinuousSearchingForReaders?(true)
     }
 
     public func deviceMessage(_ message: String!) {
@@ -453,14 +459,15 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     }
     
     public func deviceConnected() {
-        if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
-            currentReader.isConnected = true
-            ClearentWrapperDefaults.pairedReaderInfo = currentReader
-            addReaderToRecentlyUsed(reader: currentReader)
-        }
         bleManager?.udid = ClearentWrapperDefaults.pairedReaderInfo?.uuid
         bleManager?.setupDevice()
         startDeviceInfoUpdate()
+
+        // if there is no autojoin reader, set the current connected reader with autojoin true
+        if ClearentWrapperDefaults.recentlyPairedReaders?.first(where: { $0.autojoin == true }) == nil {
+            ClearentWrapperDefaults.pairedReaderInfo?.autojoin = true
+        }
+        ClearentWrapperDefaults.pairedReaderInfo?.isConnected = true
         self.delegate?.didFinishPairing()
     }
     

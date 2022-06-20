@@ -45,6 +45,21 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         stackView.positionView(onTop: flag, of: view)
     }
     
+    public func updateContent(with feedback: FlowFeedback) {
+        stackView.removeAllArrangedSubviews()
+        stackView.isUserInteractionEnabled = true
+        
+        feedback.items.forEach {
+            if let component = uiComponent(for: $0, processType: feedback.flow, feedbackType: feedback.type) {
+                stackView.addArrangedSubview(component)
+            }
+        }
+    }
+    
+    public func addLoadingViewToCurrentContent() {
+        stackView.insertArrangedSubview(ClearentLoadingView(), at: 1)
+    }
+    
     public func showLoadingView() {
         stackView.showLoadingView()
     }
@@ -55,17 +70,6 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         DispatchQueue.main.async { [weak self] in
             self?.dismiss(animated: true, completion: nil)
             self?.dismissCompletion?(isConnected, customName)
-        }
-    }
-
-    public func updateContent(with feedback: FlowFeedback) {
-        stackView.removeAllArrangedSubviews()
-        stackView.isUserInteractionEnabled = true
-        
-        feedback.items.forEach {
-            if let component = uiComponent(for: $0, processType: feedback.flow, feedbackType: feedback.type) {
-                stackView.addArrangedSubview(component)
-            }
         }
     }
 
@@ -81,7 +85,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             return icon(with: graphic)
         case .title:
             guard let text = object as? String else { return nil }
-            
+             
             return ClearentTitleLabel(text: text)
         case .description:
             guard let text = object as? String else { return nil }
@@ -157,7 +161,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         let items = readersInfo.map { item -> ClearentPairingReaderItem in
            let readerName = item.customReaderName ?? item.readerName
            return ClearentPairingReaderItem(title: readerName) {
-                self.presenter?.connectTo(reader: item)
+               self.presenter?.connectTo(reader: item)
             }
         }
         return ClearentListView(items: items)
