@@ -39,10 +39,10 @@ class ClearentHttpClient {
     
     // MARK - Public
     
-    public func saleTransaction(jwt: String, amount: String, completion: @escaping (Data?, Error?) -> Void) {
+    public func saleTransaction(jwt: String, amount: String, tipAmount: String, completion: @escaping (Data?, Error?) -> Void) {
         let saleURL = URL(string: baseURL + ClearentEndpoints.sale)
         let headers = headersForTransaction(jwt: jwt, apiKey: self.apiKey)
-        let _ = HttpClient.makeRawRequest(to: saleURL!, method: transactionMethod(type: TransactionType.sale.rawValue, amount: amount), headers: headers) { data, error in
+        let _ = HttpClient.makeRawRequest(to: saleURL!, method: transactionMethod(type: TransactionType.sale.rawValue, amount: amount, tipAmount: tipAmount), headers: headers) { data, error in
             completion(data, error)
         }
     }
@@ -50,7 +50,7 @@ class ClearentHttpClient {
     public func refundTransaction(jwt: String, amount: String, completion: @escaping (Data?, Error?) -> Void) {
         let refundURL = URL(string: baseURL + ClearentEndpoints.refund)
         let headers = headersForTransaction(jwt: jwt, apiKey: self.apiKey)
-        let _ = HttpClient.makeRawRequest(to: refundURL!, method: transactionMethod(type: TransactionType.refund.rawValue, amount: amount), headers: headers) { data, error in
+        let _ = HttpClient.makeRawRequest(to: refundURL!, method: transactionMethod(type: TransactionType.refund.rawValue, amount: amount, tipAmount: "0.00"), headers: headers) { data, error in
             completion(data, error)
         }
     }
@@ -65,13 +65,16 @@ class ClearentHttpClient {
     
     // MARK - Private
     
-    private func transactionMethod(type: String, amount: String) -> HttpClient.HTTPMethod {
-        let method = HttpClient.HTTPMethod.POST(transactionBody(type: type, amount: amount))
+    private func transactionMethod(type: String, amount: String, tipAmount: String) -> HttpClient.HTTPMethod {
+        let method = HttpClient.HTTPMethod.POST(transactionBody(type: type, amount: amount, tipAmount: tipAmount))
         return method
     }
     
-    private func transactionBody(type:String, amount: String) -> HttpClient.HTTPBody {
-        let paramsDictionary = ["amount":amount, "type":type, "software-type": ClientInfo.softwareType, "software-type-version":ClientInfo.softwareTypeVersion]
+    private func transactionBody(type:String, amount: String, tipAmount: String) -> HttpClient.HTTPBody {
+        var paramsDictionary = ["amount":amount, "type":type, "software-type": ClientInfo.softwareType, "software-type-version":ClientInfo.softwareTypeVersion]
+        if (tipAmount != "0.00") {
+            paramsDictionary["tip-amount"] = tipAmount
+        }
         let body = HttpClient.HTTPBody.parameters(paramsDictionary, HttpClient.ParameterEncoding.json)
         return body
     }

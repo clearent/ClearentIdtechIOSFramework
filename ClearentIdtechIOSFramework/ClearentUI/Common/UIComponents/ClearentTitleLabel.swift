@@ -15,6 +15,7 @@ public class ClearentTitleLabel: ClearentMarginableView {
     override public var margins: [BottomMargin] {
         [
             RelativeBottomMargin(constant: 16, relatedViewType: ClearentSubtitleLabel.self),
+            RelativeBottomMargin(constant: 24, relatedViewType: ClearentListView.self),
             BottomMargin(constant: 80)
         ]
     }

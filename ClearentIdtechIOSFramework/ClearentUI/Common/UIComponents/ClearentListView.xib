@@ -5,11 +5,10 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ClearentPairingReadersList" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ClearentListView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
             <connections>
                 <outlet property="bottomLayoutConstraint" destination="aDz-GX-dXZ" id="6gr-eE-4qF"/>
                 <outlet property="stackView" destination="L2v-iS-znc" id="KYr-BU-Rub"/>
@@ -25,7 +24,6 @@
                 </stackView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
-            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
                 <constraint firstItem="L2v-iS-znc" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="5Ha-cu-J9G"/>
                 <constraint firstItem="L2v-iS-znc" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="Jvm-5X-foL"/>
@@ -36,9 +34,4 @@
             <point key="canvasLocation" x="180.43478260869566" y="244.08482142857142"/>
         </view>
     </objects>
-    <resources>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
-    </resources>
 </document>

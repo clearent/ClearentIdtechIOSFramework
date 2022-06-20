@@ -6,10 +6,10 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
-class ClearentPairingReadersList: ClearentMarginableView {
+class ClearentListView: ClearentMarginableView {
     @IBOutlet var stackView: ClearentAdaptiveStackView!
 
-    convenience init(items: [ClearentPairingReaderItem]) {
+    convenience init(items: [ClearentMarginableView]) {
         self.init()
         items.forEach {
             stackView.addArrangedSubview($0)

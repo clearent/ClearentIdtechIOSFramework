@@ -48,7 +48,6 @@ protocol FlowDataProtocol : AnyObject {
 
 class FlowDataProvider : NSObject {
     weak var delegate: FlowDataProtocol?
-    static let shared = FlowDataProvider()
     
     let sdkWrapper = ClearentWrapper.shared
     
@@ -60,10 +59,22 @@ class FlowDataProvider : NSObject {
     func fetchReaderInfo() -> ReaderInfo? {
         return ClearentWrapperDefaults.pairedReaderInfo
     }
+    
+    public func startTipTransaction(amountWithoutTip: Double) {
+        let amountInfo = AmountInfo(amountWithoutTip: amountWithoutTip, availableTipPercentages: ClearentUIManager.shared.tipAmounts)
+        
+        let items = [FlowDataItem(type: .title, object: "xsdk_user_transaction_tip_title".localized),
+                     FlowDataItem(type: .tips, object: amountInfo),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.transactionWithTip),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.transactionWithoutTip)]
+        
+        let feedback = FlowFeedback(flow: .payment, type: FlowFeedbackType.info, items: items)
+
+        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+    }
 }
 
 extension FlowDataProvider : ClearentWrapperProtocol {
-    
     // MARK - Transaction related
     
     func didEncounteredGeneralError() {

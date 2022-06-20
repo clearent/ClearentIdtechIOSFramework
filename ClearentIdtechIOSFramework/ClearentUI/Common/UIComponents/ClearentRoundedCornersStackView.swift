@@ -15,8 +15,6 @@ class ClearentRoundedCornersStackView: ClearentAdaptiveStackView {
         static let backgroundColor = ClearentConstants.Color.backgroundSecondary01
     }
 
-    public var action: (() -> Void)?
-
     // MARK: - Lifecycle
 
     override init(frame: CGRect) {
@@ -29,14 +27,16 @@ class ClearentRoundedCornersStackView: ClearentAdaptiveStackView {
         setup()
     }
 
-    // MARK: - Public
-
-    public func showLoadingView() {
+    func showLoadingView() {
         removeAllArrangedSubviews()
         let loadingView = ClearentLoadingView()
         let emptySpace = ClearentEmptySpace(height: Layout.emptySpaceHeight)
         addArrangedSubview(emptySpace)
         addArrangedSubview(loadingView)
+    }
+    
+    func findButtonInStack(with type: FlowButtonType) -> ClearentPrimaryButton? {
+        return subviews.first { ($0 as? ClearentPrimaryButton)?.type == type } as? ClearentPrimaryButton
     }
     
     // MARK: - Private

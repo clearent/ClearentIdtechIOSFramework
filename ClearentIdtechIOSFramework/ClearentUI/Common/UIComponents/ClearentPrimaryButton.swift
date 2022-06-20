@@ -45,9 +45,21 @@ public class ClearentPrimaryButton: ClearentMarginableView {
             enabledBackgroundColor = isBorderedButton ? color.backgroundSecondary01 : color.base01
             enabledTextColor = isBorderedButton ? color.base01 : color.backgroundSecondary01
             borderColor = color.backgroundSecondary02
-            borderWidth = isBorderedButton ? ClearentConstants.Size.primaryButtonBorderWidth : 0
+            borderWidth = isBorderedButton ? ClearentConstants.Size.defaultButtonBorderWidth : 0
         }
     }
+    
+    public var isTransparentButton: Bool = false {
+        didSet {
+            if isTransparentButton {
+                enabledBackgroundColor = ClearentConstants.Color.backgroundSecondary01
+                enabledTextColor = ClearentConstants.Color.base01
+                borderWidth = 0
+            }
+        }
+    }
+    
+    var type: FlowButtonType?
     
     var borderColor: UIColor? {
         didSet {
