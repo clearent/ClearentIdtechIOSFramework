@@ -23,7 +23,7 @@ public enum UserAction: String {
          useMagstripe = "USE MAGSTRIPE",
          transactionStarted = "TRANSACTION STARTED",
          tapFailed = "TAP FAILED. INSERT/SWIPE",
-         bleDisconnected = "BLUETOOTH DISCONNECTED",
+         connectionTiemout = "CONNECTIION TIMEOUT",
          noInternet = "NO INTERNET",
          noBluetooth = "Bluetooth on this device is currently powered off.",
          noBluetoothPermission = "This app is not authorized to use Bluetooth Low Energy."
