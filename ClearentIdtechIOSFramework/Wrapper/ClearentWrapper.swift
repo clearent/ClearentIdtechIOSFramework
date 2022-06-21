@@ -79,6 +79,7 @@ public final class ClearentWrapper : NSObject {
     private let monitor = NWPathMonitor()
     private var isInternetOn = false
     internal var isBluetoothOn = false
+    internal var shouldSendPressButton = false
     private var continuousSearchingTimer: Timer?
     private var connectToReaderTimer: Timer?
     private var shouldStopUpdatingReadersListDuringContinuousSearching: Bool? = false
@@ -133,7 +134,9 @@ public final class ClearentWrapper : NSObject {
         
     public func connectTo(reader: ReaderInfo) {
         if reader.uuid != nil {
-            startConnectionTimeoutTimer()
+            DispatchQueue.main.async {
+                self.startConnectionTimeoutTimer()
+            }
             shouldStopUpdatingReadersListDuringContinuousSearching = nil
             connection  = ClearentConnection(bluetoothWithFriendlyName: reader.readerName)
             updateConnectionWithDevice(readerInfo: reader)
@@ -292,7 +295,11 @@ public final class ClearentWrapper : NSObject {
     }
     
     private func updateConnectionWithDevice(readerInfo: ReaderInfo) {
-        ClearentWrapperDefaults.pairedReaderInfo?.isConnected = false
+        if var currentReader =  ClearentWrapperDefaults.pairedReaderInfo {
+            currentReader.isConnected = false
+            addReaderToRecentlyUsed(reader: currentReader)
+        }
+        
         ClearentWrapperDefaults.pairedReaderInfo = readerInfo
 
         if let uuid = readerInfo.uuid {
@@ -309,8 +316,8 @@ public final class ClearentWrapper : NSObject {
     
     public func stopContinousSearching() {
         self.connection?.searchBluetooth = false
-        shouldStopUpdatingReadersListDuringContinuousSearching = nil
         shouldBeginContinuousSearchingForReaders?(false)
+        invalidateConnectionTimer()
     }
         
     private func getBatterylevel() {
@@ -370,10 +377,12 @@ public final class ClearentWrapper : NSObject {
     }
     
     private func startConnectionTimeoutTimer() {
-        invalidateConnectionTimer()
-        connectToReaderTimer = Timer.scheduledTimer(withTimeInterval: 15, repeats: false) { [weak self] _ in
+        self.shouldSendPressButton = true
+        connectToReaderTimer = Timer.scheduledTimer(withTimeInterval: 17, repeats: false) { [weak self] _ in
                 DispatchQueue.main.async {
-                    self?.delegate?.userActionNeeded(action: .connectionTimeout)
+                    if (self?.shouldSendPressButton == false) {
+                        self?.delegate?.userActionNeeded(action: .connectionTimeout)
+                    }
                 }
             }
         }
@@ -434,6 +443,13 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
                     }
                 }
             }
+            
+            if (clearentFeedback.message == "BLUETOOTH CONNECTED"){
+                DispatchQueue.main.async {
+                    self.shouldSendPressButton = false
+                    self.invalidateConnectionTimer()
+                }
+            }
         case .ERROR:
             if (ClearentWrapperDefaults.pairedReaderInfo != nil && clearentFeedback.message == UserAction.noBluetooth.rawValue) {
                 
@@ -478,7 +494,8 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         DispatchQueue.main.async {
             self.connectToReaderTimer?.invalidate()
             self.connectToReaderTimer = nil
-            
+            self.shouldSendPressButton = false
+            print("INVALIDATE TIMER")
         }
     }
     
