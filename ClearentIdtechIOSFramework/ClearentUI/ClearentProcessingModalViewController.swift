@@ -66,6 +66,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
 
     public func dismissViewController(isConnected: Bool, customName: String?) {
         ClearentWrapperDefaults.skipOnboarding = true
+        ClearentWrapper.shared.stopContinousSearching()
         ClearentWrapper.shared.cancelTransaction()
         DispatchQueue.main.async { [weak self] in
             self?.dismiss(animated: true, completion: nil)
