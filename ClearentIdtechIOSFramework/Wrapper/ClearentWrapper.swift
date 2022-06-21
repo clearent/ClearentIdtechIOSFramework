@@ -23,7 +23,7 @@ public enum UserAction: String {
          useMagstripe = "USE MAGSTRIPE",
          transactionStarted = "TRANSACTION STARTED",
          tapFailed = "TAP FAILED. INSERT/SWIPE",
-         connectionTiemout = "CONNECTIION TIMEOUT",
+         connectionTimeout = "CONNECTION TIMEOUT",
          noInternet = "NO INTERNET",
          noBluetooth = "Bluetooth on this device is currently powered off.",
          noBluetoothPermission = "This app is not authorized to use Bluetooth Low Energy."
@@ -291,11 +291,7 @@ public final class ClearentWrapper : NSObject {
     }
     
     private func updateConnectionWithDevice(readerInfo: ReaderInfo) {
-        var current = ClearentWrapperDefaults.pairedReaderInfo
-        current?.isConnected = false
-        if let reader = current {
-            addReaderToRecentlyUsed(reader: reader)
-        }
+        ClearentWrapperDefaults.pairedReaderInfo?.isConnected = false
         ClearentWrapperDefaults.pairedReaderInfo = readerInfo
 
         if let uuid = readerInfo.uuid {
@@ -371,7 +367,7 @@ public final class ClearentWrapper : NSObject {
         self.connectToReaderTimer = nil
         connectToReaderTimer = Timer.scheduledTimer(withTimeInterval: 8.0, repeats: false) { [weak self] _ in
                 DispatchQueue.main.async {
-                    self?.delegate?.userActionNeeded(action: .connectionTiemout)
+                    self?.delegate?.userActionNeeded(action: .connectionTimeout)
                 }
             }
         }
