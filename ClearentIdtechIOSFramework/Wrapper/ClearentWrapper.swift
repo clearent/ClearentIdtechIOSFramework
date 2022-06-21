@@ -78,7 +78,11 @@ public final class ClearentWrapper : NSObject {
     private var bleManager : BluetoothScanner?
     private let monitor = NWPathMonitor()
     private var isInternetOn = false
+    private lazy var httpClient: ClearentHttpClient = {
+        ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
+    }()
     internal var isBluetoothOn = false
+    internal var tipEnabled: Bool? = nil
     private var continuousSearchingTimer: Timer?
     private var connectToReaderTimer: Timer?
     private var shouldStopUpdatingReadersListDuringContinuousSearching: Bool? = false
@@ -193,8 +197,6 @@ public final class ClearentWrapper : NSObject {
     }
     
     public func saleTransaction(jwt: String, amount: String, tipAmount: String) {
-        let httpClient = ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
-        
         httpClient.saleTransaction(jwt: jwt, amount: amount, tipAmount: tipAmount) { data, error in
             guard let responseData = data else { return }
             
@@ -216,7 +218,6 @@ public final class ClearentWrapper : NSObject {
     }
     
     public func refundTransaction(jwt: String, amount: String) {
-        let httpClient = ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
         httpClient.refundTransaction(jwt: jwt, amount: amount) { data, error in
             guard let responseData = data else { return }
             
@@ -238,7 +239,6 @@ public final class ClearentWrapper : NSObject {
     }
     
     public func voidTransaction(transactionID: String) {
-        let httpClient = ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
         httpClient.voidTransaction(transactionID: transactionID) { data, error in
             guard let responseData = data else { return }
             
@@ -255,6 +255,25 @@ public final class ClearentWrapper : NSObject {
                 }
             } catch let jsonDecodingError {
                 print(jsonDecodingError)
+            }
+        }
+    }
+    
+    public func fetchTipSetting(completion: @escaping () -> Void) {
+        guard tipEnabled == nil else {
+            completion()
+            return
+        }
+        httpClient.merchantSettings() { data, error in
+            DispatchQueue.main.async {
+                do {
+                    guard let data = data else { return }
+                    let decodedResponse = try JSONDecoder().decode(MerchantSettings.self, from: data)
+                    self.tipEnabled = decodedResponse.payload.terminalSettings.enableTip
+                } catch let jsonDecodingError {
+                    print(jsonDecodingError)
+                }
+                completion()
             }
         }
     }
@@ -487,5 +506,12 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
             self.bleManager?.cancelPeripheralConnection()
             self.delegate?.deviceDidDisconnect()
         }
+    }
+}
+
+
+extension Data {
+    var prettyString: NSString? {
+        return NSString(data: self, encoding: String.Encoding.utf8.rawValue) ?? nil
     }
 }
