@@ -380,7 +380,7 @@ public final class ClearentWrapper : NSObject {
         self.shouldSendPressButton = true
         connectToReaderTimer = Timer.scheduledTimer(withTimeInterval: 17, repeats: false) { [weak self] _ in
                 DispatchQueue.main.async {
-                    if (self?.shouldSendPressButton == false) {
+                    if (self?.shouldSendPressButton == true) {
                         self?.delegate?.userActionNeeded(action: .connectionTimeout)
                     }
                 }
