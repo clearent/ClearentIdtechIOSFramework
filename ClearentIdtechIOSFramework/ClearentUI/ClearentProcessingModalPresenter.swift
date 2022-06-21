@@ -218,6 +218,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             if (ClearentWrapperDefaults.pairedReaderInfo?.readerName == reader.readerName){
                 ClearentWrapperDefaults.pairedReaderInfo?.customReaderName = reader.customReaderName
             }
+            sdkWrapper.removeReaderFromRecentlyUsed(reader: reader)
+            sdkWrapper.addReaderToRecentlyUsed(reader: reader)
             editableReader = reader
         }
     }
