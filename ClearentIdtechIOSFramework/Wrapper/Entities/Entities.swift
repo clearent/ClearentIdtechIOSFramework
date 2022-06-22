@@ -41,17 +41,15 @@ public struct MerchantSettings: Codable {
     
     public struct PayloadSettings: Codable {
         var terminalSettings: TerminalSettings
-    
-        public struct TerminalSettings: Codable {
-            var enableTip: Bool
-            
-            private enum CodingKeys: String, CodingKey {
-                case enableTip = "enable-tip"
-            }
+        enum CodingKeys: String, CodingKey {
+            case terminalSettings = "terminal-settings"
         }
         
-        private enum CodingKeys: String, CodingKey {
-            case terminalSettings = "terminal-settings"
+        public struct TerminalSettings: Codable {
+            var enableTip: Bool
+            enum CodingKeys: String, CodingKey {
+                case enableTip = "enable-tip"
+            }
         }
     }
 }
