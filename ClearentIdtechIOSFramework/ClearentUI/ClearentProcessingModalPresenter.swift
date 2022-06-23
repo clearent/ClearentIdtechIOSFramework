@@ -79,7 +79,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         case .pairing:
             sdkWrapper.startPairing(reconnectIfPossible: !newPair)
         case .payment:
-            sdkWrapper.retryLastTransaction()
+            startTransactionFlow()
         case .showReaders:
             break
         }
@@ -172,11 +172,13 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     
     private func startTransactionFlow() {
         sdkFeedbackProvider.delegate = self
-        
-        if let tipEnabled = ClearentWrapper.shared.tipEnabled, tipEnabled, sdkWrapper.isReaderConnected() {
-            self.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: amountWithoutTip ?? 0)
-        } else {
-            continueTransaction()
+        fetchTipSetting { [weak self] in
+            guard let strongSelf = self else { return }
+            if let tipEnabled = ClearentWrapper.shared.tipEnabled, tipEnabled, strongSelf.tipsScreenWasNotShown, strongSelf.sdkWrapper.isReaderConnected() {
+                strongSelf.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: strongSelf.amountWithoutTip ?? 0)
+            } else {
+                strongSelf.continueTransaction()
+            }
         }
     }
     
