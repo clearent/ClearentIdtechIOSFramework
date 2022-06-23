@@ -14,6 +14,7 @@ public final class ClearentUIManager : NSObject {
     public static let shared = ClearentUIManager()
     public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
     public var tipEnabled: Bool = false
+    public var signatureEnabled: Bool = false
     public var tipAmounts: [Double] = ClearentConstants.Tips.defaultTipPercentages
     // MARK: Init
     
@@ -55,6 +56,10 @@ public final class ClearentUIManager : NSObject {
         if let tips = tipAmounts {
             self.tipAmounts = tips
         }
+    }
+    
+    public func setSignatureEnabled(signatureEnabled: Bool) {
+        self.signatureEnabled = signatureEnabled
     }
     
     public func paymentViewController(amount: Double) -> UINavigationController {
