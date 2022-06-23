@@ -30,6 +30,7 @@ protocol ProcessingModalProtocol {
     func showDetailsScreen(for reader: ReaderItem, allReaders: [ReaderItem], flowDataProvider: FlowDataProvider, on navigationController: UINavigationController)
     func connectTo(reader: ReaderInfo)
     func updateTemporaryReaderName(name: String?)
+    func fetchTipSetting(completion: @escaping () -> Void)
 }
 
 class ClearentProcessingModalPresenter {
@@ -163,12 +164,16 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         }
     }
     
+    func fetchTipSetting(completion: @escaping () -> Void) {
+        sdkWrapper.fetchTipSetting(completion: completion)
+    }
+
     // MARK: Private
     
     private func startTransactionFlow() {
         sdkFeedbackProvider.delegate = self
         
-        if (ClearentUIManager.shared.tipEnabled && sdkWrapper.isReaderConnected()) {
+        if let tipEnabled = ClearentWrapper.shared.tipEnabled, tipEnabled, sdkWrapper.isReaderConnected() {
             self.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: amountWithoutTip ?? 0)
         } else {
             continueTransaction()
@@ -251,7 +256,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                 self.modalProcessingView?.updateContent(with: feedback)
             }
         } else {
-            if ClearentUIManager.shared.tipEnabled && tipsScreenWasNotShown {
+            if let tipEnabled = ClearentWrapper.shared.tipEnabled, tipEnabled, tipsScreenWasNotShown {
                 self.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: amountWithoutTip ?? 0)
             } else {
                 continueTransaction()

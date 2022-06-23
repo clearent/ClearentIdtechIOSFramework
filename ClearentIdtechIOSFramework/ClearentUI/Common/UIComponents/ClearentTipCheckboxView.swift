@@ -10,7 +10,7 @@ class ClearentTipCheckboxView: ClearentMarginableView {
 
     // MARK: - Properties
     
-    @IBOutlet weak var checkButton: UIButton!
+    @IBOutlet weak var checkView: UIImageView!
     @IBOutlet weak var percentageLabel: UILabel!
     @IBOutlet weak var tipValueLabel: UILabel!
     @IBOutlet weak var decreaseTipButton: UIButton!
@@ -29,8 +29,8 @@ class ClearentTipCheckboxView: ClearentMarginableView {
     
     var isSelected: Bool = false {
         didSet {
-            checkButton.layer.borderWidth = isSelected ? checkButton.bounds.height / 3.0 : ClearentConstants.Size.defaultButtonBorderWidth
-            checkButton.layer.borderColor = isSelected ? ClearentConstants.Color.base01.cgColor : ClearentConstants.Color.base04.cgColor
+            checkView.layer.borderWidth = isSelected ? checkView.bounds.height / 3.0 : ClearentConstants.Size.defaultButtonBorderWidth
+            checkView.layer.borderColor = isSelected ? ClearentConstants.Color.base01.cgColor : ClearentConstants.Color.base04.cgColor
         }
     }
     
@@ -42,7 +42,7 @@ class ClearentTipCheckboxView: ClearentMarginableView {
     }
     
     override func configure() {
-        setCheckButton()
+        setCheckView()
         setLabels()
         setAdjustTipButton(button: decreaseTipButton, iconName: ClearentConstants.IconName.decreaseTip)
         setAdjustTipButton(button: increaseTipButton, iconName: ClearentConstants.IconName.increaseTip)
@@ -90,11 +90,10 @@ class ClearentTipCheckboxView: ClearentMarginableView {
         tipValueLabel.textColor = ClearentConstants.Color.base01
     }
     
-    private func setCheckButton() {
+    private func setCheckView() {
         isSelected = false
-        checkButton.layer.cornerRadius = checkButton.bounds.height / 2.0
-        checkButton.backgroundColor = ClearentConstants.Color.backgroundSecondary01
-        checkButton.setTitle("", for: .normal)
+        checkView.layer.cornerRadius = checkView.bounds.height / 2.0
+        checkView.backgroundColor = ClearentConstants.Color.backgroundSecondary01
     }
     
     private func setAdjustTipButton(button: UIButton, iconName: String) {
