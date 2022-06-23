@@ -76,6 +76,18 @@
 // Read error (use Magstripe)
 "xsdk_tap_failed_insert_swipe_description" = "Tap failed. Please insert or swipe the card";
 
+// Read error (amount is over maximum limit allowed for tap)
+"xsdk_amount_over_maximum_limit_allowed_for_tap_description" = "Amount is over maximum limit allowed for tap";
+
+// Read error (chip not recognized)
+"xsdk_chip_not_recognized_description" = "Chip not recognized. Pull card out, wait for green led, try swipe";
+
+// Read error (failed to start swipe)
+"xsdk_failed_starting_swipe_description" = "Failed to start swipe. Try again but this time pull card out when instructed";
+
+// Read error (card unsupported)
+"xsdk_card_unsupported" = "Card unsupported";
+
 // Reader signal
 "xsdk_reader_signal_idle" = "Not connected";
 "xsdk_reader_signal_connected" = "Connected";

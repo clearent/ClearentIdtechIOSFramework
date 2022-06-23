@@ -191,6 +191,34 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .description, object: "xsdk_bluetooth__permission_error_description".localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.settings),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+        case .amountNotAllowedForTap:
+            type = .warning
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
+                     FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
+                     FlowDataItem(type: .description, object: "xsdk_amount_over_maximum_limit_allowed_for_tap_description".localized),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.retry),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+        case .chipNotRecognized:
+            type = .warning
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
+                     FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
+                     FlowDataItem(type: .description, object: "xsdk_chip_not_recognized_description".localized),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.retry),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+        case .failedToStartSwipe:
+            type = .warning
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
+                     FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
+                     FlowDataItem(type: .description, object: "xsdk_failed_starting_swipe_description".localized),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.retry),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+        case .cardUnsupported:
+            type = .warning
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
+                     FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
+                     FlowDataItem(type: .description, object: "xsdk_card_unsupported".localized),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.retry),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         }
         
         if let flowItems = items {

@@ -26,7 +26,11 @@ public enum UserAction: String {
          connectionTimeout = "CONNECTION TIMEOUT",
          noInternet = "NO INTERNET",
          noBluetooth = "Bluetooth on this device is currently powered off.",
-         noBluetoothPermission = "This app is not authorized to use Bluetooth Low Energy."
+         noBluetoothPermission = "This app is not authorized to use Bluetooth Low Energy.",
+         amountNotAllowedForTap = "Amount is over maximum limit allowed for tap.",
+         chipNotRecognized = "Chip not recognized. Pull card out, wait for green led, try swipe.",
+         failedToStartSwipe = "Failed to start swipe. Try again but this time pull card out when instructed.",
+         cardUnsupported = "Card unsupported"
 }
 
 public enum UserInfo: String {
