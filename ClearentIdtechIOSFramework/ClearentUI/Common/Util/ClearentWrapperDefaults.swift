@@ -61,7 +61,7 @@ extension ClearentWrapperDefaults {
         ClearentWrapper.shared.readerInfoReceived?(newValue)
         
         if var newPairedReader = newValue {
-            // set first paired reader with autojoine true
+            // set first pairedReader with autojoin true
             if recentlyPairedReaders?.count ?? 0 == 0 {
                 newPairedReader.autojoin = true
             }
