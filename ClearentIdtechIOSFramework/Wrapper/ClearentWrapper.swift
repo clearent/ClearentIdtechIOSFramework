@@ -314,11 +314,7 @@ public final class ClearentWrapper : NSObject {
     }
     
     private func updateConnectionWithDevice(readerInfo: ReaderInfo) {
-        if var currentReader =  ClearentWrapperDefaults.pairedReaderInfo {
-            currentReader.isConnected = false
-            addReaderToRecentlyUsed(reader: currentReader)
-        }
-        
+        ClearentWrapperDefaults.pairedReaderInfo?.isConnected = false
         ClearentWrapperDefaults.pairedReaderInfo = readerInfo
 
         if let uuid = readerInfo.uuid {
@@ -456,10 +452,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         case .BLUETOOTH:
             if (ClearentWrapperDefaults.pairedReaderInfo != nil) {
                 if (clearentFeedback.message == UserAction.noBluetooth.rawValue) {
-                    if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
-                        currentReader.isConnected = false
-                        ClearentWrapperDefaults.pairedReaderInfo = currentReader
-                    }
+                    ClearentWrapperDefaults.pairedReaderInfo?.isConnected = false
                 }
             }
             
@@ -523,10 +516,6 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         bleManager?.udid = ClearentWrapperDefaults.pairedReaderInfo?.uuid
         bleManager?.setupDevice()
         startDeviceInfoUpdate()
-        // if there is no autojoin reader, set the current connected reader with autojoin true
-        if ClearentWrapperDefaults.recentlyPairedReaders?.first(where: { $0.autojoin == true }) == nil {
-            ClearentWrapperDefaults.pairedReaderInfo?.autojoin = true
-        }
         ClearentWrapperDefaults.pairedReaderInfo?.isConnected = true
         self.delegate?.didFinishPairing()
     }
