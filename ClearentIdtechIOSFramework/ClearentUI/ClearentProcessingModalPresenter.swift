@@ -40,6 +40,7 @@ class ClearentProcessingModalPresenter {
     private weak var modalProcessingView: ClearentProcessingModalView?
     private var temporaryReaderName: String?
     private let sdkWrapper = ClearentWrapper.shared
+    private var tipsScreenWasNotShown = true
     var amountWithoutTip: Double?
     var tip: Double?
     var processType: ProcessType
@@ -159,6 +160,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         case .transactionWithTip, .transactionWithoutTip:
             modalProcessingView?.showLoadingView()
             continueTransaction()
+            tipsScreenWasNotShown = false
         }
     }
     
@@ -254,7 +256,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                 self.modalProcessingView?.updateContent(with: feedback)
             }
         } else {
-            if let tipEnabled = ClearentWrapper.shared.tipEnabled, tipEnabled {
+            if let tipEnabled = ClearentWrapper.shared.tipEnabled, tipEnabled, tipsScreenWasNotShown {
                 self.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: amountWithoutTip ?? 0)
             } else {
                 continueTransaction()
