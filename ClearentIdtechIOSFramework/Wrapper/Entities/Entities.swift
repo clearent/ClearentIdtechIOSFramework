@@ -35,3 +35,10 @@ public struct ResponseError: Codable {
         case message = "error-message"
     }
 }
+
+public struct SignatureResponse: Codable {
+    var code: String
+    var status: String
+    var links: [Links]?
+    var payload: Payload
+}

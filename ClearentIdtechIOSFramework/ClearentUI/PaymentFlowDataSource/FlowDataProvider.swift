@@ -75,6 +75,11 @@ class FlowDataProvider : NSObject {
 }
 
 extension FlowDataProvider : ClearentWrapperProtocol {
+    
+    func didFinishedSIgnatureUploadWith(response: SignatureResponse, error: ResponseError?) {
+        // show result
+    }
+    
     // MARK - Transaction related
     
     func didEncounteredGeneralError() {
