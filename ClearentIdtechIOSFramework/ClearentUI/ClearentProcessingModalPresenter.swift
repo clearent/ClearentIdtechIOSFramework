@@ -174,7 +174,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         sdkFeedbackProvider.delegate = self
         fetchTipSetting { [weak self] in
             guard let strongSelf = self else { return }
-            if let tipEnabled = ClearentWrapper.shared.tipEnabled, tipEnabled, strongSelf.tipsScreenWasNotShown, strongSelf.sdkWrapper.isReaderConnected() {
+            let showTipsScreen = (ClearentWrapper.shared.tipEnabled ?? false) && strongSelf.tipsScreenWasNotShown
+            if showTipsScreen, strongSelf.sdkWrapper.isReaderConnected() {
                 strongSelf.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: strongSelf.amountWithoutTip ?? 0)
             } else {
                 strongSelf.continueTransaction()
@@ -258,7 +259,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                 self.modalProcessingView?.updateContent(with: feedback)
             }
         } else {
-            if let tipEnabled = ClearentWrapper.shared.tipEnabled, tipEnabled, tipsScreenWasNotShown {
+            if (ClearentWrapper.shared.tipEnabled ?? false), tipsScreenWasNotShown {
                 self.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: amountWithoutTip ?? 0)
             } else {
                 continueTransaction()
