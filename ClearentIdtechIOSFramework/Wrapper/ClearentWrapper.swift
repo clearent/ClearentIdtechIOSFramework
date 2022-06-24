@@ -522,6 +522,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
             self.connectToReaderTimer?.invalidate()
             self.connectToReaderTimer = nil
             self.shouldSendPressButton = false
+            print("INVALIDATE TIMER")
         }
     }
     
