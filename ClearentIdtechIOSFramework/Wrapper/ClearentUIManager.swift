@@ -16,6 +16,7 @@ public final class ClearentUIManager : NSObject {
     public var tipEnabled: Bool = false
     public var signatureEnabled: Bool = false
     public var tipAmounts: [Double] = ClearentConstants.Tips.defaultTipPercentages
+    
     // MARK: Init
     
     public override init() {
