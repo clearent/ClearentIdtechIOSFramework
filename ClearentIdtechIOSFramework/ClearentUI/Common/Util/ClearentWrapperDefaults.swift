@@ -10,32 +10,12 @@ import Foundation
 import AVFAudio
 
 private struct DefaultKeys {
-    static let readerFriendlyNameKey = "xsdk_reader_friendly_name_key"
     static let recentlyPairedReadersKey = "xsdk_recently+paired_readers_key"
     static let skipOnboarding = "xsdk_skip_onboarding_key"
 }
 
 public class ClearentWrapperDefaults: UserDefaultsPersistence {
-        
-    private static var defaultReaderInfo: ReaderInfo? {
-           
-           get {
-               if let savedReaderData = retrieveValue(forKey: DefaultKeys.readerFriendlyNameKey) as? Data {
-                   let decoder = JSONDecoder()
-                   let loadedReaderInfo = try? decoder.decode(ReaderInfo.self, from: savedReaderData)
-                   return loadedReaderInfo
-               }
-               
-               return nil
-           }
-           
-           set {
-               let encoder = JSONEncoder()
-               if let encoded = try? encoder.encode(newValue) {
-                   save(encoded, forKey:  DefaultKeys.readerFriendlyNameKey)
-               }
-           }
-       }
+    fileprivate static var previouslyPairedReaderInfo: ReaderInfo?
     
     internal static var recentlyPairedReaders: [ReaderInfo]? {
            
@@ -70,20 +50,29 @@ public class ClearentWrapperDefaults: UserDefaultsPersistence {
 extension ClearentWrapperDefaults {
     internal static var pairedReaderInfo: ReaderInfo? {
         get {
-            defaultReaderInfo
+            previouslyPairedReaderInfo ?? recentlyPairedReaders?.first { $0.autojoin == true }
         }
         set {
-            ClearentWrapper.shared.readerInfoReceived?(newValue)
-            // current paired reader should be in sync with the corresponding item from previously paired readers
-            if let pairedReader = newValue {
-                ClearentWrapper.shared.addReaderToRecentlyUsed(reader: pairedReader)
-            } // if pairedReader is nil, we need to set connected and autojoin to false for the corresponding item from the previously paired readers
-            else if var oldPairedReader = defaultReaderInfo {
-                oldPairedReader.isConnected = false
-                oldPairedReader.autojoin = false
-                ClearentWrapper.shared.updateReaderInRecentlyUsed(reader: oldPairedReader)
-            }
-            defaultReaderInfo = newValue
+            setupPairedReader(with: newValue)
         }
+    }
+    
+    private static func setupPairedReader(with newValue: ReaderInfo?) {
+        ClearentWrapper.shared.readerInfoReceived?(newValue)
+        
+        if var newPairedReader = newValue {
+            // set first pairedReader with autojoin true
+            if recentlyPairedReaders?.count ?? 0 == 0 {
+                newPairedReader.autojoin = true
+            }
+            ClearentWrapper.shared.addReaderToRecentlyUsed(reader: newPairedReader)
+        }
+        // if pairedReader is nil, we need to set connected and autojoin to false for the corresponding item from the previously paired readers
+        else if var previouslyPairedReaderInfo = previouslyPairedReaderInfo {
+            previouslyPairedReaderInfo.isConnected = false
+            previouslyPairedReaderInfo.autojoin = false
+            ClearentWrapper.shared.updateReaderInRecentlyUsed(reader: previouslyPairedReaderInfo)
+        }
+        previouslyPairedReaderInfo = newValue
     }
 }
