@@ -66,13 +66,16 @@ extension ClearentWrapperDefaults {
                 newPairedReader.autojoin = true
             }
             ClearentWrapper.shared.addReaderToRecentlyUsed(reader: newPairedReader)
+            previouslyPairedReaderInfo = newPairedReader
         }
         // if pairedReader is nil, we need to set connected and autojoin to false for the corresponding item from the previously paired readers
-        else if var previouslyPairedReaderInfo = previouslyPairedReaderInfo {
-            previouslyPairedReaderInfo.isConnected = false
-            previouslyPairedReaderInfo.autojoin = false
-            ClearentWrapper.shared.updateReaderInRecentlyUsed(reader: previouslyPairedReaderInfo)
+        else {
+            if var previouslyPairedReaderInfo = previouslyPairedReaderInfo {
+                previouslyPairedReaderInfo.isConnected = false
+                previouslyPairedReaderInfo.autojoin = false
+                ClearentWrapper.shared.updateReaderInRecentlyUsed(reader: previouslyPairedReaderInfo)
+            }
+            previouslyPairedReaderInfo = nil
         }
-        previouslyPairedReaderInfo = newValue
     }
 }

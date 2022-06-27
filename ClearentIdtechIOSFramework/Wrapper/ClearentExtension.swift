@@ -19,11 +19,8 @@ extension ClearentWrapper: BluetoothScannerProtocol {
     }
     
     internal func didReceivedSignalStrength(level: SignalLevel) {
-        if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
-            currentReader.signalLevel = level.rawValue
-            ClearentWrapperDefaults.pairedReaderInfo = currentReader
-            delegate?.didReceiveSignalStrength()
-        }
+        ClearentWrapperDefaults.pairedReaderInfo?.signalLevel = level.rawValue
+        delegate?.didReceiveSignalStrength()
     }
     
     internal func didFinishWithError() {
