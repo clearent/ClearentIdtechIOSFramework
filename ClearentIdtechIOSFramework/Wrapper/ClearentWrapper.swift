@@ -78,6 +78,9 @@ public final class ClearentWrapper : NSObject {
     private var bleManager : BluetoothScanner?
     private let monitor = NWPathMonitor()
     private var isInternetOn = false
+    private var connectivityActionNeeded: UserAction? {
+        isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : .noInternet
+    }
     private lazy var httpClient: ClearentHttpClient = {
         ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
     }()
@@ -117,6 +120,12 @@ public final class ClearentWrapper : NSObject {
     // MARK - Public
         
     public func startPairing(reconnectIfPossible: Bool) {
+        if let action = connectivityActionNeeded {
+            DispatchQueue.main.async {
+                self.delegate?.userActionNeeded(action: action)
+            }
+            return
+        }
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let strongSelf = self else { return }
             
@@ -160,11 +169,6 @@ public final class ClearentWrapper : NSObject {
         self.publicKey = publicKey
     }
     
-    public func retryLastTransaction() {
-        guard let amount = transactionAmount else {return}        
-        startTransaction(with: amount, and: tipAmount)
-    }
-    
     public func startTransaction(with amount: String, and tip: String?) {
 
         if (amount.canBeConverted(to: String.Encoding.utf8)) {
@@ -174,21 +178,20 @@ public final class ClearentWrapper : NSObject {
         if let newTip = tip, newTip.canBeConverted(to: String.Encoding.utf8) {
             self.tipAmount = newTip
         }
-
-        let userActionNeeded: UserAction? = isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : .noInternet
         
-        if let action = userActionNeeded {
+        if let action = connectivityActionNeeded {
             DispatchQueue.main.async {
                   self.delegate?.userActionNeeded(action: action)
             }
-        } else {
-            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-                guard let strongSelf = self else { return }
-                ClearentWrapper.shared.startDeviceInfoUpdate()
-                let payment = ClearentPayment.init(sale: ())
-                payment?.amount = Double(amount) ?? 0
-                strongSelf.clearentVP3300.startTransaction(payment, clearentConnection: strongSelf.connection)
-            }
+            return
+        }
+        
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let strongSelf = self else { return }
+            ClearentWrapper.shared.startDeviceInfoUpdate()
+            let payment = ClearentPayment.init(sale: ())
+            payment?.amount = Double(amount) ?? 0
+            strongSelf.clearentVP3300.startTransaction(payment, clearentConnection: strongSelf.connection)
         }
     }
     
@@ -264,14 +267,19 @@ public final class ClearentWrapper : NSObject {
     }
     
     public func fetchTipSetting(completion: @escaping () -> Void) {
-        guard tipEnabled == nil else {
-            completion()
+        if let action = connectivityActionNeeded {
+            DispatchQueue.main.async {
+                self.delegate?.userActionNeeded(action: action)
+            }
             return
         }
         httpClient.merchantSettings() { data, error in
             DispatchQueue.main.async {
                 do {
-                    guard let data = data else { return }
+                    guard let data = data else {
+                        completion()
+                        return
+                    }
                     let decodedResponse = try JSONDecoder().decode(MerchantSettings.self, from: data)
                     self.tipEnabled = decodedResponse.payload.terminalSettings.enableTip
                 } catch let jsonDecodingError {
@@ -394,13 +402,14 @@ public final class ClearentWrapper : NSObject {
     private func startConnectionTimeoutTimer() {
         self.shouldSendPressButton = true
         connectToReaderTimer = Timer.scheduledTimer(withTimeInterval: 17, repeats: false) { [weak self] _ in
+                guard let strongSelf = self else { return }
                 DispatchQueue.main.async {
-                    if (self?.shouldSendPressButton == true) {
+                    if strongSelf.shouldSendPressButton && strongSelf.isBluetoothOn && strongSelf.isInternetOn {
                         self?.delegate?.userActionNeeded(action: .connectionTimeout)
                     }
                 }
             }
-        }
+    }
 }
 
 extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
@@ -458,7 +467,6 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
             
             if (clearentFeedback.message == "BLUETOOTH CONNECTED"){
                 DispatchQueue.main.async {
-                    self.shouldSendPressButton = false
                     self.invalidateConnectionTimer()
                 }
             }
