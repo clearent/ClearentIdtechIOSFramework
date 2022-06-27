@@ -62,7 +62,7 @@ class ClearentHttpClient {
         let created = DateFormatter().string(from: Date())
         
         let signatureURL = URL(string: baseURL + ClearentEndpoints.signature)
-        let headers = headersForSignature(apiKey: self.apiKey)
+        let headers = headers(jwt: nil, apiKey: self.apiKey)
         let _ = HttpClient.makeRawRequest(to: signatureURL!, method: signatureHTTPMethod(base64Image: baseURL, created: created, transactionID: transactionID), headers: headers) { data, error in
             completion(data, error)
         }
@@ -105,11 +105,6 @@ class ClearentHttpClient {
         if let jwt = jwt {
             headers["mobilejwt"] = jwt
         }
-        return headers
-    }
-    
-    private func headersForSignature(apiKey:String) -> Dictionary<String, String> {
-        let headers = ["Content-Type": "application/json", "Accept": "application/json", "api-key" : apiKey]
         return headers
     }
     

@@ -13,7 +13,6 @@ public final class ClearentUIManager : NSObject {
     private let clearentWrapper = ClearentWrapper.shared
     public static let shared = ClearentUIManager()
     public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
-    public var tipEnabled: Bool = false
     public var signatureEnabled: Bool = false
     public var tipAmounts: [Double] = ClearentConstants.Tips.defaultTipPercentages
     
@@ -50,13 +49,6 @@ public final class ClearentUIManager : NSObject {
     
     public func updateWith(baseURL: String, apiKey: String, publicKey: String) {
         clearentWrapper.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey)
-    }
-    
-    public func setTipsEnabled(tipsEnabled: Bool, tipAmounts:[Double]?) {
-        self.tipEnabled = tipsEnabled
-        if let tips = tipAmounts {
-            self.tipAmounts = tips
-        }
     }
     
     public func setSignatureEnabled(signatureEnabled: Bool) {

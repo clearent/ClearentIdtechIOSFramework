@@ -210,7 +210,7 @@ public final class ClearentWrapper : NSObject {
                 let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
                 guard let transactionError = decodedResponse.payload.error else {
                     DispatchQueue.main.async {
-                        if let linksItem = decodedResponse.links?[0] {
+                        if let linksItem = decodedResponse.links?.first {
                             self.lastTransactionID = linksItem.id
                         }
                       
