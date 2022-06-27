@@ -347,25 +347,16 @@ public final class ClearentWrapper : NSObject {
         var response : NSData? = NSData()
         _ = clearentVP3300.device_sendIDGCommand(0xF0, subCommand: 0x02, data: nil, response: &response)
         guard let response = response else {
-            if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
-                currentReader.batterylevel = nil
-                ClearentWrapperDefaults.pairedReaderInfo = currentReader
-            }
+            ClearentWrapperDefaults.pairedReaderInfo?.batterylevel = nil
             return
         }
         let curentLevel = response.int
         
         if (curentLevel > 0) {
             let batteryLevel = batteryLevelPercentageFrom(level: response.int)
-            if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
-                currentReader.batterylevel = batteryLevel
-                ClearentWrapperDefaults.pairedReaderInfo = currentReader
-            }
+            ClearentWrapperDefaults.pairedReaderInfo?.batterylevel = batteryLevel
         } else {
-            if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
-                currentReader.batterylevel = nil
-                ClearentWrapperDefaults.pairedReaderInfo = currentReader
-            }
+            ClearentWrapperDefaults.pairedReaderInfo?.batterylevel = nil
         }
     }
     
