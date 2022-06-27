@@ -46,6 +46,7 @@
 "xsdk_user_action_retry" = "Try Again";
 "xsdk_user_action_cancel" = "Cancel";
 "xsdk_user_action_ok" = "OK";
+"xsdk_connection_timeout" = "CONNECTION TIMEOUT";
 
 // Transaction completed
 "xsdk_transaction_completed_description" = "Payment successful";
@@ -76,18 +77,6 @@
 // Read error (use Magstripe)
 "xsdk_tap_failed_insert_swipe_description" = "Tap failed. Please insert or swipe the card";
 
-// Read error (amount is over maximum limit allowed for tap)
-"xsdk_amount_over_maximum_limit_allowed_for_tap_description" = "Amount is over maximum limit allowed for tap";
-
-// Read error (chip not recognized)
-"xsdk_chip_not_recognized_description" = "Chip not recognized. Pull card out, wait for green led, try swipe";
-
-// Read error (failed to start swipe)
-"xsdk_failed_starting_swipe_description" = "Failed to start swipe. Try again but this time pull card out when instructed";
-
-// Read error (card unsupported)
-"xsdk_card_unsupported" = "Card unsupported";
-
 // Reader signal
 "xsdk_reader_signal_idle" = "Not connected";
 "xsdk_reader_signal_connected" = "Connected";
@@ -117,6 +106,7 @@
 // Internet Connection
 "xsdk_internet_error_title" = "Check your connection";
 "xsdk_internet_error_description" = "You don’t seem to have an active internet connection. Please check connection and try again";
+"xsdk_no_internet" = "NO INTERNET";
 
 // Bluetooth
 "xsdk_bluetooth_error_title" = "Bluetooth is not on";
@@ -124,4 +114,5 @@
 
 "xsdk_bluetooth_permission_error_title" = "No bluetooth permission";
 "xsdk_bluetooth__permission_error_description" = "In order to use the app you need to accept the bluetooth permission.";
-
+"xsdk_no_bluetooth" = "Bluetooth on this device is currently powered off.";
+"xsdk_no_bluetooth_permission" = "This app is not authorized to use Bluetooth Low Energy.";
