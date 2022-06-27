@@ -210,6 +210,14 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         modalProcessingView?.updateContent(with: feedback)
     }
     
+    private func showSignatureScreen() {
+        let items = [FlowDataItem(type: .hint, object: "xsdk_signature_title".localized),
+                     FlowDataItem(type: .description, object: "xsdk_signature_subtitle".localized),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.done)]
+        let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.info, items: items)
+        modalProcessingView?.updateContent(with: feedback)
+    }
+    
     private func updateReaderName() {
         if var reader = editableReader {
             if let newName = temporaryReaderName, newName != "" {
@@ -270,7 +278,11 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
 
     func didFinishTransaction(error: ResponseError?) {
         if error == nil {
-            dissmissViewWithDelay()
+            if (ClearentUIManager.shared.signatureEnabled) {
+                showSignatureScreen()
+            } else {
+                dissmissViewWithDelay()
+            }
         }
     }
     

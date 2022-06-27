@@ -13,7 +13,7 @@ public final class ClearentUIManager : NSObject {
     private let clearentWrapper = ClearentWrapper.shared
     public static let shared = ClearentUIManager()
     public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
-    public var signatureEnabled: Bool = false
+    public var signatureEnabled: Bool = true
     public var tipAmounts: [Double] = ClearentConstants.Tips.defaultTipPercentages
     
     // MARK: Init

@@ -32,8 +32,8 @@
 "xsdk_user_transaction_tip_title" = "Would you like to add a tip?";
 "xsdk_user_action_transaction_with_tip" = "Charge %@";
 "xsdk_user_action_transaction_without_tip" = "Maybe next time";
-
-
+"xsdk_signature_title" = "Customer signature";
+"xsdk_signature_subtitle" = "In order to complete the transaction we need your validation signature. Please draw your signature in the box below.";
 /* Payment Flow*/
 
 "xsdk_unknown_reader_name" = "Unknown";
