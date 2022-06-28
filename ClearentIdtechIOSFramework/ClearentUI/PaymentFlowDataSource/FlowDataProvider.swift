@@ -124,110 +124,110 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         switch action {
         case .pleaseWait:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
-                     FlowDataItem(type: .description, object: action.localized)]
+                     FlowDataItem(type: .description, object: description.localized)]
         case .swipeInsert, .swipeTapOrInsert:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
-                     FlowDataItem(type: .description, object: action.localized),
+                     FlowDataItem(type: .description, object: description.localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .pressReaderButton, .connectionTimeout:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.press_button),
-                     FlowDataItem(type: .description, object: action.localized),
+                     FlowDataItem(type: .description, object: description.localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .tryICCAgain:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
-                     FlowDataItem(type: .description, object: action.localized),
+                     FlowDataItem(type: .description, object: description.localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .cardHasChip:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
-                     FlowDataItem(type: .description, object: action.localized),
+                     FlowDataItem(type: .description, object: description.localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .tryMSRAgain:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
-                     FlowDataItem(type: .description, object: action.localized),
+                     FlowDataItem(type: .description, object: description.localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .useMagstripe:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
-                     FlowDataItem(type: .description, object: action.localized),
+                     FlowDataItem(type: .description, object: description.localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .tapFailed:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
-                     FlowDataItem(type: .description, object: action.localized),
+                     FlowDataItem(type: .description, object: description.localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .removeCard, .cardSecured:
             print("nothing to do here")
         case .transactionStarted, .goingOnline:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
-                     FlowDataItem(type: .description, object: action.localized)]
+                     FlowDataItem(type: .description, object: description.localized)]
         case .noInternet:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
                      FlowDataItem(type: .title, object: "xsdk_internet_error_title".localized),
-                     FlowDataItem(type: .description, object: action.localized),
+                     FlowDataItem(type: .description, object: description.localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .noBluetooth:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
                      FlowDataItem(type: .title, object: "xsdk_bluetooth_error_title".localized),
-                     FlowDataItem(type: .description, object: action.localized),
+                     FlowDataItem(type: .description, object: description.localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .noBluetoothPermission:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
                      FlowDataItem(type: .title, object: "xsdk_bluetooth_permission_error_title".localized),
-                     FlowDataItem(type: .description, object: action.localized),
+                     FlowDataItem(type: .description, object: description.localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.settings),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .failedToStartSwipe:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
-                     FlowDataItem(type: .description, object: action.localized),
+                     FlowDataItem(type: .description, object: description.localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .cardUnsupported:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
-                     FlowDataItem(type: .description, object: action.localized),
+                     FlowDataItem(type: .description, object: description.localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .cardBlocked:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
-                     FlowDataItem(type: .description, object: action.localized),
+                     FlowDataItem(type: .description, object: description.localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .cardExpired:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
-                     FlowDataItem(type: .description, object: action.localized),
+                     FlowDataItem(type: .description, object: description.localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .badChip:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
-                     FlowDataItem(type: .description, object: action.localized),
+                     FlowDataItem(type: .description, object: description.localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .transactionFailed:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
-                     FlowDataItem(type: .description, object: action.localized),
+                     FlowDataItem(type: .description, object: description.localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         }
@@ -249,17 +249,17 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             print("nothing to do here")
         case .processing, .goingOnline:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
-                         FlowDataItem(type: .description, object: info.localized)]
+                         FlowDataItem(type: .description, object: description.localized)]
         case .amountNotAllowedForTap:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
-                     FlowDataItem(type: .description, object: info.localized),
+                     FlowDataItem(type: .description, object: description.localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .chipNotRecognized:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
-                     FlowDataItem(type: .description, object: info.localized),
+                     FlowDataItem(type: .description, object: description.localized),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         }

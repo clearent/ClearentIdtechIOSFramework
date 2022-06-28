@@ -34,7 +34,7 @@ public enum UserAction: String {
          cardBlocked,
          cardExpired
     
-    var localized: String {
+    var description: String {
         switch self {
         case .pleaseWait:
             return CLEARENT_PLEASE_WAIT
@@ -93,7 +93,7 @@ public enum UserInfo: String {
          amountNotAllowedForTap,
          chipNotRecognized
     
-    var localized: String {
+    var description: String {
         switch self {
         case .authorizing:
             return CLEARENT_TRANSACTION_AUTHORIZING
