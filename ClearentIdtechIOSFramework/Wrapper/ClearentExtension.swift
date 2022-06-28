@@ -14,19 +14,13 @@ extension ClearentWrapper: BluetoothScannerProtocol {
     func didUpdateBluetoothState(isOn: Bool) {
         isBluetoothOn = isOn
         if (!isBluetoothOn) {
-            if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
-                currentReader.isConnected = false
-                ClearentWrapperDefaults.pairedReaderInfo = currentReader
-            }
+            ClearentWrapperDefaults.pairedReaderInfo?.isConnected = false
         }
     }
     
     internal func didReceivedSignalStrength(level: SignalLevel) {
-        if var currentReader = ClearentWrapperDefaults.pairedReaderInfo {
-            currentReader.signalLevel = level.rawValue
-            ClearentWrapperDefaults.pairedReaderInfo = currentReader
-            delegate?.didReceiveSignalStrength()
-        }
+        ClearentWrapperDefaults.pairedReaderInfo?.signalLevel = level.rawValue
+        delegate?.didReceiveSignalStrength()
     }
     
     internal func didFinishWithError() {

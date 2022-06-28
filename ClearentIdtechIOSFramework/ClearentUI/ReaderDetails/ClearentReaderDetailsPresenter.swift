@@ -74,11 +74,6 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
         if let currentIndex = existingReaders.firstIndex(where: {$0 == currentReader}) {
             existingReaders[currentIndex].autojoin = markAsAutojoin
         }
-        if currentReader == ClearentWrapperDefaults.pairedReaderInfo {
-            ClearentWrapperDefaults.pairedReaderInfo?.autojoin = markAsAutojoin
-        } else {
-            ClearentWrapperDefaults.pairedReaderInfo?.autojoin = !markAsAutojoin
-        }
         ClearentWrapperDefaults.recentlyPairedReaders = existingReaders
     }
 
