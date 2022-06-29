@@ -9,7 +9,7 @@ import Foundation
 import CocoaLumberjack
 import Network
 
-public enum UserAction: String {
+public enum UserAction: String, CaseIterable {
     case pleaseWait,
          swipeTapOrInsert,
          swipeInsert,
@@ -84,9 +84,13 @@ public enum UserAction: String {
             return "xsdk_no_bluetooth_permission".localized
         }
     }
+    
+    static func action(for text: String) -> UserAction? {
+        UserAction.allCases.first { $0.description == text }
+    }
 }
 
-public enum UserInfo: String {
+public enum UserInfo: String, CaseIterable {
     case authorizing,
          processing,
          goingOnline,
@@ -106,6 +110,10 @@ public enum UserInfo: String {
         case .chipNotRecognized:
             return CLEARENT_CHIP_UNRECOGNIZED
         }
+    }
+    
+    static func info(for text: String) -> UserInfo? {
+        UserInfo.allCases.first { $0.description == text }
     }
 }
 
@@ -170,7 +178,7 @@ public final class ClearentWrapper : NSObject {
     
     private override init() {
         super.init()
-        
+
         createLogFile()
         self.startConnectionListener()
         bleManager = BluetoothScanner.init(udid: nil, delegate: self)
@@ -512,13 +520,13 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
                 self.delegate?.didEncounteredGeneralError()
             }
         case .USER_ACTION:
-            if let action = UserAction(rawValue: clearentFeedback.message) {
+            if let action = UserAction.action(for: clearentFeedback.message) {
                 DispatchQueue.main.async {
                     self.delegate?.userActionNeeded(action: action)
                 }
             }
         case .INFO:
-            if let info = UserInfo(rawValue: clearentFeedback.message) {
+            if let info = UserInfo.info(for: clearentFeedback.message) {
                 DispatchQueue.main.async {
                     self.delegate?.didReceiveInfo(info: info)
                 }
@@ -538,12 +546,12 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         case .ERROR:
             if (ClearentWrapperDefaults.pairedReaderInfo != nil && clearentFeedback.message == UserAction.noBluetooth.rawValue) {
                 
-                if let action = UserAction(rawValue: clearentFeedback.message) {
+                if let action = UserAction.action(for: clearentFeedback.message) {
                     DispatchQueue.main.async {
                         self.delegate?.userActionNeeded(action: action)
                     }
                 }
-            } else  if let action = UserAction(rawValue: clearentFeedback.message) {
+            } else  if let action = UserAction.action(for: clearentFeedback.message) {
                 DispatchQueue.main.async {
                     self.delegate?.userActionNeeded(action: action)
                 }
