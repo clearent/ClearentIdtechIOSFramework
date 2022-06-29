@@ -9,30 +9,112 @@ import Foundation
 import CocoaLumberjack
 import Network
 
-public enum UserAction: String {
-    case pleaseWait = "PLEASE WAIT...",
-         swipeTapOrInsert = "PLEASE SWIPE, TAP, OR INSERT",
-         swipeInsert = "INSERT/SWIPE CARD",
-         pressReaderButton = "PRESS BUTTON ON READER",
-         removeCard = "CARD READ OK, REMOVE CARD",
-         tryICCAgain = "TRY ICC AGAIN",
-         goingOnline = "GOING ONLINE",
-         cardSecured = "CARD SECURED",
-         cardHasChip = "CARD HAS CHIP. TRY INSERT",
-         tryMSRAgain = "TRY MSR AGAIN",
-         useMagstripe = "USE MAGSTRIPE",
-         transactionStarted = "TRANSACTION STARTED",
-         tapFailed = "TAP FAILED. INSERT/SWIPE",
-         connectionTimeout = "CONNECTION TIMEOUT",
-         noInternet = "NO INTERNET",
-         noBluetooth = "Bluetooth on this device is currently powered off.",
-         noBluetoothPermission = "This app is not authorized to use Bluetooth Low Energy."
+public enum UserAction: String, CaseIterable {
+    case pleaseWait,
+         swipeTapOrInsert,
+         swipeInsert,
+         pressReaderButton,
+         removeCard,
+         tryICCAgain,
+         goingOnline,
+         cardSecured,
+         cardHasChip,
+         tryMSRAgain,
+         useMagstripe,
+         transactionStarted,
+         transactionFailed,
+         tapFailed,
+         connectionTimeout,
+         noInternet,
+         noBluetooth,
+         noBluetoothPermission,
+         failedToStartSwipe,
+         badChip,
+         cardUnsupported,
+         cardBlocked,
+         cardExpired
+    
+    var description: String {
+        switch self {
+        case .pleaseWait:
+            return CLEARENT_PLEASE_WAIT
+        case .swipeTapOrInsert:
+            return CLEARENT_USER_ACTION_3_IN_1_MESSAGE
+        case .swipeInsert:
+            return CLEARENT_USER_ACTION_2_IN_1_MESSAGE
+        case .pressReaderButton:
+            return CLEARENT_USER_ACTION_PRESS_BUTTON_MESSAGE
+        case .removeCard:
+            return CLEARENT_CARD_READ_OK_TO_REMOVE_CARD
+        case .tryICCAgain:
+            return CLEARENT_TRY_ICC_AGAIN
+        case .tryMSRAgain:
+            return CLEARENT_TRY_MSR_AGAIN
+        case .goingOnline:
+            return CLEARENT_TRANSLATING_CARD_TO_TOKEN
+        case .cardSecured:
+            return CLEARENT_SUCCESSFUL_TOKENIZATION_MESSAGE
+        case .cardHasChip:
+            return CLEARENT_CHIP_FOUND_ON_SWIPE
+        case .useMagstripe:
+            return CLEARENT_USE_MAGSTRIPE
+        case .transactionStarted:
+            return CLEARENT_RESPONSE_TRANSACTION_STARTED
+        case .transactionFailed:
+            return CLEARENT_RESPONSE_TRANSACTION_FAILED
+        case .tapFailed:
+            return CLEARENT_CONTACTLESS_FALLBACK_MESSAGE
+        case .failedToStartSwipe:
+            return CLEARENT_PULLED_CARD_OUT_EARLY
+        case .badChip:
+            return CLEARENT_BAD_CHIP
+        case .cardUnsupported:
+            return CLEARENT_CARD_UNSUPPORTED
+        case .cardBlocked:
+            return CLEARENT_CARD_BLOCKED
+        case .cardExpired:
+            return CLEARENT_CARD_EXPIRED
+        case .connectionTimeout:
+            return "xsdk_connection_timeout".localized
+        case .noInternet:
+            return "xsdk_no_internet".localized
+        case .noBluetooth:
+            return "xsdk_no_bluetooth".localized
+        case .noBluetoothPermission:
+            return "xsdk_no_bluetooth_permission".localized
+        }
+    }
+    
+    static func action(for text: String) -> UserAction? {
+        UserAction.allCases.first { $0.description == text }
+    }
 }
 
-public enum UserInfo: String {
-    case authorizing = "AUTHORIZING...",
-         processing = "PROCESSING...",
-         goingOnline = "GOING ONLINE"
+public enum UserInfo: String, CaseIterable {
+    case authorizing,
+         processing,
+         goingOnline,
+         amountNotAllowedForTap,
+         chipNotRecognized
+    
+    var description: String {
+        switch self {
+        case .authorizing:
+            return CLEARENT_TRANSACTION_AUTHORIZING
+        case .processing:
+            return CLEARENT_TRANSACTION_PROCESSING
+        case .goingOnline:
+            return CLEARENT_TRANSLATING_CARD_TO_TOKEN
+        case .amountNotAllowedForTap:
+            return CLEARENT_TAP_OVER_MAX_AMOUNT
+        case .chipNotRecognized:
+            return CLEARENT_CHIP_UNRECOGNIZED
+        }
+    }
+    
+    static func info(for text: String) -> UserInfo? {
+        UserInfo.allCases.first { $0.description == text }
+    }
 }
 
 public enum TransactionError {
@@ -96,7 +178,7 @@ public final class ClearentWrapper : NSObject {
     
     private override init() {
         super.init()
-        
+
         createLogFile()
         self.startConnectionListener()
         bleManager = BluetoothScanner.init(udid: nil, delegate: self)
@@ -438,13 +520,13 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
                 self.delegate?.didEncounteredGeneralError()
             }
         case .USER_ACTION:
-            if let action = UserAction(rawValue: clearentFeedback.message) {
+            if let action = UserAction.action(for: clearentFeedback.message) {
                 DispatchQueue.main.async {
                     self.delegate?.userActionNeeded(action: action)
                 }
             }
         case .INFO:
-            if let info = UserInfo(rawValue: clearentFeedback.message) {
+            if let info = UserInfo.info(for: clearentFeedback.message) {
                 DispatchQueue.main.async {
                     self.delegate?.didReceiveInfo(info: info)
                 }
@@ -464,12 +546,12 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         case .ERROR:
             if (ClearentWrapperDefaults.pairedReaderInfo != nil && clearentFeedback.message == UserAction.noBluetooth.rawValue) {
                 
-                if let action = UserAction(rawValue: clearentFeedback.message) {
+                if let action = UserAction.action(for: clearentFeedback.message) {
                     DispatchQueue.main.async {
                         self.delegate?.userActionNeeded(action: action)
                     }
                 }
-            } else  if let action = UserAction(rawValue: clearentFeedback.message) {
+            } else  if let action = UserAction.action(for: clearentFeedback.message) {
                 DispatchQueue.main.async {
                     self.delegate?.userActionNeeded(action: action)
                 }

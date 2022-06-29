@@ -46,35 +46,13 @@
 "xsdk_user_action_retry" = "Try Again";
 "xsdk_user_action_cancel" = "Cancel";
 "xsdk_user_action_ok" = "OK";
+"xsdk_connection_timeout" = "CONNECTION TIMEOUT";
 
 // Transaction completed
 "xsdk_transaction_completed_description" = "Payment successful";
 
-// Insert card
-"xsdk_tap_insert_swipe_description" = "Please swipe, tap, or insert the card";
-
-// Processing
-"xsdk_processing_description" = "Processing...";
-
-// Press button
-"xsdk_press_button_description" = "Press the button on the reader";
-
-// Read error (try ICC again)
-"xsdk_read_card_try_icc_again_title" = "Card read error";
-"xsdk_read_card_try_icc_again_description" = "Try ICC again";
-
 // Read error (card has chip)
 "xsdk_read_error_title" = "Card read error";
-"xsdk_read_card_has_chip_description" = "Card has chip, try insert";
-
-// Read error (try MSR again)
-"xsdk_read_try_msr_again_description" = "Try MSR again";
-
-// Read error (use Magstripe)
-"xsdk_read_try_use_magstripe_description" = "Try use MAGSTRIPE";
-
-// Read error (use Magstripe)
-"xsdk_tap_failed_insert_swipe_description" = "Tap failed. Please insert or swipe the card";
 
 // Reader signal
 "xsdk_reader_signal_idle" = "Not connected";
@@ -104,12 +82,11 @@
 
 // Internet Connection
 "xsdk_internet_error_title" = "Check your connection";
-"xsdk_internet_error_description" = "You don’t seem to have an active internet connection. Please check connection and try again";
+"xsdk_no_internet" = "NO INTERNET";
 
 // Bluetooth
 "xsdk_bluetooth_error_title" = "Bluetooth is not on";
-"xsdk_bluetooth_error_description" = "You don’t seem to have bluetooth active. Please check the bluetooth state and try again";
 
 "xsdk_bluetooth_permission_error_title" = "No bluetooth permission";
-"xsdk_bluetooth__permission_error_description" = "In order to use the app you need to accept the bluetooth permission.";
-
+"xsdk_no_bluetooth" = "Bluetooth on this device is currently powered off.";
+"xsdk_no_bluetooth_permission" = "This app is not authorized to use Bluetooth Low Energy.";
