@@ -101,7 +101,7 @@ public class ClearentConstants {
     }
     
     public enum Tips {
-        public static let defaultTipPercentages = [5.0, 10.0, 15.0]
+        public static let defaultTipPercentages = [15.0, 18.0, 20.0]
         public static let customTipAdjustFactor: Double = 1.0
         public static let defaultCustomTipValue: Double = 5.0
     }

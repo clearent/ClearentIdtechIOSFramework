@@ -34,9 +34,7 @@ class ClearentProcessingModalViewController: ClearentBaseViewController {
         super.viewDidLoad()
 
         positionViewOnTop(flag: showOnTop)
-        presenter?.fetchTipSetting { [weak self] in
-            self?.presenter?.startFlow()
-        }
+        presenter?.startFlow()
     }
 }
 
