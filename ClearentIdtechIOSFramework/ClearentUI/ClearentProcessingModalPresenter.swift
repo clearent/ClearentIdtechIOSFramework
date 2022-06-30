@@ -31,6 +31,7 @@ protocol ProcessingModalProtocol {
     func connectTo(reader: ReaderInfo)
     func updateTemporaryReaderName(name: String?)
     func fetchTipSetting(completion: @escaping () -> Void)
+    func handleSignature(with image: UIImage?)
 }
 
 class ClearentProcessingModalPresenter {
@@ -161,14 +162,17 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             modalProcessingView?.showLoadingView()
             continueTransaction()
             tipsScreenWasNotShown = false
-        case .signature:
-            modalProcessingView?.showLoadingView()
-            ClearentWrapper.shared.sendSignatureWithImage(image: UIImage(named: ClearentConstants.IconName.batteryFull) ?? UIImage())
         }
     }
     
     func fetchTipSetting(completion: @escaping () -> Void) {
         sdkWrapper.fetchTipSetting(completion: completion)
+    }
+    
+    func handleSignature(with image: UIImage?) {
+        guard let image = image else { return }
+        modalProcessingView?.showLoadingView()
+        ClearentWrapper.shared.sendSignatureWithImage(image: image)
     }
 
     // MARK: Private
@@ -215,8 +219,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     
     private func showSignatureScreen() {
         let items = [FlowDataItem(type: .hint, object: "xsdk_signature_title".localized),
-                     FlowDataItem(type: .description, object: "xsdk_signature_subtitle".localized),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.signature)]
+                     FlowDataItem(type: .signature, object: nil)]
         let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.info, items: items)
         modalProcessingView?.updateContent(with: feedback)
     }
@@ -282,17 +285,17 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
     func didFinishTransaction(error: ResponseError?) {
         if error == nil {
             if (ClearentUIManager.shared.signatureEnabled) {
-                showSignatureScreen()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    self.showSignatureScreen()
+                }
             } else {
                 dissmissViewWithDelay()
             }
         }
     }
     
-    func didFinishSignature(error: ResponseError?) {
-        if error == nil {
-                dissmissViewWithDelay()
-            }
+    func didFinishSignature() {
+        dissmissViewWithDelay()
     }
 
     func didBeginContinuousSearching() {

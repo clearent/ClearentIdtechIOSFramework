@@ -21,7 +21,8 @@ public class ClearentHintView: ClearentMarginableView {
             RelativeBottomMargin(constant: 40, relatedViewType: ClearentIcon.self),
             RelativeBottomMargin(constant: 29, relatedViewType: ClearentLoadingView.self),
             RelativeBottomMargin(constant: 64, relatedViewType: ClearentSubtitleLabel.self),
-            RelativeBottomMargin(constant: 45, relatedViewType: ClearentListView.self)
+            RelativeBottomMargin(constant: 45, relatedViewType: ClearentListView.self),
+            RelativeBottomMargin(constant: 16, relatedViewType: ClearentSignatureView.self)
         ]
     }
 

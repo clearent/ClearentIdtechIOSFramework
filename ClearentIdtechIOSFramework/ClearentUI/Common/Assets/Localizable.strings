@@ -32,9 +32,7 @@
 "xsdk_user_transaction_tip_title" = "Would you like to add a tip?";
 "xsdk_user_action_transaction_with_tip" = "Charge %@";
 "xsdk_user_action_transaction_without_tip" = "Maybe next time";
-"xsdk_signature_title" = "Customer signature";
-"xsdk_signature_subtitle" = "In order to complete the transaction we need your validation signature. Please draw your signature in the box below.";
-"xsdk_signature_action" = "Done";
+
 /* Payment Flow*/
 
 "xsdk_unknown_reader_name" = "Unknown";
@@ -48,8 +46,12 @@
 "xsdk_user_action_cancel" = "Cancel";
 "xsdk_user_action_ok" = "OK";
 
-// Signature upload completed
-"xsdk_signature_upload_completed_description" = "Signature registered successfuly";
+// Signature
+"xsdk_signature_title" = "Customer signature";
+"xsdk_signature_subtitle" = "I agree to pay total amount pursuant to the cardholder agreement.";
+"xsdk_signature_action" = "Done";
+"xsdk_signature_upload_sucessfull_title" = "Signature registered successfully";
+"xsdk_signature_upload_failure_title" = "The signature was not properly processed";
 
 // Transaction completed
 "xsdk_transaction_completed_description" = "Payment successful";

@@ -26,7 +26,7 @@ class ClearentReaderConnectivityStatusView: ClearentXibView {
 
     override func configure() {
         textColor = ClearentConstants.Color.base02
-        font = ClearentConstants.Font.proTextSmall
+        font = ClearentConstants.Font.proTextExtraSmall
     }
     
     // MARK: Public

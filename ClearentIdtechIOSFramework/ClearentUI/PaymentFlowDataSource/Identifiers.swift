@@ -13,7 +13,7 @@ enum SignalLevel : Int {
 }
 
 enum FlowDataKeys {
-    case readerInfo, graphicType, title, description, userAction, devicesFound, recentlyPaired, hint, input, tips
+    case readerInfo, graphicType, title, description, userAction, devicesFound, recentlyPaired, hint, input, tips, signature
 }
 
 public enum FlowFeedbackType {
@@ -71,7 +71,7 @@ enum FlowGraphicType {
 
 public enum FlowButtonType {
 
-    case cancel, retry, pair, done, pairNewReader, settings, pairInFlow, addReaderName, renameReaderLater, transactionWithTip, transactionWithoutTip, signature
+    case cancel, retry, pair, done, pairNewReader, settings, pairInFlow, addReaderName, renameReaderLater, transactionWithTip, transactionWithoutTip
 
     var title: String {
         switch self {
@@ -95,8 +95,6 @@ public enum FlowButtonType {
             return transactionWithTipTitle()
         case .transactionWithoutTip:
             return "xsdk_user_action_transaction_without_tip".localized
-        case .signature:
-            return "xsdk_signature_action".localized
         }
     }
 

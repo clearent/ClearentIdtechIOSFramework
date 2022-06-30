@@ -30,6 +30,7 @@ public class ClearentConstants {
         public static let base02 = UIColor(hexString: "#6A6D7D")
         public static let base03 = UIColor(hexString: "#000000")
         public static let base04 = UIColor(hexString: "#999BA8")
+        public static let base05 = UIColor(hexString: "#B9B9B9")
         
         public static let warning = UIColor(hexString: "#C2210F")
     }
@@ -47,7 +48,8 @@ public class ClearentConstants {
         public static let proTextBoldNormal = UIFont(name: sfProTextBold, size: 14)
         public static let proTextLarge = UIFont(name: sfProTextMedium, size: 16)
         public static let proTextNormal = UIFont(name: sfProTextMedium, size: 14)
-        public static let proTextSmall = UIFont(name: sfProTextMedium, size: 10)
+        public static let proTextSmall = UIFont(name: sfProTextMedium, size: 12)
+        public static let proTextExtraSmall = UIFont(name: sfProTextMedium, size: 10)
     }
 
     // MARK: Assets
