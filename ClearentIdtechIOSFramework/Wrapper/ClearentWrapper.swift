@@ -161,7 +161,7 @@ public final class ClearentWrapper : NSObject {
     private let monitor = NWPathMonitor()
     private var isInternetOn = false
     private var connectivityActionNeeded: UserAction? {
-        isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : .noInternet
+        isBluetoothPermissionGranted  ? (isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : .noInternet) : .noBluetoothPermission
     }
     private lazy var httpClient: ClearentHttpClient = {
         ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
