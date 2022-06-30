@@ -285,7 +285,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
     func didFinishTransaction(error: ResponseError?) {
         if error == nil {
             if (ClearentUIManager.shared.signatureEnabled) {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                     self.showSignatureScreen()
                 }
             } else {

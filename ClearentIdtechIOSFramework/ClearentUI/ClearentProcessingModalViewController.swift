@@ -140,7 +140,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         let signatureView = ClearentSignatureView()
         signatureView.doneAction = { [weak self] signatureImage in
             self?.presenter?.handleSignature(with: signatureImage)
-            // switch orientation back to portrait when moving to the next screen
+            // switch orientation back to portrait when moving to the next step
             NotificationCenter.default.post(name: Notification.Name.shouldChangeInterfaceOrientation, object: UIInterfaceOrientationMask.portrait)
         }
         

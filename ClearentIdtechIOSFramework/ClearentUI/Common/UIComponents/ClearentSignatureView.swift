@@ -24,6 +24,7 @@
      @IBOutlet var indicatorLine: UIView!
      @IBOutlet var roundedCornersView: UIView!
      @IBOutlet var descriptionLabel: UILabel!
+     private var previousOrientation: UIDeviceOrientation = .unknown
      
      public var doneAction: ((_ resultedImage: UIImage) -> Void)?
      
@@ -54,7 +55,10 @@
      }
     
      @objc func orientationDidChange() {
-         drawingPanel.clearDrawing()
+         if UIDevice.current.orientation != previousOrientation {
+             drawingPanel.clearDrawing()
+             previousOrientation = UIDevice.current.orientation
+         }
      }
      
      deinit {
@@ -109,13 +113,6 @@
          isMultipleTouchEnabled = false
      }
      
-     func clearDrawing() {
-         bufferImage = nil
-         drawingLayer?.removeFromSuperlayer()
-         drawingLayer = nil
-         setNeedsDisplay()
-     }
-     
      // MARK: Drawing
      
      override func draw(_ rect: CGRect) {
@@ -145,21 +142,23 @@
          }
      }
      
+     func clearDrawing() {
+         bufferImage = nil
+         drawingLayer?.removeFromSuperlayer()
+         drawingLayer = nil
+         setNeedsDisplay()
+     }
      
      // MARK: - Touches
      
      override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-         guard let point = touches.first?.preciseLocation(in: self) else {
-             return
-         }
+         guard let point = touches.first?.preciseLocation(in: self) else { return }
          points.removeAll()
          points.append(point)
      }
      
      override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
-         guard let point = touches.first?.preciseLocation(in: self) else {
-             return
-         }
+         guard let point = touches.first?.preciseLocation(in: self) else { return }
          points.append(point)
          updatePaths()
          layer.setNeedsDisplay()
@@ -183,7 +182,6 @@
      // MARK: - Bezier paths Management
      
      private func updatePaths() {
-         
          // update main path
          while points.count > 4 {
              points[3] = CGPoint(x: (points[2].x + points[4].x)/2.0, y: (points[2].y + points[4].y)/2.0)
