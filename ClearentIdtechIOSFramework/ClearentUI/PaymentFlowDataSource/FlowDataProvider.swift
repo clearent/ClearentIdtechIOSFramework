@@ -39,6 +39,7 @@ class FlowDataFactory {
 }
 
 protocol FlowDataProtocol : AnyObject {
+    func didFinishSignature(error: ResponseError?)
     func didFinishTransaction(error: ResponseError?)
     func deviceDidDisconnect()
     func didFinishedPairing()
@@ -76,10 +77,34 @@ class FlowDataProvider : NSObject {
 
 extension FlowDataProvider : ClearentWrapperProtocol {
     
-    func didFinishedSIgnatureUploadWith(response: SignatureResponse, error: ResponseError?) {
-        // show result
+    func didFinishedSignatureUploadWith(response: SignatureResponse, error: ResponseError?) {
+        let feedback: FlowFeedback
+        
+        if let error = error {
+            let errItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
+                            FlowDataItem(type: .title, object: "xsdk_general_error_title".localized),
+                            FlowDataItem(type: .description, object: error.message),
+                            FlowDataItem(type: .userAction, object: FlowButtonType.done)]
+            
+           feedback = FlowDataFactory.component(with: .payment,
+                                                    type: .error,
+                                                    readerInfo: fetchReaderInfo(),
+                                                    payload: errItems)
+        } else {
+            let transactionItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.transaction_completed),
+                                    FlowDataItem(type: .title, object: "xsdk_signature_upload_completed_description".localized)]
+            
+            feedback = FlowDataFactory.component(with: .payment,
+                                                 type: .info,
+                                                 readerInfo: fetchReaderInfo(),
+                                                 payload: transactionItems)
+        }
+        
+        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        self?.delegate?.didFinishTransaction(error: Error)
     }
     
+ 
     // MARK - Transaction related
     
     func didEncounteredGeneralError() {

@@ -52,7 +52,7 @@ public protocol ClearentWrapperProtocol : AnyObject {
     func didBeginContinuousSearching()
     func didEncounteredGeneralError()
     func didFinishTransaction(response: TransactionResponse, error: ResponseError?)
-    func didFinishedSIgnatureUploadWith(response: SignatureResponse, error: ResponseError?)
+    func didFinishedSignatureUploadWith(response: SignatureResponse, error: ResponseError?)
     func userActionNeeded(action: UserAction)
     func didReceiveInfo(info: UserInfo)
 }
@@ -237,10 +237,14 @@ public final class ClearentWrapper : NSObject {
                      do {
                          let decodedResponse = try JSONDecoder().decode(SignatureResponse.self, from: responseData)
                          guard let signatureError = decodedResponse.payload.error else {
-                             self.delegate?.didFinishedSIgnatureUploadWith(response: decodedResponse, error: nil)
+                             DispatchQueue.main.async {
+                                 self.delegate?.didFinishedSignatureUploadWith(response: decodedResponse, error: nil)
+                             }
                              return
                          }
-                         self.delegate?.didFinishedSIgnatureUploadWith(response: decodedResponse, error: signatureError)
+                         DispatchQueue.main.async {
+                             self.delegate?.didFinishedSignatureUploadWith(response: decodedResponse, error: signatureError)
+                         }
                          // error call delegate
                      } catch let jsonDecodingError {
                          print(jsonDecodingError)

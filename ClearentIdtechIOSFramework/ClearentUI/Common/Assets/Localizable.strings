@@ -34,6 +34,7 @@
 "xsdk_user_action_transaction_without_tip" = "Maybe next time";
 "xsdk_signature_title" = "Customer signature";
 "xsdk_signature_subtitle" = "In order to complete the transaction we need your validation signature. Please draw your signature in the box below.";
+"xsdk_signature_action" = "Done";
 /* Payment Flow*/
 
 "xsdk_unknown_reader_name" = "Unknown";
@@ -46,6 +47,9 @@
 "xsdk_user_action_retry" = "Try Again";
 "xsdk_user_action_cancel" = "Cancel";
 "xsdk_user_action_ok" = "OK";
+
+// Signature upload completed
+"xsdk_signature_upload_completed_description" = "Signature registered successfuly";
 
 // Transaction completed
 "xsdk_transaction_completed_description" = "Payment successful";

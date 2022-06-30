@@ -161,6 +161,9 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             modalProcessingView?.showLoadingView()
             continueTransaction()
             tipsScreenWasNotShown = false
+        case .signature:
+            modalProcessingView?.showLoadingView()
+            ClearentWrapper.shared.sendSignatureWithImage(image: UIImage(named: ClearentConstants.IconName.batteryFull) ?? UIImage())
         }
     }
     
@@ -213,7 +216,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     private func showSignatureScreen() {
         let items = [FlowDataItem(type: .hint, object: "xsdk_signature_title".localized),
                      FlowDataItem(type: .description, object: "xsdk_signature_subtitle".localized),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.done)]
+                     FlowDataItem(type: .userAction, object: FlowButtonType.signature)]
         let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.info, items: items)
         modalProcessingView?.updateContent(with: feedback)
     }
@@ -286,6 +289,12 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
         }
     }
     
+    func didFinishSignature(error: ResponseError?) {
+        if error == nil {
+                dissmissViewWithDelay()
+            }
+    }
+
     func didBeginContinuousSearching() {
         modalProcessingView?.addLoadingViewToCurrentContent()
     }
