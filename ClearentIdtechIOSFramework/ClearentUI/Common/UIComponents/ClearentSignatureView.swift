@@ -12,7 +12,6 @@
      private struct Layout {
          static let cornerRadius = 8.0
          static let borderWidth = 1.0
-         static let cellsPerRow = 3
      }
      
      // MARK: - Properties
@@ -45,12 +44,9 @@
          setupDescriptionLabel()
          setupDoneButton()
          setupSignatureIndicator()
+         setupRoundedCornersView()
          clearButton.titleLabel?.font = ClearentConstants.Font.proTextNormal
 
-         roundedCornersView.layer.cornerRadius = Layout.cornerRadius
-         roundedCornersView.layer.borderWidth = Layout.borderWidth
-         roundedCornersView.layer.borderColor = ClearentConstants.Color.backgroundSecondary02.cgColor
-         
          NotificationCenter.default.addObserver(self, selector: #selector(orientationDidChange), name: UIDevice.orientationDidChangeNotification, object: nil)
      }
     
@@ -83,5 +79,11 @@
          doneButton.title = "xsdk_signature_action".localized
          doneButton.isBorderedButton = false
          doneButton.button.isUserInteractionEnabled = false
+     }
+     
+     private func setupRoundedCornersView() {
+         roundedCornersView.layer.cornerRadius = Layout.cornerRadius
+         roundedCornersView.layer.borderWidth = Layout.borderWidth
+         roundedCornersView.layer.borderColor = ClearentConstants.Color.backgroundSecondary02.cgColor
      }
  }

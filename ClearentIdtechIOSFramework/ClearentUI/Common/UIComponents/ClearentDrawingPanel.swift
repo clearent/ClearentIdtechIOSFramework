@@ -12,7 +12,7 @@ class ClearentDrawingPanel: UIView {
     private var currentPath: UIBezierPath?
     private var temporaryPath: UIBezierPath?
     private var points = [CGPoint]()
-    private var lineWidth: CGFloat = 2.0
+    private let lineWidth: CGFloat = 2.0
     
     // MARK: Init
     

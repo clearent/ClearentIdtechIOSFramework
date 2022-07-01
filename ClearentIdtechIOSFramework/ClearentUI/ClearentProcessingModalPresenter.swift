@@ -31,7 +31,7 @@ protocol ProcessingModalProtocol {
     func connectTo(reader: ReaderInfo)
     func updateTemporaryReaderName(name: String?)
     func fetchTipSetting(completion: @escaping () -> Void)
-    func handleSignature(with image: UIImage?)
+    func handleSignature(with image: UIImage)
 }
 
 class ClearentProcessingModalPresenter {
@@ -169,8 +169,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         sdkWrapper.fetchTipSetting(completion: completion)
     }
     
-    func handleSignature(with image: UIImage?) {
-        guard let image = image else { return }
+    func handleSignature(with image: UIImage) {
         modalProcessingView?.showLoadingView()
         ClearentWrapper.shared.sendSignatureWithImage(image: image)
     }
