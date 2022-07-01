@@ -190,35 +190,35 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .failedToStartSwipe:
             type = .warning
-            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
                      FlowDataItem(type: .description, object: action.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .cardUnsupported:
             type = .warning
-            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
                      FlowDataItem(type: .description, object: action.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .cardBlocked:
             type = .warning
-            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
                      FlowDataItem(type: .description, object: action.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .cardExpired:
             type = .warning
-            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
                      FlowDataItem(type: .description, object: action.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .badChip:
-            type = .warning
-            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
+            type = .error
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
                      FlowDataItem(type: .description, object: action.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
@@ -251,13 +251,13 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
                      FlowDataItem(type: .description, object: info.description)]
         case .amountNotAllowedForTap:
-            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
                      FlowDataItem(type: .description, object: info.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .chipNotRecognized:
-            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
                      FlowDataItem(type: .description, object: info.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
