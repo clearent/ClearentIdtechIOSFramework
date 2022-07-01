@@ -281,6 +281,8 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
     }
 
     func didReceiveFlowFeedback(feedback: FlowFeedback) {
+        ClearentApplicationOrientation.customOrientationMaskClosure?(UIInterfaceOrientationMask.portrait)
+        UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
         modalProcessingView?.updateContent(with: feedback)
     }
 

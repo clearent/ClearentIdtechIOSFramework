@@ -133,15 +133,12 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     
     private func signatureView() -> ClearentSignatureView {
         // all orientations should be allowed when signature view is displayed
-        NotificationCenter.default.post(name: Notification.Name.shouldChangeInterfaceOrientation, object: UIInterfaceOrientationMask.all )
+        ClearentApplicationOrientation.customOrientationMaskClosure?(UIInterfaceOrientationMask.all)
         
         let signatureView = ClearentSignatureView()
         signatureView.doneAction = { [weak self] signatureImage in
-            // switch orientation back to portrait when moving to the next step
-            NotificationCenter.default.post(name: Notification.Name.shouldChangeInterfaceOrientation, object: UIInterfaceOrientationMask.portrait)
             self?.presenter?.handleSignature(with: signatureImage)
         }
-        
         return signatureView
     }
 
