@@ -46,6 +46,7 @@
 		012E78542858D2A4008E30CF /* ClearentTipCheckboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 012E78532858D2A4008E30CF /* ClearentTipCheckboxView.swift */; };
 		013157E5286C359E0037D281 /* ClearentSignatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013157E4286C359E0037D281 /* ClearentSignatureView.swift */; };
 		013157E7286C35AE0037D281 /* ClearentSignatureView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 013157E6286C35AE0037D281 /* ClearentSignatureView.xib */; };
+		013157ED286EC6D70037D281 /* ClearentDrawingPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013157EC286EC6D70037D281 /* ClearentDrawingPanel.swift */; };
 		013AB9B7282264B100771FAC /* ClearentPairingReaderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013AB9B6282264B100771FAC /* ClearentPairingReaderItem.swift */; };
 		013AB9B9282264C100771FAC /* ClearentPairingReaderItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 013AB9B8282264C100771FAC /* ClearentPairingReaderItem.xib */; };
 		014B2BA6280087AD0056F7FD /* ClearentPrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014B2BA5280087AD0056F7FD /* ClearentPrimaryButton.swift */; };
@@ -232,6 +233,7 @@
 		012E78532858D2A4008E30CF /* ClearentTipCheckboxView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentTipCheckboxView.swift; sourceTree = "<group>"; };
 		013157E4286C359E0037D281 /* ClearentSignatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentSignatureView.swift; sourceTree = "<group>"; };
 		013157E6286C35AE0037D281 /* ClearentSignatureView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentSignatureView.xib; sourceTree = "<group>"; };
+		013157EC286EC6D70037D281 /* ClearentDrawingPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentDrawingPanel.swift; sourceTree = "<group>"; };
 		013AB9B6282264B100771FAC /* ClearentPairingReaderItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentPairingReaderItem.swift; sourceTree = "<group>"; };
 		013AB9B8282264C100771FAC /* ClearentPairingReaderItem.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentPairingReaderItem.xib; sourceTree = "<group>"; };
 		014B2BA5280087AD0056F7FD /* ClearentPrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentPrimaryButton.swift; sourceTree = "<group>"; };
@@ -518,6 +520,7 @@
 				012E78532858D2A4008E30CF /* ClearentTipCheckboxView.swift */,
 				013157E4286C359E0037D281 /* ClearentSignatureView.swift */,
 				013157E6286C35AE0037D281 /* ClearentSignatureView.xib */,
+				013157EC286EC6D70037D281 /* ClearentDrawingPanel.swift */,
 			);
 			path = UIComponents;
 			sourceTree = "<group>";
@@ -1120,6 +1123,7 @@
 				CC9FF466282BC127004B2185 /* ClearentUIManager.swift in Sources */,
 				013157E5286C359E0037D281 /* ClearentSignatureView.swift in Sources */,
 				014B2BA6280087AD0056F7FD /* ClearentPrimaryButton.swift in Sources */,
+				013157ED286EC6D70037D281 /* ClearentDrawingPanel.swift in Sources */,
 				CC1953B728213ECC00DF3688 /* UserDefaultsPersistence.swift in Sources */,
 				E7B89E3121F6A6A400078C73 /* ClearentManualEntry.m in Sources */,
 				E7CA497520E579190090CFFC /* ClearentConfigFetcher.m in Sources */,

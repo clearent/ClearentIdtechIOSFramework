@@ -30,7 +30,7 @@ public class ClearentConstants {
         public static let base02 = UIColor(hexString: "#6A6D7D")
         public static let base03 = UIColor(hexString: "#000000")
         public static let base04 = UIColor(hexString: "#999BA8")
-        public static let base05 = UIColor(hexString: "#B9B9B9")
+        public static let base05 = UIColor(hexString: "#A5A5A5")
         
         public static let warning = UIColor(hexString: "#C2210F")
     }

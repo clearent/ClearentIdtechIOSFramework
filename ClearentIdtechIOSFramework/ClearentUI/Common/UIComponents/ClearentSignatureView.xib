@@ -43,13 +43,13 @@
                     </constraints>
                 </view>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="X" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s0W-pM-4PG">
-                    <rect key="frame" x="32" y="193.5" width="12.5" height="23"/>
+                    <rect key="frame" x="32" y="197.5" width="12.5" height="23"/>
                     <fontDescription key="fontDescription" type="system" pointSize="19"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ccM-uO-bcu" userLabel="Line">
-                    <rect key="frame" x="46.5" y="211.5" width="551.5" height="1"/>
+                    <rect key="frame" x="46.5" y="215.5" width="551.5" height="1"/>
                     <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="1" id="dZf-vC-YK0"/>
@@ -78,7 +78,7 @@
             <constraints>
                 <constraint firstItem="s0W-pM-4PG" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="32" id="44A-V5-s0t"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="szP-6v-EWH" secondAttribute="trailing" id="4EM-hk-lwu"/>
-                <constraint firstItem="ccM-uO-bcu" firstAttribute="bottom" secondItem="QOm-Xu-c7c" secondAttribute="bottom" constant="-20" id="51S-Hw-Asa"/>
+                <constraint firstItem="ccM-uO-bcu" firstAttribute="bottom" secondItem="QOm-Xu-c7c" secondAttribute="bottom" constant="-16" id="51S-Hw-Asa"/>
                 <constraint firstItem="QOm-Xu-c7c" firstAttribute="trailing" secondItem="ZpK-Zx-9Xn" secondAttribute="trailing" id="6du-bu-Nbt"/>
                 <constraint firstItem="2qF-Iw-9zT" firstAttribute="trailing" secondItem="QOm-Xu-c7c" secondAttribute="trailing" constant="-8" id="8Af-ce-fQj"/>
                 <constraint firstAttribute="bottom" secondItem="cHo-hh-jzX" secondAttribute="bottom" id="8cn-G4-KTV"/>
