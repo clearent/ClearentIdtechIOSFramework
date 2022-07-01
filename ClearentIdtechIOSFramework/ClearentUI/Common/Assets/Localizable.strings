@@ -51,7 +51,7 @@
 "xsdk_signature_title" = "Customer signature";
 "xsdk_signature_subtitle" = "I agree to pay total amount pursuant to the cardholder agreement.";
 "xsdk_signature_action" = "Done";
-"xsdk_signature_upload_sucessfull_title" = "Signature registered successfully";
+"xsdk_signature_upload_sucessfull_title" = "Upload completed successfully";
 "xsdk_signature_upload_failure_title" = "The signature was not properly processed";
 
 // Transaction completed
