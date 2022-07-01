@@ -134,6 +134,7 @@ public protocol ClearentWrapperProtocol : AnyObject {
     func didBeginContinuousSearching()
     func didEncounteredGeneralError()
     func didFinishTransaction(response: TransactionResponse, error: ResponseError?)
+    func didFinishedSignatureUploadWith(response: SignatureResponse, error: ResponseError?)
     func userActionNeeded(action: UserAction)
     func didReceiveInfo(info: UserInfo)
 }
@@ -157,6 +158,7 @@ public final class ClearentWrapper : NSObject {
     }()
     private var transactionAmount: String?
     private var tipAmount: String?
+    private var lastTransactionID: String?
     private var bleManager : BluetoothScanner?
     private let monitor = NWPathMonitor()
     private var isInternetOn = false
@@ -293,6 +295,10 @@ public final class ClearentWrapper : NSObject {
                 let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
                 guard let transactionError = decodedResponse.payload.error else {
                     DispatchQueue.main.async {
+                        if let linksItem = decodedResponse.links?.first {
+                            self.lastTransactionID = linksItem.id
+                        }
+                      
                         self.delegate?.didFinishTransaction(response: decodedResponse, error: nil)
                     }
                     return
@@ -302,6 +308,33 @@ public final class ClearentWrapper : NSObject {
                 }
             } catch let jsonDecodingError {
                 print(jsonDecodingError)
+            }
+        }
+    }
+    
+    public func sendSignatureWithImage(image: UIImage) {
+        if let id = lastTransactionID {
+            if let tid = Int(id) {
+                 let base64Image =  image.jpegData(compressionQuality: 1)?.base64EncodedString() ?? ""
+                 let httpClient = ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
+                 httpClient.sendSignature(base64Image: base64Image, transactionID: tid) { data, error in
+                     guard let responseData = data else { return }
+                     do {
+                         let decodedResponse = try JSONDecoder().decode(SignatureResponse.self, from: responseData)
+                         guard let signatureError = decodedResponse.payload.error else {
+                             DispatchQueue.main.async {
+                                 self.delegate?.didFinishedSignatureUploadWith(response: decodedResponse, error: nil)
+                             }
+                             return
+                         }
+                         DispatchQueue.main.async {
+                             self.delegate?.didFinishedSignatureUploadWith(response: decodedResponse, error: signatureError)
+                         }
+                         // error call delegate
+                     } catch let jsonDecodingError {
+                         print(jsonDecodingError)
+                     }
+                 }
             }
         }
     }
@@ -588,7 +621,6 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
             self.connectToReaderTimer?.invalidate()
             self.connectToReaderTimer = nil
             self.shouldSendPressButton = false
-            print("INVALIDATE TIMER")
         }
     }
     

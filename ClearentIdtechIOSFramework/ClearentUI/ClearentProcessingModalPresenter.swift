@@ -31,6 +31,7 @@ protocol ProcessingModalProtocol {
     func connectTo(reader: ReaderInfo)
     func updateTemporaryReaderName(name: String?)
     func fetchTipSetting(completion: @escaping () -> Void)
+    func handleSignature(with image: UIImage)
 }
 
 class ClearentProcessingModalPresenter {
@@ -167,6 +168,11 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     func fetchTipSetting(completion: @escaping () -> Void) {
         sdkWrapper.fetchTipSetting(completion: completion)
     }
+    
+    func handleSignature(with image: UIImage) {
+        modalProcessingView?.showLoadingView()
+        ClearentWrapper.shared.sendSignatureWithImage(image: image)
+    }
 
     // MARK: Private
     
@@ -210,6 +216,13 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                      FlowDataItem(type: .input, object: FlowInputType.nameInput),
                      FlowDataItem(type: .userAction, object: FlowButtonType.done)]
         let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.renameReaderDone, items: items)
+        modalProcessingView?.updateContent(with: feedback)
+    }
+    
+    private func showSignatureScreen() {
+        let items = [FlowDataItem(type: .hint, object: "xsdk_signature_title".localized),
+                     FlowDataItem(type: .signature, object: nil)]
+        let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.info, items: items)
         modalProcessingView?.updateContent(with: feedback)
     }
     
@@ -268,15 +281,27 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
     }
 
     func didReceiveFlowFeedback(feedback: FlowFeedback) {
+        ClearentApplicationOrientation.customOrientationMaskClosure?(UIInterfaceOrientationMask.portrait)
+        UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
         modalProcessingView?.updateContent(with: feedback)
     }
 
     func didFinishTransaction(error: ResponseError?) {
         if error == nil {
-            dissmissViewWithDelay()
+            if (ClearentUIManager.shared.signatureEnabled) {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                    self.showSignatureScreen()
+                }
+            } else {
+                dissmissViewWithDelay()
+            }
         }
     }
     
+    func didFinishSignature() {
+        dissmissViewWithDelay()
+    }
+
     func didBeginContinuousSearching() {
         modalProcessingView?.addLoadingViewToCurrentContent()
     }

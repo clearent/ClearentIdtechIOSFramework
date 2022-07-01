@@ -30,7 +30,7 @@ class ClearentLabelSwitch: ClearentInfoWithIcon {
         switchView.transform = CGAffineTransform(scaleX: 0.83, y: 0.77)
         titleFont = ClearentConstants.Font.proTextNormal
         titleTextColor = ClearentConstants.Color.base02
-        descriptionFont = ClearentConstants.Font.proTextSmall
+        descriptionFont = ClearentConstants.Font.proTextExtraSmall
         descriptionTextColor = ClearentConstants.Color.base02
         separatorView.backgroundColor = ClearentConstants.Color.backgroundSecondary02
     }

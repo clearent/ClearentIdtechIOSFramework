@@ -39,6 +39,7 @@ class FlowDataFactory {
 }
 
 protocol FlowDataProtocol : AnyObject {
+    func didFinishSignature()
     func didFinishTransaction(error: ResponseError?)
     func deviceDidDisconnect()
     func didFinishedPairing()
@@ -75,6 +76,35 @@ class FlowDataProvider : NSObject {
 }
 
 extension FlowDataProvider : ClearentWrapperProtocol {
+    
+    func didFinishedSignatureUploadWith(response: SignatureResponse, error: ResponseError?) {
+        let feedback: FlowFeedback
+        
+        if let error = error {
+            let errItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
+                            FlowDataItem(type: .title, object: "xsdk_signature_upload_failure_title".localized),
+                            FlowDataItem(type: .description, object: error.message),
+                            FlowDataItem(type: .userAction, object: FlowButtonType.done)]
+            
+           feedback = FlowDataFactory.component(with: .payment,
+                                                    type: .error,
+                                                    readerInfo: fetchReaderInfo(),
+                                                    payload: errItems)
+        } else {
+            let transactionItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.transaction_completed),
+                                    FlowDataItem(type: .title, object: "xsdk_signature_upload_sucessfull_title".localized)]
+            
+            feedback = FlowDataFactory.component(with: .payment,
+                                                 type: .info,
+                                                 readerInfo: fetchReaderInfo(),
+                                                 payload: transactionItems)
+            self.delegate?.didFinishSignature()
+        }
+        
+        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+    }
+    
+ 
     // MARK - Transaction related
     
     func didEncounteredGeneralError() {

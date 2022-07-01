@@ -125,9 +125,21 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             return ClearentTextField(currentReaderName: presenter?.editableReader?.customReaderName, inputName: "xsdk_reader_name".localized, hint: "xsdk_reader_name_input_hint".localized, delegate: self)
         case .tips:
             guard let amountInfo = object as? AmountInfo else { return nil }
-            
             return tipOptionsListView(with: amountInfo)
+        case .signature:
+            return signatureView()
         }
+    }
+    
+    private func signatureView() -> ClearentSignatureView {
+        // all orientations should be allowed when signature view is displayed
+        ClearentApplicationOrientation.customOrientationMaskClosure?(UIInterfaceOrientationMask.all)
+        
+        let signatureView = ClearentSignatureView()
+        signatureView.doneAction = { [weak self] signatureImage in
+            self?.presenter?.handleSignature(with: signatureImage)
+        }
+        return signatureView
     }
 
     private func readerInfoView(readerInfo: ReaderInfo?, flowFeedbackType: FlowFeedbackType) -> ClearentReaderStatusHeaderView? {
