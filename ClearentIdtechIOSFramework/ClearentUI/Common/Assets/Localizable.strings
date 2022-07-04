@@ -33,7 +33,6 @@
 "xsdk_user_action_transaction_with_tip" = "Charge %@";
 "xsdk_user_action_transaction_without_tip" = "Maybe next time";
 
-
 /* Payment Flow*/
 
 "xsdk_unknown_reader_name" = "Unknown";
@@ -47,6 +46,13 @@
 "xsdk_user_action_cancel" = "Cancel";
 "xsdk_user_action_ok" = "OK";
 "xsdk_connection_timeout" = "CONNECTION TIMEOUT";
+
+// Signature
+"xsdk_signature_title" = "Customer signature";
+"xsdk_signature_subtitle" = "I agree to pay total amount pursuant to the cardholder agreement.";
+"xsdk_signature_action" = "Done";
+"xsdk_signature_upload_sucessfull_title" = "Upload completed successfully";
+"xsdk_signature_upload_failure_title" = "The signature was not properly processed";
 
 // Transaction completed
 "xsdk_transaction_completed_description" = "Payment successful";

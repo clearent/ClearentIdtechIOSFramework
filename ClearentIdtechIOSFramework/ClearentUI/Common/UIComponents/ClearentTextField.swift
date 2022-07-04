@@ -39,7 +39,7 @@ class ClearentTextField: ClearentMarginableView, UITextFieldDelegate {
     }
 
     override func configure() {
-        self.infoLabel.font = ClearentConstants.Font.proTextSmall
+        self.infoLabel.font = ClearentConstants.Font.proTextExtraSmall
         self.inputField.font = ClearentConstants.Font.proTextNormal
     }
     

@@ -15,6 +15,13 @@ public struct TransactionResponse: Codable {
     var payload: Payload
 }
 
+public struct SignatureResponse: Codable {
+    var code: String
+    var status: String
+    var links: [Links]?
+    var payload: Payload
+}
+
 public struct Links: Codable {
     var rel: String
     var href: String
@@ -35,7 +42,7 @@ public struct ResponseError: Codable {
         case message = "error-message"
     }
 }
-
+    
 public struct MerchantSettings: Codable {
     var payload: PayloadSettings
     
@@ -53,3 +60,4 @@ public struct MerchantSettings: Codable {
         }
     }
 }
+
