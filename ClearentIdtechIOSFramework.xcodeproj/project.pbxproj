@@ -80,6 +80,8 @@
 		19A61D6C2804129100E295B3 /* ClearentReaderStatusHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19A61D642804129100E295B3 /* ClearentReaderStatusHeaderView.xib */; };
 		19A61D6D2804129100E295B3 /* ClearentReaderStatusHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A61D652804129100E295B3 /* ClearentReaderStatusHeaderView.swift */; };
 		19A61D70280412CD00E295B3 /* Asset Catalog.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 19A61D6F280412CC00E295B3 /* Asset Catalog.xcassets */; };
+		19BD103D286EEF1100F0E5C4 /* ClearentUIBrandConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BD103C286EEF1100F0E5C4 /* ClearentUIBrandConfigurator.swift */; };
+		19BD103F286EF1F600F0E5C4 /* ClearentUIColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BD103E286EF1F600F0E5C4 /* ClearentUIColors.swift */; };
 		19C6EBD1281127E400762CD4 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19C6EBD0281127E400762CD4 /* Notification.swift */; };
 		4B074F3C2447173200868E21 /* ClearentConfigFetcher_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E728DB1D20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m */; };
 		4B074F3E244717E500868E21 /* ClearentConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA494020E171830090CFFC /* ClearentConfiguration.h */; };
@@ -264,6 +266,8 @@
 		19A61D642804129100E295B3 /* ClearentReaderStatusHeaderView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ClearentReaderStatusHeaderView.xib; sourceTree = "<group>"; };
 		19A61D652804129100E295B3 /* ClearentReaderStatusHeaderView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentReaderStatusHeaderView.swift; sourceTree = "<group>"; };
 		19A61D6F280412CC00E295B3 /* Asset Catalog.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Asset Catalog.xcassets"; sourceTree = "<group>"; };
+		19BD103C286EEF1100F0E5C4 /* ClearentUIBrandConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentUIBrandConfigurator.swift; sourceTree = "<group>"; };
+		19BD103E286EF1F600F0E5C4 /* ClearentUIColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentUIColors.swift; sourceTree = "<group>"; };
 		19C6EBD0281127E400762CD4 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		4B074F4624471B7900868E21 /* ClearentBluetoothDevice_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentBluetoothDevice_Tests.m; sourceTree = "<group>"; };
 		4B074F4824471F2700868E21 /* ClearentConnection_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentConnection_Tests.m; sourceTree = "<group>"; };
@@ -573,6 +577,7 @@
 		19B0A07E27EC9FB1006DAA48 /* ClearentUI */ = {
 			isa = PBXGroup;
 			children = (
+				19BD103B286EEBCF00F0E5C4 /* BrandConfigurator */,
 				0111819E283262D80025750A /* ReaderDetails */,
 				010394942803460E000A7A94 /* Common */,
 				BAC4E3C027FC3DC9001B5E6D /* PaymentFlowDataSource */,
@@ -581,6 +586,15 @@
 				1937011C27F31C8100BF48E5 /* ClearentProcessingModalPresenter.swift */,
 			);
 			path = ClearentUI;
+			sourceTree = "<group>";
+		};
+		19BD103B286EEBCF00F0E5C4 /* BrandConfigurator */ = {
+			isa = PBXGroup;
+			children = (
+				19BD103C286EEF1100F0E5C4 /* ClearentUIBrandConfigurator.swift */,
+				19BD103E286EF1F600F0E5C4 /* ClearentUIColors.swift */,
+			);
+			path = BrandConfigurator;
 			sourceTree = "<group>";
 		};
 		BA40A34727F1B38C0041CCF7 /* Wrapper */ = {
@@ -1082,6 +1096,7 @@
 				BA40A34C27F1B38C0041CCF7 /* ClearentWrapper.swift in Sources */,
 				013AB9B7282264B100771FAC /* ClearentPairingReaderItem.swift in Sources */,
 				0169C2E527FF1A4600B8B4DB /* ClearentMarginableView.swift in Sources */,
+				19BD103D286EEF1100F0E5C4 /* ClearentUIBrandConfigurator.swift in Sources */,
 				012E78542858D2A4008E30CF /* ClearentTipCheckboxView.swift in Sources */,
 				01F6D57B280580B200310E01 /* ClearentStringExtension.swift in Sources */,
 				01D1ED6F280FFA680005FC71 /* ReaderInfo.swift in Sources */,
@@ -1099,6 +1114,7 @@
 				E726A0382258B5B400F3E8B7 /* ClearentCache.m in Sources */,
 				19116EB0282BC3D60042CE8E /* ClearentReadersTableView.swift in Sources */,
 				0165F76E285B75E600C12463 /* ClearentMoneyFormatter.swift in Sources */,
+				19BD103F286EF1F600F0E5C4 /* ClearentUIColors.swift in Sources */,
 				0101EC2A2808249F00C533DE /* ClearentLoadingView.swift in Sources */,
 				BAC4E3C427FC3E88001B5E6D /* FlowDataProvider.swift in Sources */,
 				0129F83028253A8D00027BCE /* UIFontExtension.swift in Sources */,
