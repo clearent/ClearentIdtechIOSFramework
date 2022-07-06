@@ -16,6 +16,7 @@ private struct ClearentEndpoints {
     static let sale: String = "/rest/v2/mobile/transactions/sale"
     static let refund: String = "/rest/v2/mobile/transactions/refund"
     static let void: String = "/rest/v2/transactions/void"
+    static let signature: String = "/rest/v2/signature"
     static let settings = "/rest/v2/settings/terminal"
 }
 
@@ -52,6 +53,17 @@ class ClearentHttpClient {
         let refundURL = URL(string: baseURL + ClearentEndpoints.refund)
         let headers = headers(jwt: jwt, apiKey: self.apiKey)
         let _ = HttpClient.makeRawRequest(to: refundURL!, method: transactionMethod(type: TransactionType.refund.rawValue, amount: amount, tipAmount: "0.00"), headers: headers) { data, error in
+            completion(data, error)
+        }
+    }
+    
+    public func sendSignature(base64Image: String, transactionID: Int, completion: @escaping (Data?, Error?) -> Void) {
+        
+        let created = DateFormatter().string(from: Date())
+        
+        let signatureURL = URL(string: baseURL + ClearentEndpoints.signature)
+        let headers = headers(jwt: nil, apiKey: self.apiKey)
+        let _ = HttpClient.makeRawRequest(to: signatureURL!, method: signatureHTTPMethod(base64Image: baseURL, created: created, transactionID: transactionID), headers: headers) { data, error in
             completion(data, error)
         }
     }
@@ -98,6 +110,12 @@ class ClearentHttpClient {
     
     private func voidHTTPMethod(transactionID:String) -> HttpClient.HTTPMethod {
         let paramsDictionary = ["id":transactionID, "type":TransactionType.void.rawValue, "software-type": ClientInfo.softwareType, "software-type-version":ClientInfo.softwareTypeVersion]
+        let body = HttpClient.HTTPBody.parameters(paramsDictionary, HttpClient.ParameterEncoding.json)
+        return HttpClient.HTTPMethod.POST(body)
+    }
+    
+    private func signatureHTTPMethod(base64Image: String, created: String, transactionID: Int) -> HttpClient.HTTPMethod {
+        let paramsDictionary = ["base-64-image":base64Image, "created":created, "transaction-id": transactionID] as [String : Any]
         let body = HttpClient.HTTPBody.parameters(paramsDictionary, HttpClient.ParameterEncoding.json)
         return HttpClient.HTTPMethod.POST(body)
     }

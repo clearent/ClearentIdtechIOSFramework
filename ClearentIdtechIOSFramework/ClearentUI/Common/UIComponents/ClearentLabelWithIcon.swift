@@ -24,7 +24,7 @@ class ClearentLabelWithIcon: ClearentTitleLabel {
     }
 
     override func configure() {
-        font = ClearentConstants.Font.proTextSmall
+        font = ClearentConstants.Font.proTextExtraSmall
         textColor = ClearentConstants.Color.base02
     }
 }

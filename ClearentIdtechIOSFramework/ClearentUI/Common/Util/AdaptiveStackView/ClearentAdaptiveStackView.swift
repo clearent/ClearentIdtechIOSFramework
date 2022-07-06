@@ -17,18 +17,20 @@ public class ClearentAdaptiveStackView: UIStackView {
     }
     
     public func positionView(onTop: Bool, of view: UIView, margin: CGFloat = 32) {
-        if #available(iOS 11.0, *) {
-            removeFromSuperview()
-            view.addSubview(self)
-            alpha = 0
-            topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: margin).isActive = onTop
-            bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -margin).isActive = !onTop
-            leftAnchor.constraint(equalTo: view.leftAnchor, constant: margin).isActive = true
-            rightAnchor.constraint(equalTo: view.rightAnchor, constant: -margin).isActive = true
-            heightAnchor.constraint(lessThanOrEqualToConstant: view.frame.height / 1.3).isActive = true
-            UIView.animate(withDuration: 0.5, delay: 0.1) { [weak self] in
-                self?.alpha = 1.0
-            }
+        removeFromSuperview()
+        view.addSubview(self)
+        alpha = 0
+        topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: margin).isActive = onTop
+        heightAnchor.constraint(lessThanOrEqualToConstant: view.frame.height / 1.3).isActive = onTop
+        
+        bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -margin).isActive = !onTop
+        topAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.topAnchor, constant: margin).isActive = !onTop
+
+        leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: margin).isActive = true
+        rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -margin).isActive = true
+        
+        UIView.animate(withDuration: 0.5, delay: 0.1) { [weak self] in
+            self?.alpha = 1.0
         }
     }
 
