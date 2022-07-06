@@ -287,8 +287,8 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
-    public func saleTransaction(jwt: String, amount: String, tipAmount: String) {
-        httpClient.saleTransaction(jwt: jwt, amount: amount, tipAmount: tipAmount) { data, error in
+    public func saleTransaction(jwt: String, saleEntity: SaleEntity) {
+        httpClient.saleTransaction(jwt: jwt, saleEntity: saleEntity) { data, error in
             guard let responseData = data else { return }
             
             do {
@@ -340,7 +340,8 @@ public final class ClearentWrapper : NSObject {
     }
     
     public func refundTransaction(jwt: String, amount: String) {
-        httpClient.refundTransaction(jwt: jwt, amount: amount) { data, error in
+        let saleEntity = SaleEntity(amount: amount)
+        httpClient.refundTransaction(jwt: jwt, saleEntity: saleEntity) { data, error in
             guard let responseData = data else { return }
             
             do {
@@ -395,7 +396,7 @@ public final class ClearentWrapper : NSObject {
                         completion()
                         return
                     }
-                    let decodedResponse = try JSONDecoder().decode(MerchantSettings.self, from: data)
+                    let decodedResponse = try JSONDecoder().decode(MerchantSettingsEntity.self, from: data)
                     self.tipEnabled = decodedResponse.payload.terminalSettings.enableTip
                 } catch let jsonDecodingError {
                     print(jsonDecodingError)
@@ -529,14 +530,17 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         if (amountArray.last?.count == 1) {
             amountString = amountString + "0"
         }
+        let saleEntity = SaleEntity(amount: amountString)
         
-        var tipAmountString = self.tipAmount ?? "0.00"
-        let tipAmountArray = tipAmountString.split(separator: ".")
-        if (tipAmountArray.last?.count == 1) {
-            tipAmountString = tipAmountString + "0"
+        if var tipAmount = tipAmount {
+            let tipAmountArray = tipAmount.split(separator: ".")
+            if tipAmountArray.last?.count == 1 {
+                tipAmount = tipAmount + "0"
+            }
+            saleEntity.tipAmount = tipAmount
         }
-        
-        saleTransaction(jwt: clearentTransactionToken.jwt, amount: amountString, tipAmount: tipAmountString)
+
+        saleTransaction(jwt: clearentTransactionToken.jwt, saleEntity: saleEntity)
     }
     
     public func disconnectFromReader() {

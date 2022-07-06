@@ -41,18 +41,18 @@ class ClearentHttpClient {
     
     // MARK - Public
     
-    public func saleTransaction(jwt: String, amount: String, tipAmount: String, completion: @escaping (Data?, Error?) -> Void) {
+    public func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (Data?, Error?) -> Void) {
         let saleURL = URL(string: baseURL + ClearentEndpoints.sale)
         let headers = headers(jwt: jwt, apiKey: self.apiKey)
-        let _ = HttpClient.makeRawRequest(to: saleURL!, method: transactionMethod(type: TransactionType.sale.rawValue, amount: amount, tipAmount: tipAmount), headers: headers) { data, error in
+        let _ = HttpClient.makeRawRequest(to: saleURL!, method: transactionMethod(type: TransactionType.sale.rawValue, saleEntity: saleEntity), headers: headers) { data, error in
             completion(data, error)
         }
     }
     
-    public func refundTransaction(jwt: String, amount: String, completion: @escaping (Data?, Error?) -> Void) {
+    public func refundTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (Data?, Error?) -> Void) {
         let refundURL = URL(string: baseURL + ClearentEndpoints.refund)
         let headers = headers(jwt: jwt, apiKey: self.apiKey)
-        let _ = HttpClient.makeRawRequest(to: refundURL!, method: transactionMethod(type: TransactionType.refund.rawValue, amount: amount, tipAmount: "0.00"), headers: headers) { data, error in
+        let _ = HttpClient.makeRawRequest(to: refundURL!, method: transactionMethod(type: TransactionType.refund.rawValue, saleEntity: saleEntity), headers: headers) { data, error in
             completion(data, error)
         }
     }
@@ -86,17 +86,15 @@ class ClearentHttpClient {
     
     // MARK - Private
     
-    private func transactionMethod(type: String, amount: String, tipAmount: String) -> HttpClient.HTTPMethod {
-        let method = HttpClient.HTTPMethod.POST(transactionBody(type: type, amount: amount, tipAmount: tipAmount))
+    private func transactionMethod(type: String, saleEntity: SaleEntity) -> HttpClient.HTTPMethod {
+        let method = HttpClient.HTTPMethod.POST(transactionBody(type: type, saleEntity: saleEntity))
         return method
     }
     
-    private func transactionBody(type:String, amount: String, tipAmount: String) -> HttpClient.HTTPBody {
-        var paramsDictionary = ["amount":amount, "type":type, "software-type": ClientInfo.softwareType, "software-type-version":ClientInfo.softwareTypeVersion]
-        if (tipAmount != "0.00") {
-            paramsDictionary["tip-amount"] = tipAmount
-        }
-        let body = HttpClient.HTTPBody.parameters(paramsDictionary, HttpClient.ParameterEncoding.json)
+    private func transactionBody(type:String, saleEntity: SaleEntity) -> HttpClient.HTTPBody {
+        saleEntity.softwareType = ClientInfo.softwareType
+        saleEntity.softwareTypeVersion = ClientInfo.softwareTypeVersion
+        let body = HttpClient.HTTPBody.codableObject(saleEntity, HttpClient.ParameterEncoding.json)
         return body
     }
     
@@ -115,8 +113,20 @@ class ClearentHttpClient {
     }
     
     private func signatureHTTPMethod(base64Image: String, created: String, transactionID: Int) -> HttpClient.HTTPMethod {
-        let paramsDictionary = ["base-64-image":base64Image, "created":created, "transaction-id": transactionID] as [String : Any]
-        let body = HttpClient.HTTPBody.parameters(paramsDictionary, HttpClient.ParameterEncoding.json)
+        let signatureEntity = SignatureEntity(base64Image: base64Image, created: created, transactionID: transactionID)
+        let body = HttpClient.HTTPBody.codableObject(signatureEntity, HttpClient.ParameterEncoding.json)
         return HttpClient.HTTPMethod.POST(body)
+    }
+}
+
+
+public protocol CodableProtocol: Codable {}
+
+extension CodableProtocol {
+    func encode() -> Data? {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .millisecondsSince1970
+        guard let json = try? encoder.encode(self) else { return nil }
+        return json
     }
 }

@@ -69,6 +69,9 @@
 		01949F6D283BEC3E0041292A /* SF-Pro-Display-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 01949F6B283BEC3E0041292A /* SF-Pro-Display-Bold.otf */; };
 		019F92922827C9F10068E3FA /* ClearentListView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 019F92912827C9F10068E3FA /* ClearentListView.xib */; };
 		01D1ED6F280FFA680005FC71 /* ReaderInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D1ED6E280FFA680005FC71 /* ReaderInfo.swift */; };
+		01ED8F662874577E001D6952 /* SaleEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ED8F652874577E001D6952 /* SaleEntity.swift */; };
+		01ED8F682874586D001D6952 /* MerchantSettingsEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ED8F672874586D001D6952 /* MerchantSettingsEntity.swift */; };
+		01ED8F6A2874731B001D6952 /* SignatureEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ED8F692874731B001D6952 /* SignatureEntity.swift */; };
 		01F6D57B280580B200310E01 /* ClearentStringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F6D57A280580B200310E01 /* ClearentStringExtension.swift */; };
 		01F7CA502846226100345A24 /* ClearentHintView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01F7CA4F2846226100345A24 /* ClearentHintView.xib */; };
 		19116EB0282BC3D60042CE8E /* ClearentReadersTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19116EAF282BC3D60042CE8E /* ClearentReadersTableView.swift */; };
@@ -257,6 +260,9 @@
 		01949F6B283BEC3E0041292A /* SF-Pro-Display-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Display-Bold.otf"; sourceTree = "<group>"; };
 		019F92912827C9F10068E3FA /* ClearentListView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentListView.xib; sourceTree = "<group>"; };
 		01D1ED6E280FFA680005FC71 /* ReaderInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderInfo.swift; sourceTree = "<group>"; };
+		01ED8F652874577E001D6952 /* SaleEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaleEntity.swift; sourceTree = "<group>"; };
+		01ED8F672874586D001D6952 /* MerchantSettingsEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MerchantSettingsEntity.swift; sourceTree = "<group>"; };
+		01ED8F692874731B001D6952 /* SignatureEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureEntity.swift; sourceTree = "<group>"; };
 		01F6D57A280580B200310E01 /* ClearentStringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentStringExtension.swift; sourceTree = "<group>"; };
 		01F7CA4F2846226100345A24 /* ClearentHintView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentHintView.xib; sourceTree = "<group>"; };
 		19116EAF282BC3D60042CE8E /* ClearentReadersTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentReadersTableView.swift; sourceTree = "<group>"; };
@@ -620,6 +626,9 @@
 			isa = PBXGroup;
 			children = (
 				BA475A56280FEB91002A003D /* Entities.swift */,
+				01ED8F652874577E001D6952 /* SaleEntity.swift */,
+				01ED8F672874586D001D6952 /* MerchantSettingsEntity.swift */,
+				01ED8F692874731B001D6952 /* SignatureEntity.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -1057,6 +1066,7 @@
 			files = (
 				0169C2E727FF1A4600B8B4DB /* ClearentXibView.swift in Sources */,
 				4B907F8B242E7FAA0029C21E /* ClearentFeedback.m in Sources */,
+				01ED8F6A2874731B001D6952 /* SignatureEntity.swift in Sources */,
 				014B2BAC280092F10056F7FD /* ClearentColorExtension.swift in Sources */,
 				4B32C08E2432586500CCF9B9 /* ClearentConnection.m in Sources */,
 				011181AC28329ECD0025750A /* ClearentInfoWithIcon.swift in Sources */,
@@ -1116,6 +1126,7 @@
 				BAC4E3C427FC3E88001B5E6D /* FlowDataProvider.swift in Sources */,
 				0129F83028253A8D00027BCE /* UIFontExtension.swift in Sources */,
 				1937011D27F31C8100BF48E5 /* ClearentProcessingModalPresenter.swift in Sources */,
+				01ED8F682874586D001D6952 /* MerchantSettingsEntity.swift in Sources */,
 				4B32C08B2432560600CCF9B9 /* ClearentResponse.m in Sources */,
 				0129F7E52823A83000027BCE /* ClearentSubtitleLabel.swift in Sources */,
 				0101EC292808249F00C533DE /* ProgressShapeLayer.swift in Sources */,
@@ -1132,6 +1143,7 @@
 				E7CA497520E579190090CFFC /* ClearentConfigFetcher.m in Sources */,
 				0169C2E627FF1A4600B8B4DB /* ClearentAdaptiveStackView.swift in Sources */,
 				CC836ABF2848C2AC00DB4CBA /* ClearentTextField.swift in Sources */,
+				01ED8F662874577E001D6952 /* SaleEntity.swift in Sources */,
 				0169E76C286EEDF0000484CC /* ClearentApplicationOrientation.swift in Sources */,
 				CC1953B928213F5700DF3688 /* ClearentWrapperDefaults.swift in Sources */,
 				011181B32833B4450025750A /* ClearentReaderDetailsPresenter.swift in Sources */,

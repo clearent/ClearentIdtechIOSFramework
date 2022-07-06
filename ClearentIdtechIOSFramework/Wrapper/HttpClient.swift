@@ -16,7 +16,7 @@ class HttpClient {
     }
     
     enum HTTPBody {
-        case text(String), data(Data), parameters([String: Any], ParameterEncoding)
+        case text(String), data(Data), codableObject(CodableProtocol, ParameterEncoding), parameters([String: Any], ParameterEncoding)
         
         var data: Data? {
             switch self {
@@ -26,6 +26,8 @@ class HttpClient {
                 return body
             case .parameters(let dict, let encoding):
                 return encoding.encode(body: dict)
+            case .codableObject(let object, let encoding):
+                return encoding.encode(body: object)
             }
         }
         
@@ -83,6 +85,10 @@ class HttpClient {
     
     enum ParameterEncoding {
         case json
+        
+        func encode(body: CodableProtocol) -> Data? {
+            return body.encode()
+        }
         
         func encode(body: [String: Any]) -> Data? {
             switch self {

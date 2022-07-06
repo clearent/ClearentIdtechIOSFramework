@@ -245,7 +245,10 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     private func continueTransaction() {
         if sdkWrapper.isReaderConnected(), let amount = amountWithoutTip {
             let formattedAmount = String(ClearentMoneyFormatter.formattedText(from: amount).double)
-            let formattedTip = String(ClearentMoneyFormatter.formattedText(from: tip ?? 0).double)
+            var formattedTip: String? = nil
+            if let tip = tip {
+                formattedTip = String(ClearentMoneyFormatter.formattedText(from: tip).double)
+            }
             sdkWrapper.startTransaction(with: formattedAmount, and: formattedTip)
         } else {
             sdkWrapper.startPairing(reconnectIfPossible: true)
