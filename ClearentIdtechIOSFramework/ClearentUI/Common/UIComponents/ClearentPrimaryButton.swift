@@ -8,11 +8,17 @@
 
 import UIKit
 
+
+public enum ButtonStyleType {
+    case transparent, bordered, filled
+}
+
 public class ClearentPrimaryButton: ClearentMarginableView {
     
     // MARK: - Properties
 
     public var action: (() -> Void)?
+    var type: FlowButtonType?
 
     @IBOutlet var button: UIButton!
 
@@ -23,47 +29,25 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         ]
     }
 
-    public var enabledBackgroundColor = ClearentUIBrandConfigurator.shared.colorPalette.enabledBackgroundColor {
-        didSet { updateAppearence() }
-    }
-
-    public var disabledBackgroundColor = ClearentUIBrandConfigurator.shared.colorPalette.disabledBackgroundColor {
-        didSet { updateAppearence() }
-    }
-
-    public var enabledTextColor = ClearentUIBrandConfigurator.shared.colorPalette.enabledTextColor {
-        didSet { updateAppearence() }
-    }
-
-    public var disabledTextColor = ClearentUIBrandConfigurator.shared.colorPalette.disabledTextColor {
-        didSet { updateAppearence() }
-    }
-
-    public var isBorderedButton: Bool = false {
-        didSet {
-            let color = ClearentConstants.Color.self
-            enabledBackgroundColor = isBorderedButton ? color.backgroundSecondary01 : color.base01
-            enabledTextColor = isBorderedButton ? color.base01 : color.backgroundSecondary01
-            borderColor = ClearentUIBrandConfigurator.shared.colorPalette.buttonBorderColor
-            borderWidth = isBorderedButton ? ClearentConstants.Size.defaultButtonBorderWidth : 0
-        }
-    }
+    public var filledBackgroundColor = ClearentConstants.Color.base01
+    public var filledButtonTextColor = ClearentConstants.Color.backgroundSecondary01
     
-    public var isTransparentButton: Bool = false {
+    public var borderColor: UIColor = ClearentConstants.Color.backgroundSecondary02
+    public var borderedBackgroundColor = ClearentConstants.Color.backgroundSecondary01
+    public var borderedButtonTextColor = ClearentConstants.Color.base01
+    
+    public var transparentButtonTextColor = ClearentConstants.Color.base01
+
+    public var buttonStyle: ButtonStyleType = .filled {
         didSet {
-            if isTransparentButton {
-                enabledBackgroundColor = ClearentConstants.Color.backgroundSecondary01
-                enabledTextColor = ClearentConstants.Color.base01
-                borderWidth = 0
+            switch buttonStyle {
+            case .transparent:
+                setTransparentButton()
+            case .bordered:
+                setBorderedButton()
+            case .filled:
+                setFilledButton()
             }
-        }
-    }
-    
-    var type: FlowButtonType?
-    
-    var borderColor: UIColor? {
-        didSet {
-            button.layer.borderColor = borderColor?.cgColor
         }
     }
 
@@ -73,29 +57,14 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         }
     }
     
-    var borderWidth: CGFloat? {
-        didSet {
-            guard let borderWidth = borderWidth else { return }
-            button.layer.borderWidth = borderWidth
-        }
-    }
-    
     public var title: String? {
         didSet {
             button.setTitle(title, for: .normal)
         }
     }
 
-    public var isEnabled: Bool {
-        set {
-            button.isEnabled = newValue
-            updateAppearence()
-        }
-        get { button.isEnabled }
-    }
-
     override func configure() {
-        updateAppearence()
+        setFilledButton()
         button.layer.cornerRadius = button.bounds.height / 2
         button.layer.masksToBounds = true
         textFont = ClearentConstants.Font.proTextNormal
@@ -106,10 +75,23 @@ public class ClearentPrimaryButton: ClearentMarginableView {
     }
 
     // MARK: - Private
-
-    private func updateAppearence() {
-        button.backgroundColor = isEnabled ? enabledBackgroundColor : disabledBackgroundColor
-        let textColor = isEnabled ? enabledTextColor : disabledTextColor
-        button.setTitleColor(textColor, for: .normal)
+    
+    private func setBorderedButton() {
+        button.backgroundColor = borderedBackgroundColor
+        button.setTitleColor(borderedButtonTextColor, for: .normal)
+        button.layer.borderColor = borderColor.cgColor
+        button.layer.borderWidth = ClearentConstants.Size.defaultButtonBorderWidth
+    }
+    
+    private func setTransparentButton() {
+        button.backgroundColor = .clear
+        button.setTitleColor(transparentButtonTextColor, for: .normal)
+        button.layer.borderWidth = 0
+    }
+    
+    private func setFilledButton() {
+        button.backgroundColor = filledBackgroundColor
+        button.setTitleColor(filledButtonTextColor, for: .normal)
+        button.layer.borderWidth = 0
     }
 }

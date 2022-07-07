@@ -77,7 +77,6 @@
      
      private func setupDoneButton() {
          doneButton.title = "xsdk_signature_action".localized
-         doneButton.isBorderedButton = false
          doneButton.button.isUserInteractionEnabled = false
      }
      
