@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol ClearenttextFieldProtocol {
+protocol ClearentTextFieldProtocol {
     func didFinishWithResult(name: String?)
 }
 
@@ -16,7 +16,7 @@ class ClearentTextField: ClearentMarginableView, UITextFieldDelegate {
 
     @IBOutlet weak var infoLabel: UILabel!
     @IBOutlet weak var inputField: UITextField!
-    var delegate: ClearenttextFieldProtocol?
+    var delegate: ClearentTextFieldProtocol?
 
     private var readerName: String?
         override public var margins: [BottomMargin] {
@@ -25,7 +25,7 @@ class ClearentTextField: ClearentMarginableView, UITextFieldDelegate {
         ]
     }
     
-    convenience init(currentReaderName: String?, inputName: String, hint: String, delegate: ClearenttextFieldProtocol) {
+    convenience init(currentReaderName: String?, inputName: String, hint: String, delegate: ClearentTextFieldProtocol) {
         self.init()
         self.readerName = currentReaderName
         self.infoLabel.text = inputName

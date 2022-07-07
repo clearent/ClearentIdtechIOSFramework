@@ -226,7 +226,7 @@ extension ClearentProcessingModalViewController: ClearentReadersTableViewDelegat
     }
 }
 
-extension ClearentProcessingModalViewController: ClearenttextFieldProtocol {
+extension ClearentProcessingModalViewController: ClearentTextFieldProtocol {
     func didFinishWithResult(name: String?) {
         presenter?.updateTemporaryReaderName(name: name)
     }
