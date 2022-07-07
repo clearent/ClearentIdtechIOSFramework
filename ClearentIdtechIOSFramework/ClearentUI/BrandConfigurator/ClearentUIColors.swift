@@ -14,7 +14,7 @@ public protocol ClearentUIColors {
     // MARK: ClearentLoadingView
     
     // The loading view's fill color
-    var fillColor: UIColor { get }
+    var loadingViewFillColor: UIColor { get }
     
     // MARK: ClearentPrimaryButton
     
@@ -54,39 +54,37 @@ public protocol ClearentUIColors {
     // The label's text color (also used in ClearentReaderDetailsScreen)
     var subtitleLabelColor: UIColor { get }
     
-    // MARK: ClearentPairingReaderItem
-    
-    // The item's text color
-    var readerItemColor: UIColor { get }
-    
     // MARK: ClearentReaderStatusHeaderView
     
     // The reader name label's color
     var readerNameColor: UIColor { get }
     
-    // The description label's color
-    var descriptionColor: UIColor { get }
-    
     // MARK: ClearentReaderConnectivityStatusView
     
-    // The status label's color
-    var statusLabelColor: UIColor { get }
+    // The status label's color (also used in ClearentReaderStatusHeaderView)
+    var readerStatusLabelColor: UIColor { get }
     
     // MARK: ClearentReadersTableViewCell
     
-    // The reader name label's color
+    // The reader name label's color (also used in ClearentPairingReaderItem)
     var readerNameLabelColor: UIColor { get }
     
-    // The reader status icon's color
-    var readerStatusIconColor: UIColor { get }
+    // The reader status icon's color when the reader is connected
+    var readerStatusConnectedIconColor: UIColor { get }
+    
+    // The reader status icon's color when the reader is not connected
+    var readerStatusNotConnectedIconColor: UIColor { get }
     
     // The cell's background color
     var readersCellBackgroundColor: UIColor { get }
     
     // MARK: ClearentTipCheckboxView
     
-    // The border's color of the checkbox view
-    var checkboxBorderColor: UIColor { get }
+    // The border's color of the checkbox view when is selected
+    var checkboxSelectedBorderColor: UIColor { get }
+    
+    // The border's color of the checkbox view when is not selected
+    var checkboxUnselectedBorderColor: UIColor { get }
     
     // The percentage label's color
     var percentageLabelColor: UIColor { get }
@@ -95,7 +93,7 @@ public protocol ClearentUIColors {
     var tipLabelColor: UIColor { get }
     
     // The tip adjustment button's tint color
-    var tipAdjustmentTinColor: UIColor { get }
+    var tipAdjustmentTintColor: UIColor { get }
     
     // MARK: ClearentTextField
     
@@ -103,6 +101,9 @@ public protocol ClearentUIColors {
     var infoLabelColor: UIColor { get }
     
     // MARK: ClearentReaderDetailsScreen
+    
+    // The navigation bar's tint color
+    var navigationBarTintColor: UIColor { get }
     
     // The title's color
     var screenTitleColor: UIColor { get }

@@ -86,6 +86,7 @@
 		19A61D70280412CD00E295B3 /* Asset Catalog.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 19A61D6F280412CC00E295B3 /* Asset Catalog.xcassets */; };
 		19BD103D286EEF1100F0E5C4 /* ClearentUIBrandConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BD103C286EEF1100F0E5C4 /* ClearentUIBrandConfigurator.swift */; };
 		19BD103F286EF1F600F0E5C4 /* ClearentUIColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BD103E286EF1F600F0E5C4 /* ClearentUIColors.swift */; };
+		19BD1041287577D300F0E5C4 /* ClearentColorsDefaultPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BD1040287577D300F0E5C4 /* ClearentColorsDefaultPalette.swift */; };
 		19C6EBD1281127E400762CD4 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19C6EBD0281127E400762CD4 /* Notification.swift */; };
 		4B074F3C2447173200868E21 /* ClearentConfigFetcher_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E728DB1D20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m */; };
 		4B074F3E244717E500868E21 /* ClearentConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA494020E171830090CFFC /* ClearentConfiguration.h */; };
@@ -276,6 +277,7 @@
 		19A61D6F280412CC00E295B3 /* Asset Catalog.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Asset Catalog.xcassets"; sourceTree = "<group>"; };
 		19BD103C286EEF1100F0E5C4 /* ClearentUIBrandConfigurator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentUIBrandConfigurator.swift; sourceTree = "<group>"; };
 		19BD103E286EF1F600F0E5C4 /* ClearentUIColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentUIColors.swift; sourceTree = "<group>"; };
+		19BD1040287577D300F0E5C4 /* ClearentColorsDefaultPalette.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentColorsDefaultPalette.swift; sourceTree = "<group>"; };
 		19C6EBD0281127E400762CD4 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		4B074F4624471B7900868E21 /* ClearentBluetoothDevice_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentBluetoothDevice_Tests.m; sourceTree = "<group>"; };
 		4B074F4824471F2700868E21 /* ClearentConnection_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentConnection_Tests.m; sourceTree = "<group>"; };
@@ -605,6 +607,7 @@
 			children = (
 				19BD103C286EEF1100F0E5C4 /* ClearentUIBrandConfigurator.swift */,
 				19BD103E286EF1F600F0E5C4 /* ClearentUIColors.swift */,
+				19BD1040287577D300F0E5C4 /* ClearentColorsDefaultPalette.swift */,
 			);
 			path = BrandConfigurator;
 			sourceTree = "<group>";
@@ -1122,6 +1125,7 @@
 				4B32C0912432677F00CCF9B9 /* ClearentTransactionToken.m in Sources */,
 				E7CA494520E1753D0090CFFC /* ClearentConfigurator.m in Sources */,
 				BAEAD2D92810041100AA72F6 /* ClearentExtension.swift in Sources */,
+				19BD1041287577D300F0E5C4 /* ClearentColorsDefaultPalette.swift in Sources */,
 				4BAEA885271C5CD8007F5FCF /* ClearentLumberjack.m in Sources */,
 				19C6EBD1281127E400762CD4 /* Notification.swift in Sources */,
 				E726A0382258B5B400F3E8B7 /* ClearentCache.m in Sources */,

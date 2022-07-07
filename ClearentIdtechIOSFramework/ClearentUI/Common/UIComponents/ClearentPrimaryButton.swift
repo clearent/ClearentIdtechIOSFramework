@@ -23,19 +23,19 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         ]
     }
 
-    public var enabledBackgroundColor = ClearentConstants.Color.accent01 {
+    public var enabledBackgroundColor = ClearentUIBrandConfigurator.shared.colorPalette.enabledBackgroundColor {
         didSet { updateAppearence() }
     }
 
-    public var disabledBackgroundColor = ClearentConstants.Color.base01 {
+    public var disabledBackgroundColor = ClearentUIBrandConfigurator.shared.colorPalette.disabledBackgroundColor {
         didSet { updateAppearence() }
     }
 
-    public var enabledTextColor = ClearentConstants.Color.backgroundSecondary01 {
+    public var enabledTextColor = ClearentUIBrandConfigurator.shared.colorPalette.enabledTextColor {
         didSet { updateAppearence() }
     }
 
-    public var disabledTextColor = ClearentConstants.Color.backgroundSecondary01 {
+    public var disabledTextColor = ClearentUIBrandConfigurator.shared.colorPalette.disabledTextColor {
         didSet { updateAppearence() }
     }
 
@@ -44,7 +44,7 @@ public class ClearentPrimaryButton: ClearentMarginableView {
             let color = ClearentConstants.Color.self
             enabledBackgroundColor = isBorderedButton ? color.backgroundSecondary01 : color.base01
             enabledTextColor = isBorderedButton ? color.base01 : color.backgroundSecondary01
-            borderColor = color.backgroundSecondary02
+            borderColor = ClearentUIBrandConfigurator.shared.colorPalette.buttonBorderColor
             borderWidth = isBorderedButton ? ClearentConstants.Size.defaultButtonBorderWidth : 0
         }
     }

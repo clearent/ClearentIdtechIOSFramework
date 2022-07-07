@@ -10,5 +10,5 @@ import Foundation
 
 public class ClearentUIBrandConfigurator {
     public static var shared = ClearentUIBrandConfigurator()
-    
+    var colorPalette = ClearentColorsDefaultPalette()
 }

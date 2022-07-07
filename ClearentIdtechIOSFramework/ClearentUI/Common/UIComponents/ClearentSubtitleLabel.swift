@@ -21,6 +21,6 @@ public class ClearentSubtitleLabel: ClearentTitleLabel {
     override func configure() {
         label.textAlignment = .center
         font = ClearentConstants.Font.proTextNormal
-        textColor = ClearentConstants.Color.base02
+        textColor = ClearentUIBrandConfigurator.shared.colorPalette.subtitleLabelColor
     }
 }
