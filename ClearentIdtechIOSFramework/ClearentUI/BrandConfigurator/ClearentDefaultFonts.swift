@@ -31,11 +31,11 @@ class ClearentDefaultFonts: ClearentUIFonts {
     
     var readerNameTextFont: UIFont { proTextNormal }
     
-    var statusLabelFont: UIFont { proTextSmall }
+    var statusLabelFont: UIFont { proTextExtraSmall }
     
     var tipItemTextFont: UIFont { proTextNormal }
     
-    var addCustomNameInfoLabelFont: UIFont { proTextExtraSmall }
+    var addCustomNameInfoLabelFont: UIFont { proTextSmall }
     
     var addCustomNameInputLabelFont: UIFont { proTextNormal }
     

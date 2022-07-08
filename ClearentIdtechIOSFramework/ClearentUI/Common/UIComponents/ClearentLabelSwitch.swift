@@ -31,6 +31,7 @@ class ClearentLabelSwitch: ClearentInfoWithIcon {
         switchView.transform = CGAffineTransform(scaleX: 0.83, y: 0.77)
         descriptionFont = ClearentUIBrandConfigurator.shared.fonts.detailScreenItemDescriptionFont
         descriptionTextColor = ClearentConstants.Color.base02
+        separatorView.backgroundColor = ClearentConstants.Color.backgroundSecondary02
     }
 
     @IBAction func switchValueDidChange(_ sender: UISwitch) {

@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import UIKit
 
 public class ClearentUIBrandConfigurator {
     public static var shared = ClearentUIBrandConfigurator()
