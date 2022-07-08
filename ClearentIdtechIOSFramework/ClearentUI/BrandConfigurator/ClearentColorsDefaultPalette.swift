@@ -61,5 +61,7 @@ class ClearentColorsDefaultPalette: ClearentUIColors {
     
     var navigationBarTintColor: UIColor { return UIColor(hexString: "000000") }
     
-    var screenTitleColor: UIColor { return UIColor(hexString: "") }
+    var screenTitleColor: UIColor { return UIColor(hexString: "000000") }
+    
+    var signatureDescriptionMessageColor: UIColor { return UIColor(hexString: "272431") }
 }

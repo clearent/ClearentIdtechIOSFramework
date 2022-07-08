@@ -107,4 +107,9 @@ public protocol ClearentUIColors {
     
     // The title's color
     var screenTitleColor: UIColor { get }
+    
+    // MARK: ClearentSignatureView
+    
+    // The description message's color
+    var signatureDescriptionMessageColor: UIColor { get }
 }

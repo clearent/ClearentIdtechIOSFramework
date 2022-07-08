@@ -67,7 +67,7 @@
          descriptionLabel.text = "xsdk_signature_subtitle".localized
          descriptionLabel.font = ClearentConstants.Font.proTextSmall
          descriptionLabel.textAlignment = .left
-         descriptionLabel.textColor = ClearentConstants.Color.base01
+         descriptionLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.signatureDescriptionMessageColor
      }
      
      private func setupSignatureIndicator() {
