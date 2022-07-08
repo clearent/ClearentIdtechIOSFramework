@@ -26,7 +26,7 @@ class ClearentReaderConnectivityStatusView: ClearentXibView {
 
     override func configure() {
         textColor = ClearentUIBrandConfigurator.shared.colorPalette.readerStatusLabelColor
-        font = ClearentConstants.Font.proTextSmall
+        font = ClearentUIBrandConfigurator.shared.fonts.statusLabelFont
     }
     
     // MARK: Public

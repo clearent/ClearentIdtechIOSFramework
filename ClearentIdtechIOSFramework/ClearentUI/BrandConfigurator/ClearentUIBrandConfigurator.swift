@@ -7,8 +7,11 @@
 //
 
 import Foundation
+import UIKit
 
 public class ClearentUIBrandConfigurator {
     public static var shared = ClearentUIBrandConfigurator()
-    var colorPalette = ClearentColorsDefaultPalette()
+    
+    public var colorPalette: ClearentUIColors = ClearentColorsDefaultPalette()
+    public var fonts: ClearentUIFonts = ClearentDefaultFonts()
 }

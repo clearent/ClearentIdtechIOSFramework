@@ -79,7 +79,7 @@ class ClearentReadersTableViewCell: UITableViewCell {
         roundedCornersView.layer.cornerRadius = 8
         roundedCornersView.layer.masksToBounds = true
         
-        readerNameLabel.font = ClearentConstants.Font.proTextNormal
+        readerNameLabel.font = ClearentUIBrandConfigurator.shared.fonts.listItemTextFont
         readerNameLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.readerNameLabelColor
         detailsButton.setTitle("", for: .normal)
     }

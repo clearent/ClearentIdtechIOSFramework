@@ -69,6 +69,8 @@
 		01949F6D283BEC3E0041292A /* SF-Pro-Display-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 01949F6B283BEC3E0041292A /* SF-Pro-Display-Bold.otf */; };
 		019F92922827C9F10068E3FA /* ClearentListView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 019F92912827C9F10068E3FA /* ClearentListView.xib */; };
 		01D1ED6F280FFA680005FC71 /* ReaderInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D1ED6E280FFA680005FC71 /* ReaderInfo.swift */; };
+		01EEC9242875AD3700AAB08E /* ClearentUIFont.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EEC9232875AD3700AAB08E /* ClearentUIFont.swift */; };
+		01EEC9262876BACA00AAB08E /* ClearentDefaultFonts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01EEC9252876BACA00AAB08E /* ClearentDefaultFonts.swift */; };
 		01F6D57B280580B200310E01 /* ClearentStringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F6D57A280580B200310E01 /* ClearentStringExtension.swift */; };
 		01F7CA502846226100345A24 /* ClearentHintView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01F7CA4F2846226100345A24 /* ClearentHintView.xib */; };
 		19116EB0282BC3D60042CE8E /* ClearentReadersTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19116EAF282BC3D60042CE8E /* ClearentReadersTableView.swift */; };
@@ -260,6 +262,8 @@
 		01949F6B283BEC3E0041292A /* SF-Pro-Display-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Display-Bold.otf"; sourceTree = "<group>"; };
 		019F92912827C9F10068E3FA /* ClearentListView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentListView.xib; sourceTree = "<group>"; };
 		01D1ED6E280FFA680005FC71 /* ReaderInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderInfo.swift; sourceTree = "<group>"; };
+		01EEC9232875AD3700AAB08E /* ClearentUIFont.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentUIFont.swift; sourceTree = "<group>"; };
+		01EEC9252876BACA00AAB08E /* ClearentDefaultFonts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentDefaultFonts.swift; sourceTree = "<group>"; };
 		01F6D57A280580B200310E01 /* ClearentStringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentStringExtension.swift; sourceTree = "<group>"; };
 		01F7CA4F2846226100345A24 /* ClearentHintView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentHintView.xib; sourceTree = "<group>"; };
 		19116EAF282BC3D60042CE8E /* ClearentReadersTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentReadersTableView.swift; sourceTree = "<group>"; };
@@ -608,6 +612,8 @@
 				19BD103C286EEF1100F0E5C4 /* ClearentUIBrandConfigurator.swift */,
 				19BD103E286EF1F600F0E5C4 /* ClearentUIColors.swift */,
 				19BD1040287577D300F0E5C4 /* ClearentColorsDefaultPalette.swift */,
+				01EEC9232875AD3700AAB08E /* ClearentUIFont.swift */,
+				01EEC9252876BACA00AAB08E /* ClearentDefaultFonts.swift */,
 			);
 			path = BrandConfigurator;
 			sourceTree = "<group>";
@@ -1074,6 +1080,7 @@
 			files = (
 				0169C2E727FF1A4600B8B4DB /* ClearentXibView.swift in Sources */,
 				4B907F8B242E7FAA0029C21E /* ClearentFeedback.m in Sources */,
+				01EEC9262876BACA00AAB08E /* ClearentDefaultFonts.swift in Sources */,
 				014B2BAC280092F10056F7FD /* ClearentColorExtension.swift in Sources */,
 				4B32C08E2432586500CCF9B9 /* ClearentConnection.m in Sources */,
 				011181AC28329ECD0025750A /* ClearentInfoWithIcon.swift in Sources */,
@@ -1150,6 +1157,7 @@
 				CC1953B728213ECC00DF3688 /* UserDefaultsPersistence.swift in Sources */,
 				E7B89E3121F6A6A400078C73 /* ClearentManualEntry.m in Sources */,
 				E7CA497520E579190090CFFC /* ClearentConfigFetcher.m in Sources */,
+				01EEC9242875AD3700AAB08E /* ClearentUIFont.swift in Sources */,
 				0169C2E627FF1A4600B8B4DB /* ClearentAdaptiveStackView.swift in Sources */,
 				CC836ABF2848C2AC00DB4CBA /* ClearentTextField.swift in Sources */,
 				0169E76C286EEDF0000484CC /* ClearentApplicationOrientation.swift in Sources */,

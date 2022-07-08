@@ -68,9 +68,9 @@ class ClearentInfoWithIcon: ClearentMarginableView {
     }
 
     override func configure() {
-        titleFont = ClearentConstants.Font.proTextNormal
+        titleFont = ClearentUIBrandConfigurator.shared.fonts.detailScreenItemTitleFont
         titleTextColor = ClearentConstants.Color.base02
-        descriptionFont = ClearentConstants.Font.proTextNormal
+        descriptionFont = ClearentUIBrandConfigurator.shared.fonts.detailScreenItemSubtitleFont
         descriptionTextColor = ClearentConstants.Color.base01
         separatorView.backgroundColor = ClearentConstants.Color.backgroundSecondary02
     }
@@ -78,5 +78,4 @@ class ClearentInfoWithIcon: ClearentMarginableView {
     @IBAction func buttonAction(_ sender: Any) {
         editButtonPressed?()
     }
-    
 }
