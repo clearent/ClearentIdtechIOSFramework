@@ -44,9 +44,9 @@ public protocol ClearentUIFonts {
 
     // MARK: - ClearentTextField
     
-    var addCustomNameInfoLabelFont: UIFont { get }
+    var customNameInfoLabelFont: UIFont { get }
 
-    var addCustomNameInputLabelFont: UIFont { get }
+    var customNameInputLabelFont: UIFont { get }
 
     // MARK: - ClearentReaderDetailsScreen
     
