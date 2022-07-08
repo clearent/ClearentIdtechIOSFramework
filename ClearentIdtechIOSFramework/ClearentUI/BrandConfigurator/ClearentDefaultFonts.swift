@@ -35,9 +35,9 @@ class ClearentDefaultFonts: ClearentUIFonts {
     
     var tipItemTextFont: UIFont { proTextNormal }
     
-    var addCustomNameInfoLabelFont: UIFont { proTextSmall }
+    var customNameInfoLabelFont: UIFont { proTextSmall }
     
-    var addCustomNameInputLabelFont: UIFont { proTextNormal }
+    var customNameInputLabelFont: UIFont { proTextNormal }
     
     var signatureSubtitleFont: UIFont { proTextSmall}
     
