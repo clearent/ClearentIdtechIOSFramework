@@ -15,6 +15,18 @@ class ClearentColorsDefaultPalette: ClearentUIColors {
     
     var loadingViewFillColor: UIColor { return UIColor(hexString: "#272431") }
     
+    var filledBackgroundColor: UIColor { return UIColor(hexString: "272431") }
+    
+    var filledButtonTextColor: UIColor { return UIColor(hexString: "FFFFFF") }
+    
+    var borderColor: UIColor { return UIColor(hexString: "E1E2E8") }
+    
+    var borderedBackgroundColor: UIColor { return UIColor(hexString: "FFFFFF") }
+    
+    var borderedButtonTextColor: UIColor { return UIColor(hexString: "272431") }
+    
+    var transparentButtonTextColor: UIColor { return UIColor(hexString: "272431") }
+    
     var enabledBackgroundColor: UIColor { return UIColor(hexString: "#2FAC10") }
     
     var disabledBackgroundColor: UIColor { UIColor(hexString: "#272431") }

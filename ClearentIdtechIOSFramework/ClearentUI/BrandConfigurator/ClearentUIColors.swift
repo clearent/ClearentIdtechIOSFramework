@@ -18,20 +18,23 @@ public protocol ClearentUIColors {
     
     // MARK: ClearentPrimaryButton
     
-    // The button's background color when it is enabled
-    var enabledBackgroundColor: UIColor { get }
+    // The background's color for button of type filled
+    var filledBackgroundColor: UIColor { get }
     
-    // The button's background color when it is disabled
-    var disabledBackgroundColor: UIColor { get }
+    // The text's color for button of type filled
+    var filledButtonTextColor: UIColor { get }
     
-    // The button's text color when it is enabled
-    var enabledTextColor: UIColor { get }
+    // The border's color for button of type bordered
+    var borderColor: UIColor { get }
     
-    // The button's text color when it is disabled
-    var disabledTextColor: UIColor { get }
+    // The background's color for button of type bordered
+    var borderedBackgroundColor: UIColor { get }
     
-    // The button's border color
-    var buttonBorderColor: UIColor { get }
+    // The text's color for button of type bordered
+    var borderedButtonTextColor: UIColor { get }
+    
+    // The text's color for button of type transparent
+    var transparentButtonTextColor: UIColor { get }
     
     // MARK: ClearentHintView
     

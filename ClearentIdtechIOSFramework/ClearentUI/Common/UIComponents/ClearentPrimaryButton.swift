@@ -29,14 +29,14 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         ]
     }
 
-    public var filledBackgroundColor = ClearentConstants.Color.base01
-    public var filledButtonTextColor = ClearentConstants.Color.backgroundSecondary01
+    public var filledBackgroundColor = ClearentUIBrandConfigurator.shared.colorPalette.filledBackgroundColor
+    public var filledButtonTextColor = ClearentUIBrandConfigurator.shared.colorPalette.filledButtonTextColor
     
-    public var borderColor: UIColor = ClearentConstants.Color.backgroundSecondary02
-    public var borderedBackgroundColor = ClearentConstants.Color.backgroundSecondary01
-    public var borderedButtonTextColor = ClearentConstants.Color.base01
+    public var borderColor: UIColor = ClearentUIBrandConfigurator.shared.colorPalette.borderColor
+    public var borderedBackgroundColor = ClearentUIBrandConfigurator.shared.colorPalette.borderedBackgroundColor
+    public var borderedButtonTextColor = ClearentUIBrandConfigurator.shared.colorPalette.borderedButtonTextColor
     
-    public var transparentButtonTextColor = ClearentConstants.Color.base01
+    public var transparentButtonTextColor = ClearentUIBrandConfigurator.shared.colorPalette.transparentButtonTextColor
 
     public var buttonStyle: ButtonStyleType = .filled {
         didSet {
