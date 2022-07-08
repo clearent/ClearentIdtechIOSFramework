@@ -75,5 +75,9 @@ class ClearentColorsDefaultPalette: ClearentUIColors {
     
     var screenTitleColor: UIColor { return UIColor(hexString: "000000") }
     
+    var removeReaderButtonBorderColor: UIColor { return UIColor(hexString: "C2210F") }
+    
+    var removeReaderButtonTextColor: UIColor { return UIColor(hexString: "C2210F") }
+    
     var signatureDescriptionMessageColor: UIColor { return UIColor(hexString: "272431") }
 }

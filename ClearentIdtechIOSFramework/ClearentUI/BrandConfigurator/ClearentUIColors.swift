@@ -111,6 +111,12 @@ public protocol ClearentUIColors {
     // The title's color
     var screenTitleColor: UIColor { get }
     
+    // The remove reader button's border color
+    var removeReaderButtonBorderColor: UIColor { get }
+    
+    // The remove reader button's text color
+    var removeReaderButtonTextColor: UIColor { get }
+    
     // MARK: ClearentSignatureView
     
     // The description message's color

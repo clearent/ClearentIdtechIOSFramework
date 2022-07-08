@@ -161,9 +161,8 @@ class ClearentReaderDetailsViewController: UIViewController {
 
     private func setupButton() {
         removeReaderButton.title = "xsdk_reader_details_remove_reader".localized
-        let color = ClearentConstants.Color.self
-        removeReaderButton.borderedButtonTextColor = color.warning
-        removeReaderButton.borderColor = color.warning
+        removeReaderButton.borderedButtonTextColor = ClearentUIBrandConfigurator.shared.colorPalette.removeReaderButtonTextColor
+        removeReaderButton.borderColor = ClearentUIBrandConfigurator.shared.colorPalette.removeReaderButtonBorderColor
         removeReaderButton.buttonStyle = .bordered
         removeReaderButton.action = { [weak self] in
             self?.detailsPresenter.removeReader()
