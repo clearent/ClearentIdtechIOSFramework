@@ -15,7 +15,7 @@ private struct DefaultKeys {
 }
 
 public class ClearentWrapperDefaults: UserDefaultsPersistence {
-    fileprivate static var previouslyPairedReaderInfo: ReaderInfo?
+    static var lastPairedReaderInfo: ReaderInfo?
     
     internal static var recentlyPairedReaders: [ReaderInfo]? {
            
@@ -50,7 +50,7 @@ public class ClearentWrapperDefaults: UserDefaultsPersistence {
 extension ClearentWrapperDefaults {
     internal static var pairedReaderInfo: ReaderInfo? {
         get {
-            previouslyPairedReaderInfo ?? recentlyPairedReaders?.first { $0.autojoin == true }
+            lastPairedReaderInfo
         }
         set {
             setupPairedReader(with: newValue)
@@ -66,16 +66,16 @@ extension ClearentWrapperDefaults {
                 newPairedReader.autojoin = true
             }
             ClearentWrapper.shared.addReaderToRecentlyUsed(reader: newPairedReader)
-            previouslyPairedReaderInfo = newPairedReader
+            lastPairedReaderInfo = newPairedReader
         }
         // if pairedReader is nil, we need to set connected and autojoin to false for the corresponding item from the previously paired readers
         else {
-            if var previouslyPairedReaderInfo = previouslyPairedReaderInfo {
-                previouslyPairedReaderInfo.isConnected = false
-                previouslyPairedReaderInfo.autojoin = false
-                ClearentWrapper.shared.updateReaderInRecentlyUsed(reader: previouslyPairedReaderInfo)
+            if var defaultReaderInfo = lastPairedReaderInfo {
+                defaultReaderInfo.isConnected = false
+                defaultReaderInfo.autojoin = false
+                ClearentWrapper.shared.updateReaderInRecentlyUsed(reader: defaultReaderInfo)
             }
-            previouslyPairedReaderInfo = nil
+            lastPairedReaderInfo = nil
         }
     }
 }

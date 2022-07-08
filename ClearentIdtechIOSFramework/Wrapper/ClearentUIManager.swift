@@ -24,7 +24,13 @@ public final class ClearentUIManager : NSObject {
     }
     
     func setupReaderInfo() {
-        ClearentWrapperDefaults.pairedReaderInfo?.isConnected = false
+        // reset connection status on app restart
+        if var connectedReader = ClearentWrapperDefaults.recentlyPairedReaders?.first(where: { $0.isConnected }) {
+            connectedReader.isConnected = false
+            ClearentWrapper.shared.updateReaderInRecentlyUsed(reader: connectedReader)
+        }
+        
+        ClearentWrapperDefaults.lastPairedReaderInfo = ClearentWrapperDefaults.recentlyPairedReaders?.first { $0.autojoin }
 
         ClearentWrapper.shared.readerInfoReceived = { [weak self] _ in
             DispatchQueue.main.async {
