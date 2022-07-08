@@ -24,7 +24,7 @@ class ClearentLabelWithIcon: ClearentTitleLabel {
     }
 
     override func configure() {
-        font = ClearentConstants.Font.proTextExtraSmall
+        font = ClearentUIBrandConfigurator.shared.fonts.detailScreenItemDescriptionFont
         textColor = ClearentConstants.Color.base02
     }
 }

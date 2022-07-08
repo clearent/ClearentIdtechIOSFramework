@@ -51,7 +51,7 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         }
     }
 
-    var textFont = ClearentConstants.Font.proTextNormal {
+    var textFont: UIFont? {
         didSet {
             button.titleLabel?.font = textFont
         }
@@ -67,7 +67,7 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         setFilledButton()
         button.layer.cornerRadius = button.bounds.height / 2
         button.layer.masksToBounds = true
-        textFont = ClearentConstants.Font.proTextNormal
+        textFont = ClearentUIBrandConfigurator.shared.fonts.primaryButtonTextFont
     }
 
     @IBAction func buttonWasPressed(_: Any) {

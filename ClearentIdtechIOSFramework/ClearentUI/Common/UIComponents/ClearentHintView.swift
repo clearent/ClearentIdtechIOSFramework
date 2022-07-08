@@ -86,7 +86,7 @@ public class ClearentHintView: ClearentMarginableView {
     // MARK: - Private
 
     private func setupLabel() {
-        textFont = ClearentConstants.Font.proTextNormal
+        textFont = ClearentUIBrandConfigurator.shared.fonts.hintTextFont
         label.textAlignment = .center
         label.layer.cornerRadius = 10
         label.layer.masksToBounds = true

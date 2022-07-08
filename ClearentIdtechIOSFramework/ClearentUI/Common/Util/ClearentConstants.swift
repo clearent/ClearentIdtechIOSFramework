@@ -32,23 +32,6 @@ public class ClearentConstants {
         public static let warning = UIColor(hexString: "#C2210F")
     }
 
-    // MARK: - Fonts
-
-    public enum Font {
-        private static let sfProDisplayBold = "SFProDisplay-Bold"
-        private static let sfProTextBold = "SFProText-Bold"
-        private static let sfProTextMedium = "SFProText-Medium"
-
-        public static let proDisplayBoldExtraLarge = UIFont(name: sfProDisplayBold, size: 32)
-        public static let proDisplayBoldLarge = UIFont(name: sfProDisplayBold, size: 20) ?? UIFont.systemFont(ofSize: 20)
-        
-        public static let proTextBoldNormal = UIFont(name: sfProTextBold, size: 14)
-        public static let proTextLarge = UIFont(name: sfProTextMedium, size: 16)
-        public static let proTextNormal = UIFont(name: sfProTextMedium, size: 14)
-        public static let proTextSmall = UIFont(name: sfProTextMedium, size: 12)
-        public static let proTextExtraSmall = UIFont(name: sfProTextMedium, size: 10)
-    }
-
     // MARK: Assets
 
     public enum IconName {

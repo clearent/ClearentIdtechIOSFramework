@@ -84,9 +84,9 @@ class ClearentTipCheckboxView: ClearentMarginableView {
     }
     
     private func setLabels() {
-        percentageLabel.font = ClearentConstants.Font.proTextNormal
+        percentageLabel.font = ClearentUIBrandConfigurator.shared.fonts.tipItemTextFont
         percentageLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.percentageLabelColor
-        tipValueLabel.font = ClearentConstants.Font.proTextNormal
+        tipValueLabel.font = ClearentUIBrandConfigurator.shared.fonts.tipItemTextFont
         tipValueLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.tipLabelColor
     }
     
