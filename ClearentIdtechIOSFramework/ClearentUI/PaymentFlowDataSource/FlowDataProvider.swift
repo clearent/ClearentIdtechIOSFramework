@@ -218,7 +218,8 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         }
         
         if let flowItems = items {
-            let feedback = FlowDataFactory.component(with: .payment,
+            let flow: ProcessType = ClearentWrapper.shared.flowType == .signature ? .signature : .payment
+            let feedback = FlowDataFactory.component(with: flow,
                                                 type: type,
                                                 readerInfo: fetchReaderInfo(),
                                                 payload: flowItems)

@@ -134,7 +134,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     private func signatureView() -> ClearentSignatureView {
         // all orientations should be allowed when signature view is displayed
         ClearentApplicationOrientation.customOrientationMaskClosure?(UIInterfaceOrientationMask.all)
-        
+        ClearentWrapper.shared.flowType = .signature
         let signatureView = ClearentSignatureView()
         signatureView.doneAction = { [weak self] signatureImage in
             self?.presenter?.handleSignature(with: signatureImage)
