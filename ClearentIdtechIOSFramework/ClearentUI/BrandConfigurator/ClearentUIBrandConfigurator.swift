@@ -16,5 +16,5 @@ public class ClearentUIBrandConfigurator {
     
     /// Offers the possibility to customize strings displayed in the UI. Set this variable with an array of key/value objects that represent the localization keys to be overriden and the corresponsing desired texts
     /// If this is not set, the default values will be used for all texts.
-    public var overridenLocalizedStrings: [String: String]?
+    public var overriddenLocalizedStrings: [String: String]?
 }
