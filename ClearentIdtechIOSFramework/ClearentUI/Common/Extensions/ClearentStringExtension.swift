@@ -8,7 +8,7 @@
 
 extension String {
     var localized: String {
-        if let overriddenStrings = ClearentUIBrandConfigurator.shared.overridenLocalizedStrings, let text = overriddenStrings[self] {
+        if let overriddenStrings = ClearentUIBrandConfigurator.shared.overriddenLocalizedStrings, let text = overriddenStrings[self] {
             return text
         }
         return NSLocalizedString(self, bundle: ClearentConstants.bundle, comment: self)
