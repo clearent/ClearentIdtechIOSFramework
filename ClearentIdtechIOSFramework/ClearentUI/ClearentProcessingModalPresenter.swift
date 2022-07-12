@@ -69,29 +69,25 @@ class ClearentProcessingModalPresenter {
 extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 
     func restartProcess(processType: ProcessType, newPair: Bool) {
-        ClearentWrapper.shared.flowType = processType
         self.processType = processType
         sdkFeedbackProvider.delegate = self
         modalProcessingView?.showLoadingView()
         
-        switch processType {
-        case .renameReader:
-            showRenameReader()
-        case .pairing:
-            sdkWrapper.startPairing(reconnectIfPossible: !newPair)
-        case .payment:
-            startTransactionFlow()
-        case .showReaders:
-            break
-        }
+        startProcess(isRestart: true, processType: processType, newPair: newPair)
     }
     
     func startFlow() {
+        startProcess(isRestart: false, processType: processType)
+    }
+    
+    private func startProcess(isRestart: Bool, processType: ProcessType, newPair: Bool = false) {
         ClearentWrapper.shared.flowType = processType
         
         switch processType {
         case let .pairing(withReader: readerInfo):
-            if let readerInfo = readerInfo {
+            if isRestart {
+                sdkWrapper.startPairing(reconnectIfPossible: !newPair)
+            } else if let readerInfo = readerInfo {
                 // automatically connect to this reader
                 connectTo(reader: readerInfo)
             } else {
@@ -100,7 +96,10 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         case .payment:
             startTransactionFlow()
         case .showReaders:
+            if isRestart { break; }
             showReadersList()
+        case .signature:
+            showSignatureScreen()
         case .renameReader:
             showRenameReader()
         }
