@@ -6,65 +6,64 @@
   Copyright © 2022 Clearent, L.L.C. All rights reserved.
 */
 
-/* Pairing Flow*/
+// MARK: Pairing Flow
+// Texts that are displayed during the payment flow
 
-"xsdk_searching_for_reader" = "Searching for your reader...";
-"xsdk_pair_new_reader" = "Pair new reader";
-"xsdk_press_reader_button" = "Press the button on reader to reconnect";
-"xsdk_select_reader" = "Please select the reader you wish to pair with";
-"xsdk_connecting_reader" = "Connecting...";
-"xsdk_connection_sucessful" = "Connection successful";
-"xsdk_prepare_pairing_reader_range" = "Please make sure your reader is turned on and in range of the mobile device pairing it";
-"xsdk_prepare_pairing_reader_button" = "Press and hold the button on the side of the reader to turn it on.";
-"xsdk_no_readers_found_title" = "No reader has been found. Please check that your reader is turned on and in range of the device.";
-"xsdk_no_readers_found_description" = "No readers available";
-"xsdk_paired_successful" = "Your reader is connected and ready to be used.";
-"xsdk_add_name_to_reader" = "Add a name to your reader";
-"xsdk_rename_your_reader" = "Rename your reader";
-"xsdk_user_action_pair" = "Pair";
-"xsdk_user_action_done" = "Done";
-"xsdk_user_action_settings" = "Settings";
-"xsdk_user_action_addName" = "Add";
-"xsdk_user_action_later" = "Maybe later";
-"xsdk_reader_name" = "Reader name";
-"xsdk_reader_name_input_hint" = "Input a custom name";
+"xsdk_pairing_pair_new_reader" = "Pair new reader";
+"xsdk_pairing_select_reader" = "Please select the reader you wish to pair with";
+"xsdk_pairing_connecting_reader" = "Connecting...";
+"xsdk_pairing_connection_sucessful" = "Connection successful";
+"xsdk_pairing_prepare_pairing_reader_range" = "Please make sure your reader is turned on and in range of the mobile device pairing it";
+"xsdk_pairing_prepare_pairing_reader_button" = "Press and hold the button on the side of the reader to turn it on.";
+"xsdk_pairing_no_readers_found_title" = "No reader has been found. Please check that your reader is turned on and in range of the device.";
+"xsdk_pairing_no_readers_found_description" = "No readers available";
+"xsdk_pairing_paired_successful" = "Your reader is connected and ready to be used.";
+"xsdk_pairing_add_name_to_reader" = "Add a name to your reader";
+"xsdk_pairing_rename_your_reader" = "Rename your reader";
+"xsdk_pairing_user_action_pair" = "Pair";
+"xsdk_pairing_user_action_done" = "Done";
+"xsdk_pairing_user_action_settings" = "Settings";
+"xsdk_pairing_user_action_addName" = "Add";
+"xsdk_pairing_user_action_later" = "Maybe later";
+"xsdk_pairing_reader_name" = "Reader name";
+"xsdk_pairing_reader_name_input_hint" = "Input a custom name";
 
-"xsdk_user_transaction_tip_title" = "Would you like to add a tip?";
-"xsdk_user_action_transaction_with_tip" = "Charge %@";
-"xsdk_user_action_transaction_without_tip" = "Maybe next time";
+// MARK: Payment Flow
+// Texts that are displayed during the payment flow
 
-/* Payment Flow*/
+"xsdk_payment_transaction_completed_description" = "Payment successful";
 
-"xsdk_unknown_reader_name" = "Unknown";
-// Tips
+// MARK: Tips
+// Texts that are displayed on the tips screen (part of the payment flow)
+
 "xsdk_tips_custom_amount" = "Custom amount";
+"xsdk_tips_user_transaction_tip_title" = "Would you like to add a tip?";
+"xsdk_tips_user_action_transaction_with_tip" = "Charge %@";
+"xsdk_tips_user_action_transaction_without_tip" = "Maybe next time";
 
-// General error
-"xsdk_general_error_title" = "Transaction failed";
-"xsdk_general_error_description" = "Something went wrong";
-"xsdk_user_action_retry" = "Try Again";
-"xsdk_user_action_cancel" = "Cancel";
-"xsdk_user_action_ok" = "OK";
-"xsdk_connection_timeout" = "CONNECTION TIMEOUT";
+// MARK: Signature
+// Texts that are displayed on the signature screen (part of the payment flow)
 
-// Signature
 "xsdk_signature_title" = "Customer signature";
 "xsdk_signature_subtitle" = "I agree to pay total amount pursuant to the cardholder agreement.";
 "xsdk_signature_action" = "Done";
-"xsdk_signature_upload_sucessfull_title" = "Upload completed successfully";
+"xsdk_signature_upload_sucessful_title" = "Upload completed successfully";
 "xsdk_signature_upload_failure_title" = "The signature was not properly processed";
 
-// Transaction completed
-"xsdk_transaction_completed_description" = "Payment successful";
+// MARK: Readers list
+// Texts that are displayed on the readers list screen
 
-// Read error (card has chip)
-"xsdk_read_error_title" = "Card read error";
+"xsdk_readers_list_no_reader_connected" = "No reader connected";
+"xsdk_readers_list_select_reader" = "Please select a reader to connect";
 
-// Reader signal
+// MARK: Reader signal
+// Texts that are displayed on top of the readers list screen
+
 "xsdk_reader_signal_idle" = "Not connected";
 "xsdk_reader_signal_connected" = "Connected";
 
-/* Reader Details */
+// MARK: Reader Details
+// Texts that are displayed on the reader details screen
 
 "xsdk_reader_details_connected" = "Connected";
 "xsdk_reader_details_signal_status" = "Signal status (%@)";
@@ -82,17 +81,28 @@
 "xsdk_reader_details_signal_medium" = "Medium";
 "xsdk_reader_details_signal_weak" = "Weak";
 
-/* Readers list */
-"xsdk_readers_list_no_reader_connected" = "No reader connected";
-"xsdk_readers_list_select_reader" = "Please select a reader to connect";
+// MARK: General errors
+// Texts that are displayed in case of a general error during the payment flow
 
-// Internet Connection
+"xsdk_general_error_title" = "Transaction failed";
+"xsdk_general_error_description" = "Something went wrong";
+"xsdk_general_error_user_action_retry" = "Try Again";
+"xsdk_general_error_user_action_cancel" = "Cancel";
+"xsdk_general_error_connection_timeout" = "CONNECTION TIMEOUT";
+
+// MARK: Reader error
+"xsdk_reader_error_title" = "Card read error";
+
+// MARK: Internet Connection
+// Texts that are displayed in case of no Internet connection
+
 "xsdk_internet_error_title" = "Check your connection";
-"xsdk_no_internet" = "NO INTERNET";
+"xsdk_internet_no_connection" = "NO INTERNET";
 
-// Bluetooth
+// MARK: Bluetooth
+// Texts that are displayed in case of no bluetooth connection
+
 "xsdk_bluetooth_error_title" = "Bluetooth is not on";
-
 "xsdk_bluetooth_permission_error_title" = "No bluetooth permission";
-"xsdk_no_bluetooth" = "Bluetooth on this device is currently powered off.";
-"xsdk_no_bluetooth_permission" = "This app is not authorized to use Bluetooth Low Energy.";
+"xsdk_bluetooth_turned_off" = "Bluetooth on this device is currently powered off.";
+"xsdk_bluetooth_no_permission" = "This app is not authorized to use Bluetooth Low Energy.";

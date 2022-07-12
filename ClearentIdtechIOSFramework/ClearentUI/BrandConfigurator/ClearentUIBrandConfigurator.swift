@@ -11,10 +11,13 @@ import Foundation
 public class ClearentUIBrandConfigurator {
     public static var shared = ClearentUIBrandConfigurator()
     
+    /// Offers the possibility to customize the colors used in UI components.
     public var colorPalette: ClearentUIColors = ClearentColorsDefaultPalette()
+    
+    ///Offers the possibility to customize the fonts used in UI components.
     public var fonts: ClearentUIFonts = ClearentDefaultFonts()
     
-    /// Offers the possibility to customize strings displayed in the UI. Set this variable with an array of key/value objects that represent the localization keys to be overridden and the corresponsing desired texts
+    /// Offers the possibility to customize the strings displayed in UI components. Set this variable with an array of key/value objects that represent the localization keys to be overridden and the corresponding desired texts
     /// If this is not set, the default values will be used for all texts.
     public var overriddenLocalizedStrings: [String: String]?
 }

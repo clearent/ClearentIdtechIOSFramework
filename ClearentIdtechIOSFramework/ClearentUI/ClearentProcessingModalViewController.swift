@@ -122,7 +122,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             }
             return ClearentReadersTableView(dataSource: readersTableViewDataSource, delegate: self)
         case .input:
-            return ClearentTextField(currentReaderName: presenter?.editableReader?.customReaderName, inputName: "xsdk_reader_name".localized, hint: "xsdk_reader_name_input_hint".localized, delegate: self)
+            return ClearentTextField(currentReaderName: presenter?.editableReader?.customReaderName, inputName: "xsdk_pairing_reader_name".localized, hint: "xsdk_pairing_reader_name_input_hint".localized, delegate: self)
         case .tips:
             guard let amountInfo = object as? AmountInfo else { return nil }
             return tipOptionsListView(with: amountInfo)
