@@ -33,6 +33,8 @@
 "xsdk_user_action_transaction_with_tip" = "Charge %@";
 "xsdk_user_action_transaction_without_tip" = "Maybe next time";
 
+"xsdk_general_error_user_action_manually_enter_card" = "Manually enter credit card details";
+
 /* Payment Flow*/
 
 "xsdk_unknown_reader_name" = "Unknown";

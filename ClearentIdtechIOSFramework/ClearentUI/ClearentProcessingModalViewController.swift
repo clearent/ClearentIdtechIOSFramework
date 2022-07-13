@@ -183,7 +183,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     private func actionButton(userAction: FlowButtonType, processType: ProcessType, flowFeedbackType: FlowFeedbackType) -> ClearentPrimaryButton {
         let button = ClearentPrimaryButton()
         button.title = userAction.title
-        button.isBorderedButton = [.cancel, .pairNewReader, .renameReaderLater].contains(userAction)
+        button.isBorderedButton = [.cancel, .pairNewReader, .renameReaderLater, .manuallyEnterCardInfo].contains(userAction)
         if userAction == .transactionWithTip {
             button.title = userAction.transactionWithTipTitle(for: presenter?.amountWithoutTip)
         } else if userAction == .transactionWithoutTip {

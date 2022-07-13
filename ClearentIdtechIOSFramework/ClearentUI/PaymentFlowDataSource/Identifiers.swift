@@ -72,7 +72,7 @@ enum FlowGraphicType {
 
 public enum FlowButtonType {
 
-    case cancel, retry, pair, done, pairNewReader, settings, pairInFlow, addReaderName, renameReaderLater, transactionWithTip, transactionWithoutTip
+    case cancel, retry, pair, done, pairNewReader, settings, pairInFlow, addReaderName, renameReaderLater, transactionWithTip, transactionWithoutTip, manuallyEnterCardInfo
 
     var title: String {
         switch self {
@@ -96,6 +96,8 @@ public enum FlowButtonType {
             return transactionWithTipTitle()
         case .transactionWithoutTip:
             return "xsdk_user_action_transaction_without_tip".localized
+        case .manuallyEnterCardInfo:
+            return "xsdk_general_error_user_action_manually_enter_card".localized
         }
     }
 

@@ -161,13 +161,17 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .pressReaderButton, .connectionTimeout:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.press_button),
-                     FlowDataItem(type: .description, object: action.description),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+                     FlowDataItem(type: .description, object: action.description)]
+            if ClearentWrapper.shared.flowType == .payment {
+                items?.append(FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo))
+            }
+            items?.append(FlowDataItem(type: .userAction, object: FlowButtonType.cancel))
         case .tryICCAgain, .cardHasChip, .tryMSRAgain, .useMagstripe, .tapFailed:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
                      FlowDataItem(type: .description, object: action.description),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .removeCard, .cardSecured:
             print("nothing to do here")
@@ -200,6 +204,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
                      FlowDataItem(type: .description, object: action.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .cardUnsupported, .cardBlocked, .cardExpired, .badChip:
             type = .warning
@@ -207,6 +212,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
                      FlowDataItem(type: .description, object: action.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .transactionFailed:
             type = .warning
@@ -214,6 +220,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
                      FlowDataItem(type: .description, object: action.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         }
         
@@ -241,12 +248,14 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
                      FlowDataItem(type: .description, object: info.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .chipNotRecognized:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
                      FlowDataItem(type: .title, object: "xsdk_read_error_title".localized),
                      FlowDataItem(type: .description, object: info.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         }
         

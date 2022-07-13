@@ -159,8 +159,14 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             showRenameReader()
         case .transactionWithTip, .transactionWithoutTip:
             modalProcessingView?.showLoadingView()
-            continueTransaction()
+            if ClearentUIManager.shared.cardReaderPaymentMethodEnabled {
+                startCardReaderTransaction()
+            } else {
+                startManualEntryTransaction()
+            }
             tipsScreenWasNotShown = false
+        case .manuallyEnterCardInfo:
+            showManuallyEnterCardInfoForm()
         }
     }
     
@@ -179,12 +185,52 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         sdkFeedbackProvider.delegate = self
         fetchTipSetting { [weak self] in
             guard let strongSelf = self else { return }
-            let showTipsScreen = (ClearentWrapper.shared.tipEnabled ?? false) && strongSelf.tipsScreenWasNotShown
-            if showTipsScreen, strongSelf.sdkWrapper.isReaderConnected() {
-                strongSelf.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: strongSelf.amountWithoutTip ?? 0)
+            if ClearentUIManager.shared.cardReaderPaymentMethodEnabled {
+                strongSelf.startCardReaderTransaction()
             } else {
-                strongSelf.continueTransaction()
+                strongSelf.startManualEntryTransaction()
             }
+        }
+    }
+    
+    private func startManualEntryTransaction() {
+        let showTipsScreen = (ClearentWrapper.shared.tipEnabled ?? false) && tipsScreenWasNotShown
+        if showTipsScreen {
+            sdkFeedbackProvider.startTipTransaction(amountWithoutTip: amountWithoutTip ?? 0)
+        } else {
+            showManuallyEnterCardInfoForm()
+        }
+    }
+    
+    private func startCardReaderTransaction() {
+        if sdkWrapper.isReaderConnected() {
+            let showTipsScreen = (ClearentWrapper.shared.tipEnabled ?? false) && tipsScreenWasNotShown
+            if showTipsScreen {
+                sdkFeedbackProvider.startTipTransaction(amountWithoutTip: amountWithoutTip ?? 0)
+            } else {
+                if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoFractionDigits {
+                    let saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoFractionDigits)
+                    startTransaction(saleEntity: saleEntity)
+                }
+            }
+        } else {
+            sdkWrapper.startPairing(reconnectIfPossible: true)
+        }
+    }
+    
+    private func showManuallyEnterCardInfoForm() {
+        // TODO: show manual credit card info form
+        
+        // TODO: on action
+        if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoFractionDigits {
+            let saleEntity = SaleEntity(amount: amountFormatted,
+                                        tipAmount: tip?.stringFormattedWithTwoFractionDigits,
+                                        billing: ClientInformation(firstName: "ion", lastName: "pop", zip: "123456"),
+                                        shipping: ClientInformation(company: "Endava", zip: "654321"),
+                                        customerID: "111",
+                                        invoice: "5642735472",
+                                        orderID: "73894")
+            startTransaction(saleEntity: saleEntity, manualEntryCardInfo: ManualEntryCardInfo(card: "4165987660022642", expirationDateMMYY: "0727", csc: "198"))
         }
     }
     
@@ -240,18 +286,9 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             editableReader = reader
         }
     }
-    
-    private func continueTransaction() {
-        if sdkWrapper.isReaderConnected(), let amount = amountWithoutTip {
-            let formattedAmount = String(ClearentMoneyFormatter.formattedText(from: amount).double)
-            var formattedTip: String? = nil
-            if let tip = tip {
-                formattedTip = String(ClearentMoneyFormatter.formattedText(from: tip).double)
-            }
-            sdkWrapper.startTransaction(with: formattedAmount, and: formattedTip)
-        } else {
-            sdkWrapper.startPairing(reconnectIfPossible: true)
-        }
+
+    private func startTransaction(saleEntity: SaleEntity, manualEntryCardInfo: ManualEntryCardInfo? = nil) {
+        sdkWrapper.startTransaction(with: saleEntity, manualEntryCardInfo: manualEntryCardInfo)
     }
 }
 
@@ -277,7 +314,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
             if (ClearentWrapper.shared.tipEnabled ?? false), tipsScreenWasNotShown {
                 self.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: amountWithoutTip ?? 0)
             } else {
-                continueTransaction()
+                startCardReaderTransaction()
             }
         }
     }

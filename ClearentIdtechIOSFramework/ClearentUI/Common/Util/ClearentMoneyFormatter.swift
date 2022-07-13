@@ -39,3 +39,7 @@ public extension String {
         return amount
     }
 }
+
+extension Double {
+    var stringFormattedWithTwoFractionDigits: String? { String(ClearentMoneyFormatter.formattedText(from: self).double) }
+}
