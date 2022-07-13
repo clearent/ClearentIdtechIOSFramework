@@ -13,21 +13,21 @@ class ClearentColorsDefaultPalette: ClearentUIColors {
     
     init() {}
     
-    var loadingViewFillColor: UIColor { return UIColor(hexString: "#272431") }
+    var loadingViewFillColor: UIColor { UIColor(hexString: "#272431") }
     
-    var filledBackgroundColor: UIColor { return UIColor(hexString: "272431") }
+    var filledBackgroundColor: UIColor { UIColor(hexString: "272431") }
     
-    var filledButtonTextColor: UIColor { return UIColor(hexString: "FFFFFF") }
+    var filledButtonTextColor: UIColor { UIColor(hexString: "FFFFFF") }
     
-    var borderColor: UIColor { return UIColor(hexString: "E1E2E8") }
+    var borderColor: UIColor { UIColor(hexString: "E1E2E8") }
     
-    var borderedBackgroundColor: UIColor { return UIColor(hexString: "FFFFFF") }
+    var borderedBackgroundColor: UIColor { UIColor(hexString: "FFFFFF") }
     
-    var borderedButtonTextColor: UIColor { return UIColor(hexString: "272431") }
+    var borderedButtonTextColor: UIColor { UIColor(hexString: "272431") }
     
-    var transparentButtonTextColor: UIColor { return UIColor(hexString: "272431") }
+    var transparentButtonTextColor: UIColor { UIColor(hexString: "272431") }
     
-    var enabledBackgroundColor: UIColor { return UIColor(hexString: "#2FAC10") }
+    var enabledBackgroundColor: UIColor { UIColor(hexString: "#2FAC10") }
     
     var disabledBackgroundColor: UIColor { UIColor(hexString: "#272431") }
     
@@ -35,49 +35,49 @@ class ClearentColorsDefaultPalette: ClearentUIColors {
     
     var disabledTextColor: UIColor { UIColor(hexString: "#FFFFFF") }
     
-    var buttonBorderColor: UIColor { return UIColor(hexString: "E1E2E8") }
+    var buttonBorderColor: UIColor { UIColor(hexString: "E1E2E8") }
     
-    var highlightedBackgroundColor: UIColor { return UIColor(hexString: "#F44E27") }
+    var highlightedBackgroundColor: UIColor { UIColor(hexString: "#F44E27") }
     
-    var highlightedTextColor: UIColor { return UIColor(hexString: "#FFFFFF") }
+    var highlightedTextColor: UIColor { UIColor(hexString: "#FFFFFF") }
     
-    var defaultTextColor: UIColor { return UIColor(hexString: "#000000") }
+    var defaultTextColor: UIColor { UIColor(hexString: "#000000") }
     
-    var titleLabelColor: UIColor { return UIColor(hexString: "#272431") }
+    var titleLabelColor: UIColor { UIColor(hexString: "#272431") }
     
-    var subtitleLabelColor: UIColor { return UIColor(hexString: "#6A6D7D") }
+    var subtitleLabelColor: UIColor { UIColor(hexString: "#6A6D7D") }
     
-    var readerNameColor: UIColor { return UIColor(hexString: "1B181F") }
+    var readerNameColor: UIColor { UIColor(hexString: "1B181F") }
     
-    var readerStatusLabelColor: UIColor { return UIColor(hexString: "#6A6D7D") }
+    var readerStatusLabelColor: UIColor { UIColor(hexString: "#6A6D7D") }
     
-    var readerNameLabelColor: UIColor { return UIColor(hexString: "1B181F") }
+    var readerNameLabelColor: UIColor { UIColor(hexString: "1B181F") }
     
-    var readerStatusConnectedIconColor: UIColor { return UIColor(hexString: "2FAC10") }
+    var readerStatusConnectedIconColor: UIColor { UIColor(hexString: "2FAC10") }
     
-    var readerStatusNotConnectedIconColor: UIColor { return UIColor(hexString: "F4C15F") }
+    var readerStatusNotConnectedIconColor: UIColor { UIColor(hexString: "F4C15F") }
     
-    var readersCellBackgroundColor: UIColor { return UIColor(hexString: "EEEFF3") }
+    var readersCellBackgroundColor: UIColor { UIColor(hexString: "EEEFF3") }
     
-    var checkboxSelectedBorderColor: UIColor { return UIColor(hexString: "272431") }
+    var checkboxSelectedBorderColor: UIColor { UIColor(hexString: "272431") }
     
-    var checkboxUnselectedBorderColor: UIColor { return UIColor(hexString: "999BA8") }
+    var checkboxUnselectedBorderColor: UIColor { UIColor(hexString: "999BA8") }
     
-    var percentageLabelColor: UIColor { return UIColor(hexString: "272431") }
+    var percentageLabelColor: UIColor { UIColor(hexString: "272431") }
     
-    var tipLabelColor: UIColor { return UIColor(hexString: "272431") }
+    var tipLabelColor: UIColor { UIColor(hexString: "272431") }
     
-    var tipAdjustmentTintColor: UIColor { return UIColor(hexString: "272431") }
+    var tipAdjustmentTintColor: UIColor { UIColor(hexString: "272431") }
     
-    var infoLabelColor: UIColor { return UIColor(hexString: "1B181F") }
+    var infoLabelColor: UIColor { UIColor(hexString: "1B181F") }
     
-    var navigationBarTintColor: UIColor { return UIColor(hexString: "000000") }
+    var navigationBarTintColor: UIColor { UIColor(hexString: "000000") }
     
-    var screenTitleColor: UIColor { return UIColor(hexString: "000000") }
+    var screenTitleColor: UIColor { UIColor(hexString: "000000") }
     
-    var removeReaderButtonBorderColor: UIColor { return UIColor(hexString: "C2210F") }
+    var removeReaderButtonBorderColor: UIColor { UIColor(hexString: "C2210F") }
     
-    var removeReaderButtonTextColor: UIColor { return UIColor(hexString: "C2210F") }
+    var removeReaderButtonTextColor: UIColor { UIColor(hexString: "C2210F") }
     
-    var signatureDescriptionMessageColor: UIColor { return UIColor(hexString: "272431") }
+    var signatureDescriptionMessageColor: UIColor { UIColor(hexString: "272431") }
 }

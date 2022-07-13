@@ -7,7 +7,7 @@
 */
 
 // MARK: Pairing Flow
-// Texts that are displayed during the payment flow
+// Texts that are displayed during the pairing flow
 
 "xsdk_pairing_pair_new_reader" = "Pair new reader";
 "xsdk_pairing_select_reader" = "Please select the reader you wish to pair with";
@@ -28,12 +28,12 @@
 "xsdk_pairing_reader_name" = "Reader name";
 "xsdk_pairing_reader_name_input_hint" = "Input a custom name";
 
-// MARK: Payment Flow
+// MARK: Payment Flow - General
 // Texts that are displayed during the payment flow
 
 "xsdk_payment_transaction_completed_description" = "Payment successful";
 
-// MARK: Tips
+// MARK: Payment Flow - Tips
 // Texts that are displayed on the tips screen (part of the payment flow)
 
 "xsdk_tips_custom_amount" = "Custom amount";
@@ -41,7 +41,7 @@
 "xsdk_tips_user_action_transaction_with_tip" = "Charge %@";
 "xsdk_tips_user_action_transaction_without_tip" = "Maybe next time";
 
-// MARK: Signature
+// MARK: Payment Flow - Signature
 // Texts that are displayed on the signature screen (part of the payment flow)
 
 "xsdk_signature_title" = "Customer signature";
