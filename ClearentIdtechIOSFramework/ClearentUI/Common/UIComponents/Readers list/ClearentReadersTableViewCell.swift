@@ -69,17 +69,18 @@ class ClearentReadersTableViewCell: UITableViewCell {
     }
     
     private func setupReaderStatusIcon(isConnected: Bool) {
-        readerStatusIcon.backgroundColor = isConnected ? ClearentConstants.Color.accent01 : ClearentConstants.Color.accent02
+        readerStatusIcon.backgroundColor = isConnected ? ClearentUIBrandConfigurator.shared.colorPalette.readerStatusConnectedIconColor : ClearentUIBrandConfigurator.shared.colorPalette.readerStatusNotConnectedIconColor
         readerStatusIcon.layer.cornerRadius = readerStatusIcon.frame.width / 2
         readerStatusIcon.layer.masksToBounds = true
     }
     
     private func configure() {
-        roundedCornersView.backgroundColor = ClearentConstants.Color.backgroundSecondary03
+        roundedCornersView.backgroundColor = ClearentUIBrandConfigurator.shared.colorPalette.readersCellBackgroundColor
         roundedCornersView.layer.cornerRadius = 8
         roundedCornersView.layer.masksToBounds = true
         
-        readerNameLabel.font = ClearentConstants.Font.proTextNormal
+        readerNameLabel.font = ClearentUIBrandConfigurator.shared.fonts.listItemTextFont
+        readerNameLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.readerNameLabelColor
         detailsButton.setTitle("", for: .normal)
     }
 

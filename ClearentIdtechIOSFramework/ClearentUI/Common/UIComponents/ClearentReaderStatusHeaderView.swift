@@ -30,8 +30,12 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
     }
     
     override func configure() {
-        descriptionLabel.font = ClearentConstants.Font.proTextExtraSmall
-        descriptionLabel.textColor = ClearentConstants.Color.base02
+        readerNameLabel.font = ClearentUIBrandConfigurator.shared.fonts.readerNameTextFont
+        readerNameLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.readerNameColor
+
+        descriptionLabel.font = ClearentUIBrandConfigurator.shared.fonts.statusLabelFont
+        descriptionLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.readerStatusLabelColor
+
         verticalSeparator.backgroundColor = ClearentConstants.Color.backgroundSecondary02
     }
     

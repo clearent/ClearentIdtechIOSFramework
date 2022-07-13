@@ -27,10 +27,9 @@ class ClearentLabelSwitch: ClearentInfoWithIcon {
     }
 
     override func configure() {
+        super.configure()
         switchView.transform = CGAffineTransform(scaleX: 0.83, y: 0.77)
-        titleFont = ClearentConstants.Font.proTextNormal
-        titleTextColor = ClearentConstants.Color.base02
-        descriptionFont = ClearentConstants.Font.proTextExtraSmall
+        descriptionFont = ClearentUIBrandConfigurator.shared.fonts.detailScreenItemDescriptionFont
         descriptionTextColor = ClearentConstants.Color.base02
         separatorView.backgroundColor = ClearentConstants.Color.backgroundSecondary02
     }

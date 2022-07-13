@@ -12,7 +12,7 @@ class ClearentLoadingView: ClearentMarginableView {
     // MARK: Properties
     
     @IBOutlet var containerView: UIView!
-    private var color: UIColor = ClearentConstants.Color.base01
+    private var color: UIColor = ClearentUIBrandConfigurator.shared.colorPalette.loadingViewFillColor
     private var lineWidth: CGFloat = 4.0
     private lazy var shapeLayer: ProgressShapeLayer = .init(strokeColor: color, lineWidth: lineWidth)
 

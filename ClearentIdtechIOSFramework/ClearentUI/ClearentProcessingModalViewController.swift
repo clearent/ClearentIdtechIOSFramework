@@ -122,7 +122,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             }
             return ClearentReadersTableView(dataSource: readersTableViewDataSource, delegate: self)
         case .input:
-            return ClearentTextField(currentReaderName: presenter?.editableReader?.customReaderName, inputName: "xsdk_reader_name".localized, hint: "xsdk_reader_name_input_hint".localized, delegate: self)
+            return ClearentTextField(currentReaderName: presenter?.editableReader?.customReaderName, inputName: "xsdk_pairing_reader_name".localized, hint: "xsdk_pairing_reader_name_input_hint".localized, delegate: self)
         case .tips:
             guard let amountInfo = object as? AmountInfo else { return nil }
             return tipOptionsListView(with: amountInfo)
@@ -183,11 +183,13 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     private func actionButton(userAction: FlowButtonType, processType: ProcessType, flowFeedbackType: FlowFeedbackType) -> ClearentPrimaryButton {
         let button = ClearentPrimaryButton()
         button.title = userAction.title
-        button.isBorderedButton = [.cancel, .pairNewReader, .renameReaderLater].contains(userAction)
+        if [.cancel, .pairNewReader, .renameReaderLater].contains(userAction) {
+            button.buttonStyle = .bordered
+        }
         if userAction == .transactionWithTip {
             button.title = userAction.transactionWithTipTitle(for: presenter?.amountWithoutTip)
         } else if userAction == .transactionWithoutTip {
-            button.isTransparentButton = true
+            button.buttonStyle = .transparent
         }
         button.type = userAction
         button.action = { [weak self] in
@@ -226,7 +228,7 @@ extension ClearentProcessingModalViewController: ClearentReadersTableViewDelegat
     }
 }
 
-extension ClearentProcessingModalViewController: ClearenttextFieldProtocol {
+extension ClearentProcessingModalViewController: ClearentTextFieldProtocol {
     func didFinishWithResult(name: String?) {
         presenter?.updateTemporaryReaderName(name: name)
     }

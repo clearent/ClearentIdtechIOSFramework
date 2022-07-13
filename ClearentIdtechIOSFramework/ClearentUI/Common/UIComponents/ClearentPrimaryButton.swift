@@ -8,11 +8,17 @@
 
 import UIKit
 
+
+public enum ButtonStyleType {
+    case transparent, bordered, filled
+}
+
 public class ClearentPrimaryButton: ClearentMarginableView {
     
     // MARK: - Properties
 
     public var action: (() -> Void)?
+    var type: FlowButtonType?
 
     @IBOutlet var button: UIButton!
 
@@ -23,60 +29,37 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         ]
     }
 
-    public var enabledBackgroundColor = ClearentConstants.Color.accent01 {
-        didSet { updateAppearence() }
-    }
-
-    public var disabledBackgroundColor = ClearentConstants.Color.base01 {
-        didSet { updateAppearence() }
-    }
-
-    public var enabledTextColor = ClearentConstants.Color.backgroundSecondary01 {
-        didSet { updateAppearence() }
-    }
-
-    public var disabledTextColor = ClearentConstants.Color.backgroundSecondary01 {
-        didSet { updateAppearence() }
-    }
-
-    public var isBorderedButton: Bool = false {
-        didSet {
-            let color = ClearentConstants.Color.self
-            enabledBackgroundColor = isBorderedButton ? color.backgroundSecondary01 : color.base01
-            enabledTextColor = isBorderedButton ? color.base01 : color.backgroundSecondary01
-            borderColor = color.backgroundSecondary02
-            borderWidth = isBorderedButton ? ClearentConstants.Size.defaultButtonBorderWidth : 0
-        }
-    }
+    public var filledBackgroundColor = ClearentUIBrandConfigurator.shared.colorPalette.filledBackgroundColor
+    public var filledButtonTextColor = ClearentUIBrandConfigurator.shared.colorPalette.filledButtonTextColor
     
-    public var isTransparentButton: Bool = false {
+    public var borderColor: UIColor = ClearentUIBrandConfigurator.shared.colorPalette.borderColor
+    public var borderedBackgroundColor = ClearentUIBrandConfigurator.shared.colorPalette.borderedBackgroundColor
+    public var borderedButtonTextColor = ClearentUIBrandConfigurator.shared.colorPalette.borderedButtonTextColor
+    
+    public var transparentButtonTextColor = ClearentUIBrandConfigurator.shared.colorPalette.transparentButtonTextColor
+
+    public var buttonStyle: ButtonStyleType = .filled {
         didSet {
-            if isTransparentButton {
-                enabledBackgroundColor = ClearentConstants.Color.backgroundSecondary01
-                enabledTextColor = ClearentConstants.Color.base01
-                borderWidth = 0
+            switch buttonStyle {
+            case .transparent:
+                setTransparentButton()
+            case .bordered:
+                setBorderedButton()
+            case .filled:
+                setFilledButton()
             }
         }
     }
     
-    var type: FlowButtonType?
-    
-    var borderColor: UIColor? {
-        didSet {
-            button.layer.borderColor = borderColor?.cgColor
-        }
+    public var isEnabled: Bool {
+        set { button.isEnabled = newValue }
+        
+        get { button.isEnabled }
     }
 
-    var textFont = ClearentConstants.Font.proTextNormal {
+    var textFont: UIFont? {
         didSet {
             button.titleLabel?.font = textFont
-        }
-    }
-    
-    var borderWidth: CGFloat? {
-        didSet {
-            guard let borderWidth = borderWidth else { return }
-            button.layer.borderWidth = borderWidth
         }
     }
     
@@ -86,19 +69,11 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         }
     }
 
-    public var isEnabled: Bool {
-        set {
-            button.isEnabled = newValue
-            updateAppearence()
-        }
-        get { button.isEnabled }
-    }
-
     override func configure() {
-        updateAppearence()
+        setFilledButton()
         button.layer.cornerRadius = button.bounds.height / 2
         button.layer.masksToBounds = true
-        textFont = ClearentConstants.Font.proTextNormal
+        textFont = ClearentUIBrandConfigurator.shared.fonts.primaryButtonTextFont
     }
 
     @IBAction func buttonWasPressed(_: Any) {
@@ -106,10 +81,23 @@ public class ClearentPrimaryButton: ClearentMarginableView {
     }
 
     // MARK: - Private
-
-    private func updateAppearence() {
-        button.backgroundColor = isEnabled ? enabledBackgroundColor : disabledBackgroundColor
-        let textColor = isEnabled ? enabledTextColor : disabledTextColor
-        button.setTitleColor(textColor, for: .normal)
+    
+    private func setBorderedButton() {
+        button.backgroundColor = borderedBackgroundColor
+        button.setTitleColor(borderedButtonTextColor, for: .normal)
+        button.layer.borderColor = borderColor.cgColor
+        button.layer.borderWidth = ClearentConstants.Size.defaultButtonBorderWidth
+    }
+    
+    private func setTransparentButton() {
+        button.backgroundColor = .clear
+        button.setTitleColor(transparentButtonTextColor, for: .normal)
+        button.layer.borderWidth = 0
+    }
+    
+    private func setFilledButton() {
+        button.backgroundColor = filledBackgroundColor
+        button.setTitleColor(filledButtonTextColor, for: .normal)
+        button.layer.borderWidth = 0
     }
 }
