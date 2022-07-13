@@ -50,6 +50,12 @@ public class ClearentPrimaryButton: ClearentMarginableView {
             }
         }
     }
+    
+    public var isEnabled: Bool {
+        set { button.isEnabled = newValue }
+        
+        get { button.isEnabled }
+    }
 
     var textFont: UIFont? {
         didSet {
