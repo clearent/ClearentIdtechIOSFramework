@@ -159,14 +159,13 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             showRenameReader()
         case .transactionWithTip, .transactionWithoutTip:
             modalProcessingView?.showLoadingView()
-            if ClearentUIManager.shared.cardReaderPaymentMethodEnabled {
+            if ClearentUIManager.shared.useCardReaderPaymentMethod {
                 startCardReaderTransaction()
             } else {
                 startManualEntryTransaction()
             }
-            tipsScreenWasNotShown = false
         case .manuallyEnterCardInfo:
-            showManuallyEnterCardInfoForm()
+            startManualEntryTransaction()
         }
     }
     
@@ -183,54 +182,51 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     
     private func startTransactionFlow() {
         sdkFeedbackProvider.delegate = self
+        
+        if ClearentUIManager.shared.useCardReaderPaymentMethod && !sdkWrapper.isReaderConnected() {
+            sdkWrapper.startPairing(reconnectIfPossible: true)
+        } else {
+            startTipFlow()
+        }
+    }
+    
+    private func startTipFlow() {
         fetchTipSetting { [weak self] in
             guard let strongSelf = self else { return }
-            if ClearentUIManager.shared.cardReaderPaymentMethodEnabled {
-                strongSelf.startCardReaderTransaction()
+            let showTipsScreen = (ClearentWrapper.shared.tipEnabled ?? false) && strongSelf.tipsScreenWasNotShown
+            if showTipsScreen {
+                strongSelf.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: strongSelf.amountWithoutTip ?? 0)
+                strongSelf.tipsScreenWasNotShown = false
             } else {
-                strongSelf.startManualEntryTransaction()
+                if ClearentUIManager.shared.useCardReaderPaymentMethod {
+                    strongSelf.startCardReaderTransaction()
+                } else {
+                    strongSelf.startManualEntryTransaction()
+                }
             }
+        }
+    }
+
+    private func startCardReaderTransaction() {
+        if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoFractionDigits {
+            let saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoFractionDigits)
+            startTransaction(saleEntity: saleEntity)
         }
     }
     
     private func startManualEntryTransaction() {
-        let showTipsScreen = (ClearentWrapper.shared.tipEnabled ?? false) && tipsScreenWasNotShown
-        if showTipsScreen {
-            sdkFeedbackProvider.startTipTransaction(amountWithoutTip: amountWithoutTip ?? 0)
-        } else {
-            showManuallyEnterCardInfoForm()
-        }
-    }
-    
-    private func startCardReaderTransaction() {
-        if sdkWrapper.isReaderConnected() {
-            let showTipsScreen = (ClearentWrapper.shared.tipEnabled ?? false) && tipsScreenWasNotShown
-            if showTipsScreen {
-                sdkFeedbackProvider.startTipTransaction(amountWithoutTip: amountWithoutTip ?? 0)
-            } else {
-                if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoFractionDigits {
-                    let saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoFractionDigits)
-                    startTransaction(saleEntity: saleEntity)
-                }
-            }
-        } else {
-            sdkWrapper.startPairing(reconnectIfPossible: true)
-        }
-    }
-    
-    private func showManuallyEnterCardInfoForm() {
         // TODO: show manual credit card info form
         
         // TODO: on action
         if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoFractionDigits {
             let saleEntity = SaleEntity(amount: amountFormatted,
                                         tipAmount: tip?.stringFormattedWithTwoFractionDigits,
-                                        billing: ClientInformation(firstName: "ion", lastName: "pop", zip: "123456"),
+                                        billing: ClientInformation(firstName: "John", lastName: "Scott", zip: "85284"),
                                         shipping: ClientInformation(company: "Endava", zip: "654321"),
-                                        customerID: "111",
-                                        invoice: "5642735472",
-                                        orderID: "73894")
-            startTransaction(saleEntity: saleEntity, manualEntryCardInfo: ManualEntryCardInfo(card: "4165987660022642", expirationDateMMYY: "0727", csc: "198"))
+                                        customerID: "002",
+                                        invoice: "invoice123",
+                                        orderID: "99988d")
+            startTransaction(saleEntity: saleEntity, manualEntryCardInfo: ManualEntryCardInfo(card: "4111111111111111", expirationDateMMYY: "0727", csc: "999"))
         }
     }
     
@@ -311,11 +307,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                 self.modalProcessingView?.updateContent(with: feedback)
             }
         } else {
-            if (ClearentWrapper.shared.tipEnabled ?? false), tipsScreenWasNotShown {
-                self.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: amountWithoutTip ?? 0)
-            } else {
-                startCardReaderTransaction()
-            }
+            startTipFlow()
         }
     }
 

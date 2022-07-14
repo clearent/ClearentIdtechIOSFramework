@@ -49,14 +49,14 @@ struct ClientInformation: Codable {
     let company, firstName, fromZip, lastName, zip: String?
 
     enum CodingKeys: String, CodingKey {
-        case company
         case firstName = "first-name"
-        case fromZip = "from-zip"
         case lastName = "last-name"
+        case company
+        case fromZip = "from-zip"
         case zip
     }
     
-    init(company: String? = nil, firstName: String? = nil, fromZip: String? = nil, lastName: String? = nil, zip: String? = nil) {
+    init(firstName: String? = nil, lastName: String? = nil, company: String? = nil, fromZip: String? = nil, zip: String? = nil) {
         self.company = company
         self.firstName = firstName
         self.fromZip = fromZip
