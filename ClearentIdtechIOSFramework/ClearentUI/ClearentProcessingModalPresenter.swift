@@ -217,7 +217,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     private func startManualEntryTransaction() {
         // TODO: show manual credit card info form
         
-        // TODO: on action
+        // TODO: on confirm action
         if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoFractionDigits {
             let saleEntity = SaleEntity(amount: amountFormatted,
                                         tipAmount: tip?.stringFormattedWithTwoFractionDigits,

@@ -160,9 +160,7 @@ public final class ClearentWrapper : NSObject {
     lazy var clearentManualEntry: ClearentManualEntry = {
         return ClearentManualEntry(self, clearentBaseUrl: baseURL, publicKey: publicKey)
     }()
-    
-//    private var transactionAmount: String?
-//    private var tipAmount: String?
+
     private var saleEntity: SaleEntity?
     private var lastTransactionID: String?
     private var bleManager : BluetoothScanner?
