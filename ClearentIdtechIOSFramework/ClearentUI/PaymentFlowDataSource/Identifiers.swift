@@ -77,25 +77,25 @@ public enum FlowButtonType {
     var title: String {
         switch self {
         case .cancel:
-            return "xsdk_user_action_cancel".localized
+            return "xsdk_general_error_user_action_cancel".localized
         case .retry:
-            return "xsdk_user_action_retry".localized
+            return "xsdk_general_error_user_action_retry".localized
         case .pair, .pairInFlow:
-            return "xsdk_user_action_pair".localized
+            return "xsdk_pairing_user_action_pair".localized
         case .done:
-            return "xsdk_user_action_done".localized
+            return "xsdk_pairing_user_action_done".localized
         case .pairNewReader:
-            return "xsdk_pair_new_reader".localized
+            return "xsdk_pairing_pair_new_reader".localized
         case .settings:
-            return "xsdk_user_action_settings".localized
+            return "xsdk_pairing_user_action_settings".localized
         case .addReaderName:
-            return "xsdk_user_action_addName".localized
+            return "xsdk_pairing_user_action_addName".localized
         case .renameReaderLater:
-            return "xsdk_user_action_later".localized
+            return "xsdk_pairing_user_action_later".localized
         case .transactionWithTip:
             return transactionWithTipTitle()
         case .transactionWithoutTip:
-            return "xsdk_user_action_transaction_without_tip".localized
+            return "xsdk_tips_user_action_transaction_without_tip".localized
         case .manuallyEnterCardInfo:
             return "xsdk_general_error_user_action_manually_enter_card".localized
         }
@@ -104,7 +104,7 @@ public enum FlowButtonType {
     func transactionWithTipTitle(for amount: Double? = nil) -> String {
         guard let amount = amount else { return "" }
         let formattedText = ClearentMoneyFormatter.formattedText(from: amount)
-        return String(format: "xsdk_user_action_transaction_with_tip".localized, formattedText)
+        return String(format: "xsdk_tips_user_action_transaction_with_tip".localized, formattedText)
     }
 }
 

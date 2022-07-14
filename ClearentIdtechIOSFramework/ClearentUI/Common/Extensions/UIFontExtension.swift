@@ -7,10 +7,10 @@
 //
 
 extension UIFont {
-    public class func loadFonts() {
-        let fonts = ["SF-Pro-Display-Bold.otf", "SF-Pro-Text-Bold.otf", "SF-Pro-Text-Medium.otf"]
-        fonts.forEach {
-            registerFont(with: $0, moduleBundle: ClearentConstants.bundle)
+    public class func loadFonts(fonts: [String]? = ["SF-Pro-Display-Bold.otf", "SF-Pro-Text-Bold.otf", "SF-Pro-Text-Medium.otf"],
+                                bundle: Bundle? = ClearentConstants.bundle) {
+        fonts?.forEach {
+            registerFont(with: $0, moduleBundle: bundle ?? ClearentConstants.bundle)
         }
     }
 

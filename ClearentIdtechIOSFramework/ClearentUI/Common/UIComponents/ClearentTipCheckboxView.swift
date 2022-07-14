@@ -30,7 +30,7 @@ class ClearentTipCheckboxView: ClearentMarginableView {
     var isSelected: Bool = false {
         didSet {
             checkView.layer.borderWidth = isSelected ? checkView.bounds.height / 3.0 : ClearentConstants.Size.defaultButtonBorderWidth
-            checkView.layer.borderColor = isSelected ? ClearentConstants.Color.base01.cgColor : ClearentConstants.Color.base04.cgColor
+            checkView.layer.borderColor = isSelected ? ClearentUIBrandConfigurator.shared.colorPalette.checkboxSelectedBorderColor.cgColor : ClearentUIBrandConfigurator.shared.colorPalette.checkboxUnselectedBorderColor.cgColor
         }
     }
     
@@ -84,10 +84,10 @@ class ClearentTipCheckboxView: ClearentMarginableView {
     }
     
     private func setLabels() {
-        percentageLabel.font = ClearentConstants.Font.proTextNormal
-        percentageLabel.textColor = ClearentConstants.Color.base01
-        tipValueLabel.font = ClearentConstants.Font.proTextNormal
-        tipValueLabel.textColor = ClearentConstants.Color.base01
+        percentageLabel.font = ClearentUIBrandConfigurator.shared.fonts.tipItemTextFont
+        percentageLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.percentageLabelColor
+        tipValueLabel.font = ClearentUIBrandConfigurator.shared.fonts.tipItemTextFont
+        tipValueLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.tipLabelColor
     }
     
     private func setCheckView() {
@@ -101,7 +101,7 @@ class ClearentTipCheckboxView: ClearentMarginableView {
         button.setImage(icon, for: .normal)
         button.setTitle("", for: .normal)
         button.backgroundColor = ClearentConstants.Color.backgroundSecondary01
-        button.tintColor = ClearentConstants.Color.base01
+        button.tintColor = ClearentUIBrandConfigurator.shared.colorPalette.tipAdjustmentTintColor
     }
     
     private func adjustCustomTip(with factor: Double) {

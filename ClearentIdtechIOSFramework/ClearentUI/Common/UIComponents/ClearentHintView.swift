@@ -32,19 +32,19 @@ public class ClearentHintView: ClearentMarginableView {
         }
     }
 
-    public var highlightedTextColor = ClearentConstants.Color.backgroundSecondary01 {
+    public var highlightedTextColor = ClearentUIBrandConfigurator.shared.colorPalette.highlightedTextColor {
         didSet {
             label.textColor = highlightedTextColor
         }
     }
 
-    public var defaultTextColor = ClearentConstants.Color.base03 {
+    public var defaultTextColor = ClearentUIBrandConfigurator.shared.colorPalette.defaultTextColor {
         didSet {
             label.textColor = defaultTextColor
         }
     }
 
-    public var highlightedBackgroundColor = ClearentConstants.Color.accent03 {
+    public var highlightedBackgroundColor = ClearentUIBrandConfigurator.shared.colorPalette.highlightedBackgroundColor {
         didSet {
             updateAppearance()
         }
@@ -86,7 +86,7 @@ public class ClearentHintView: ClearentMarginableView {
     // MARK: - Private
 
     private func setupLabel() {
-        textFont = ClearentConstants.Font.proTextNormal
+        textFont = ClearentUIBrandConfigurator.shared.fonts.hintTextFont
         label.textAlignment = .center
         label.layer.cornerRadius = 10
         label.layer.masksToBounds = true

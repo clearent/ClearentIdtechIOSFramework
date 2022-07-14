@@ -57,9 +57,9 @@ public extension ReaderInfo {
         
         guard isConnected else {
             if flowFeedbackType == .searchDevices {
-                return (iconName: nil, title: "xsdk_connecting_reader".localized)
+                return (iconName: nil, title: "xsdk_pairing_connecting_reader".localized)
             } else if flowFeedbackType == .showReaders, let isConnecting = isConnecting, isConnecting {
-                return (iconName: nil, title: "xsdk_connecting_reader".localized)
+                return (iconName: nil, title: "xsdk_pairing_connecting_reader".localized)
             }
             return (iconName: icon, title: "xsdk_reader_signal_idle".localized)
         }
@@ -74,7 +74,7 @@ public extension ReaderInfo {
         default:
             icon = flowFeedbackType == .searchDevices ? nil : ClearentConstants.IconName.signalIdle
         }
-        let title = flowFeedbackType == .searchDevices ? "xsdk_connection_sucessful".localized : "xsdk_reader_signal_connected".localized
+        let title = flowFeedbackType == .searchDevices ? "xsdk_pairing_connection_sucessful".localized : "xsdk_reader_signal_connected".localized
         
         return (iconName: icon, title: title)
     }

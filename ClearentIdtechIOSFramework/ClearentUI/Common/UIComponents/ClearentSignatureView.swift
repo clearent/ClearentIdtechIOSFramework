@@ -45,7 +45,7 @@
          setupDoneButton()
          setupSignatureIndicator()
          setupRoundedCornersView()
-         clearButton.titleLabel?.font = ClearentConstants.Font.proTextNormal
+         clearButton.titleLabel?.font = ClearentUIBrandConfigurator.shared.fonts.primaryButtonTextFont
 
          NotificationCenter.default.addObserver(self, selector: #selector(orientationDidChange), name: UIDevice.orientationDidChangeNotification, object: nil)
      }
@@ -65,9 +65,9 @@
      
      private func setupDescriptionLabel() {
          descriptionLabel.text = "xsdk_signature_subtitle".localized
-         descriptionLabel.font = ClearentConstants.Font.proTextSmall
+         descriptionLabel.font = ClearentUIBrandConfigurator.shared.fonts.signatureSubtitleFont
          descriptionLabel.textAlignment = .left
-         descriptionLabel.textColor = ClearentConstants.Color.base01
+         descriptionLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.signatureDescriptionMessageColor
      }
      
      private func setupSignatureIndicator() {
@@ -77,7 +77,6 @@
      
      private func setupDoneButton() {
          doneButton.title = "xsdk_signature_action".localized
-         doneButton.isBorderedButton = false
          doneButton.button.isUserInteractionEnabled = false
      }
      

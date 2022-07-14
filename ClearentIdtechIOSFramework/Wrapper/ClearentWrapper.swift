@@ -75,13 +75,13 @@ public enum UserAction: String, CaseIterable {
         case .cardExpired:
             return CLEARENT_CARD_EXPIRED
         case .connectionTimeout:
-            return "xsdk_connection_timeout".localized
+            return "xsdk_general_error_connection_timeout".localized
         case .noInternet:
-            return "xsdk_no_internet".localized
+            return "xsdk_internet_no_connection".localized
         case .noBluetooth:
-            return "xsdk_no_bluetooth".localized
+            return "xsdk_bluetooth_turned_off".localized
         case .noBluetoothPermission:
-            return "xsdk_no_bluetooth_permission".localized
+            return "xsdk_bluetooth_no_permission".localized
         }
     }
     

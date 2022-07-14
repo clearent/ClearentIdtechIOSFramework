@@ -50,8 +50,9 @@ class ClearentReaderDetailsViewController: UIViewController {
         navigationBar.isTranslucent = true
         navigationBar.barTintColor = view.backgroundColor
         navigationBar.shadowImage = UIImage()
-        navigationBar.tintColor = ClearentConstants.Color.backgroundPrimary02
-        navigationBar.titleTextAttributes = [.font: ClearentConstants.Font.proDisplayBoldLarge]
+        navigationBar.tintColor = ClearentUIBrandConfigurator.shared.colorPalette.navigationBarTintColor
+        navigationBar.titleTextAttributes = [.font: ClearentUIBrandConfigurator.shared.fonts.screenTitleFont,
+                                             .foregroundColor: ClearentUIBrandConfigurator.shared.colorPalette.screenTitleColor]
         customNavigationItem.title = "xsdk_reader_details_nav_title".localized
     }
 
@@ -160,11 +161,9 @@ class ClearentReaderDetailsViewController: UIViewController {
 
     private func setupButton() {
         removeReaderButton.title = "xsdk_reader_details_remove_reader".localized
-        let color = ClearentConstants.Color.self
-        removeReaderButton.enabledBackgroundColor = color.backgroundSecondary01
-        removeReaderButton.enabledTextColor = color.warning
-        removeReaderButton.borderColor = color.warning
-        removeReaderButton.borderWidth = ClearentConstants.Size.defaultButtonBorderWidth
+        removeReaderButton.borderedButtonTextColor = ClearentUIBrandConfigurator.shared.colorPalette.removeReaderButtonTextColor
+        removeReaderButton.borderColor = ClearentUIBrandConfigurator.shared.colorPalette.removeReaderButtonBorderColor
+        removeReaderButton.buttonStyle = .bordered
         removeReaderButton.action = { [weak self] in
             self?.detailsPresenter.removeReader()
         }
