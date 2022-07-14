@@ -208,8 +208,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
 
     private func startCardReaderTransaction() {
-        if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoFractionDigits {
-            let saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoFractionDigits)
+        if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
+            let saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals)
             startTransaction(saleEntity: saleEntity)
         }
     }
@@ -218,16 +218,16 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         // TODO: show manual credit card info form
         
         // TODO: on confirm action
-        if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoFractionDigits {
+        /*if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
             let saleEntity = SaleEntity(amount: amountFormatted,
-                                        tipAmount: tip?.stringFormattedWithTwoFractionDigits,
+                                        tipAmount: tip?.stringFormattedWithTwoDecimals,
                                         billing: ClientInformation(firstName: "John", lastName: "Scott", zip: "85284"),
                                         shipping: ClientInformation(company: "Endava", zip: "654321"),
                                         customerID: "002",
                                         invoice: "invoice123",
                                         orderID: "99988d")
             startTransaction(saleEntity: saleEntity, manualEntryCardInfo: ManualEntryCardInfo(card: "4111111111111111", expirationDateMMYY: "0727", csc: "999"))
-        }
+        }*/
     }
     
     private func showReadersList() {

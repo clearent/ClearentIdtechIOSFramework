@@ -7,7 +7,7 @@
 
 import Foundation
 
-internal struct ClientInfo {
+private struct ClientInfo {
     static let softwareType = "Xplor Mobile"
     static let softwareTypeVersion = "1"
 }

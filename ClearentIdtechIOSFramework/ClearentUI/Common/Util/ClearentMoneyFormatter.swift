@@ -41,5 +41,5 @@ public extension String {
 }
 
 extension Double {
-    var stringFormattedWithTwoFractionDigits: String? { String(ClearentMoneyFormatter.formattedText(from: self).double) }
+    var stringFormattedWithTwoDecimals: String? { String(ClearentMoneyFormatter.formattedText(from: self).double) }
 }

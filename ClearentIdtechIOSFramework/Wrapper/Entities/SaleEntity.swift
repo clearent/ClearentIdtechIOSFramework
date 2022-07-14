@@ -42,7 +42,6 @@ public class SaleEntity: CodableProtocol {
     }
 }
 
-
 // MARK: - ClientInformation
 
 struct ClientInformation: Codable {

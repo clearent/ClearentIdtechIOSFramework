@@ -282,8 +282,6 @@ public final class ClearentWrapper : NSObject {
             card.card = cardNo
             card.expirationDateMMYY = expirationDate
             card.csc = csc
-            card.softwareType = ClientInfo.softwareType
-            card.softwareTypeVersion = ClientInfo.softwareTypeVersion
             strongSelf.clearentManualEntry.createTransactionToken(card)
         }
     }
