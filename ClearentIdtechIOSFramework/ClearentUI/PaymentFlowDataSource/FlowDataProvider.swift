@@ -51,6 +51,7 @@ class FlowDataProvider : NSObject {
     weak var delegate: FlowDataProtocol?
     
     let sdkWrapper = ClearentWrapper.shared
+    var connectionErrorDisplayed = false
     
     public override init() {
         super.init()
@@ -162,10 +163,11 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         case .pressReaderButton, .connectionTimeout:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.press_button),
                      FlowDataItem(type: .description, object: action.description)]
-            if ClearentWrapper.shared.flowType == .payment {
+            if ClearentWrapper.shared.flowType == .payment, connectionErrorDisplayed {
                 items?.append(FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo))
             }
             items?.append(FlowDataItem(type: .userAction, object: FlowButtonType.cancel))
+            connectionErrorDisplayed = true
         case .tryICCAgain, .cardHasChip, .tryMSRAgain, .useMagstripe, .tapFailed:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),

@@ -218,15 +218,15 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         // TODO: show manual credit card info form
         
         // TODO: on confirm action
-        /*if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
+        /* if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
             let saleEntity = SaleEntity(amount: amountFormatted,
                                         tipAmount: tip?.stringFormattedWithTwoDecimals,
-                                        billing: ClientInformation(firstName: "John", lastName: "Scott", zip: "85284"),
-                                        shipping: ClientInformation(company: "Endava", zip: "654321"),
+                                        billing: ClientInformation(firstName: "John", lastName: "Scott", company: "Endava", zip: "85284"),
+                                        shipping: ClientInformation(zip: "85284"),
                                         customerID: "002",
                                         invoice: "invoice123",
                                         orderID: "99988d")
-            startTransaction(saleEntity: saleEntity, manualEntryCardInfo: ManualEntryCardInfo(card: "4111111111111111", expirationDateMMYY: "0727", csc: "999"))
+            startTransaction(saleEntity: saleEntity, manualEntryCardInfo: ManualEntryCardInfo(card: "4111111111111111", expirationDateMMYY: "0728", csc: "999"))
         }*/
     }
     
