@@ -10,7 +10,7 @@ import UIKit
 
 
 public enum ButtonStyleType {
-    case transparent, bordered, filled
+    case bordered, filled
 }
 
 public class ClearentPrimaryButton: ClearentMarginableView {
@@ -35,14 +35,10 @@ public class ClearentPrimaryButton: ClearentMarginableView {
     public var borderColor: UIColor = ClearentUIBrandConfigurator.shared.colorPalette.borderColor
     public var borderedBackgroundColor = ClearentUIBrandConfigurator.shared.colorPalette.borderedBackgroundColor
     public var borderedButtonTextColor = ClearentUIBrandConfigurator.shared.colorPalette.borderedButtonTextColor
-    
-    public var transparentButtonTextColor = ClearentUIBrandConfigurator.shared.colorPalette.transparentButtonTextColor
 
     public var buttonStyle: ButtonStyleType = .filled {
         didSet {
             switch buttonStyle {
-            case .transparent:
-                setTransparentButton()
             case .bordered:
                 setBorderedButton()
             case .filled:
@@ -87,12 +83,6 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         button.setTitleColor(borderedButtonTextColor, for: .normal)
         button.layer.borderColor = borderColor.cgColor
         button.layer.borderWidth = ClearentConstants.Size.defaultButtonBorderWidth
-    }
-    
-    private func setTransparentButton() {
-        button.backgroundColor = .clear
-        button.setTitleColor(transparentButtonTextColor, for: .normal)
-        button.layer.borderWidth = 0
     }
     
     private func setFilledButton() {
