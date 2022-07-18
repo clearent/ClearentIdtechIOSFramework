@@ -33,9 +33,6 @@ public protocol ClearentUIColors {
     // The text's color for button of type bordered
     var borderedButtonTextColor: UIColor { get }
     
-    // The text's color for button of type transparent
-    var transparentButtonTextColor: UIColor { get }
-    
     // MARK: ClearentHintView
     
     // The background's color when this component is highlighted
