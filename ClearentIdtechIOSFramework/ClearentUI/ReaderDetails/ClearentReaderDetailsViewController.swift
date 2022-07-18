@@ -11,9 +11,9 @@ import UIKit
 class ClearentReaderDetailsViewController: UIViewController {
     var readerInfo: ReaderInfo { detailsPresenter.currentReader }
     var detailsPresenter: ClearentReaderDetailsProtocol!
-    
+
     // MARK: - IBOutlets
-    
+
     @IBOutlet var stackView: ClearentAdaptiveStackView!
     @IBOutlet var connectedView: ClearentLabelSwitch!
     @IBOutlet var signalStatusView: ClearentLabelWithIcon!
@@ -37,13 +37,13 @@ class ClearentReaderDetailsViewController: UIViewController {
         setupButton()
     }
 
-    public override func viewWillAppear(_ animated: Bool) {
+    override public func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         navigationController?.isNavigationBarHidden = true
     }
-    
+
     // MARK: - Private
-    
+
     private func setupNavigationBar() {
         let image = UIImage(named: ClearentConstants.IconName.navigationArrow, in: ClearentConstants.bundle, compatibleWith: nil)
         customNavigationItem.leftBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(didPressBackButton))
@@ -63,7 +63,7 @@ class ClearentReaderDetailsViewController: UIViewController {
         connectedView.valueChangedAction = { [weak self] isOn in
             guard let strongSelf = self else { return }
             if isOn {
-                let modalVC = ClearentUIManager.shared.viewController(processType: .pairing(withReader: strongSelf.readerInfo)) { isConnected, customName in
+                let modalVC = ClearentUIManager.shared.viewController(processType: .pairing(withReader: strongSelf.readerInfo)) { isConnected, _ in
                     strongSelf.didChangedConnectionStatus(reader: strongSelf.readerInfo, isConnected: isConnected)
                 }
                 strongSelf.navigationController?.present(modalVC, animated: false)
@@ -88,7 +88,7 @@ class ClearentReaderDetailsViewController: UIViewController {
         connectedView.isOn = isConnected
         updateReaderInfo()
     }
-    
+
     private func didChangedCustomReaderName(reader: ReaderInfo, customName: String?) {
         detailsPresenter.currentReader = reader
         detailsPresenter.currentReader.customReaderName = customName
@@ -101,7 +101,7 @@ class ClearentReaderDetailsViewController: UIViewController {
         setupCustomReaderName()
         setupVersion()
     }
-    
+
     private func setupReaderStatus() {
         if let signalStatus = detailsPresenter.readerSignalStatus {
             signalStatusView.iconName = signalStatus.iconName
@@ -121,12 +121,12 @@ class ClearentReaderDetailsViewController: UIViewController {
         readerName.descriptionText = readerInfo.readerName
         readerName.button.isHidden = true
     }
-    
+
     private func setupCustomReaderName() {
         customReaderName.titleText = "xsdk_reader_details_custom_readername_title".localized
         customReaderName.editButtonPressed = { [weak self] in
             guard let strongSelf = self else { return }
-            let modalVC = ClearentUIManager.shared.viewController(processType: .renameReader, editableReader: self?.detailsPresenter.currentReader) { isConnected, customName in
+            let modalVC = ClearentUIManager.shared.viewController(processType: .renameReader, editableReader: self?.detailsPresenter.currentReader) { _, customName in
                 strongSelf.didChangedCustomReaderName(reader: strongSelf.readerInfo, customName: customName)
             }
             strongSelf.navigationController?.present(modalVC, animated: false)
@@ -168,7 +168,7 @@ class ClearentReaderDetailsViewController: UIViewController {
             self?.showRemoveReaderAlert()
         }
     }
-    
+
     func showRemoveReaderAlert() {
         let readerName = detailsPresenter.currentReader.customReaderName ?? detailsPresenter.currentReader.readerName
         let alertTitle = String(format: "xsdk_reader_details_remove_alert_title".localized, readerName)
@@ -176,8 +176,8 @@ class ClearentReaderDetailsViewController: UIViewController {
         alert.addAction(UIAlertAction(title: "xsdk_reader_details_remove_alert_confirm".localized, style: .destructive) { [weak self] _ in
             self?.detailsPresenter.removeReader()
         })
-    
         alert.addAction(UIAlertAction(title: "xsdk_reader_details_remove_alert_cancel".localized, style: .cancel) { _ in })
+
         present(alert, animated: true, completion: nil)
     }
 
