@@ -165,8 +165,20 @@ class ClearentReaderDetailsViewController: UIViewController {
         removeReaderButton.borderColor = ClearentUIBrandConfigurator.shared.colorPalette.removeReaderButtonBorderColor
         removeReaderButton.buttonStyle = .bordered
         removeReaderButton.action = { [weak self] in
-            self?.detailsPresenter.removeReader()
+            self?.showRemoveReaderAlert()
         }
+    }
+    
+    func showRemoveReaderAlert() {
+        let readerName = detailsPresenter.currentReader.customReaderName ?? detailsPresenter.currentReader.readerName
+        let alertTitle = String(format: "xsdk_reader_details_remove_alert_title".localized, readerName)
+        let alert = UIAlertController(title: alertTitle, message: "xsdk_reader_details_remove_alert_message".localized, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "xsdk_reader_details_remove_alert_confirm".localized, style: .destructive) { [weak self] _ in
+            self?.detailsPresenter.removeReader()
+        })
+    
+        alert.addAction(UIAlertAction(title: "xsdk_reader_details_remove_alert_cancel".localized, style: .cancel) { _ in })
+        present(alert, animated: true, completion: nil)
     }
 
     @objc func didPressBackButton() {

@@ -76,6 +76,10 @@
 "xsdk_reader_details_serialnumber_title" = "Serial number";
 "xsdk_reader_details_version_title" = "Version";
 "xsdk_reader_details_remove_reader" = "Remove reader";
+"xsdk_reader_details_remove_alert_title" = "Remove %@";
+"xsdk_reader_details_remove_alert_message" = "You are about to remove this reader from your app.\nAre you sure you want to proceed?";
+"xsdk_reader_details_remove_alert_confirm" = "Yes";
+"xsdk_reader_details_remove_alert_cancel" = "Cancel";
 "xsdk_reader_details_nav_title" = "Reader details";
 "xsdk_reader_details_signal_good" = "Good";
 "xsdk_reader_details_signal_medium" = "Medium";
