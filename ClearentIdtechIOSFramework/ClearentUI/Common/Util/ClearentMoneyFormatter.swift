@@ -39,3 +39,7 @@ public extension String {
         return amount
     }
 }
+
+extension Double {
+    var stringFormattedWithTwoDecimals: String? { String(ClearentMoneyFormatter.formattedText(from: self).double) }
+}

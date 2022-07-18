@@ -65,7 +65,7 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         }
     }
 
-    override func configure() {
+    public override func configure() {
         setFilledButton()
         button.layer.cornerRadius = button.bounds.height / 2
         button.layer.masksToBounds = true

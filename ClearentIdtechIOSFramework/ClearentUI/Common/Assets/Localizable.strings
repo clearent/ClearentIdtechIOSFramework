@@ -89,6 +89,7 @@
 "xsdk_general_error_user_action_retry" = "Try Again";
 "xsdk_general_error_user_action_cancel" = "Cancel";
 "xsdk_general_error_connection_timeout" = "CONNECTION TIMEOUT";
+"xsdk_general_error_user_action_manually_enter_card" = "Manually enter credit card details";
 
 // MARK: Reader error
 "xsdk_reader_error_title" = "Card read error";

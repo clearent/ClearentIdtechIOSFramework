@@ -156,8 +156,12 @@ public final class ClearentWrapper : NSObject {
         let config = ClearentVP3300Config(noContactlessNoConfiguration: baseURL, publicKey: publicKey)
         return Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
     }()
-    private var transactionAmount: String?
-    private var tipAmount: String?
+    
+    lazy var clearentManualEntry: ClearentManualEntry = {
+        return ClearentManualEntry(self, clearentBaseUrl: baseURL, publicKey: publicKey)
+    }()
+
+    private var saleEntity: SaleEntity?
     private var lastTransactionID: String?
     private var bleManager : BluetoothScanner?
     private let monitor = NWPathMonitor()
@@ -253,28 +257,41 @@ public final class ClearentWrapper : NSObject {
         self.publicKey = publicKey
     }
     
-    public func startTransaction(with amount: String, and tip: String?) {
-
-        if (amount.canBeConverted(to: String.Encoding.utf8)) {
-            self.transactionAmount = amount
-        }
+    public func startTransaction(with saleEntity: SaleEntity, manualEntryCardInfo: ManualEntryCardInfo? = nil) {
+        if !saleEntity.amount.canBeConverted(to: .utf8) { return }
+        if let tip = saleEntity.tipAmount, !tip.canBeConverted(to: .utf8) { return }
         
-        if let newTip = tip, newTip.canBeConverted(to: String.Encoding.utf8) {
-            self.tipAmount = newTip
-        }
-        
+        self.saleEntity = saleEntity
         if let action = connectivityActionNeeded {
             DispatchQueue.main.async {
-                  self.delegate?.userActionNeeded(action: action)
+                self.delegate?.userActionNeeded(action: action)
             }
             return
         }
-        
+        if let manualEntryCardInfo = manualEntryCardInfo {
+            manualEntryTransaction(cardNo: manualEntryCardInfo.card, expirationDate: manualEntryCardInfo.expirationDateMMYY, csc: manualEntryCardInfo.csc)
+        } else {
+            cardReaderTransaction()
+        }
+    }
+    
+    private func manualEntryTransaction(cardNo: String, expirationDate: String, csc: String) {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let strongSelf = self else { return }
+            let card = ClearentCard()
+            card.card = cardNo
+            card.expirationDateMMYY = expirationDate
+            card.csc = csc
+            strongSelf.clearentManualEntry.createTransactionToken(card)
+        }
+    }
+    
+    private func cardReaderTransaction() {
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let strongSelf = self, let saleEntity = strongSelf.saleEntity else { return }
             ClearentWrapper.shared.startDeviceInfoUpdate()
             let payment = ClearentPayment.init(sale: ())
-            payment?.amount = Double(amount) ?? 0
+            payment?.amount = Double(saleEntity.amount) ?? 0
             strongSelf.clearentVP3300.startTransaction(payment, clearentConnection: strongSelf.connection)
         }
     }
@@ -287,8 +304,8 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
-    public func saleTransaction(jwt: String, amount: String, tipAmount: String) {
-        httpClient.saleTransaction(jwt: jwt, amount: amount, tipAmount: tipAmount) { data, error in
+    public func saleTransaction(jwt: String, saleEntity: SaleEntity) {
+        httpClient.saleTransaction(jwt: jwt, saleEntity: saleEntity) { data, error in
             guard let responseData = data else { return }
             
             do {
@@ -340,7 +357,8 @@ public final class ClearentWrapper : NSObject {
     }
     
     public func refundTransaction(jwt: String, amount: String) {
-        httpClient.refundTransaction(jwt: jwt, amount: amount) { data, error in
+        let saleEntity = SaleEntity(amount: amount)
+        httpClient.refundTransaction(jwt: jwt, saleEntity: saleEntity) { data, error in
             guard let responseData = data else { return }
             
             do {
@@ -395,7 +413,7 @@ public final class ClearentWrapper : NSObject {
                         completion()
                         return
                     }
-                    let decodedResponse = try JSONDecoder().decode(MerchantSettings.self, from: data)
+                    let decodedResponse = try JSONDecoder().decode(MerchantSettingsEntity.self, from: data)
                     self.tipEnabled = decodedResponse.payload.terminalSettings.enableTip
                 } catch let jsonDecodingError {
                     print(jsonDecodingError)
@@ -521,22 +539,21 @@ public final class ClearentWrapper : NSObject {
 extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     
     public func successTransactionToken(_ clearentTransactionToken: ClearentTransactionToken!) {
-        guard let amount = transactionAmount else { return }
+        guard let saleEntity = saleEntity else { return }
         // make sure we have two decimals otherwise the API will return an error
-        var amountString = String(amount)
-        let amountArray = amountString.split(separator: ".")
-        
+        let amountArray = saleEntity.amount.split(separator: ".")
         if (amountArray.last?.count == 1) {
-            amountString = amountString + "0"
+            saleEntity.amount = saleEntity.amount + "0"
         }
         
-        var tipAmountString = self.tipAmount ?? "0.00"
-        let tipAmountArray = tipAmountString.split(separator: ".")
-        if (tipAmountArray.last?.count == 1) {
-            tipAmountString = tipAmountString + "0"
+        if let tipAmount = saleEntity.tipAmount {
+            let tipAmountArray = tipAmount.split(separator: ".")
+            if tipAmountArray.last?.count == 1 {
+                saleEntity.tipAmount = tipAmount + "0"
+            }
         }
-        
-        saleTransaction(jwt: clearentTransactionToken.jwt, amount: amountString, tipAmount: tipAmountString)
+
+        saleTransaction(jwt: clearentTransactionToken.jwt, saleEntity: saleEntity)
     }
     
     public func disconnectFromReader() {
@@ -638,6 +655,21 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
             ClearentWrapperDefaults.pairedReaderInfo?.isConnected = false
             self.bleManager?.cancelPeripheralConnection()
             self.delegate?.deviceDidDisconnect()
+        }
+    }
+}
+
+
+extension ClearentWrapper : ClearentManualEntryDelegate {
+    public func handleManualEntryError(_ message: String!) {
+        DispatchQueue.main.async {
+            if let action = UserAction.action(for: message) {
+                self.delegate?.userActionNeeded(action: action)
+            } else if let info = UserInfo.info(for: message) {
+                self.delegate?.didReceiveInfo(info: info)
+            } else {
+                self.delegate?.didEncounteredGeneralError()
+            }
         }
     }
 }

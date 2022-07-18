@@ -29,7 +29,7 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
         ]
     }
     
-    override func configure() {
+    public override func configure() {
         readerNameLabel.font = ClearentUIBrandConfigurator.shared.fonts.readerNameTextFont
         readerNameLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.readerNameColor
 

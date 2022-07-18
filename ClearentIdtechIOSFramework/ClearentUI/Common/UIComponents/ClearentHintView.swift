@@ -75,7 +75,7 @@ public class ClearentHintView: ClearentMarginableView {
         label.text = text
     }
 
-    override func configure() {
+    public override func configure() {
         super.configure()
         updateAppearance()
         backgroundColor = .clear

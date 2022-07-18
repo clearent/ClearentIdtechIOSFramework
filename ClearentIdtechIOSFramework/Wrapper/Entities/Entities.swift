@@ -42,22 +42,3 @@ public struct ResponseError: Codable {
         case message = "error-message"
     }
 }
-    
-public struct MerchantSettings: Codable {
-    var payload: PayloadSettings
-    
-    public struct PayloadSettings: Codable {
-        var terminalSettings: TerminalSettings
-        enum CodingKeys: String, CodingKey {
-            case terminalSettings = "terminal-settings"
-        }
-        
-        public struct TerminalSettings: Codable {
-            var enableTip: Bool
-            enum CodingKeys: String, CodingKey {
-                case enableTip = "enable-tip"
-            }
-        }
-    }
-}
-
