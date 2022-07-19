@@ -74,6 +74,9 @@ public class ClearentConstants {
         // Reader details
         static let navigationArrow = "left-arrow"
         static let editButton = "smallEditButton"
+        
+        // Manual Entry Card Info
+        static let calendar = "calendar"
     }
 
     public enum Size {

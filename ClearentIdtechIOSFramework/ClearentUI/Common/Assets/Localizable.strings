@@ -50,6 +50,36 @@
 "xsdk_signature_upload_sucessful_title" = "Upload completed successfully";
 "xsdk_signature_upload_failure_title" = "The signature was not properly processed";
 
+// MARK: Payment Flow - Manually Enter Card Info
+
+"xsdk_payment_manual_entry_card_no" = "Credit Card Number";
+"xsdk_payment_manual_entry_card_no_error" = "Invalid credit card number";
+
+"xsdk_payment_manual_entry_exp_date" = "Exp. Date";
+"xsdk_payment_manual_entry_exp_date_error" = "The card has expired";
+"xsdk_payment_manual_entry_exp_date_placeholder" = "mm/yy";
+
+"xsdk_payment_manual_entry_csc" = "Security Code";
+"xsdk_payment_manual_entry_csc_error" = "Invalid number";
+"xsdk_payment_manual_entry_csc_placeholder" = "CVV";
+
+"xsdk_payment_manual_entry_cardholder_name" = "Cardholder Name (optional)";
+
+"xsdk_payment_manual_entry_billing_zip" = "Billing ZIP Code (optional)";
+"xsdk_payment_manual_entry_billing_zip_error" = "Invalid zip code";
+
+"xsdk_payment_manual_entry_invoice_no" = "Invoice No.";
+
+"xsdk_payment_manual_entry_oder_no" = "Order No.";
+
+"xsdk_payment_manual_entry_company_name" = "Company Name";
+
+"xsdk_payment_manual_entry_customer_id" = "Customer ID";
+
+"xsdk_payment_manual_entry_shipping_zip" = "Ship-to ZIP Code";
+"xsdk_payment_manual_entry_shipping_zip_error" = "Invalid zip code";
+
+
 // MARK: Readers list
 // Texts that are displayed on the readers list screen
 
