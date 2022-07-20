@@ -161,7 +161,8 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .description, object: action.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .pressReaderButton, .connectionTimeout:
-            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.press_button),
+            items = [FlowDataItem(type: .description, object: "xsdk_pairing_prepare_pairing_reader_range".localized),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.press_button),
                      FlowDataItem(type: .description, object: action.description)]
             if ClearentWrapper.shared.flowType == .payment, connectionErrorDisplayed {
                 items?.append(FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo))

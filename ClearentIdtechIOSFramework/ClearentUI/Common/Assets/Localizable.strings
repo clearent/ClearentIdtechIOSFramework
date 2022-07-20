@@ -13,7 +13,7 @@
 "xsdk_pairing_select_reader" = "Please select the reader you wish to pair with";
 "xsdk_pairing_connecting_reader" = "Connecting...";
 "xsdk_pairing_connection_sucessful" = "Connection successful";
-"xsdk_pairing_prepare_pairing_reader_range" = "Please make sure your reader is turned on and in range of the mobile device pairing it";
+"xsdk_pairing_prepare_pairing_reader_range" = "Make sure your reader is turned on and in range of the mobile device pairing it";
 "xsdk_pairing_prepare_pairing_reader_button" = "Press and hold the button on the side of the reader to turn it on.";
 "xsdk_pairing_no_readers_found_title" = "No reader has been found. Please check that your reader is turned on and in range of the device.";
 "xsdk_pairing_no_readers_found_description" = "No readers available";
@@ -88,7 +88,6 @@
 "xsdk_general_error_description" = "Something went wrong";
 "xsdk_general_error_user_action_retry" = "Try Again";
 "xsdk_general_error_user_action_cancel" = "Cancel";
-"xsdk_general_error_connection_timeout" = "CONNECTION TIMEOUT";
 "xsdk_general_error_user_action_manually_enter_card" = "Manually enter credit card details";
 
 // MARK: Reader error
