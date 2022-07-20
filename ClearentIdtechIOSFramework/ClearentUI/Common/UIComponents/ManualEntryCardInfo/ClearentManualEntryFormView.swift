@@ -15,8 +15,8 @@ class ClearentManualEntryFormView: ClearentXibView {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var footerView: UIView!
     
+    @IBOutlet var tableViewHeightLC: NSLayoutConstraint!
     private var dataSource: ClearentPaymentDataSource?
-//    private weak var delegate: ClearentPaymentDelegate?
     
     override func configure() {}
     
@@ -26,18 +26,25 @@ class ClearentManualEntryFormView: ClearentXibView {
         self.init()
         
         self.dataSource = dataSource
-//        self.delegate = delegate
-        
         tableView.dataSource = dataSource
         tableView.delegate = self
         
         ClearentPaymentFieldCell.register(tableView: tableView)
         ClearentPaymentTwoFieldsCell.register(tableView: tableView)
     }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        tableViewHeightLC.constant = tableView.contentSize.height
+    }
 }
 
 extension ClearentManualEntryFormView: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return UITableViewHeaderFooterView()
+    }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        88
+        88.0
     }
 }
