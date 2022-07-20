@@ -118,4 +118,12 @@ public protocol ClearentUIColors {
     
     // The description message's color
     var signatureDescriptionMessageColor: UIColor { get }
+    
+    // MARK: ClearentPaymentTextField
+    
+    // The field title's color
+    var paymentFieldTitleColor: UIColor { get }
+    
+    // The error message's text color
+    var errorMessageTextColor: UIColor { get }
 }

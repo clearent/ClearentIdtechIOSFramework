@@ -17,34 +17,33 @@ class ClearentPaymentDataSource: NSObject {
 
 extension ClearentPaymentDataSource: UITableViewDataSource {
     func numberOfSections(in _: UITableView) -> Int {
-        return sections.count
+        sections.count
     }
 
     func tableView(_: UITableView, numberOfRowsInSection section: Int) -> Int {
         let section = sections[section]
-        if section.isCollapsable && !section.isCollapsed {
-            return 0
-        }
-        return section.rows.count
+        
+        return (section.isCollapsable && !section.isCollapsed) ? 0 : section.rows.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let section = sections[indexPath.section]
         let row = section.rows[indexPath.row]
+        
         switch row.type {
             case .singleItem:
-                if let cell = tableView.dequeueReusableCell(withIdentifier: "ClearentPaymentTextField", for: indexPath) as? ClearentPaymentTextField {
-                    cell.setup(with: row)
+            if let cell = tableView.dequeueReusableCell(withIdentifier: ClearentPaymentFieldCell.identifier, for: indexPath) as? ClearentPaymentFieldCell {
+                    cell.setup(with: row.elements[0])
+                    
                     return cell
                 }
-                
             case .twoItems:
-                if let cell = tableView.dequeueReusableCell(withIdentifier: "ClearentPaymentTwoTextFields", for: indexPath) as? ClearentPaymentTwoTextFields {
+            if let cell = tableView.dequeueReusableCell(withIdentifier: ClearentPaymentTwoFieldsCell.identifier, for: indexPath) as? ClearentPaymentTwoFieldsCell {
                     cell.setup(with: row)
+                    
                     return cell
                 }
         }
         return UITableViewCell()
     }
 }
-

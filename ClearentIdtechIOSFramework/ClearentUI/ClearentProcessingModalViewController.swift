@@ -128,6 +128,8 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             return tipOptionsListView(with: amountInfo)
         case .signature:
             return signatureView()
+        case .manualEntry:
+            return manualEntryFormView()
         }
     }
     
@@ -140,6 +142,12 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             self?.presenter?.handleSignature(with: signatureImage)
         }
         return signatureView
+    }
+    
+    private func manualEntryFormView() -> ClearentManualEntryFormView {
+        let dataSource = ClearentPaymentDataSource(with: [ClearentPaymentBaseSection(), ClearentPaymentAdditionalSection()])
+        
+        return ClearentManualEntryFormView(with: dataSource)
     }
 
     private func readerInfoView(readerInfo: ReaderInfo?, flowFeedbackType: FlowFeedbackType) -> ClearentReaderStatusHeaderView? {

@@ -52,6 +52,8 @@
 
 // MARK: Payment Flow - Manually Enter Card Info
 
+"xsdk_payment_manual_entry_title" = "Please fill in the credit card information";
+
 "xsdk_payment_manual_entry_card_no" = "Credit Card Number";
 "xsdk_payment_manual_entry_card_no_error" = "Invalid credit card number";
 
@@ -78,6 +80,9 @@
 
 "xsdk_payment_manual_entry_shipping_zip" = "Ship-to ZIP Code";
 "xsdk_payment_manual_entry_shipping_zip_error" = "Invalid zip code";
+
+"xsdk_payment_manual_entry_user_action_cancel" = "Cancel";
+"xsdk_payment_manual_entry_user_action_confirm" = "Confirm";
 
 
 // MARK: Readers list

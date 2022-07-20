@@ -215,6 +215,10 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     private func startManualEntryTransaction() {
+        let items = [FlowDataItem(type: .manualEntry, object: nil)]
+        let feedback = FlowFeedback(flow: .payment, type: FlowFeedbackType.info, items: items)
+        modalProcessingView?.updateContent(with: feedback)
+        
         // TODO: show manual credit card info form
         
         // TODO: on confirm action

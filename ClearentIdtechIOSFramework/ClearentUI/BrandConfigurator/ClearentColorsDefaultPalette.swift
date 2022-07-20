@@ -78,4 +78,8 @@ class ClearentColorsDefaultPalette: ClearentUIColors {
     var removeReaderButtonTextColor: UIColor { UIColor(hexString: "C2210F") }
     
     var signatureDescriptionMessageColor: UIColor { UIColor(hexString: "272431") }
+    
+    var paymentFieldTitleColor: UIColor { UIColor(hexString: "272431") }
+    
+    var errorMessageTextColor: UIColor { UIColor(hexString: "C2210F") }
 }
