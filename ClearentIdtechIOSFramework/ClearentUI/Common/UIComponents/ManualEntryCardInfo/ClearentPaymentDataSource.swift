@@ -23,7 +23,7 @@ extension ClearentPaymentDataSource: UITableViewDataSource {
     func tableView(_: UITableView, numberOfRowsInSection section: Int) -> Int {
         let section = sections[section]
         
-        return (section.isCollapsable && !section.isCollapsed) ? 0 : section.rows.count
+        return (section.isCollapsable && section.isCollapsed) ? 0 : section.rows.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -31,18 +31,19 @@ extension ClearentPaymentDataSource: UITableViewDataSource {
         let row = section.rows[indexPath.row]
         
         switch row.type {
-            case .singleItem:
+        case .singleItem:
             if let cell = tableView.dequeueReusableCell(withIdentifier: ClearentPaymentFieldCell.identifier, for: indexPath) as? ClearentPaymentFieldCell {
-                    cell.setup(with: row.elements[0])
-                    
-                    return cell
-                }
-            case .twoItems:
+                cell.setup(with: row.elements[0])
+                
+                return cell
+            }
+            
+        case .twoItems:
             if let cell = tableView.dequeueReusableCell(withIdentifier: ClearentPaymentTwoFieldsCell.identifier, for: indexPath) as? ClearentPaymentTwoFieldsCell {
-                    cell.setup(with: row)
-                    
-                    return cell
-                }
+                cell.setup(with: row)
+                
+                return cell
+            }
         }
         return UITableViewCell()
     }

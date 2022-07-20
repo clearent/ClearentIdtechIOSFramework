@@ -15,7 +15,6 @@ class ClearentPaymentFieldCell: UITableViewCell {
     
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var textField: UITextField!
-    @IBOutlet weak var fieldButton: UIButton!
     @IBOutlet weak var errorImageView: UIImageView!
     @IBOutlet weak var errorMessageLabel: UILabel!
     
@@ -35,11 +34,12 @@ class ClearentPaymentFieldCell: UITableViewCell {
     func setup(with row: ClearentPaymentItem) {
         titleLabel.text = row.title
         textField.placeholder = row.placeholder
+        textField.keyboardType = row.type == .creditCardNo ? .numberPad : .default
+        textField.layer.borderWidth = 1.0
+        textField.layer.borderColor = ClearentUIBrandConfigurator.shared.colorPalette.borderColor.cgColor
+        textField.layer.cornerRadius = 4
+        textField.layer.masksToBounds = true
         errorMessageLabel.text = row.errorMessage
-        
-        if let iconName = row.iconName {
-            fieldButton.setImage(UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil), for: .normal)
-        }
     }
     
     // MARK: - Private

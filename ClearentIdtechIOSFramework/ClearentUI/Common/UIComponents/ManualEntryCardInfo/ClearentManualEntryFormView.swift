@@ -35,16 +35,17 @@ class ClearentManualEntryFormView: ClearentXibView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
+        
         tableViewHeightLC.constant = tableView.contentSize.height
     }
 }
 
 extension ClearentManualEntryFormView: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return UITableViewHeaderFooterView()
-    }
+//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+//        return UITableViewHeaderFooterView()
+//    }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        88.0
+        92.0
     }
 }

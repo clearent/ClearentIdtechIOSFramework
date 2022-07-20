@@ -21,29 +21,29 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lhk-Ht-dFn" customClass="ClearentPrimaryButton" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                    <rect key="frame" x="16" y="123" width="120" height="40"/>
+                    <rect key="frame" x="16" y="123" width="319" height="40"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="40" id="7yf-DW-aOD"/>
-                        <constraint firstAttribute="width" constant="120" id="hQz-m5-0Gh"/>
                     </constraints>
                 </view>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="w6i-zU-jqo" customClass="ClearentPrimaryButton" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                    <rect key="frame" x="152" y="123" width="120" height="40"/>
+                    <rect key="frame" x="351" y="123" width="319" height="40"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="40" id="8pg-uJ-F8b"/>
-                        <constraint firstAttribute="width" constant="120" id="t7M-pS-TWc"/>
                     </constraints>
                 </view>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
+                <constraint firstItem="lhk-Ht-dFn" firstAttribute="width" secondItem="w6i-zU-jqo" secondAttribute="width" id="C6y-xo-VGO"/>
                 <constraint firstItem="lhk-Ht-dFn" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="PFm-mK-PIo"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="w6i-zU-jqo" secondAttribute="trailing" constant="16" id="WOJ-GJ-PkT"/>
                 <constraint firstItem="lhk-Ht-dFn" firstAttribute="centerY" secondItem="vUN-kp-3ea" secondAttribute="centerY" id="We2-6R-uIi"/>
-                <constraint firstItem="w6i-zU-jqo" firstAttribute="leading" secondItem="lhk-Ht-dFn" secondAttribute="trailing" constant="16" id="csU-cM-3uF"/>
                 <constraint firstItem="w6i-zU-jqo" firstAttribute="centerY" secondItem="lhk-Ht-dFn" secondAttribute="centerY" id="lzu-tj-VQ9"/>
+                <constraint firstItem="w6i-zU-jqo" firstAttribute="leading" secondItem="lhk-Ht-dFn" secondAttribute="trailing" constant="16" id="xpb-wT-Yeu"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <point key="canvasLocation" x="328.98550724637681" y="-99.107142857142847"/>

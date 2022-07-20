@@ -79,7 +79,7 @@ struct CreditCardNoItem: ClearentPaymentItem {
     
     var title: String { "xsdk_payment_manual_entry_card_no".localized }
     
-    var errorMessage: String { "xsdk_payment_manual_entry_card_no_error".localized }
+    var errorMessage: String? { "xsdk_payment_manual_entry_card_no_error".localized }
     
     var isOptional: Bool { false }
 }
@@ -93,7 +93,7 @@ struct DateItem: ClearentPaymentItem {
     
     var iconName: String? { ClearentConstants.IconName.calendar }
     
-    var errorMessage: String { "xsdk_payment_manual_entry_exp_date_error".localized }
+    var errorMessage: String? { "xsdk_payment_manual_entry_exp_date_error".localized }
     
     var isOptional: Bool { false }
 }
@@ -105,7 +105,7 @@ struct SecurityCodeItem: ClearentPaymentItem {
     
     var placeholder: String? { "xsdk_payment_manual_entry_csc_placeholder".localized }
     
-    var errorMessage: String { "xsdk_payment_manual_entry_csc_error".localized }
+    var errorMessage: String? { "xsdk_payment_manual_entry_csc_error".localized }
     
     var isOptional: Bool { false }
 }
@@ -122,7 +122,7 @@ struct BillingZipCodeItem: ClearentPaymentItem {
     
     var title: String { "xsdk_payment_manual_entry_billing_zip".localized }
     
-    var errorMessage: String { "xsdk_payment_manual_entry_billing_zip_error".localized }
+    var errorMessage: String? { "xsdk_payment_manual_entry_billing_zip_error".localized }
 }
 
 struct InvoiceNoItem: ClearentPaymentItem {
@@ -158,5 +158,5 @@ struct ShippingZipCodeItem: ClearentPaymentItem {
     
     var title: String { "xsdk_payment_manual_entry_shipping_zip".localized }
     
-    var errorMessage: String { "xsdk_payment_manual_entry_shipping_zip_error".localized }
+    var errorMessage: String? { "xsdk_payment_manual_entry_shipping_zip_error".localized }
 }

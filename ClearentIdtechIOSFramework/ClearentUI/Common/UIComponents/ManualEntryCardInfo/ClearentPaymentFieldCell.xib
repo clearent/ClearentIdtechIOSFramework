@@ -34,15 +34,6 @@
                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                         <textInputTraits key="textInputTraits"/>
                     </textField>
-                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XHe-Bc-7o6">
-                        <rect key="frame" x="367" y="38.5" width="14" height="15"/>
-                        <constraints>
-                            <constraint firstAttribute="height" constant="15" id="DjC-qj-vGP"/>
-                            <constraint firstAttribute="width" constant="14" id="cce-kP-5Ld"/>
-                        </constraints>
-                        <state key="normal" title="Button"/>
-                        <buttonConfiguration key="configuration" style="plain"/>
-                    </button>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dGA-A7-ZkV">
                         <rect key="frame" x="354" y="74" width="42" height="21"/>
                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
@@ -58,9 +49,7 @@
                     </imageView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="3i2-ne-UoN" firstAttribute="trailing" secondItem="XHe-Bc-7o6" secondAttribute="trailing" constant="15" id="1QA-fT-1LC"/>
                     <constraint firstItem="FEk-n2-FqV" firstAttribute="centerY" secondItem="dGA-A7-ZkV" secondAttribute="centerY" id="Hlv-w8-i5O"/>
-                    <constraint firstItem="XHe-Bc-7o6" firstAttribute="centerY" secondItem="3i2-ne-UoN" secondAttribute="centerY" id="K5S-F1-iu1"/>
                     <constraint firstItem="3i2-ne-UoN" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="TKU-51-HgH"/>
                     <constraint firstItem="AnL-B2-j4H" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="Ubn-52-gI1"/>
                     <constraint firstAttribute="trailing" secondItem="3i2-ne-UoN" secondAttribute="trailing" id="gbV-kj-jOd"/>
@@ -76,7 +65,6 @@
             <connections>
                 <outlet property="errorImageView" destination="FEk-n2-FqV" id="uyu-cb-5UY"/>
                 <outlet property="errorMessageLabel" destination="dGA-A7-ZkV" id="mB5-jB-75H"/>
-                <outlet property="fieldButton" destination="XHe-Bc-7o6" id="odx-py-LTV"/>
                 <outlet property="textField" destination="3i2-ne-UoN" id="njy-0S-1QG"/>
                 <outlet property="titleLabel" destination="AnL-B2-j4H" id="vSj-5X-cdC"/>
             </connections>

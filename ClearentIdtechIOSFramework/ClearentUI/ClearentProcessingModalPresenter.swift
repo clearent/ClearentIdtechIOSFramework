@@ -219,8 +219,6 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         let feedback = FlowFeedback(flow: .payment, type: FlowFeedbackType.info, items: items)
         modalProcessingView?.updateContent(with: feedback)
         
-        // TODO: show manual credit card info form
-        
         // TODO: on confirm action
         /* if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
             let saleEntity = SaleEntity(amount: amountFormatted,
