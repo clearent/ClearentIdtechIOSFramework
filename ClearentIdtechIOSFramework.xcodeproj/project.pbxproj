@@ -71,6 +71,7 @@
 		01949F6D283BEC3E0041292A /* SF-Pro-Display-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 01949F6B283BEC3E0041292A /* SF-Pro-Display-Bold.otf */; };
 		019F92922827C9F10068E3FA /* ClearentListView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 019F92912827C9F10068E3FA /* ClearentListView.xib */; };
 		01D1ED6F280FFA680005FC71 /* ReaderInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D1ED6E280FFA680005FC71 /* ReaderInfo.swift */; };
+		01D437C5288855DD008A1233 /* UITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D437C4288855DD008A1233 /* UITextField.swift */; };
 		01ED8F662874577E001D6952 /* SaleEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ED8F652874577E001D6952 /* SaleEntity.swift */; };
 		01ED8F682874586D001D6952 /* MerchantSettingsEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ED8F672874586D001D6952 /* MerchantSettingsEntity.swift */; };
 		01ED8F6A2874731B001D6952 /* SignatureEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ED8F692874731B001D6952 /* SignatureEntity.swift */; };
@@ -280,6 +281,7 @@
 		01949F6B283BEC3E0041292A /* SF-Pro-Display-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Display-Bold.otf"; sourceTree = "<group>"; };
 		019F92912827C9F10068E3FA /* ClearentListView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentListView.xib; sourceTree = "<group>"; };
 		01D1ED6E280FFA680005FC71 /* ReaderInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderInfo.swift; sourceTree = "<group>"; };
+		01D437C4288855DD008A1233 /* UITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextField.swift; sourceTree = "<group>"; };
 		01ED8F652874577E001D6952 /* SaleEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaleEntity.swift; sourceTree = "<group>"; };
 		01ED8F672874586D001D6952 /* MerchantSettingsEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MerchantSettingsEntity.swift; sourceTree = "<group>"; };
 		01ED8F692874731B001D6952 /* SignatureEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignatureEntity.swift; sourceTree = "<group>"; };
@@ -500,6 +502,7 @@
 				BA475A4528087EC1002A003D /* NSDataExtension.swift */,
 				19C6EBD0281127E400762CD4 /* Notification.swift */,
 				0129F82F28253A8D00027BCE /* UIFontExtension.swift */,
+				01D437C4288855DD008A1233 /* UITextField.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1223,6 +1226,7 @@
 				01ED8F682874586D001D6952 /* MerchantSettingsEntity.swift in Sources */,
 				4B32C08B2432560600CCF9B9 /* ClearentResponse.m in Sources */,
 				0129F7E52823A83000027BCE /* ClearentSubtitleLabel.swift in Sources */,
+				01D437C5288855DD008A1233 /* UITextField.swift in Sources */,
 				0101EC292808249F00C533DE /* ProgressShapeLayer.swift in Sources */,
 				E77C90482000442200C3E590 /* ClearentTransactionTokenRequest.m in Sources */,
 				01913F14282AECF100A71CF6 /* ClearentRoundedCornersStackView.swift in Sources */,

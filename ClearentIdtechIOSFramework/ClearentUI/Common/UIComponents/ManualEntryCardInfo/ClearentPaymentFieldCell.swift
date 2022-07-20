@@ -54,5 +54,6 @@ class ClearentPaymentFieldCell: UITableViewCell {
         errorImageView.image = UIImage(named: ClearentConstants.IconName.exclamationMark, in: ClearentConstants.bundle, compatibleWith: nil)
         errorImageView.isHidden = true
         errorMessageLabel.isHidden = true
+        textField.addDoneToKeyboard(barButtonTitle: "xsdk_keyboard_done".localized)
     }
 }

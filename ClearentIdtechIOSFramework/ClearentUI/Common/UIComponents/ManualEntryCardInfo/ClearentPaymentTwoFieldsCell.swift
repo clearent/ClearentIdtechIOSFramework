@@ -61,6 +61,7 @@ class ClearentPaymentTwoFieldsCell: UITableViewCell {
         securityCodeTextField.layer.borderColor = ClearentUIBrandConfigurator.shared.colorPalette.borderColor.cgColor
         securityCodeTextField.layer.cornerRadius = 4
         securityCodeTextField.layer.masksToBounds = true
+        securityCodeTextField.addDoneToKeyboard(barButtonTitle: "xsdk_keyboard_done".localized)
         
         securityCodeErrorImageView.image = UIImage(named: ClearentConstants.IconName.exclamationMark, in: ClearentConstants.bundle, compatibleWith: nil)
         securityCodeErrorImageView.isHidden = true
@@ -78,6 +79,8 @@ class ClearentPaymentTwoFieldsCell: UITableViewCell {
         expirationDateTextField.layer.borderColor = ClearentUIBrandConfigurator.shared.colorPalette.borderColor.cgColor
         expirationDateTextField.layer.cornerRadius = 4
         expirationDateTextField.layer.masksToBounds = true
+        expirationDateTextField.keyboardType = .numberPad
+        expirationDateTextField.addDoneToKeyboard(barButtonTitle: "xsdk_keyboard_done".localized)
         
         if let iconName = item.iconName {
             calendarButton.setImage(UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil), for: .normal)

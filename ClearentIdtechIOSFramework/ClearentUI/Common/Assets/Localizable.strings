@@ -6,6 +6,9 @@
   Copyright © 2022 Clearent, L.L.C. All rights reserved.
 */
 
+// MARK: Common
+"xsdk_keyboard_done" = "Done";
+
 // MARK: Pairing Flow
 // Texts that are displayed during the pairing flow
 
