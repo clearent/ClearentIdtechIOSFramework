@@ -24,6 +24,8 @@ class ClearentPaymentTwoFieldsCell: UITableViewCell {
     @IBOutlet weak var securityCodeErrorImageView: UIImageView!
     @IBOutlet weak var securityCodeErrorMessageLabel: UILabel!
     
+    var action: ((ClearentPaymentItemType?, String?) -> Void)?
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         
@@ -69,6 +71,9 @@ class ClearentPaymentTwoFieldsCell: UITableViewCell {
         securityCodeErrorMessageLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.errorMessageTextColor
         securityCodeErrorMessageLabel.font = ClearentUIBrandConfigurator.shared.fonts.errorMessageLabelFont
         securityCodeErrorMessageLabel.isHidden = true
+        
+        expirationDateTextField.addTarget(self, action: #selector(textFieldDidCompleteEditing(textField:)), for: .editingDidEnd)
+        securityCodeTextField.addTarget(self, action: #selector(textFieldDidCompleteEditing(textField:)), for: .editingDidEnd)
     }
     
     private func setupExpirationDateField(item: ClearentPaymentItem) {
@@ -92,5 +97,9 @@ class ClearentPaymentTwoFieldsCell: UITableViewCell {
         securityCodeTitleLabel.text = item.title
         securityCodeTextField.placeholder = item.placeholder
         securityCodeErrorMessageLabel.text = item.errorMessage
+    }
+    
+    @objc private func textFieldDidCompleteEditing(textField: UITextField) {
+        textField === expirationDateTextField ? action?(ClearentPaymentItemType.date, textField.text) : action?(ClearentPaymentItemType.securityCode, textField.text)
     }
 }

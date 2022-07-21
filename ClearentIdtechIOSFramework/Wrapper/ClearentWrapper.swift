@@ -262,12 +262,14 @@ public final class ClearentWrapper : NSObject {
         if let tip = saleEntity.tipAmount, !tip.canBeConverted(to: .utf8) { return }
         
         self.saleEntity = saleEntity
+        
         if let action = connectivityActionNeeded {
             DispatchQueue.main.async {
                 self.delegate?.userActionNeeded(action: action)
             }
             return
         }
+        
         if let manualEntryCardInfo = manualEntryCardInfo {
             manualEntryTransaction(cardNo: manualEntryCardInfo.card, expirationDate: manualEntryCardInfo.expirationDateMMYY, csc: manualEntryCardInfo.csc)
         } else {

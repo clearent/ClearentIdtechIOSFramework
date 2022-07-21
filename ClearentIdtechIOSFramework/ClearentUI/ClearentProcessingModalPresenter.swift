@@ -32,6 +32,8 @@ protocol ProcessingModalProtocol {
     func updateTemporaryReaderName(name: String?)
     func fetchTipSetting(completion: @escaping () -> Void)
     func handleSignature(with image: UIImage)
+    func updateCardData(for type: ClearentPaymentItemType?, with value: String?)
+    func sendManualEntryTransaction()
 }
 
 class ClearentProcessingModalPresenter {
@@ -48,6 +50,8 @@ class ClearentProcessingModalPresenter {
     var selectedReaderFromReadersList: ReaderItem?
     var sdkFeedbackProvider: FlowDataProvider
     var editableReader: ReaderInfo?
+    var cardInfo: ManualEntryCardInfo?
+    
     // MARK: Init
 
     init(modalProcessingView: ClearentProcessingModalView, amount: Double?, processType: ProcessType) {
@@ -56,6 +60,7 @@ class ClearentProcessingModalPresenter {
         self.processType = processType
         sdkFeedbackProvider = FlowDataProvider()
         sdkFeedbackProvider.delegate = self
+        cardInfo = ManualEntryCardInfo(card: "", expirationDateMMYY: "", csc: "")
     }
 
     private func dissmissViewWithDelay() {
@@ -177,6 +182,34 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         modalProcessingView?.showLoadingView()
         ClearentWrapper.shared.sendSignatureWithImage(image: image)
     }
+    
+    func updateCardData(for type: ClearentPaymentItemType?, with value: String?) {
+        guard let type = type, let value = value else { return }
+        
+        switch type {
+        case .creditCardNo:
+            cardInfo?.card = value
+        case .date:
+            cardInfo?.expirationDateMMYY = value
+        case .securityCode:
+            cardInfo?.csc = value
+        default:
+            break
+        }
+    }
+    
+    func sendManualEntryTransaction() {
+        if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
+            let saleEntity = SaleEntity(amount: amountFormatted,
+                                        tipAmount: tip?.stringFormattedWithTwoDecimals,
+                                        billing: ClientInformation(firstName: "John", lastName: "Scott", company: "Endava", zip: "85284"),
+                                        shipping: ClientInformation(zip: "85284"),
+                                        customerID: "002",
+                                        invoice: "invoice123",
+                                        orderID: "99988d")
+            startTransaction(saleEntity: saleEntity, manualEntryCardInfo: cardInfo)
+        }
+    }
 
     // MARK: Private
     
@@ -220,16 +253,6 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         modalProcessingView?.updateContent(with: feedback)
         
         // TODO: on confirm action
-        /* if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
-            let saleEntity = SaleEntity(amount: amountFormatted,
-                                        tipAmount: tip?.stringFormattedWithTwoDecimals,
-                                        billing: ClientInformation(firstName: "John", lastName: "Scott", company: "Endava", zip: "85284"),
-                                        shipping: ClientInformation(zip: "85284"),
-                                        customerID: "002",
-                                        invoice: "invoice123",
-                                        orderID: "99988d")
-            startTransaction(saleEntity: saleEntity, manualEntryCardInfo: ManualEntryCardInfo(card: "4111111111111111", expirationDateMMYY: "0728", csc: "999"))
-        }*/
     }
     
     private func showReadersList() {

@@ -7,9 +7,9 @@
 //
 
 public struct ManualEntryCardInfo {
-    let card: String
-    let expirationDateMMYY: String
-    let csc: String
+    var card: String
+    var expirationDateMMYY: String
+    var csc: String
 }
 
 public class SaleEntity: CodableProtocol {

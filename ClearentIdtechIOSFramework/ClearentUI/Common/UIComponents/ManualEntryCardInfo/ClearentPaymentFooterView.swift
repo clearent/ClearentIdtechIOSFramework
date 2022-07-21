@@ -14,6 +14,9 @@ class ClearentPaymentFooterView: ClearentXibView {
     @IBOutlet weak var cancelButton: ClearentPrimaryButton!
     @IBOutlet weak var confirmButton: ClearentPrimaryButton!
     
+    var cancelButtonAction: (() -> Void)?
+    var confirmButtonAction: (() -> Void)?
+    
     override func configure() {
         setupCancelButton()
         setupConfirmButton()
@@ -26,7 +29,7 @@ class ClearentPaymentFooterView: ClearentXibView {
         cancelButton.button.setTitle("xsdk_payment_manual_entry_user_action_cancel".localized, for: .normal)
         
         cancelButton.action = {
-            
+            self.cancelButtonAction?()
         }
     }
     
@@ -35,7 +38,7 @@ class ClearentPaymentFooterView: ClearentXibView {
         confirmButton.button.setTitle("xsdk_payment_manual_entry_user_action_confirm".localized, for: .normal)
         
         confirmButton.action = {
-            
+            self.confirmButtonAction?()
         }
     }
 }

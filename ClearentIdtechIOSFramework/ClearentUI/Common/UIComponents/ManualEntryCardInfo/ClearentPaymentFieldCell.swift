@@ -18,12 +18,16 @@ class ClearentPaymentFieldCell: UITableViewCell {
     @IBOutlet weak var errorImageView: UIImageView!
     @IBOutlet weak var errorMessageLabel: UILabel!
     
+    private var type: ClearentPaymentItemType?
+    var action: ((ClearentPaymentItemType?, String?) -> Void)?
+    
     // MARK: - Lifecycle
     
     override func awakeFromNib() {
         super.awakeFromNib()
         
         configure()
+        addTargetOnTextField()
     }
     
     static func register(tableView: UITableView) {
@@ -40,6 +44,7 @@ class ClearentPaymentFieldCell: UITableViewCell {
         textField.layer.cornerRadius = 4
         textField.layer.masksToBounds = true
         errorMessageLabel.text = row.errorMessage
+        type = row.type
     }
     
     // MARK: - Private
@@ -55,5 +60,13 @@ class ClearentPaymentFieldCell: UITableViewCell {
         errorImageView.isHidden = true
         errorMessageLabel.isHidden = true
         textField.addDoneToKeyboard(barButtonTitle: "xsdk_keyboard_done".localized)
+    }
+    
+    private func addTargetOnTextField() {
+        textField.addTarget(self, action: #selector(textFieldDidCompleteEditing), for: .editingDidEnd)
+    }
+    
+    @objc private func textFieldDidCompleteEditing() {
+        action?(type, textField.text)
     }
 }

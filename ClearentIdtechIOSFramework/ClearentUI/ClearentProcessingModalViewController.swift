@@ -145,9 +145,11 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     }
     
     private func manualEntryFormView() -> ClearentManualEntryFormView {
-        let dataSource = ClearentPaymentDataSource(with: [ClearentPaymentBaseSection(), ClearentPaymentAdditionalSection()])
+        let dataSource = ClearentPaymentDataSource(with: [ClearentPaymentBaseSection(), ClearentPaymentAdditionalSection()], delegate: self)
+        let manualEntryFormView = ClearentManualEntryFormView(with: dataSource)
+        manualEntryFormView.delegate = self
         
-        return ClearentManualEntryFormView(with: dataSource)
+        return manualEntryFormView
     }
 
     private func readerInfoView(readerInfo: ReaderInfo?, flowFeedbackType: FlowFeedbackType) -> ClearentReaderStatusHeaderView? {
@@ -237,5 +239,21 @@ extension ClearentProcessingModalViewController: ClearentReadersTableViewDelegat
 extension ClearentProcessingModalViewController: ClearentTextFieldProtocol {
     func didFinishWithResult(name: String?) {
         presenter?.updateTemporaryReaderName(name: name)
+    }
+}
+
+extension ClearentProcessingModalViewController: ClearentPaymentFieldProtocol {
+    func didFinishCompletePaymentField(type: ClearentPaymentItemType?, value: String?) {
+        presenter?.updateCardData(for: type, with: value)
+    }
+}
+
+extension ClearentProcessingModalViewController: ClearentManualEntryFormViewProtocol {
+    func didTapOnCancelButton() {
+        self.dismiss(animated: true, completion: nil)
+    }
+    
+    func didTapOnConfirmButton() {
+        presenter?.sendManualEntryTransaction()
     }
 }

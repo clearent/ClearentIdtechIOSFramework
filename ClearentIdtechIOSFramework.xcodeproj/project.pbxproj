@@ -105,7 +105,6 @@
 		19BD10642886D32C00F0E5C4 /* ClearentPaymentTwoFieldsCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19BD10622886D32C00F0E5C4 /* ClearentPaymentTwoFieldsCell.xib */; };
 		19BD10672886E2B300F0E5C4 /* ClearentPaymentFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BD10652886E2B300F0E5C4 /* ClearentPaymentFieldCell.swift */; };
 		19BD10682886E2B300F0E5C4 /* ClearentPaymentFieldCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19BD10662886E2B300F0E5C4 /* ClearentPaymentFieldCell.xib */; };
-		19BD106A2887D9B500F0E5C4 /* ClearentPaymentDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BD10692887D9B500F0E5C4 /* ClearentPaymentDelegate.swift */; };
 		19C6EBD1281127E400762CD4 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19C6EBD0281127E400762CD4 /* Notification.swift */; };
 		4B074F3C2447173200868E21 /* ClearentConfigFetcher_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E728DB1D20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m */; };
 		4B074F3E244717E500868E21 /* ClearentConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA494020E171830090CFFC /* ClearentConfiguration.h */; };
@@ -315,7 +314,6 @@
 		19BD10622886D32C00F0E5C4 /* ClearentPaymentTwoFieldsCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentPaymentTwoFieldsCell.xib; sourceTree = "<group>"; };
 		19BD10652886E2B300F0E5C4 /* ClearentPaymentFieldCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentPaymentFieldCell.swift; sourceTree = "<group>"; };
 		19BD10662886E2B300F0E5C4 /* ClearentPaymentFieldCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentPaymentFieldCell.xib; sourceTree = "<group>"; };
-		19BD10692887D9B500F0E5C4 /* ClearentPaymentDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentPaymentDelegate.swift; sourceTree = "<group>"; };
 		19C6EBD0281127E400762CD4 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		4B074F4624471B7900868E21 /* ClearentBluetoothDevice_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentBluetoothDevice_Tests.m; sourceTree = "<group>"; };
 		4B074F4824471F2700868E21 /* ClearentConnection_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentConnection_Tests.m; sourceTree = "<group>"; };
@@ -592,7 +590,6 @@
 			isa = PBXGroup;
 			children = (
 				019328E028869EDE0081C357 /* ClearentPaymentDataSource.swift */,
-				19BD10692887D9B500F0E5C4 /* ClearentPaymentDelegate.swift */,
 				19BD10552885D1CA00F0E5C4 /* ClearentPaymentHeaderView.swift */,
 				19BD10572885D42700F0E5C4 /* ClearentPaymentHeaderView.xib */,
 				19BD10592885E43100F0E5C4 /* ClearentPaymentFooterView.swift */,
@@ -1181,7 +1178,6 @@
 				E764E7722303182C0029B753 /* ClearentOfflineDeclineReceipt.m in Sources */,
 				BA40A34D27F1B38C0041CCF7 /* HttpClient.swift in Sources */,
 				19BD105E2886823C00F0E5C4 /* ClearentManualEntryFormView.swift in Sources */,
-				19BD106A2887D9B500F0E5C4 /* ClearentPaymentDelegate.swift in Sources */,
 				4BAEA888271C5F24007F5FCF /* ClearentLumberjackRemoteLogger.m in Sources */,
 				4B32C09824335D5500CCF9B9 /* ClearentBluetoothDevice.m in Sources */,
 				19116EB7282BDB820042CE8E /* ClearentReadersTableViewCell.swift in Sources */,

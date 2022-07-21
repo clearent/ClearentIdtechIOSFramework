@@ -9,14 +9,20 @@
 import Foundation
 import UIKit
 
+protocol ClearentManualEntryFormViewProtocol: AnyObject {
+    func didTapOnCancelButton()
+    func didTapOnConfirmButton()
+}
+
 class ClearentManualEntryFormView: ClearentXibView {
     
-    @IBOutlet weak var headerView: UIView!
+    @IBOutlet weak var headerView: ClearentPaymentHeaderView!
     @IBOutlet weak var tableView: UITableView!
-    @IBOutlet weak var footerView: UIView!
+    @IBOutlet weak var footerView: ClearentPaymentFooterView!
     
     @IBOutlet var tableViewHeightLC: NSLayoutConstraint!
     private var dataSource: ClearentPaymentDataSource?
+    weak var delegate: ClearentManualEntryFormViewProtocol?
     
     override func configure() {}
     
@@ -31,6 +37,14 @@ class ClearentManualEntryFormView: ClearentXibView {
         
         ClearentPaymentFieldCell.register(tableView: tableView)
         ClearentPaymentTwoFieldsCell.register(tableView: tableView)
+        
+        footerView.cancelButtonAction = {
+            self.delegate?.didTapOnCancelButton()
+        }
+        
+        footerView.confirmButtonAction = {
+            self.delegate?.didTapOnConfirmButton()
+        }
     }
     
     override func layoutSubviews() {
