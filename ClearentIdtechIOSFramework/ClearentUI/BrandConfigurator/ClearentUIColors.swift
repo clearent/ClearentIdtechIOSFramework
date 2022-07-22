@@ -11,12 +11,12 @@ import UIKit
 
 public protocol ClearentUIColors {
     
-    // MARK: ClearentLoadingView
+    // MARK: - ClearentLoadingView
     
     // The loading view's fill color
     var loadingViewFillColor: UIColor { get }
     
-    // MARK: ClearentPrimaryButton
+    // MARK: - ClearentPrimaryButton
     
     // The background's color for button of type filled
     var filledBackgroundColor: UIColor { get }
@@ -33,7 +33,7 @@ public protocol ClearentUIColors {
     // The text's color for button of type bordered
     var borderedButtonTextColor: UIColor { get }
     
-    // MARK: ClearentHintView
+    // MARK: - ClearentHintView
     
     // The background's color when this component is highlighted
     var highlightedBackgroundColor: UIColor { get }
@@ -44,27 +44,27 @@ public protocol ClearentUIColors {
     // The default text color
     var defaultTextColor: UIColor { get }
     
-    // MARK: ClearentTitleLabel
+    // MARK: - ClearentTitleLabel
     
     // The label's text color (also used in ClearentReaderDetailsScreen)
     var titleLabelColor: UIColor { get }
     
-    // MARK: ClearentSubtitleLabel
+    // MARK: - ClearentSubtitleLabel
     
     // The label's text color (also used in ClearentReaderDetailsScreen)
     var subtitleLabelColor: UIColor { get }
     
-    // MARK: ClearentReaderStatusHeaderView
+    // MARK: - ClearentReaderStatusHeaderView
     
     // The reader name label's color
     var readerNameColor: UIColor { get }
     
-    // MARK: ClearentReaderConnectivityStatusView
+    // MARK: - ClearentReaderConnectivityStatusView
     
     // The status label's color (also used in ClearentReaderStatusHeaderView)
     var readerStatusLabelColor: UIColor { get }
     
-    // MARK: ClearentReadersTableViewCell
+    // MARK: - ClearentReadersTableViewCell
     
     // The reader name label's color (also used in ClearentPairingReaderItem)
     var readerNameLabelColor: UIColor { get }
@@ -78,7 +78,7 @@ public protocol ClearentUIColors {
     // The cell's background color
     var readersCellBackgroundColor: UIColor { get }
     
-    // MARK: ClearentTipCheckboxView
+    // MARK: - ClearentTipCheckboxView
     
     // The border's color of the checkbox view when is selected
     var checkboxSelectedBorderColor: UIColor { get }
@@ -95,12 +95,12 @@ public protocol ClearentUIColors {
     // The tip adjustment button's tint color
     var tipAdjustmentTintColor: UIColor { get }
     
-    // MARK: ClearentTextField
+    // MARK: - ClearentTextField
     
     // The info label's color
     var infoLabelColor: UIColor { get }
     
-    // MARK: ClearentReaderDetailsScreen
+    // MARK: - ClearentReaderDetailsScreen
     
     // The navigation bar's tint color
     var navigationBarTintColor: UIColor { get }
@@ -114,12 +114,12 @@ public protocol ClearentUIColors {
     // The remove reader button's text color
     var removeReaderButtonTextColor: UIColor { get }
     
-    // MARK: ClearentSignatureView
+    // MARK: - ClearentSignatureView
     
     // The description message's color
     var signatureDescriptionMessageColor: UIColor { get }
     
-    // MARK: ClearentPaymentTextField
+    // MARK: - ClearentPaymentTextField
     
     // The field title's color
     var paymentFieldTitleColor: UIColor { get }
