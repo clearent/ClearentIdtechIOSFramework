@@ -67,11 +67,11 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
     public func handleAutojoin(markAsAutojoin: Bool) {
         currentReader.autojoin = markAsAutojoin
         guard var existingReaders = ClearentWrapperDefaults.recentlyPairedReaders else { return }
-    
-        if let oldAutojoinIndex = existingReaders.firstIndex(where: {$0.autojoin == true}) {
+
+        if let oldAutojoinIndex = existingReaders.firstIndex(where: { $0.autojoin == true }) {
             existingReaders[oldAutojoinIndex].autojoin = false
         }
-        if let currentIndex = existingReaders.firstIndex(where: {$0 == currentReader}) {
+        if let currentIndex = existingReaders.firstIndex(where: { $0 == currentReader }) {
             existingReaders[currentIndex].autojoin = markAsAutojoin
         }
         ClearentWrapperDefaults.recentlyPairedReaders = existingReaders

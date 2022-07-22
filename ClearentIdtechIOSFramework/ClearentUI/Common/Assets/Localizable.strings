@@ -16,7 +16,7 @@
 "xsdk_pairing_select_reader" = "Please select the reader you wish to pair with";
 "xsdk_pairing_connecting_reader" = "Connecting...";
 "xsdk_pairing_connection_sucessful" = "Connection successful";
-"xsdk_pairing_prepare_pairing_reader_range" = "Please make sure your reader is turned on and in range of the mobile device pairing it";
+"xsdk_pairing_prepare_pairing_reader_range" = "Make sure your reader is turned on and in range of the mobile device pairing it";
 "xsdk_pairing_prepare_pairing_reader_button" = "Press and hold the button on the side of the reader to turn it on.";
 "xsdk_pairing_no_readers_found_title" = "No reader has been found. Please check that your reader is turned on and in range of the device.";
 "xsdk_pairing_no_readers_found_description" = "No readers available";
@@ -114,6 +114,10 @@
 "xsdk_reader_details_serialnumber_title" = "Serial number";
 "xsdk_reader_details_version_title" = "Version";
 "xsdk_reader_details_remove_reader" = "Remove reader";
+"xsdk_reader_details_remove_alert_title" = "Remove %@";
+"xsdk_reader_details_remove_alert_message" = "You are about to remove this reader from your app.\nAre you sure you want to proceed?";
+"xsdk_reader_details_remove_alert_confirm" = "Yes";
+"xsdk_reader_details_remove_alert_cancel" = "Cancel";
 "xsdk_reader_details_nav_title" = "Reader details";
 "xsdk_reader_details_signal_good" = "Good";
 "xsdk_reader_details_signal_medium" = "Medium";
@@ -126,7 +130,6 @@
 "xsdk_general_error_description" = "Something went wrong";
 "xsdk_general_error_user_action_retry" = "Try Again";
 "xsdk_general_error_user_action_cancel" = "Cancel";
-"xsdk_general_error_connection_timeout" = "CONNECTION TIMEOUT";
 "xsdk_general_error_user_action_manually_enter_card" = "Manually enter credit card details";
 
 // MARK: Reader error

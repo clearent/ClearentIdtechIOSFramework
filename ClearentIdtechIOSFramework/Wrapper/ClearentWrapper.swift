@@ -75,7 +75,7 @@ public enum UserAction: String, CaseIterable {
         case .cardExpired:
             return CLEARENT_CARD_EXPIRED
         case .connectionTimeout:
-            return "xsdk_general_error_connection_timeout".localized
+            return CLEARENT_USER_ACTION_PRESS_BUTTON_MESSAGE
         case .noInternet:
             return "xsdk_internet_no_connection".localized
         case .noBluetooth:
