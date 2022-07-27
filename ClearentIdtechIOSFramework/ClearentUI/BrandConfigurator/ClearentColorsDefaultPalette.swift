@@ -63,8 +63,6 @@ class ClearentColorsDefaultPalette: ClearentUIColors {
     
     var tipLabelColor: UIColor { UIColor(hexString: "272431") }
     
-    var tipAdjustmentTintColor: UIColor { UIColor(hexString: "272431") }
-    
     var infoLabelColor: UIColor { UIColor(hexString: "1B181F") }
     
     var navigationBarTintColor: UIColor { UIColor(hexString: "000000") }
