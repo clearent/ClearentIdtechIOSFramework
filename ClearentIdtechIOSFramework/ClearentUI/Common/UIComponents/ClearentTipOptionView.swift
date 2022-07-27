@@ -10,9 +10,9 @@ class ClearentTipOptionView: ClearentMarginableView {
 
     // MARK: - Properties
     
-    @IBOutlet var checkView: UIImageView!
-    @IBOutlet var percentageLabel: UILabel!
-    @IBOutlet var customAmountTextField: UITextField!
+    @IBOutlet weak var checkView: UIImageView!
+    @IBOutlet weak var percentageLabel: UILabel!
+    @IBOutlet weak var customAmountTextField: UITextField!
     
     var tipSelectedAction: ((_ tipValue: Double) -> Void)?
     
@@ -64,7 +64,7 @@ class ClearentTipOptionView: ClearentMarginableView {
     private func setTextField(isCustomTip: Bool) {
         customAmountTextField.isHidden = !isCustomTip
         customAmountTextField.keyboardType = .numberPad
-        customAmountTextField.addDoneToKeyboard(barButtonTitle: "Done")
+        customAmountTextField.addDoneToKeyboard(barButtonTitle: "xsdk_keyboard_done".localized)
         customAmountTextField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: .editingChanged)
     }
     
@@ -81,10 +81,9 @@ class ClearentTipOptionView: ClearentMarginableView {
     
     @objc final private func textFieldDidChange(textField: UITextField) {
         guard let text = textField.text else { return }
-        tipValue = text.isEmpty ? 0 : max(text.double, ClearentConstants.Tips.minimumCustomTipValue)
-        customAmountTextField.text = text.isEmpty ? "" : ClearentMoneyFormatter.formattedWithoutSymbol(from: tipValue)
+        let tipValuePrefix = String(text.prefix(ClearentConstants.Tips.maxCustomTipCharacters))
+        tipValue = tipValuePrefix.isEmpty ? 0 : max(tipValuePrefix.double, ClearentConstants.Tips.minCustomTipValue)
+        customAmountTextField.text = tipValuePrefix.isEmpty ? "" : ClearentMoneyFormatter.formattedWithoutSymbol(from: tipValue)
         tipWasPressed()
     }
 }
-
-

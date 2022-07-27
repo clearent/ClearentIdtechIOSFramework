@@ -36,6 +36,29 @@ class ClearentProcessingModalViewController: ClearentBaseViewController {
         positionViewOnTop(flag: showOnTop)
         presenter?.startFlow()
     }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        setupNotifications()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    private func setupNotifications() {
+        // Register keyboard notifications
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+
+    @objc private func keyboardWillShow(notification: Notification) {
+        view.frame.origin.y = view.safeAreaInsets.top - stackView.frame.minY + ClearentConstants.Size.modalStackViewMargin
+    }
+
+    @objc private func keyboardWillHide(notification: Notification) {
+        view.frame.origin.y = 0
+    }
 }
 
 // MARK: - ClearentPaymentProcessingView
@@ -198,9 +221,9 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     }
     
     private func tipOptionsListView(with amountInfo: AmountInfo) -> ClearentListView {
-        let tipOptionsList = amountInfo.tipOptions.map { tip -> ClearentTipCheckboxView in
-            let tipElement = ClearentTipCheckboxView(percentageText: "\(tip.percentageText)", tipValue: tip.value, isCustomTip: tip.isCustom)
-            tipElement.tipSelectedAction = { [weak self] value in
+        let tipOptionsList = amountInfo.tipOptions.map { tip -> ClearentTipOptionView in
+            let tipOption = ClearentTipOptionView(percentageTextAndValue: tip.percentageTextAndValue, tipValue: tip.value, isCustomTip: tip.isCustom)
+            tipOption.tipSelectedAction = { [weak self] value in
                 self?.presenter?.tip = value
                 if let button = self?.stackView.findButtonInStack(with: .transactionWithTip) {
                     var amountInfo = amountInfo
@@ -208,7 +231,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
                     button.title = button.type?.transactionWithTipTitle(for: amountInfo.finalAmount)
                 }
             }
-            return tipElement
+            return tipOption
         }
         return ClearentListView(items: tipOptionsList)
     }

@@ -7,19 +7,24 @@
 //
 
 struct AmountInfo {
-    var amountWithoutTip: Double
-    var availableTipPercentages: [Double]
+    typealias TipOption = (percentageTextAndValue: String, value: Double, isCustom: Bool)
     
-    var tipOptions: [(percentageText: String, value: Double, isCustom: Bool)] {
-        var tips = availableTipPercentages.map {(
-             percentageText: "\($0)%",
-             value: $0 / 100 * amountWithoutTip,
-             isCustom: false
-        )}
-        let customTip = (percentageText: "xsdk_tips_custom_amount".localized, value: ClearentConstants.Tips.defaultCustomTipValue, isCustom: true)
+    var amountWithoutTip: Double
+    var availableTipPercentages: [Int]
+    
+    var tipOptions: [TipOption] {
+        var tips: [TipOption] = availableTipPercentages.map {
+            let value = Double($0) / 100.0 * amountWithoutTip
+            return
+                (percentageTextAndValue: String(format: "xsdk_tips_percentage_and_value".localized, $0, ClearentMoneyFormatter.formattedWithSymbol(from: value)),
+                 value: value,
+                 isCustom: false)
+        }
+        let customTip: TipOption = (percentageTextAndValue: "xsdk_tips_custom_amount".localized, value: 0, isCustom: true)
         tips.append(customTip)
         return tips
     }
+    
     var selectedTipValue: Double?
     var finalAmount: Double {
         if let selectedTipValue = selectedTipValue {  return amountWithoutTip + selectedTipValue }
