@@ -10,7 +10,7 @@ import Foundation
 public struct ClearentMoneyFormatter {
     private static let localeCurrency = "en_US"
 
-    fileprivate static var numberFormatter: NumberFormatter {
+    fileprivate static var numberFormatterWithSymbol: NumberFormatter {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         formatter.maximumFractionDigits = 2
@@ -18,12 +18,22 @@ public struct ClearentMoneyFormatter {
         return formatter
     }
     
-    public static func formattedText(from double: Double) -> String {
-        return numberFormatter.string(for: double) ?? ""
+    fileprivate static var numberFormatterWithoutSymbol: NumberFormatter {
+        let formatter = ClearentMoneyFormatter.numberFormatterWithSymbol
+        formatter.currencySymbol = ""
+        return formatter
+    }
+    
+    public static func formattedWithSymbol(from double: Double) -> String {
+        numberFormatterWithSymbol.string(for: double) ?? ""
+    }
+    
+    public static func formattedWithoutSymbol(from double: Double) -> String {
+        numberFormatterWithoutSymbol.string(for: double) ?? ""
     }
 
-    public static func formattedText(from string: String) -> String {
-        return numberFormatter.string(for: string.double) ?? ""
+    public static func formattedWithSymbol(from string: String) -> String {
+        numberFormatterWithSymbol.string(for: string.double) ?? ""
     }
 }
 
@@ -34,12 +44,12 @@ private extension StringProtocol where Self: RangeReplaceableCollection {
 public extension String {
     var double: Double {
         let digits = Double(digits) ?? 0
-        let divisor = pow(10, ClearentMoneyFormatter.numberFormatter.maximumFractionDigits)
+        let divisor = pow(10, ClearentMoneyFormatter.numberFormatterWithoutSymbol.maximumFractionDigits)
         let amount = digits / NSDecimalNumber(decimal: divisor).doubleValue
         return amount
     }
 }
 
 extension Double {
-    var stringFormattedWithTwoDecimals: String? { String(ClearentMoneyFormatter.formattedText(from: self).double) }
+    var stringFormattedWithTwoDecimals: String? { String(ClearentMoneyFormatter.formattedWithoutSymbol(from: self).double) }
 }

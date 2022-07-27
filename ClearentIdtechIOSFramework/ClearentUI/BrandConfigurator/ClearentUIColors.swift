@@ -87,9 +87,6 @@ public protocol ClearentUIColors {
     var checkboxUnselectedBorderColor: UIColor { get }
     
     // The percentage label's color
-    var percentageLabelColor: UIColor { get }
-    
-    // The tip value label's color
     var tipLabelColor: UIColor { get }
     
     // The tip adjustment button's tint color

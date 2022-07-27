@@ -61,8 +61,6 @@ class ClearentColorsDefaultPalette: ClearentUIColors {
     
     var checkboxUnselectedBorderColor: UIColor { UIColor(hexString: "999BA8") }
     
-    var percentageLabelColor: UIColor { UIColor(hexString: "272431") }
-    
     var tipLabelColor: UIColor { UIColor(hexString: "272431") }
     
     var tipAdjustmentTintColor: UIColor { UIColor(hexString: "272431") }
