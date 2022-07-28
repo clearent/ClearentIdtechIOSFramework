@@ -120,4 +120,9 @@ public protocol ClearentUIColors {
     
     // The error message's text color
     var errorMessageTextColor: UIColor { get }
+    
+    // MARK: - ClearentPaymentSectionHeaderView
+    
+    // The payment section title's color
+    var paymentSectionTitleColor: UIColor { get }
 }

@@ -55,4 +55,6 @@ class ClearentDefaultFonts: ClearentUIFonts {
     var paymentFieldTitleLabelFont: UIFont { proTextNormal }
     
     var errorMessageLabelFont: UIFont { proTextExtraSmall }
+    
+    var sectionTitleLabelFont: UIFont { proTextLarge }
 }

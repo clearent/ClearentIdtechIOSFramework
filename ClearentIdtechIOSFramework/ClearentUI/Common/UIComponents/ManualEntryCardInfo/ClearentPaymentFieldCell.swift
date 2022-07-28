@@ -9,6 +9,11 @@
 import UIKit
 
 class ClearentPaymentFieldCell: UITableViewCell {
+    
+    enum Layout {
+        static let cellHeight: CGFloat = 92
+        static let sectionHeaderViewHeight: CGFloat = 48 //TO DO: double check if this is the right size
+    }
 
     static let identifier = "ClearentPaymentFieldCellIdentifier"
     static let nib = "ClearentPaymentFieldCell"

@@ -78,6 +78,7 @@ public class ClearentConstants {
         // Manual Entry Card Info
         static let calendar = "calendar"
         static let exclamationMark = "redExclamationMark"
+        static let expandMedium = "expandMedium"
     }
 
     public enum Size {

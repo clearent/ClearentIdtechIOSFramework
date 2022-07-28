@@ -74,6 +74,8 @@
 "xsdk_payment_manual_entry_billing_zip" = "Billing ZIP Code (optional)";
 "xsdk_payment_manual_entry_billing_zip_error" = "Invalid zip code";
 
+"xsdk_payment_manual_entry_additional_section_title" = "Additional Information";
+
 "xsdk_payment_manual_entry_invoice_no" = "Invoice No.";
 
 "xsdk_payment_manual_entry_oder_no" = "Order No.";

@@ -105,6 +105,8 @@
 		19BD10672886E2B300F0E5C4 /* ClearentPaymentFieldCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BD10652886E2B300F0E5C4 /* ClearentPaymentFieldCell.swift */; };
 		19BD10682886E2B300F0E5C4 /* ClearentPaymentFieldCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19BD10662886E2B300F0E5C4 /* ClearentPaymentFieldCell.xib */; };
 		19C6701328928BC700FFD208 /* UITextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19C6701228928BC700FFD208 /* UITextField.swift */; };
+		19BD1070288E83EC00F0E5C4 /* ClearentPaymentSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19BD106F288E83EC00F0E5C4 /* ClearentPaymentSectionHeaderView.swift */; };
+		19BD1072288E83FE00F0E5C4 /* ClearentPaymentSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 19BD1071288E83FE00F0E5C4 /* ClearentPaymentSectionHeaderView.xib */; };
 		19C6EBD1281127E400762CD4 /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19C6EBD0281127E400762CD4 /* Notification.swift */; };
 		4B074F3C2447173200868E21 /* ClearentConfigFetcher_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E728DB1D20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m */; };
 		4B074F3E244717E500868E21 /* ClearentConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA494020E171830090CFFC /* ClearentConfiguration.h */; };
@@ -315,6 +317,8 @@
 		19BD10652886E2B300F0E5C4 /* ClearentPaymentFieldCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentPaymentFieldCell.swift; sourceTree = "<group>"; };
 		19BD10662886E2B300F0E5C4 /* ClearentPaymentFieldCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentPaymentFieldCell.xib; sourceTree = "<group>"; };
 		19C6701228928BC700FFD208 /* UITextField.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITextField.swift; sourceTree = "<group>"; };
+		19BD106F288E83EC00F0E5C4 /* ClearentPaymentSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentPaymentSectionHeaderView.swift; sourceTree = "<group>"; };
+		19BD1071288E83FE00F0E5C4 /* ClearentPaymentSectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentPaymentSectionHeaderView.xib; sourceTree = "<group>"; };
 		19C6EBD0281127E400762CD4 /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		4B074F4624471B7900868E21 /* ClearentBluetoothDevice_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentBluetoothDevice_Tests.m; sourceTree = "<group>"; };
 		4B074F4824471F2700868E21 /* ClearentConnection_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentConnection_Tests.m; sourceTree = "<group>"; };
@@ -601,6 +605,8 @@
 				19BD10662886E2B300F0E5C4 /* ClearentPaymentFieldCell.xib */,
 				19BD10612886D32C00F0E5C4 /* ClearentPaymentTwoFieldsCell.swift */,
 				19BD10622886D32C00F0E5C4 /* ClearentPaymentTwoFieldsCell.xib */,
+				19BD106F288E83EC00F0E5C4 /* ClearentPaymentSectionHeaderView.swift */,
+				19BD1071288E83FE00F0E5C4 /* ClearentPaymentSectionHeaderView.xib */,
 			);
 			path = ManualEntryCardInfo;
 			sourceTree = "<group>";
@@ -1110,6 +1116,7 @@
 				011181A6283267960025750A /* ClearentLabelSwitch.xib in Resources */,
 				19A61D5D2804121400E295B3 /* SF-Pro-Text-Medium.otf in Resources */,
 				19A61D6C2804129100E295B3 /* ClearentReaderStatusHeaderView.xib in Resources */,
+				19BD1072288E83FE00F0E5C4 /* ClearentPaymentSectionHeaderView.xib in Resources */,
 				19BD105C2885E48900F0E5C4 /* ClearentPaymentFooterView.xib in Resources */,
 				013157E7286C35AE0037D281 /* ClearentSignatureView.xib in Resources */,
 				19BD10682886E2B300F0E5C4 /* ClearentPaymentFieldCell.xib in Resources */,
@@ -1210,6 +1217,7 @@
 				E75891FC225522AB00288032 /* ClearentLogging.m in Sources */,
 				010394962803462F000A7A94 /* UIStackViewExtension.swift in Sources */,
 				E75891F7225522AB00288032 /* ClearentLoggingRequest.m in Sources */,
+				19BD1070288E83EC00F0E5C4 /* ClearentPaymentSectionHeaderView.swift in Sources */,
 				0101EC282808249F00C533DE /* StrokeAnimation.swift in Sources */,
 				E75A5BEC20DD20580035B911 /* ClearentEmvConfigurator.m in Sources */,
 				4B32C0912432677F00CCF9B9 /* ClearentTransactionToken.m in Sources */,

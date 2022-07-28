@@ -55,11 +55,30 @@ class ClearentManualEntryFormView: ClearentXibView {
 }
 
 extension ClearentManualEntryFormView: UITableViewDelegate {
-//    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-//        return UITableViewHeaderFooterView()
-//    }
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let sectionHeaderView = ClearentPaymentSectionHeaderView()
+        sectionHeaderView.delegate = self
+        
+        return dataSource?.sections[section].isCollapsable == true ? sectionHeaderView : nil
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return dataSource?.sections[section].isCollapsable == true ? ClearentPaymentFieldCell.Layout.sectionHeaderViewHeight : 0
+    }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        92.0
+        ClearentPaymentFieldCell.Layout.cellHeight
+    }
+}
+
+extension ClearentManualEntryFormView: ClearentPaymentSectionHeaderViewProtocol {
+    func didTapOnSectionHeaderView(_ sender: ClearentPaymentSectionHeaderView) {
+        guard let dataSource = dataSource else { return }
+        
+        let isSectionCollapsed = dataSource.sections[1].isCollapsed
+        dataSource.sections[1].isCollapsed = !isSectionCollapsed
+        
+//        tableView.reloadData()
+        sender.updateDropDownIcon(isSectionCollapsed: dataSource.sections[1].isCollapsed)
     }
 }
