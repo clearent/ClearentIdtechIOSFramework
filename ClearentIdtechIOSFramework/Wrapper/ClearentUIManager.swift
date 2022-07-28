@@ -8,6 +8,10 @@
 
 import Foundation
 
+/**
+ * This class is to be used as a singleton and it's main purpose is to start diferent processes from the SDK by providing UIControllers that will handle the entire process
+ *
+ */
 public final class ClearentUIManager : NSObject {
     
     private let clearentWrapper = ClearentWrapper.shared
@@ -42,18 +46,34 @@ public final class ClearentUIManager : NSObject {
     
     // MARK: Public
     
+    /**
+     * Method updates the SDK with needed paramas to work properly
+     * @param baseURL, the endpoint of the backend
+     * @param apiKey, the API Key in order to use the API
+     * @param publicKey, needed for the card reader initialisation
+     */
     public func updateWith(baseURL: String, apiKey: String, publicKey: String) {
         clearentWrapper.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey)
     }
     
+    /**
+     * Method returns a UIController that can handle the entire payment process
+     * @param amount, the amount to be charged in a transaction
+     */
     public func paymentViewController(amount: Double) -> UINavigationController {
         viewController(processType: .payment, amount:amount)
     }
     
+    /**
+     * Method returns a UIController that can handle the pairing process of a card reader
+     */
     public func pairingViewController() -> UINavigationController {
         viewController(processType: .pairing())
     }
     
+    /**
+     * Method returns a UIController that will display a list containing current card reader informations and recently paired readers
+     */
     public func readersViewController() -> UINavigationController {
         viewController(processType: .showReaders)
     }

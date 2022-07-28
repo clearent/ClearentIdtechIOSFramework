@@ -122,22 +122,22 @@ public enum TransactionError {
 }
 
 /**
- * A protocol used to comunicate  informations and results regarding interaction with the card reader & API's
+ * This protocol is used to comunicate  informations and results regarding the interaction with the SDK
  */
 public protocol ClearentWrapperProtocol : AnyObject {
     /**
      * Method called right after a pairing process is started.
-     *  We're calling a pairing process , bluetooth search start, selection of a device and connection to that device
+     *  Called right after a bluetooth search is started
      */
     func didStartPairing()
     
     /**
-     * Method called right after a succesfull connection to a card reader was made
+     * Method called right after a succesfull connection to a card reader was completed
      */
     func didFinishPairing()
     
     /**
-     * Method called as a response to 'startDeviceInfoUpdate' method and indicated that new reader information is available
+     * Method called as a response to 'startDeviceInfoUpdate' method and indicates that new reader information is available
      */
     func didReceiveSignalStrength()
     
