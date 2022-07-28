@@ -39,7 +39,8 @@
 // MARK: Payment Flow - Tips
 // Texts that are displayed on the tips screen (part of the payment flow)
 
-"xsdk_tips_custom_amount" = "Custom amount";
+"xsdk_tips_percentage_and_value" = "%d%% (%@)";
+"xsdk_tips_custom_amount" = "Custom amount ($)";
 "xsdk_tips_user_transaction_tip_title" = "Would you like to add a tip?";
 "xsdk_tips_user_action_transaction_with_tip" = "Charge %@";
 "xsdk_tips_user_action_transaction_without_tip" = "Maybe next time";

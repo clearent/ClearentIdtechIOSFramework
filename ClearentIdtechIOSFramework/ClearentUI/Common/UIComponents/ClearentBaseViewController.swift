@@ -27,7 +27,7 @@ open class ClearentBaseViewController: UIViewController {
             backgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             backgroundView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             backgroundView.topAnchor.constraint(equalTo: view.topAnchor),
-            backgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+            backgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: view.frame.height)
         ])
     }
 }

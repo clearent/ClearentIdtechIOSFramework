@@ -16,7 +16,8 @@ public class ClearentAdaptiveStackView: UIStackView {
         handleSubviewsMargins()
     }
     
-    public func positionView(onTop: Bool, of view: UIView, margin: CGFloat = 32) {
+    public func positionView(onTop: Bool, of view: UIView) {
+        let margin = ClearentConstants.Size.modalStackViewMargin
         removeFromSuperview()
         view.addSubview(self)
         alpha = 0

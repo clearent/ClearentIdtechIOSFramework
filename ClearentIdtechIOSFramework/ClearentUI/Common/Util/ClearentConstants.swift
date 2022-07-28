@@ -82,11 +82,12 @@ public class ClearentConstants {
 
     public enum Size {
         public static let defaultButtonBorderWidth = 1.0
+        public static let modalStackViewMargin = 32.0
     }
     
     public enum Tips {
-        public static let defaultTipPercentages = [15.0, 18.0, 20.0]
-        public static let customTipAdjustFactor: Double = 1.0
-        public static let defaultCustomTipValue: Double = 5.0
+        public static let defaultTipPercentages = [15, 18, 20]
+        public static let minCustomTipValue: Double = 0.01
+        public static let maxCustomTipCharacters = 20
     }
 }

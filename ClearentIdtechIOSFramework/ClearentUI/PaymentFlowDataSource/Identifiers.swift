@@ -103,7 +103,7 @@ public enum FlowButtonType {
 
     func transactionWithTipTitle(for amount: Double? = nil) -> String {
         guard let amount = amount else { return "" }
-        let formattedText = ClearentMoneyFormatter.formattedText(from: amount)
+        let formattedText = ClearentMoneyFormatter.formattedWithSymbol(from: amount)
         return String(format: "xsdk_tips_user_action_transaction_with_tip".localized, formattedText)
     }
 }
