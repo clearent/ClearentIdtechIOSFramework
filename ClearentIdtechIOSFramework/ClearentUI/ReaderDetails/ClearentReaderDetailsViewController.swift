@@ -131,6 +131,22 @@ class ClearentReaderDetailsViewController: UIViewController {
             }
             strongSelf.navigationController?.present(modalVC, animated: false)
         }
+        
+        if self.detailsPresenter.currentReader.customReaderName != nil {
+            customReaderName.deleteButtonPressed = { [weak self] in
+                guard self != nil else { return }
+                self?.detailsPresenter.currentReader.customReaderName = nil
+                if let reader = self?.detailsPresenter.currentReader {
+                    self?.didChangedCustomReaderName(reader:reader, customName: nil)
+                }
+            }
+            
+            customReaderName.secondIconName = ClearentConstants.IconName.editButton
+            customReaderName.secondaryButton.isHidden = false
+        } else {
+            customReaderName.secondaryButton.isHidden = true
+        }
+        
         if let friendlyreaderName = detailsPresenter.currentReader.customReaderName {
             customReaderName.descriptionText = friendlyreaderName
         } else {
