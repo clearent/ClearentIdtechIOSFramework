@@ -84,6 +84,9 @@ public class ClearentConstants {
     public enum Tips {
         public static let defaultTipPercentages = [15, 18, 20]
         public static let minCustomTipValue: Double = 0.01
-        public static let maxCustomTipCharacters = 16
+    }
+    
+    public enum Amount {
+        public static let maxNoOfCharacters = 11
     }
 }
