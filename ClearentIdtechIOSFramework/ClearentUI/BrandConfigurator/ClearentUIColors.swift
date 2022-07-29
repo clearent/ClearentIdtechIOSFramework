@@ -24,6 +24,12 @@ public protocol ClearentUIColors {
     // The text's color for button of type filled
     var filledButtonTextColor: UIColor { get }
     
+    // The background's color for button of type filled and disabled
+    var filledDisabledBackgroundColor: UIColor { get }
+    
+    // The text's color for button of type filled and Disabled
+    var filledDisabledButtonTextColor: UIColor { get }
+    
     // The border's color for button of type bordered
     var borderColor: UIColor { get }
     

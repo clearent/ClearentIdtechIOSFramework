@@ -10,6 +10,7 @@ import UIKit
 
 protocol ClearentTextFieldProtocol {
     func didFinishWithResult(name: String?)
+    func didChangeValidationState(isValid: Bool)
 }
 
 class ClearentTextField: ClearentMarginableView, UITextFieldDelegate {
@@ -34,6 +35,7 @@ class ClearentTextField: ClearentMarginableView, UITextFieldDelegate {
             self.inputField.text = readerName
         }
         self.inputField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: .editingChanged)
+        self.inputField.delegate = self
         self.delegate = delegate
         self.delegate?.didFinishWithResult(name: self.inputField.text)
     }
@@ -44,7 +46,19 @@ class ClearentTextField: ClearentMarginableView, UITextFieldDelegate {
         self.inputField.font = ClearentUIBrandConfigurator.shared.fonts.customNameInputLabelFont
     }
     
+    
+    @objc func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        let maxLength = 10
+        let currentString = (textField.text ?? "") as NSString
+        let newString = currentString.replacingCharacters(in: range, with: string)
+        
+        return newString.count <= maxLength
+    }
+    
     @objc final private func textFieldDidChange(textField: UITextField) {
-        self.delegate?.didFinishWithResult(name: self.inputField.text)
+        
+        let isValid = textField.hasText && textField.text?.count ?? 0 >= 3
+        self.delegate?.didChangeValidationState(isValid: isValid)
+        self.delegate?.didFinishWithResult(name: textField.text)
     }
 }
