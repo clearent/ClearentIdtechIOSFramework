@@ -36,7 +36,6 @@ class ClearentManualEntryFormView: ClearentXibView {
         tableView.delegate = self
         
         ClearentPaymentFieldCell.register(tableView: tableView)
-        ClearentPaymentTwoFieldsCell.register(tableView: tableView)
         
         footerView.cancelButtonAction = {
             self.delegate?.didTapOnCancelButton()

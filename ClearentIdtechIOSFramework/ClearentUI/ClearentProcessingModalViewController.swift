@@ -265,7 +265,7 @@ extension ClearentProcessingModalViewController: ClearentTextFieldProtocol {
     }
 }
 
-extension ClearentProcessingModalViewController: ClearentPaymentFieldProtocol {
+extension ClearentProcessingModalViewController: ClearentPaymentDataSourceProtocol {
     func didFinishCompletePaymentField(type: ClearentPaymentItemType?, value: String?) {
         presenter?.updateCardData(for: type, with: value)
     }

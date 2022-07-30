@@ -10,6 +10,13 @@ import UIKit
 
 class ClearentPaymentFieldCell: UITableViewCell {
     
+    @IBOutlet weak var leftPaymentTextField: ClearentPaymentTextField!
+    @IBOutlet weak var rightPaymentTextField: ClearentPaymentTextField!
+    @IBOutlet weak var stackView: UIStackView!
+    
+    private var type: ClearentPaymentRowType?
+    var action: ((ClearentPaymentItemType?, String?) -> Void)?
+    
     enum Layout {
         static let cellHeight: CGFloat = 92
         static let sectionHeaderViewHeight: CGFloat = 48 //TO DO: double check if this is the right size
@@ -18,60 +25,61 @@ class ClearentPaymentFieldCell: UITableViewCell {
     static let identifier = "ClearentPaymentFieldCellIdentifier"
     static let nib = "ClearentPaymentFieldCell"
     
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var textField: UITextField!
-    @IBOutlet weak var errorImageView: UIImageView!
-    @IBOutlet weak var errorMessageLabel: UILabel!
-    
-    private var type: ClearentPaymentItemType?
-    var action: ((ClearentPaymentItemType?, String?) -> Void)?
-    
-    // MARK: - Lifecycle
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        
-        configure()
-        addTargetOnTextField()
-    }
+    // MARK: - Public
     
     static func register(tableView: UITableView) {
         tableView.register(UINib(nibName: ClearentPaymentFieldCell.nib, bundle: Bundle(for: ClearentPaymentFieldCell.self)),
                            forCellReuseIdentifier: ClearentPaymentFieldCell.identifier)
     }
     
-    func setup(with row: ClearentPaymentItem) {
-        titleLabel.text = row.title
-        textField.placeholder = row.placeholder
-        textField.keyboardType = row.type == .creditCardNo ? .numberPad : .default
-        textField.layer.borderWidth = 1.0
-        textField.layer.borderColor = ClearentUIBrandConfigurator.shared.colorPalette.borderColor.cgColor
-        textField.layer.cornerRadius = 4
-        textField.layer.masksToBounds = true
-        errorMessageLabel.text = row.errorMessage
+    func setup(with row: ClearentPaymentRow) {
         type = row.type
-    }
-    
-    // MARK: - Private
-    
-    private func configure() {
-        titleLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.paymentFieldTitleColor
-        titleLabel.font = ClearentUIBrandConfigurator.shared.fonts.paymentFieldTitleLabelFont
-
-        errorMessageLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.errorMessageTextColor
-        errorMessageLabel.font = ClearentUIBrandConfigurator.shared.fonts.errorMessageLabelFont
         
-        errorImageView.image = UIImage(named: ClearentConstants.IconName.exclamationMark, in: ClearentConstants.bundle, compatibleWith: nil)
-        errorImageView.isHidden = true
-        errorMessageLabel.isHidden = true
-        textField.addDoneToKeyboard(barButtonTitle: "xsdk_keyboard_done".localized)
+        if row.type == .singleItem {
+            leftPaymentTextField.setup(with: row.elements[0])
+            leftPaymentTextField.action = { [weak self] fieldType, cardData in
+                guard let strongSelf = self else { return }
+                strongSelf.action?(fieldType, cardData)
+            }
+            stackView.removeAllArrangedSubviews()
+            stackView.addArrangedSubview(leftPaymentTextField)
+            
+        } else {
+            leftPaymentTextField.setup(with: row.elements[0])
+            leftPaymentTextField.action = { [weak self] fieldType, cardData in
+                guard let strongSelf = self else { return }
+                strongSelf.action?(fieldType, cardData)
+            }
+            
+            rightPaymentTextField.setup(with: row.elements[1])
+            rightPaymentTextField.action = { [weak self] fieldType, cardData in
+                guard let strongSelf = self else { return }
+                strongSelf.action?(fieldType, cardData)
+            }
+        }
     }
     
-    private func addTargetOnTextField() {
-        textField.addTarget(self, action: #selector(textFieldDidCompleteEditing), for: .editingDidEnd)
-    }
-    
-    @objc private func textFieldDidCompleteEditing() {
-        action?(type, textField.text)
+    func updatePaymentField(containing item: ClearentPaymentItemType?, with errorMessage: String?) {
+        if type == .singleItem {
+            guard let errorMessage = errorMessage else {
+                leftPaymentTextField.disableErrorState()
+                return
+            }
+            leftPaymentTextField.enableErrorState(errorMessage: errorMessage)
+        } else {
+            if item == .date {
+                guard let errorMessage = errorMessage else {
+                    leftPaymentTextField.disableErrorState()
+                    return
+                }
+                leftPaymentTextField.enableErrorState(errorMessage: errorMessage)
+            } else {
+                guard let errorMessage = errorMessage else {
+                    rightPaymentTextField.disableErrorState()
+                    return
+                }
+                rightPaymentTextField.enableErrorState(errorMessage: errorMessage)
+            }
+        }
     }
 }
