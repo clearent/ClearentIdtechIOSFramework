@@ -148,7 +148,7 @@ public final class ClearentWrapper : NSObject {
         ClearentWrapperDefaults.recentlyPairedReaders ?? []
     }
     public static let shared = ClearentWrapper()
-    public var flowType: ProcessType?
+    public var flowType: (processType: ProcessType, flowFeedbackType: FlowFeedbackType?)?
     public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
     weak var delegate: ClearentWrapperProtocol?
     private var connection  = ClearentConnection(bluetoothSearch: ())
@@ -166,6 +166,7 @@ public final class ClearentWrapper : NSObject {
     private var bleManager : BluetoothScanner?
     private let monitor = NWPathMonitor()
     private var isInternetOn = false
+    private var signatureImage: UIImage?
     private var connectivityActionNeeded: UserAction? {
         isBluetoothPermissionGranted  ? (isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : .noInternet) : .noBluetoothPermission
     }
@@ -331,22 +332,27 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
+    public func resendSignature() {
+        guard let signatureImage = signatureImage else { return }
+        sendSignatureWithImage(image: signatureImage)
+    }
+
     public func sendSignatureWithImage(image: UIImage) {
         if let id = lastTransactionID {
             if let tid = Int(id) {
+                 signatureImage = image
                  let base64Image =  image.jpegData(compressionQuality: 1)?.base64EncodedString() ?? ""
                  let httpClient = ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
                  httpClient.sendSignature(base64Image: base64Image, transactionID: tid) { data, error in
                      guard let responseData = data else { return }
                      do {
                          let decodedResponse = try JSONDecoder().decode(SignatureResponse.self, from: responseData)
-                         guard let signatureError = decodedResponse.payload.error else {
-                             DispatchQueue.main.async {
-                                 self.delegate?.didFinishedSignatureUploadWith(response: decodedResponse, error: nil)
-                             }
-                             return
-                         }
                          DispatchQueue.main.async {
+                             guard let signatureError = decodedResponse.payload.error else {
+                                 self.signatureImage = nil
+                                 self.delegate?.didFinishedSignatureUploadWith(response: decodedResponse, error: nil)
+                                 return
+                             }
                              self.delegate?.didFinishedSignatureUploadWith(response: decodedResponse, error: signatureError)
                          }
                          // error call delegate

@@ -18,13 +18,12 @@ protocol ClearentProcessingModalView: AnyObject {
 
 protocol ProcessingModalProtocol {
     var editableReader: ReaderInfo? { get set }
-    var processType: ProcessType { get set }
     var amountWithoutTip: Double? { get set }
     var tip: Double? { get set }
     var sdkFeedbackProvider: FlowDataProvider { get set }
     var selectedReaderFromReadersList: ReaderItem? { get set }
-    func handleUserAction(userAction: FlowButtonType, processType: ProcessType, flowFeedbackType: FlowFeedbackType)
-    func restartProcess(processType: ProcessType, newPair: Bool)
+    func handleUserAction(userAction: FlowButtonType)
+    func restartProcess(newPair: Bool)
     func startFlow()
     func startPairingFlow()
     func showDetailsScreen(for reader: ReaderItem, allReaders: [ReaderItem], flowDataProvider: FlowDataProvider, on navigationController: UINavigationController)
@@ -44,9 +43,10 @@ class ClearentProcessingModalPresenter {
     private var temporaryReaderName: String?
     private let sdkWrapper = ClearentWrapper.shared
     private var tipsScreenWasNotShown = true
+    // defines the process type set when the SDK UI starts
+    private var processType: ProcessType
     var amountWithoutTip: Double?
     var tip: Double?
-    var processType: ProcessType
     var selectedReaderFromReadersList: ReaderItem?
     var sdkFeedbackProvider: FlowDataProvider
     var editableReader: ReaderInfo?
@@ -73,20 +73,19 @@ class ClearentProcessingModalPresenter {
 
 extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 
-    func restartProcess(processType: ProcessType, newPair: Bool) {
-        self.processType = processType
+    func restartProcess(newPair: Bool) {
+        guard let processType = ClearentWrapper.shared.flowType?.processType, let flowFeedbackType = ClearentWrapper.shared.flowType?.flowFeedbackType else { return }
         sdkFeedbackProvider.delegate = self
         modalProcessingView?.showLoadingView()
-        
-        startProcess(isRestart: true, processType: processType, newPair: newPair)
+        startProcess(isRestart: true, processType: processType, flowFeedbackType: flowFeedbackType, newPair: newPair)
     }
     
     func startFlow() {
         startProcess(isRestart: false, processType: processType)
     }
     
-    private func startProcess(isRestart: Bool, processType: ProcessType, newPair: Bool = false) {
-        ClearentWrapper.shared.flowType = processType
+    private func startProcess(isRestart: Bool, processType: ProcessType, flowFeedbackType: FlowFeedbackType? = nil, newPair: Bool = false) {
+        ClearentWrapper.shared.flowType = (processType, flowFeedbackType)
         
         switch processType {
         case let .pairing(withReader: readerInfo):
@@ -99,12 +98,17 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                 startPairingFlow()
             }
         case .payment:
-            startTransactionFlow()
+            switch flowFeedbackType {
+                case .signature:
+                    showSignatureScreen()
+                case .signatureError:
+                    resendSignature()
+                default:
+                    startTransactionFlow()
+            }
         case .showReaders:
             if isRestart { break; }
             showReadersList()
-        case .signature:
-            showSignatureScreen()
         case .renameReader:
             showRenameReader()
         }
@@ -138,21 +142,21 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         temporaryReaderName = name
     }
     
-    func handleUserAction(userAction: FlowButtonType, processType: ProcessType, flowFeedbackType: FlowFeedbackType) {
+    func handleUserAction(userAction: FlowButtonType) {
         switch userAction {
-        case .cancel, .done, .renameReaderLater:
-            if (flowFeedbackType == .pairingDoneInfo) {
+        case .cancel, .done, .renameReaderLater, .skip:
+            if ClearentWrapper.shared.flowType?.flowFeedbackType == .pairingDoneInfo {
                 showReaderNameOption()
             } else {
-                if (flowFeedbackType == .renameReaderDone) {
+                if ClearentWrapper.shared.flowType?.flowFeedbackType == .renameReaderDone {
                     updateReaderName()
                 }
                 modalProcessingView?.dismissViewController(isConnected: userAction != .cancel, customName: editableReader?.customReaderName)
             }
         case .retry, .pair:
-            restartProcess(processType: processType, newPair: false)
+            restartProcess(newPair: false)
         case .pairInFlow:
-            restartProcess(processType: processType, newPair: true)
+            restartProcess(newPair: true)
         case .pairNewReader:
             modalProcessingView?.positionViewOnTop(flag: false)
             startPairingFlow()
@@ -209,6 +213,11 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                                         orderID: "99988d")
             startTransaction(saleEntity: saleEntity, manualEntryCardInfo: cardInfo)
         }
+    }
+
+    func resendSignature() {
+        modalProcessingView?.showLoadingView()
+        ClearentWrapper.shared.resendSignature()
     }
 
     // MARK: Private
@@ -288,7 +297,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     private func showSignatureScreen() {
         let items = [FlowDataItem(type: .hint, object: "xsdk_signature_title".localized),
                      FlowDataItem(type: .signature, object: nil)]
-        let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.info, items: items)
+        let feedback = FlowFeedback(flow: .pairing(), type: .signature, items: items)
         modalProcessingView?.updateContent(with: feedback)
     }
     
@@ -318,7 +327,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
     func deviceDidDisconnect() {}
 
     func didFinishedPairing() {
-        if case .pairing = processType {
+        if [.pairing(), .showReaders].contains(processType) {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                 // display successful pairing content
                 var items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.pairingSuccessful),

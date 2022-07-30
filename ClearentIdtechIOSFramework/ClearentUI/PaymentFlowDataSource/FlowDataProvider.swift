@@ -85,10 +85,11 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             let errItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
                             FlowDataItem(type: .title, object: "xsdk_signature_upload_failure_title".localized),
                             FlowDataItem(type: .description, object: error.message),
-                            FlowDataItem(type: .userAction, object: FlowButtonType.done)]
+                            FlowDataItem(type: .userAction, object: FlowButtonType.retry),
+                            FlowDataItem(type: .userAction, object: FlowButtonType.skip)]
             
            feedback = FlowDataFactory.component(with: .payment,
-                                                    type: .error,
+                                                    type: .signatureError,
                                                     readerInfo: fetchReaderInfo(),
                                                     payload: errItems)
         } else {
@@ -164,7 +165,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             items = [FlowDataItem(type: .description, object: "xsdk_pairing_prepare_pairing_reader_range".localized),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.press_button),
                      FlowDataItem(type: .description, object: action.description)]
-            if ClearentWrapper.shared.flowType == .payment, connectionErrorDisplayed {
+            if ClearentWrapper.shared.flowType?.processType == .payment, connectionErrorDisplayed {
                 items?.append(FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo))
             }
             items?.append(FlowDataItem(type: .userAction, object: FlowButtonType.cancel))
@@ -228,11 +229,10 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         }
         
         if let flowItems = items {
-            let flow: ProcessType = ClearentWrapper.shared.flowType == .signature ? .signature : .payment
-            let feedback = FlowDataFactory.component(with: flow,
-                                                type: type,
-                                                readerInfo: fetchReaderInfo(),
-                                                payload: flowItems)
+            let feedback = FlowDataFactory.component(with: .payment,
+                                                     type: ClearentWrapper.shared.flowType?.flowFeedbackType ?? type,
+                                                     readerInfo: fetchReaderInfo(),
+                                                     payload: flowItems)
             self.delegate?.didReceiveFlowFeedback(feedback: feedback)
         }
     }
@@ -274,7 +274,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     // MARK - Pairing related
     
     func didFinishPairing() {
-        if case .showReaders = ClearentWrapper.shared.flowType {
+        if case .showReaders = ClearentWrapper.shared.flowType?.processType {
             createFeedbackForSuccessfulPairing()
         } else {
             let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.pairingSuccessful),
@@ -321,7 +321,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         let items: [FlowDataItem]
         let feedback: FlowFeedback
         
-        if case .showReaders = ClearentWrapper.shared.flowType {
+        if case .showReaders = ClearentWrapper.shared.flowType?.processType {
             guard let recentlyPairedDevices = ClearentWrapperDefaults.recentlyPairedReaders else { return }
             
             items = [FlowDataItem(type: .recentlyPaired, object: recentlyPairedDevices),
@@ -380,7 +380,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
 
     func didReceiveSignalStrength() {
         // when signal strength is received, content should be reloaded
-        if case .showReaders = ClearentWrapper.shared.flowType {
+        if case .showReaders = ClearentWrapper.shared.flowType?.processType {
             createFeedbackForSuccessfulPairing()
         }
     }
