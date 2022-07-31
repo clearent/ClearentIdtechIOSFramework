@@ -36,50 +36,38 @@ class ClearentPaymentFieldCell: UITableViewCell {
         type = row.type
         
         if row.type == .singleItem {
-            leftPaymentTextField.setup(with: row.elements[0])
-            leftPaymentTextField.action = { [weak self] fieldType, cardData in
-                guard let strongSelf = self else { return }
-                strongSelf.action?(fieldType, cardData)
-            }
+            setup(paymentField: leftPaymentTextField, with: row.elements[0])
             stackView.removeAllArrangedSubviews()
             stackView.addArrangedSubview(leftPaymentTextField)
-            
         } else {
-            leftPaymentTextField.setup(with: row.elements[0])
-            leftPaymentTextField.action = { [weak self] fieldType, cardData in
-                guard let strongSelf = self else { return }
-                strongSelf.action?(fieldType, cardData)
-            }
-            
-            rightPaymentTextField.setup(with: row.elements[1])
-            rightPaymentTextField.action = { [weak self] fieldType, cardData in
-                guard let strongSelf = self else { return }
-                strongSelf.action?(fieldType, cardData)
-            }
+            setup(paymentField: leftPaymentTextField, with: row.elements[0])
+            setup(paymentField: rightPaymentTextField, with: row.elements[1])
         }
     }
     
     func updatePaymentField(containing item: ClearentPaymentItemType?, with errorMessage: String?) {
-        if type == .singleItem {
-            guard let errorMessage = errorMessage else {
-                leftPaymentTextField.disableErrorState()
-                return
-            }
-            leftPaymentTextField.enableErrorState(errorMessage: errorMessage)
+        if type == .singleItem || item == .date {
+            update(paymentField: leftPaymentTextField, with: errorMessage)
         } else {
-            if item == .date {
-                guard let errorMessage = errorMessage else {
-                    leftPaymentTextField.disableErrorState()
-                    return
-                }
-                leftPaymentTextField.enableErrorState(errorMessage: errorMessage)
-            } else {
-                guard let errorMessage = errorMessage else {
-                    rightPaymentTextField.disableErrorState()
-                    return
-                }
-                rightPaymentTextField.enableErrorState(errorMessage: errorMessage)
-            }
+            update(paymentField: rightPaymentTextField, with: errorMessage)
         }
+    }
+    
+    // MARK: - Private
+    
+    private func setup(paymentField: ClearentPaymentTextField, with item: ClearentPaymentItem) {
+        paymentField.setup(with: item)
+        paymentField.action = { [weak self] fieldType, cardData in
+            guard let strongSelf = self else { return }
+            strongSelf.action?(fieldType, cardData)
+        }
+    }
+    
+    private func update(paymentField: ClearentPaymentTextField, with errorMessage: String?) {
+        guard let errorMessage = errorMessage else {
+            paymentField.disableErrorState()
+            return
+        }
+        paymentField.enableErrorState(errorMessage: errorMessage)
     }
 }
