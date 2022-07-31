@@ -74,4 +74,15 @@ class ClearentPaymentTextField: ClearentXibView {
         errorLabel.isHidden = true
         textField.layer.borderColor = ClearentUIBrandConfigurator.shared.colorPalette.borderColor.cgColor
     }
+    
+    // MARK: - Actions
+    
+    @IBAction func textFieldEditingChanged(_ sender: UITextField) {
+        guard var text = sender.text else { return }
+        
+        if text.count > 0 && text.count % 5 == 0 && text.last != " " {
+            text.insert(" ", at: text.index(text.startIndex, offsetBy: text.count - 1))
+        }
+        sender.text = text
+    }
 }

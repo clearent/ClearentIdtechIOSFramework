@@ -27,7 +27,8 @@ class ClearentFieldValidationHelper {
     }
     
     static func isCardNumberValid(_ cardNumber: String) -> Bool {
-        guard cardNumber.count >= 15 && cardNumber.count <= 19 else { return false }
+        let cardNumberWithoutWhiteSpaces = cardNumber.replacingOccurrences(of: " ", with: "")
+        guard cardNumberWithoutWhiteSpaces.count >= 15 && cardNumberWithoutWhiteSpaces.count <= 19 else { return false }
         
         return true
     }
