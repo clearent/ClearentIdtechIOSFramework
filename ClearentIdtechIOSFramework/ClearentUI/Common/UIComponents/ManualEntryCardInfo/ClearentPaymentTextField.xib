@@ -13,6 +13,7 @@
             <connections>
                 <outlet property="errorImageView" destination="e2S-Km-NZD" id="LRY-Vn-aKc"/>
                 <outlet property="errorLabel" destination="1of-qm-I1T" id="sP2-sv-M2O"/>
+                <outlet property="fieldButton" destination="XA9-f2-5Hl" id="UJ0-4U-tqf"/>
                 <outlet property="textField" destination="HaK-v5-FqN" id="hli-XG-ecD"/>
                 <outlet property="titleLabel" destination="dK4-Yi-irH" id="vbd-dS-z9o"/>
             </connections>
@@ -52,6 +53,14 @@
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XA9-f2-5Hl">
+                    <rect key="frame" x="851" y="38.5" width="13" height="15"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="13" id="MEt-29-LFi"/>
+                        <constraint firstAttribute="height" constant="15" id="Zx9-K5-JiA"/>
+                    </constraints>
+                    <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                </button>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -64,8 +73,10 @@
                 <constraint firstItem="dK4-Yi-irH" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="SXx-zu-HXD"/>
                 <constraint firstItem="e2S-Km-NZD" firstAttribute="centerY" secondItem="1of-qm-I1T" secondAttribute="centerY" id="V6K-fc-YH6"/>
                 <constraint firstItem="1of-qm-I1T" firstAttribute="top" secondItem="HaK-v5-FqN" secondAttribute="bottom" constant="6" id="Vhv-nI-Ltm"/>
+                <constraint firstItem="HaK-v5-FqN" firstAttribute="trailing" secondItem="XA9-f2-5Hl" secondAttribute="trailing" constant="27" id="eQq-G4-uQs"/>
                 <constraint firstItem="HaK-v5-FqN" firstAttribute="top" secondItem="dK4-Yi-irH" secondAttribute="bottom" constant="4" id="s2t-kX-snj"/>
                 <constraint firstItem="1of-qm-I1T" firstAttribute="trailing" secondItem="HaK-v5-FqN" secondAttribute="trailing" id="s9b-LC-Ejr"/>
+                <constraint firstItem="XA9-f2-5Hl" firstAttribute="centerY" secondItem="HaK-v5-FqN" secondAttribute="centerY" id="zcs-Ja-t8q"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <point key="canvasLocation" x="-12" y="74"/>

@@ -15,6 +15,7 @@ class ClearentPaymentTextField: ClearentXibView {
     @IBOutlet weak var textField: UITextField!
     @IBOutlet weak var errorImageView: UIImageView!
     @IBOutlet weak var errorLabel: UILabel!
+    @IBOutlet weak var fieldButton: UIButton!
     
     private var type: ClearentPaymentItemType?
     var action: ((ClearentPaymentItemType?, String?) -> Void)?
@@ -32,6 +33,8 @@ class ClearentPaymentTextField: ClearentXibView {
         
         textField.addTarget(self, action: #selector(textFieldDidCompleteEditing), for: .editingDidEnd)
         textField.addDoneToKeyboard(barButtonTitle: "xsdk_keyboard_done".localized)
+        
+        fieldButton.isHidden = true
     }
     
     // MARK: - Private
@@ -52,6 +55,11 @@ class ClearentPaymentTextField: ClearentXibView {
         textField.layer.masksToBounds = true
         errorLabel.text = item.errorMessage
         type = item.type
+        
+        if type == .date {
+            fieldButton.isHidden = false
+            fieldButton.setImage(UIImage(named: ClearentConstants.IconName.calendar, in: ClearentConstants.bundle, compatibleWith: nil), for: .normal)
+        }
     }
     
     func enableErrorState(errorMessage: String?) {
