@@ -74,10 +74,10 @@ ClearentUIManager.shared.updateWith(baseURL: baseURL, apiKey: apiKey, publicKey:
 
 ### Important!
 
-**THe safe keeping of the **API URL**, **API KEY** and the **PUBLIC KEY** is the integrators reposability. The SDK does not store this informations only in memory!**
+**The safe keeping of the **API URL**, **API KEY** and the **PUBLIC KEY** is the integrators reposability. The SDK does not store this informations only in memory!**
 
 
-**Enabling the signature functionality**
+**Disabling the signature functionality**
 The signature feature is enabled by default, if you want to disable it:
 ```
 ClearentUIManager.shared.signatureEnabled = false
@@ -95,10 +95,19 @@ self.navigationController?.present(pairingVC, animated: true, completion: {})
 
 **Starting a transaction**
 
+Every time you start a transaction you need to pass the amount as Double to the payment controller.
+The SDK UI provides the option to enter the card details manualy or by using the card reader, use the **useCardReaderPaymentMethod** to choose the desired method.
+
+```
+ ClearentUIManager.shared.useCardReaderPaymentMethod = true
+```
+
 ```
 let transactionVC = ClearentUIManager.shared.paymentViewController(amount: 20.0)
 self.navigationController?.present(transactionVC, animated: true, completion: {})
 ```
+
+
 
 **Showing readers list & reader details**
 
