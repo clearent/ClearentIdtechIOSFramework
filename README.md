@@ -33,7 +33,7 @@ Clearent SDK UI is a wrapper over ClearentFrameworkSDK that provides payments ca
  - CocoaLumberJack.xcframework
 
 
-## Package Management - In Progress
+## Package Management - (Work In Progress)
 
 You can use our [Clearent Cocoapod](https://github.com/clearent/CocoaPods) or [Carthage](https://github.com/Carthage/Carthage).
 
@@ -72,9 +72,9 @@ Use ClearentUIManager class to update the SDK with this information like this.
 ClearentUIManager.shared.updateWith(baseURL: baseURL, apiKey: apiKey, publicKey: publicKey)
 ```
 
-###Important!###
+### Important!
 
-**Safe keeping of the **API URL**, **API KEY** and the **PUBLIC KEY** is the integrators reposability. The SDK does not sore this informations only in memory!**
+**THe safe keeping of the **API URL**, **API KEY** and the **PUBLIC KEY** is the integrators reposability. The SDK does not store this informations only in memory!**
 
 
 **Enabling the signature functionality**
