@@ -14,6 +14,7 @@ protocol ClearentReaderDetailsProtocol {
     func disconnectFromReader()
     func handleAutojoin(markAsAutojoin: Bool)
     func handleBackAction()
+    func updateReader(reader:ReaderInfo)
 }
 
 class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
@@ -58,6 +59,13 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
         }
         ClearentWrapper.shared.removeReaderFromRecentlyUsed(reader: currentReader)
         handleBackAction()
+    }
+    
+    func updateReader(reader: ReaderInfo) {
+        if (reader.readerName == ClearentWrapperDefaults.pairedReaderInfo?.readerName) {
+            ClearentWrapperDefaults.pairedReaderInfo?.customReaderName = nil
+        }
+        ClearentWrapper.shared.updateReaderInRecentlyUsed(reader: reader)
     }
 
     func disconnectFromReader() {

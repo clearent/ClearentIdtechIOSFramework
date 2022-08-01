@@ -136,7 +136,9 @@ class ClearentReaderDetailsViewController: UIViewController {
             customReaderName.deleteButtonPressed = { [weak self] in
                 guard self != nil else { return }
                 self?.detailsPresenter.currentReader.customReaderName = nil
+                
                 if let reader = self?.detailsPresenter.currentReader {
+                    self?.detailsPresenter.updateReader(reader: reader)
                     self?.didChangedCustomReaderName(reader:reader, customName: nil)
                 }
             }
