@@ -514,8 +514,8 @@ public final class ClearentWrapper : NSObject {
     
     
     /**
-     * Method that will void a transcation
-     * @param transactionID, ID of transcation to be voided
+     * Method that will void a transaction
+     * @param transactionID, ID of transaction to be voided
      */
     public func voidTransaction(transactionID: String) {
         httpClient.voidTransaction(transactionID: transactionID) { data, error in
