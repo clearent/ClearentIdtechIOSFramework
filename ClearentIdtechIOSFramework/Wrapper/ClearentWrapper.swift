@@ -126,13 +126,12 @@ public enum TransactionError {
  */
 public protocol ClearentWrapperProtocol : AnyObject {
     /**
-     * Method called right after a pairing process is started.
-     *  Called right after a bluetooth search is started
+     * Method called right after a pairing process and a bluetooth search is started
      */
     func didStartPairing()
     
     /**
-     * Method called right after a succesfull connection to a card reader was completed
+     * Method called right after a successful connection to a card reader was completed
      */
     func didFinishPairing()
     
@@ -142,13 +141,13 @@ public protocol ClearentWrapperProtocol : AnyObject {
     func didReceiveSignalStrength()
     
     /**
-     * Method called after a pairing process is started card readers were found nearby
+     * Method called after a pairing process is started and card readers were found nearby
      * @param readers, the list of readers available for pairing
      */
     func didFindReaders(readers:[ReaderInfo])
     
     /**
-     * Method called when the curently paired device disconnects
+     * Method called when the currently paired device disconnects
      */
     func deviceDidDisconnect()
     
@@ -179,26 +178,26 @@ public protocol ClearentWrapperProtocol : AnyObject {
     func didBeginContinuousSearching()
     
     /**
-     * Method called  when a general error is encountered in apayment/transaction process
+     * Method called  when a general error is encountered in a payment/transaction process
      */
     func didEncounteredGeneralError()
     
     /**
      * Method called  when a transaction is finished
      * @param response, transaction response as received from the API
-     * @param error, if not null will contain the error received from the API
+     * @param error, if not null it will contain the error received from the API
      */
     func didFinishTransaction(response: TransactionResponse, error: ResponseError?)
     
     /**
-     * Method called  when the process of uploadiing signature image has completed
+     * Method called  when the process of uploading the signature image has completed
      * @param response, upload response as received from the API
-     * @param error, if not null will contain the error received from the API
+     * @param error, if not null it will contain the error received from the API
      */
     func didFinishedSignatureUploadWith(response: SignatureResponse, error: ResponseError?)
     
     /**
-     * Method called  each time the reader needs an action from the user,
+     * Method called each time the reader needs an action from the user
      * @UserAction, please check the enum for more cases
      * @action, User Action needed to be performed by the user
      */
@@ -407,7 +406,7 @@ public final class ClearentWrapper : NSObject {
     }
     
     /**
-     * Method that will search for curenlty used readers and call the delegate methods with the results
+     * Method that will search for currently used readers and call the delegate methods with the results
      */
     public func searchRecentlyUsedReaders() {
         if let recentlyUsedReaders = ClearentWrapperDefaults.recentlyPairedReaders, recentlyUsedReaders.count > 0 {
@@ -540,7 +539,7 @@ public final class ClearentWrapper : NSObject {
     
     
     /**
-     * Method that will void a transcation
+     * Method that will fetch the tip settings for current mechant
      * @param transactionID, ID of transcation to be voided
      */
     public func fetchTipSetting(completion: @escaping () -> Void) {
