@@ -74,7 +74,7 @@ ClearentUIManager.shared.updateWith(baseURL: baseURL, apiKey: apiKey, publicKey:
 
 ### Important!
 
-**The safe keeping of the **API URL**, **API KEY** and the **PUBLIC KEY** is the integrators reposability. The SDK does not store this informations only in memory!**
+**The safe keeping of the **API URL**, **API KEY** and the **PUBLIC KEY** is the integrators reposability. The SDK stores this information only in memory!**
 
 
 **Tips** this feature can be enabled from your merchant account and when it's enabled the first step in the transaction flow will be a prompt where the user/client is prompted with UI that will offer some options to choose a tip. The options the user/client has are three fixed options in percents and a custom tip input field. The three options are customizable by settting the **tipAmounts** that is an array of Int values property of the **ClearentUIManager** as below.
@@ -129,7 +129,7 @@ The reader details will display the status of the current reader and a list of r
 If you want to display the reader's status in your app you cand use the  **readerInfoReceived** clojure of the **ClearentUIManager**.
 
 
-Here is the defintion of the clojure. You will receive a **ReaderInfo** object that contains reader related informations.
+Here is the defintion of the clojure. You will receive a **ReaderInfo** object that contains reader related information.
 ```
 public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
 
@@ -146,7 +146,7 @@ ClearentUIManager.shared.readerInfoReceived = { [weak self] reader in
 
 ## Customizing the SDK experience
 
-The SDK provides the option to customize the fonts, colors and texts used in the SDK. This can be achieved by using the **ClearentUIBrandConfigurator class that is a singleton and overriding the following properties. Check our [Swift Example](https://).
+The SDK provides the option to customize the fonts, colors and texts used in the SDK. This can be achieved by using the **ClearentUIBrandConfigurator** class that is a singleton and overriding the following properties. Check our [Swift Example](https://).
 
 **Colors**
 ```
@@ -157,6 +157,7 @@ ClearentUIBrandConfigurator.shared.colorPalette = ClientColorPalette()
 
 
 **Fonts**
+
 You will need to implement a class that will implement **ClearentUIFonts** protocol and load your custom fonts.
 
 
@@ -171,11 +172,11 @@ In order to customize texts used in the SDK you will need to provide a dictionar
 
 ```
 ClearentUIBrandConfigurator.shared.overriddenLocalizedStrings = [
-            "xsdk_tips_custom_amount": "🍎Custom amount",
-            "xsdk_tips_user_transaction_tip_title": "🍎Would you like to add a tip?",
-            "xsdk_tips_user_action_transaction_with_tip": "🍎Charge %@",
-            "xsdk_tips_user_action_transaction_without_tip":"🍎Maybe next time"
-        ]
+    "xsdk_tips_custom_amount": "🍎Custom amount",
+    "xsdk_tips_user_transaction_tip_title": "🍎Would you like to add a tip?",
+    "xsdk_tips_user_action_transaction_with_tip": "🍎Charge %@",
+    "xsdk_tips_user_action_transaction_without_tip":"🍎Maybe next time"
+]
 ```
 
 
