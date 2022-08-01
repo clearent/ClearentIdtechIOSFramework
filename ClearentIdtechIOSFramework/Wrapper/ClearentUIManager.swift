@@ -47,7 +47,7 @@ public final class ClearentUIManager : NSObject {
     // MARK: Public
     
     /**
-     * Method updates the SDK with needed paramas to work properly
+     * Method updates the SDK with needed parameters to work properly
      * @param baseURL, the endpoint of the backend
      * @param apiKey, the API Key in order to use the API
      * @param publicKey, needed for the card reader initialisation
