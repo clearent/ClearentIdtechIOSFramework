@@ -163,7 +163,7 @@ public protocol ClearentWrapperProtocol : AnyObject {
     func startedReaderConnection(with reader:ReaderInfo)
     
     /**
-     * Method called  in response to method 'searchRecentlyUsedReaders' and indicated that recently readers were found
+     * Method called in response to method 'searchRecentlyUsedReaders' and indicated that recently readers were found
      * @param readers. list of recently paired readers
      */
     func didFindRecentlyUsedReaders(readers:[ReaderInfo])
