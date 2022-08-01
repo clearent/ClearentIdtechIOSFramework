@@ -184,7 +184,7 @@ public protocol ClearentWrapperProtocol : AnyObject {
     func didEncounteredGeneralError()
     
     /**
-     * Method called  when a transaction is finished
+     * Method called when a transaction is finished
      * @param response, transaction response as received from the API
      * @param error, if not null will contain the error received from the API
      */
