@@ -569,7 +569,7 @@ public final class ClearentWrapper : NSObject {
     
     /**
      * Method that checks if a reader is already paired and connected
-     * return A bool indicating  if there is a reader connected
+     * return A bool indicating if there is a reader connected
      */
     public func isReaderConnected() -> Bool {
         return (ClearentWrapperDefaults.pairedReaderInfo != nil && ClearentWrapperDefaults.pairedReaderInfo?.isConnected == true)
