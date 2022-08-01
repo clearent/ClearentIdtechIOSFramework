@@ -377,9 +377,9 @@ public final class ClearentWrapper : NSObject {
     
     /**
      * Method that performs a manual card transaction
-     * @param cardNo,  card number as String
-     * @param expirationDate,  card expiration date as String
-     * @param csc,  card security code as String
+     * @param cardNo, card number as String
+     * @param expirationDate, card expiration date as String
+     * @param csc, card security code as String
      */
     private func manualEntryTransaction(cardNo: String, expirationDate: String, csc: String) {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
