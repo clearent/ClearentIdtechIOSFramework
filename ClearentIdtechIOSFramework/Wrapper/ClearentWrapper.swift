@@ -122,7 +122,7 @@ public enum TransactionError {
 }
 
 /**
- * This protocol is used to comunicate  informations and results regarding the interaction with the SDK
+ * This protocol is used to comunicate information and results regarding the interaction with the SDK
  */
 public protocol ClearentWrapperProtocol : AnyObject {
     /**
