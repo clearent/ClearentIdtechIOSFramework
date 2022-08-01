@@ -1,6 +1,5 @@
 ![Screenshot](docs/clearent_logo.jpg)
-/page
-# This branch is work in progress...
+# This is work in progress...
 
 # IDTech iOS Framework :iphone: :credit_card:
 
