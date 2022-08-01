@@ -74,6 +74,7 @@ public class ClearentConstants {
         // Reader details
         static let navigationArrow = "left-arrow"
         static let editButton = "smallEditButton"
+        static let deleteButton = "smallDeleteButton"
     }
 
     public enum Size {
