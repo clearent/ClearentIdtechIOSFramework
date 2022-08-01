@@ -454,8 +454,8 @@ public final class ClearentWrapper : NSObject {
     }
 
     /**
-     * Method that will send a jpeg with client signature tot he payment gateway for storage
-     * @param image,  UIImage to be uploaded
+     * Method that will send a jpeg with client signature tot the payment gateway for storage
+     * @param image, UIImage to be uploaded
      */
     public func sendSignatureWithImage(image: UIImage) {
         if let id = lastTransactionID {
