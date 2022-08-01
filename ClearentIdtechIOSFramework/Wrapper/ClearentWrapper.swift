@@ -340,9 +340,9 @@ public final class ClearentWrapper : NSObject {
     
     /**
      * This method will update the current SDK keys
-     * @param baseURL,  the backend endpoint
-     * @param publicKey,  publicKey used by the IDTech reader framework
-     * @param apiKey,  API Key used for http calls
+     * @param baseURL, the backend endpoint
+     * @param publicKey, publicKey used by the IDTech reader framework
+     * @param apiKey, API Key used for http calls
      */
     public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String) {
         self.baseURL = baseURL
