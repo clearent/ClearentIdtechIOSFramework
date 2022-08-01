@@ -33,7 +33,7 @@ Clearent SDK UI is a wrapper over ClearentFrameworkSDK that provides payments ca
  - CocoaLumberJack.xcframework
 
 
-## Package Management - (Work In Progress)
+## Package Management - (To be updated with correct information)
 
 You can use our [Clearent Cocoapod](https://github.com/clearent/CocoaPods) or [Carthage](https://github.com/Carthage/Carthage).
 
@@ -77,7 +77,9 @@ ClearentUIManager.shared.updateWith(baseURL: baseURL, apiKey: apiKey, publicKey:
 **The safe keeping of the **API URL**, **API KEY** and the **PUBLIC KEY** is the integrators reposability. The SDK stores this information only in memory!**
 
 
-**Tips** this feature can be enabled from your merchant account and when it's enabled the first step in the transaction flow will be a prompt where the user/client is prompted with UI that will offer some options to choose a tip. The options the user/client has are three fixed options in percents and a custom tip input field. The three options are customizable by settting the **tipAmounts** that is an array of Int values property of the **ClearentUIManager** as below.
+**Tips** 
+
+This feature can be enabled from your merchant account and when it's enabled the first step in the transaction flow will be a prompt where the user/client is prompted with UI that will offer some options to choose a tip. The options the user/client has are three fixed options in percents and a custom tip input field. The three options are customizable by settting the **tipAmounts** that is an array of Int values property of the **ClearentUIManager** as below.
 
 ```
 ClearentUIManager.tipAmounts = [5, 15, 20]
@@ -146,7 +148,7 @@ ClearentUIManager.shared.readerInfoReceived = { [weak self] reader in
 
 ## Customizing the SDK experience
 
-The SDK provides the option to customize the fonts, colors and texts used in the SDK. This can be achieved by using the **ClearentUIBrandConfigurator** class that is a singleton and overriding the following properties. Check our [Swift Example](https://).
+The SDK provides the option to customize the fonts, colors and texts used in the SDK. This can be achieved by overriding properties of the **ClearentUIBrandConfigurator** class that is a singleton. Check our [Swift Example](https://) for full customization example.
 
 **Colors**
 ```
