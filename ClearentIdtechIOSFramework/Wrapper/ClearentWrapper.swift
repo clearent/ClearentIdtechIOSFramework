@@ -205,9 +205,9 @@ public protocol ClearentWrapperProtocol : AnyObject {
     func userActionNeeded(action: UserAction)
     
     /**
-     * Method called  each time the reader wants to infor the user
+     * Method called  each time the reader wants to inform the user
      * @UserInfo, please check the enum for more cases
-     * @info , UserInfo needed to be performed by the user
+     * @info, UserInfo needed to be performed by the user
      */
     func didReceiveInfo(info: UserInfo)
 }
