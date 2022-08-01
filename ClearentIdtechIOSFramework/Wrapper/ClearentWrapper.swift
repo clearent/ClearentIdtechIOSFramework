@@ -313,8 +313,8 @@ public final class ClearentWrapper : NSObject {
         
     
     /**
-     * Method that will try to initiated a connection to a specific reader
-     * @param reader,  the card reader to connect to
+     * Method that will try to initiate a connection to a specific reader
+     * @param reader, the card reader to connect to
      */
     public func connectTo(reader: ReaderInfo) {
         if reader.uuid != nil {
