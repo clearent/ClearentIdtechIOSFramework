@@ -419,8 +419,8 @@ public final class ClearentWrapper : NSObject {
     
     /**
      * Method that will send a transaction to the payment gateway for processing
-     * @param jwt,  Token received from the card reader
-     * @param SaleEntity,  information about the transcation
+     * @param jwt, Token received from the card reader
+     * @param SaleEntity, information about the transaction
      */
     public func saleTransaction(jwt: String, saleEntity: SaleEntity) {
         httpClient.saleTransaction(jwt: jwt, saleEntity: saleEntity) { data, error in
