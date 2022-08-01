@@ -16,7 +16,7 @@
 "xsdk_pairing_select_reader" = "Please select the reader you wish to pair with";
 "xsdk_pairing_connecting_reader" = "Connecting...";
 "xsdk_pairing_connection_sucessful" = "Connection successful";
-"xsdk_pairing_prepare_pairing_reader_range" = "Make sure your reader is turned on and in range of the mobile device pairing it";
+"xsdk_pairing_prepare_pairing_reader_range" = "Make sure the reader is turned on, in range of the device being paired/connected, and is not currently connected to a different device.";
 "xsdk_pairing_prepare_pairing_reader_button" = "Press and hold the button on the side of the reader to turn it on.";
 "xsdk_pairing_no_readers_found_title" = "No reader has been found. Please check that your reader is turned on and in range of the device.";
 "xsdk_pairing_no_readers_found_description" = "No readers available";
@@ -51,6 +51,7 @@
 "xsdk_signature_title" = "Customer signature";
 "xsdk_signature_subtitle" = "I agree to pay total amount pursuant to the cardholder agreement.";
 "xsdk_signature_action" = "Done";
+"xsdk_signature_error_action_skip" = "Skip";
 "xsdk_signature_upload_sucessful_title" = "Upload completed successfully";
 "xsdk_signature_upload_failure_title" = "The signature was not properly processed";
 

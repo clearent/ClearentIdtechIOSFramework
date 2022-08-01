@@ -143,7 +143,7 @@ class ClearentReaderDetailsViewController: UIViewController {
                 }
             }
             
-            customReaderName.secondIconName = ClearentConstants.IconName.editButton
+            customReaderName.secondIconName = ClearentConstants.IconName.deleteButton
             customReaderName.secondaryButton.isHidden = false
         } else {
             customReaderName.secondaryButton.isHidden = true

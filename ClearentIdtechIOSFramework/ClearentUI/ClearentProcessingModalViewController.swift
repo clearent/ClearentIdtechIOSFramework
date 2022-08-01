@@ -82,9 +82,9 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     public func updateContent(with feedback: FlowFeedback) {
         stackView.removeAllArrangedSubviews()
         stackView.isUserInteractionEnabled = true
-        
+        ClearentWrapper.shared.flowType = (feedback.flow, feedback.type)
         feedback.items.forEach {
-            if let component = uiComponent(for: $0, processType: feedback.flow, feedbackType: feedback.type) {
+            if let component = uiComponent(for: $0) {
                 stackView.addArrangedSubview(component)
             }
         }
@@ -108,12 +108,12 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         }
     }
 
-    private func uiComponent(for item: FlowDataItem, processType: ProcessType, feedbackType: FlowFeedbackType) -> UIView? {
+    private func uiComponent(for item: FlowDataItem) -> UIView? {
         let object = item.object
         
         switch item.type {
         case .readerInfo:
-            return readerInfoView(readerInfo: object as? ReaderInfo, flowFeedbackType: feedbackType)
+            return readerInfoView(readerInfo: object as? ReaderInfo)
         case .graphicType:
             guard let graphic = object as? FlowGraphicType else { return nil }
             
@@ -129,7 +129,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         case .userAction:
             guard let userAction = object as? FlowButtonType else { return nil }
 
-            return actionButton(userAction: userAction, processType: processType, flowFeedbackType: feedbackType)
+            return actionButton(userAction: userAction)
         case .devicesFound:
             guard let readersInfo = object as? [ReaderInfo] else { return nil }
             
@@ -168,7 +168,6 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     private func signatureView() -> ClearentSignatureView {
         // all orientations should be allowed when signature view is displayed
         ClearentApplicationOrientation.customOrientationMaskClosure?(UIInterfaceOrientationMask.all)
-        ClearentWrapper.shared.flowType = .signature
         let signatureView = ClearentSignatureView()
         signatureView.doneAction = { [weak self] signatureImage in
             self?.presenter?.handleSignature(with: signatureImage)
@@ -176,7 +175,8 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         return signatureView
     }
 
-    private func readerInfoView(readerInfo: ReaderInfo?, flowFeedbackType: FlowFeedbackType) -> ClearentReaderStatusHeaderView? {
+    private func readerInfoView(readerInfo: ReaderInfo?) -> ClearentReaderStatusHeaderView? {
+        guard let flowFeedbackType = ClearentWrapper.shared.flowType?.flowFeedbackType else { return nil }
         if readerInfo == nil && flowFeedbackType != .showReaders { return nil }
         var name = readerInfo?.readerName ?? "xsdk_readers_list_no_reader_connected".localized
         if let customName = readerInfo?.customReaderName {
@@ -214,10 +214,10 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         return ClearentListView(items: items)
     }
 
-    private func actionButton(userAction: FlowButtonType, processType: ProcessType, flowFeedbackType: FlowFeedbackType) -> ClearentPrimaryButton {
+    private func actionButton(userAction: FlowButtonType) -> ClearentPrimaryButton {
         let button = ClearentPrimaryButton()
         button.title = userAction.title
-        if [.cancel, .pairNewReader, .renameReaderLater, .transactionWithoutTip, .manuallyEnterCardInfo].contains(userAction) {
+        if [.cancel, .pairNewReader, .renameReaderLater, .transactionWithoutTip, .manuallyEnterCardInfo, .skip].contains(userAction) {
             button.buttonStyle = .bordered
         }
         if userAction == .transactionWithTip {
@@ -226,7 +226,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         button.type = userAction
         button.action = { [weak self] in
             guard let strongSelf = self, let presenter = strongSelf.presenter else { return }
-            presenter.handleUserAction(userAction: userAction, processType: processType, flowFeedbackType: flowFeedbackType)
+            presenter.handleUserAction(userAction: userAction)
         }
         return button
     }
