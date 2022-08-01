@@ -394,7 +394,7 @@ public final class ClearentWrapper : NSObject {
     
     
     /**
-     * Method that will start  a card reader transaction
+     * Method that will start a card reader transaction
      */
     private func cardReaderTransaction() {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
