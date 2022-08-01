@@ -122,7 +122,7 @@ public enum TransactionError {
 }
 
 /**
- * This protocol is used to comunicate  informations and results regarding the interaction with the SDK
+ * This protocol is used to comunicate information and results regarding the interaction with the SDK
  */
 public protocol ClearentWrapperProtocol : AnyObject {
     /**
@@ -162,18 +162,18 @@ public protocol ClearentWrapperProtocol : AnyObject {
     func startedReaderConnection(with reader:ReaderInfo)
     
     /**
-     * Method called  in response to method 'searchRecentlyUsedReaders' and indicated that recently readers were found
+     * Method called in response to method 'searchRecentlyUsedReaders' and indicated that recently readers were found
      * @param readers. list of recently paired readers
      */
     func didFindRecentlyUsedReaders(readers:[ReaderInfo])
     
     /**
-     * Method called  in response to method 'searchRecentlyUsedReaders' and indicated that no recently readers were found
+     * Method called in response to method 'searchRecentlyUsedReaders' and indicated that no recently readers were found
      */
     func didNotFindRecentlyUsedReaders()
     
     /**
-     * Method called  to indicate that continously search readers nearby process has started
+     * Method called to indicate that continuous search of nearby readers has started
      */
     func didBeginContinuousSearching()
     
@@ -183,7 +183,7 @@ public protocol ClearentWrapperProtocol : AnyObject {
     func didEncounteredGeneralError()
     
     /**
-     * Method called  when a transaction is finished
+     * Method called when a transaction is finished
      * @param response, transaction response as received from the API
      * @param error, if not null it will contain the error received from the API
      */
@@ -204,9 +204,9 @@ public protocol ClearentWrapperProtocol : AnyObject {
     func userActionNeeded(action: UserAction)
     
     /**
-     * Method called  each time the reader wants to infor the user
+     * Method called  each time the reader wants to inform the user
      * @UserInfo, please check the enum for more cases
-     * @info , UserInfo needed to be performed by the user
+     * @info, UserInfo needed to be performed by the user
      */
     func didReceiveInfo(info: UserInfo)
 }
@@ -282,7 +282,7 @@ public final class ClearentWrapper : NSObject {
     
     /**
      * Method that will start the pairing process by creating a new connection and starting a bluetooth search.
-     * @param reconnectIfPossible boo, if  false  a connection that will search for bluetooth devices will be started, if true a connection with the last paired reader will be tried
+     * @param reconnectIfPossible, if  false  a connection that will search for bluetooth devices will be started, if true a connection with the last paired reader will be tried
      */
     public func startPairing(reconnectIfPossible: Bool) {
         if let action = connectivityActionNeeded {
@@ -312,8 +312,8 @@ public final class ClearentWrapper : NSObject {
         
     
     /**
-     * Method that will try to initiated a connection to a specific reader
-     * @param reader,  the card reader to connect to
+     * Method that will try to initiate a connection to a specific reader
+     * @param reader, the card reader to connect to
      */
     public func connectTo(reader: ReaderInfo) {
         if reader.uuid != nil {
@@ -339,9 +339,9 @@ public final class ClearentWrapper : NSObject {
     
     /**
      * This method will update the current SDK keys
-     * @param baseURL,  the backend endpoint
-     * @param publicKey,  publicKey used by the IDTech reader framework
-     * @param apiKey,  API Key used for http calls
+     * @param baseURL, the backend endpoint
+     * @param publicKey, publicKey used by the IDTech reader framework
+     * @param apiKey, API Key used for http calls
      */
     public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String) {
         self.baseURL = baseURL
@@ -376,9 +376,9 @@ public final class ClearentWrapper : NSObject {
     
     /**
      * Method that performs a manual card transaction
-     * @param cardNo,  card number as String
-     * @param expirationDate,  card expiration date as String
-     * @param csc,  card security code as String
+     * @param cardNo, card number as String
+     * @param expirationDate, card expiration date as String
+     * @param csc, card security code as String
      */
     private func manualEntryTransaction(cardNo: String, expirationDate: String, csc: String) {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
@@ -393,7 +393,7 @@ public final class ClearentWrapper : NSObject {
     
     
     /**
-     * Method that will start  a card reader transaction
+     * Method that will start a card reader transaction
      */
     private func cardReaderTransaction() {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
@@ -418,8 +418,8 @@ public final class ClearentWrapper : NSObject {
     
     /**
      * Method that will send a transaction to the payment gateway for processing
-     * @param jwt,  Token received from the card reader
-     * @param SaleEntity,  information about the transcation
+     * @param jwt, Token received from the card reader
+     * @param SaleEntity, information about the transaction
      */
     public func saleTransaction(jwt: String, saleEntity: SaleEntity) {
         httpClient.saleTransaction(jwt: jwt, saleEntity: saleEntity) { data, error in
@@ -453,8 +453,8 @@ public final class ClearentWrapper : NSObject {
     }
 
     /**
-     * Method that will send a jpeg with client signature tot he payment gateway for storage
-     * @param image,  UIImage to be uploaded
+     * Method that will send a jpeg with client signature tot the payment gateway for storage
+     * @param image, UIImage to be uploaded
      */
     public func sendSignatureWithImage(image: UIImage) {
         if let id = lastTransactionID {
@@ -513,8 +513,8 @@ public final class ClearentWrapper : NSObject {
     
     
     /**
-     * Method that will void a transcation
-     * @param transactionID, ID of transcation to be voided
+     * Method that will void a transaction
+     * @param transactionID, ID of transaction to be voided
      */
     public func voidTransaction(transactionID: String) {
         httpClient.voidTransaction(transactionID: transactionID) { data, error in
@@ -568,7 +568,7 @@ public final class ClearentWrapper : NSObject {
     
     /**
      * Method that checks if a reader is already paired and connected
-     * return A bool indicating  if there is a reader connected
+     * return A bool indicating if there is a reader connected
      */
     public func isReaderConnected() -> Bool {
         return (ClearentWrapperDefaults.pairedReaderInfo != nil && ClearentWrapperDefaults.pairedReaderInfo?.isConnected == true)

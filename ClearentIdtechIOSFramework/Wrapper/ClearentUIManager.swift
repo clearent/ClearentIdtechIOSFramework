@@ -9,7 +9,7 @@
 import Foundation
 
 /**
- * This class is to be used as a singleton and it's main purpose is to start diferent processes from the SDK by providing UIControllers that will handle the entire process
+ * This class is to be used as a singleton and its main purpose is to start different processes from the SDK by providing UIControllers that will handle the entire process
  *
  */
 public final class ClearentUIManager : NSObject {
@@ -47,7 +47,7 @@ public final class ClearentUIManager : NSObject {
     // MARK: Public
     
     /**
-     * Method updates the SDK with needed paramas to work properly
+     * Method updates the SDK with needed parameters to work properly
      * @param baseURL, the endpoint of the backend
      * @param apiKey, the API Key in order to use the API
      * @param publicKey, needed for the card reader initialisation
