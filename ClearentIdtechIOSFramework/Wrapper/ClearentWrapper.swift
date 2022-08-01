@@ -283,7 +283,7 @@ public final class ClearentWrapper : NSObject {
     
     /**
      * Method that will start the pairing process by creating a new connection and starting a bluetooth search.
-     * @param reconnectIfPossible boo, if  false  a connection that will search for bluetooth devices will be started, if true a connection with the last paired reader will be tried
+     * @param reconnectIfPossible, if  false  a connection that will search for bluetooth devices will be started, if true a connection with the last paired reader will be tried
      */
     public func startPairing(reconnectIfPossible: Bool) {
         if let action = connectivityActionNeeded {
