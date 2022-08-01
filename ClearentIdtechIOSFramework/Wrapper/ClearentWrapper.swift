@@ -174,7 +174,7 @@ public protocol ClearentWrapperProtocol : AnyObject {
     func didNotFindRecentlyUsedReaders()
     
     /**
-     * Method called  to indicate that continously search readers nearby process has started
+     * Method called to indicate that continuous search of nearby readers has started
      */
     func didBeginContinuousSearching()
     
