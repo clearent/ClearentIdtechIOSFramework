@@ -169,7 +169,7 @@ public protocol ClearentWrapperProtocol : AnyObject {
     func didFindRecentlyUsedReaders(readers:[ReaderInfo])
     
     /**
-     * Method called  in response to method 'searchRecentlyUsedReaders' and indicated that no recently readers were found
+     * Method called in response to method 'searchRecentlyUsedReaders' and indicated that no recently readers were found
      */
     func didNotFindRecentlyUsedReaders()
     
