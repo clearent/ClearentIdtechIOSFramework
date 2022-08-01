@@ -19,7 +19,7 @@ public final class ClearentUIManager : NSObject {
     public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
     public var signatureEnabled: Bool = true
     public var useCardReaderPaymentMethod: Bool = true
-    public var tipAmounts: [Double] = ClearentConstants.Tips.defaultTipPercentages
+    public var tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages
     
     // MARK: Init
     

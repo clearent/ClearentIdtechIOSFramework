@@ -86,14 +86,8 @@ public protocol ClearentUIColors {
     // The border's color of the checkbox view when is not selected
     var checkboxUnselectedBorderColor: UIColor { get }
     
-    // The percentage label's color
-    var percentageLabelColor: UIColor { get }
-    
-    // The tip value label's color
+    // The tip label's color
     var tipLabelColor: UIColor { get }
-    
-    // The tip adjustment button's tint color
-    var tipAdjustmentTintColor: UIColor { get }
     
     // MARK: ClearentTextField
     

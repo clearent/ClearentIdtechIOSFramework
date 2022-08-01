@@ -6,6 +6,9 @@
   Copyright © 2022 Clearent, L.L.C. All rights reserved.
 */
 
+// MARK: Common
+ "xsdk_keyboard_done" = "Done";
+
 // MARK: Pairing Flow
 // Texts that are displayed during the pairing flow
 
@@ -13,7 +16,7 @@
 "xsdk_pairing_select_reader" = "Please select the reader you wish to pair with";
 "xsdk_pairing_connecting_reader" = "Connecting...";
 "xsdk_pairing_connection_sucessful" = "Connection successful";
-"xsdk_pairing_prepare_pairing_reader_range" = "Make sure your reader is turned on and in range of the mobile device pairing it";
+"xsdk_pairing_prepare_pairing_reader_range" = "Make sure the reader is turned on, in range of the device being paired/connected, and is not currently connected to a different device.";
 "xsdk_pairing_prepare_pairing_reader_button" = "Press and hold the button on the side of the reader to turn it on.";
 "xsdk_pairing_no_readers_found_title" = "No reader has been found. Please check that your reader is turned on and in range of the device.";
 "xsdk_pairing_no_readers_found_description" = "No readers available";
@@ -36,7 +39,8 @@
 // MARK: Payment Flow - Tips
 // Texts that are displayed on the tips screen (part of the payment flow)
 
-"xsdk_tips_custom_amount" = "Custom amount";
+"xsdk_tips_percentage_and_value" = "%d%% (%@)";
+"xsdk_tips_custom_amount" = "Custom amount ($)";
 "xsdk_tips_user_transaction_tip_title" = "Would you like to add a tip?";
 "xsdk_tips_user_action_transaction_with_tip" = "Charge %@";
 "xsdk_tips_user_action_transaction_without_tip" = "Maybe next time";
@@ -47,6 +51,7 @@
 "xsdk_signature_title" = "Customer signature";
 "xsdk_signature_subtitle" = "I agree to pay total amount pursuant to the cardholder agreement.";
 "xsdk_signature_action" = "Done";
+"xsdk_signature_error_action_skip" = "Skip";
 "xsdk_signature_upload_sucessful_title" = "Upload completed successfully";
 "xsdk_signature_upload_failure_title" = "The signature was not properly processed";
 
