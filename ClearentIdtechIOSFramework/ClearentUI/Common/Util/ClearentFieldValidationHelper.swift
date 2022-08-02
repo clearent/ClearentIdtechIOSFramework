@@ -10,11 +10,11 @@ import Foundation
 
 class ClearentFieldValidationHelper {
     
-    static func validateCardData(_ data: String?, field: ClearentPaymentItemType?) -> Bool {
-        guard let field = field else { return false }
+    static func validateCardData(_ data: String?, field: ClearentPaymentItem?) -> Bool {
+        guard let type = field?.type else { return false }
         guard let data = data else { return false }
         
-        switch field {
+        switch type {
         case .creditCardNo:
             return isCardNumberValid(data)
         case .date:

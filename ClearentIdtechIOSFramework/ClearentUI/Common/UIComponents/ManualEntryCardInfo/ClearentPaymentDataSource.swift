@@ -9,7 +9,7 @@
 
 
 protocol ClearentPaymentDataSourceProtocol: AnyObject {
-    func didFinishCompletePaymentField(type: ClearentPaymentItemType?, value: String?)
+    func didFinishCompletePaymentField(item: ClearentPaymentItem?, value: String?)
 }
 
 class ClearentPaymentDataSource: NSObject {
@@ -40,15 +40,15 @@ extension ClearentPaymentDataSource: UITableViewDataSource {
         if let cell = tableView.dequeueReusableCell(withIdentifier: ClearentPaymentFieldCell.identifier, for: indexPath) as? ClearentPaymentFieldCell {
             cell.setup(with: row)
             
-            cell.action = { [weak self] fieldType, cardData in
+            cell.action = { [weak self] item, cardData in
                 guard let strongSelf = self else { return }
-                let isCardDataValid = ClearentFieldValidationHelper.validateCardData(cardData, field: fieldType)
+                let isCardDataValid = ClearentFieldValidationHelper.validateCardData(cardData, field: item)
                 
                 if isCardDataValid {
-                    strongSelf.delegate?.didFinishCompletePaymentField(type: fieldType, value: cardData)
-                    cell.updatePaymentField(containing: fieldType, with: nil)
+                    strongSelf.delegate?.didFinishCompletePaymentField(item: item, value: cardData)
+                    cell.updatePaymentField(containing: item, with: nil)
                 } else {
-                    cell.updatePaymentField(containing: fieldType, with: fieldType?.errorMessage)
+                    cell.updatePaymentField(containing: item, with: item?.errorMessage)
                 }
             }
             return cell

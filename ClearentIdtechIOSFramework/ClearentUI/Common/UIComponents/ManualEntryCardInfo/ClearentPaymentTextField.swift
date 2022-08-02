@@ -16,9 +16,9 @@ class ClearentPaymentTextField: ClearentXibView {
     @IBOutlet weak var errorImageView: UIImageView!
     @IBOutlet weak var errorLabel: UILabel!
     @IBOutlet weak var fieldButton: UIButton!
-    
-    private var type: ClearentPaymentItemType?
-    var action: ((ClearentPaymentItemType?, String?) -> Void)?
+
+    var action: ((ClearentPaymentItem, String?) -> Void)?
+    var item: ClearentPaymentItem?
     
     override func configure() {
         titleLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.paymentFieldTitleColor
@@ -33,33 +33,34 @@ class ClearentPaymentTextField: ClearentXibView {
         
         textField.addTarget(self, action: #selector(textFieldDidCompleteEditing), for: .editingDidEnd)
         textField.addDoneToKeyboard(barButtonTitle: "xsdk_keyboard_done".localized)
+        textField.layer.borderWidth = 1.0
+        textField.layer.borderColor = ClearentUIBrandConfigurator.shared.colorPalette.borderColor.cgColor
+        textField.layer.cornerRadius = 4
+        textField.layer.masksToBounds = true
         
         fieldButton.isHidden = true
+        fieldButton.setImage(UIImage(named: ClearentConstants.IconName.calendar, in: ClearentConstants.bundle, compatibleWith: nil), for: .normal)
     }
     
     // MARK: - Private
     
     @objc private func textFieldDidCompleteEditing() {
-        action?(type, textField.text)
+        guard let item = item else {
+            return
+        }
+
+        action?(item, textField.text)
     }
     
     // MARK: - Public
     
     func setup(with item: ClearentPaymentItem) {
+        self.item = item
         titleLabel.text = item.title
         textField.placeholder = item.placeholder
         textField.keyboardType = (item.type == .creditCardNo || item.type == .date || item.type == .securityCode) ? .numberPad : .default
-        textField.layer.borderWidth = 1.0
-        textField.layer.borderColor = ClearentUIBrandConfigurator.shared.colorPalette.borderColor.cgColor
-        textField.layer.cornerRadius = 4
-        textField.layer.masksToBounds = true
         errorLabel.text = item.errorMessage
-        type = item.type
-        
-        if type == .date {
-            fieldButton.isHidden = false
-            fieldButton.setImage(UIImage(named: ClearentConstants.IconName.calendar, in: ClearentConstants.bundle, compatibleWith: nil), for: .normal)
-        }
+        fieldButton.isHidden = item.type != .date
     }
     
     func enableErrorState(errorMessage: String?) {

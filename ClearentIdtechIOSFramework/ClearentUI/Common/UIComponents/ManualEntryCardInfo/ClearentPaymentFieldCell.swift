@@ -11,11 +11,10 @@ import UIKit
 class ClearentPaymentFieldCell: UITableViewCell {
     
     @IBOutlet weak var leftPaymentTextField: ClearentPaymentTextField!
-    @IBOutlet weak var rightPaymentTextField: ClearentPaymentTextField!
+    @IBOutlet var rightPaymentTextField: ClearentPaymentTextField!
     @IBOutlet weak var stackView: UIStackView!
     
-    private var type: ClearentPaymentRowType?
-    var action: ((ClearentPaymentItemType?, String?) -> Void)?
+    var action: ((ClearentPaymentItem?, String?) -> Void)?
     
     enum Layout {
         static let cellHeight: CGFloat = 92
@@ -33,23 +32,23 @@ class ClearentPaymentFieldCell: UITableViewCell {
     }
     
     func setup(with row: ClearentPaymentRow) {
-        type = row.type
-        
-        if row.type == .singleItem {
-            setup(paymentField: leftPaymentTextField, with: row.elements[0])
-            stackView.removeAllArrangedSubviews()
-            stackView.addArrangedSubview(leftPaymentTextField)
-        } else {
-            setup(paymentField: leftPaymentTextField, with: row.elements[0])
-            setup(paymentField: rightPaymentTextField, with: row.elements[1])
+        guard let firstElement = row.elements[safe: 0] else { return }
+        setup(paymentField: leftPaymentTextField, with: firstElement)
+
+        rightPaymentTextField.isHidden = row.elements.count == 1
+       
+        if let secondElement = row.elements[safe: 1] {
+            rightPaymentTextField.isHidden = false
+            setup(paymentField: rightPaymentTextField, with: secondElement)
         }
     }
     
-    func updatePaymentField(containing item: ClearentPaymentItemType?, with errorMessage: String?) {
-        if type == .singleItem || item == .date {
-            update(paymentField: leftPaymentTextField, with: errorMessage)
-        } else {
+    func updatePaymentField(containing item: ClearentPaymentItem?, with errorMessage: String?) {
+        switch item?.type {
+        case .securityCode:
             update(paymentField: rightPaymentTextField, with: errorMessage)
+        default:
+            update(paymentField: leftPaymentTextField, with: errorMessage)
         }
     }
     
@@ -57,9 +56,9 @@ class ClearentPaymentFieldCell: UITableViewCell {
     
     private func setup(paymentField: ClearentPaymentTextField, with item: ClearentPaymentItem) {
         paymentField.setup(with: item)
-        paymentField.action = { [weak self] fieldType, cardData in
+        paymentField.action = { [weak self] item, cardData in
             guard let strongSelf = self else { return }
-            strongSelf.action?(fieldType, cardData)
+            strongSelf.action?(item, cardData)
         }
     }
     

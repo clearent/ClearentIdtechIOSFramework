@@ -6,37 +6,9 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
-enum ClearentPaymentRowType {
-    case singleItem, twoItems
-}
 
 enum ClearentPaymentItemType {
     case creditCardNo, date, securityCode, cardholderName, billingZipCode, invoiceNo, orderNo, companyName, customerId, shippingZipCode
-    
-    var errorMessage: String {
-        switch self {
-        case .creditCardNo:
-            return "xsdk_payment_manual_entry_card_no_error".localized
-        case .date:
-            return "xsdk_payment_manual_entry_exp_date_error".localized
-        case .securityCode:
-            return "xsdk_payment_manual_entry_csc_error".localized
-        case .cardholderName:
-            return "xsdk_payment_manual_entry_cardholder_name_error".localized
-        case .billingZipCode:
-            return "xsdk_payment_manual_entry_billing_zip_error".localized
-        case .invoiceNo:
-            return "xsdk_payment_manual_entry_invoice_no_error".localized
-        case .orderNo:
-            return "xsdk_payment_manual_entry_order_no_error".localized
-        case .companyName:
-            return "xsdk_payment_manual_entry_company_name_error".localized
-        case .customerId:
-            return "xsdk_payment_manual_entry_customer_id_error".localized
-        case .shippingZipCode:
-            return "xsdk_payment_manual_entry_shipping_zip_error".localized
-        }
-    }
 }
 
 protocol ClearentPaymentSection {
@@ -47,7 +19,6 @@ protocol ClearentPaymentSection {
 }
 
 struct ClearentPaymentRow {
-    var type: ClearentPaymentRowType = .singleItem
     var elements: [ClearentPaymentItem]
 }
 
@@ -76,14 +47,14 @@ struct ClearentPaymentBaseSection: ClearentPaymentSection {
 
     var rows: [ClearentPaymentRow] {[
         ClearentPaymentRow(elements: [CreditCardNoItem()]),
-        ClearentPaymentRow(type: .twoItems, elements: [DateItem(), SecurityCodeItem()]),
+        ClearentPaymentRow(elements: [DateItem(), SecurityCodeItem()]),
         ClearentPaymentRow(elements: [CardholderNameItem()]),
         ClearentPaymentRow(elements: [BillingZipCodeItem()])
     ]}
 }
 
 struct ClearentPaymentAdditionalSection: ClearentPaymentSection {
-    var title: String? { "Additional Info" }
+    var title: String? { "xsdk_payment_manual_entry_additional_section_title".localized }
     
     var isCollapsable: Bool { true }
     
@@ -97,7 +68,6 @@ struct ClearentPaymentAdditionalSection: ClearentPaymentSection {
         ClearentPaymentRow(elements: [ShippingZipCodeItem()])
     ]}
 }
-
 
 struct CreditCardNoItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .creditCardNo }

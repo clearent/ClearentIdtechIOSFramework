@@ -9,42 +9,39 @@
 import UIKit
 
 protocol ClearentPaymentSectionHeaderViewProtocol: AnyObject {
-    func didTapOnSectionHeaderView(_ sender: ClearentPaymentSectionHeaderView)
+    func didTapOnSectionHeaderView(header: ClearentPaymentSectionHeaderView, sectionIndex: Int)
 }
 
 class ClearentPaymentSectionHeaderView: ClearentXibView {
     
+
     @IBOutlet weak var sectionTitleLabel: UILabel!
     @IBOutlet weak var dropdownImageView: UIImageView!
     
     weak var delegate: ClearentPaymentSectionHeaderViewProtocol?
     
+    convenience init(sectionItem: ClearentPaymentSection) {
+        self.init()
+        self.sectionTitleLabel.text = sectionItem.title
+        self.rotateDropDownIcon(isSectionCollapsed: sectionItem.isCollapsed)
+    }
+    
     override func configure() {
         sectionTitleLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.paymentSectionTitleColor
         sectionTitleLabel.font = ClearentUIBrandConfigurator.shared.fonts.sectionTitleLabelFont
-        sectionTitleLabel.text = "xsdk_payment_manual_entry_additional_section_title".localized
+        
         dropdownImageView.image = UIImage(named: ClearentConstants.IconName.expandMedium, in: ClearentConstants.bundle, compatibleWith: nil)
     }
     
     // MARK: - Public
     
-    public func updateDropDownIcon(isSectionCollapsed: Bool) {
-        let expandIcon = UIImage(named: ClearentConstants.IconName.expandMedium, in: ClearentConstants.bundle, compatibleWith: nil)
-        
-        dropdownImageView.image = isSectionCollapsed ? expandIcon : rotateDropDownIcon()
-    }
-    
-    // MARK: - Private
-    
-    private func rotateDropDownIcon() -> UIImage? {
-        dropdownImageView.transform = CGAffineTransform(rotationAngle: .pi)
-        
-        return dropdownImageView.image
+    func rotateDropDownIcon(isSectionCollapsed: Bool) {
+        dropdownImageView.transform = CGAffineTransform(rotationAngle: isSectionCollapsed ? 0.0 : .pi)
     }
     
     // MARK: - Actions
     
     @IBAction func didTapOnSectionHeaderView(_ sender: Any) {
-        delegate?.didTapOnSectionHeaderView(self)
+        delegate?.didTapOnSectionHeaderView(header: self, sectionIndex: 1)
     }
 }

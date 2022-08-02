@@ -31,7 +31,7 @@ protocol ProcessingModalProtocol {
     func updateTemporaryReaderName(name: String?)
     func fetchTipSetting(completion: @escaping () -> Void)
     func handleSignature(with image: UIImage)
-    func updateCardData(for type: ClearentPaymentItemType?, with value: String?)
+    func updateCardData(for item: ClearentPaymentItem?, with value: String?)
     func sendManualEntryTransaction()
 }
 
@@ -187,8 +187,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         ClearentWrapper.shared.sendSignatureWithImage(image: image)
     }
     
-    func updateCardData(for type: ClearentPaymentItemType?, with value: String?) {
-        guard let type = type, let value = value else { return }
+    func updateCardData(for item: ClearentPaymentItem?, with value: String?) {
+        guard let type = item?.type, let value = value else { return }
         
         switch type {
         case .creditCardNo:

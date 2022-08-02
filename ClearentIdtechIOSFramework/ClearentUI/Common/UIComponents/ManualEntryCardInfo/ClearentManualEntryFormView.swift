@@ -55,10 +55,11 @@ class ClearentManualEntryFormView: ClearentXibView {
 
 extension ClearentManualEntryFormView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let sectionHeaderView = ClearentPaymentSectionHeaderView()
-        sectionHeaderView.delegate = self
+        guard let sectionItem = dataSource?.sections[safe: section], sectionItem.isCollapsable else { return nil }
         
-        return dataSource?.sections[section].isCollapsable == true ? sectionHeaderView : nil
+        let sectionHeaderView = ClearentPaymentSectionHeaderView(sectionItem: sectionItem)
+        sectionHeaderView.delegate = self
+        return sectionHeaderView
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -71,13 +72,13 @@ extension ClearentManualEntryFormView: UITableViewDelegate {
 }
 
 extension ClearentManualEntryFormView: ClearentPaymentSectionHeaderViewProtocol {
-    func didTapOnSectionHeaderView(_ sender: ClearentPaymentSectionHeaderView) {
-        guard let dataSource = dataSource else { return }
-        
-        let isSectionCollapsed = dataSource.sections[1].isCollapsed
-        dataSource.sections[1].isCollapsed = !isSectionCollapsed
-        
-//        tableView.reloadData()
-        sender.updateDropDownIcon(isSectionCollapsed: dataSource.sections[1].isCollapsed)
+    func didTapOnSectionHeaderView(header: ClearentPaymentSectionHeaderView, sectionIndex: Int) {
+        guard let dataSource = dataSource, let section = dataSource.sections[safe: sectionIndex] else { return }
+
+        dataSource.sections[sectionIndex].isCollapsed = !section.isCollapsed
+        tableView.beginUpdates()
+        tableView.reloadSections([sectionIndex], with: .fade)
+        tableView.endUpdates()
+        tableViewHeightLC.constant = tableView.contentSize.height
     }
 }
