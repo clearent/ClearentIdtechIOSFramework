@@ -366,3 +366,61 @@ After the user selects one of the readers from the list you need to tell the SDK
 
 The SDK will try to connect to the selected device and it will call the ```didFinishedPairing()``` method when finished.
 Now you have a paired reader and you can start using it for performing transactions.
+
+
+**Performing a transaction**  
+
+Using a card reader
+
+```
+   // Define a SaleEntity, you can also add client information on the SaleEntity
+   let saleEntity = SaleEntity(amount: 22.0, tipAmount: 5)
+   ClearentWrapper.shared.startTransaction(with: saleEntity)
+```
+
+Using manual card entry
+
+```
+   // Define a SaleEntity, you can also add client information on the SaleEntity
+   let saleEntity = SaleEntity(amount: 22.0, tipAmount: 5)
+   
+   // Create a manual card entry instance
+   let ManualEntryCardInfo(card: "4111111111111111", expirationDateMMYY: "0728", csc: "999")
+   ClearentWrapper.shared.startTransaction(with: saleEntity, manualEntryCardInfo: manualEntryCardInfo)
+```
+
+After starting a transaction feedback messages will be triggered on the delegate.
+
+
+User action needed indicates that the user/client needs to perform an action in order for the transaction to continue e.g. Insert the card.
+```
+    func userActionNeeded(action: UserAction) {
+        // here you should check the user action type and display the informtion to the users
+    }
+```
+
+
+User info contains informations related to the transaction status e.g. Processing
+
+```
+    func didReceiveInfo(info: UserInfo) {
+        // you should display the information to the users
+    }
+```
+
+
+After the transaction is proccesed a delegate method will inform you about the status.
+
+```
+    func didFinishTransaction(error: ResponseError?) {
+        if error == nil {
+           // no error
+        } else {
+           // you should inform about the error
+        }
+    }
+```
+
+    
+     
+**Getting the card reader status**  
