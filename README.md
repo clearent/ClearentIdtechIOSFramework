@@ -234,3 +234,92 @@ class ViewController: UIViewController {
 }
 
 ```
+
+
+
+# Integrate the SDK without the UI
+
+
+## Overview
+
+**SDK Wrapper** is a wrapper over **ClearentFrameworkSDK** that provides payments capabilities using the IDTech iOS framework to read credit card data using VP3300. Its goal is to ease integration and fix some of the most common issues.
+
+**ClearentWrapper** is a singleton class and the main interaction point with the SDK.  
+
+You will use this class to update the SDK with the needed information to work properly : API URL, API KEY and the PUBLIC KEY. 
+
+**Important Note:**
+
+The safe keeping of the API URL, API KEY and the PUBLIC KEY is the integrators reposability. The SDK stores this information only in memory!
+
+**ClearentWrapperProtocol** is the protocol you will need to implement in order to receive updates , error and notifications from the SDK. Each method from the protocol is documented in code.
+
+**ClearentWrapperDefaults** is a user default storage that holds information like currently paired reader and a list of previously paired readers. You should not save anything here the SDK handles this for you.
+
+
+
+## Pairing and connecting to a reader.
+
+In order to perform transaction using the VP3300 card reader you will need to pair (connect) the device using Bluetooth, the Bluetooth connectivity is handled by the SDK .
+
+In this step the SDK performs a Bluetooth search in order to discover the card readers around. In order for the device to be discoverable it needs to be turned on and in range of the mobile device. The result of the Bluetooth search is a list of devices of type ReaderInfo and you will get the list from the delegate method **didFindReaders(readers: [ReaderInfo])**. 
+
+Once you have the list of available readers the next step is to select the reader you want to connect to using the **connectTo(reader: ReaderInfo)** method that will try to connect the reader. Once the SDK manages to connect to the reader the delegate method didFinishPairing will get called indicating the connection was successful. 
+
+
+## Performing a transaction
+
+You can perform a transaction in two modes : using a card reader or by using the card details directly.
+
+**1.Performing a transaction using the card reader.**
+
+A transaction is performed in two steps :
+
+1. Reading the card , the IDTech framework reads the card info and provides a jwt token .
+2. Performing an API call that will send the transaction information together with the JWT token to a payment gateway.
+
+You can start a transaction using startTransaction(saleEntity: SaleEntity) method. You need to provide a SaleEntity that will contain the amount, you can also specify a tip and client related information. 
+
+When you call the startTransaction method the SDK will start guide you to the process by calling two important methods from the ClearentWrapperProtocol  : 
+
+1. **userActionNeeded(action: UserAction)** , indicates that the user need to do an action like swiping the card, removing the card etc.
+2. **didReceiveInfo(info: UserInfo)**, this method presents different information related to the transaction.
+
+After the transaction is completed the delegate method didFinishTransaction(response: TransactionResponse, error: ResponseError?) will get called. You can check the error parameter to know if the transaction was successful or not.
+
+**2. Performing a transaction using manual card entry.**
+
+You can start a transaction using startTransaction(with saleEntity: SaleEntity, manualEntryCardInfo: ManualEntryCardInfo?) method where the manualEntryCardInfo parameter will contain the card informations.
+
+
+**Cancelling , voiding and refunding a transaction**
+
+If you started a card reader transaction  and want to cancel it you can use cancelTransaction() method and after this call the card reader will be ready to take another transaction. You can use this method only before the card is read by the card reader. Once the card has been read the transaction will be performed and the transaction will be also registered by the payment gateway. In this case you can use the **voidTransaction(transactionID:String)** to void the transaction you want (this will work only if the transaction was not yet processed by the gateway). Another option is to perform a refund using the **refundTransaction(jwt: String, amount: String)**.
+
+
+**Getting information related to the card reader status**
+
+You can obtain a ReaderInfo  object from **ClearentWrapperDefaults.pairedReader**.  
+Sometimes you will need to request and display new information related to the reader like battery status or signal strength. You can achieve this by using the **startDeviceInfoUpdate()** method, calling this method will start fetching new information from the connected reader and when this information will be available it will call **readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?** closure that you will need to implement in your code.
+
+
+**Getting information related to previously paired readers**
+
+Each time you pair a new reader the SDK will save its information in a User Defaults cache. You can get the list using recentlyPairedReaders  property of the **ClearentWrapperDefaults**. The result will be an array of **ReaderInfo** objects.
+
+You can check if a reader is connected by using the **isReaderConnected()** method or by checking the **isConnected** property of the **ClearentWrapperDefaults.pairedReader**.
+
+
+
+**Uploading a signature**
+
+If you want to upload a signature image after a transaction you can use the 
+**sendSignatureWithImage(image: UIImage)** , after this method is called the **didFinishedSignatureUploadWith(response: SignatureResponse, error: ResponseError?)** delegate method will be called.  Note that the sendSignature method will use the latest transaction ID as the ID for the signature in the API call.
+
+In case of error you can use the **resendSignature()** method to retry the signature upload.
+  
+
+
+
+
+
