@@ -19,6 +19,10 @@ class ClearentColorsDefaultPalette: ClearentUIColors {
     
     var filledButtonTextColor: UIColor { UIColor(hexString: "FFFFFF") }
     
+    var filledDisabledBackgroundColor: UIColor { UIColor(hexString: "eeeeee") }
+    
+    var filledDisabledButtonTextColor: UIColor { UIColor(hexString: "FFFFFF") }
+    
     var borderColor: UIColor { UIColor(hexString: "E1E2E8") }
     
     var borderedBackgroundColor: UIColor { UIColor(hexString: "FFFFFF") }

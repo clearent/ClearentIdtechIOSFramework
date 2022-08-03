@@ -12,8 +12,11 @@ class ClearentInfoWithIcon: ClearentMarginableView {
     @IBOutlet var titleLabel: UILabel!
     @IBOutlet var descriptionLabel: UILabel!
     @IBOutlet weak var button: UIButton!
+    @IBOutlet weak var secondaryButton: UIButton!
+    
     @IBOutlet var separatorView: UIView!
     public var editButtonPressed: (() -> Void)?
+    public var deleteButtonPressed: (() -> Void)?
     
     override var margins: [BottomMargin] {
         [RelativeBottomMargin(constant: 24, relatedViewType: ClearentInfoWithIcon.self)]
@@ -66,6 +69,14 @@ class ClearentInfoWithIcon: ClearentMarginableView {
             button.setTitle(nil, for: .normal)
         }
     }
+    
+    var secondIconName: String? {
+        didSet {
+            guard let iconName = secondIconName else { return }
+            secondaryButton.setBackgroundImage(UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil), for: .normal)
+            secondaryButton.setTitle(nil, for: .normal)
+        }
+    }
 
     override func configure() {
         titleFont = ClearentUIBrandConfigurator.shared.fonts.detailScreenItemTitleFont
@@ -78,4 +89,10 @@ class ClearentInfoWithIcon: ClearentMarginableView {
     @IBAction func buttonAction(_ sender: Any) {
         editButtonPressed?()
     }
+    
+    
+    @IBAction func secondaryButtonAction(_ sender: Any) {
+        deleteButtonPressed?()
+    }
+    
 }
