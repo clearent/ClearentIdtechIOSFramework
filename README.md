@@ -185,3 +185,52 @@ ClearentUIBrandConfigurator.shared.overriddenLocalizedStrings = [
 ## Code Example
 
 Swift example of the ClearenSDKUI  integration [Swift Example](https://).
+
+```
+import UIKit
+import ClearentSDKUI
+
+class ViewController: UIViewController {
+    
+    @IBOutlet weak var showReadersDetailsButton: UIButton!
+    @IBOutlet weak var startTransactionButton: UIButton!
+    @IBOutlet weak var startPairingButton: UIButton!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        initSDK()
+    }
+    
+    func initSDK() {
+        
+        // Update the SDk with needed info to work properly
+        ClearentUIManager.shared.updateWith(baseURL: Api.baseURL, apiKey: Api.apiKey, publicKey: Api.publicKey)
+        
+        // Load the default fonts from our SDK
+        UIFont.loadFonts()
+        
+        // The signature step from transaction is enabled by default
+        ClearentUIManager.shared.signatureEnabled = false
+    }
+    
+    
+    // MARK: Actions
+    
+    @IBAction func showRederDetailsAction(_ sender: Any) {
+        
+        let readerDetailsVC = ClearentUIManager.shared.readersViewController()
+        self.navigationController?.present(readerDetailsVC, animated: true, completion: { })
+    }
+    
+    @IBAction func startTransactionAction(_ sender: Any) {
+        let transactionVC = ClearentUIManager.shared.paymentViewController(amount: 20.0)
+        self.navigationController?.present(transactionVC, animated: true, completion: { })
+    }
+    
+    @IBAction func startPairingProcess(_ sender: Any) {
+        let pairingVC = ClearentUIManager.shared.pairingViewController()
+        self.navigationController?.present(pairingVC, animated: true, completion: { })
+    }
+}
+
+```
