@@ -274,7 +274,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                      FlowDataItem(type: .userAction, object: FlowButtonType.done)]
         let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.renameReaderDone, items: items)
         modalProcessingView?.updateContent(with: feedback)
-        modalProcessingView?.updateUserActionButtonState(enabled: (self.editableReader?.customReaderName != nil) ? true : false)
+        modalProcessingView?.updateUserActionButtonState(enabled: self.editableReader?.customReaderName != nil)
     }
     
     private func showSignatureScreen() {

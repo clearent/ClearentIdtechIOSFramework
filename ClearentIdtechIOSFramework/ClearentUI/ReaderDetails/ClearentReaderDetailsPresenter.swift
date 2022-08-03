@@ -62,7 +62,7 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
     }
     
     func updateReader(reader: ReaderInfo) {
-        if (reader.readerName == ClearentWrapperDefaults.pairedReaderInfo?.readerName) {
+        if (reader == ClearentWrapperDefaults.pairedReaderInfo) {
             ClearentWrapperDefaults.pairedReaderInfo?.customReaderName = nil
         }
         ClearentWrapper.shared.updateReaderInRecentlyUsed(reader: reader)

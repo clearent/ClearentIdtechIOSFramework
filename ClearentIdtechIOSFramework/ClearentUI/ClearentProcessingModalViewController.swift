@@ -68,7 +68,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     func updateUserActionButtonState(enabled: Bool) {
         let button = stackView.findButtonInStack(with: FlowButtonType.done)
         button?.isUserInteractionEnabled = enabled
-        if (enabled) {
+        if enabled {
             button?.setFilledButton()
         } else {
             button?.setDisabledButton()
