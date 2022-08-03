@@ -347,7 +347,7 @@ After the search for readers is completed the SDK will trigger a delegate method
     func didFindReaders(readers: [ReaderInfo])  {
         // you can display the list of readers on the UI
     }
-'''
+```
 
 If no available readers around are found the SDK will trigger this method :
 
@@ -355,14 +355,14 @@ If no available readers around are found the SDK will trigger this method :
     func didNotFindReaders() {
         // you can inform the user to check if the card reader is turned on in range and it's not paired with another device
     }
-'''
+```
 
 After the user selects one of the readers from the list you need to tell the SDK to connect to it.
 
 ```
    // reader is a ReaderInfo item
    ClearentWrapper.shared.connectTo(reader: reader)
-'''
+```
 
-The SDK will try to connect to the selected device and it will call the ```didFinishedPairing()''' method when finished.
+The SDK will try to connect to the selected device and it will call the ```didFinishedPairing()``` method when finished.
 Now you have a paired reader and you can start using it for performing transactions.
