@@ -51,8 +51,8 @@ struct ClearentPaymentBaseSection: ClearentPaymentSection {
     var rows: [ClearentPaymentRow] = [
         ClearentPaymentRow(elements: [CreditCardNoItem()]),
         ClearentPaymentRow(elements: [DateItem(), SecurityCodeItem()]),
-        ClearentPaymentRow(elements: [CardholderNameItem()])//,
-//        ClearentPaymentRow(elements: [BillingZipCodeItem()])
+        ClearentPaymentRow(elements: [CardholderNameItem()]),
+        ClearentPaymentRow(elements: [BillingZipCodeItem()])
     ]
 }
 

@@ -75,7 +75,6 @@ class ClearentManualEntryFormView: ClearentXibView {
         tableView.contentInset.bottom = 0
     }
     
-    
     override func layoutSubviews() {
         super.layoutSubviews()
         

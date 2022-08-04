@@ -43,19 +43,9 @@ extension ClearentPaymentDataSource: UITableViewDataSource {
 
     func tableView(_: UITableView, numberOfRowsInSection section: Int) -> Int {
         let section = sections[section]
-        
         return section.isCollapsed ? 0 : section.rows.count
     }
-//    private func loadViewFromNib() {
-//        guard let nibName = nibName else { return }
-//        let bundle = Bundle(for: type(of: self))
-//        let nib = UINib(nibName: nibName, bundle: bundle)
-//        guard let view = nib.instantiate(withOwner: self, options: nil).first as? UIView else { return }
-//        view.frame = bounds
-//        view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-//        addSubview(view)
-//    }
-
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let section = sections[indexPath.section]
         let row = section.rows[indexPath.row]

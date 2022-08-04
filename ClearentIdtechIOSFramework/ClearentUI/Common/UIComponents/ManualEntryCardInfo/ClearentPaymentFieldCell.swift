@@ -10,9 +10,9 @@ import UIKit
 
 class ClearentPaymentFieldCell: UITableViewCell {
     
-    @IBOutlet var leftPaymentTextField: ClearentPaymentTextField!
-    @IBOutlet var rightPaymentTextField: ClearentPaymentTextField!
-    @IBOutlet var stackView: UIStackView!
+    @IBOutlet weak var leftPaymentTextField: ClearentPaymentTextField!
+    @IBOutlet weak var rightPaymentTextField: ClearentPaymentTextField!
+    @IBOutlet weak var stackView: UIStackView!
     
     var action: ((ClearentPaymentItem?, String?) -> Void)?
     
@@ -85,7 +85,6 @@ class ClearentPaymentFieldCell: UITableViewCell {
         paymentField.enableErrorState(errorMessage: errorMessage)
     }
 }
-
 
 fileprivate extension UITableView {
     func nextResponder(identifier: ItemIdentifier) {
