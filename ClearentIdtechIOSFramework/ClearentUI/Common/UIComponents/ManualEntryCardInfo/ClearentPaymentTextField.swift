@@ -17,6 +17,8 @@ class ClearentPaymentTextField: ClearentXibView {
     @IBOutlet weak var errorLabel: UILabel!
     @IBOutlet weak var fieldButton: UIButton!
 
+    var previousButtonWasTapped: ((_ identifier: ItemIdentifier) -> Void)?
+    var nextButtonWasTapped: ((_ identifier: ItemIdentifier) -> Void)?
     var action: ((ClearentPaymentItem, String?) -> Void)?
     var item: ClearentPaymentItem?
     
@@ -30,13 +32,8 @@ class ClearentPaymentTextField: ClearentXibView {
         errorLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.errorMessageTextColor
         errorLabel.font = ClearentUIBrandConfigurator.shared.fonts.errorMessageLabelFont
         errorLabel.isHidden = true
-        
-        textField.addTarget(self, action: #selector(textFieldDidCompleteEditing), for: .editingDidEnd)
-        textField.addDoneToKeyboard(barButtonTitle: "xsdk_keyboard_done".localized)
-        textField.layer.borderWidth = 1.0
-        textField.layer.borderColor = ClearentUIBrandConfigurator.shared.colorPalette.borderColor.cgColor
-        textField.layer.cornerRadius = 4
-        textField.layer.masksToBounds = true
+
+        configureTextField()
         
         fieldButton.isHidden = true
         fieldButton.setImage(UIImage(named: ClearentConstants.IconName.calendar, in: ClearentConstants.bundle, compatibleWith: nil), for: .normal)
@@ -52,15 +49,27 @@ class ClearentPaymentTextField: ClearentXibView {
         action?(item, textField.text)
     }
     
+    private func configureTextField() {
+        textField.addTarget(self, action: #selector(textFieldDidCompleteEditing), for: .editingDidEnd)
+        textField.layer.borderWidth = 1.0
+        textField.layer.borderColor = ClearentUIBrandConfigurator.shared.colorPalette.borderColor.cgColor
+        textField.layer.cornerRadius = 4
+        textField.layer.masksToBounds = true
+    }
+    
     // MARK: - Public
     
-    func setup(with item: ClearentPaymentItem) {
+    func setup(with item: ClearentPaymentItem, isFirstCell: Bool, isLastCell: Bool) {
         self.item = item
+        if let tag = item.identifier?.tag {
+            textField.tag = tag
+        }
         titleLabel.text = item.title
         textField.placeholder = item.placeholder
         textField.keyboardType = (item.type == .creditCardNo || item.type == .date || item.type == .securityCode) ? .numberPad : .default
         errorLabel.text = item.errorMessage
         fieldButton.isHidden = item.type != .date
+        textField.addNavigationAndDoneToKeyboard(previousAction: (target: self, action: #selector(previousButtonTapped), isEnabled: !isFirstCell), nextAction: (target: self, action: #selector(nextButtonTapped), isEnabled: !isLastCell))
     }
     
     func enableErrorState(errorMessage: String?) {
@@ -85,5 +94,17 @@ class ClearentPaymentTextField: ClearentXibView {
             text.insert(" ", at: text.index(text.startIndex, offsetBy: text.count - 1))
         }
         sender.text = text
+    }
+}
+
+extension ClearentPaymentTextField {
+    @objc private func previousButtonTapped() {
+        previousButtonWasTapped?(item?.identifier)
+        _ = resignFirstResponder()
+    }
+    
+    @objc private func nextButtonTapped() {
+        nextButtonWasTapped?(item?.identifier)
+        _ = resignFirstResponder()
     }
 }

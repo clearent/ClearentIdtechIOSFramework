@@ -34,9 +34,7 @@ class ClearentManualEntryFormView: ClearentXibView {
         self.dataSource = dataSource
         tableView.dataSource = dataSource
         tableView.delegate = self
-        
-        ClearentPaymentFieldCell.register(tableView: tableView)
-        
+
         footerView.cancelButtonAction = {
             self.delegate?.didTapOnCancelButton()
         }
@@ -44,7 +42,39 @@ class ClearentManualEntryFormView: ClearentXibView {
         footerView.confirmButtonAction = {
             self.delegate?.didTapOnConfirmButton()
         }
+        setupNotifications()
     }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    private func setupNotifications() {
+        // Register keyboard notifications
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+
+    @objc private func keyboardWillShow(notification: Notification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue,
+           let currentTextField = UIResponder.currentFirst() as? UITextField {
+
+            // check if the top of the keyboard is above the bottom of the currently focused textbox
+            let keyboardY = keyboardSize.origin.y
+            let convertedTextFieldFrame = convert(currentTextField.frame, from: currentTextField.superview)
+            let textFieldY = convertedTextFieldFrame.origin.y + convertedTextFieldFrame.size.height
+
+            // if textField is below keyboard, bump the table view up
+            if textFieldY > keyboardY {
+                self.tableView.contentInset.bottom = keyboardSize.height
+            }
+        }
+    }
+
+    @objc private func keyboardWillHide(notification: Notification) {
+        tableView.contentInset.bottom = 0
+    }
+    
     
     override func layoutSubviews() {
         super.layoutSubviews()
@@ -76,9 +106,7 @@ extension ClearentManualEntryFormView: ClearentPaymentSectionHeaderViewProtocol 
         guard let dataSource = dataSource, let section = dataSource.sections[safe: sectionIndex] else { return }
 
         dataSource.sections[sectionIndex].isCollapsed = !section.isCollapsed
-        tableView.beginUpdates()
-        tableView.reloadSections([sectionIndex], with: .fade)
-        tableView.endUpdates()
+        tableView.reloadData()
         tableViewHeightLC.constant = tableView.contentSize.height
     }
 }

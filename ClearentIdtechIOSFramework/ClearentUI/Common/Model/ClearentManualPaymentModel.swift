@@ -15,12 +15,14 @@ protocol ClearentPaymentSection {
     var title: String? { get }
     var isCollapsable: Bool { get }
     var isCollapsed: Bool { get set }
-    var rows: [ClearentPaymentRow] { get }
+    var rows: [ClearentPaymentRow] { get set }
 }
 
 struct ClearentPaymentRow {
     var elements: [ClearentPaymentItem]
 }
+
+typealias ItemIdentifier = (tag: Int, indexPath: IndexPath)?
 
 protocol ClearentPaymentItem {
     var type: ClearentPaymentItemType { get }
@@ -29,6 +31,7 @@ protocol ClearentPaymentItem {
     var iconName: String? { get }
     var errorMessage: String? { get }
     var isOptional: Bool { get }
+    var identifier: ItemIdentifier { get set }
 }
 
 extension ClearentPaymentItem {
@@ -45,12 +48,12 @@ struct ClearentPaymentBaseSection: ClearentPaymentSection {
     
     var isCollapsed: Bool = false
 
-    var rows: [ClearentPaymentRow] {[
+    var rows: [ClearentPaymentRow] = [
         ClearentPaymentRow(elements: [CreditCardNoItem()]),
         ClearentPaymentRow(elements: [DateItem(), SecurityCodeItem()]),
-        ClearentPaymentRow(elements: [CardholderNameItem()]),
-        ClearentPaymentRow(elements: [BillingZipCodeItem()])
-    ]}
+        ClearentPaymentRow(elements: [CardholderNameItem()])//,
+//        ClearentPaymentRow(elements: [BillingZipCodeItem()])
+    ]
 }
 
 struct ClearentPaymentAdditionalSection: ClearentPaymentSection {
@@ -60,16 +63,17 @@ struct ClearentPaymentAdditionalSection: ClearentPaymentSection {
     
     var isCollapsed: Bool = true
 
-    var rows: [ClearentPaymentRow] {[
+    var rows: [ClearentPaymentRow] = [
         ClearentPaymentRow(elements: [InvoiceNoItem()]),
         ClearentPaymentRow(elements: [OrderNoItem()]),
         ClearentPaymentRow(elements: [CompanyNameItem()]),
         ClearentPaymentRow(elements: [CustomerIDItem()]),
         ClearentPaymentRow(elements: [ShippingZipCodeItem()])
-    ]}
+    ]
 }
 
 struct CreditCardNoItem: ClearentPaymentItem {
+   
     var type: ClearentPaymentItemType { .creditCardNo }
     
     var title: String { "xsdk_payment_manual_entry_card_no".localized }
@@ -77,6 +81,8 @@ struct CreditCardNoItem: ClearentPaymentItem {
     var errorMessage: String? { "xsdk_payment_manual_entry_card_no_error".localized }
     
     var isOptional: Bool { false }
+    
+    var identifier: ItemIdentifier = nil
 }
 
 struct DateItem: ClearentPaymentItem {
@@ -91,6 +97,8 @@ struct DateItem: ClearentPaymentItem {
     var errorMessage: String? { "xsdk_payment_manual_entry_exp_date_error".localized }
     
     var isOptional: Bool { false }
+    
+    var identifier: ItemIdentifier = nil
 }
 
 struct SecurityCodeItem: ClearentPaymentItem {
@@ -103,6 +111,8 @@ struct SecurityCodeItem: ClearentPaymentItem {
     var errorMessage: String? { "xsdk_payment_manual_entry_csc_error".localized }
     
     var isOptional: Bool { false }
+    
+    var identifier: ItemIdentifier = nil
 }
 
 
@@ -111,6 +121,8 @@ struct CardholderNameItem: ClearentPaymentItem {
     
     var title: String { "xsdk_payment_manual_entry_cardholder_name".localized }
     
+    var identifier: ItemIdentifier = nil
+    
 }
 struct BillingZipCodeItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .billingZipCode }
@@ -118,18 +130,24 @@ struct BillingZipCodeItem: ClearentPaymentItem {
     var title: String { "xsdk_payment_manual_entry_billing_zip".localized }
     
     var errorMessage: String? { "xsdk_payment_manual_entry_billing_zip_error".localized }
+    
+    var identifier: ItemIdentifier = nil
 }
 
 struct InvoiceNoItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .invoiceNo }
     
     var title: String { "xsdk_payment_manual_entry_invoice_no".localized }
+    
+    var identifier: ItemIdentifier = nil
 }
 
 struct OrderNoItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .orderNo }
     
     var title: String { "xsdk_payment_manual_entry_order_no".localized }
+    
+    var identifier: ItemIdentifier = nil
 }
 
 struct CompanyNameItem: ClearentPaymentItem {
@@ -138,6 +156,8 @@ struct CompanyNameItem: ClearentPaymentItem {
     var title: String { "xsdk_payment_manual_entry_company_name".localized }
     
     var iconName: String?
+    
+    var identifier: ItemIdentifier = nil
 }
 
 struct CustomerIDItem: ClearentPaymentItem {
@@ -146,6 +166,8 @@ struct CustomerIDItem: ClearentPaymentItem {
     var title: String { "xsdk_payment_manual_entry_customer_id".localized }
     
     var iconName: String?
+    
+    var identifier: ItemIdentifier = nil
 }
 
 struct ShippingZipCodeItem: ClearentPaymentItem {
@@ -154,4 +176,6 @@ struct ShippingZipCodeItem: ClearentPaymentItem {
     var title: String { "xsdk_payment_manual_entry_shipping_zip".localized }
     
     var errorMessage: String? { "xsdk_payment_manual_entry_shipping_zip_error".localized }
+    
+    var identifier: ItemIdentifier = nil
 }

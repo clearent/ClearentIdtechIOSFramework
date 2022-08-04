@@ -10,14 +10,14 @@ import UIKit
 
 class ClearentPaymentFieldCell: UITableViewCell {
     
-    @IBOutlet weak var leftPaymentTextField: ClearentPaymentTextField!
+    @IBOutlet var leftPaymentTextField: ClearentPaymentTextField!
     @IBOutlet var rightPaymentTextField: ClearentPaymentTextField!
-    @IBOutlet weak var stackView: UIStackView!
+    @IBOutlet var stackView: UIStackView!
     
     var action: ((ClearentPaymentItem?, String?) -> Void)?
     
     enum Layout {
-        static let cellHeight: CGFloat = 92
+        static let cellHeight: CGFloat = 94
         static let sectionHeaderViewHeight: CGFloat = 48 //TO DO: double check if this is the right size
     }
 
@@ -26,20 +26,16 @@ class ClearentPaymentFieldCell: UITableViewCell {
     
     // MARK: - Public
     
-    static func register(tableView: UITableView) {
-        tableView.register(UINib(nibName: ClearentPaymentFieldCell.nib, bundle: Bundle(for: ClearentPaymentFieldCell.self)),
-                           forCellReuseIdentifier: ClearentPaymentFieldCell.identifier)
-    }
-    
-    func setup(with row: ClearentPaymentRow) {
-        guard let firstElement = row.elements[safe: 0] else { return }
-        setup(paymentField: leftPaymentTextField, with: firstElement)
 
+    
+    func setup(with row: ClearentPaymentRow, isFirstCell: Bool, isLastCell: Bool) {
+        guard let firstItem = row.elements[safe: 0] else { return }
+        setup(paymentField: leftPaymentTextField, with: firstItem, isFirstCell: isFirstCell, isLastCell: isLastCell)
         rightPaymentTextField.isHidden = row.elements.count == 1
        
-        if let secondElement = row.elements[safe: 1] {
+        if let secondItem = row.elements[safe: 1] {
             rightPaymentTextField.isHidden = false
-            setup(paymentField: rightPaymentTextField, with: secondElement)
+            setup(paymentField: rightPaymentTextField, with: secondItem, isFirstCell: isFirstCell, isLastCell: isLastCell)
         }
     }
     
@@ -52,10 +48,29 @@ class ClearentPaymentFieldCell: UITableViewCell {
         }
     }
     
+    func setupNavigationActions(for tableView: UITableView) {
+        leftPaymentTextField.nextButtonWasTapped = { identifier in
+            tableView.nextResponder(identifier: identifier)
+        }
+        
+        leftPaymentTextField.previousButtonWasTapped = { identifier in
+            tableView.previousResponder(identifier: identifier)
+        }
+        
+        rightPaymentTextField.nextButtonWasTapped = { identifier in
+            tableView.nextResponder(identifier: identifier)
+        }
+        
+        rightPaymentTextField.previousButtonWasTapped = { identifier in
+            tableView.previousResponder(identifier: identifier)
+        }
+
+    }
+    
     // MARK: - Private
     
-    private func setup(paymentField: ClearentPaymentTextField, with item: ClearentPaymentItem) {
-        paymentField.setup(with: item)
+    private func setup(paymentField: ClearentPaymentTextField, with item: ClearentPaymentItem, isFirstCell: Bool, isLastCell: Bool) {
+        paymentField.setup(with: item, isFirstCell: isFirstCell, isLastCell: isLastCell)
         paymentField.action = { [weak self] item, cardData in
             guard let strongSelf = self else { return }
             strongSelf.action?(item, cardData)
@@ -70,3 +85,34 @@ class ClearentPaymentFieldCell: UITableViewCell {
         paymentField.enableErrorState(errorMessage: errorMessage)
     }
 }
+
+
+fileprivate extension UITableView {
+    func nextResponder(identifier: ItemIdentifier) {
+        guard let identifier = identifier else { return }
+        for i in (identifier.tag + 1)..<(identifier.tag + 100) {
+            if let view = viewWithTag(i), let containerView = view.superview?.superview as? ClearentPaymentTextField {
+                handleJumpTo(textField: view, and: containerView, tag: i)
+                break
+            }
+        }
+    }
+    
+    func previousResponder(identifier: ItemIdentifier) {
+        guard let identifier = identifier else { return }
+        for i in (0..<(identifier.tag)).reversed() {
+            if let view = viewWithTag(i), let containerView = view.superview?.superview as? ClearentPaymentTextField {
+                handleJumpTo(textField: view, and: containerView, tag: i)
+                break
+            }
+        }
+    }
+    
+    private func handleJumpTo(textField: UIView, and textFieldContainer: ClearentPaymentTextField, tag: Int) {
+        textField.becomeFirstResponder()
+        if let indexPath = textFieldContainer.item?.identifier?.indexPath {
+            scrollToRow(at: indexPath, at: .bottom, animated: true)
+        }
+    }
+}
+
