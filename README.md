@@ -4,20 +4,20 @@
 
 ## Overview 
 
-Clearent SDK UI is a wrapper over ClearentFrameworkSDK that provides payments capabilities using the IDTech iOS framework to read credit card data using VP3300. Its goal is to ease integration by providing complete UI that handle all important flows end-to-end.
+Clearent SDK UI is a wrapper over ClearentFrameworkSDK that provides payment capabilities using the IDTech iOS framework to read credit card data using VP3300. Its goal is to ease integration by providing complete UI that handle all important flows end-to-end.
 
 
  **Clearent SDK UI** wraps all major features of the ClearentFrameworkSDK and adds UI for all major flows:
 
-1. **Pairing Flow**, guides the user thru the pairing process steps, taking care of edge cases and possible errors.
+1. **Pairing Flow**, guides the user through the pairing process steps, taking care of edge cases and possible errors.
 
-2. **Transaction Flow**, guides the user thru the transaction flow, handling also device pairing if needed, takes care of edge cases and error handling.
+2. **Transaction Flow**, guides the user through the transaction flow, handling also device pairing if needed, takes care of edge cases and error handling.
 
-3. **Readers List & Reader Details**, this flow provides reader management capabilities, it displays the status of the current paired reader but also a list of recently used readers from where you can navigate to a settings screen of the reader.
+3. **Readers List & Reader Details**, this flow provides reader management capabilities, it displays the status of the current paired reader, but also a list of recently used readers from where you can navigate to a settings screen of the reader.
 
 **Clearent SDK UI - Options**
 
-1. **Tips**, when this feature is enabled the first step in the Transaction Flow will be the tips screen where the user/client is prompted with UI that will offer some options to choose a tip, This feature can be enabled or disabled from your merchant account.
+1. **Tips**, when this feature is enabled the first step in the Transaction Flow will be the tips screen where the user/client is prompted with UI that will offer some options to choose a tip. This feature can be enabled or disabled from your merchant account.
 
 2. **Signature**, when this feature is enabled as a last step in the Transaction Flow the SDK will display a screen  where the user/client can provide a signature. This signature will be uploaded to the Clearent backend.
 
@@ -262,7 +262,7 @@ The safe keeping of the **API URL**, **API KEY** and the **PUBLIC KEY** is the i
 
 In order to perform transaction using the VP3300 card reader you will need to pair (connect) the device using Bluetooth, the Bluetooth connectivity is handled by the SDK .
 
-In this step the SDK performs a Bluetooth search in order to discover the card readers around. In order for the device to be discoverable it needs to be turned on and in range of the mobile device. The result of the Bluetooth search is a list of devices of type ReaderInfo and you will get the list from the delegate method **didFindReaders(readers: [ReaderInfo])**. 
+In this step the SDK performs a Bluetooth search in order to discover the card readers around. In order for the device to be discoverable, it needs to be turned on and in range of the mobile device. The result of the Bluetooth search is a list of devices of type ReaderInfo and you will get the list from the delegate method **didFindReaders(readers: [ReaderInfo])**.  
 
 Once you have the list of available readers the next step is to select the reader you want to connect to using the **connectTo(reader: ReaderInfo)** method that will try to connect the reader. Once the SDK manages to connect to the reader the delegate method didFinishPairing will get called indicating the connection was successful. 
 
@@ -275,7 +275,7 @@ You can perform a transaction in two modes : using a card reader or by using the
 
 A transaction is performed in two steps :
 
-1. Reading the card , the IDTech framework reads the card info and provides a jwt token .
+1.  Reading the card, the IDTech framework reads the card info and provides a jwt (token).
 2. Performing an API call that will send the transaction information together with the JWT token to a payment gateway.
 
 You can start a transaction using startTransaction(saleEntity: SaleEntity) method. You need to provide a SaleEntity that will contain the amount, you can also specify a tip and client related information. 
@@ -294,7 +294,7 @@ You can start a transaction using startTransaction(with saleEntity: SaleEntity, 
 
 **Cancelling , voiding and refunding a transaction**
 
-If you started a card reader transaction  and want to cancel it you can use cancelTransaction() method and after this call the card reader will be ready to take another transaction. You can use this method only before the card is read by the card reader. Once the card has been read the transaction will be performed and the transaction will be also registered by the payment gateway. In this case you can use the **voidTransaction(transactionID:String)** to void the transaction you want (this will work only if the transaction was not yet processed by the gateway). Another option is to perform a refund using the **refundTransaction(jwt: String, amount: String)**.
+If you started a card reader transaction and want to cancel it you can use cancelTransaction() method and after this call the card reader will be ready to take another transaction. You can use this method only before the card is read by the card reader. Once the card has been read the transaction will be performed and the transaction will be also registered by the payment gateway. In this case you can use the **voidTransaction(transactionID:String)** to void the transaction you want (this will work only if the transaction was not yet processed by the gateway). Another option is to perform a refund using the **refundTransaction(jwt: String, amount: String)**.
 
 
 ## Getting information related to the card reader status
@@ -313,10 +313,9 @@ You can check if a reader is connected by using the **isReaderConnected()** meth
 
 ## Uploading a signature
 
-If you want to upload a signature image after a transaction you can use the 
-**sendSignatureWithImage(image: UIImage)** , after this method is called the **didFinishedSignatureUploadWith(response: SignatureResponse, error: ResponseError?)** delegate method will be called.  Note that the sendSignature method will use the latest transaction ID as the ID for the signature in the API call.
-
-In case of error you can use the **resendSignature()** method to retry the signature upload.
+If you want to upload a signature image after a transaction, you can use 
+**sendSignatureWithImage(image: UIImage)**. After this method is called, the **didFinishedSignatureUploadWith(response: SignatureResponse, error: ResponseError?)** delegate method will be called.  Note that the sendSignature method will use the latest transaction ID as the ID for the signature in the API call.
+In case of error you can use the **resendSignature()** method to retry the signature upload
 
 
 ## Relevant code snippets
