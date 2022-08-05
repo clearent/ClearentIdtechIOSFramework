@@ -306,7 +306,7 @@ In case of error you can use the **resendSignature()** method to retry the signa
 ```
     ClearentWrapper.shared.updateWithInfo(baseURL: Api.baseURL, publicKey: Api.publicKey, apiKey: Api.apiKey)
     
-    // You will need ti implement the 
+    // You will need to implement the delegate methods
     ClearentWrapper.shared.delegate = self
 ```
 
