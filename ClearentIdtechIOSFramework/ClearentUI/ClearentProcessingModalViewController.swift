@@ -64,6 +64,17 @@ class ClearentProcessingModalViewController: ClearentBaseViewController {
 // MARK: - ClearentPaymentProcessingView
 
 extension ClearentProcessingModalViewController: ClearentProcessingModalView {
+    
+    func updateUserActionButtonState(enabled: Bool) {
+        let button = stackView.findButtonInStack(with: FlowButtonType.done)
+        button?.isUserInteractionEnabled = enabled
+        if enabled {
+            button?.setFilledButton()
+        } else {
+            button?.setDisabledButton()
+        }
+    }
+    
     func positionViewOnTop(flag: Bool) {
         stackView.positionView(onTop: flag, of: view)
     }
@@ -260,6 +271,11 @@ extension ClearentProcessingModalViewController: ClearentReadersTableViewDelegat
 }
 
 extension ClearentProcessingModalViewController: ClearentTextFieldProtocol {
+    
+    func didChangeValidationState(isValid: Bool) {
+        presenter?.enableDoneButtonForInput(enabled: isValid)
+    }
+    
     func didFinishWithResult(name: String?) {
         presenter?.updateTemporaryReaderName(name: name)
     }

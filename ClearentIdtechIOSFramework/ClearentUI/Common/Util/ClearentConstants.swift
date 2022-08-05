@@ -79,6 +79,7 @@ public class ClearentConstants {
         static let calendar = "calendar"
         static let exclamationMark = "redExclamationMark"
         static let expandMedium = "expandMedium"
+        static let deleteButton = "smallDeleteButton"
     }
 
     public enum Size {
