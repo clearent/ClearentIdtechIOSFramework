@@ -53,7 +53,7 @@
 "xsdk_signature_action" = "Done";
 "xsdk_signature_error_action_skip" = "Skip";
 "xsdk_signature_upload_sucessful_title" = "Upload completed successfully";
-"xsdk_signature_upload_failure_title" = "The signature was not properly processed";
+"xsdk_signature_upload_failure_title" = "Signature capture failed";
 
 // MARK: Payment Flow - Manually Enter Card Info
 

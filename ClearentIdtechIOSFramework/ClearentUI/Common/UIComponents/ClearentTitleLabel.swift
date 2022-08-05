@@ -16,6 +16,7 @@ public class ClearentTitleLabel: ClearentMarginableView {
         [
             RelativeBottomMargin(constant: 16, relatedViewType: ClearentSubtitleLabel.self),
             RelativeBottomMargin(constant: 24, relatedViewType: ClearentListView.self),
+            RelativeBottomMargin(constant: 24, relatedViewType: ClearentPrimaryButton.self),
             BottomMargin(constant: 80)
         ]
     }
