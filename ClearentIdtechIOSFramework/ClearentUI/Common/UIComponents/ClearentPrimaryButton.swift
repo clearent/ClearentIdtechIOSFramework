@@ -32,6 +32,9 @@ public class ClearentPrimaryButton: ClearentMarginableView {
     public var filledBackgroundColor = ClearentUIBrandConfigurator.shared.colorPalette.filledBackgroundColor
     public var filledButtonTextColor = ClearentUIBrandConfigurator.shared.colorPalette.filledButtonTextColor
     
+    public var filledDisabledBackgroundColor = ClearentUIBrandConfigurator.shared.colorPalette.filledDisabledBackgroundColor
+    public var filledDisabledButtonTextColor = ClearentUIBrandConfigurator.shared.colorPalette.filledDisabledButtonTextColor
+    
     public var borderColor: UIColor = ClearentUIBrandConfigurator.shared.colorPalette.borderColor
     public var borderedBackgroundColor = ClearentUIBrandConfigurator.shared.colorPalette.borderedBackgroundColor
     public var borderedButtonTextColor = ClearentUIBrandConfigurator.shared.colorPalette.borderedButtonTextColor
@@ -85,9 +88,16 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         button.layer.borderWidth = ClearentConstants.Size.defaultButtonBorderWidth
     }
     
-    private func setFilledButton() {
+    // MARK: - Internal
+    
+    internal func setFilledButton() {
         button.backgroundColor = filledBackgroundColor
         button.setTitleColor(filledButtonTextColor, for: .normal)
+        button.setTitleColor(filledDisabledButtonTextColor, for: .disabled)
         button.layer.borderWidth = 0
+    }
+    
+    internal func setDisabledButton() {
+        button.backgroundColor = filledDisabledBackgroundColor
     }
 }

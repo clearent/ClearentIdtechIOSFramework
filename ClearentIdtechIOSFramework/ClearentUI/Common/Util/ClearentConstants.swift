@@ -80,6 +80,7 @@ public class ClearentConstants {
         static let exclamationMark = "redExclamationMark"
         static let expandMedium = "expandMedium"
         static let collapseMedium = "collapseMedium"
+        static let deleteButton = "smallDeleteButton"
     }
 
     public enum Size {

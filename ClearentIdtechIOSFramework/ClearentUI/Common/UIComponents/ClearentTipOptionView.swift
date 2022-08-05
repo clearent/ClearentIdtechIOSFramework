@@ -81,11 +81,13 @@ class ClearentTipOptionView: ClearentMarginableView {
     
     @objc final private func textFieldDidChange(textField: UITextField) {
         guard let text = textField.text else { return }
-        let tipWithDigitsOnly = text.filter("0123456789".contains)
+
         // limit the tip amount to certain minimum and maximum values declared in Constants
+        let tipWithDigitsOnly = text.filter("0123456789".contains)
         let tipPrefix = String(tipWithDigitsOnly.prefix(ClearentConstants.Amount.maxNoOfCharacters))
-        tipValue = tipPrefix.isEmpty ? 0 : max(tipPrefix.double, ClearentConstants.Tips.minCustomTipValue)
+        tipValue = tipPrefix.isEmpty || tipPrefix == "00" ? 0 : max(tipPrefix.double, ClearentConstants.Tips.minCustomTipValue)
         customAmountTextField.text = tipPrefix.isEmpty ? "" : ClearentMoneyFormatter.formattedWithoutSymbol(from: tipValue)
+        
         tipWasPressed()
     }
 }

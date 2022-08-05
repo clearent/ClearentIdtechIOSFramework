@@ -14,6 +14,7 @@ protocol ClearentProcessingModalView: AnyObject {
     func showLoadingView()
     func dismissViewController(isConnected: Bool, customName: String?)
     func positionViewOnTop(flag: Bool)
+    func updateUserActionButtonState(enabled: Bool)
 }
 
 protocol ProcessingModalProtocol {
@@ -29,6 +30,7 @@ protocol ProcessingModalProtocol {
     func showDetailsScreen(for reader: ReaderItem, allReaders: [ReaderItem], flowDataProvider: FlowDataProvider, on navigationController: UINavigationController)
     func connectTo(reader: ReaderInfo)
     func updateTemporaryReaderName(name: String?)
+    func enableDoneButtonForInput(enabled: Bool)
     func fetchTipSetting(completion: @escaping () -> Void)
     func handleSignature(with image: UIImage)
     func updateCardData(for item: ClearentPaymentItem?, with value: String?)
@@ -72,7 +74,11 @@ class ClearentProcessingModalPresenter {
 }
 
 extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
-
+    
+    func enableDoneButtonForInput(enabled: Bool) {
+        modalProcessingView?.updateUserActionButtonState(enabled: enabled)
+    }
+    
     func restartProcess(newPair: Bool) {
         guard let processType = ClearentWrapper.shared.flowType?.processType, let flowFeedbackType = ClearentWrapper.shared.flowType?.flowFeedbackType else { return }
         sdkFeedbackProvider.delegate = self
@@ -292,6 +298,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                      FlowDataItem(type: .userAction, object: FlowButtonType.done)]
         let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.renameReaderDone, items: items)
         modalProcessingView?.updateContent(with: feedback)
+        modalProcessingView?.updateUserActionButtonState(enabled: self.editableReader?.customReaderName != nil)
     }
     
     private func showSignatureScreen() {
