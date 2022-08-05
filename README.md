@@ -238,7 +238,7 @@ The safe keeping of the **API URL**, **API KEY** and the **PUBLIC KEY** is the i
 
 The SDK supports current version of iOS and two previous versions. Curently 13, 14 and 15.
 
-## Pairing and connecting to a reader.
+## Pairing a reader.
 
 In order to perform transaction using the VP3300 card reader you will need to pair (connect) the device using Bluetooth, the Bluetooth connectivity is handled by the SDK .
 
