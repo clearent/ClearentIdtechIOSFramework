@@ -35,33 +35,11 @@ Clearent SDK UI is a wrapper over ClearentFrameworkSDK that provides payment cap
 
 ## Package Management - (To be updated with correct information)
 
-You can use our [Clearent Cocoapod](https://github.com/clearent/CocoaPods) or [Carthage](https://github.com/Carthage/Carthage).
+// podfile & cartfile example 
 
-:new: CocoaPods latest version is 4.0.9.
+## Supported iOS versions
 
-### Carthage ###
-
-:one: Install Carthage if you have not done so. ex - brew install carthage.
-
-:two: Add your github credentials to XCode.
-
-:three: Add a Cartfile to your project (at root). Point to Clearent's github repository for this framework by adding the following to your Cartfile
-
-    github "clearent/ClearentIdtechIOSFramework" "4.0.9"
-
-:four: Run this command from your project's root folder. This command will pull down a copy of the Clearent Framework and build it locally under Carthage/Build.
-
-    carthage update
-
-:five: On your application targets’ General settings tab, in the Embedded Binaries section, drag and drop the Clearent Framework from the Carthage/Build folder.
-
-:six: Additionally, you'll need to copy debug symbols for debugging and crash reporting on OS X.
-    On your application target’s Build Phases settings tab, click the + icon and choose New Copy Files Phase.
-    Click the Destination drop-down menu and select Products Directory.
-    From the Clearent framework, drag and drop its corresponding dSYM file.
-
-:seven: Build your app. The Clearent Framework should be available for use.
-
+The SDK supports current version of iOS and two previous versions. Curently 13, 14 and 15.
 
 ## How to Integrate
 
@@ -237,7 +215,7 @@ class ViewController: UIViewController {
 
 
 
-# Integrating the ClearentWrapper (No UI)
+# Integrating the ClearentWrapper
 
 
 ## Overview
@@ -256,7 +234,9 @@ The safe keeping of the **API URL**, **API KEY** and the **PUBLIC KEY** is the i
 
 **ClearentWrapperDefaults** is a user default storage that holds information like currently paired reader and a list of previously paired readers. You should not save anything here the SDK handles this for you.
 
+## Supported iOS versions
 
+The SDK supports current version of iOS and two previous versions. Curently 13, 14 and 15.
 
 ## Pairing and connecting to a reader.
 
@@ -319,7 +299,6 @@ In case of error you can use the **resendSignature()** method to retry the signa
 
 
 ## Relevant code snippets
-
 
 
 **Initialisation**  
@@ -420,6 +399,5 @@ After the transaction is proccesed a delegate method will inform you about the s
     }
 ```
 
-    
-     
-**Getting the card reader status**  
+
+Full Swift example of the ClearenWrapper integration  integration [Swift Example](https://).
