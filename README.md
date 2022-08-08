@@ -1,305 +1,403 @@
 ![Screenshot](docs/clearent_logo.jpg)
 
-# This branch is work in progress...
+# Clearent SDK UI
 
-# IDTech iOS Framework :iphone: :credit_card:
+## Overview 
 
-Hi ! If you've stumbled across our GitHub and want to know what Clearent can do for you (spoiler alert, we do payments) go [here](https://developer.clearent.com/) to learn more. Or skip all that, get a sandbox key [here](https://developer.clearent.com/get-started/), and get online with us today. #wesupportdevs :bowtie:.
+Clearent SDK UI is a wrapper over ClearentFrameworkSDK that provides payment capabilities using the IDTech iOS framework to read credit card data using VP3300. Its goal is to ease integration by providing complete UI that handle all important flows end-to-end.
 
-## Overview (See [Demo](https://github.com/clearent/IDTech_VP3300_Objc_Demo) for more details)
 
-Our iOS Framework works with the IDTech framework allowing you to handle credit card data from an IDTech VIVOpay reader (VP3300). The audio jack and bluetooth versions are supported.
+ **Clearent SDK UI** wraps all major features of the ClearentFrameworkSDK and adds UI for all major flows:
 
-The design is similar to the IDTech design so you can reference IDTech's documentation. The big difference is the methods exposed by the IDTech framework's delegate that would return credit card data to you is now handled by the Clearent framework. The Clearent solution implements the emvTransactionData and swipeMSRData IDTech methods on your behalf. Instead of working directly with the card data, the card data is sent to Clearent. Clearent will issue a 'Transaction Token' (aka, JWT) for each card read. The Transaction Token is sent back thru the delegate, allowing you to present it when you want to run a sale.
+1. **Pairing Flow**, guides the user through the pairing process steps, taking care of edge cases and possible errors.
 
-Visit the [Clearent Mobile API Docs](http://api.clearent.com/swagger.html#!/Quest_API_Integration/Mobile_Transactions_using_SDKs) to see how to run a mobile sale using our Rest endpoints.
+2. **Transaction Flow**, guides the user through the transaction flow, handling also device pairing if needed, takes care of edge cases and error handling.
 
-Code references are in objective-c since the framework was built in that language. We are working on a [Swift](https://github.com/clearent/IDTechSwiftDemo) demo. Currently it shows you can connect with a bluetooth reader and get the transaction token back.
+3. **Readers List & Reader Details**, this flow provides reader management capabilities, it displays the status of the current paired reader, but also a list of recently used readers from where you can navigate to a settings screen of the reader.
 
-## Release Notes
+**Clearent SDK UI - Options**
 
-[Release Notes](docs/RELEASE_NOTES.md) :eyes:
+1. **Tips**, when this feature is enabled the first step in the Transaction Flow will be the tips screen where the user/client is prompted with UI that will offer some options to choose a tip. This feature can be enabled or disabled from your merchant account.
 
-## Dependency Management.
+2. **Signature**, when this feature is enabled as a last step in the Transaction Flow the SDK will display a screen  where the user/client can provide a signature. This signature will be uploaded to the Clearent backend.
 
-You can use our [Clearent Cocoapod](https://github.com/clearent/CocoaPods) or [Carthage](https://github.com/Carthage/Carthage).
+3. **UI Customization**, Clearent SDK UI provides the integrator the chance to customize the fonts, colors and texts used in the UI, This is achieved by overwriting the public properties of each UI element that is exposed.
 
-:new: CocoaPods latest version is 2.0.15.
 
-### Carthage ###
+## Dependencies
 
-:one: Install Carthage if you have not done so. ex - brew install carthage.
+ **Clearent SDK UI** does not use any other dependencies except the ones of the ClearentFrameworkSDK:
+ 
+ - IDTech.xcframework 
+ - DTech.bundle (responsible for translating error codes to messages)
+ - CocoaLumberJack.xcframework
 
-:two: Add your github credentials to XCode.
 
-:three: Add a Cartfile to your project (at root). Point to Clearent's github repository for this framework by adding the following to your Cartfile
+## Package Management - (To be updated with correct information)
 
-    github "clearent/ClearentIdtechIOSFramework" "2.0.5"
+// podfile & cartfile example 
 
-:four: Run this command from your project's root folder. This command will pull down a copy of the Clearent Framework and build it locally under Carthage/Build.
+## Supported iOS versions
 
-    carthage update
+The SDK supports current version of iOS and two previous versions. Curently 13, 14 and 15.
 
-:five: On your application targets’ General settings tab, in the Embedded Binaries section, drag and drop the Clearent Framework from the Carthage/Build folder.
+## How to Integrate
 
-:six: Additionally, you'll need to copy debug symbols for debugging and crash reporting on OS X.
-    On your application target’s Build Phases settings tab, click the + icon and choose New Copy Files Phase.
-    Click the Destination drop-down menu and select Products Directory.
-    From the Clearent framework, drag and drop its corresponding dSYM file.
+In order to integrate the **SDK UI** you will need the **API URL**, **API KEY** and the **PUBLIC KEY**. 
+Use ClearentUIManager class to update the SDK with this information like this. 
 
-:seven: Build your app. The Clearent Framework should be available for use.
-
-## Use the Clearent Framework with an IDTech device - Objective C
-
-:one: Add this to your ViewController.h  
-
-```smalltalk
-#import <ClearentIdtechIOSFramework/ClearentIdtechIOSFramework.h>
+```
+ClearentUIManager.shared.updateWith(baseURL: baseURL, apiKey: apiKey, publicKey: publicKey)
 ```
 
-:two: Change your interface to adhere to the Clearent public delegate (Clearent_Public_IDTech_VP3300_Delegate)
+### Important!
 
-```smalltalk
-@interface ViewController : UIViewController<UIAlertViewDelegate,Clearent_Public_IDTech_VP3300_Delegate, UIActionSheetDelegate,MFMailComposeViewControllerDelegate>
+**The safe keeping of the **API URL**, **API KEY** and the **PUBLIC KEY** is the integrators reposability. The SDK stores this information only in memory!**
+
+
+**Tips** 
+
+This feature can be enabled from your merchant account and when it's enabled the first step in the transaction flow will be a prompt where the user/client is prompted with UI that will offer some options to choose a tip. The options the user/client has are three fixed options in percents and a custom tip input field. The three options are customizable by settting the **tipAmounts** that is an array of Int values property of the **ClearentUIManager** as below.
+
+```
+ClearentUIManager.tipAmounts = [5, 15, 20]
 ```
 
-:three: Define the framework object you will interact with in ViewController.m.
 
-```smalltalk
-Clearent_VP3300 *clearentVP3300;
+**Disabling the signature functionality**
+The signature feature is enabled by default, if you want to disable it:
+```
+ClearentUIManager.shared.signatureEnabled = false
 ```
 
-:four: Initialize the object
+Now you are ready to use the SDK UI. 
+In order to display the UI from the SDK you need to have an instance of **UINavigationController** that you will use to present specific UIControllers from the SDK.
 
-```smalltalk
-clearentVP3300 = [[Clearent_VP3300 alloc]  init];
+**Starting the pairing process**
 
-[clearentVP3300 init:self clearentBaseUrl:@"https://gateway-sb.clearent.net", @"the public key Clearent gave you"];
+```
+let pairingVC = ClearentUIManager.shared.pairingViewController()
+self.navigationController?.present(pairingVC, animated: true, completion: {})
 ```
 
-:five: Monitor for device readiness thru the isReady method of the delegate. You can also use the isConnected method of the Clearent_VP3300 object to verify the framework is still connected to the reader.
+**Starting a transaction**
 
-:six: Implement the successfulTransactionToken method. This method returns a token which represents the credit card and the current transaction request. It allows you to submit a payment transaction.
-When a card is processed (swipe or insert/dip of card with an emv chip), the framework will call successfulTransactionToken method when tokenization is successful.
+Every time you start a transaction you need to pass the amount as Double to the payment controller.
+The SDK UI provides the option to enter the card details manualy or by using the card reader, use the **useCardReaderPaymentMethod** to choose the desired method.
 
-```smalltalk
--(void) successfulTransactionToken:(NSString*) jsonString {
-  //This json contains the transaction token. See demo app for more details
+```
+ ClearentUIManager.shared.useCardReaderPaymentMethod = true
+```
+
+```
+let transactionVC = ClearentUIManager.shared.paymentViewController(amount: 20.0)
+self.navigationController?.present(transactionVC, animated: true, completion: {})
+```
+
+
+**Showing readers list & reader details**
+
+```
+let readerDetailsVC = ClearentUIManager.shared.readersViewController()
+self.navigationController?.present(readerDetailsVC, animated: true, completion: { })
+```
+The reader details will display the status of the current reader and a list of recently paired readers. From this list the user can navigate to the readers details.
+
+
+**Reader Status**
+
+If you want to display the reader's status in your app you cand use the  **readerInfoReceived** clojure of the **ClearentUIManager**.
+
+
+Here is the defintion of the clojure. You will receive a **ReaderInfo** object that contains reader related information.
+```
+public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
+
+```
+
+How to use it.
+
+```
+ClearentUIManager.shared.readerInfoReceived = { [weak self] reader in
+    // update your UI
 }
 ```
 
-:seven: Monitor for errors by implementing the deviceMessage and lcdDisplay methods. When you see the message INSERT/SWIPE it means
-you should interact with the reader.
 
-:eight: When you are ready to process the payment, do a POST against endpoint /rest/v2/mobile/transactions/sale (for a sale).
+## Customizing the SDK experience
 
-## Audio Jack Connectivity
+The SDK provides the option to customize the fonts, colors and texts used in the SDK. This can be achieved by overriding properties of the **ClearentUIBrandConfigurator** class that is a singleton. Check our [Swift Example](https://) for full customization example.
 
-* If an audio jack reader is connected to the iPad/iPhone you can monitor for the connection using a method you implement for the public delegate.
-
-```smalltalk
-- (void) plugStatusChange:(BOOL)deviceInserted;
+**Colors**
 ```
-* When you see the device is connected you call this method to finish setting the connection.
-
-```objective-c
-[clearentVP3300 device_connectToAudioReader];
+ClearentUIBrandConfigurator.shared.colorPalette = ClientColorPalette()
 ```
 
-## Bluetooth Connectivity
+**ClientColorPalette** is a class that you will need to write and implement **ClearentUIColors** protocol. 
 
-* If a bluetooth reader is used, you can monitor for a connection using this method.
 
-```objective-c
-[clearentVP3300 isConnected];
+**Fonts**
+
+You will need to implement a class that will implement **ClearentUIFonts** protocol and load your custom fonts.
+
+
+```
+UIFont.loadFonts(fonts: ["Arial Bold.ttf", "Arial.ttf"], bundle: Constants.bundle)
+ClearentUIBrandConfigurator.shared.fonts = ClientFonts()
 ```
 
-* You can use the framework to start scanning for a specific device or to do a general scan for any device that has the prefix of 'IDTECH-VP3300-'.
+**Texts**
 
-```smalltalk
-[clearentVP3300 device_enableBLEDeviceSearch:val];
+In order to customize texts used in the SDK you will need to provide a dictionary containing the new messages you want to show.
+
+```
+ClearentUIBrandConfigurator.shared.overriddenLocalizedStrings = [
+    "xsdk_tips_custom_amount": "🍎Custom amount",
+    "xsdk_tips_user_transaction_tip_title": "🍎Would you like to add a tip?",
+    "xsdk_tips_user_action_transaction_with_tip": "🍎Charge %@",
+    "xsdk_tips_user_action_transaction_without_tip":"🍎Maybe next time"
+]
 ```
 
-* Messages will be returned from this method you implemented for the public delegate. The returned message will contain 'BLE DEVICE FOUND' followed by the name.
 
-```smalltalk
-- (void) deviceMessage:(NSString*)message
+## Code Example
+
+Swift example of the ClearenSDKUI  integration [Swift Example](https://).
+
 ```
-* A quick flashing blue LED means the bluetooth reader is connected. A transaction can now be started.
+import UIKit
+import ClearentSDKUI
 
-* Slow blinking blue LED means the reader is on and listening for anyone to connect to.
-
-* Am amber colored LED during a connection attempt means the reader is low on power. Charge the reader for at least 30 minutes.
-
-* If you plug the reader in to a power source you can still use it over bluetooth but the connection, once established, will remain connected (and generally will be more reliable).
-
-## Basic User Flow
-
-:one: Start a transaction. The framework exposes 3 methods for starting a transaction - emv_startTransaction (dip and swipe), ctls_startTransaction (contactless only), and device_startTransaction. If you will never support contactless use emv_startTransaction. If you plan on supporting contactless we recommend the device_startTransaction method since it supports contactless, dip, and swipe.
-
-```smalltalk
--(RETURN_CODE) device_startTransaction:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline  fallback:(BOOL)fallback;
-```
-
-:two: Interact with reader - If you are using bluetooth make sure you've pressed the button on the reader. The bluetooth reader should have a blue led flashing quickly. This means it's connected and can communicate with the reader. The framework will callback in the deviceMessage with messages that indicate what is happening between the framework and the reader. If you see a message similar to 'Insert, swipe or, tap', that means the reader is ready for card interaction.
-
-:three: Success - If you get a callback to the successfulTransactionToken it means the card was read successfully and translated to a transaction token. The transaction token is short lived (24 hr) and is meant to facilitate a payment, not to save the card for future use. If you want to store the card send in 'create-token' as true on the /rest/v2/mobile/transactions/sale endpoint and you will receive a Clearent Vault token id (token-id) that you can save and send in the 'card' field of future transactions.
-
-:four: Failure - The framework will send messages back that indicate failure. ex - TERMINATE, 'Card read error'. When this happens, you can call the device_cancelTransaction method to cancel the current transaction and attempt again. If the problem persists it is recommended you key in the card and use the manual entry process.
-
-## Use the Clearent Framework to create a transaction token (JWT) for a manually entered card - Objective C
-
-:one: Change your interface to adhere to the delegate ClearentManualEntryDelegate
-
-```smalltalk
-@interface ViewController : UIViewController<UIAlertViewDelegate,Clearent_Public_IDTech_VP3300_Delegate, UIActionSheetDelegate,MFMailComposeViewControllerDelegate>,ClearentManualEntryDelegate
-```
-
-:two: Define the framework object you will interact with in ViewController.m.
-
-```smalltalk
-ClearentManualEntry *clearentManualEntry;
-```
-
-:three: Initialize the object
-
-```smalltalk
-clearentManualEntry = [[ClearentManualEntry alloc]  init];
-
-[clearentManualEntry init:self clearentBaseUrl:@"https://gateway-sb.clearent.net", @"the public key Clearent gave you"];
-```
-
-:four: Implement the successfulTransactionToken method. If you have already implemented this for the IDTech Device solution you don't have to do anything extra.
-
-```smalltalk
--(void) successfulTransactionToken:(NSString*) jsonString {
-  //This json contains the transaction token. See demo app for more details
+class ViewController: UIViewController {
+    
+    @IBOutlet weak var showReadersDetailsButton: UIButton!
+    @IBOutlet weak var startTransactionButton: UIButton!
+    @IBOutlet weak var startPairingButton: UIButton!
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        initSDK()
+    }
+    
+    func initSDK() {
+        
+        // Update the SDk with needed info to work properly
+        ClearentUIManager.shared.updateWith(baseURL: Api.baseURL, apiKey: Api.apiKey, publicKey: Api.publicKey)
+        
+        // Load the default fonts from our SDK
+        UIFont.loadFonts()
+        
+        // The signature step from transaction is enabled by default
+        ClearentUIManager.shared.signatureEnabled = false
+    }
+    
+    
+    // MARK: Actions
+    
+    @IBAction func showRederDetailsAction(_ sender: Any) {
+        
+        let readerDetailsVC = ClearentUIManager.shared.readersViewController()
+        self.navigationController?.present(readerDetailsVC, animated: true, completion: { })
+    }
+    
+    @IBAction func startTransactionAction(_ sender: Any) {
+        let transactionVC = ClearentUIManager.shared.paymentViewController(amount: 20.0)
+        self.navigationController?.present(transactionVC, animated: true, completion: { })
+    }
+    
+    @IBAction func startPairingProcess(_ sender: Any) {
+        let pairingVC = ClearentUIManager.shared.pairingViewController()
+        self.navigationController?.present(pairingVC, animated: true, completion: { })
+    }
 }
+
 ```
 
-:five: Monitor for errors by implementing the handleManualEntryError method.
 
-:six: When you are ready to process the payment, do a POST against endpoint /rest/v2/mobile/transactions/sale (for a sale). See demo app for an example [Clearent IDTech iOS Demo](https://github.com/clearent/IDTech_VP3300_Demo)
 
-## Disabling emv configuration when using a preconfigured reader
+# Integrating the ClearentWrapper
 
-By default Clearent will not apply (as of 1.1.8-beta) an emv configuration to your device. This configuration was determined by going through a certification process. The configuration can also be applied before the device is shipped to you. When this happens, you should disable the configuration feature. To do this, call this method on the Clearent_VP3300 object.
 
-```smalltalk
-- (void) setAutoConfiguration:(BOOL)enable;
+## Overview
+
+**ClearentWrapper** is a wrapper over **ClearentFrameworkSDK** that provides payments capabilities using the IDTech iOS framework to read credit card data using VP3300. Its goal is to ease integration and fix some of the most common issues.
+
+**ClearentWrapper** is a singleton class and the main interaction point with the SDK.  
+
+You will use this class to update the SDK with the needed information to work properly : **API URL**, **API KEY** and the **PUBLIC KEY**. 
+
+**Important Note:**
+
+The safe keeping of the **API URL**, **API KEY** and the **PUBLIC KEY** is the integrators reposability. The SDK stores this information only in memory!
+
+**ClearentWrapperProtocol** is the protocol you will need to implement in order to receive updates , error and notifications from the SDK. Each method from the protocol is documented in code.
+
+**ClearentWrapperDefaults** is a user default storage that holds information like currently paired reader and a list of previously paired readers. You should not save anything here the SDK handles this for you.
+
+## Supported iOS versions
+
+The SDK supports current version of iOS and two previous versions. Curently 13, 14 and 15.
+
+## Pairing a reader.
+
+In order to perform transaction using the VP3300 card reader you will need to pair (connect) the device using Bluetooth, the Bluetooth connectivity is handled by the SDK .
+
+In this step the SDK performs a Bluetooth search in order to discover the card readers around. In order for the device to be discoverable, it needs to be turned on and in range of the mobile device. The result of the Bluetooth search is a list of devices of type ReaderInfo and you will get the list from the delegate method **didFindReaders(readers: [ReaderInfo])**.  
+
+Once you have the list of available readers the next step is to select the reader you want to connect to using the **connectTo(reader: ReaderInfo)** method that will try to connect the reader. Once the SDK manages to connect to the reader the delegate method didFinishPairing will get called indicating the connection was successful. 
+
+
+## Performing a transaction
+
+You can perform a transaction in two modes : using a card reader or by using the card details directly.
+
+**1.Performing a transaction using the card reader.**
+
+A transaction is performed in two steps :
+
+1.  Reading the card, the IDTech framework reads the card info and provides a jwt (token).
+2. Performing an API call that will send the transaction information together with the JWT token to a payment gateway.
+
+You can start a transaction using startTransaction(saleEntity: SaleEntity) method. You need to provide a SaleEntity that will contain the amount, you can also specify a tip and client related information. 
+
+When you call the startTransaction method the SDK will start guide you to the process by calling two important methods from the ClearentWrapperProtocol  : 
+
+1. **userActionNeeded(action: UserAction)** , indicates that the user need to do an action like swiping the card, removing the card etc.
+2. **didReceiveInfo(info: UserInfo)**, this method presents different information related to the transaction.
+
+After the transaction is completed the delegate method didFinishTransaction(response: TransactionResponse, error: ResponseError?) will get called. You can check the error parameter to know if the transaction was successful or not.
+
+**2. Performing a transaction using manual card entry.**
+
+You can start a transaction using startTransaction(with saleEntity: SaleEntity, manualEntryCardInfo: ManualEntryCardInfo?) method where the manualEntryCardInfo parameter will contain the card informations.
+
+
+**Cancelling , voiding and refunding a transaction**
+
+If you started a card reader transaction and want to cancel it you can use cancelTransaction() method and after this call the card reader will be ready to take another transaction. You can use this method only before the card is read by the card reader. Once the card has been read the transaction will be performed and the transaction will be also registered by the payment gateway. In this case you can use the **voidTransaction(transactionID:String)** to void the transaction you want (this will work only if the transaction was not yet processed by the gateway). Another option is to perform a refund using the **refundTransaction(jwt: String, amount: String)**.
+
+
+## Getting information related to the card reader status
+
+You can obtain a ReaderInfo  object from **ClearentWrapperDefaults.pairedReader**.  
+Sometimes you will need to request and display new information related to the reader like battery status or signal strength. You can achieve this by using the **startDeviceInfoUpdate()** method, calling this method will start fetching new information from the connected reader and when this information will be available it will call **readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?** closure that you will need to implement in your code.
+
+
+## Getting information related to previously paired readers
+
+Each time you pair a new reader the SDK will save its information in a User Defaults cache. You can get the list using recentlyPairedReaders  property of the **ClearentWrapperDefaults**. The result will be an array of **ReaderInfo** objects.
+
+You can check if a reader is connected by using the **isReaderConnected()** method or by checking the **isConnected** property of the **ClearentWrapperDefaults.pairedReader**.
+
+
+
+## Uploading a signature
+
+If you want to upload a signature image after a transaction, you can use 
+**sendSignatureWithImage(image: UIImage)**. After this method is called, the **didFinishedSignatureUploadWith(response: SignatureResponse, error: ResponseError?)** delegate method will be called.  Note that the sendSignature method will use the latest transaction ID as the ID for the signature in the API call.
+In case of error you can use the **resendSignature()** method to retry the signature upload
+
+
+## Relevant code snippets
+
+
+**Initialisation**  
+
+```
+    ClearentWrapper.shared.updateWithInfo(baseURL: Api.baseURL, publicKey: Api.publicKey, apiKey: Api.apiKey)
+    
+    // You will need to implement the delegate methods
+    ClearentWrapper.shared.delegate = self
 ```
 
-If you want to check to see if the reader has already had configuration applied to it use this method (added 1.1.8-beta). When we configure a reader we alter the 9F4E tag to include 50 as a hex value (P for preconfigured).
 
-```objective-c
-[clearentVP3300 isPreconfigured];
+**Pairing a device**  
+
+Calling this method will start the process of pairing a card reader with an iOS device.
+
+```
+    ClearentWrapper.shared.startPairing(reconnectIfPossible: true)
 ```
 
-## Enabling contactless
+After the search for readers is completed the SDK will trigger a delegate method. 
 
-By default the framework will not apply the contactless emv configuration to your device. So no action needs to be taken for pre configured readers. If you are not using a pre configured reader you can pass true to enable configuration. When the reader is successfully configured a flag is set in the application's memory so it remembers not to apply the configuration on subsequent connections.
-
-```smalltalk
-- (void) setContactlessConfiguration:(BOOL)enable;
+```
+    func didFindReaders(readers: [ReaderInfo])  {
+        // you can display the list of readers on the UI
+    }
 ```
 
-Independent of the contactless configuration is a flag to enable the use of contactless. By default the framework will throw the same error it did in the previous version until contactless is enabled.
+If no available readers around are found the SDK will trigger this method :
 
-```objective-c
-[clearentVP3300 setContactless:true];
+```
+    func didNotFindReaders() {
+        // you can inform the user to check if the card reader is turned on in range and it's not paired with another device
+    }
 ```
 
-If you need the ability to apply contactless configuration after you have initialized the Clearent_VP3300 object you can use this method after you have enabled contactless configuration with the setContactlessConfiguration method.
+After the user selects one of the readers from the list you need to tell the SDK to connect to it.
 
-```objective-c
-[clearentVP3300 applyClearentConfiguration];
+```
+   // reader is a ReaderInfo item
+   ClearentWrapper.shared.connectTo(reader: reader)
 ```
 
-If you want to check to see if the reader has already had contactless configuration applied to it use this method.
+The SDK will try to connect to the selected device and it will call the ```didFinishedPairing()``` method when finished.
+Now you have a paired reader and you can start using it for performing transactions.
 
-```objective-c
-[clearentVP3300 isContactlessConfigured];
+
+**Performing a transaction**  
+
+Using a card reader
+
+```
+   // Define a SaleEntity, you can also add client information on the SaleEntity
+   let saleEntity = SaleEntity(amount: 22.0, tipAmount: 5)
+   ClearentWrapper.shared.startTransaction(with: saleEntity)
 ```
 
-## Contactless
+Using manual card entry
 
-* The amount field is required in order to fully support all scenarios we discovered during our certification process. If an amount is not provided, then large
-amounts risk being declined.
-
-* If an email address is available, provide it. In an event of an offline decline the customer will receive an offline decline receipt (email only).
-
-* A new method has been created which allows you to pass in the email address when starting a transaction.
-
-```smalltalk
-ClearentPayment *clearentPayment = [[ClearentPayment alloc] init];
-   [clearentPayment setAmount:amount];
-   clearentPayment.amtOther = 0;
-   clearentPayment.type = 0;
-   clearentPayment.timeout = 30;
-   clearentPayment.tags = nil;
-   clearentPayment.emailAddress = txtReceiptEmailAddress.text;
-   clearentPayment.fallback = true;
-   clearentPayment.forceOnline = false;
-
-   RETURN_CODE rt = [clearentVP3300 device_startTransaction:clearentPayment];
-```   
-
-* EMV Contactless cards , which have the wifi/network symbol on them, are supported. Cards put into an Apple Wallet are also supported. Cards that use the MSD Contactless standard are not supported.
-
-:exclamation: The virtualized Apple Card is not supported.
-
-* If a tap is attempted and the reader has trouble reading the card because it was not in the NFC field long enough, the framework will handle this error and start up a new transaction. This retry loop will send back a message of 'RETRY TAP' until either it's successful or the transaction is cancelled or timed out.
-
-* Some times when the card and the reader interact an error will happen that does not allow contactless. When this happens the framework will cancel the transaction and start a new contact/swipe transaction. Contactless will be disabled allowing you to interact with the reader without fear of triggering the contactless read. You will be prompted with a message to "INSERT/SWIPE".
-
-* There are times where the contactless interaction does not work (see [Known Issues](https://github.com/clearent/ClearentIdtechIOSFramework/blob/master/docs/RELEASE_NOTES.md#known-issues--different-behavior)). When this happens you can insert the contactless card *first*, then start the transaction.
-
-* If you have already configured contactless and need to clear the cache that stops the framework from performing configuration every time the reader connects.
-```objective-c
-   [clearentVP3300 clearContactlessConfigurationCache];
+```
+   // Define a SaleEntity, you can also add client information on the SaleEntity
+   let saleEntity = SaleEntity(amount: 22.0, tipAmount: 5)
+   
+   // Create a manual card entry instance
+   let ManualEntryCardInfo(card: "4111111111111111", expirationDateMMYY: "0728", csc: "999")
+   ClearentWrapper.shared.startTransaction(with: saleEntity, manualEntryCardInfo: manualEntryCardInfo)
 ```
 
-* New helper method to configure everything at once. This method also gives you the ability to disable our remote logging (recommended for debug only).
+After starting a transaction feedback messages will be triggered on the delegate.
 
-```smalltalk
-   ClearentVP3300Config *clearentVP3300Config = [[ClearentVP3300Config alloc] init];
-   clearentVP3300Config.clearentBaseUrl = baseUrl;
-   clearentVP3300Config.publicKey = publicKey;
-   clearentVP3300Config.contactAutoConfiguration = false;
-   clearentVP3300Config.contactlessAutoConfiguration = false;
-   clearentVP3300Config.contactless = true;
-   clearentVP3300Config.disableRemoteLogging = true;
 
-   clearentVP3300 = [[Clearent_VP3300 alloc] initWithConfig:self  clearentVP3300Configuration:clearentVP3300Config];
+User action needed indicates that the user/client needs to perform an action in order for the transaction to continue e.g. Insert the card.
+```
+    func userActionNeeded(action: UserAction) {
+        // here you should check the user action type and display the informtion to the users
+    }
 ```
 
-## The Transaction Token (JWT)
 
- The successfulTransactionToken callback will get a message in JSON. It contains safe data about the card as well as the transaction token/JWT.
+User info contains informations related to the transaction status e.g. Processing
 
-  * cvm - the card holder verification method
+```
+    func didReceiveInfo(info: UserInfo) {
+        // you should display the information to the users
+    }
+```
 
-  * last-four - last four of the credit card number
 
-  * track-data-hash - a hash representing the track data. This can be used as a unique id of the transaction.
+After the transaction is proccesed a delegate method will inform you about the status.
 
-  * jwt - This is the transaction token/JWT you will pass to us as a header when you perform a payment transaction.
+```
+    func didFinishTransaction(error: ResponseError?) {
+        if error == nil {
+           // no error
+        } else {
+           // you should inform about the error
+        }
+    }
+```
 
-## User experience when emv configuration is being applied.
 
-When the Clearent framework applies the emv configuration to the reader it is using IDTech's framework for communication. This process can take up to a couple of minutes and also has its own unique failures that need to be managed (with possible retry logic). The Clearent framework has some retry capability to account for these failures (example bluetooth connectivity) but only attempts a limited number of times. It's up to the client app to account for this initial user experience. Once the reader has been configured the device serial number is cached so the framework knows not to configure again. If you want to avoid hitting this one time delay during a transaction flow you can advise the merchant to perform an initial connection with the reader, maybe at the time they pull the reader out of the box or some time prior to running transactions.
-
-## Other tidbits
-
-[Card Orientation in Reader](docs/card_orientation.gif)
-
-# Go Live Checklist
-
-- [ ] Finish Clearent Integration Certification
-- [ ] Change base url from https://gateway-sb.clearent.net to https://gateway.clearent.net
-- [ ] Change public key from sandbox to production
-- [ ] Switch Clearent api keys from sandbox to production
-- [ ] Confirm Clearent api keys are used server side only and not embedded in your app.
-- [ ] :shipit: :city_sunset: :saxophone: :notes:
-
-[From an ipad, download latest objc demo](https://github.com/clearent/ClearentIdtechIOSFramework/blob/2.0/apps/VP3300%202020-04-29%2006-18-09/index.html){:target="_blank"}.
+Full Swift example of the ClearenWrapper integration  integration [Swift Example](https://).

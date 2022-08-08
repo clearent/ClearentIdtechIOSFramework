@@ -121,21 +121,93 @@ public enum TransactionError {
     case networkError, insuficientFunds, duplicateTransaction, generalError
 }
 
+/**
+ * This protocol is used to comunicate information and results regarding the interaction with the SDK
+ */
 public protocol ClearentWrapperProtocol : AnyObject {
+    /**
+     * Method called right after a pairing process and a bluetooth search is started
+     */
     func didStartPairing()
+    
+    /**
+     * Method called right after a successful connection to a card reader was completed
+     */
     func didFinishPairing()
+    
+    /**
+     * Method called as a response to 'startDeviceInfoUpdate' method and indicates that new reader information is available
+     */
     func didReceiveSignalStrength()
+    
+    /**
+     * Method called after a pairing process is started and card readers were found nearby
+     * @param readers, the list of readers available for pairing
+     */
     func didFindReaders(readers:[ReaderInfo])
+    
+    /**
+     * Method called when the currently paired device disconnects
+     */
     func deviceDidDisconnect()
+    
+    /**
+     * Method called when a pairing process was started but there are no available readers to pair with nearby
+     */
     func didNotFindReaders()
+    
+    /**
+     * Method called after the 'connectTo' method was called by protocol implementing class, indicating that  a connection to the selected reader is beeing  established
+     */
     func startedReaderConnection(with reader:ReaderInfo)
+    
+    /**
+     * Method called in response to method 'searchRecentlyUsedReaders' and indicated that recently readers were found
+     * @param readers. list of recently paired readers
+     */
     func didFindRecentlyUsedReaders(readers:[ReaderInfo])
+    
+    /**
+     * Method called in response to method 'searchRecentlyUsedReaders' and indicated that no recently readers were found
+     */
     func didNotFindRecentlyUsedReaders()
+    
+    /**
+     * Method called to indicate that continuous search of nearby readers has started
+     */
     func didBeginContinuousSearching()
+    
+    /**
+     * Method called  when a general error is encountered in a payment/transaction process
+     */
     func didEncounteredGeneralError()
+    
+    /**
+     * Method called when a transaction is finished
+     * @param response, transaction response as received from the API
+     * @param error, if not null it will contain the error received from the API
+     */
     func didFinishTransaction(response: TransactionResponse, error: ResponseError?)
+    
+    /**
+     * Method called  when the process of uploading the signature image has completed
+     * @param response, upload response as received from the API
+     * @param error, if not null it will contain the error received from the API
+     */
     func didFinishedSignatureUploadWith(response: SignatureResponse, error: ResponseError?)
+    
+    /**
+     * Method called each time the reader needs an action from the user
+     * @UserAction, please check the enum for more cases
+     * @action, User Action needed to be performed by the user
+     */
     func userActionNeeded(action: UserAction)
+    
+    /**
+     * Method called  each time the reader wants to inform the user
+     * @UserInfo, please check the enum for more cases
+     * @info, UserInfo needed to be performed by the user
+     */
     func didReceiveInfo(info: UserInfo)
 }
 
@@ -207,7 +279,11 @@ public final class ClearentWrapper : NSObject {
     }
     
     // MARK - Public
-        
+    
+    /**
+     * Method that will start the pairing process by creating a new connection and starting a bluetooth search.
+     * @param reconnectIfPossible, if  false  a connection that will search for bluetooth devices will be started, if true a connection with the last paired reader will be tried
+     */
     public func startPairing(reconnectIfPossible: Bool) {
         if let action = connectivityActionNeeded {
             DispatchQueue.main.async {
@@ -234,6 +310,11 @@ public final class ClearentWrapper : NSObject {
         }
     }
         
+    
+    /**
+     * Method that will try to initiate a connection to a specific reader
+     * @param reader, the card reader to connect to
+     */
     public func connectTo(reader: ReaderInfo) {
         if reader.uuid != nil {
             DispatchQueue.main.async {
@@ -245,6 +326,9 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
+    /**
+     * Method that will cancel a transaction
+     */
     public func cancelTransaction() {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             self?.clearentVP3300.emv_cancelTransaction()
@@ -252,12 +336,25 @@ public final class ClearentWrapper : NSObject {
         }        
     }
      
+    
+    /**
+     * This method will update the current SDK keys
+     * @param baseURL, the backend endpoint
+     * @param publicKey, publicKey used by the IDTech reader framework
+     * @param apiKey, API Key used for http calls
+     */
     public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String) {
         self.baseURL = baseURL
         self.apiKey = apiKey
         self.publicKey = publicKey
     }
     
+    
+    /**
+     * This method will start a transaction, if manualEntryCardInfo is not null then a manual transaction will be performed otherwise a card reader transcation will be initiated
+     * @param SaleEntity,  holds informations used for the transcation
+     * @param ManualEntryCardInfo,  all the information needed for a manual card transaction
+     */
     public func startTransaction(with saleEntity: SaleEntity, manualEntryCardInfo: ManualEntryCardInfo? = nil) {
         if !saleEntity.amount.canBeConverted(to: .utf8) { return }
         if let tip = saleEntity.tipAmount, !tip.canBeConverted(to: .utf8) { return }
@@ -276,6 +373,13 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
+    
+    /**
+     * Method that performs a manual card transaction
+     * @param cardNo, card number as String
+     * @param expirationDate, card expiration date as String
+     * @param csc, card security code as String
+     */
     private func manualEntryTransaction(cardNo: String, expirationDate: String, csc: String) {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let strongSelf = self else { return }
@@ -287,6 +391,10 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
+    
+    /**
+     * Method that will start a card reader transaction
+     */
     private func cardReaderTransaction() {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let strongSelf = self, let saleEntity = strongSelf.saleEntity else { return }
@@ -297,6 +405,9 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
+    /**
+     * Method that will search for currently used readers and call the delegate methods with the results
+     */
     public func searchRecentlyUsedReaders() {
         if let recentlyUsedReaders = ClearentWrapperDefaults.recentlyPairedReaders, recentlyUsedReaders.count > 0 {
             delegate?.didFindRecentlyUsedReaders(readers: recentlyUsedReaders)
@@ -305,6 +416,11 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
+    /**
+     * Method that will send a transaction to the payment gateway for processing
+     * @param jwt, Token received from the card reader
+     * @param SaleEntity, information about the transaction
+     */
     public func saleTransaction(jwt: String, saleEntity: SaleEntity) {
         httpClient.saleTransaction(jwt: jwt, saleEntity: saleEntity) { data, error in
             guard let responseData = data else { return }
@@ -330,11 +446,16 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
+    
     public func resendSignature() {
         guard let signatureImage = signatureImage else { return }
         sendSignatureWithImage(image: signatureImage)
     }
 
+    /**
+     * Method that will send a jpeg with client signature tot the payment gateway for storage
+     * @param image, UIImage to be uploaded
+     */
     public func sendSignatureWithImage(image: UIImage) {
         if let id = lastTransactionID {
             if let tid = Int(id) {
@@ -362,6 +483,12 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
+    
+    /**
+     * Method that will mark a transaction for refund
+     * @param jwt, Token generated by te card reader
+     * @param amount, Amount to be refunded
+     */
     public func refundTransaction(jwt: String, amount: String) {
         let saleEntity = SaleEntity(amount: amount)
         httpClient.refundTransaction(jwt: jwt, saleEntity: saleEntity) { data, error in
@@ -384,6 +511,11 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
+    
+    /**
+     * Method that will void a transaction
+     * @param transactionID, ID of transaction to be voided
+     */
     public func voidTransaction(transactionID: String) {
         httpClient.voidTransaction(transactionID: transactionID) { data, error in
             guard let responseData = data else { return }
@@ -405,6 +537,11 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
+    
+    /**
+     * Method that will fetch the tip settings for current mechant
+     * @param transactionID, ID of transcation to be voided
+     */
     public func fetchTipSetting(completion: @escaping () -> Void) {
         if let action = connectivityActionNeeded {
             DispatchQueue.main.async {
@@ -429,10 +566,17 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
+    /**
+     * Method that checks if a reader is already paired and connected
+     * return A bool indicating if there is a reader connected
+     */
     public func isReaderConnected() -> Bool {
         return (ClearentWrapperDefaults.pairedReaderInfo != nil && ClearentWrapperDefaults.pairedReaderInfo?.isConnected == true)
     }
     
+    /**
+     * Method that triggers a fetch of data about the reader
+     */
     public func startDeviceInfoUpdate() {
         bleManager?.readRSSI()
         getBatterylevel()
