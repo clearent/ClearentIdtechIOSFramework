@@ -21,6 +21,7 @@ class ClearentPaymentTextField: ClearentXibView {
     var nextButtonWasTapped: ((_ identifier: ItemIdentifier) -> Void)?
     var action: ((ClearentPaymentItem, String?) -> Void)?
     var item: ClearentPaymentItem?
+    private var previousText: String = ""
     
     override func configure() {
         titleLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.paymentFieldTitleColor
@@ -65,11 +66,29 @@ class ClearentPaymentTextField: ClearentXibView {
             textField.tag = tag
         }
         titleLabel.text = item.title
-        textField.placeholder = item.placeholder
-        textField.keyboardType = (item.type == .creditCardNo || item.type == .date || item.type == .securityCode) ? .numberPad : .default
-        errorLabel.text = item.errorMessage
+        setupTextField(placeholder: item.placeholder, isFirstCell: isFirstCell, isLastCell: isLastCell)
         fieldButton.isHidden = item.type != .date
+        textField.text = item.enteredValue
+        
+        if item.isValid {
+            disableErrorState()
+        } else {
+            enableErrorState(errorMessage: item.errorMessage)
+        }
+    }
+    
+    func setupTextField(placeholder: String?, isFirstCell: Bool, isLastCell: Bool) {
+        guard let item = item else { return }
+
+        textField.keyboardType = (item.type == .creditCardNo || item.type == .date || item.type == .securityCode) ? .numberPad : .default
         textField.addNavigationAndDoneToKeyboard(previousAction: (target: self, action: #selector(previousButtonTapped), isEnabled: !isFirstCell), nextAction: (target: self, action: #selector(nextButtonTapped), isEnabled: !isLastCell))
+        if let placeholder = placeholder {
+            let attributes: [NSAttributedString.Key: Any] = [.font: ClearentUIBrandConfigurator.shared.fonts.textfieldPlaceholder,
+                                                             .foregroundColor: ClearentUIBrandConfigurator.shared.colorPalette.paymentTextFieldPlaceholder]
+            textField.attributedPlaceholder =  NSAttributedString(string: placeholder, attributes: attributes)
+        } else {
+            textField.placeholder = ""
+        }
     }
     
     func enableErrorState(errorMessage: String?) {
@@ -88,12 +107,35 @@ class ClearentPaymentTextField: ClearentXibView {
     // MARK: - Actions
     
     @IBAction func textFieldEditingChanged(_ sender: UITextField) {
-        guard var text = sender.text else { return }
+        guard let text = sender.text, let item = item else { return }
         
+        switch item.type {
+        case .creditCardNo:
+            handleCreditCardNo(enteredText: text, sender: sender)
+        case.date:
+            handleExpirationDate(enteredText: text, sender: sender)
+        default:
+            sender.text = String(text.prefix(item.maxNoOfChars))
+        }
+
+    }
+    
+    private func handleCreditCardNo(enteredText: String, sender: UITextField) {
+        var text = enteredText
         if text.count > 0 && text.count % 5 == 0 && text.last != " " {
             text.insert(" ", at: text.index(text.startIndex, offsetBy: text.count - 1))
         }
         sender.text = text
+    }
+
+    private func handleExpirationDate(enteredText: String, sender: UITextField) {
+        var dateWithoutSlash = enteredText.replacingOccurrences(of: "/", with: "")
+    
+        if dateWithoutSlash.count >= 2 && previousText.last != "/" {
+            dateWithoutSlash.insert("/", at: enteredText.index(enteredText.startIndex, offsetBy: 2))
+        }
+        sender.text = String(dateWithoutSlash.prefix(5))
+        previousText = enteredText
     }
 }
 

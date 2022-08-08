@@ -131,4 +131,9 @@ public protocol ClearentUIColors {
     
     // The payment section title's color
     var paymentSectionTitleColor: UIColor { get }
+    
+    // MARK: - ClearentPaymentTextField
+    
+    // The payment textfield placeholder's color
+    var paymentTextFieldPlaceholder: UIColor { get }
 }

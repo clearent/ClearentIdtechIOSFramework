@@ -50,9 +50,7 @@ extension ClearentPaymentDataSource: UITableViewDataSource {
         let section = sections[indexPath.section]
         let row = section.rows[indexPath.row]
 
-        let bundle = Bundle(for: ClearentPaymentFieldCell.self)
-        let nib = UINib(nibName: "ClearentPaymentFieldCell", bundle: bundle)
-        if let cell = nib.instantiate(withOwner: self, options: nil).first as? ClearentPaymentFieldCell {        
+        if let cell = tableView.dequeueReusableCell(withIdentifier: ClearentPaymentFieldCell.identifier, for: indexPath) as? ClearentPaymentFieldCell {
             let isLastCell = isLastCell(indexPath: indexPath)
             let isFirstCell = isFirstCell(indexPath: indexPath)
             cell.setup(with: row, isFirstCell: isFirstCell, isLastCell: isLastCell)
@@ -68,14 +66,17 @@ extension ClearentPaymentDataSource: UITableViewDataSource {
     }
     
     private func handleCellAction(cell: ClearentPaymentFieldCell, item: ClearentPaymentItem?, cardData: String?) {
+        guard var item = item else { return }
         
         let isCardDataValid = ClearentFieldValidationHelper.validateCardData(cardData, field: item)
+        item.isValid = isCardDataValid
+        item.enteredValue = cardData ?? ""
         
         if isCardDataValid {
             delegate?.didFinishCompletePaymentField(item: item, value: cardData)
             cell.updatePaymentField(containing: item, with: nil)
         } else {
-            cell.updatePaymentField(containing: item, with: item?.errorMessage)
+            cell.updatePaymentField(containing: item, with: item.errorMessage)
         }
     }
     

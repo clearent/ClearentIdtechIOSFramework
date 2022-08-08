@@ -21,12 +21,15 @@ class ClearentPaymentFieldCell: UITableViewCell {
         static let sectionHeaderViewHeight: CGFloat = 48 //TO DO: double check if this is the right size
     }
 
-    static let identifier = "ClearentPaymentFieldCellIdentifier"
-    static let nib = "ClearentPaymentFieldCell"
+    static let identifier = "ClearentPaymentFieldCell"
+    static let nib = String(describing: ClearentPaymentFieldCell.self)
     
     // MARK: - Public
     
-
+    static func register(tableView: UITableView) {
+        tableView.register(UINib(nibName: ClearentPaymentFieldCell.nib, bundle: Bundle(for: ClearentPaymentFieldCell.self)),
+                           forCellReuseIdentifier: ClearentPaymentFieldCell.identifier)
+    }
     
     func setup(with row: ClearentPaymentRow, isFirstCell: Bool, isLastCell: Bool) {
         guard let firstItem = row.elements[safe: 0] else { return }

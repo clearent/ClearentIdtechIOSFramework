@@ -84,4 +84,6 @@ class ClearentColorsDefaultPalette: ClearentUIColors {
     var errorMessageTextColor: UIColor { UIColor(hexString: "C2210F") }
     
     var paymentSectionTitleColor: UIColor { UIColor(hexString: "272431") }
+    
+    var paymentTextFieldPlaceholder: UIColor { UIColor(hexString: "#6A6D7D")}
 }

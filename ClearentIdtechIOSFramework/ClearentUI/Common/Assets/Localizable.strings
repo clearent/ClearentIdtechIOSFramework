@@ -63,11 +63,11 @@
 "xsdk_payment_manual_entry_card_no_error" = "Invalid credit card number";
 
 "xsdk_payment_manual_entry_exp_date" = "Exp. Date";
-"xsdk_payment_manual_entry_exp_date_error" = "The card has expired";
+"xsdk_payment_manual_entry_exp_date_error" = "Invalid expiration date";
 "xsdk_payment_manual_entry_exp_date_placeholder" = "mm/yy";
 
 "xsdk_payment_manual_entry_csc" = "Security Code";
-"xsdk_payment_manual_entry_csc_error" = "Invalid number";
+"xsdk_payment_manual_entry_csc_error" = "Invalid security code";
 "xsdk_payment_manual_entry_csc_placeholder" = "CVV";
 
 "xsdk_payment_manual_entry_cardholder_name" = "Cardholder Name (optional)";
@@ -79,16 +79,16 @@
 "xsdk_payment_manual_entry_additional_section_title" = "Additional Information";
 
 "xsdk_payment_manual_entry_invoice_no" = "Invoice No.";
-"xsdk_payment_manual_entry_invoice_no_error" = "Invalid invoice no.";
+"xsdk_payment_manual_entry_invoice_no_error" = "Invoice number is too long";
 
 "xsdk_payment_manual_entry_order_no" = "Order No.";
-"xsdk_payment_manual_entry_order_no_error" = "Invalid order no.";
+"xsdk_payment_manual_entry_order_no_error" = "Order number is too long";
 
 "xsdk_payment_manual_entry_company_name" = "Company Name";
-"xsdk_payment_manual_entry_company_name_error" = "Invalid company name";
+"xsdk_payment_manual_entry_company_name_error" = "Company name is too long";
 
 "xsdk_payment_manual_entry_customer_id" = "Customer ID";
-"xsdk_payment_manual_entry_customer_id_error" = "Invalid customer ID";
+"xsdk_payment_manual_entry_customer_id_error" = "Customer ID is too long";
 
 "xsdk_payment_manual_entry_shipping_zip" = "Ship-to ZIP Code";
 "xsdk_payment_manual_entry_shipping_zip_error" = "Invalid zip code";

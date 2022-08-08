@@ -32,11 +32,11 @@ extension UITextField {
         fixedSpace.width = 10
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
         
-        createToolbar(with: [previousButton, fixedSpace, nextButton, flexibleSpace, doneBtn])
+        createToolbar(with: [fixedSpace, previousButton, fixedSpace, nextButton, flexibleSpace, doneBtn])
     }
     
     private func createToolbar(with items: [UIBarButtonItem]) {
-        let toolbar: UIToolbar = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 50))
+        let toolbar: UIToolbar = UIToolbar(frame: CGRect.init(x: 0, y: 0, width: UIScreen.main.bounds.width, height: 60))
         toolbar.items = items
         toolbar.sizeToFit()
         inputAccessoryView = toolbar
