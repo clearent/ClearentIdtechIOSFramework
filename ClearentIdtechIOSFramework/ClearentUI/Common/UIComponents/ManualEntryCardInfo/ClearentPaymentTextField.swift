@@ -121,14 +121,20 @@ class ClearentPaymentTextField: ClearentXibView {
     }
     
     private func handleCreditCardNo(enteredText: String, sender: UITextField) {
-        var text = enteredText
-        if text.count > 0 && text.count % 5 == 0 && text.last != " " {
-            text.insert(" ", at: text.index(text.startIndex, offsetBy: text.count - 1))
-        }
-        sender.text = text
+        guard let item = item else { return }
+        // insert an empty space every 4 digits and force a max number of entered digits
+        let textWithoutSpaces = enteredText.replacingOccurrences(of: " ", with: "")
+        let maxText = String(textWithoutSpaces.prefix(item.maxNoOfChars))
+        let regex = try? NSRegularExpression(pattern: "([0-9]{4})(?!$)", options: .caseInsensitive)
+        let formattedText = regex?.stringByReplacingMatches(in: maxText,
+                                  options: .reportProgress,
+                                  range: NSMakeRange(0, maxText.count),
+                                  withTemplate: "$0 ")
+        sender.text = formattedText
     }
 
     private func handleExpirationDate(enteredText: String, sender: UITextField) {
+        // insert a '/' after 2 digits
         var dateWithoutSlash = enteredText.replacingOccurrences(of: "/", with: "")
     
         if dateWithoutSlash.count >= 2 && previousText.last != "/" {
