@@ -51,6 +51,7 @@ class ClearentProcessingModalPresenter {
     var selectedReaderFromReadersList: ReaderItem?
     var sdkFeedbackProvider: FlowDataProvider
     var editableReader: ReaderInfo?
+    var shouldStartTransactionAfterRenameReader = false
     // MARK: Init
 
     init(modalProcessingView: ClearentProcessingModalView, amount: Double?, processType: ProcessType) {
@@ -153,7 +154,14 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                 if ClearentWrapper.shared.flowType?.flowFeedbackType == .renameReaderDone {
                     updateReaderName()
                 }
-                modalProcessingView?.dismissViewController(isConnected: userAction != .cancel, customName: editableReader?.customReaderName)
+                
+                if (self.shouldStartTransactionAfterRenameReader) {
+                    self.shouldStartTransactionAfterRenameReader = false
+                    startTipFlow()
+                    modalProcessingView?.positionViewOnTop(flag: false)
+                } else {
+                    modalProcessingView?.dismissViewController(isConnected: userAction != .cancel, customName: editableReader?.customReaderName)
+                }
             }
         case .retry, .pair:
             restartProcess(newPair: false)
@@ -200,6 +208,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         sdkFeedbackProvider.delegate = self
         
         if ClearentUIManager.shared.useCardReaderPaymentMethod && !sdkWrapper.isReaderConnected() {
+            shouldStartTransactionAfterRenameReader = (ClearentWrapperDefaults.pairedReaderInfo == nil) ? true : false
             sdkWrapper.startPairing(reconnectIfPossible: true)
         } else {
             startTipFlow()
@@ -310,8 +319,8 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
     func deviceDidDisconnect() {}
 
     func didFinishedPairing() {
-        if [.pairing(), .showReaders].contains(processType) {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+        if [.pairing(), .showReaders].contains(processType) ||  shouldStartTransactionAfterRenameReader == true {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [self] in
                 // display successful pairing content
                 var items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.pairingSuccessful),
                              FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
@@ -320,6 +329,9 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                 if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo {
                     items.insert(FlowDataItem(type: .readerInfo, object: readerInfo), at: 0)
                 }
+                
+                // Only show the transaction flow after pairing is there is a new pair
+                //self.shouldStartTransactionAfterRenameReader = (self.processType == .payment && readerReconnectWasPrerformed == false) ? true : false
                 let feedback = FlowFeedback(flow: self.processType, type: FlowFeedbackType.pairingDoneInfo, items: items)
                 self.modalProcessingView?.updateContent(with: feedback)
             }
