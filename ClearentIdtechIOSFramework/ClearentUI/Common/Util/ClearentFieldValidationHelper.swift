@@ -47,7 +47,7 @@ class ClearentFieldValidationHelper {
     
     static func isSecurityCodeValid(_ securityCode: String, field: ClearentPaymentItem) -> Bool {
         let regex = "^[\\d]{3,\(field.maxNoOfChars)}"
-        return ClearentFieldValidationHelper.evaluate(text: securityCode, regex: regex) || securityCode.isEmpty
+        return ClearentFieldValidationHelper.evaluate(text: securityCode, regex: regex)
     }
     
     static func isCardholderNameValid(_ name: String, field: ClearentPaymentItem) -> Bool {
@@ -64,6 +64,17 @@ class ClearentFieldValidationHelper {
         let regex = "^.{0,\(field.maxNoOfChars)}"
         return ClearentFieldValidationHelper.evaluate(text: text, regex: regex)
     }
+    
+//    private static func hideCardNumber(text: String) -> String {
+//        let text = text
+//        let regex = try? NSRegularExpression(pattern: "(//d)(?!$)", options: .caseInsensitive)
+//        return regex?.stringByReplacingMatches(in: text,
+//                                  options: .reportProgress,
+//                                  range: NSMakeRange(0, text.count),
+//                                               withTemplate: "*") ?? ""
+//        
+//
+//    }
     
     private static func evaluate(text: String, regex: String) -> Bool {
         let predicate = NSPredicate(format:"SELF MATCHES %@", regex)

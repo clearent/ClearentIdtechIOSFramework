@@ -36,9 +36,20 @@ class ClearentPaymentFooterView: ClearentXibView {
     private func setupConfirmButton() {
         confirmButton.buttonStyle = .filled
         confirmButton.button.setTitle("xsdk_payment_manual_entry_user_action_confirm".localized, for: .normal)
+        disableConfirmButton()
         
         confirmButton.action = {
             self.confirmButtonAction?()
         }
+    }
+    
+    func enableConfirmButton() {
+        confirmButton.setEnabledButton()
+        confirmButton.isEnabled = true
+    }
+    
+    func disableConfirmButton() {
+        confirmButton.setDisabledButton()
+        confirmButton.isEnabled = false
     }
 }

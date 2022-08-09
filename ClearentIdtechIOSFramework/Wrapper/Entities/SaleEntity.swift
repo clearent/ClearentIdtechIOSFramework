@@ -55,7 +55,10 @@ struct ClientInformation: Codable {
         case zip
     }
     
-    init(firstName: String? = nil, lastName: String? = nil, company: String? = nil, fromZip: String? = nil, zip: String? = nil) {
+    init?(firstName: String? = nil, lastName: String? = nil, company: String? = nil, fromZip: String? = nil, zip: String? = nil) {
+        if firstName == nil && lastName == nil && company == nil && fromZip == nil && zip == nil {
+            return nil
+        }
         self.company = company
         self.firstName = firstName
         self.fromZip = fromZip

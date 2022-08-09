@@ -29,10 +29,6 @@ class ClearentColorsDefaultPalette: ClearentUIColors {
     
     var borderedButtonTextColor: UIColor { UIColor(hexString: "272431") }
     
-    var enabledBackgroundColor: UIColor { UIColor(hexString: "#2FAC10") }
-    
-    var disabledBackgroundColor: UIColor { UIColor(hexString: "#272431") }
-    
     var enabledTextColor: UIColor { UIColor(hexString: "#FFFFFF") }
     
     var disabledTextColor: UIColor { UIColor(hexString: "#FFFFFF") }

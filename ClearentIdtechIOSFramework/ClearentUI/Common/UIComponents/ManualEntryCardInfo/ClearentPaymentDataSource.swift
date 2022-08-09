@@ -7,7 +7,6 @@
 //
 
 
-
 protocol ClearentPaymentDataSourceProtocol: AnyObject {
     func didFinishCompletePaymentField(item: ClearentPaymentItem?, value: String?)
 }
@@ -16,9 +15,8 @@ class ClearentPaymentDataSource: NSObject {
     var sections: [ClearentPaymentSection]
     weak var delegate: ClearentPaymentDataSourceProtocol?
 
-    init(with sections: [ClearentPaymentSection], delegate: ClearentPaymentDataSourceProtocol) {
+    init(with sections: [ClearentPaymentSection]) {
         self.sections = sections
-        self.delegate = delegate
         super.init()
         self.setupIdentifiersForElements()
     }
@@ -33,6 +31,35 @@ class ClearentPaymentDataSource: NSObject {
                 }
             }
         }
+    }
+    
+    func isAllDataValid() -> Bool {
+        for section in sections {
+            for row in section.rows {
+                if row.elements.first(where: { $0.isValid == false }) != nil {
+                    return false
+                }
+                if row.elements.first(where: { !$0.isOptional && $0.enteredValue.isEmpty }) != nil {
+                    return false
+                }
+            }
+        }
+        return true
+    }
+    
+    func valueForType(_ type: ClearentPaymentItemType) -> String? {
+        for section in sections {
+            for row in section.rows {
+                if let item = row.elements.first(where: { $0.type == type }) {
+                    if item.enteredValue.isEmpty {
+                        return nil
+                    } else {
+                        return item.enteredValue
+                    }
+                }
+            }
+        }
+        return nil
     }
 }
 
@@ -71,13 +98,9 @@ extension ClearentPaymentDataSource: UITableViewDataSource {
         let isCardDataValid = ClearentFieldValidationHelper.validateCardData(cardData, field: item)
         item.isValid = isCardDataValid
         item.enteredValue = cardData ?? ""
+        cell.updatePaymentField(containing: item)
+        delegate?.didFinishCompletePaymentField(item: item, value: cardData)
         
-        if isCardDataValid {
-            delegate?.didFinishCompletePaymentField(item: item, value: cardData)
-            cell.updatePaymentField(containing: item, with: nil)
-        } else {
-            cell.updatePaymentField(containing: item, with: item.errorMessage)
-        }
     }
     
     private func isFirstCell(indexPath: IndexPath) -> Bool {
