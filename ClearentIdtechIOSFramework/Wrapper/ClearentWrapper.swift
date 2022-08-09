@@ -408,12 +408,15 @@ public final class ClearentWrapper : NSObject {
     }
     
     public func fetchTipSetting(completion: @escaping () -> Void) {
-        if let action = connectivityActionNeeded {
-            DispatchQueue.main.async {
-                self.delegate?.userActionNeeded(action: action)
+        if ClearentUIManager.shared.useCardReaderPaymentMethod {
+            if let action = connectivityActionNeeded {
+                DispatchQueue.main.async {
+                    self.delegate?.userActionNeeded(action: action)
+                }
+                return
             }
-            return
         }
+
         httpClient.merchantSettings() { data, error in
             DispatchQueue.main.async {
                 do {
