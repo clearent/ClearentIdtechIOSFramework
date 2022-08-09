@@ -11,7 +11,7 @@ import UIKit
 
 protocol ClearentManualEntryFormViewProtocol: AnyObject {
     func didTapOnCancelButton()
-    func didTapOnConfirmButton()
+    func didTapOnConfirmButton(dataSource: ClearentPaymentDataSource)
 }
 
 class ClearentManualEntryFormView: ClearentXibView {
@@ -42,7 +42,7 @@ class ClearentManualEntryFormView: ClearentXibView {
         }
         
         footerView.confirmButtonAction = {
-            self.delegate?.didTapOnConfirmButton()
+            self.delegate?.didTapOnConfirmButton(dataSource: dataSource)
         }
         setupNotifications()
     }
@@ -99,5 +99,16 @@ extension ClearentManualEntryFormView: ClearentPaymentSectionHeaderViewProtocol 
         dataSource.sections[sectionIndex].isCollapsed = !section.isCollapsed
         tableView.reloadData()
         tableViewHeightLC.constant = tableView.contentSize.height
+    }
+}
+
+
+extension ClearentManualEntryFormView: ClearentPaymentDataSourceProtocol {
+    func didFinishCompletePaymentField(item: ClearentPaymentItem?, value: String?) {
+        if dataSource?.isAllDataValid() ?? false{
+            footerView.enableConfirmButton()
+        } else {
+            footerView.disableConfirmButton()
+        }
     }
 }

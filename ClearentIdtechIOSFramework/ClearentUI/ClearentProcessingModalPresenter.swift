@@ -33,8 +33,7 @@ protocol ProcessingModalProtocol {
     func enableDoneButtonForInput(enabled: Bool)
     func fetchTipSetting(completion: @escaping () -> Void)
     func handleSignature(with image: UIImage)
-    func updateCardData(for item: ClearentPaymentItem?, with value: String?)
-    func sendManualEntryTransaction()
+    func sendManualEntryTransaction(dataSource: ClearentPaymentDataSource)
 }
 
 class ClearentProcessingModalPresenter {
@@ -52,7 +51,6 @@ class ClearentProcessingModalPresenter {
     var selectedReaderFromReadersList: ReaderItem?
     var sdkFeedbackProvider: FlowDataProvider
     var editableReader: ReaderInfo?
-    var cardInfo: ManualEntryCardInfo?
     
     // MARK: Init
 
@@ -62,7 +60,6 @@ class ClearentProcessingModalPresenter {
         self.processType = processType
         sdkFeedbackProvider = FlowDataProvider()
         sdkFeedbackProvider.delegate = self
-        cardInfo = ManualEntryCardInfo(card: "", expirationDateMMYY: "", csc: "")
     }
 
     private func dissmissViewWithDelay() {
@@ -193,32 +190,29 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         ClearentWrapper.shared.sendSignatureWithImage(image: image)
     }
     
-    func updateCardData(for item: ClearentPaymentItem?, with value: String?) {
-        guard let type = item?.type, let value = value else { return }
+    func sendManualEntryTransaction(dataSource: ClearentPaymentDataSource) {
         
-        switch type {
-        case .creditCardNo:
-            cardInfo?.card = value
-        case .date:
-            cardInfo?.expirationDateMMYY = value
-        case .securityCode:
-            cardInfo?.csc = value
-        default:
-            break
-        }
-    }
-    
-    func sendManualEntryTransaction() {
-        if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
-            let saleEntity = SaleEntity(amount: amountFormatted,
-                                        tipAmount: tip?.stringFormattedWithTwoDecimals,
-                                        billing: ClientInformation(firstName: "John", lastName: "Scott", company: "Endava", zip: "85284"),
-                                        shipping: ClientInformation(zip: "85284"),
-                                        customerID: "002",
-                                        invoice: "invoice123",
-                                        orderID: "99988d")
-            startTransaction(saleEntity: saleEntity, manualEntryCardInfo: cardInfo)
-        }
+        guard let amount = amountWithoutTip?.stringFormattedWithTwoDecimals,
+              let cardNo = dataSource.valueForType(.creditCardNo)?.replacingOccurrences(of: " ", with: ""),
+              let date = dataSource.valueForType(.date)?.replacingOccurrences(of: "/", with: ""),
+              let csc = dataSource.valueForType(.securityCode) else { return }
+        let cardInfo = ManualEntryCardInfo(card: cardNo, expirationDateMMYY: date, csc: csc)
+        
+        let name = ClearentCarholderName(fullName: dataSource.valueForType(.cardholderName))
+        let billingInfo = ClientInformation(firstName: name.first,
+                                            lastName: name.last,
+                                            company: dataSource.valueForType(.companyName),
+                                            zip: dataSource.valueForType(.billingZipCode))
+        let shippingInfo = ClientInformation(zip: dataSource.valueForType(.shippingZipCode))
+        let saleEntity = SaleEntity(amount: amount,
+                                     tipAmount: tip?.stringFormattedWithTwoDecimals,
+                                     billing: billingInfo,
+                                     shipping: shippingInfo,
+                                     customerID: dataSource.valueForType(.customerId),
+                                     invoice: dataSource.valueForType(.invoiceNo),
+                                     orderID: dataSource.valueForType(.orderNo))
+        
+        startTransaction(saleEntity: saleEntity, manualEntryCardInfo: cardInfo)
     }
 
     func resendSignature() {

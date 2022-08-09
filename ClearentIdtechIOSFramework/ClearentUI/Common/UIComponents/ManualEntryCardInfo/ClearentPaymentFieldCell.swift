@@ -42,12 +42,14 @@ class ClearentPaymentFieldCell: UITableViewCell {
         }
     }
     
-    func updatePaymentField(containing item: ClearentPaymentItem?, with errorMessage: String?) {
-        switch item?.type {
+    func updatePaymentField(containing item: ClearentPaymentItem?) {
+        guard let item = item else { return }
+
+        switch item.type {
         case .securityCode:
-            update(paymentField: rightPaymentTextField, with: errorMessage)
+            update(paymentField: rightPaymentTextField, with: item.isValid ? nil : item.errorMessage)
         default:
-            update(paymentField: leftPaymentTextField, with: errorMessage)
+            update(paymentField: leftPaymentTextField, with: item.isValid ? nil : item.errorMessage)
         }
     }
     
