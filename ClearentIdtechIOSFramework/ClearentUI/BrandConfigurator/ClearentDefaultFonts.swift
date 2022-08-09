@@ -57,4 +57,6 @@ class ClearentDefaultFonts: ClearentUIFonts {
     var errorMessageLabelFont: UIFont { proTextExtraSmall }
     
     var sectionTitleLabelFont: UIFont { proTextLarge }
+    
+    var textfieldPlaceholder: UIFont { proTextNormal }
 }

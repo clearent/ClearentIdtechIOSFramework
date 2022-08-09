@@ -6,50 +6,24 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
-enum ClearentPaymentRowType {
-    case singleItem, twoItems
-}
 
 enum ClearentPaymentItemType {
     case creditCardNo, date, securityCode, cardholderName, billingZipCode, invoiceNo, orderNo, companyName, customerId, shippingZipCode
-    
-    var errorMessage: String {
-        switch self {
-        case .creditCardNo:
-            return "xsdk_payment_manual_entry_card_no_error".localized
-        case .date:
-            return "xsdk_payment_manual_entry_exp_date_error".localized
-        case .securityCode:
-            return "xsdk_payment_manual_entry_csc_error".localized
-        case .cardholderName:
-            return "xsdk_payment_manual_entry_cardholder_name_error".localized
-        case .billingZipCode:
-            return "xsdk_payment_manual_entry_billing_zip_error".localized
-        case .invoiceNo:
-            return "xsdk_payment_manual_entry_invoice_no_error".localized
-        case .orderNo:
-            return "xsdk_payment_manual_entry_order_no_error".localized
-        case .companyName:
-            return "xsdk_payment_manual_entry_company_name_error".localized
-        case .customerId:
-            return "xsdk_payment_manual_entry_customer_id_error".localized
-        case .shippingZipCode:
-            return "xsdk_payment_manual_entry_shipping_zip_error".localized
-        }
-    }
 }
 
 protocol ClearentPaymentSection {
     var title: String? { get }
     var isCollapsable: Bool { get }
     var isCollapsed: Bool { get set }
-    var rows: [ClearentPaymentRow] { get }
+    var rows: [ClearentPaymentRow] { get set }
 }
 
+
 struct ClearentPaymentRow {
-    var type: ClearentPaymentRowType = .singleItem
     var elements: [ClearentPaymentItem]
 }
+
+typealias ItemIdentifier = (tag: Int, indexPath: IndexPath)?
 
 protocol ClearentPaymentItem {
     var type: ClearentPaymentItemType { get }
@@ -57,7 +31,11 @@ protocol ClearentPaymentItem {
     var placeholder: String? { get }
     var iconName: String? { get }
     var errorMessage: String? { get }
+    var maxNoOfChars: Int { get }
     var isOptional: Bool { get }
+    var identifier: ItemIdentifier { get set }
+    var isValid: Bool { get set }
+    var enteredValue: String { get set }
 }
 
 extension ClearentPaymentItem {
@@ -67,49 +45,57 @@ extension ClearentPaymentItem {
     var errorMessage: String? { nil }
 }
 
-struct ClearentPaymentBaseSection: ClearentPaymentSection {
+class ClearentPaymentBaseSection: ClearentPaymentSection {
     var title: String? { nil }
     
     var isCollapsable: Bool { false }
     
     var isCollapsed: Bool = false
 
-    var rows: [ClearentPaymentRow] {[
+    var rows: [ClearentPaymentRow] = [
         ClearentPaymentRow(elements: [CreditCardNoItem()]),
-        ClearentPaymentRow(type: .twoItems, elements: [DateItem(), SecurityCodeItem()]),
+        ClearentPaymentRow(elements: [DateItem(), SecurityCodeItem()]),
         ClearentPaymentRow(elements: [CardholderNameItem()]),
         ClearentPaymentRow(elements: [BillingZipCodeItem()])
-    ]}
+    ]
 }
 
-struct ClearentPaymentAdditionalSection: ClearentPaymentSection {
-    var title: String? { "Additional Info" }
+class ClearentPaymentAdditionalSection: ClearentPaymentSection {
+    var title: String? { "xsdk_payment_manual_entry_additional_section_title".localized }
     
     var isCollapsable: Bool { true }
     
     var isCollapsed: Bool = true
 
-    var rows: [ClearentPaymentRow] {[
+    var rows: [ClearentPaymentRow] = [
         ClearentPaymentRow(elements: [InvoiceNoItem()]),
         ClearentPaymentRow(elements: [OrderNoItem()]),
         ClearentPaymentRow(elements: [CompanyNameItem()]),
         ClearentPaymentRow(elements: [CustomerIDItem()]),
         ClearentPaymentRow(elements: [ShippingZipCodeItem()])
-    ]}
+    ]
 }
 
-
-struct CreditCardNoItem: ClearentPaymentItem {
+class CreditCardNoItem: ClearentPaymentItem {
+    
     var type: ClearentPaymentItemType { .creditCardNo }
     
     var title: String { "xsdk_payment_manual_entry_card_no".localized }
     
     var errorMessage: String? { "xsdk_payment_manual_entry_card_no_error".localized }
     
+    var maxNoOfChars: Int { 19 }
+
     var isOptional: Bool { false }
+    
+    var identifier: ItemIdentifier = nil
+    
+    var isValid: Bool = true
+    
+    var enteredValue: String = ""
 }
 
-struct DateItem: ClearentPaymentItem {
+class DateItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .date }
     
     var title: String { "xsdk_payment_manual_entry_exp_date".localized }
@@ -120,10 +106,18 @@ struct DateItem: ClearentPaymentItem {
     
     var errorMessage: String? { "xsdk_payment_manual_entry_exp_date_error".localized }
     
+    var maxNoOfChars: Int { 4 }
+    
     var isOptional: Bool { false }
+    
+    var identifier: ItemIdentifier = nil
+    
+    var isValid: Bool = true
+    
+    var enteredValue: String = ""
 }
 
-struct SecurityCodeItem: ClearentPaymentItem {
+class SecurityCodeItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .securityCode }
     
     var title: String { "xsdk_payment_manual_entry_csc".localized }
@@ -132,56 +126,131 @@ struct SecurityCodeItem: ClearentPaymentItem {
     
     var errorMessage: String? { "xsdk_payment_manual_entry_csc_error".localized }
     
+    var maxNoOfChars: Int { 4 }
+    
     var isOptional: Bool { false }
+    
+    var identifier: ItemIdentifier = nil
+    
+    var isValid: Bool = true
+    
+    var enteredValue: String = ""
 }
 
 
-struct CardholderNameItem: ClearentPaymentItem {
+class CardholderNameItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .cardholderName }
     
     var title: String { "xsdk_payment_manual_entry_cardholder_name".localized }
     
+    var errorMessage: String? { "xsdk_payment_manual_entry_cardholder_name_error".localized }
+    
+    var maxNoOfChars: Int { 50 }
+    
+    var identifier: ItemIdentifier = nil
+    
+    var isValid: Bool = true
+    
+    var enteredValue: String = ""
+    
 }
-struct BillingZipCodeItem: ClearentPaymentItem {
+
+class BillingZipCodeItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .billingZipCode }
     
     var title: String { "xsdk_payment_manual_entry_billing_zip".localized }
     
     var errorMessage: String? { "xsdk_payment_manual_entry_billing_zip_error".localized }
+    
+    var maxNoOfChars: Int { 10 }
+    
+    var identifier: ItemIdentifier = nil
+    
+    var isValid: Bool = true
+    
+    var enteredValue: String = ""
 }
 
-struct InvoiceNoItem: ClearentPaymentItem {
+class InvoiceNoItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .invoiceNo }
     
     var title: String { "xsdk_payment_manual_entry_invoice_no".localized }
+    
+    var errorMessage: String? { "xsdk_payment_manual_entry_invoice_no_error".localized }
+    
+    var maxNoOfChars: Int { 50 }
+    
+    var identifier: ItemIdentifier = nil
+    
+    var isValid: Bool = true
+    
+    var enteredValue: String = ""
 }
 
-struct OrderNoItem: ClearentPaymentItem {
+class OrderNoItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .orderNo }
     
     var title: String { "xsdk_payment_manual_entry_order_no".localized }
+    
+    var errorMessage: String? { "xsdk_payment_manual_entry_order_no_error".localized }
+    
+    var maxNoOfChars: Int { 50 }
+    
+    var identifier: ItemIdentifier = nil
+    
+    var isValid: Bool = true
+    
+    var enteredValue: String = ""
 }
 
-struct CompanyNameItem: ClearentPaymentItem {
+class CompanyNameItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .companyName }
     
     var title: String { "xsdk_payment_manual_entry_company_name".localized }
     
+    var errorMessage: String? { "xsdk_payment_manual_entry_company_name_error".localized }
+    
+    var maxNoOfChars: Int { 50 }
+    
     var iconName: String?
+    
+    var identifier: ItemIdentifier = nil
+    
+    var isValid: Bool = true
+    
+    var enteredValue: String = ""
 }
 
-struct CustomerIDItem: ClearentPaymentItem {
+class CustomerIDItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .customerId }
     
     var title: String { "xsdk_payment_manual_entry_customer_id".localized }
     
+    var errorMessage: String? { "xsdk_payment_manual_entry_customer_id_error".localized }
+    
+    var maxNoOfChars: Int { 50 }
+    
     var iconName: String?
+    
+    var identifier: ItemIdentifier = nil
+    
+    var isValid: Bool = true
+    
+    var enteredValue: String = ""
 }
 
-struct ShippingZipCodeItem: ClearentPaymentItem {
+class ShippingZipCodeItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .shippingZipCode }
     
     var title: String { "xsdk_payment_manual_entry_shipping_zip".localized }
     
     var errorMessage: String? { "xsdk_payment_manual_entry_shipping_zip_error".localized }
+    
+    var maxNoOfChars: Int { 10 }
+    
+    var identifier: ItemIdentifier = nil
+    
+    var isValid: Bool = true
+    
+    var enteredValue: String = ""
 }

@@ -34,7 +34,7 @@ class ClearentManualEntryFormView: ClearentXibView {
         self.dataSource = dataSource
         tableView.dataSource = dataSource
         tableView.delegate = self
-        
+
         ClearentPaymentFieldCell.register(tableView: tableView)
         
         footerView.cancelButtonAction = {
@@ -44,6 +44,27 @@ class ClearentManualEntryFormView: ClearentXibView {
         footerView.confirmButtonAction = {
             self.delegate?.didTapOnConfirmButton()
         }
+        setupNotifications()
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    private func setupNotifications() {
+        // Register keyboard notifications
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+
+    @objc private func keyboardWillShow(notification: Notification) {
+        if let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue {
+            tableView.contentInset.bottom = keyboardSize.height / 1.3
+        }
+    }
+
+    @objc private func keyboardWillHide(notification: Notification) {
+        tableView.contentInset.bottom = 0
     }
     
     override func layoutSubviews() {
@@ -55,10 +76,11 @@ class ClearentManualEntryFormView: ClearentXibView {
 
 extension ClearentManualEntryFormView: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let sectionHeaderView = ClearentPaymentSectionHeaderView()
-        sectionHeaderView.delegate = self
+        guard let sectionItem = dataSource?.sections[safe: section], sectionItem.isCollapsable else { return nil }
         
-        return dataSource?.sections[section].isCollapsable == true ? sectionHeaderView : nil
+        let sectionHeaderView = ClearentPaymentSectionHeaderView(sectionItem: sectionItem)
+        sectionHeaderView.delegate = self
+        return sectionHeaderView
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -71,13 +93,11 @@ extension ClearentManualEntryFormView: UITableViewDelegate {
 }
 
 extension ClearentManualEntryFormView: ClearentPaymentSectionHeaderViewProtocol {
-    func didTapOnSectionHeaderView(_ sender: ClearentPaymentSectionHeaderView) {
-        guard let dataSource = dataSource else { return }
-        
-        let isSectionCollapsed = dataSource.sections[1].isCollapsed
-        dataSource.sections[1].isCollapsed = !isSectionCollapsed
-        
-//        tableView.reloadData()
-        sender.updateDropDownIcon(isSectionCollapsed: dataSource.sections[1].isCollapsed)
+    func didTapOnSectionHeaderView(header: ClearentPaymentSectionHeaderView, sectionIndex: Int) {
+        guard let dataSource = dataSource, let section = dataSource.sections[safe: sectionIndex] else { return }
+
+        dataSource.sections[sectionIndex].isCollapsed = !section.isCollapsed
+        tableView.reloadData()
+        tableViewHeightLC.constant = tableView.contentSize.height
     }
 }

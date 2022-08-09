@@ -16,9 +16,12 @@ class ClearentPaymentTextField: ClearentXibView {
     @IBOutlet weak var errorImageView: UIImageView!
     @IBOutlet weak var errorLabel: UILabel!
     @IBOutlet weak var fieldButton: UIButton!
-    
-    private var type: ClearentPaymentItemType?
-    var action: ((ClearentPaymentItemType?, String?) -> Void)?
+
+    var previousButtonWasTapped: ((_ identifier: ItemIdentifier) -> Void)?
+    var nextButtonWasTapped: ((_ identifier: ItemIdentifier) -> Void)?
+    var action: ((ClearentPaymentItem, String?) -> Void)?
+    var item: ClearentPaymentItem?
+    private var previousText: String = ""
     
     override func configure() {
         titleLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.paymentFieldTitleColor
@@ -30,35 +33,61 @@ class ClearentPaymentTextField: ClearentXibView {
         errorLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.errorMessageTextColor
         errorLabel.font = ClearentUIBrandConfigurator.shared.fonts.errorMessageLabelFont
         errorLabel.isHidden = true
-        
-        textField.addTarget(self, action: #selector(textFieldDidCompleteEditing), for: .editingDidEnd)
-        textField.addDoneToKeyboard(barButtonTitle: "xsdk_keyboard_done".localized)
+
+        configureTextField()
         
         fieldButton.isHidden = true
+        fieldButton.setImage(UIImage(named: ClearentConstants.IconName.calendar, in: ClearentConstants.bundle, compatibleWith: nil), for: .normal)
     }
     
     // MARK: - Private
     
     @objc private func textFieldDidCompleteEditing() {
-        action?(type, textField.text)
+        guard let item = item else {
+            return
+        }
+
+        action?(item, textField.text)
     }
     
-    // MARK: - Public
-    
-    func setup(with item: ClearentPaymentItem) {
-        titleLabel.text = item.title
-        textField.placeholder = item.placeholder
-        textField.keyboardType = (item.type == .creditCardNo || item.type == .date || item.type == .securityCode) ? .numberPad : .default
+    private func configureTextField() {
+        textField.addTarget(self, action: #selector(textFieldDidCompleteEditing), for: .editingDidEnd)
         textField.layer.borderWidth = 1.0
         textField.layer.borderColor = ClearentUIBrandConfigurator.shared.colorPalette.borderColor.cgColor
         textField.layer.cornerRadius = 4
         textField.layer.masksToBounds = true
-        errorLabel.text = item.errorMessage
-        type = item.type
+    }
+    
+    // MARK: - Public
+    
+    func setup(with item: ClearentPaymentItem, isFirstCell: Bool, isLastCell: Bool) {
+        self.item = item
+        if let tag = item.identifier?.tag {
+            textField.tag = tag
+        }
+        titleLabel.text = item.title
+        setupTextField(placeholder: item.placeholder, isFirstCell: isFirstCell, isLastCell: isLastCell)
+        fieldButton.isHidden = item.type != .date
+        textField.text = item.enteredValue
         
-        if type == .date {
-            fieldButton.isHidden = false
-            fieldButton.setImage(UIImage(named: ClearentConstants.IconName.calendar, in: ClearentConstants.bundle, compatibleWith: nil), for: .normal)
+        if item.isValid {
+            disableErrorState()
+        } else {
+            enableErrorState(errorMessage: item.errorMessage)
+        }
+    }
+    
+    func setupTextField(placeholder: String?, isFirstCell: Bool, isLastCell: Bool) {
+        guard let item = item else { return }
+
+        textField.keyboardType = (item.type == .creditCardNo || item.type == .date || item.type == .securityCode) ? .numberPad : .default
+        textField.addNavigationAndDoneToKeyboard(previousAction: (target: self, action: #selector(previousButtonTapped), isEnabled: !isFirstCell), nextAction: (target: self, action: #selector(nextButtonTapped), isEnabled: !isLastCell))
+        if let placeholder = placeholder {
+            let attributes: [NSAttributedString.Key: Any] = [.font: ClearentUIBrandConfigurator.shared.fonts.textfieldPlaceholder,
+                                                             .foregroundColor: ClearentUIBrandConfigurator.shared.colorPalette.paymentTextFieldPlaceholder]
+            textField.attributedPlaceholder =  NSAttributedString(string: placeholder, attributes: attributes)
+        } else {
+            textField.placeholder = ""
         }
     }
     
@@ -78,11 +107,46 @@ class ClearentPaymentTextField: ClearentXibView {
     // MARK: - Actions
     
     @IBAction func textFieldEditingChanged(_ sender: UITextField) {
-        guard var text = sender.text else { return }
+        guard let text = sender.text, let item = item else { return }
         
+        switch item.type {
+        case .creditCardNo:
+            handleCreditCardNo(enteredText: text, sender: sender)
+        case.date:
+            handleExpirationDate(enteredText: text, sender: sender)
+        default:
+            sender.text = String(text.prefix(item.maxNoOfChars))
+        }
+
+    }
+    
+    private func handleCreditCardNo(enteredText: String, sender: UITextField) {
+        var text = enteredText
         if text.count > 0 && text.count % 5 == 0 && text.last != " " {
             text.insert(" ", at: text.index(text.startIndex, offsetBy: text.count - 1))
         }
         sender.text = text
+    }
+
+    private func handleExpirationDate(enteredText: String, sender: UITextField) {
+        var dateWithoutSlash = enteredText.replacingOccurrences(of: "/", with: "")
+    
+        if dateWithoutSlash.count >= 2 && previousText.last != "/" {
+            dateWithoutSlash.insert("/", at: enteredText.index(enteredText.startIndex, offsetBy: 2))
+        }
+        sender.text = String(dateWithoutSlash.prefix(5))
+        previousText = enteredText
+    }
+}
+
+extension ClearentPaymentTextField {
+    @objc private func previousButtonTapped() {
+        previousButtonWasTapped?(item?.identifier)
+        _ = resignFirstResponder()
+    }
+    
+    @objc private func nextButtonTapped() {
+        nextButtonWasTapped?(item?.identifier)
+        _ = resignFirstResponder()
     }
 }

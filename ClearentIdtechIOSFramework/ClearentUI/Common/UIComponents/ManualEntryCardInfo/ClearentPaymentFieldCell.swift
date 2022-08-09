@@ -14,16 +14,15 @@ class ClearentPaymentFieldCell: UITableViewCell {
     @IBOutlet weak var rightPaymentTextField: ClearentPaymentTextField!
     @IBOutlet weak var stackView: UIStackView!
     
-    private var type: ClearentPaymentRowType?
-    var action: ((ClearentPaymentItemType?, String?) -> Void)?
+    var action: ((ClearentPaymentItem?, String?) -> Void)?
     
     enum Layout {
-        static let cellHeight: CGFloat = 92
+        static let cellHeight: CGFloat = 94
         static let sectionHeaderViewHeight: CGFloat = 48 //TO DO: double check if this is the right size
     }
 
-    static let identifier = "ClearentPaymentFieldCellIdentifier"
-    static let nib = "ClearentPaymentFieldCell"
+    static let identifier = "ClearentPaymentFieldCell"
+    static let nib = String(describing: ClearentPaymentFieldCell.self)
     
     // MARK: - Public
     
@@ -32,34 +31,52 @@ class ClearentPaymentFieldCell: UITableViewCell {
                            forCellReuseIdentifier: ClearentPaymentFieldCell.identifier)
     }
     
-    func setup(with row: ClearentPaymentRow) {
-        type = row.type
-        
-        if row.type == .singleItem {
-            setup(paymentField: leftPaymentTextField, with: row.elements[0])
-            stackView.removeAllArrangedSubviews()
-            stackView.addArrangedSubview(leftPaymentTextField)
-        } else {
-            setup(paymentField: leftPaymentTextField, with: row.elements[0])
-            setup(paymentField: rightPaymentTextField, with: row.elements[1])
+    func setup(with row: ClearentPaymentRow, isFirstCell: Bool, isLastCell: Bool) {
+        guard let firstItem = row.elements[safe: 0] else { return }
+        setup(paymentField: leftPaymentTextField, with: firstItem, isFirstCell: isFirstCell, isLastCell: isLastCell)
+        rightPaymentTextField.isHidden = row.elements.count == 1
+       
+        if let secondItem = row.elements[safe: 1] {
+            rightPaymentTextField.isHidden = false
+            setup(paymentField: rightPaymentTextField, with: secondItem, isFirstCell: isFirstCell, isLastCell: isLastCell)
         }
     }
     
-    func updatePaymentField(containing item: ClearentPaymentItemType?, with errorMessage: String?) {
-        if type == .singleItem || item == .date {
-            update(paymentField: leftPaymentTextField, with: errorMessage)
-        } else {
+    func updatePaymentField(containing item: ClearentPaymentItem?, with errorMessage: String?) {
+        switch item?.type {
+        case .securityCode:
             update(paymentField: rightPaymentTextField, with: errorMessage)
+        default:
+            update(paymentField: leftPaymentTextField, with: errorMessage)
         }
+    }
+    
+    func setupNavigationActions(for tableView: UITableView) {
+        leftPaymentTextField.nextButtonWasTapped = { identifier in
+            tableView.nextResponder(identifier: identifier)
+        }
+        
+        leftPaymentTextField.previousButtonWasTapped = { identifier in
+            tableView.previousResponder(identifier: identifier)
+        }
+        
+        rightPaymentTextField.nextButtonWasTapped = { identifier in
+            tableView.nextResponder(identifier: identifier)
+        }
+        
+        rightPaymentTextField.previousButtonWasTapped = { identifier in
+            tableView.previousResponder(identifier: identifier)
+        }
+
     }
     
     // MARK: - Private
     
-    private func setup(paymentField: ClearentPaymentTextField, with item: ClearentPaymentItem) {
-        paymentField.setup(with: item)
-        paymentField.action = { [weak self] fieldType, cardData in
+    private func setup(paymentField: ClearentPaymentTextField, with item: ClearentPaymentItem, isFirstCell: Bool, isLastCell: Bool) {
+        paymentField.setup(with: item, isFirstCell: isFirstCell, isLastCell: isLastCell)
+        paymentField.action = { [weak self] item, cardData in
             guard let strongSelf = self else { return }
-            strongSelf.action?(fieldType, cardData)
+            strongSelf.action?(item, cardData)
         }
     }
     
@@ -71,3 +88,33 @@ class ClearentPaymentFieldCell: UITableViewCell {
         paymentField.enableErrorState(errorMessage: errorMessage)
     }
 }
+
+fileprivate extension UITableView {
+    func nextResponder(identifier: ItemIdentifier) {
+        guard let identifier = identifier else { return }
+        for i in (identifier.tag + 1)..<(identifier.tag + 100) {
+            if let view = viewWithTag(i), let containerView = view.superview?.superview as? ClearentPaymentTextField {
+                handleJumpTo(textField: view, and: containerView, tag: i)
+                break
+            }
+        }
+    }
+    
+    func previousResponder(identifier: ItemIdentifier) {
+        guard let identifier = identifier else { return }
+        for i in (0..<(identifier.tag)).reversed() {
+            if let view = viewWithTag(i), let containerView = view.superview?.superview as? ClearentPaymentTextField {
+                handleJumpTo(textField: view, and: containerView, tag: i)
+                break
+            }
+        }
+    }
+    
+    private func handleJumpTo(textField: UIView, and textFieldContainer: ClearentPaymentTextField, tag: Int) {
+        textField.becomeFirstResponder()
+        if let indexPath = textFieldContainer.item?.identifier?.indexPath {
+            scrollToRow(at: indexPath, at: .bottom, animated: true)
+        }
+    }
+}
+

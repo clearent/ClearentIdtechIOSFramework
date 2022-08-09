@@ -84,7 +84,6 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         if let error = error {
             let errItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
                             FlowDataItem(type: .title, object: "xsdk_signature_upload_failure_title".localized),
-                            FlowDataItem(type: .description, object: error.message),
                             FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                             FlowDataItem(type: .userAction, object: FlowButtonType.skip)]
             

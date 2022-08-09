@@ -75,4 +75,8 @@ public protocol ClearentUIFonts {
     // MARK: - ClearentPaymentSectionHeaderView
     
     var sectionTitleLabelFont: UIFont { get }
+    
+    // MARK: - ClearentPaymentTextField
+    
+    var textfieldPlaceholder: UIFont { get }
 }
