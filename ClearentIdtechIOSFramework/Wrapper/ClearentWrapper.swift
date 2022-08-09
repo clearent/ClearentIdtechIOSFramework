@@ -264,11 +264,13 @@ public final class ClearentWrapper : NSObject {
         
         self.saleEntity = saleEntity
         
-        if let action = connectivityActionNeeded {
-            DispatchQueue.main.async {
-                self.delegate?.userActionNeeded(action: action)
+        if ClearentUIManager.shared.useCardReaderPaymentMethod {
+            if let action = connectivityActionNeeded {
+                DispatchQueue.main.async {
+                    self.delegate?.userActionNeeded(action: action)
+                }
+                return
             }
-            return
         }
         
         if let manualEntryCardInfo = manualEntryCardInfo {
