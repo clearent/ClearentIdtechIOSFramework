@@ -9,6 +9,17 @@
 
 enum ClearentPaymentItemType {
     case creditCardNo, date, securityCode, cardholderName, billingZipCode, invoiceNo, orderNo, companyName, customerId, shippingZipCode
+    
+    var separator: String {
+        switch self {
+        case .creditCardNo:
+            return " "
+        case .date:
+            return "/"
+        default:
+            return ""
+        }
+    }
 }
 
 protocol ClearentPaymentSection {
@@ -17,7 +28,6 @@ protocol ClearentPaymentSection {
     var isCollapsed: Bool { get set }
     var rows: [ClearentPaymentRow] { get set }
 }
-
 
 struct ClearentPaymentRow {
     var elements: [ClearentPaymentItem]
@@ -37,7 +47,6 @@ protocol ClearentPaymentItem {
     var isValid: Bool { get set }
     var enteredValue: String { get set }
     var hiddenValue: String? { get set }
-    var separator: String? { get }
 }
 
 extension ClearentPaymentItem {
@@ -45,7 +54,6 @@ extension ClearentPaymentItem {
     var placeholder: String? { nil }
     var iconName: String? { nil }
     var errorMessage: String? { nil }
-    var separator: String? { nil }
 }
 
 class ClearentPaymentBaseSection: ClearentPaymentSection {
@@ -79,8 +87,8 @@ class ClearentPaymentAdditionalSection: ClearentPaymentSection {
     ]
 }
 
+
 class CreditCardNoItem: ClearentPaymentItem {
-    
     var type: ClearentPaymentItemType { .creditCardNo }
     
     var title: String { "xsdk_payment_manual_entry_card_no".localized }
@@ -98,8 +106,6 @@ class CreditCardNoItem: ClearentPaymentItem {
     var enteredValue: String = ""
     
     var hiddenValue: String? = nil
-    
-    var separator: String? = " "
 }
 
 class DateItem: ClearentPaymentItem {
@@ -124,8 +130,6 @@ class DateItem: ClearentPaymentItem {
     var enteredValue: String = ""
     
     var hiddenValue: String? = nil
-    
-    var separator: String? = "/"
 }
 
 class SecurityCodeItem: ClearentPaymentItem {
@@ -167,7 +171,6 @@ class CardholderNameItem: ClearentPaymentItem {
     var enteredValue: String = ""
     
     var hiddenValue: String? = nil
-    
 }
 
 class BillingZipCodeItem: ClearentPaymentItem {

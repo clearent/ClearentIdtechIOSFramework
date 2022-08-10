@@ -24,8 +24,6 @@ class ClearentManualEntryFormView: ClearentXibView {
     private var dataSource: ClearentPaymentDataSource?
     weak var delegate: ClearentManualEntryFormViewProtocol?
     
-    override func configure() {}
-    
     // MARK: - Init
     
     convenience init(with dataSource: ClearentPaymentDataSource) {

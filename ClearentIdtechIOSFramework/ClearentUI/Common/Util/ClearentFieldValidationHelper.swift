@@ -31,7 +31,7 @@ class ClearentFieldValidationHelper {
     }
     
     static func isCardNumberValid(item: ClearentPaymentItem) -> Bool {
-        let cardNumberWithoutSpaces = item.enteredValue.replacingOccurrences(of: " ", with: "")
+        let cardNumberWithoutSpaces = item.enteredValue.replacingOccurrences(of: ClearentPaymentItemType.creditCardNo.separator, with: "")
         let regex = "^[\\d]{15,\(item.maxNoOfChars)}"
         
         return ClearentFieldValidationHelper.evaluate(text: cardNumberWithoutSpaces, regex: regex)
@@ -39,7 +39,7 @@ class ClearentFieldValidationHelper {
     
     static func isExpirationDateValid(item: ClearentPaymentItem) -> Bool {
         let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "MM\(item.separator ?? "")yy"
+        dateFormatter.dateFormat = "MM\(item.type.separator)yy"
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         guard let date = dateFormatter.date(from: item.enteredValue),
               let endOfMonth = Calendar.current.date(byAdding: .month, value: 1, to: date) else { return false }
@@ -92,7 +92,7 @@ class ClearentFieldValidationHelper {
     
     // insert an empty space every 4 digits and force a max number of entered digits
     static func formatCreditCardNo(text: String, sender: UITextField, item: ClearentPaymentItem) {
-        let separator = item.separator ?? ""
+        let separator = item.type.separator
         let textWithoutSpaces = text.replacingOccurrences(of: separator, with: "")
         let maxText = String(textWithoutSpaces.prefix(item.maxNoOfChars))
         let regex = try? NSRegularExpression(pattern: "(.{4})(?!$)", options: .caseInsensitive)
@@ -106,7 +106,7 @@ class ClearentFieldValidationHelper {
     // insert a separator ('/') after 2 digits
     static func formatExpirationDate(sender: UITextField, item: ClearentPaymentItem) {
         guard let text = sender.text else { return }
-        let separator = item.separator ?? ""
+        let separator = item.type.separator
         let separatorChar = Character(separator)
         var date = text.replacingOccurrences(of: separator, with: "")
     

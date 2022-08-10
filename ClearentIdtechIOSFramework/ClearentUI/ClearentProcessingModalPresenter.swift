@@ -193,8 +193,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     func sendManualEntryTransaction(dataSource: ClearentPaymentDataSource) {
         
         guard let amount = amountWithoutTip?.stringFormattedWithTwoDecimals,
-              let cardNo = dataSource.valueForType(.creditCardNo)?.replacingOccurrences(of: " ", with: ""),
-              let date = dataSource.valueForType(.date)?.replacingOccurrences(of: "/", with: ""),
+              let cardNo = dataSource.valueForType(.creditCardNo)?.replacingOccurrences(of: ClearentPaymentItemType.creditCardNo.separator, with: ""),
+              let date = dataSource.valueForType(.date)?.replacingOccurrences(of: ClearentPaymentItemType.date.separator, with: ""),
               let csc = dataSource.valueForType(.securityCode) else { return }
         let cardInfo = ManualEntryCardInfo(card: cardNo, expirationDateMMYY: date, csc: csc)
         
