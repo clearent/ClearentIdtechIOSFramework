@@ -33,7 +33,7 @@ protocol ProcessingModalProtocol {
     func enableDoneButtonForInput(enabled: Bool)
     func fetchTipSetting(completion: @escaping () -> Void)
     func handleSignature(with image: UIImage)
-    func sendManualEntryTransaction(dataSource: ClearentPaymentDataSource)
+    func sendManualEntryTransaction(with dataSource: ClearentPaymentDataSource)
 }
 
 class ClearentProcessingModalPresenter {
@@ -189,7 +189,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         ClearentWrapper.shared.sendSignatureWithImage(image: image)
     }
     
-    func sendManualEntryTransaction(dataSource: ClearentPaymentDataSource) {
+    func sendManualEntryTransaction(with dataSource: ClearentPaymentDataSource) {
         guard let amount = amountWithoutTip?.stringFormattedWithTwoDecimals,
               let cardNo = dataSource.valueForType(.creditCardNo)?.replacingOccurrences(of: ClearentPaymentItemType.creditCardNo.separator, with: ""),
               let date = dataSource.valueForType(.date)?.replacingOccurrences(of: ClearentPaymentItemType.date.separator, with: ""),

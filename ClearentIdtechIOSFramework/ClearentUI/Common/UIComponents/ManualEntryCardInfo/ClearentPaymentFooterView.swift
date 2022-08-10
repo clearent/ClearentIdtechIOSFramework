@@ -22,6 +22,16 @@ class ClearentPaymentFooterView: ClearentXibView {
         setupConfirmButton()
     }
     
+    func enableConfirmButton() {
+        confirmButton.setEnabledButton()
+        confirmButton.isEnabled = true
+    }
+    
+    func disableConfirmButton() {
+        confirmButton.setDisabledButton()
+        confirmButton.isEnabled = false
+    }
+    
     // MARK: - Private
     
     private func setupCancelButton() {
@@ -41,15 +51,5 @@ class ClearentPaymentFooterView: ClearentXibView {
         confirmButton.action = {
             self.confirmButtonAction?()
         }
-    }
-    
-    func enableConfirmButton() {
-        confirmButton.setEnabledButton()
-        confirmButton.isEnabled = true
-    }
-    
-    func disableConfirmButton() {
-        confirmButton.setDisabledButton()
-        confirmButton.isEnabled = false
     }
 }

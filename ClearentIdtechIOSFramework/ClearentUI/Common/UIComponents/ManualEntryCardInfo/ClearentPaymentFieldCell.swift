@@ -34,6 +34,7 @@ class ClearentPaymentFieldCell: UITableViewCell {
     func setup(with row: ClearentPaymentRow, isFirstCell: Bool, isLastCell: Bool) {
         guard let firstItem = row.elements[safe: 0] else { return }
         setup(paymentField: leftPaymentTextField, with: firstItem, isFirstCell: isFirstCell, isLastCell: isLastCell)
+        // do not show the second text field if there is only one element in row
         rightPaymentTextField.isHidden = row.elements.count == 1
        
         if let secondItem = row.elements[safe: 1] {

@@ -81,7 +81,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     func didFinishedSignatureUploadWith(response: SignatureResponse, error: ResponseError?) {
         let feedback: FlowFeedback
         
-        if let error = error {
+        if error == nil {
             let errItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
                             FlowDataItem(type: .title, object: "xsdk_signature_upload_failure_title".localized),
                             FlowDataItem(type: .userAction, object: FlowButtonType.retry),

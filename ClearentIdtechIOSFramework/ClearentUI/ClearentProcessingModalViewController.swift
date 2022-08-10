@@ -288,6 +288,6 @@ extension ClearentProcessingModalViewController: ClearentManualEntryFormViewProt
     }
     
     func didTapOnConfirmButton(dataSource: ClearentPaymentDataSource) {
-        presenter?.sendManualEntryTransaction(dataSource: dataSource)
+        presenter?.sendManualEntryTransaction(with: dataSource)
     }
 }

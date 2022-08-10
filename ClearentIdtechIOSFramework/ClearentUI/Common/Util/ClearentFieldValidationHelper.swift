@@ -26,13 +26,13 @@ class ClearentFieldValidationHelper {
         case .billingZipCode, .shippingZipCode:
             return isZipValid(item: item)
         case .invoiceNo, .orderNo, .companyName, .customerId:
-            return hasAnyCharacherMaxLength(item: item)
+            return hasValidLength(item: item)
         }
     }
     
     static func isCardNumberValid(item: ClearentPaymentItem) -> Bool {
         let cardNumberWithoutSpaces = item.enteredValue.replacingOccurrences(of: ClearentPaymentItemType.creditCardNo.separator, with: "")
-        let regex = "^[\\d]{15,\(item.maxNoOfChars)}"
+        let regex = "\\d{15,\(item.maxNoOfChars)}"
         
         return ClearentFieldValidationHelper.evaluate(text: cardNumberWithoutSpaces, regex: regex)
     }
@@ -47,27 +47,28 @@ class ClearentFieldValidationHelper {
     }
     
     static func isSecurityCodeValid(item: ClearentPaymentItem) -> Bool {
-        let regex = "^[\\d]{3,\(item.maxNoOfChars)}"
+        let regex = "\\d{3,\(item.maxNoOfChars)}"
         return ClearentFieldValidationHelper.evaluate(text: item.enteredValue, regex: regex)
     }
     
     static func isCardholderNameValid(item: ClearentPaymentItem) -> Bool {
-        let regex = "^[A-Za-z\\s]{0,\(item.maxNoOfChars)}"
+        let regex = "[A-Za-z\\s]{0,\(item.maxNoOfChars)}"
         return ClearentFieldValidationHelper.evaluate(text: item.enteredValue, regex: regex)
     }
     
     static func isZipValid(item: ClearentPaymentItem) -> Bool {
-        let regex = "^[A-Za-z\\d\\-]{5,\(item.maxNoOfChars)}"
+        let regex = "[A-Za-z\\d\\-]{5,\(item.maxNoOfChars)}"
         return ClearentFieldValidationHelper.evaluate(text: item.enteredValue, regex: regex) || item.enteredValue.isEmpty
     }
     
-    static func hasAnyCharacherMaxLength(item: ClearentPaymentItem) -> Bool {
-        let regex = "^.{0,\(item.maxNoOfChars)}"
+    static func hasValidLength(item: ClearentPaymentItem) -> Bool {
+        let regex = ".{0,\(item.maxNoOfChars)}"
         return ClearentFieldValidationHelper.evaluate(text: item.enteredValue, regex: regex)
     }
     
+    // if the value is valid, it replaces all digits except the last 4 with '*'
     static func hideCardNumber(text: String, sender: UITextField, item: ClearentPaymentItem) {
-        guard let regex = try? NSRegularExpression(pattern: "(\\d)(?=\\d{4})", options: .caseInsensitive), item.isValid else { return }
+        guard let regex = try? NSRegularExpression(pattern: "\\d(?=\\d{4})", options: .caseInsensitive), item.isValid else { return }
         let textWithoutSpaces = text.replacingOccurrences(of: " ", with: "")
         let hiddenText = regex.stringByReplacingMatches(in: textWithoutSpaces,
                                   options: .reportProgress,
@@ -78,7 +79,7 @@ class ClearentFieldValidationHelper {
         item.hiddenValue = sender.text ?? nil
     }
     
-    
+    // if the value is valid, it replaces all digits with '*'
     static func hideSecurityCode(text: String, sender: UITextField, item: ClearentPaymentItem) {
         guard let regex = try? NSRegularExpression(pattern: "\\d", options: .caseInsensitive), item.isValid else { return }
         let formattedText = regex.stringByReplacingMatches(in: text,
@@ -90,12 +91,12 @@ class ClearentFieldValidationHelper {
         item.hiddenValue = formattedText
     }
     
-    // insert an empty space every 4 digits and force a max number of entered digits
+    // inserts a separator (empty space) every 4 digits and force a max number of entered digits
     static func formatCreditCardNo(text: String, sender: UITextField, item: ClearentPaymentItem) {
         let separator = item.type.separator
         let textWithoutSpaces = text.replacingOccurrences(of: separator, with: "")
         let maxText = String(textWithoutSpaces.prefix(item.maxNoOfChars))
-        let regex = try? NSRegularExpression(pattern: "(.{4})(?!$)", options: .caseInsensitive)
+        let regex = try? NSRegularExpression(pattern: ".{4}(?!$)", options: .caseInsensitive)
         let formattedText = regex?.stringByReplacingMatches(in: maxText,
                                   options: .reportProgress,
                                   range: NSMakeRange(0, maxText.count),
@@ -103,7 +104,7 @@ class ClearentFieldValidationHelper {
         sender.text = formattedText
     }
     
-    // insert a separator ('/') after 2 digits
+    // inserts a separator ('/') after 2 digits
     static func formatExpirationDate(sender: UITextField, item: ClearentPaymentItem) {
         guard let text = sender.text else { return }
         let separator = item.type.separator

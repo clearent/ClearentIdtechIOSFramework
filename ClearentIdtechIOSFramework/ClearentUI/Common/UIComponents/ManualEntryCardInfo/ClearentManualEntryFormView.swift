@@ -23,7 +23,6 @@ class ClearentManualEntryFormView: ClearentXibView {
     weak var delegate: ClearentManualEntryFormViewProtocol?
     private var dataSource: ClearentPaymentDataSource?
     
-    
     // MARK: - Init
     
     convenience init(with dataSource: ClearentPaymentDataSource) {

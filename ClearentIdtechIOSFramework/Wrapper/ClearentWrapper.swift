@@ -413,7 +413,7 @@ public final class ClearentWrapper : NSObject {
     }
     
     public func stopContinousSearching() {
-        self.connection?.searchBluetooth = false
+        connection?.searchBluetooth = false
         shouldBeginContinuousSearchingForReaders?(false)
         invalidateConnectionTimer()
     }
