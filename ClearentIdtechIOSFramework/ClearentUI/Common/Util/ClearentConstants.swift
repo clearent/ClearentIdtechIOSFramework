@@ -74,6 +74,12 @@ public class ClearentConstants {
         // Reader details
         static let navigationArrow = "left-arrow"
         static let editButton = "smallEditButton"
+        
+        // Manual Entry Card Info
+        static let calendar = "calendar"
+        static let exclamationMark = "redExclamationMark"
+        static let expandMedium = "expandMedium"
+        static let collapseMedium = "collapseMedium"
         static let deleteButton = "smallDeleteButton"
     }
 

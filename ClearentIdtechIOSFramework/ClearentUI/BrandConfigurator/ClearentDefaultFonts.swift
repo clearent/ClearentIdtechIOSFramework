@@ -7,6 +7,7 @@
 //
 
 class ClearentDefaultFonts: ClearentUIFonts {
+    
     private let sfProDisplayBold = "SFProDisplay-Bold"
     private let sfProTextBold = "SFProText-Bold"
     private let sfProTextMedium = "SFProText-Medium"
@@ -48,4 +49,14 @@ class ClearentDefaultFonts: ClearentUIFonts {
     var detailScreenItemDescriptionFont: UIFont { proTextExtraSmall }
     
     var screenTitleFont: UIFont { proDisplayBoldLarge }
+    
+    var paymentViewTitleLabelFont: UIFont { proTextNormal }
+    
+    var paymentFieldTitleLabelFont: UIFont { proTextNormal }
+    
+    var errorMessageLabelFont: UIFont { proTextExtraSmall }
+    
+    var sectionTitleLabelFont: UIFont { proTextLarge }
+    
+    var textfieldPlaceholder: UIFont { proTextNormal }
 }

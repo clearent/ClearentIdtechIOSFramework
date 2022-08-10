@@ -100,4 +100,8 @@ public class ClearentPrimaryButton: ClearentMarginableView {
     internal func setDisabledButton() {
         button.backgroundColor = filledDisabledBackgroundColor
     }
+    
+    internal func setEnabledButton() {
+        button.backgroundColor = filledBackgroundColor
+    }
 }

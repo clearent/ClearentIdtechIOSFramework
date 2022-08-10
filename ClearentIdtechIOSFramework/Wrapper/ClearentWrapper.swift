@@ -360,12 +360,9 @@ public final class ClearentWrapper : NSObject {
         if let tip = saleEntity.tipAmount, !tip.canBeConverted(to: .utf8) { return }
         
         self.saleEntity = saleEntity
-        if let action = connectivityActionNeeded {
-            DispatchQueue.main.async {
-                self.delegate?.userActionNeeded(action: action)
-            }
-            return
-        }
+        
+        if shouldDisplayBluetoothWarning() { return }
+        
         if let manualEntryCardInfo = manualEntryCardInfo {
             manualEntryTransaction(cardNo: manualEntryCardInfo.card, expirationDate: manualEntryCardInfo.expirationDateMMYY, csc: manualEntryCardInfo.csc)
         } else {
@@ -373,41 +370,10 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
-    
-    /**
-     * Method that performs a manual card transaction
-     * @param cardNo, card number as String
-     * @param expirationDate, card expiration date as String
-     * @param csc, card security code as String
-     */
-    private func manualEntryTransaction(cardNo: String, expirationDate: String, csc: String) {
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let strongSelf = self else { return }
-            let card = ClearentCard()
-            card.card = cardNo
-            card.expirationDateMMYY = expirationDate
-            card.csc = csc
-            strongSelf.clearentManualEntry.createTransactionToken(card)
-        }
-    }
-    
-    
-    /**
-     * Method that will start a card reader transaction
-     */
-    private func cardReaderTransaction() {
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let strongSelf = self, let saleEntity = strongSelf.saleEntity else { return }
-            ClearentWrapper.shared.startDeviceInfoUpdate()
-            let payment = ClearentPayment.init(sale: ())
-            payment?.amount = Double(saleEntity.amount) ?? 0
-            strongSelf.clearentVP3300.startTransaction(payment, clearentConnection: strongSelf.connection)
-        }
-    }
-    
     /**
      * Method that will search for currently used readers and call the delegate methods with the results
      */
+    
     public func searchRecentlyUsedReaders() {
         if let recentlyUsedReaders = ClearentWrapperDefaults.recentlyPairedReaders, recentlyUsedReaders.count > 0 {
             delegate?.didFindRecentlyUsedReaders(readers: recentlyUsedReaders)
@@ -543,12 +509,8 @@ public final class ClearentWrapper : NSObject {
      * @param transactionID, ID of transcation to be voided
      */
     public func fetchTipSetting(completion: @escaping () -> Void) {
-        if let action = connectivityActionNeeded {
-            DispatchQueue.main.async {
-                self.delegate?.userActionNeeded(action: action)
-            }
-            return
-        }
+        if shouldDisplayBluetoothWarning() { return }
+
         httpClient.merchantSettings() { data, error in
             DispatchQueue.main.async {
                 do {
@@ -584,7 +546,25 @@ public final class ClearentWrapper : NSObject {
         getSerialNumber()
     }
     
+    public func stopContinousSearching() {
+        connection?.searchBluetooth = false
+        shouldBeginContinuousSearchingForReaders?(false)
+        invalidateConnectionTimer()
+    }
+    
     // MARK - Private
+    
+    private func shouldDisplayBluetoothWarning() -> Bool {
+        if ClearentUIManager.shared.useCardReaderPaymentMethod {
+            if let action = connectivityActionNeeded {
+                DispatchQueue.main.async {
+                    self.delegate?.userActionNeeded(action: action)
+                }
+                return true
+            }
+        }
+        return false
+    }
     
     private func startConnectionListener() {
         monitor.pathUpdateHandler = { [weak self] path in
@@ -618,12 +598,6 @@ public final class ClearentWrapper : NSObject {
         connection?.searchBluetooth = false
         clearentVP3300.start(connection)
         self.delegate?.startedReaderConnection(with: readerInfo)
-    }
-    
-    public func stopContinousSearching() {
-        self.connection?.searchBluetooth = false
-        shouldBeginContinuousSearchingForReaders?(false)
-        invalidateConnectionTimer()
     }
         
     private func getBatterylevel() {
@@ -676,13 +650,43 @@ public final class ClearentWrapper : NSObject {
     private func startConnectionTimeoutTimer() {
         self.shouldSendPressButton = true
         connectToReaderTimer = Timer.scheduledTimer(withTimeInterval: 17, repeats: false) { [weak self] _ in
-                guard let strongSelf = self else { return }
-                DispatchQueue.main.async {
-                    if strongSelf.shouldSendPressButton && strongSelf.isBluetoothOn && strongSelf.isInternetOn {
-                        self?.delegate?.userActionNeeded(action: .connectionTimeout)
-                    }
+            guard let strongSelf = self else { return }
+            DispatchQueue.main.async {
+                if strongSelf.shouldSendPressButton && strongSelf.isBluetoothOn && strongSelf.isInternetOn {
+                    self?.delegate?.userActionNeeded(action: .connectionTimeout)
                 }
             }
+        }
+    }
+    
+    /**
+     * Method that performs a manual card transaction
+     * @param cardNo, card number as String
+     * @param expirationDate, card expiration date as String
+     * @param csc, card security code as String
+     */
+    private func manualEntryTransaction(cardNo: String, expirationDate: String, csc: String) {
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let strongSelf = self else { return }
+            let card = ClearentCard()
+            card.card = cardNo
+            card.expirationDateMMYY = expirationDate
+            card.csc = csc
+            strongSelf.clearentManualEntry.createTransactionToken(card)
+        }
+    }
+    
+    /**
+     * Method that will start a card reader transaction
+     */
+    private func cardReaderTransaction() {
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let strongSelf = self, let saleEntity = strongSelf.saleEntity else { return }
+            ClearentWrapper.shared.startDeviceInfoUpdate()
+            let payment = ClearentPayment.init(sale: ())
+            payment?.amount = Double(saleEntity.amount) ?? 0
+            strongSelf.clearentVP3300.startTransaction(payment, clearentConnection: strongSelf.connection)
+        }
     }
 }
 

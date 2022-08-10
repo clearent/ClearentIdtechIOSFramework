@@ -63,4 +63,20 @@ public protocol ClearentUIFonts {
     var detailScreenItemSubtitleFont: UIFont { get }
      
     var detailScreenItemDescriptionFont: UIFont { get }
+    
+    // MARK: - ClearentPaymentHeaderView, ClearentPaymentTextField
+    
+    var paymentViewTitleLabelFont: UIFont { get }
+    
+    var paymentFieldTitleLabelFont: UIFont { get }
+    
+    var errorMessageLabelFont: UIFont { get }
+    
+    // MARK: - ClearentPaymentSectionHeaderView
+    
+    var sectionTitleLabelFont: UIFont { get }
+    
+    // MARK: - ClearentPaymentTextField
+    
+    var textfieldPlaceholder: UIFont { get }
 }

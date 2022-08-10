@@ -29,10 +29,6 @@ class ClearentColorsDefaultPalette: ClearentUIColors {
     
     var borderedButtonTextColor: UIColor { UIColor(hexString: "272431") }
     
-    var enabledBackgroundColor: UIColor { UIColor(hexString: "#2FAC10") }
-    
-    var disabledBackgroundColor: UIColor { UIColor(hexString: "#272431") }
-    
     var enabledTextColor: UIColor { UIColor(hexString: "#FFFFFF") }
     
     var disabledTextColor: UIColor { UIColor(hexString: "#FFFFFF") }
@@ -78,4 +74,10 @@ class ClearentColorsDefaultPalette: ClearentUIColors {
     var removeReaderButtonTextColor: UIColor { UIColor(hexString: "C2210F") }
     
     var signatureDescriptionMessageColor: UIColor { UIColor(hexString: "272431") }
+    
+    var manualPaymentTitleColor: UIColor { UIColor(hexString: "272431") }
+    
+    var manualPaymentErrorMessageColor: UIColor { UIColor(hexString: "C2210F") }
+    
+    var manualPaymentTextFieldPlaceholder: UIColor { UIColor(hexString: "#6A6D7D")}
 }
