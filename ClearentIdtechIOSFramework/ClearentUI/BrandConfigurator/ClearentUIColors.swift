@@ -119,21 +119,16 @@ public protocol ClearentUIColors {
     // The description message's color
     var signatureDescriptionMessageColor: UIColor { get }
     
-    // MARK: - ClearentPaymentTextField
+    // MARK: - ClearentManualEntryFormView
     
-    // The field title's color
-    var paymentFieldTitleColor: UIColor { get }
+    // The color of header, fields and section displayed on Manual Entry Form view
+    var manualPaymentTitleColor: UIColor { get }
     
     // The error message's text color
-    var errorMessageTextColor: UIColor { get }
-    
-    // MARK: - ClearentPaymentSectionHeaderView
-    
-    // The payment section title's color
-    var paymentSectionTitleColor: UIColor { get }
+    var manualPaymentErrorMessageColor: UIColor { get }
     
     // MARK: - ClearentPaymentTextField
     
     // The payment textfield placeholder's color
-    var paymentTextFieldPlaceholder: UIColor { get }
+    var manualPaymentTextFieldPlaceholder: UIColor { get }
 }

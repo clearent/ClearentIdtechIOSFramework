@@ -23,13 +23,13 @@ class ClearentPaymentTextField: ClearentXibView {
     var item: ClearentPaymentItem?
     
     override func configure() {
-        titleLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.paymentFieldTitleColor
+        titleLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.manualPaymentTitleColor
         titleLabel.font = ClearentUIBrandConfigurator.shared.fonts.paymentFieldTitleLabelFont
         
         errorImageView.image = UIImage(named: ClearentConstants.IconName.exclamationMark, in: ClearentConstants.bundle, compatibleWith: nil)
         errorImageView.isHidden = true
         
-        errorLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.errorMessageTextColor
+        errorLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.manualPaymentErrorMessageColor
         errorLabel.font = ClearentUIBrandConfigurator.shared.fonts.errorMessageLabelFont
         errorLabel.isHidden = true
 
@@ -65,7 +65,7 @@ class ClearentPaymentTextField: ClearentXibView {
         textField.addNavigationAndDoneToKeyboard(previousAction: (target: self, action: #selector(previousButtonTapped), isEnabled: !isFirstCell), nextAction: (target: self, action: #selector(nextButtonTapped), isEnabled: !isLastCell))
         if let placeholder = placeholder {
             let attributes: [NSAttributedString.Key: Any] = [.font: ClearentUIBrandConfigurator.shared.fonts.textfieldPlaceholder,
-                                                             .foregroundColor: ClearentUIBrandConfigurator.shared.colorPalette.paymentTextFieldPlaceholder]
+                                                             .foregroundColor: ClearentUIBrandConfigurator.shared.colorPalette.manualPaymentTextFieldPlaceholder]
             textField.attributedPlaceholder =  NSAttributedString(string: placeholder, attributes: attributes)
         } else {
             textField.placeholder = ""
@@ -76,7 +76,7 @@ class ClearentPaymentTextField: ClearentXibView {
         errorImageView.isHidden = false
         errorLabel.isHidden = false
         errorLabel.text = errorMessage
-        textField.layer.borderColor = ClearentUIBrandConfigurator.shared.colorPalette.errorMessageTextColor.cgColor
+        textField.layer.borderColor = ClearentUIBrandConfigurator.shared.colorPalette.manualPaymentErrorMessageColor.cgColor
     }
     
     func disableErrorState() {

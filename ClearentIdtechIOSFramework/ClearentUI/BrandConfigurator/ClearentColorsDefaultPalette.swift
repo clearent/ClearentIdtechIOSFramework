@@ -75,11 +75,9 @@ class ClearentColorsDefaultPalette: ClearentUIColors {
     
     var signatureDescriptionMessageColor: UIColor { UIColor(hexString: "272431") }
     
-    var paymentFieldTitleColor: UIColor { UIColor(hexString: "272431") }
+    var manualPaymentTitleColor: UIColor { UIColor(hexString: "272431") }
     
-    var errorMessageTextColor: UIColor { UIColor(hexString: "C2210F") }
+    var manualPaymentErrorMessageColor: UIColor { UIColor(hexString: "C2210F") }
     
-    var paymentSectionTitleColor: UIColor { UIColor(hexString: "272431") }
-    
-    var paymentTextFieldPlaceholder: UIColor { UIColor(hexString: "#6A6D7D")}
+    var manualPaymentTextFieldPlaceholder: UIColor { UIColor(hexString: "#6A6D7D")}
 }

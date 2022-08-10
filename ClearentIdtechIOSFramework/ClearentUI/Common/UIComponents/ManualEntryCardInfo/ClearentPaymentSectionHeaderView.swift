@@ -26,7 +26,7 @@ class ClearentPaymentSectionHeaderView: ClearentXibView {
     }
     
     override func configure() {
-        sectionTitleLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.paymentSectionTitleColor
+        sectionTitleLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.manualPaymentTitleColor
         sectionTitleLabel.font = ClearentUIBrandConfigurator.shared.fonts.sectionTitleLabelFont
         
         dropdownImageView.image = UIImage(named: ClearentConstants.IconName.expandMedium, in: ClearentConstants.bundle, compatibleWith: nil)
