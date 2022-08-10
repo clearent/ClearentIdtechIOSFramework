@@ -21,7 +21,6 @@ class ClearentPaymentTextField: ClearentXibView {
     var nextButtonWasTapped: ((_ identifier: ItemIdentifier) -> Void)?
     var action: ((ClearentPaymentItem, String?) -> Void)?
     var item: ClearentPaymentItem?
-    private var previousText: String = ""
     
     override func configure() {
         titleLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.paymentFieldTitleColor
@@ -40,23 +39,6 @@ class ClearentPaymentTextField: ClearentXibView {
         fieldButton.setImage(UIImage(named: ClearentConstants.IconName.calendar, in: ClearentConstants.bundle, compatibleWith: nil), for: .normal)
     }
     
-    // MARK: - Private
-    
-    @objc private func textFieldDidCompleteEditing() {
-        guard let item = item else {
-            return
-        }
-
-        action?(item, textField.text)
-    }
-    
-    private func configureTextField() {
-        textField.addTarget(self, action: #selector(textFieldDidCompleteEditing), for: .editingDidEnd)
-        textField.layer.borderWidth = 1.0
-        textField.layer.borderColor = ClearentUIBrandConfigurator.shared.colorPalette.borderColor.cgColor
-        textField.layer.cornerRadius = 4
-        textField.layer.masksToBounds = true
-    }
     
     // MARK: - Public
     
@@ -68,7 +50,7 @@ class ClearentPaymentTextField: ClearentXibView {
         titleLabel.text = item.title
         setupTextField(placeholder: item.placeholder, isFirstCell: isFirstCell, isLastCell: isLastCell)
         fieldButton.isHidden = item.type != .date
-        textField.text = item.enteredValue
+        textField.text = item.hiddenValue ?? item.enteredValue
         
         if item.isValid {
             disableErrorState()
@@ -106,42 +88,50 @@ class ClearentPaymentTextField: ClearentXibView {
     
     // MARK: - Actions
     
-    @IBAction func textFieldEditingChanged(_ sender: UITextField) {
+    @IBAction private func textFieldEditingChanged(_ sender: UITextField) {
         guard let text = sender.text, let item = item else { return }
         
         switch item.type {
         case .creditCardNo:
-            handleCreditCardNo(enteredText: text, sender: sender)
+            ClearentFieldValidationHelper.formatCreditCardNo(text: text, sender: sender, item: item)
         case.date:
-            handleExpirationDate(enteredText: text, sender: sender)
+            ClearentFieldValidationHelper.formatExpirationDate(sender: sender, item: item)
         default:
             sender.text = String(text.prefix(item.maxNoOfChars))
         }
-
-    }
-    
-    private func handleCreditCardNo(enteredText: String, sender: UITextField) {
-        guard let item = item else { return }
-        // insert an empty space every 4 digits and force a max number of entered digits
-        let textWithoutSpaces = enteredText.replacingOccurrences(of: " ", with: "")
-        let maxText = String(textWithoutSpaces.prefix(item.maxNoOfChars))
-        let regex = try? NSRegularExpression(pattern: "([0-9]{4})(?!$)", options: .caseInsensitive)
-        let formattedText = regex?.stringByReplacingMatches(in: maxText,
-                                  options: .reportProgress,
-                                  range: NSMakeRange(0, maxText.count),
-                                  withTemplate: "$0 ")
-        sender.text = formattedText
     }
 
-    private func handleExpirationDate(enteredText: String, sender: UITextField) {
-        // insert a '/' after 2 digits
-        var dateWithoutSlash = enteredText.replacingOccurrences(of: "/", with: "")
-    
-        if dateWithoutSlash.count >= 2 && previousText.last != "/" {
-            dateWithoutSlash.insert("/", at: enteredText.index(enteredText.startIndex, offsetBy: 2))
+    @objc private func textFieldDidCompleteEditing() {
+        guard let item = item, let text = textField.text else { return }
+        
+        action?(item, text)
+        
+        switch item.type {
+        case .creditCardNo:
+            ClearentFieldValidationHelper.hideCardNumber(text: text, sender: textField, item: item)
+        case .securityCode:
+            ClearentFieldValidationHelper.hideSecurityCode(text: text, sender: textField, item: item)
+        default:
+            break
         }
-        sender.text = String(dateWithoutSlash.prefix(5))
-        previousText = enteredText
+    }
+    
+    @objc private func touchDown() {
+        switch item?.type {
+        case .creditCardNo, .securityCode:
+            textField.text = item?.enteredValue
+        default:
+            break
+        }
+    }
+    
+    private func configureTextField() {
+        textField.addTarget(self, action: #selector(textFieldDidCompleteEditing), for: .editingDidEnd)
+        textField.addTarget(self, action: #selector(touchDown), for: .editingDidBegin)
+        textField.layer.borderWidth = 1.0
+        textField.layer.borderColor = ClearentUIBrandConfigurator.shared.colorPalette.borderColor.cgColor
+        textField.layer.cornerRadius = 4
+        textField.layer.masksToBounds = true
     }
 }
 

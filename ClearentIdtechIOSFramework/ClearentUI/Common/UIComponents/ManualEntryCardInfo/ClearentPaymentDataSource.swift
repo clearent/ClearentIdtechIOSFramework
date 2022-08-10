@@ -94,10 +94,9 @@ extension ClearentPaymentDataSource: UITableViewDataSource {
     
     private func handleCellAction(cell: ClearentPaymentFieldCell, item: ClearentPaymentItem?, cardData: String?) {
         guard var item = item else { return }
-        
-        let isCardDataValid = ClearentFieldValidationHelper.validateCardData(cardData, field: item)
-        item.isValid = isCardDataValid
         item.enteredValue = cardData ?? ""
+        let isCardDataValid = ClearentFieldValidationHelper.validateCardData(item: item)
+        item.isValid = isCardDataValid
         cell.updatePaymentField(containing: item)
         delegate?.didFinishCompletePaymentField(item: item, value: cardData)
         

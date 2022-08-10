@@ -36,6 +36,8 @@ protocol ClearentPaymentItem {
     var identifier: ItemIdentifier { get set }
     var isValid: Bool { get set }
     var enteredValue: String { get set }
+    var hiddenValue: String? { get set }
+    var separator: String? { get }
 }
 
 extension ClearentPaymentItem {
@@ -43,6 +45,7 @@ extension ClearentPaymentItem {
     var placeholder: String? { nil }
     var iconName: String? { nil }
     var errorMessage: String? { nil }
+    var separator: String? { nil }
 }
 
 class ClearentPaymentBaseSection: ClearentPaymentSection {
@@ -93,6 +96,10 @@ class CreditCardNoItem: ClearentPaymentItem {
     var isValid: Bool = true
     
     var enteredValue: String = ""
+    
+    var hiddenValue: String? = nil
+    
+    var separator: String? = " "
 }
 
 class DateItem: ClearentPaymentItem {
@@ -115,6 +122,10 @@ class DateItem: ClearentPaymentItem {
     var isValid: Bool = true
     
     var enteredValue: String = ""
+    
+    var hiddenValue: String? = nil
+    
+    var separator: String? = "/"
 }
 
 class SecurityCodeItem: ClearentPaymentItem {
@@ -135,6 +146,8 @@ class SecurityCodeItem: ClearentPaymentItem {
     var isValid: Bool = true
     
     var enteredValue: String = ""
+    
+    var hiddenValue: String? = nil
 }
 
 
@@ -153,6 +166,8 @@ class CardholderNameItem: ClearentPaymentItem {
     
     var enteredValue: String = ""
     
+    var hiddenValue: String? = nil
+    
 }
 
 class BillingZipCodeItem: ClearentPaymentItem {
@@ -169,6 +184,8 @@ class BillingZipCodeItem: ClearentPaymentItem {
     var isValid: Bool = true
     
     var enteredValue: String = ""
+    
+    var hiddenValue: String? = nil
 }
 
 class InvoiceNoItem: ClearentPaymentItem {
@@ -185,6 +202,8 @@ class InvoiceNoItem: ClearentPaymentItem {
     var isValid: Bool = true
     
     var enteredValue: String = ""
+    
+    var hiddenValue: String? = nil
 }
 
 class OrderNoItem: ClearentPaymentItem {
@@ -201,6 +220,8 @@ class OrderNoItem: ClearentPaymentItem {
     var isValid: Bool = true
     
     var enteredValue: String = ""
+    
+    var hiddenValue: String? = nil
 }
 
 class CompanyNameItem: ClearentPaymentItem {
@@ -219,6 +240,8 @@ class CompanyNameItem: ClearentPaymentItem {
     var isValid: Bool = true
     
     var enteredValue: String = ""
+    
+    var hiddenValue: String? = nil
 }
 
 class CustomerIDItem: ClearentPaymentItem {
@@ -237,6 +260,8 @@ class CustomerIDItem: ClearentPaymentItem {
     var isValid: Bool = true
     
     var enteredValue: String = ""
+    
+    var hiddenValue: String? = nil
 }
 
 class ShippingZipCodeItem: ClearentPaymentItem {
@@ -253,4 +278,6 @@ class ShippingZipCodeItem: ClearentPaymentItem {
     var isValid: Bool = true
     
     var enteredValue: String = ""
+    
+    var hiddenValue: String? = nil
 }
