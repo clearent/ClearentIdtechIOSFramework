@@ -14,7 +14,6 @@ protocol ClearentPaymentSectionHeaderViewProtocol: AnyObject {
 
 class ClearentPaymentSectionHeaderView: ClearentXibView {
     
-
     @IBOutlet weak var sectionTitleLabel: UILabel!
     @IBOutlet weak var dropdownImageView: UIImageView!
     

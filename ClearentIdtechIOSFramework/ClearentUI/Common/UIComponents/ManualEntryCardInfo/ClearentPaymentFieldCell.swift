@@ -18,7 +18,7 @@ class ClearentPaymentFieldCell: UITableViewCell {
     
     enum Layout {
         static let cellHeight: CGFloat = 94
-        static let sectionHeaderViewHeight: CGFloat = 48 //TO DO: double check if this is the right size
+        static let sectionHeaderViewHeight: CGFloat = 48
     }
 
     static let identifier = "ClearentPaymentFieldCell"
@@ -69,7 +69,6 @@ class ClearentPaymentFieldCell: UITableViewCell {
         rightPaymentTextField.previousButtonWasTapped = { identifier in
             tableView.previousResponder(identifier: identifier)
         }
-
     }
     
     // MARK: - Private

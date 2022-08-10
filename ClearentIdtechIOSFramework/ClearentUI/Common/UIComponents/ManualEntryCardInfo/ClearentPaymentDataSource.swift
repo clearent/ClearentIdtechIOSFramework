@@ -89,7 +89,6 @@ extension ClearentPaymentDataSource: UITableViewDataSource {
             return cell
         }
         return UITableViewCell()
-
     }
     
     private func handleCellAction(cell: ClearentPaymentFieldCell, item: ClearentPaymentItem?, cardData: String?) {
@@ -99,7 +98,6 @@ extension ClearentPaymentDataSource: UITableViewDataSource {
         item.isValid = isCardDataValid
         cell.updatePaymentField(containing: item)
         delegate?.didFinishCompletePaymentField(item: item, value: cardData)
-        
     }
     
     private func isFirstCell(indexPath: IndexPath) -> Bool {

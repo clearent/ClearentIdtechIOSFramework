@@ -39,7 +39,6 @@ class ClearentPaymentTextField: ClearentXibView {
         fieldButton.setImage(UIImage(named: ClearentConstants.IconName.calendar, in: ClearentConstants.bundle, compatibleWith: nil), for: .normal)
     }
     
-    
     // MARK: - Public
     
     func setup(with item: ClearentPaymentItem, isFirstCell: Bool, isLastCell: Bool) {

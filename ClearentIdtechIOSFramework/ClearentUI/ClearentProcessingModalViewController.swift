@@ -284,7 +284,7 @@ extension ClearentProcessingModalViewController: ClearentTextFieldProtocol {
 
 extension ClearentProcessingModalViewController: ClearentManualEntryFormViewProtocol {
     func didTapOnCancelButton() {
-        self.dismiss(animated: true, completion: nil)
+        dismiss(animated: true, completion: nil)
     }
     
     func didTapOnConfirmButton(dataSource: ClearentPaymentDataSource) {

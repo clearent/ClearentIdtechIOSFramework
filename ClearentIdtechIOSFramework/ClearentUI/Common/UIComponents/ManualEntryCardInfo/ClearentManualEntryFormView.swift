@@ -19,10 +19,10 @@ class ClearentManualEntryFormView: ClearentXibView {
     @IBOutlet weak var headerView: ClearentPaymentHeaderView!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var footerView: ClearentPaymentFooterView!
-    
     @IBOutlet var tableViewHeightLC: NSLayoutConstraint!
-    private var dataSource: ClearentPaymentDataSource?
     weak var delegate: ClearentManualEntryFormViewProtocol?
+    private var dataSource: ClearentPaymentDataSource?
+    
     
     // MARK: - Init
     
@@ -49,6 +49,12 @@ class ClearentManualEntryFormView: ClearentXibView {
         NotificationCenter.default.removeObserver(self)
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        tableViewHeightLC.constant = tableView.contentSize.height
+    }
+    
     private func setupNotifications() {
         // Register keyboard notifications
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
@@ -63,12 +69,6 @@ class ClearentManualEntryFormView: ClearentXibView {
 
     @objc private func keyboardWillHide(notification: Notification) {
         tableView.contentInset.bottom = 0
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        
-        tableViewHeightLC.constant = tableView.contentSize.height
     }
 }
 

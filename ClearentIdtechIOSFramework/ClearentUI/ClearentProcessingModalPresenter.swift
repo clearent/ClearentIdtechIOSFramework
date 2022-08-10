@@ -170,7 +170,6 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             modalProcessingView?.positionViewOnTop(flag: true)
             showRenameReader()
         case .transactionWithTip, .transactionWithoutTip:
-            modalProcessingView?.showLoadingView()
             if ClearentUIManager.shared.useCardReaderPaymentMethod {
                 startCardReaderTransaction()
             } else {
@@ -191,13 +190,12 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     func sendManualEntryTransaction(dataSource: ClearentPaymentDataSource) {
-        
         guard let amount = amountWithoutTip?.stringFormattedWithTwoDecimals,
               let cardNo = dataSource.valueForType(.creditCardNo)?.replacingOccurrences(of: ClearentPaymentItemType.creditCardNo.separator, with: ""),
               let date = dataSource.valueForType(.date)?.replacingOccurrences(of: ClearentPaymentItemType.date.separator, with: ""),
               let csc = dataSource.valueForType(.securityCode) else { return }
-        let cardInfo = ManualEntryCardInfo(card: cardNo, expirationDateMMYY: date, csc: csc)
         
+        let cardInfo = ManualEntryCardInfo(card: cardNo, expirationDateMMYY: date, csc: csc)
         let name = ClearentCarholderName(fullName: dataSource.valueForType(.cardholderName))
         let billingInfo = ClientInformation(firstName: name.first,
                                             lastName: name.last,
@@ -260,8 +258,6 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         let items = [FlowDataItem(type: .manualEntry, object: nil)]
         let feedback = FlowFeedback(flow: .payment, type: FlowFeedbackType.info, items: items)
         modalProcessingView?.updateContent(with: feedback)
-        
-        // TODO: on confirm action
     }
     
     private func showReadersList() {
@@ -319,6 +315,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
 
     private func startTransaction(saleEntity: SaleEntity, manualEntryCardInfo: ManualEntryCardInfo? = nil) {
+        modalProcessingView?.showLoadingView()
         sdkWrapper.startTransaction(with: saleEntity, manualEntryCardInfo: manualEntryCardInfo)
     }
 }
