@@ -113,10 +113,8 @@ fileprivate extension UITableView {
     }
     
     private func handleJumpTo(textField: UIView, and textFieldContainer: ClearentPaymentTextField, tag: Int) {
-        
         textField.becomeFirstResponder()
         if let indexPath = textFieldContainer.item?.identifier?.indexPath {
-            print("🍎 jump to \(tag), indexPath: \(indexPath)")
             scrollToRow(at: indexPath, at: .bottom, animated: true)
         }
     }
