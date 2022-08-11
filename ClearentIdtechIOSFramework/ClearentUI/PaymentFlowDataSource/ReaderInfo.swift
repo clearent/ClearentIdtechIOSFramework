@@ -14,9 +14,9 @@ public struct ReaderItem {
 public struct ReaderInfo : Codable {
     public var readerName: String
     public var customReaderName: String?
-    var batterylevel: Int?
-    var signalLevel: Int?
-    var isConnected: Bool {
+    public var batterylevel: Int?
+    public var signalLevel: Int?
+    public var isConnected: Bool {
         didSet {
             if isConnected == false {
                 signalLevel = nil
@@ -24,10 +24,10 @@ public struct ReaderInfo : Codable {
             }
         }
     }
-    var autojoin: Bool
-    var uuid: UUID?
-    var serialNumber: String?
-    var version: String?
+    public var autojoin: Bool
+    public var uuid: UUID?
+    public var serialNumber: String?
+    public var version: String?
 }
 
 extension ReaderInfo: Equatable {
