@@ -162,6 +162,8 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             return tipOptionsListView(with: amountInfo)
         case .signature:
             return signatureView()
+        case .manualEntry:
+            return manualEntryFormView()
         }
     }
     
@@ -173,6 +175,15 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             self?.presenter?.handleSignature(with: signatureImage)
         }
         return signatureView
+    }
+    
+    private func manualEntryFormView() -> ClearentManualEntryFormView {
+        let dataSource = ClearentPaymentDataSource(with: [ClearentPaymentBaseSection(), ClearentPaymentAdditionalSection()])
+        let manualEntryFormView = ClearentManualEntryFormView(with: dataSource)
+        manualEntryFormView.delegate = self
+        dataSource.delegate = manualEntryFormView
+        
+        return manualEntryFormView
     }
 
     private func readerInfoView(readerInfo: ReaderInfo?) -> ClearentReaderStatusHeaderView? {
@@ -268,5 +279,15 @@ extension ClearentProcessingModalViewController: ClearentTextFieldProtocol {
     
     func didFinishWithResult(name: String?) {
         presenter?.updateTemporaryReaderName(name: name)
+    }
+}
+
+extension ClearentProcessingModalViewController: ClearentManualEntryFormViewProtocol {
+    func didTapOnCancelButton() {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func didTapOnConfirmButton(dataSource: ClearentPaymentDataSource) {
+        presenter?.sendManualEntryTransaction(with: dataSource)
     }
 }

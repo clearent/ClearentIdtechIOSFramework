@@ -64,7 +64,7 @@ class ClearentTipOptionView: ClearentMarginableView {
     private func setTextField(isCustomTip: Bool) {
         customAmountTextField.isHidden = !isCustomTip
         customAmountTextField.keyboardType = .numberPad
-        customAmountTextField.addDoneToKeyboard(barButtonTitle: "xsdk_keyboard_done".localized)
+        customAmountTextField.addDoneToKeyboard()
         customAmountTextField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: .editingChanged)
     }
     

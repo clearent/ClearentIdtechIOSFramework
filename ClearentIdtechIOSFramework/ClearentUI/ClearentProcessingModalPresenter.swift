@@ -33,7 +33,7 @@ protocol ProcessingModalProtocol {
     func enableDoneButtonForInput(enabled: Bool)
     func fetchTipSetting(completion: @escaping () -> Void)
     func handleSignature(with image: UIImage)
-  
+    func sendManualEntryTransaction(with dataSource: ClearentPaymentDataSource)
 }
 
 class ClearentProcessingModalPresenter {
@@ -52,6 +52,7 @@ class ClearentProcessingModalPresenter {
     var sdkFeedbackProvider: FlowDataProvider
     var editableReader: ReaderInfo?
     var shouldStartTransactionAfterRenameReader = false
+
     // MARK: Init
 
     init(modalProcessingView: ClearentProcessingModalView, amount: Double?, processType: ProcessType) {
@@ -177,7 +178,6 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             modalProcessingView?.positionViewOnTop(flag: true)
             showRenameReader()
         case .transactionWithTip, .transactionWithoutTip:
-            modalProcessingView?.showLoadingView()
             if ClearentUIManager.shared.useCardReaderPaymentMethod {
                 startCardReaderTransaction()
             } else {
@@ -195,6 +195,30 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     func handleSignature(with image: UIImage) {
         modalProcessingView?.showLoadingView()
         ClearentWrapper.shared.sendSignatureWithImage(image: image)
+    }
+    
+    func sendManualEntryTransaction(with dataSource: ClearentPaymentDataSource) {
+        guard let amount = amountWithoutTip?.stringFormattedWithTwoDecimals,
+              let cardNo = dataSource.valueForType(.creditCardNo)?.replacingOccurrences(of: ClearentPaymentItemType.creditCardNo.separator, with: ""),
+              let date = dataSource.valueForType(.date)?.replacingOccurrences(of: ClearentPaymentItemType.date.separator, with: ""),
+              let csc = dataSource.valueForType(.securityCode) else { return }
+        
+        let cardInfo = ManualEntryCardInfo(card: cardNo, expirationDateMMYY: date, csc: csc)
+        let name = ClearentCarholderName(fullName: dataSource.valueForType(.cardholderName))
+        let billingInfo = ClientInformation(firstName: name.first,
+                                            lastName: name.last,
+                                            company: dataSource.valueForType(.companyName),
+                                            zip: dataSource.valueForType(.billingZipCode))
+        let shippingInfo = ClientInformation(zip: dataSource.valueForType(.shippingZipCode))
+        let saleEntity = SaleEntity(amount: amount,
+                                     tipAmount: tip?.stringFormattedWithTwoDecimals,
+                                     billing: billingInfo,
+                                     shipping: shippingInfo,
+                                     customerID: dataSource.valueForType(.customerId),
+                                     invoice: dataSource.valueForType(.invoiceNo),
+                                     orderID: dataSource.valueForType(.orderNo))
+        
+        startTransaction(saleEntity: saleEntity, manualEntryCardInfo: cardInfo)
     }
 
     func resendSignature() {
@@ -240,19 +264,9 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     private func startManualEntryTransaction() {
-        // TODO: show manual credit card info form
-        
-        // TODO: on confirm action
-        /* if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
-            let saleEntity = SaleEntity(amount: amountFormatted,
-                                        tipAmount: tip?.stringFormattedWithTwoDecimals,
-                                        billing: ClientInformation(firstName: "John", lastName: "Scott", company: "Endava", zip: "85284"),
-                                        shipping: ClientInformation(zip: "85284"),
-                                        customerID: "002",
-                                        invoice: "invoice123",
-                                        orderID: "99988d")
-            startTransaction(saleEntity: saleEntity, manualEntryCardInfo: ManualEntryCardInfo(card: "4111111111111111", expirationDateMMYY: "0728", csc: "999"))
-        }*/
+        let items = [FlowDataItem(type: .manualEntry, object: nil)]
+        let feedback = FlowFeedback(flow: .payment, type: FlowFeedbackType.info, items: items)
+        modalProcessingView?.updateContent(with: feedback)
     }
     
     private func showReadersList() {
@@ -310,6 +324,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
 
     private func startTransaction(saleEntity: SaleEntity, manualEntryCardInfo: ManualEntryCardInfo? = nil) {
+        modalProcessingView?.showLoadingView()
         sdkWrapper.startTransaction(with: saleEntity, manualEntryCardInfo: manualEntryCardInfo)
     }
 }
