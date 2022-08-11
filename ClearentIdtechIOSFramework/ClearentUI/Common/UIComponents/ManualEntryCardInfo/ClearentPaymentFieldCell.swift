@@ -18,7 +18,7 @@ class ClearentPaymentFieldCell: UITableViewCell {
     
     enum Layout {
         static let cellHeight: CGFloat = 94
-        static let sectionHeaderViewHeight: CGFloat = 48
+        static let sectionHeaderViewHeight: CGFloat = 40
     }
 
     static let identifier = "ClearentPaymentFieldCell"
@@ -113,8 +113,10 @@ fileprivate extension UITableView {
     }
     
     private func handleJumpTo(textField: UIView, and textFieldContainer: ClearentPaymentTextField, tag: Int) {
+        
         textField.becomeFirstResponder()
         if let indexPath = textFieldContainer.item?.identifier?.indexPath {
+            print("🍎 jump to \(tag), indexPath: \(indexPath)")
             scrollToRow(at: indexPath, at: .bottom, animated: true)
         }
     }

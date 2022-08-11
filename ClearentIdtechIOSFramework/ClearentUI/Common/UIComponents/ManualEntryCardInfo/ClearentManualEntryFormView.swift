@@ -31,6 +31,10 @@ class ClearentManualEntryFormView: ClearentXibView {
         self.dataSource = dataSource
         tableView.dataSource = dataSource
         tableView.delegate = self
+        
+        if #available(iOS 15.0, *) {
+            tableView.sectionHeaderTopPadding = 0
+        }
 
         ClearentPaymentFieldCell.register(tableView: tableView)
         
