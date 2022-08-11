@@ -152,11 +152,6 @@ public protocol ClearentWrapperProtocol : AnyObject {
     func deviceDidDisconnect()
     
     /**
-     * Method called when a pairing process was started but there are no available readers to pair with nearby
-     */
-    func didNotFindReaders()
-    
-    /**
      * Method called after the 'connectTo' method was called by protocol implementing class, indicating that  a connection to the selected reader is beeing  established
      */
     func startedReaderConnection(with reader:ReaderInfo)
@@ -166,11 +161,6 @@ public protocol ClearentWrapperProtocol : AnyObject {
      * @param readers. list of recently paired readers
      */
     func didFindRecentlyUsedReaders(readers:[ReaderInfo])
-    
-    /**
-     * Method called in response to method 'searchRecentlyUsedReaders' and indicated that no recently readers were found
-     */
-    func didNotFindRecentlyUsedReaders()
     
     /**
      * Method called to indicate that continuous search of nearby readers has started
@@ -378,7 +368,7 @@ public final class ClearentWrapper : NSObject {
         if let recentlyUsedReaders = ClearentWrapperDefaults.recentlyPairedReaders, recentlyUsedReaders.count > 0 {
             delegate?.didFindRecentlyUsedReaders(readers: recentlyUsedReaders)
         } else {
-            delegate?.didNotFindRecentlyUsedReaders()
+            delegate?.didFindRecentlyUsedReaders(readers: [])
         }
     }
     
@@ -776,7 +766,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
             let readers = bluetoothDevices.map { readerInfo(from: $0) }
             self.delegate?.didFindReaders(readers: readers)
         } else {
-            self.delegate?.didNotFindReaders()
+            self.delegate?.didFindReaders(readers: [])
         }
         
         shouldStopUpdatingReadersListDuringContinuousSearching = true

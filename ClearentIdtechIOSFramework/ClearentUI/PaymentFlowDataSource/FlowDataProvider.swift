@@ -305,12 +305,16 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     }
     
     func didFindReaders(readers: [ReaderInfo]) {
-        let items = [FlowDataItem(type: .hint, object: "xsdk_pairing_select_reader".localized),
-                     FlowDataItem(type: .devicesFound, object: readers),
+        let title = readers.count > 0 ? "xsdk_pairing_select_reader".localized : "xsdk_pairing_no_readers_found_title".localized
+        let flowDataItem = readers.count > 0 ? FlowDataItem(type: .devicesFound, object: readers) : FlowDataItem(type: .description, object: "xsdk_pairing_no_readers_found_description".localized)
+        let flowFeedbackType = readers.count > 0 ? FlowFeedbackType.searchDevices : FlowFeedbackType.info
+        
+        let items = [FlowDataItem(type: .hint, object: title),
+                     flowDataItem,
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
 
         let feedback = FlowDataFactory.component(with: .pairing(),
-                                                 type: .searchDevices,
+                                                 type: flowFeedbackType,
                                                  readerInfo: nil,
                                                  payload: items)
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
@@ -340,30 +344,9 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
-    func didNotFindReaders() {
-        let items = [FlowDataItem(type: .hint, object: "xsdk_pairing_no_readers_found_title".localized),
-                     FlowDataItem(type: .description, object: "xsdk_pairing_no_readers_found_description".localized),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
-
-        let feedback = FlowDataFactory.component(with: .pairing(),
-                                                 type: .info,
-                                                 readerInfo: nil,
-                                                 payload: items)
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
-    }
-    
-    func didNotFindRecentlyUsedReaders() {
-        let items = [FlowDataItem(type: .description, object: "xsdk_pairing_no_readers_found_description".localized),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
-        let feedback = FlowDataFactory.component(with: .showReaders,
-                                                 type: .showReaders,
-                                                 readerInfo: ClearentWrapperDefaults.pairedReaderInfo,
-                                                 payload: items)
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
-    }
-    
     func didFindRecentlyUsedReaders(readers: [ReaderInfo]) {
-        let items = [FlowDataItem(type: .recentlyPaired, object: readers),
+        let flowDataItem = readers.count > 0 ? FlowDataItem(type: .recentlyPaired, object: readers) : FlowDataItem(type: .description, object: "xsdk_pairing_no_readers_found_description".localized)
+        let items = [flowDataItem,
                      FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
         
         let feedback = FlowDataFactory.component(with: .showReaders,
