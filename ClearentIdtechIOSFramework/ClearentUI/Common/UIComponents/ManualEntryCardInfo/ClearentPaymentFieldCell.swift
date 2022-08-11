@@ -18,7 +18,7 @@ class ClearentPaymentFieldCell: UITableViewCell {
     
     enum Layout {
         static let cellHeight: CGFloat = 94
-        static let sectionHeaderViewHeight: CGFloat = 48
+        static let sectionHeaderViewHeight: CGFloat = 40
     }
 
     static let identifier = "ClearentPaymentFieldCell"
