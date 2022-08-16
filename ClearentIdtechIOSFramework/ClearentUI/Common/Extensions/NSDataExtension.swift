@@ -8,10 +8,10 @@
 
 import Foundation
 
-extension NSData{
-    var int :  Int{
+extension NSData {
+    var int: Int {
         var out: Int = 0
-        self.getBytes(&out, length: MemoryLayout<Int>.size)
+        getBytes(&out, length: MemoryLayout<Int>.size)
         return out
     }
 }

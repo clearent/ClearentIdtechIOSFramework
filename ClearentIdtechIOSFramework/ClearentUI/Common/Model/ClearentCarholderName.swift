@@ -7,12 +7,12 @@
 //
 
 struct ClearentCarholderName {
-    var first: String? = nil
-    var last: String? = nil
-    
+    var first: String?
+    var last: String?
+
     init(fullName: String?) {
         guard var names = fullName?.components(separatedBy: " ") else { return }
-        self.first = names.removeFirst()
-        self.last = names.joined(separator: " ")
+        first = names.removeFirst()
+        last = names.joined(separator: " ")
     }
 }

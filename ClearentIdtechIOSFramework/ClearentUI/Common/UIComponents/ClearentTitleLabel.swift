@@ -12,7 +12,7 @@ public class ClearentTitleLabel: ClearentMarginableView {
 
     @IBOutlet var label: UILabel!
 
-    override public var margins: [BottomMargin] {
+    public override var margins: [BottomMargin] {
         [
             RelativeBottomMargin(constant: 16, relatedViewType: ClearentSubtitleLabel.self),
             RelativeBottomMargin(constant: 24, relatedViewType: ClearentListView.self),
