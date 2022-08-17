@@ -50,6 +50,7 @@
 		013157ED286EC6D70037D281 /* ClearentDrawingPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013157EC286EC6D70037D281 /* ClearentDrawingPanel.swift */; };
 		013AB9B7282264B100771FAC /* ClearentPairingReaderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013AB9B6282264B100771FAC /* ClearentPairingReaderItem.swift */; };
 		013AB9B9282264C100771FAC /* ClearentPairingReaderItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = 013AB9B8282264C100771FAC /* ClearentPairingReaderItem.xib */; };
+		013CFFCA28A4FE6C0061C02D /* StringExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 013CFFC928A4FE6C0061C02D /* StringExtension.swift */; };
 		014B2BA6280087AD0056F7FD /* ClearentPrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014B2BA5280087AD0056F7FD /* ClearentPrimaryButton.swift */; };
 		014B2BA8280087C10056F7FD /* ClearentPrimaryButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 014B2BA7280087C10056F7FD /* ClearentPrimaryButton.xib */; };
 		014B2BAA280090130056F7FD /* ClearentConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014B2BA9280090130056F7FD /* ClearentConstants.swift */; };
@@ -263,6 +264,7 @@
 		013157EC286EC6D70037D281 /* ClearentDrawingPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentDrawingPanel.swift; sourceTree = "<group>"; };
 		013AB9B6282264B100771FAC /* ClearentPairingReaderItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentPairingReaderItem.swift; sourceTree = "<group>"; };
 		013AB9B8282264C100771FAC /* ClearentPairingReaderItem.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentPairingReaderItem.xib; sourceTree = "<group>"; };
+		013CFFC928A4FE6C0061C02D /* StringExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtension.swift; sourceTree = "<group>"; };
 		014B2BA5280087AD0056F7FD /* ClearentPrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentPrimaryButton.swift; sourceTree = "<group>"; };
 		014B2BA7280087C10056F7FD /* ClearentPrimaryButton.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentPrimaryButton.xib; sourceTree = "<group>"; };
 		014B2BA9280090130056F7FD /* ClearentConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentConstants.swift; sourceTree = "<group>"; };
@@ -510,6 +512,7 @@
 				0129F82F28253A8D00027BCE /* UIFontExtension.swift */,
 				19C6701228928BC700FFD208 /* UITextField.swift */,
 				011C089A2897F08300ABF845 /* UICollection.swift */,
+				013CFFC928A4FE6C0061C02D /* StringExtension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1212,6 +1215,7 @@
 				19A61D6D2804129100E295B3 /* ClearentReaderStatusHeaderView.swift in Sources */,
 				19C670152892D83900FFD208 /* ClearentFieldValidationHelper.swift in Sources */,
 				19BD10672886E2B300F0E5C4 /* ClearentPaymentFieldCell.swift in Sources */,
+				013CFFCA28A4FE6C0061C02D /* StringExtension.swift in Sources */,
 				E702E5702364835B0032ED8D /* ClearentVP3300Config.m in Sources */,
 				BA40A34C27F1B38C0041CCF7 /* ClearentWrapper.swift in Sources */,
 				013AB9B7282264B100771FAC /* ClearentPairingReaderItem.swift in Sources */,
