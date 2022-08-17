@@ -7,11 +7,11 @@
 //
 
 public class ClearentSubtitleLabel: ClearentTitleLabel {
-    override public var nibName: String? {
+    public override var nibName: String? {
         String(describing: ClearentTitleLabel.self)
     }
 
-    override public var margins: [BottomMargin] {
+    public override var margins: [BottomMargin] {
         [
             RelativeBottomMargin(constant: 24, relatedViewType: ClearentPrimaryButton.self),
             RelativeBottomMargin(constant: 24, relatedViewType: ClearentIcon.self),

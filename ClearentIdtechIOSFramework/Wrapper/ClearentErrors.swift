@@ -7,23 +7,23 @@
 //
 
 /**
-  Used to determine whether a flow succeeded or failed. The assosiated value is of type String? and represents the custom name of the reader
+ Used to determine whether a flow succeeded or failed. The assosiated value is of type String? and represents the custom name of the reader
  */
 public typealias CompletionResult = Result<String?, ClearentError>
 
 public enum ClearentError: Error {
     /**
      The user aborted the current flow
-    */
+     */
     case cancelledByUser
-    
+
     /**
      No apiKey was passed to SDK
-    */
+     */
     case apiKeyNotProvided
-    
+
     /**
      No baseURL was passed to SDK
-    */
+     */
     case baseURLNotProvided
 }

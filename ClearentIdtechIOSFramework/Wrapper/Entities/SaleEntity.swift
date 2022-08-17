@@ -18,7 +18,7 @@ public class SaleEntity: CodableProtocol {
     let billing, shipping: ClientInformation?
     let card, csc, customerID, invoice, orderID: String?
 
-    init(amount: String, tipAmount: String? = nil, softwareType: String? = nil, softwareTypeVersion: String? = nil, billing: ClientInformation? = nil, shipping: ClientInformation? = nil, card: String? = nil, clientIP: String? = nil, csc: String? = nil, customerID: String? = nil, invoice: String? = nil, orderID: String? = nil) {
+    init(amount: String, tipAmount: String? = nil, softwareType: String? = nil, softwareTypeVersion: String? = nil, billing: ClientInformation? = nil, shipping: ClientInformation? = nil, card: String? = nil, csc: String? = nil, customerID: String? = nil, invoice: String? = nil, orderID: String? = nil) {
         self.amount = amount
         self.tipAmount = tipAmount
         self.softwareType = softwareType
@@ -54,9 +54,9 @@ struct ClientInformation: Codable {
         case fromZip = "from-zip"
         case zip
     }
-    
+
     init?(firstName: String? = nil, lastName: String? = nil, company: String? = nil, fromZip: String? = nil, zip: String? = nil) {
-        if firstName == nil && lastName == nil && company == nil && fromZip == nil && zip == nil {
+        if firstName == nil, lastName == nil, company == nil, fromZip == nil, zip == nil {
             return nil
         }
         self.company = company

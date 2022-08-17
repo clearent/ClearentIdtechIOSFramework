@@ -36,7 +36,7 @@ class ClearentPaymentFieldCell: UITableViewCell {
         setup(paymentField: leftPaymentTextField, with: firstItem, isFirstCell: isFirstCell, isLastCell: isLastCell)
         // do not show the second text field if there is only one element in row
         rightPaymentTextField.isHidden = row.elements.count == 1
-       
+
         if let secondItem = row.elements[safe: 1] {
             rightPaymentTextField.isHidden = false
             setup(paymentField: rightPaymentTextField, with: secondItem, isFirstCell: isFirstCell, isLastCell: isLastCell)
@@ -91,32 +91,31 @@ class ClearentPaymentFieldCell: UITableViewCell {
     }
 }
 
-fileprivate extension UITableView {
+private extension UITableView {
     func nextResponder(identifier: ItemIdentifier) {
         guard let identifier = identifier else { return }
-        for i in (identifier.tag + 1)..<(identifier.tag + 100) {
+        for i in (identifier.tag + 1) ..< (identifier.tag + 100) {
             if let view = viewWithTag(i), let containerView = view.superview?.superview as? ClearentPaymentTextField {
                 handleJumpTo(textField: view, and: containerView, tag: i)
                 break
             }
         }
     }
-    
+
     func previousResponder(identifier: ItemIdentifier) {
         guard let identifier = identifier else { return }
-        for i in (0..<(identifier.tag)).reversed() {
+        for i in (0 ..< identifier.tag).reversed() {
             if let view = viewWithTag(i), let containerView = view.superview?.superview as? ClearentPaymentTextField {
                 handleJumpTo(textField: view, and: containerView, tag: i)
                 break
             }
         }
     }
-    
-    private func handleJumpTo(textField: UIView, and textFieldContainer: ClearentPaymentTextField, tag: Int) {
+
+    private func handleJumpTo(textField: UIView, and textFieldContainer: ClearentPaymentTextField, tag _: Int) {
         textField.becomeFirstResponder()
         if let indexPath = textFieldContainer.item?.identifier?.indexPath {
             scrollToRow(at: indexPath, at: .bottom, animated: true)
         }
     }
 }
-

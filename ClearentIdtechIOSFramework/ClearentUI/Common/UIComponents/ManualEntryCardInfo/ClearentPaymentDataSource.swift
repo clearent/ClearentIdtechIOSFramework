@@ -6,7 +6,6 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
-
 protocol ClearentPaymentDataSourceProtocol: AnyObject {
     func didFinishCompletePaymentField(item: ClearentPaymentItem?, value: String?)
 }
@@ -18,21 +17,21 @@ class ClearentPaymentDataSource: NSObject {
     init(with sections: [ClearentPaymentSection]) {
         self.sections = sections
         super.init()
-        self.setupIdentifiersForElements()
+        setupIdentifiersForElements()
     }
-    
+
     private func setupIdentifiersForElements() {
         var tag = 100
         for i in sections.indices {
             for j in sections[i].rows.indices {
                 for k in sections[i].rows[j].elements.indices {
-                    self.sections[i].rows[j].elements[k].identifier = (tag: tag, indexPath: IndexPath(row: j, section: i))
+                    sections[i].rows[j].elements[k].identifier = (tag: tag, indexPath: IndexPath(row: j, section: i))
                     tag += 1
                 }
             }
         }
     }
-    
+
     func isAllDataValid() -> Bool {
         for section in sections {
             for row in section.rows {
@@ -46,7 +45,7 @@ class ClearentPaymentDataSource: NSObject {
         }
         return true
     }
-    
+
     func valueForType(_ type: ClearentPaymentItemType) -> String? {
         for section in sections {
             for row in section.rows {
@@ -72,7 +71,7 @@ extension ClearentPaymentDataSource: UITableViewDataSource {
         let section = sections[section]
         return section.isCollapsed ? 0 : section.rows.count
     }
-    
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let section = sections[indexPath.section]
         let row = section.rows[indexPath.row]
@@ -90,7 +89,7 @@ extension ClearentPaymentDataSource: UITableViewDataSource {
         }
         return UITableViewCell()
     }
-    
+
     private func handleCellAction(cell: ClearentPaymentFieldCell, item: ClearentPaymentItem?, cardData: String?) {
         guard var item = item else { return }
         item.enteredValue = cardData ?? ""
@@ -99,11 +98,11 @@ extension ClearentPaymentDataSource: UITableViewDataSource {
         cell.updatePaymentField(containing: item)
         delegate?.didFinishCompletePaymentField(item: item, value: cardData)
     }
-    
+
     private func isFirstCell(indexPath: IndexPath) -> Bool {
         return indexPath.section == 0 && indexPath.row == 0
     }
-    
+
     private func isLastCell(indexPath: IndexPath) -> Bool {
         if sections[indexPath.section].rows.count == indexPath.row + 1 {
             if let nextSection = sections[safe: indexPath.section + 1], nextSection.isCollapsed {

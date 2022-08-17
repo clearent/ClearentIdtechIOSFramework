@@ -17,17 +17,17 @@ public struct ClearentMoneyFormatter {
         formatter.locale = Locale(identifier: localeCurrency)
         return formatter
     }
-    
+
     fileprivate static var numberFormatterWithoutSymbol: NumberFormatter {
         let formatter = ClearentMoneyFormatter.numberFormatterWithSymbol
         formatter.currencySymbol = ""
         return formatter
     }
-    
+
     public static func formattedWithSymbol(from double: Double) -> String {
         numberFormatterWithSymbol.string(for: double) ?? ""
     }
-    
+
     public static func formattedWithoutSymbol(from double: Double) -> String {
         numberFormatterWithoutSymbol.string(for: double) ?? ""
     }

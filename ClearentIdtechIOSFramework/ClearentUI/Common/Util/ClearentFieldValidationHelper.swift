@@ -10,7 +10,7 @@ import Foundation
 
 class ClearentFieldValidationHelper {
     private static var previousText: String = ""
-    
+
     static func validateCardData(item: ClearentPaymentItem?) -> Bool {
         guard let item = item else { return false }
 
@@ -29,43 +29,43 @@ class ClearentFieldValidationHelper {
             return hasValidLength(item: item)
         }
     }
-    
+
     static func isCardNumberValid(item: ClearentPaymentItem) -> Bool {
         let cardNumberWithoutSpaces = item.enteredValue.replacingOccurrences(of: ClearentPaymentItemType.creditCardNo.separator, with: "")
         let luhnCheckPassed = luhnCheck(cardNumberWithoutSpaces)
         let regex = "\\d{15,\(item.maxNoOfChars)}"
         return luhnCheckPassed && evaluate(text: cardNumberWithoutSpaces, regex: regex)
     }
-    
+
     static func isExpirationDateValid(item: ClearentPaymentItem) -> Bool {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MM\(item.type.separator)yy"
         dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         guard let date = dateFormatter.date(from: item.enteredValue),
-              let endOfMonth = Calendar.current.date(byAdding: .month, value: 1, to: date) else { return false }
+            let endOfMonth = Calendar.current.date(byAdding: .month, value: 1, to: date) else { return false }
         return !(endOfMonth < Date())
     }
-    
+
     static func isSecurityCodeValid(item: ClearentPaymentItem) -> Bool {
         let regex = "\\d{3,\(item.maxNoOfChars)}"
         return evaluate(text: item.enteredValue, regex: regex)
     }
-    
+
     static func isCardholderNameValid(item: ClearentPaymentItem) -> Bool {
         let regex = "[A-Za-z\\s]{0,\(item.maxNoOfChars)}"
         return evaluate(text: item.enteredValue, regex: regex)
     }
-    
+
     static func isZipValid(item: ClearentPaymentItem) -> Bool {
         let regex = "[A-Za-z\\d\\-]{5,\(item.maxNoOfChars)}"
         return evaluate(text: item.enteredValue, regex: regex) || item.enteredValue.isEmpty
     }
-    
+
     static func hasValidLength(item: ClearentPaymentItem) -> Bool {
         let regex = ".{0,\(item.maxNoOfChars)}"
         return evaluate(text: item.enteredValue, regex: regex)
     }
-    
+
     /**
      If the value is valid, it is masked by replacing all digits except the last 4 with '*'
      */
@@ -81,13 +81,13 @@ class ClearentFieldValidationHelper {
                                                         range: NSMakeRange(0, textWithoutSpaces.count),
                                                         withTemplate: "*")
         formatCreditCardNo(text: hiddenText, sender: sender, item: item)
-       
+
         item.hiddenValue = (sender.text?.isEmpty ?? false) ? nil : sender.text
     }
-    
+
     /**
      If the value is valid, it is masked by replacing all digits with '*'
-    */
+     */
     static func hideSecurityCode(text: String, sender: UITextField, item: ClearentPaymentItem) {
         var item = item
         guard let regex = try? NSRegularExpression(pattern: "\\d", options: .caseInsensitive), item.isValid else {
@@ -101,7 +101,7 @@ class ClearentFieldValidationHelper {
         sender.text = formattedText
         item.hiddenValue = formattedText.isEmpty ? nil : formattedText
     }
-    
+
     /**
      Inserts a separator (empty space) every 4 digits and force a max number of entered digits
      */
@@ -116,7 +116,7 @@ class ClearentFieldValidationHelper {
                                                             withTemplate: "$0\(separator)")
         sender.text = formattedText
     }
-    
+
     /**
      Inserts a separator ('/') after 2 digits
      */
@@ -125,14 +125,14 @@ class ClearentFieldValidationHelper {
         let separator = item.type.separator
         let separatorChar = Character(separator)
         var date = text.replacingOccurrences(of: separator, with: "")
-    
-        if date.count >= 2 && previousText.last != separatorChar {
+
+        if date.count >= 2, previousText.last != separatorChar {
             date.insert(separatorChar, at: text.index(text.startIndex, offsetBy: 2))
         }
         sender.text = String(date.prefix(item.maxNoOfChars + separator.count))
         previousText = text
     }
-    
+
     // MARK: - private
 
     /**
@@ -143,16 +143,16 @@ class ClearentFieldValidationHelper {
      or simply subtract 9 from the product (e.g., 16: 16 - 9 = 7, 18: 18 - 9 = 9).
      Take the sum of all the digits.
      If the total modulo 10 is equal to 0 (if the total ends in zero) then the number is valid according to the Luhn formula; else it is not valid.
-    */
+     */
     private static func luhnCheck(_ number: String) -> Bool {
         let reversedString = String(number.reversed())
         var temp = 0, total = 0
-        for index in 0..<reversedString.count {
+        for index in 0 ..< reversedString.count {
             if let digit = Int(reversedString[index]) {
                 let pos = index + 1
-                if pos % 2 == 0  {
+                if pos % 2 == 0 {
                     temp = digit * 2
-                    total += temp > 9 ? temp - 9 : temp;
+                    total += temp > 9 ? temp - 9 : temp
                 } else {
                     total += digit
                 }
@@ -160,9 +160,9 @@ class ClearentFieldValidationHelper {
         }
         return total % 10 == 0
     }
-    
+
     private static func evaluate(text: String, regex: String) -> Bool {
-        let predicate = NSPredicate(format:"SELF MATCHES %@", regex)
+        let predicate = NSPredicate(format: "SELF MATCHES %@", regex)
         return predicate.evaluate(with: text)
     }
 }
