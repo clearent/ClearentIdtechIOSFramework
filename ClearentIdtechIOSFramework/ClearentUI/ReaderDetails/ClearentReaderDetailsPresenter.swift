@@ -14,13 +14,18 @@ protocol ClearentReaderDetailsProtocol {
     func disconnectFromReader()
     func handleAutojoin(markAsAutojoin: Bool)
     func handleBackAction()
-    func updateReader(reader:ReaderInfo)
+    func deleteReaderName()
+}
+
+protocol ClearentReaderDetailsDismissProtocol: AnyObject {
+    func shutDown(userAction: FlowButtonType)
 }
 
 class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
     public var currentReader: ReaderInfo
+    private weak var delegate: ClearentReaderDetailsDismissProtocol?
     private var flowDataProvider: FlowDataProvider
-    private var navigationController: UINavigationController?
+    private var navigationController: UINavigationController?    
 
     var readerSignalStatus: (title: String, iconName: String)? {
         guard let signalLevel = currentReader.signalLevel,
@@ -43,10 +48,11 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
         return (title, batteryStatus.iconName)
     }
 
-    init(currentReader: ReaderItem, flowDataProvider: FlowDataProvider, navigationController: UINavigationController) {
+    init(currentReader: ReaderItem, flowDataProvider: FlowDataProvider, navigationController: UINavigationController, delegate: ClearentReaderDetailsDismissProtocol) {
         self.currentReader = currentReader.readerInfo
         self.flowDataProvider = flowDataProvider
         self.navigationController = navigationController
+        self.delegate = delegate
     }
 
     func removeReader() {
@@ -61,11 +67,12 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
         handleBackAction()
     }
     
-    func updateReader(reader: ReaderInfo) {
-        if (reader == ClearentWrapperDefaults.pairedReaderInfo) {
+    func deleteReaderName() {
+        currentReader.customReaderName = nil
+        if currentReader == ClearentWrapperDefaults.pairedReaderInfo {
             ClearentWrapperDefaults.pairedReaderInfo?.customReaderName = nil
         }
-        ClearentWrapper.shared.updateReaderInRecentlyUsed(reader: reader)
+        ClearentWrapper.shared.updateReaderInRecentlyUsed(reader: currentReader)
     }
 
     func disconnectFromReader() {
@@ -92,7 +99,7 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
             navigationController?.popViewController(animated: true)
         } else {
             ClearentWrapper.shared.readerInfoReceived?(nil)
-            navigationController?.dismiss(animated: true)
+            delegate?.shutDown(userAction: .done)
         }
     }
 }

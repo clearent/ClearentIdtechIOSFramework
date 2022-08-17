@@ -85,7 +85,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             let errItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
                             FlowDataItem(type: .title, object: "xsdk_signature_upload_failure_title".localized),
                             FlowDataItem(type: .userAction, object: FlowButtonType.retry),
-                            FlowDataItem(type: .userAction, object: FlowButtonType.skip)]
+                            FlowDataItem(type: .userAction, object: FlowButtonType.skipSignature)]
             
            feedback = FlowDataFactory.component(with: .payment,
                                                     type: .signatureError,

@@ -72,6 +72,7 @@
 		0193D455282554DB002B04B9 /* ClearentListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0193D454282554DB002B04B9 /* ClearentListView.swift */; };
 		01949F6C283BEC3E0041292A /* SF-Pro-Text-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 01949F6A283BEC3E0041292A /* SF-Pro-Text-Bold.otf */; };
 		01949F6D283BEC3E0041292A /* SF-Pro-Display-Bold.otf in Resources */ = {isa = PBXBuildFile; fileRef = 01949F6B283BEC3E0041292A /* SF-Pro-Display-Bold.otf */; };
+		019AD47F28ABBB5A003A1595 /* ClearentErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019AD47E28ABBB5A003A1595 /* ClearentErrors.swift */; };
 		019F92922827C9F10068E3FA /* ClearentListView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 019F92912827C9F10068E3FA /* ClearentListView.xib */; };
 		01D1ED6F280FFA680005FC71 /* ReaderInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D1ED6E280FFA680005FC71 /* ReaderInfo.swift */; };
 		01ED8F662874577E001D6952 /* SaleEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01ED8F652874577E001D6952 /* SaleEntity.swift */; };
@@ -286,6 +287,7 @@
 		0193D454282554DB002B04B9 /* ClearentListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentListView.swift; sourceTree = "<group>"; };
 		01949F6A283BEC3E0041292A /* SF-Pro-Text-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Text-Bold.otf"; sourceTree = "<group>"; };
 		01949F6B283BEC3E0041292A /* SF-Pro-Display-Bold.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Display-Bold.otf"; sourceTree = "<group>"; };
+		019AD47E28ABBB5A003A1595 /* ClearentErrors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentErrors.swift; sourceTree = "<group>"; };
 		019F92912827C9F10068E3FA /* ClearentListView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentListView.xib; sourceTree = "<group>"; };
 		01D1ED6E280FFA680005FC71 /* ReaderInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderInfo.swift; sourceTree = "<group>"; };
 		01D437C4288855DD008A1233 /* UITextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UITextField.swift; sourceTree = "<group>"; };
@@ -712,6 +714,7 @@
 				BA40A34A27F1B38C0041CCF7 /* HttpClient.swift */,
 				BAEAD2D82810041100AA72F6 /* ClearentExtension.swift */,
 				CC9FF465282BC127004B2185 /* ClearentUIManager.swift */,
+				019AD47E28ABBB5A003A1595 /* ClearentErrors.swift */,
 			);
 			path = Wrapper;
 			sourceTree = "<group>";
@@ -1253,6 +1256,7 @@
 				0129F7E52823A83000027BCE /* ClearentSubtitleLabel.swift in Sources */,
 				0101EC292808249F00C533DE /* ProgressShapeLayer.swift in Sources */,
 				E77C90482000442200C3E590 /* ClearentTransactionTokenRequest.m in Sources */,
+				019AD47F28ABBB5A003A1595 /* ClearentErrors.swift in Sources */,
 				01913F14282AECF100A71CF6 /* ClearentRoundedCornersStackView.swift in Sources */,
 				E79A4D94204F14B000E4BBF6 /* ClearentDelegate.m in Sources */,
 				E71E309521F7A0E3001C950A /* ClearentCard.m in Sources */,
