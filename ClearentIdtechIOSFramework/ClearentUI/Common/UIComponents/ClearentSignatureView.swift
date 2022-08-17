@@ -64,7 +64,7 @@
      // MARK: - Private
      
      private func setupDescriptionLabel() {
-         descriptionLabel.text = "xsdk_signature_subtitle".localized
+         descriptionLabel.text = ClearentConstants.Localized.Signature.subtitle
          descriptionLabel.font = ClearentUIBrandConfigurator.shared.fonts.signatureSubtitleFont
          descriptionLabel.textAlignment = .left
          descriptionLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.signatureDescriptionMessageColor
@@ -76,7 +76,7 @@
      }
      
      private func setupDoneButton() {
-         doneButton.title = "xsdk_signature_action".localized
+         doneButton.title = ClearentConstants.Localized.Signature.action
          doneButton.button.isUserInteractionEnabled = false
      }
      

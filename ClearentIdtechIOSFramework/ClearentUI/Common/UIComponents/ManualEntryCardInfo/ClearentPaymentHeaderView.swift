@@ -15,6 +15,6 @@ class ClearentPaymentHeaderView: ClearentXibView {
     override func configure() {
         titleLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.manualPaymentTitleColor
         titleLabel.font = ClearentUIBrandConfigurator.shared.fonts.paymentViewTitleLabelFont
-        titleLabel.text = "xsdk_payment_manual_entry_title".localized
+        titleLabel.text = ClearentConstants.Localized.ManualEntry.header
     }
 }

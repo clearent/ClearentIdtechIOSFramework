@@ -53,11 +53,11 @@ class ClearentReaderDetailsViewController: UIViewController {
         navigationBar.tintColor = ClearentUIBrandConfigurator.shared.colorPalette.navigationBarTintColor
         navigationBar.titleTextAttributes = [.font: ClearentUIBrandConfigurator.shared.fonts.screenTitleFont,
                                              .foregroundColor: ClearentUIBrandConfigurator.shared.colorPalette.screenTitleColor]
-        customNavigationItem.title = "xsdk_reader_details_nav_title".localized
+        customNavigationItem.title = ClearentConstants.Localized.ReaderDetails.navigationItem
     }
 
     private func setupSwitches() {
-        connectedView.titleText = "xsdk_reader_details_connected".localized
+        connectedView.titleText = ClearentConstants.Localized.ReaderDetails.connected
         connectedView.descriptionText = ""
         connectedView.isOn = readerInfo.isConnected
         connectedView.valueChangedAction = { [weak self] isOn in
@@ -73,8 +73,8 @@ class ClearentReaderDetailsViewController: UIViewController {
             }
         }
 
-        autojoinView.titleText = "xsdk_reader_details_autojoin_title".localized
-        autojoinView.descriptionText = "xsdk_reader_details_autojoin_description".localized
+        autojoinView.titleText = ClearentConstants.Localized.ReaderDetails.autojoinTitle
+        autojoinView.descriptionText = ClearentConstants.Localized.ReaderDetails.autojoinDescription
         autojoinView.isOn = readerInfo.autojoin
         autojoinView.valueChangedAction = { [weak self] isOn in
             self?.detailsPresenter.handleAutojoin(markAsAutojoin: isOn)
@@ -117,13 +117,13 @@ class ClearentReaderDetailsViewController: UIViewController {
     }
 
     private func setupReaderName() {
-        readerName.titleText = "xsdk_reader_details_readername_title".localized
+        readerName.titleText = ClearentConstants.Localized.ReaderDetails.readerName
         readerName.descriptionText = readerInfo.readerName
         readerName.button.isHidden = true
     }
 
     private func setupCustomReaderName() {
-        customReaderName.titleText = "xsdk_reader_details_custom_readername_title".localized
+        customReaderName.titleText = ClearentConstants.Localized.ReaderDetails.customReaderName
         customReaderName.editButtonPressed = { [weak self] in
             guard let strongSelf = self else { return }
             let modalVC = ClearentUIManager.shared.viewController(processType: .renameReader, editableReader: self?.detailsPresenter.currentReader) { _, customName in
@@ -152,7 +152,7 @@ class ClearentReaderDetailsViewController: UIViewController {
         if let friendlyreaderName = detailsPresenter.currentReader.customReaderName {
             customReaderName.descriptionText = friendlyreaderName
         } else {
-            customReaderName.descriptionText = "xsdk_reader_details_add_custom_readername_title".localized
+            customReaderName.descriptionText = ClearentConstants.Localized.ReaderDetails.addCustomReaderName
         }
         customReaderName.iconName = ClearentConstants.IconName.editButton
     }
@@ -160,7 +160,7 @@ class ClearentReaderDetailsViewController: UIViewController {
     private func setupSerialNumber() {
         serialNumberView.isHidden = true
         if let serialNumber = readerInfo.serialNumber, !serialNumber.isEmpty {
-            serialNumberView.titleText = "xsdk_reader_details_serialnumber_title".localized
+            serialNumberView.titleText = ClearentConstants.Localized.ReaderDetails.serialNumber
             serialNumberView.descriptionText = serialNumber
             serialNumberView.button.isHidden = true
             serialNumberView.isHidden = false
@@ -170,7 +170,7 @@ class ClearentReaderDetailsViewController: UIViewController {
     private func setupVersion() {
         versionNumberView.isHidden = true
         if let versionNumber = readerInfo.version, !versionNumber.isEmpty {
-            versionNumberView.titleText = "xsdk_reader_details_version_title".localized
+            versionNumberView.titleText = ClearentConstants.Localized.ReaderDetails.version
             versionNumberView.descriptionText = versionNumber
             versionNumberView.button.isHidden = true
             versionNumberView.isHidden = false
@@ -178,7 +178,7 @@ class ClearentReaderDetailsViewController: UIViewController {
     }
 
     private func setupButton() {
-        removeReaderButton.title = "xsdk_reader_details_remove_reader".localized
+        removeReaderButton.title = ClearentConstants.Localized.ReaderDetails.removeReader
         removeReaderButton.borderedButtonTextColor = ClearentUIBrandConfigurator.shared.colorPalette.removeReaderButtonTextColor
         removeReaderButton.borderColor = ClearentUIBrandConfigurator.shared.colorPalette.removeReaderButtonBorderColor
         removeReaderButton.buttonStyle = .bordered
@@ -189,12 +189,12 @@ class ClearentReaderDetailsViewController: UIViewController {
 
     func showRemoveReaderAlert() {
         let readerName = detailsPresenter.currentReader.customReaderName ?? detailsPresenter.currentReader.readerName
-        let alertTitle = String(format: "xsdk_reader_details_remove_alert_title".localized, readerName)
-        let alert = UIAlertController(title: alertTitle, message: "xsdk_reader_details_remove_alert_message".localized, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "xsdk_reader_details_remove_alert_confirm".localized, style: .destructive) { [weak self] _ in
+        let alertTitle = String(format: ClearentConstants.Localized.ReaderDetails.removeReaderAlertTitle, readerName)
+        let alert = UIAlertController(title: alertTitle, message: ClearentConstants.Localized.ReaderDetails.removeReaderAlertDescription, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: ClearentConstants.Localized.ReaderDetails.confirm, style: .destructive) { [weak self] _ in
             self?.detailsPresenter.removeReader()
         })
-        alert.addAction(UIAlertAction(title: "xsdk_reader_details_remove_alert_cancel".localized, style: .cancel) { _ in })
+        alert.addAction(UIAlertAction(title: ClearentConstants.Localized.ReaderDetails.cancel, style: .cancel) { _ in })
 
         present(alert, animated: true, completion: nil)
     }

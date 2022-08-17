@@ -76,36 +76,36 @@ public enum FlowButtonType {
     var title: String {
         switch self {
         case .cancel:
-            return "xsdk_general_error_user_action_cancel".localized
+            return ClearentConstants.Localized.Error.cancel
         case .retry:
-            return "xsdk_general_error_user_action_retry".localized
+            return ClearentConstants.Localized.Error.retry
         case .pair, .pairInFlow:
-            return "xsdk_pairing_user_action_pair".localized
+            return ClearentConstants.Localized.Pairing.pair
         case .done:
-            return "xsdk_pairing_user_action_done".localized
+            return ClearentConstants.Localized.Pairing.done
         case .skip:
-            return "xsdk_signature_error_action_skip".localized
+            return ClearentConstants.Localized.Signature.skip
         case .pairNewReader:
-            return "xsdk_pairing_pair_new_reader".localized
+            return ClearentConstants.Localized.Pairing.pairNewReader
         case .settings:
-            return "xsdk_pairing_user_action_settings".localized
+            return ClearentConstants.Localized.Pairing.settings
         case .addReaderName:
-            return "xsdk_pairing_user_action_addName".localized
+            return ClearentConstants.Localized.Pairing.addName
         case .renameReaderLater:
-            return "xsdk_pairing_user_action_later".localized
+            return ClearentConstants.Localized.Pairing.later
         case .transactionWithTip:
             return transactionWithTipTitle()
         case .transactionWithoutTip:
-            return "xsdk_tips_user_action_transaction_without_tip".localized
+            return ClearentConstants.Localized.Tips.withoutTip
         case .manuallyEnterCardInfo:
-            return "xsdk_general_error_user_action_manually_enter_card".localized
+            return ClearentConstants.Localized.Error.manualEntry
         }
     }
 
     func transactionWithTipTitle(for amount: Double? = nil) -> String {
         guard let amount = amount else { return "" }
         let formattedText = ClearentMoneyFormatter.formattedWithSymbol(from: amount)
-        return String(format: "xsdk_tips_user_action_transaction_with_tip".localized, formattedText)
+        return String(format: ClearentConstants.Localized.Tips.withTip, formattedText)
     }
 }
 

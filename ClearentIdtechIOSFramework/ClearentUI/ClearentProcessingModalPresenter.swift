@@ -119,9 +119,9 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     func startPairingFlow() {
-        let items = [FlowDataItem(type: .hint, object: "xsdk_pairing_prepare_pairing_reader_range".localized),
+        let items = [FlowDataItem(type: .hint, object: ClearentConstants.Localized.Pairing.readerRange),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
-                     FlowDataItem(type: .description, object: "xsdk_pairing_prepare_pairing_reader_button".localized),
+                     FlowDataItem(type: .description, object: ClearentConstants.Localized.Pairing.readerButton),
                      FlowDataItem(type: .userAction, object: FlowButtonType.pairInFlow)]
         let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.info, items: items)
         modalProcessingView?.updateContent(with: feedback)
@@ -282,7 +282,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     private func showReaderNameOption() {
-        let items = [FlowDataItem(type: .hint, object: "xsdk_pairing_add_name_to_reader".localized),
+        let items = [FlowDataItem(type: .hint, object: ClearentConstants.Localized.Pairing.addReaderName),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
                      FlowDataItem(type: .userAction, object: FlowButtonType.addReaderName),
                      FlowDataItem(type: .userAction, object: FlowButtonType.renameReaderLater)]
@@ -292,7 +292,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     
     private func showRenameReader() {
         temporaryReaderName = nil
-        let items = [FlowDataItem(type: .hint, object: "xsdk_pairing_rename_your_reader".localized),
+        let items = [FlowDataItem(type: .hint, object: ClearentConstants.Localized.Pairing.renameReader),
                      FlowDataItem(type: .input, object: FlowInputType.nameInput),
                      FlowDataItem(type: .userAction, object: FlowButtonType.done)]
         let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.renameReaderDone, items: items)
@@ -301,7 +301,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     private func showSignatureScreen() {
-        let items = [FlowDataItem(type: .hint, object: "xsdk_signature_title".localized),
+        let items = [FlowDataItem(type: .hint, object: ClearentConstants.Localized.Signature.title),
                      FlowDataItem(type: .signature, object: nil)]
         let feedback = FlowFeedback(flow: .pairing(), type: .signature, items: items)
         modalProcessingView?.updateContent(with: feedback)
@@ -339,7 +339,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                 // display successful pairing content
                 var items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.pairingSuccessful),
                              FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
-                             FlowDataItem(type: .description, object: "xsdk_pairing_paired_successful".localized),
+                             FlowDataItem(type: .description, object: ClearentConstants.Localized.Pairing.readerSuccessfulPaired),
                              FlowDataItem(type: .userAction, object: FlowButtonType.done)]
                 if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo {
                     items.insert(FlowDataItem(type: .readerInfo, object: readerInfo), at: 0)

@@ -72,7 +72,7 @@ class ClearentPaymentBaseSection: ClearentPaymentSection {
 }
 
 class ClearentPaymentAdditionalSection: ClearentPaymentSection {
-    var title: String? { "xsdk_payment_manual_entry_additional_section_title".localized }
+    var title: String? { ClearentConstants.Localized.ManualEntry.additionalSection }
     
     var isCollapsable: Bool { true }
     
@@ -91,9 +91,9 @@ class ClearentPaymentAdditionalSection: ClearentPaymentSection {
 class CreditCardNoItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .creditCardNo }
     
-    var title: String { "xsdk_payment_manual_entry_card_no".localized }
+    var title: String { ClearentConstants.Localized.ManualEntry.cardNo }
     
-    var errorMessage: String? { "xsdk_payment_manual_entry_card_no_error".localized }
+    var errorMessage: String? { ClearentConstants.Localized.ManualEntry.cardNoError }
     
     var maxNoOfChars: Int { 19 }
 
@@ -111,13 +111,13 @@ class CreditCardNoItem: ClearentPaymentItem {
 class DateItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .date }
     
-    var title: String { "xsdk_payment_manual_entry_exp_date".localized }
+    var title: String { ClearentConstants.Localized.ManualEntry.expirationDate }
     
-    var placeholder: String? { "xsdk_payment_manual_entry_exp_date_placeholder".localized }
+    var placeholder: String? { ClearentConstants.Localized.ManualEntry.expirationDatePlaceholder }
     
     var iconName: String? { ClearentConstants.IconName.calendar }
     
-    var errorMessage: String? { "xsdk_payment_manual_entry_exp_date_error".localized }
+    var errorMessage: String? { ClearentConstants.Localized.ManualEntry.expirationDateError }
     
     var maxNoOfChars: Int { 4 }
     
@@ -135,11 +135,11 @@ class DateItem: ClearentPaymentItem {
 class SecurityCodeItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .securityCode }
     
-    var title: String { "xsdk_payment_manual_entry_csc".localized }
+    var title: String { ClearentConstants.Localized.ManualEntry.csc }
     
-    var placeholder: String? { "xsdk_payment_manual_entry_csc_placeholder".localized }
+    var placeholder: String? { ClearentConstants.Localized.ManualEntry.cscPlaceholder }
     
-    var errorMessage: String? { "xsdk_payment_manual_entry_csc_error".localized }
+    var errorMessage: String? { ClearentConstants.Localized.ManualEntry.cscError }
     
     var maxNoOfChars: Int { 4 }
     
@@ -158,9 +158,9 @@ class SecurityCodeItem: ClearentPaymentItem {
 class CardholderNameItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .cardholderName }
     
-    var title: String { "xsdk_payment_manual_entry_cardholder_name".localized }
+    var title: String { ClearentConstants.Localized.ManualEntry.cardHolderName }
     
-    var errorMessage: String? { "xsdk_payment_manual_entry_cardholder_name_error".localized }
+    var errorMessage: String? { ClearentConstants.Localized.ManualEntry.cardHolderNameError }
     
     var maxNoOfChars: Int { 50 }
     
@@ -176,9 +176,9 @@ class CardholderNameItem: ClearentPaymentItem {
 class BillingZipCodeItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .billingZipCode }
     
-    var title: String { "xsdk_payment_manual_entry_billing_zip".localized }
+    var title: String { ClearentConstants.Localized.ManualEntry.billingZipCode }
     
-    var errorMessage: String? { "xsdk_payment_manual_entry_billing_zip_error".localized }
+    var errorMessage: String? { ClearentConstants.Localized.ManualEntry.billingZipCodeError }
     
     var maxNoOfChars: Int { 10 }
     
@@ -194,9 +194,9 @@ class BillingZipCodeItem: ClearentPaymentItem {
 class InvoiceNoItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .invoiceNo }
     
-    var title: String { "xsdk_payment_manual_entry_invoice_no".localized }
+    var title: String { ClearentConstants.Localized.ManualEntry.invoiceNo }
     
-    var errorMessage: String? { "xsdk_payment_manual_entry_invoice_no_error".localized }
+    var errorMessage: String? { ClearentConstants.Localized.ManualEntry.invoiceNoError }
     
     var maxNoOfChars: Int { 50 }
     
@@ -212,9 +212,9 @@ class InvoiceNoItem: ClearentPaymentItem {
 class OrderNoItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .orderNo }
     
-    var title: String { "xsdk_payment_manual_entry_order_no".localized }
+    var title: String { ClearentConstants.Localized.ManualEntry.orderNo }
     
-    var errorMessage: String? { "xsdk_payment_manual_entry_order_no_error".localized }
+    var errorMessage: String? { ClearentConstants.Localized.ManualEntry.orderNoError }
     
     var maxNoOfChars: Int { 50 }
     
@@ -230,9 +230,9 @@ class OrderNoItem: ClearentPaymentItem {
 class CompanyNameItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .companyName }
     
-    var title: String { "xsdk_payment_manual_entry_company_name".localized }
+    var title: String { ClearentConstants.Localized.ManualEntry.companyName }
     
-    var errorMessage: String? { "xsdk_payment_manual_entry_company_name_error".localized }
+    var errorMessage: String? { ClearentConstants.Localized.ManualEntry.companyNameError }
     
     var maxNoOfChars: Int { 50 }
     
@@ -250,9 +250,9 @@ class CompanyNameItem: ClearentPaymentItem {
 class CustomerIDItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .customerId }
     
-    var title: String { "xsdk_payment_manual_entry_customer_id".localized }
+    var title: String { ClearentConstants.Localized.ManualEntry.customerID }
     
-    var errorMessage: String? { "xsdk_payment_manual_entry_customer_id_error".localized }
+    var errorMessage: String? { ClearentConstants.Localized.ManualEntry.customerIDError }
     
     var maxNoOfChars: Int { 50 }
     
@@ -270,9 +270,9 @@ class CustomerIDItem: ClearentPaymentItem {
 class ShippingZipCodeItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .shippingZipCode }
     
-    var title: String { "xsdk_payment_manual_entry_shipping_zip".localized }
+    var title: String { ClearentConstants.Localized.ManualEntry.shippingZipCode }
     
-    var errorMessage: String? { "xsdk_payment_manual_entry_shipping_zip_error".localized }
+    var errorMessage: String? { ClearentConstants.Localized.ManualEntry.shippingZipCodeError }
     
     var maxNoOfChars: Int { 10 }
     

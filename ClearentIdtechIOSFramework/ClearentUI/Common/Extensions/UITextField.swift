@@ -12,7 +12,7 @@ extension UITextField {
     // Adds a toolbar with a done button to the UITextField's Keyboard
     func addDoneToKeyboard() {
         let onDone = (target: self, action: #selector(doneButtonTapped), isEnabled: true)
-        let doneBtn = UIBarButtonItem(title: "xsdk_keyboard_done".localized, style: .done, target: onDone.target, action: onDone.action)
+        let doneBtn = UIBarButtonItem(title: ClearentConstants.Localized.Keyboard.done, style: .done, target: onDone.target, action: onDone.action)
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)
         createToolbar(with: [flexibleSpace, doneBtn])
     }
@@ -20,7 +20,7 @@ extension UITextField {
     // Adds a toolbar with navigation arrows and done button to the UITextField's Keyboard
     func addNavigationAndDoneToKeyboard(previousAction: KeyboardAction, nextAction: KeyboardAction) {
         let onDone = (target: self, action: #selector(doneButtonTapped))
-        let doneBtn = UIBarButtonItem(title: "xsdk_keyboard_done".localized, style: .done, target: onDone.target, action: onDone.action)
+        let doneBtn = UIBarButtonItem(title: ClearentConstants.Localized.Keyboard.done, style: .done, target: onDone.target, action: onDone.action)
         
         let previousButton = UIBarButtonItem(image: UIImage(named: ClearentConstants.IconName.collapseMedium, in: ClearentConstants.bundle, with: nil), style: .plain, target: previousAction.target, action: previousAction.action)
         previousButton.isEnabled = previousAction.isEnabled

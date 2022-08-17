@@ -77,11 +77,11 @@ public enum UserAction: String, CaseIterable {
         case .connectionTimeout:
             return CLEARENT_USER_ACTION_PRESS_BUTTON_MESSAGE
         case .noInternet:
-            return "xsdk_internet_no_connection".localized
+            return ClearentConstants.Localized.Internet.noConnection
         case .noBluetooth:
-            return "xsdk_bluetooth_turned_off".localized
+            return ClearentConstants.Localized.Bluetooth.turnedOff
         case .noBluetoothPermission:
-            return "xsdk_bluetooth_no_permission".localized
+            return ClearentConstants.Localized.Bluetooth.noPermission
         }
     }
     

@@ -26,20 +26,20 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
         guard let signalLevel = currentReader.signalLevel,
               let iconName = currentReader.signalStatus().iconName else { return nil }
 
-        var signalStrength = "xsdk_reader_details_signal_weak".localized
+        var signalStrength = ClearentConstants.Localized.ReaderDetails.signalWeak
         if signalLevel == 0 {
-            signalStrength = "xsdk_reader_details_signal_good".localized
+            signalStrength = ClearentConstants.Localized.ReaderDetails.signalGood
         } else if signalLevel == 1 {
-            signalStrength = "xsdk_reader_details_signal_medium".localized
+            signalStrength = ClearentConstants.Localized.ReaderDetails.signalMedium
         }
 
-        let title = String(format: "xsdk_reader_details_signal_status".localized, signalStrength)
+        let title = String(format: ClearentConstants.Localized.ReaderDetails.signalStatus, signalStrength)
         return (title, iconName)
     }
 
     var readerBatteryStatus: (title: String, iconName: String)? {
         guard let batteryStatus = currentReader.batteryStatus() else { return nil }
-        let title = String(format: "xsdk_reader_details_battery_status".localized, batteryStatus.title)
+        let title = String(format: ClearentConstants.Localized.ReaderDetails.batteryStatus, batteryStatus.title)
         return (title, batteryStatus.iconName)
     }
 
