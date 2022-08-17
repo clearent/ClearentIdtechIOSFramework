@@ -16,7 +16,7 @@ class ClearentListView: ClearentMarginableView {
         }
     }
 
-    override public var margins: [BottomMargin] {
+    public override var margins: [BottomMargin] {
         [RelativeBottomMargin(constant: 24, relatedViewType: ClearentPrimaryButton.self)]
     }
 }

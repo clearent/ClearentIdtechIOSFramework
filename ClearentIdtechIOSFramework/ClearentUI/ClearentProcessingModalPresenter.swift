@@ -12,7 +12,7 @@ protocol ClearentProcessingModalView: AnyObject {
     func updateContent(with feedback: FlowFeedback)
     func addLoadingViewToCurrentContent()
     func showLoadingView()
-    func dismissViewController(isConnected: Bool, customName: String?)
+    func dismissViewController(result: CompletionResult)
     func positionViewOnTop(flag: Bool)
     func updateUserActionButtonState(enabled: Bool)
 }
@@ -37,9 +37,8 @@ protocol ProcessingModalProtocol {
 }
 
 class ClearentProcessingModalPresenter {
-    
     // MARK: - Properties
-    
+
     private weak var modalProcessingView: ClearentProcessingModalView?
     private var temporaryReaderName: String?
     private let sdkWrapper = ClearentWrapper.shared
@@ -57,22 +56,21 @@ class ClearentProcessingModalPresenter {
 
     init(modalProcessingView: ClearentProcessingModalView, amount: Double?, processType: ProcessType) {
         self.modalProcessingView = modalProcessingView
-        self.amountWithoutTip = amount
+        amountWithoutTip = amount
         self.processType = processType
         sdkFeedbackProvider = FlowDataProvider()
         sdkFeedbackProvider.delegate = self
     }
 
-    private func dissmissViewWithDelay() {
-        let deadlineTime = DispatchTime.now() + .seconds(3)
-        DispatchQueue.main.asyncAfter(deadline: deadlineTime) {
-            self.modalProcessingView?.dismissViewController(isConnected: true, customName: ClearentWrapperDefaults.pairedReaderInfo?.customReaderName)
+    private func successfulDissmissViewWithDelay() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+            let result = CompletionResult.success(ClearentWrapperDefaults.pairedReaderInfo?.customReaderName)
+            self?.modalProcessingView?.dismissViewController(result: result)
         }
     }
 }
 
 extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
-    
     func enableDoneButtonForInput(enabled: Bool) {
         modalProcessingView?.updateUserActionButtonState(enabled: enabled)
     }
@@ -103,21 +101,21 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             }
         case .payment:
             switch flowFeedbackType {
-                case .signature:
-                    showSignatureScreen()
-                case .signatureError:
-                    resendSignature()
-                default:
-                    startTransactionFlow()
+            case .signature:
+                showSignatureScreen()
+            case .signatureError:
+                resendSignature()
+            default:
+                startTransactionFlow()
             }
         case .showReaders:
-            if isRestart { break; }
+            if isRestart { break }
             showReadersList()
         case .renameReader:
             showRenameReader()
         }
     }
-    
+
     func startPairingFlow() {
         let items = [FlowDataItem(type: .hint, object: ClearentConstants.Localized.Pairing.readerRange),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
@@ -126,10 +124,10 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.info, items: items)
         modalProcessingView?.updateContent(with: feedback)
     }
-    
-    func showDetailsScreen(for reader: ReaderItem, allReaders: [ReaderItem], flowDataProvider: FlowDataProvider, on navigationController: UINavigationController)  {
+
+    func showDetailsScreen(for reader: ReaderItem, allReaders _: [ReaderItem], flowDataProvider: FlowDataProvider, on navigationController: UINavigationController) {
         let vc = ClearentReaderDetailsViewController(nibName: String(describing: ClearentReaderDetailsViewController.self), bundle: ClearentConstants.bundle)
-        vc.detailsPresenter = ClearentReaderDetailsPresenter(currentReader: reader, flowDataProvider: flowDataProvider, navigationController: navigationController)
+        vc.detailsPresenter = ClearentReaderDetailsPresenter(currentReader: reader, flowDataProvider: flowDataProvider, navigationController: navigationController, delegate: self)
         navigationController.pushViewController(vc, animated: true)
     }
     
@@ -140,28 +138,30 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         selectedReaderFromReadersList = ReaderItem(readerInfo: reader, isConnecting: true)
         sdkWrapper.connectTo(reader: reader)
     }
-    
+
     func updateTemporaryReaderName(name: String?) {
-        if (editableReader == nil) { editableReader = ClearentWrapperDefaults.pairedReaderInfo }
+        if editableReader == nil { editableReader = ClearentWrapperDefaults.pairedReaderInfo }
         temporaryReaderName = name
     }
     
     func handleUserAction(userAction: FlowButtonType) {
         switch userAction {
-        case .cancel, .done, .renameReaderLater, .skip:
+        case .cancel, .done, .renameReaderLater, .skipSignature:
             if ClearentWrapper.shared.flowType?.flowFeedbackType == .pairingDoneInfo {
                 showReaderNameOption()
             } else {
                 if ClearentWrapper.shared.flowType?.flowFeedbackType == .renameReaderDone {
                     updateReaderName()
                 }
-                
-                if (shouldStartTransactionAfterRenameReader) {
+
+                if shouldStartTransactionAfterRenameReader {
                     shouldStartTransactionAfterRenameReader = false
                     startTipFlow()
                     modalProcessingView?.positionViewOnTop(flag: false)
                 } else {
-                    modalProcessingView?.dismissViewController(isConnected: userAction != .cancel, customName: editableReader?.customReaderName)
+                    let cancelled = userAction == .cancel
+                    let result = cancelled ? CompletionResult.failure(ClearentError.cancelledByUser) : CompletionResult.success(editableReader?.customReaderName)
+                    modalProcessingView?.dismissViewController(result: result)
                 }
             }
         case .retry, .pair:
@@ -196,13 +196,13 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         modalProcessingView?.showLoadingView()
         ClearentWrapper.shared.sendSignatureWithImage(image: image)
     }
-    
+
     func sendManualEntryTransaction(with dataSource: ClearentPaymentDataSource) {
         guard let amount = amountWithoutTip?.stringFormattedWithTwoDecimals,
-              let cardNo = dataSource.valueForType(.creditCardNo)?.replacingOccurrences(of: ClearentPaymentItemType.creditCardNo.separator, with: ""),
-              let date = dataSource.valueForType(.date)?.replacingOccurrences(of: ClearentPaymentItemType.date.separator, with: ""),
-              let csc = dataSource.valueForType(.securityCode) else { return }
-        
+            let cardNo = dataSource.valueForType(.creditCardNo)?.replacingOccurrences(of: ClearentPaymentItemType.creditCardNo.separator, with: ""),
+            let date = dataSource.valueForType(.date)?.replacingOccurrences(of: ClearentPaymentItemType.date.separator, with: ""),
+            let csc = dataSource.valueForType(.securityCode) else { return }
+
         let cardInfo = ManualEntryCardInfo(card: cardNo, expirationDateMMYY: date, csc: csc)
         let name = ClearentCarholderName(fullName: dataSource.valueForType(.cardholderName))
         let billingInfo = ClientInformation(firstName: name.first,
@@ -211,13 +211,13 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                                             zip: dataSource.valueForType(.billingZipCode))
         let shippingInfo = ClientInformation(zip: dataSource.valueForType(.shippingZipCode))
         let saleEntity = SaleEntity(amount: amount,
-                                     tipAmount: tip?.stringFormattedWithTwoDecimals,
-                                     billing: billingInfo,
-                                     shipping: shippingInfo,
-                                     customerID: dataSource.valueForType(.customerId),
-                                     invoice: dataSource.valueForType(.invoiceNo),
-                                     orderID: dataSource.valueForType(.orderNo))
-        
+                                    tipAmount: tip?.stringFormattedWithTwoDecimals,
+                                    billing: billingInfo,
+                                    shipping: shippingInfo,
+                                    customerID: dataSource.valueForType(.customerId),
+                                    invoice: dataSource.valueForType(.invoiceNo),
+                                    orderID: dataSource.valueForType(.orderNo))
+
         startTransaction(saleEntity: saleEntity, manualEntryCardInfo: cardInfo)
     }
 
@@ -230,8 +230,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     
     private func startTransactionFlow() {
         sdkFeedbackProvider.delegate = self
-        
-        if ClearentUIManager.shared.useCardReaderPaymentMethod && !sdkWrapper.isReaderConnected() {
+
+        if ClearentUIManager.shared.useCardReaderPaymentMethod, !sdkWrapper.isReaderConnected() {
             shouldStartTransactionAfterRenameReader = ClearentWrapperDefaults.pairedReaderInfo == nil
             sdkWrapper.startPairing(reconnectIfPossible: true)
         } else {
@@ -297,7 +297,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                      FlowDataItem(type: .userAction, object: FlowButtonType.done)]
         let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.renameReaderDone, items: items)
         modalProcessingView?.updateContent(with: feedback)
-        modalProcessingView?.updateUserActionButtonState(enabled: self.editableReader?.customReaderName != nil)
+        modalProcessingView?.updateUserActionButtonState(enabled: editableReader?.customReaderName != nil)
     }
     
     private func showSignatureScreen() {
@@ -314,7 +314,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             } else {
                 reader.customReaderName = nil
             }
-            if (ClearentWrapperDefaults.pairedReaderInfo?.readerName == reader.readerName){
+            if ClearentWrapperDefaults.pairedReaderInfo?.readerName == reader.readerName {
                 ClearentWrapperDefaults.pairedReaderInfo?.customReaderName = reader.customReaderName
             }
             sdkWrapper.removeReaderFromRecentlyUsed(reader: reader)
@@ -330,11 +330,10 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 }
 
 extension ClearentProcessingModalPresenter: FlowDataProtocol {
-    
     func deviceDidDisconnect() {}
 
     func didFinishedPairing() {
-        if [.pairing(), .showReaders].contains(processType) ||  shouldStartTransactionAfterRenameReader == true {
+        if [.pairing(), .showReaders].contains(processType) || shouldStartTransactionAfterRenameReader == true {
             DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
                 // display successful pairing content
                 var items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.pairingSuccessful),
@@ -364,21 +363,27 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
 
     func didFinishTransaction(error: ResponseError?) {
         if error == nil {
-            if (ClearentUIManager.shared.signatureEnabled) {
+            if ClearentUIManager.shared.signatureEnabled {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                     self.showSignatureScreen()
                 }
             } else {
-                dissmissViewWithDelay()
+                successfulDissmissViewWithDelay()
             }
         }
     }
     
     func didFinishSignature() {
-        dissmissViewWithDelay()
+        successfulDissmissViewWithDelay()
     }
 
     func didBeginContinuousSearching() {
         modalProcessingView?.addLoadingViewToCurrentContent()
+    }
+}
+
+extension ClearentProcessingModalPresenter: ClearentReaderDetailsDismissProtocol {
+    func shutDown(userAction: FlowButtonType) {
+        handleUserAction(userAction: userAction)
     }
 }

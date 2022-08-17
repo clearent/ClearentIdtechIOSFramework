@@ -12,8 +12,7 @@ import Foundation
  * This class is to be used as a singleton and its main purpose is to start different processes from the SDK by providing UIControllers that will handle the entire process
  *
  */
-public final class ClearentUIManager : NSObject {
-    
+public final class ClearentUIManager: NSObject {
     private let clearentWrapper = ClearentWrapper.shared
     public static let shared = ClearentUIManager()
     public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
@@ -59,33 +58,35 @@ public final class ClearentUIManager : NSObject {
     /**
      * Method returns a UIController that can handle the entire payment process
      * @param amount, the amount to be charged in a transaction
+     * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
-    public func paymentViewController(amount: Double) -> UINavigationController {
-        viewController(processType: .payment, amount:amount)
+    public func paymentViewController(amount: Double, completion: ((CompletionResult) -> Void)?) -> UINavigationController {
+        viewController(processType: .payment, amount: amount, dismissCompletion: completion)
     }
     
     /**
      * Method returns a UIController that can handle the pairing process of a card reader
+     * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
-    public func pairingViewController() -> UINavigationController {
-        viewController(processType: .pairing())
+    public func pairingViewController(completion: ((CompletionResult) -> Void)?) -> UINavigationController {
+        viewController(processType: .pairing(), dismissCompletion: completion)
     }
     
     /**
      * Method returns a UIController that will display a list containing current card reader informations and recently paired readers
+     * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
-    public func readersViewController() -> UINavigationController {
-        viewController(processType: .showReaders)
+    public func readersViewController(completion: ((CompletionResult) -> Void)?) -> UINavigationController {
+        viewController(processType: .showReaders, dismissCompletion: completion)
     }
-    
-    internal func viewController(processType: ProcessType, amount: Double? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((_ isConnected: Bool, _ customName: String?) -> Void)? = nil) ->  UINavigationController {
 
-        let viewController = ClearentProcessingModalViewController(showOnTop: (processType == .showReaders || processType == .renameReader))
+    internal func viewController(processType: ProcessType, amount: Double? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UINavigationController {
+        let viewController = ClearentProcessingModalViewController(showOnTop: processType == .showReaders || processType == .renameReader)
         let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, amount: amount, processType: processType)
         presenter.editableReader = editableReader
         viewController.presenter = presenter
         viewController.dismissCompletion = dismissCompletion
-        
+
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.isNavigationBarHidden = true
         navigationController.modalPresentationStyle = .overFullScreen

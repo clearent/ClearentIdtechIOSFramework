@@ -34,6 +34,7 @@
                 </imageView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <gestureRecognizers/>
             <constraints>
                 <constraint firstItem="YiN-oe-B8q" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="2Sv-XK-Nuc"/>

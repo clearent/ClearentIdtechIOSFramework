@@ -63,13 +63,17 @@ class ClearentReaderDetailsViewController: UIViewController {
         connectedView.valueChangedAction = { [weak self] isOn in
             guard let strongSelf = self else { return }
             if isOn {
-                let modalVC = ClearentUIManager.shared.viewController(processType: .pairing(withReader: strongSelf.readerInfo)) { isConnected, _ in
-                    strongSelf.didChangedConnectionStatus(reader: strongSelf.readerInfo, isConnected: isConnected)
+                let modalVC = ClearentUIManager.shared.viewController(processType: .pairing(withReader: strongSelf.readerInfo)) { result in
+                    if case .success(_) = result {
+                        strongSelf.didChangedConnectionStatus(isConnected: true)
+                    } else {
+                        strongSelf.didChangedConnectionStatus(isConnected: false)
+                    }
                 }
                 strongSelf.navigationController?.present(modalVC, animated: false)
             } else {
                 strongSelf.detailsPresenter.disconnectFromReader()
-                strongSelf.didChangedConnectionStatus(reader: strongSelf.readerInfo, isConnected: false)
+                strongSelf.didChangedConnectionStatus(isConnected: false)
             }
         }
 
@@ -81,7 +85,7 @@ class ClearentReaderDetailsViewController: UIViewController {
         }
     }
     
-    private func didChangedConnectionStatus(reader: ReaderInfo, isConnected: Bool) {
+    private func didChangedConnectionStatus(isConnected: Bool) {
         if let defaultReader = ClearentWrapperDefaults.pairedReaderInfo {
             detailsPresenter.currentReader = defaultReader
         }
@@ -89,8 +93,8 @@ class ClearentReaderDetailsViewController: UIViewController {
         updateReaderInfo()
     }
 
-    private func didChangedCustomReaderName(reader: ReaderInfo, customName: String?) {
-        detailsPresenter.currentReader = reader
+    private func didChangedCustomReaderName(customName: String?) {
+        detailsPresenter.currentReader = readerInfo
         detailsPresenter.currentReader.customReaderName = customName
         updateReaderInfo()
     }
@@ -126,8 +130,10 @@ class ClearentReaderDetailsViewController: UIViewController {
         customReaderName.titleText = ClearentConstants.Localized.ReaderDetails.customReaderName
         customReaderName.editButtonPressed = { [weak self] in
             guard let strongSelf = self else { return }
-            let modalVC = ClearentUIManager.shared.viewController(processType: .renameReader, editableReader: self?.detailsPresenter.currentReader) { _, customName in
-                strongSelf.didChangedCustomReaderName(reader: strongSelf.readerInfo, customName: customName)
+            let modalVC = ClearentUIManager.shared.viewController(processType: .renameReader, editableReader: self?.detailsPresenter.currentReader) { result in
+                if case let.success(customName) = result {
+                    strongSelf.didChangedCustomReaderName(customName: customName)
+                }
             }
             strongSelf.navigationController?.present(modalVC, animated: false)
         }
@@ -135,12 +141,8 @@ class ClearentReaderDetailsViewController: UIViewController {
         if self.detailsPresenter.currentReader.customReaderName != nil {
             customReaderName.deleteButtonPressed = { [weak self] in
                 guard self != nil else { return }
-                self?.detailsPresenter.currentReader.customReaderName = nil
-                
-                if let reader = self?.detailsPresenter.currentReader {
-                    self?.detailsPresenter.updateReader(reader: reader)
-                    self?.didChangedCustomReaderName(reader:reader, customName: nil)
-                }
+                self?.detailsPresenter.deleteReaderName()
+                self?.didChangedCustomReaderName(customName: nil)
             }
             
             customReaderName.secondIconName = ClearentConstants.IconName.deleteButton

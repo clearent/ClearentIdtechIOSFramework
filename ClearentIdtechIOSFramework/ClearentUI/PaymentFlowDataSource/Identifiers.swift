@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum SignalLevel : Int {
+enum SignalLevel: Int {
     case good = 0, medium, bad
 }
 
@@ -24,7 +24,7 @@ public enum ProcessType: Equatable {
     case pairing(withReader: ReaderInfo? = nil), payment, showReaders, renameReader
     
     public static func == (lhs: ProcessType, rhs: ProcessType) -> Bool {
-        switch (lhs,rhs) {
+        switch (lhs, rhs) {
         case (.pairing, .pairing): return true
         case (.payment, .payment): return true
         case (.showReaders, .showReaders): return true
@@ -70,8 +70,7 @@ enum FlowGraphicType {
 }
 
 public enum FlowButtonType {
-
-    case cancel, retry, pair, done, skip, pairNewReader, settings, pairInFlow, addReaderName, renameReaderLater, transactionWithTip, transactionWithoutTip, manuallyEnterCardInfo
+    case cancel, retry, pair, done, skipSignature, pairNewReader, settings, pairInFlow, addReaderName, renameReaderLater, transactionWithTip, transactionWithoutTip, manuallyEnterCardInfo
 
     var title: String {
         switch self {
@@ -83,7 +82,7 @@ public enum FlowButtonType {
             return ClearentConstants.Localized.Pairing.pair
         case .done:
             return ClearentConstants.Localized.Pairing.done
-        case .skip:
+        case .skipSignature:
             return ClearentConstants.Localized.Signature.skip
         case .pairNewReader:
             return ClearentConstants.Localized.Pairing.pairNewReader

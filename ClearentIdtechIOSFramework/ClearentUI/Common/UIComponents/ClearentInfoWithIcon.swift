@@ -11,13 +11,13 @@ import UIKit
 class ClearentInfoWithIcon: ClearentMarginableView {
     @IBOutlet var titleLabel: UILabel!
     @IBOutlet var descriptionLabel: UILabel!
-    @IBOutlet weak var button: UIButton!
-    @IBOutlet weak var secondaryButton: UIButton!
-    
+    @IBOutlet var button: UIButton!
+    @IBOutlet var secondaryButton: UIButton!
+
     @IBOutlet var separatorView: UIView!
     public var editButtonPressed: (() -> Void)?
     public var deleteButtonPressed: (() -> Void)?
-    
+
     override var margins: [BottomMargin] {
         [RelativeBottomMargin(constant: 24, relatedViewType: ClearentInfoWithIcon.self)]
     }
@@ -69,7 +69,7 @@ class ClearentInfoWithIcon: ClearentMarginableView {
             button.setTitle(nil, for: .normal)
         }
     }
-    
+
     var secondIconName: String? {
         didSet {
             guard let iconName = secondIconName else { return }
@@ -85,14 +85,12 @@ class ClearentInfoWithIcon: ClearentMarginableView {
         descriptionTextColor = ClearentConstants.Color.base01
         separatorView.backgroundColor = ClearentConstants.Color.backgroundSecondary02
     }
-    
-    @IBAction func buttonAction(_ sender: Any) {
+
+    @IBAction func buttonAction(_: Any) {
         editButtonPressed?()
     }
-    
-    
-    @IBAction func secondaryButtonAction(_ sender: Any) {
+
+    @IBAction func secondaryButtonAction(_: Any) {
         deleteButtonPressed?()
     }
-    
 }

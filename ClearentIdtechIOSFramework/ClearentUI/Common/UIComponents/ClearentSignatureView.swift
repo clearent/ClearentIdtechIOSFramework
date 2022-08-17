@@ -1,34 +1,34 @@
 //
- //  ClearentSignatureView.swift
- //  ClearentIdtechIOSFramework
- //
- //  Created by Carmen Jurcovan on 29.06.2022.
- //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
- //
+//  ClearentSignatureView.swift
+//  ClearentIdtechIOSFramework
+//
+//  Created by Carmen Jurcovan on 29.06.2022.
+//  Copyright © 2022 Clearent, L.L.C. All rights reserved.
+//
 
- import Foundation
+import Foundation
 
- class ClearentSignatureView: ClearentMarginableView {
-     private struct Layout {
-         static let cornerRadius = 8.0
-         static let borderWidth = 1.0
-     }
-     
-     // MARK: - Properties
-     
-     @IBOutlet var clearButton: UIButton!
-     @IBOutlet var doneButton: ClearentPrimaryButton!
-     @IBOutlet var drawingPanel: ClearentDrawingPanel!
-     @IBOutlet var indicatorLabel: UILabel!
-     @IBOutlet var indicatorLine: UIView!
-     @IBOutlet var roundedCornersView: UIView!
-     @IBOutlet var descriptionLabel: UILabel!
-     private var previousOrientation: UIDeviceOrientation = .unknown
-     
-     public var doneAction: ((_ resultedImage: UIImage) -> Void)?
-     
-     override var margins: [BottomMargin] {
-         [RelativeBottomMargin(constant: 16.0, relatedViewType: ClearentPrimaryButton.self),
+class ClearentSignatureView: ClearentMarginableView {
+    private struct Layout {
+        static let cornerRadius = 8.0
+        static let borderWidth = 1.0
+    }
+
+    // MARK: - Properties
+
+    @IBOutlet var clearButton: UIButton!
+    @IBOutlet var doneButton: ClearentPrimaryButton!
+    @IBOutlet var drawingPanel: ClearentDrawingPanel!
+    @IBOutlet var indicatorLabel: UILabel!
+    @IBOutlet var indicatorLine: UIView!
+    @IBOutlet var roundedCornersView: UIView!
+    @IBOutlet var descriptionLabel: UILabel!
+    private var previousOrientation: UIDeviceOrientation = .unknown
+
+    public var doneAction: ((_ resultedImage: UIImage) -> Void)?
+
+    override var margins: [BottomMargin] {
+        [RelativeBottomMargin(constant: 16.0, relatedViewType: ClearentPrimaryButton.self),
          BottomMargin(constant: 16)]
      }
 

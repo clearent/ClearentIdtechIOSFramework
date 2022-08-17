@@ -15,7 +15,7 @@ class ClearentProcessingModalViewController: ClearentBaseViewController {
     private var showOnTop: Bool = false
     @IBOutlet var stackView: ClearentRoundedCornersStackView!
     var presenter: ProcessingModalProtocol?
-    var dismissCompletion: ((_ isConnected: Bool, _ customName: String?) -> Void)?
+    var dismissCompletion: ((CompletionResult) -> Void)?
 
     // MARK: - Init
 
@@ -98,13 +98,13 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         stackView.showLoadingView()
     }
 
-    public func dismissViewController(isConnected: Bool, customName: String?) {
+    public func dismissViewController(result: CompletionResult) {
         ClearentWrapperDefaults.skipOnboarding = true
         ClearentWrapper.shared.stopContinousSearching()
         ClearentWrapper.shared.cancelTransaction()
         DispatchQueue.main.async { [weak self] in
             self?.dismiss(animated: true, completion: nil)
-            self?.dismissCompletion?(isConnected, customName)
+            self?.dismissCompletion?(result)
         }
     }
 
@@ -202,7 +202,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         statusHeaderView.setup(readerName: name, dropDownIconName: iconName, description: description, signalStatus: signalStatus, batteryStatus: batteryStatus)
         statusHeaderView.action = { [weak self] in
             if self?.showOnTop == true {
-                self?.dismiss(animated: true, completion: nil)
+                self?.presenter?.handleUserAction(userAction: .cancel)
             }
         }
         return statusHeaderView
@@ -228,7 +228,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     private func actionButton(userAction: FlowButtonType) -> ClearentPrimaryButton {
         let button = ClearentPrimaryButton()
         button.title = userAction.title
-        if [.cancel, .pairNewReader, .renameReaderLater, .transactionWithoutTip, .manuallyEnterCardInfo, .skip].contains(userAction) {
+        if [.cancel, .pairNewReader, .renameReaderLater, .transactionWithoutTip, .manuallyEnterCardInfo, .skipSignature].contains(userAction) {
             button.buttonStyle = .bordered
         }
         if userAction == .transactionWithTip {
@@ -284,7 +284,7 @@ extension ClearentProcessingModalViewController: ClearentTextFieldProtocol {
 
 extension ClearentProcessingModalViewController: ClearentManualEntryFormViewProtocol {
     func didTapOnCancelButton() {
-        dismiss(animated: true, completion: nil)
+        presenter?.handleUserAction(userAction: .cancel)
     }
     
     func didTapOnConfirmButton(dataSource: ClearentPaymentDataSource) {

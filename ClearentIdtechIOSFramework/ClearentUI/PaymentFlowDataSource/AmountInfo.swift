@@ -8,10 +8,10 @@
 
 struct AmountInfo {
     typealias TipOption = (percentageTextAndValue: String, value: Double, isCustom: Bool)
-    
+
     var amountWithoutTip: Double
     var availableTipPercentages: [Int]
-    
+
     var tipOptions: [TipOption] {
         var tips: [TipOption] = availableTipPercentages.map {
             let value = Double($0) / 100.0 * amountWithoutTip
@@ -24,10 +24,10 @@ struct AmountInfo {
         tips.append(customTip)
         return tips
     }
-    
+
     var selectedTipValue: Double?
     var finalAmount: Double {
-        if let selectedTipValue = selectedTipValue {  return amountWithoutTip + selectedTipValue }
+        if let selectedTipValue = selectedTipValue { return amountWithoutTip + selectedTipValue }
         return amountWithoutTip
     }
 }

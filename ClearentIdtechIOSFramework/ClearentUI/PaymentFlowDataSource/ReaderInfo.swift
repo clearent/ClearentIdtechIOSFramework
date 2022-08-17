@@ -11,7 +11,7 @@ public struct ReaderItem {
     var isConnecting: Bool = false
 }
 
-public struct ReaderInfo : Codable {
+public struct ReaderInfo: Codable {
     public var readerName: String
     public var customReaderName: String?
     public var batterylevel: Int?
@@ -50,7 +50,6 @@ public extension ReaderInfo {
         else if batteryLevel > 5 { iconName = ClearentConstants.IconName.batteryMediumLow }
         return (iconName, "\(String(batteryLevel))%")
     }
-
 
     func signalStatus(flowFeedbackType: FlowFeedbackType? = nil, isConnecting: Bool? = nil) -> (iconName: String?, title: String) {
         var icon: String? = ClearentConstants.IconName.signalIdle

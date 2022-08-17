@@ -6,10 +6,9 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
-
 enum ClearentPaymentItemType {
     case creditCardNo, date, securityCode, cardholderName, billingZipCode, invoiceNo, orderNo, companyName, customerId, shippingZipCode
-    
+
     var separator: String {
         switch self {
         case .creditCardNo:
@@ -58,9 +57,9 @@ extension ClearentPaymentItem {
 
 class ClearentPaymentBaseSection: ClearentPaymentSection {
     var title: String? { nil }
-    
+
     var isCollapsable: Bool { false }
-    
+
     var isCollapsed: Bool = false
 
     var rows: [ClearentPaymentRow] = [
@@ -75,7 +74,7 @@ class ClearentPaymentAdditionalSection: ClearentPaymentSection {
     var title: String? { ClearentConstants.Localized.ManualEntry.additionalSection }
     
     var isCollapsable: Bool { true }
-    
+
     var isCollapsed: Bool = true
 
     var rows: [ClearentPaymentRow] = [
@@ -87,25 +86,24 @@ class ClearentPaymentAdditionalSection: ClearentPaymentSection {
     ]
 }
 
-
 class CreditCardNoItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .creditCardNo }
     
     var title: String { ClearentConstants.Localized.ManualEntry.cardNo }
     
     var errorMessage: String? { ClearentConstants.Localized.ManualEntry.cardNoError }
-    
+
     var maxNoOfChars: Int { 19 }
 
     var isOptional: Bool { false }
-    
+
     var identifier: ItemIdentifier = nil
-    
+
     var isValid: Bool = true
-    
+
     var enteredValue: String = ""
-    
-    var hiddenValue: String? = nil
+
+    var hiddenValue: String?
 }
 
 class DateItem: ClearentPaymentItem {
@@ -120,21 +118,21 @@ class DateItem: ClearentPaymentItem {
     var errorMessage: String? { ClearentConstants.Localized.ManualEntry.expirationDateError }
     
     var maxNoOfChars: Int { 4 }
-    
+
     var isOptional: Bool { false }
-    
+
     var identifier: ItemIdentifier = nil
-    
+
     var isValid: Bool = true
-    
+
     var enteredValue: String = ""
-    
-    var hiddenValue: String? = nil
+
+    var hiddenValue: String?
 }
 
 class SecurityCodeItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .securityCode }
-    
+
     var title: String { ClearentConstants.Localized.ManualEntry.csc }
     
     var placeholder: String? { ClearentConstants.Localized.ManualEntry.cscPlaceholder }
@@ -142,71 +140,70 @@ class SecurityCodeItem: ClearentPaymentItem {
     var errorMessage: String? { ClearentConstants.Localized.ManualEntry.cscError }
     
     var maxNoOfChars: Int { 4 }
-    
-    var isOptional: Bool { false }
-    
-    var identifier: ItemIdentifier = nil
-    
-    var isValid: Bool = true
-    
-    var enteredValue: String = ""
-    
-    var hiddenValue: String? = nil
-}
 
+    var isOptional: Bool { false }
+
+    var identifier: ItemIdentifier = nil
+
+    var isValid: Bool = true
+
+    var enteredValue: String = ""
+
+    var hiddenValue: String?
+}
 
 class CardholderNameItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .cardholderName }
-    
+
     var title: String { ClearentConstants.Localized.ManualEntry.cardHolderName }
     
     var errorMessage: String? { ClearentConstants.Localized.ManualEntry.cardHolderNameError }
     
     var maxNoOfChars: Int { 50 }
-    
+
     var identifier: ItemIdentifier = nil
-    
+
     var isValid: Bool = true
-    
+
     var enteredValue: String = ""
-    
-    var hiddenValue: String? = nil
+
+    var hiddenValue: String?
 }
 
 class BillingZipCodeItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .billingZipCode }
-    
+
     var title: String { ClearentConstants.Localized.ManualEntry.billingZipCode }
     
     var errorMessage: String? { ClearentConstants.Localized.ManualEntry.billingZipCodeError }
     
     var maxNoOfChars: Int { 10 }
-    
+
     var identifier: ItemIdentifier = nil
-    
+
     var isValid: Bool = true
-    
+
     var enteredValue: String = ""
-    
-    var hiddenValue: String? = nil
+
+    var hiddenValue: String?
 }
 
 class InvoiceNoItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .invoiceNo }
-    
+
     var title: String { ClearentConstants.Localized.ManualEntry.invoiceNo }
     
     var errorMessage: String? { ClearentConstants.Localized.ManualEntry.invoiceNoError }
     
     var maxNoOfChars: Int { 50 }
-    
+
     var identifier: ItemIdentifier = nil
-    
+
     var isValid: Bool = true
-    
+
     var enteredValue: String = ""
-    
-    var hiddenValue: String? = nil
+
+    var hiddenValue: String?
 }
 
 class OrderNoItem: ClearentPaymentItem {
@@ -217,70 +214,70 @@ class OrderNoItem: ClearentPaymentItem {
     var errorMessage: String? { ClearentConstants.Localized.ManualEntry.orderNoError }
     
     var maxNoOfChars: Int { 50 }
-    
+
     var identifier: ItemIdentifier = nil
-    
+
     var isValid: Bool = true
-    
+
     var enteredValue: String = ""
-    
-    var hiddenValue: String? = nil
+
+    var hiddenValue: String?
 }
 
 class CompanyNameItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .companyName }
-    
+
     var title: String { ClearentConstants.Localized.ManualEntry.companyName }
     
     var errorMessage: String? { ClearentConstants.Localized.ManualEntry.companyNameError }
     
     var maxNoOfChars: Int { 50 }
-    
+
     var iconName: String?
-    
+
     var identifier: ItemIdentifier = nil
-    
+
     var isValid: Bool = true
-    
+
     var enteredValue: String = ""
-    
-    var hiddenValue: String? = nil
+
+    var hiddenValue: String?
 }
 
 class CustomerIDItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .customerId }
-    
+
     var title: String { ClearentConstants.Localized.ManualEntry.customerID }
     
     var errorMessage: String? { ClearentConstants.Localized.ManualEntry.customerIDError }
     
     var maxNoOfChars: Int { 50 }
-    
+
     var iconName: String?
-    
+
     var identifier: ItemIdentifier = nil
-    
+
     var isValid: Bool = true
-    
+
     var enteredValue: String = ""
-    
-    var hiddenValue: String? = nil
+
+    var hiddenValue: String?
 }
 
 class ShippingZipCodeItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .shippingZipCode }
-    
+
     var title: String { ClearentConstants.Localized.ManualEntry.shippingZipCode }
     
     var errorMessage: String? { ClearentConstants.Localized.ManualEntry.shippingZipCodeError }
     
     var maxNoOfChars: Int { 10 }
-    
+
     var identifier: ItemIdentifier = nil
-    
+
     var isValid: Bool = true
-    
+
     var enteredValue: String = ""
-    
-    var hiddenValue: String? = nil
+
+    var hiddenValue: String?
 }
