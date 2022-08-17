@@ -66,6 +66,8 @@ class ClearentReaderDetailsViewController: UIViewController {
                 let modalVC = ClearentUIManager.shared.viewController(processType: .pairing(withReader: strongSelf.readerInfo)) { result in
                     if case .success(_) = result {
                         strongSelf.didChangedConnectionStatus(isConnected: true)
+                    } else {
+                        strongSelf.didChangedConnectionStatus(isConnected: false)
                     }
                 }
                 strongSelf.navigationController?.present(modalVC, animated: false)
