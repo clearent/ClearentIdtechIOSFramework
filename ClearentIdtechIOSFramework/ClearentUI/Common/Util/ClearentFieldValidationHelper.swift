@@ -80,7 +80,7 @@ class ClearentFieldValidationHelper {
                                                         options: .reportProgress,
                                                         range: NSMakeRange(0, textWithoutSpaces.count),
                                                         withTemplate: "*")
-        formatCreditCardNo(text: hiddenText, sender: sender, item: item)
+        sender.text = formattedCreditCardNo(text: hiddenText, item: item)
 
         item.hiddenValue = (sender.text?.isEmpty ?? false) ? nil : sender.text
     }
@@ -105,7 +105,7 @@ class ClearentFieldValidationHelper {
     /**
      Inserts a separator (empty space) every 4 digits and force a max number of entered digits
      */
-    static func formatCreditCardNo(text: String, sender: UITextField, item: ClearentPaymentItem) {
+    static func formattedCreditCardNo(text: String, item: ClearentPaymentItem) -> String {
         let separator = item.type.separator
         let textWithoutSpaces = text.replacingOccurrences(of: separator, with: "")
         let maxText = String(textWithoutSpaces.prefix(item.maxNoOfChars))
@@ -114,14 +114,13 @@ class ClearentFieldValidationHelper {
                                                             options: .reportProgress,
                                                             range: NSMakeRange(0, maxText.count),
                                                             withTemplate: "$0\(separator)")
-        sender.text = formattedText
+        return formattedText ?? text
     }
 
     /**
      Inserts a separator ('/') after 2 digits
      */
-    static func formatExpirationDate(sender: UITextField, item: ClearentPaymentItem) {
-        guard let text = sender.text else { return }
+    static func formattedExpirationDate(text: String, item: ClearentPaymentItem) -> String {
         let separator = item.type.separator
         let separatorChar = Character(separator)
         var date = text.replacingOccurrences(of: separator, with: "")
@@ -129,8 +128,8 @@ class ClearentFieldValidationHelper {
         if date.count >= 2, previousText.last != separatorChar {
             date.insert(separatorChar, at: text.index(text.startIndex, offsetBy: 2))
         }
-        sender.text = String(date.prefix(item.maxNoOfChars + separator.count))
         previousText = text
+        return String(date.prefix(item.maxNoOfChars + separator.count))
     }
 
     // MARK: - private
