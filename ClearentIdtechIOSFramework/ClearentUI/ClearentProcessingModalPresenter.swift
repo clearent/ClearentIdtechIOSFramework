@@ -31,7 +31,6 @@ protocol ProcessingModalProtocol {
     func connectTo(reader: ReaderInfo)
     func updateTemporaryReaderName(name: String?)
     func enableDoneButtonForInput(enabled: Bool)
-    func fetchTipSetting(completion: @escaping () -> Void)
     func handleSignature(with image: UIImage)
     func sendManualEntryTransaction(with dataSource: ClearentPaymentDataSource)
 }
@@ -188,13 +187,15 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         }
     }
     
-    func fetchTipSetting(completion: @escaping () -> Void) {
-        sdkWrapper.fetchTipSetting(completion: completion)
-    }
-    
     func handleSignature(with image: UIImage) {
         modalProcessingView?.showLoadingView()
-        ClearentWrapper.shared.sendSignatureWithImage(image: image)
+        do {
+            try sdkWrapper.sendSignatureWithImage(image: image)
+        } catch {
+            if let error = error as? ClearentError {
+                modalProcessingView?.dismissViewController(result: .failure(error))
+            }
+        }
     }
 
     func sendManualEntryTransaction(with dataSource: ClearentPaymentDataSource) {
@@ -223,7 +224,13 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 
     func resendSignature() {
         modalProcessingView?.showLoadingView()
-        ClearentWrapper.shared.resendSignature()
+        ClearentWrapper.shared.resendSignature { [weak self] result in
+            guard let strongSelf = self else { return }
+            
+            if case .failure(_) = result {
+                strongSelf.modalProcessingView?.dismissViewController(result: result)
+            }
+        }
     }
 
     // MARK: Private
@@ -240,9 +247,10 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     private func startTipFlow() {
-        fetchTipSetting { [weak self] in
+        sdkWrapper.fetchTipSetting { [weak self] in
             guard let strongSelf = self else { return }
-            let showTipsScreen = (ClearentWrapper.shared.tipEnabled ?? false) && strongSelf.tipsScreenWasNotShown
+            
+            let showTipsScreen = ClearentWrapper.shared.tipEnabled && strongSelf.tipsScreenWasNotShown
             if showTipsScreen {
                 strongSelf.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: strongSelf.amountWithoutTip ?? 0)
                 strongSelf.tipsScreenWasNotShown = false
@@ -325,7 +333,14 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 
     private func startTransaction(saleEntity: SaleEntity, manualEntryCardInfo: ManualEntryCardInfo? = nil) {
         modalProcessingView?.showLoadingView()
-        sdkWrapper.startTransaction(with: saleEntity, manualEntryCardInfo: manualEntryCardInfo)
+        
+        do {
+            try sdkWrapper.startTransaction(with: saleEntity, manualEntryCardInfo: manualEntryCardInfo)
+        } catch {
+            if let error = error as? ClearentError {
+                modalProcessingView?.dismissViewController(result: .failure(error))
+            }
+        }
     }
 }
 
