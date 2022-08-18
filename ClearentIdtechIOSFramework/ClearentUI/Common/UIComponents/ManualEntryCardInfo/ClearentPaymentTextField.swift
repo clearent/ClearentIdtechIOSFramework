@@ -89,17 +89,16 @@ class ClearentPaymentTextField: ClearentXibView {
     
     @IBAction private func textFieldEditingChanged(_ sender: UITextField) {
         guard let text = sender.text, let item = item else { return }
-        var newText: String = ""
-
+        
         switch item.type {
         case .creditCardNo:
-            newText = ClearentFieldValidationHelper.formattedCreditCardNo(text: text, item: item)
+            let newText = ClearentFieldValidationHelper.formattedCreditCardNo(text: text, item: item)
             textField.resetCursorPosition(for: newText, separator: item.type.separator)
         case.date:
-            newText = ClearentFieldValidationHelper.formattedExpirationDate(text: text, item: item)
+            let newText = ClearentFieldValidationHelper.formattedExpirationDate(text: text, item: item)
             textField.resetCursorPosition(for: newText)
         default:
-            newText = String(text.prefix(item.maxNoOfChars))
+            sender.text = String(text.prefix(item.maxNoOfChars))
         }
     }
 
