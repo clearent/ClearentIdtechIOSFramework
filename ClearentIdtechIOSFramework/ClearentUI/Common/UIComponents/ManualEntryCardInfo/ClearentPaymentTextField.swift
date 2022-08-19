@@ -70,6 +70,7 @@ class ClearentPaymentTextField: ClearentXibView {
         } else {
             textField.placeholder = ""
         }
+        textField.clearButtonMode = (item.type == .date) ? .never : .whileEditing
     }
     
     func enableErrorState(errorMessage: String?) {
