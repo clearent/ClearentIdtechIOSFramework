@@ -117,10 +117,6 @@ public enum UserInfo: String, CaseIterable {
     }
 }
 
-public enum TransactionError {
-    case networkError, insuficientFunds, duplicateTransaction, generalError
-}
-
 /**
  * This protocol is used to comunicate information and results regarding the interaction with the SDK
  */
@@ -203,26 +199,37 @@ public protocol ClearentWrapperProtocol : AnyObject {
 
 public final class ClearentWrapper : NSObject {
     
-    private var baseURL: String = ""
-    private var apiKey: String = ""
-    private var publicKey: String = ""
+    public static let shared = ClearentWrapper()
+    
+    /// The list of readers  stored in user defaults, that were previoulsy paired
     public var previouslyPairedReaders: [ReaderInfo] {
         ClearentWrapperDefaults.recentlyPairedReaders ?? []
     }
-    public static let shared = ClearentWrapper()
+    
+    /// Determines the current flow type
     public var flowType: (processType: ProcessType, flowFeedbackType: FlowFeedbackType?)?
+    
+    /// Closure called when reader info (signal, battery, reader name, connection status) is received
     public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
+    
+    /// Specifies what payment flow should be displayed. If true, card reader is used. Otherwise, a form where the user has to enter manually the card info is displayed.
+    public var useCardReaderPaymentMethod: Bool = true
+    
     weak var delegate: ClearentWrapperProtocol?
-    private var connection  = ClearentConnection(bluetoothSearch: ())
-    lazy var clearentVP3300: Clearent_VP3300 = {
+
+    private lazy var clearentVP3300: Clearent_VP3300 = {
         let config = ClearentVP3300Config(noContactlessNoConfiguration: baseURL, publicKey: publicKey)
         return Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
     }()
     
-    lazy var clearentManualEntry: ClearentManualEntry = {
+    private lazy var clearentManualEntry: ClearentManualEntry = {
         return ClearentManualEntry(self, clearentBaseUrl: baseURL, publicKey: publicKey)
     }()
 
+    private var connection  = ClearentConnection(bluetoothSearch: ())
+    private var baseURL: String = ""
+    private var apiKey: String = ""
+    private var publicKey: String = ""
     private var saleEntity: SaleEntity?
     private var lastTransactionID: String?
     private var bleManager : BluetoothScanner?
@@ -559,7 +566,7 @@ public final class ClearentWrapper : NSObject {
     // MARK - Private
     
     private func shouldDisplayBluetoothWarning() -> Bool {
-        if ClearentUIManager.shared.useCardReaderPaymentMethod {
+        if useCardReaderPaymentMethod {
             if let action = connectivityActionNeeded {
                 DispatchQueue.main.async {
                     self.delegate?.userActionNeeded(action: action)

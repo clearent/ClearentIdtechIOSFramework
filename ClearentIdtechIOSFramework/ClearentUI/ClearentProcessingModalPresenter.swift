@@ -177,7 +177,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             modalProcessingView?.positionViewOnTop(flag: true)
             showRenameReader()
         case .transactionWithTip, .transactionWithoutTip:
-            if ClearentUIManager.shared.useCardReaderPaymentMethod {
+            if sdkWrapper.useCardReaderPaymentMethod {
                 startCardReaderTransaction()
             } else {
                 startManualEntryTransaction()
@@ -224,6 +224,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 
     func resendSignature() {
         modalProcessingView?.showLoadingView()
+        
         ClearentWrapper.shared.resendSignature { [weak self] result in
             guard let strongSelf = self else { return }
             
@@ -238,7 +239,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     private func startTransactionFlow() {
         sdkFeedbackProvider.delegate = self
 
-        if ClearentUIManager.shared.useCardReaderPaymentMethod, !sdkWrapper.isReaderConnected() {
+        if sdkWrapper.useCardReaderPaymentMethod, !sdkWrapper.isReaderConnected() {
             shouldStartTransactionAfterRenameReader = ClearentWrapperDefaults.pairedReaderInfo == nil
             sdkWrapper.startPairing(reconnectIfPossible: true)
         } else {
@@ -248,14 +249,14 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     
     private func startTipFlow() {
         sdkWrapper.fetchTipSetting { [weak self] in
-            guard let strongSelf = self else { return }
-            
+            guard let strongSelf = self else { return }            
             let showTipsScreen = ClearentWrapper.shared.tipEnabled && strongSelf.tipsScreenWasNotShown
+
             if showTipsScreen {
                 strongSelf.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: strongSelf.amountWithoutTip ?? 0)
                 strongSelf.tipsScreenWasNotShown = false
             } else {
-                if ClearentUIManager.shared.useCardReaderPaymentMethod {
+                if strongSelf.sdkWrapper.useCardReaderPaymentMethod {
                     strongSelf.startCardReaderTransaction()
                 } else {
                     strongSelf.startManualEntryTransaction()
