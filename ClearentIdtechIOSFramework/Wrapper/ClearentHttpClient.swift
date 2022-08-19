@@ -26,7 +26,7 @@ enum TransactionType : String {
 
 class ClearentHttpClient {
     
-    let httpClient: HttpClient?
+    var httpClient: HttpClient? = nil
     let baseURL: String
     let apiKey: String
     
@@ -36,10 +36,8 @@ class ClearentHttpClient {
         self.baseURL = baseURL
         self.apiKey = apiKey
         
-        guard let url = URL(string: baseURL) else {
-            self.httpClient = nil
-            return
-        }
+        guard let url = URL(string: baseURL) else { return }
+        
         self.httpClient = HttpClient(baseURL: url)
     }
     

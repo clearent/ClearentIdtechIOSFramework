@@ -19,4 +19,7 @@ public enum ClearentError: Error {
 
     /// No baseURL was passed to SDK
     case baseURLNotProvided
+    
+    /// No publicKey was passed to SDK
+    case publicKeyNotProvided
 }

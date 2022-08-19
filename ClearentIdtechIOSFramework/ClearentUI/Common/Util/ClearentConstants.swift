@@ -34,7 +34,7 @@ public class ClearentConstants {
 
     // MARK: Assets
 
-    public enum IconName {
+    enum IconName {
         // Reader Battery Status
         static let batteryFull = "full"
         static let batteryHigh = "high"
@@ -83,12 +83,12 @@ public class ClearentConstants {
         static let deleteButton = "smallDeleteButton"
     }
 
-    public enum Size {
+    enum Size {
         public static let defaultButtonBorderWidth = 1.0
         public static let modalStackViewMargin = 32.0
     }
     
-    public enum Tips {
+    enum Tips {
         public static let defaultTipPercentages = [15, 18, 20]
         public static let minCustomTipValue: Double = 0.01
     }
@@ -97,20 +97,20 @@ public class ClearentConstants {
         public static let maxNoOfCharacters = 11
     }
     
-    public enum Localized {
-        public enum Internet {
+    enum Localized {
+        enum Internet {
             public static let noConnection = "xsdk_internet_no_connection".localized
             public static let error = "xsdk_internet_error_title".localized
         }
         
-        public enum Bluetooth {
+        enum Bluetooth {
             public static let turnedOff = "xsdk_bluetooth_turned_off".localized
             public static let noPermission = "xsdk_bluetooth_no_permission".localized
             public static let error = "xsdk_bluetooth_error_title".localized
             public static let permissionError = "xsdk_bluetooth_permission_error_title".localized
         }
         
-        public enum ReaderDetails {
+        enum ReaderDetails {
             public static let navigationItem = "xsdk_reader_details_nav_title".localized
             public static let connected = "xsdk_reader_details_connected".localized
             public static let autojoinTitle = "xsdk_reader_details_autojoin_title".localized
@@ -132,7 +132,7 @@ public class ClearentConstants {
             public static let batteryStatus = "xsdk_reader_details_battery_status".localized
         }
         
-        public enum ManualEntry {
+        enum ManualEntry {
             public static let header = "xsdk_payment_manual_entry_title".localized
             public static let footerCancel = "xsdk_payment_manual_entry_user_action_cancel".localized
             public static let footerConfirm = "xsdk_payment_manual_entry_user_action_confirm".localized
@@ -161,7 +161,7 @@ public class ClearentConstants {
             public static let shippingZipCodeError = "xsdk_payment_manual_entry_shipping_zip_error".localized
         }
         
-        public enum Signature {
+        enum Signature {
             public static let title = "xsdk_signature_title".localized
             public static let subtitle = "xsdk_signature_subtitle".localized
             public static let action = "xsdk_signature_action".localized
@@ -170,11 +170,11 @@ public class ClearentConstants {
             public static let signatureUploadSuccessful = "xsdk_signature_upload_sucessful_title".localized
         }
         
-        public enum Keyboard {
+        enum Keyboard {
             public static let done = "xsdk_keyboard_done".localized
         }
         
-        public enum Pairing {
+        enum Pairing {
             public static let connecting = "xsdk_pairing_connecting_reader".localized
             public static let connectionSuccessful = "xsdk_pairing_connection_sucessful".localized
             public static let pair = "xsdk_pairing_user_action_pair".localized
@@ -195,17 +195,17 @@ public class ClearentConstants {
             public static let readerSuccessfulPaired = "xsdk_pairing_paired_successful".localized
         }
         
-        public enum ReaderInfo {
+        enum ReaderInfo {
             public static let idle = "xsdk_reader_signal_idle".localized
             public static let connected = "xsdk_reader_signal_connected".localized
         }
         
-        public enum ReadersList {
+        enum ReadersList {
             public static let noReaderConnected = "xsdk_readers_list_no_reader_connected".localized
             public static let selectReader = "xsdk_readers_list_select_reader".localized
         }
         
-        public enum Error {
+        enum Error {
             public static let cancel = "xsdk_general_error_user_action_cancel".localized
             public static let retry = "xsdk_general_error_user_action_retry".localized
             public static let manualEntry = "xsdk_general_error_user_action_manually_enter_card".localized
@@ -214,11 +214,11 @@ public class ClearentConstants {
             public static let readerError = "xsdk_reader_error_title".localized
         }
         
-        public enum FlowDataProvider {
+        enum FlowDataProvider {
             public static let transactionCompleted = "xsdk_payment_transaction_completed_description".localized
         }
         
-        public enum Tips {
+        enum Tips {
             public static let percentageAndValueFormat = "xsdk_tips_percentage_and_value".localized
             public static let customAmount = "xsdk_tips_custom_amount".localized
             public static let transactionTip = "xsdk_tips_user_transaction_tip_title".localized

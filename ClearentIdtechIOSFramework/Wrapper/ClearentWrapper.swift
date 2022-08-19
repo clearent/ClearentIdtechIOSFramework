@@ -353,8 +353,7 @@ public final class ClearentWrapper : NSObject {
      * @param ManualEntryCardInfo,  all the information needed for a manual card transaction
      */
     public func startTransaction(with saleEntity: SaleEntity, manualEntryCardInfo: ManualEntryCardInfo? = nil) throws {
-        guard !baseURL.isEmpty else { throw ClearentError.baseURLNotProvided }
-        guard !apiKey.isEmpty else { throw ClearentError.apiKeyNotProvided }
+        if let error = handleMissingKeys() { throw error }
         
         if !saleEntity.amount.canBeConverted(to: .utf8) { return }
         if let tip = saleEntity.tipAmount, !tip.canBeConverted(to: .utf8) { return }
@@ -429,8 +428,7 @@ public final class ClearentWrapper : NSObject {
      * @param image, UIImage to be uploaded
      */
     public func sendSignatureWithImage(image: UIImage) throws {
-        guard !baseURL.isEmpty else { throw ClearentError.baseURLNotProvided }
-        guard !apiKey.isEmpty else { throw ClearentError.apiKeyNotProvided }
+        if let error = handleMissingKeys() { throw error }
         
         if let id = lastTransactionID {
             if let tid = Int(id) {
@@ -463,8 +461,7 @@ public final class ClearentWrapper : NSObject {
      * @param amount, Amount to be refunded
      */
     public func refundTransaction(jwt: String, amount: String) throws {
-        guard !baseURL.isEmpty else { throw ClearentError.baseURLNotProvided }
-        guard !apiKey.isEmpty else { throw ClearentError.apiKeyNotProvided }
+        if let error = handleMissingKeys() { throw error }
         
         httpClient.refundTransaction(jwt: jwt, saleEntity: SaleEntity(amount: amount)) { data, error in
             guard let responseData = data else { return }
@@ -491,8 +488,7 @@ public final class ClearentWrapper : NSObject {
      * @param transactionID, ID of transaction to be voided
      */
     public func voidTransaction(transactionID: String) throws {
-        guard !baseURL.isEmpty else { throw ClearentError.baseURLNotProvided }
-        guard !apiKey.isEmpty else { throw ClearentError.apiKeyNotProvided }
+        if let error = handleMissingKeys() { throw error }
         
         httpClient.voidTransaction(transactionID: transactionID) { data, error in
             guard let responseData = data else { return }
@@ -668,6 +664,14 @@ public final class ClearentWrapper : NSObject {
                 }
             }
         }
+    }
+    
+    private func handleMissingKeys() -> ClearentError? {
+        guard !baseURL.isEmpty else { return ClearentError.baseURLNotProvided }
+        guard !apiKey.isEmpty else { return ClearentError.apiKeyNotProvided }
+        guard !publicKey.isEmpty else { return ClearentError.publicKeyNotProvided }
+        
+        return nil
     }
     
     /**
