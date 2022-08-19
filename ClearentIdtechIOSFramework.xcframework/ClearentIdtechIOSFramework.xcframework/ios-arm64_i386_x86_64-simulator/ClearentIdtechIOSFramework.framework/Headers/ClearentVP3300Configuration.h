@@ -31,6 +31,6 @@
 - (BOOL) contactlessAutoConfiguration;
 - (BOOL) contactless;
 - (BOOL) disableRemoteLogging;
-
+- (BOOL) enableEnhancedFeedback;
 
 @end

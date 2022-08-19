@@ -13,7 +13,7 @@
 #import "ClearentPublicVP3300Delegate.h"
 #import "ClearentPaymentRequest.h"
 #import "ClearentVP3300Configuration.h"
-#import "IDTech/IDT_VP3300.h"
+#import <IDTech/IDT_VP3300.h>
 #import "ClearentResponse.h"
 #import "ClearentConnection.h"
 

@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "IDTech/IDT_VP3300.h"
+#import <IDTech/IDT_VP3300.h>
 
 #import "ClearentPublicVP3300Delegate.h"
 #import "ClearentTransactionTokenRequest.h"
@@ -131,6 +131,8 @@ During a Contactless transaction, if events are enabled, they will be sent to th
 - (void) updatePublicKey:(NSString *)publicKey;
 
 - (void) resetTransaction;
+
+- (void) setEnhancedMessaging;
 
 @end
 

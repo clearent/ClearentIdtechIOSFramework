@@ -13,7 +13,7 @@
 #import "ClearentPublicVP3300Delegate.h"
 #import "ClearentPaymentRequest.h"
 #import "ClearentVP3300Configuration.h"
-#import "IDT_VP3300.h"
+#import <IDTech/IDT_VP3300.h>
 #import "ClearentResponse.h"
 #import "ClearentConnection.h"
 
@@ -1526,6 +1526,11 @@ Filter out all service ids except for 1820, which is what IDTech readers use.
 */
 - (void) setServiceScanFilterWithService1820;
 
+/**
+Set BLE Service Scan Filter.
+Filter out all service uuids except for those supported (VP3300,VP3350)
+*/
+- (void) setSupportedServiceScanFilters;
 /**
 If you did not instruct the framework to do any configuration when you initialized the vp3300 object, you can use the set methods to pick which configuration you want applied, then call this method to apply the configuration. The emv/contact configuration usually takes up to a minute and the contactless takes about 45 seconds.
     */

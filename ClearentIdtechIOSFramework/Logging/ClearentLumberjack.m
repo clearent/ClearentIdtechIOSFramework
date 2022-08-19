@@ -9,9 +9,13 @@
 #import "ClearentLumberjack.h"
 #import "ClearentLumberjackRemoteLogger.h"
 
+
 @implementation ClearentLumberjack
 
+BOOL enhancedFeedback = NO;
+
 ClearentLumberjackRemoteLogger *clearentLumberjackRemoteLogger;
+
 
 + (void) initLumberJack:(NSString *) baseUrl publicKey:(NSString *) publicKey
 {
@@ -22,7 +26,8 @@ ClearentLumberjackRemoteLogger *clearentLumberjackRemoteLogger;
     clearentLumberjackRemoteLogger.baseUrl = baseUrl;
     clearentLumberjackRemoteLogger.publicKey = publicKey;
     clearentLumberjackRemoteLogger.saveInterval = 30;
-    
+   
+
     [DDLog addLogger:clearentLumberjackRemoteLogger];
 }
 
@@ -32,9 +37,10 @@ ClearentLumberjackRemoteLogger *clearentLumberjackRemoteLogger;
     }
 }
 
+
 + (void) logError:(NSString*) logMessage {
     if(logMessage != nil) {
-        DDLogError(logMessage);
+        DDLogInfo(logMessage);
     }
 }
 

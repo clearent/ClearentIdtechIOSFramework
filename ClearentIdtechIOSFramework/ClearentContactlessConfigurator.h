@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "IDT_VP3300.h"
+#import <IDTech/IDT_VP3300.h>
 #import "ClearentConfiguration.h"
 
 typedef NS_ENUM(NSUInteger, CONTACTLESS_CONFIGURATION_RETURN_CODE) {

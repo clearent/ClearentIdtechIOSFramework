@@ -85,6 +85,8 @@ BOOL userNotifiedOfTimeOut = NO;
 
 BOOL transactionIsInProcess = NO;
 
+NSDictionary *enhancedMessages;
+
 
 - (instancetype) init : (id <Clearent_Public_IDTech_VP3300_Delegate>) publicDelegate clearentBaseUrl:(NSString*)clearentBaseUrl publicKey:(NSString*)publicKey idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance  {
     
@@ -131,9 +133,54 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         self.contactless = clearentVP3300Configuration.contactless;
         SEL configurationCallbackSelector = @selector(deviceMessage:);
         _clearentConfigurator = [[ClearentConfigurator alloc] init:self.baseUrl publicKey:self.publicKey callbackObject:self withSelector:configurationCallbackSelector sharedController:_idTechSharedInstance];
+        
+        
+        [self setEnhancedMessaging];
        
     }
     return self;
+}
+
+- (void) setEnhancedMessaging {
+    
+    
+    NSString *bundlePath =
+      [[NSBundle mainBundle] pathForResource:@"ClearentIdtechMessages"
+                                      ofType:@"bundle"];
+    if ([bundlePath length] > 0){
+        
+        NSBundle *resourcesBundle = [NSBundle bundleWithPath:bundlePath];
+        if (resourcesBundle != nil){
+            NSString *enhancedMessagingFilePath =
+                  [resourcesBundle pathForResource:@"enhancedmessages-v1"
+                                            ofType:@"txt"
+                                       inDirectory:nil];
+            if ([enhancedMessagingFilePath length] > 0){
+                
+                NSError *error;
+                NSString *fileContents = [NSString stringWithContentsOfFile:enhancedMessagingFilePath encoding:NSUTF8StringEncoding error:&error];
+
+                if (error) {
+                    NSLog(@"Error reading file: %@", error.localizedDescription);
+                } else {
+
+                    NSLog(@"contents: %@", fileContents);
+                    NSArray *listArray = [fileContents componentsSeparatedByString:@"\n"];
+                    NSLog(@"items = %d", [listArray count]);
+                
+                    enhancedMessages = [NSDictionary dictionaryWithContentsOfFile:enhancedMessagingFilePath];
+                }
+                
+            }
+        }
+    }
+    
+   
+     if(nil != enhancedMessages && enhancedMessages.count > 0) {
+         NSLog(@"ENHANCED MESSAGING INITIALIZED");
+     } else {
+         NSLog(@"NO ENHANCED MESSAGING");
+     }
 }
 
 - (instancetype) initWithPaymentCallback : (id <Clearent_Public_IDTech_VP3300_Delegate>)publicDelegate clearentVP3300Configuration:(id <ClearentVP3300Configuration>) clearentVP3300Configuration callbackObject:(id)callbackObject withSelector:(SEL)runTransactionSelector idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
@@ -449,7 +496,10 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         return;
     }
     
-    if(([message isEqualToString:CLEARENT_PLEASE_WAIT]
+    //TODO ugly solution. we need to stop idtech messages being sent back if we know we are in the middle of processing a successful read.
+    
+    if((processingCurrentRequest
+        || [message isEqualToString:CLEARENT_PLEASE_WAIT]
         || [message isEqualToString:CLEARENT_CARD_READ_OK_TO_REMOVE_CARD]
         || [message isEqualToString:CLEARENT_TRANSACTION_PROCESSING]
         || [message isEqualToString:CLEARENT_TRANSACTION_AUTHORIZING])) {
@@ -459,7 +509,10 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     //IDTech framework will never return timeout when its in the middle of a transaction. We have other errors to account for this.
     //This timeout is the result of the timer we have that wraps the entire transaction to account for a scenario where the
     //idtech framework cannot tell us to timeout. Ex- user inserts card but reader does not recognize and cannot report
-    if(transactionIsInProcess &&  [message isEqualToString:CLEARENT_TRANSACTION_FINAL_FALLBACK_ERROR]) {
+    if(transactionIsInProcess &&
+       ([message isEqualToString:CLEARENT_TRANSACTION_FINAL_FALLBACK_ERROR]
+        || [message isEqualToString:CLEARENT_TIMEOUT_ERROR_RESPONSE]
+        || [message isEqualToString:CLEARENT_TIMEOUT_ERROR_RESPONSE2])) {
         [ClearentLumberjack logInfo:@"deviceMessage:Dont callback with timeout message. Transaction is in process"];
         return;
     }
@@ -511,7 +564,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     } @catch (NSException *exception) {
         [ClearentLumberjack logInfo:@"monitorCardRemoval:Failed to retrieve the icc reader status"];
     } @finally {
-        if(!userNotifiedOfTimeOut) {
+        if(!userNotifiedOfTimeOut && [monitorCardRemovalTimer isValid]) {
             [self deviceMessage:CLEARENT_TRANSACTION_FINAL_FALLBACK_ERROR];
         }
     }
@@ -520,7 +573,11 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 
 - (void) sendFeedback:(NSString*) message {
 
-    if(message != nil && ([message isEqualToString:@"Timeout"] || [message isEqualToString:CLEARENT_TIMEOUT_ERROR_RESPONSE2] || [message isEqualToString:CLEARENT_TIMEOUT_ERROR_RESPONSE] || [message isEqualToString:CLEARENT_TRANSACTION_FINAL_FALLBACK_ERROR])) {
+    if(message != nil && ([message isEqualToString:@"Timeout"]
+        || [message isEqualToString:CLEARENT_TIMEOUT_ERROR_RESPONSE2]
+        || [message isEqualToString:CLEARENT_TIMEOUT_ERROR_RESPONSE]
+        || [message isEqualToString:CLEARENT_TRANSACTION_FINAL_FALLBACK_ERROR])) {
+        
         if(userNotifiedOfTimeOut) {
             return;
         } else {
@@ -533,25 +590,45 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     if(clearentFeedback.message != nil
        && ![clearentFeedback.message isEqualToString:@""]
        && ![clearentFeedback.message isEqualToString:@" "]) {
-       
-        [self feedback:clearentFeedback];
-        
-    }
-    
-}
-
-- (void) feedback:(ClearentFeedback*)clearentFeedback {
-    if ([self.publicDelegate respondsToSelector:@selector(feedback:)]) {
         
         [self disableCardRemovalTimerWhenFeedback:clearentFeedback];
         
-        [self.publicDelegate feedback:clearentFeedback];
+        if(processingCurrentRequest
+           && ([clearentFeedback.message isEqualToString:@"TERMINATED"]
+           || ![clearentFeedback.message isEqualToString:@"TERMINATE"])) {
+            [ClearentLumberjack logInfo:@"CLEARENT PROCESSING STARTED. SUPPRESS TERMINATED AND TERMINATE"];
+            return;
+        }
+        
+        if([clearentFeedback.message containsString:@"TRANSACTION FAILED"]) {
+            [ClearentLumberjack logInfo: [NSString stringWithFormat:@"ENHANCED MSG from %@ to %@", clearentFeedback.message, @"Try again or use a different card"]];
+            clearentFeedback.message = @"Try again or use a different card";
+            [self feedback:clearentFeedback];
+        } else if(nil != _clearentVP3300Configuration && _clearentVP3300Configuration.enableEnhancedFeedback) {
+            NSString *enhancedString = [enhancedMessages objectForKey:clearentFeedback.message];
+            if(nil != enhancedString) {
+                if(![enhancedString isEqualToString:@"SUPPRESS"]) {
+                    [ClearentLumberjack logInfo: [NSString stringWithFormat:@"ENHANCED MSG from %@ to %@", clearentFeedback.message, enhancedString]];
+                    clearentFeedback.message = enhancedString;
+                    [self feedback:clearentFeedback];
+                }
+            } else {
+                [ClearentLumberjack logInfo: [NSString stringWithFormat:@"NO ENHANCED MSG %@", clearentFeedback.message]];
+                [self feedback:clearentFeedback];
+            }
+        } else {
+            [self feedback:clearentFeedback];
+        }
+            
     }
+    
 }
 
 - (void) disableCardRemovalTimerWhenFeedback:(ClearentFeedback*)clearentFeedback {
     
-    if(clearentFeedback.message != nil
+    if(processingCurrentRequest || transactionIsInProcess) {
+        [self disableCardRemovalTimer];
+    } else if(clearentFeedback.message != nil
        && !([clearentFeedback.message isEqualToString:@""] || [clearentFeedback.message isEqualToString:@" "])
        && (clearentFeedback.feedBackMessageType == 4
            || [clearentFeedback.message isEqualToString:CLEARENT_CARD_READ_OK_TO_REMOVE_CARD]
@@ -563,6 +640,13 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     }
   
 }
+
+- (void) feedback:(ClearentFeedback*)clearentFeedback {
+    if ([self.publicDelegate respondsToSelector:@selector(feedback:)]) {
+        [self.publicDelegate feedback:clearentFeedback];
+    }
+}
+
                           
 - (void) handleContactlessError:(NSString*)contactlessError emvData:(IDTEMVData*)emvData {
     
@@ -1666,6 +1750,8 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
 - (void) createTransactionToken:(ClearentTransactionTokenRequest*)clearentTransactionTokenRequest {
     
     processingCurrentRequest = YES;
+    
+    [monitorCardRemovalTimer invalidate];
     
     //Complete the transaction as soon as possible so the idtech framework does not resend the current transaction.
     [_idTechSharedInstance emv_completeOnlineEMVTransaction:false hostResponseTags:nil];

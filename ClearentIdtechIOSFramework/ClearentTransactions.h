@@ -12,7 +12,7 @@
 @class ClearentResponse;
 @class ClearentConnection;
 #import "ClearentPayment.h"
-#import "IDT_VP3300.h"
+#import <IDTech/IDT_VP3300.h>
 
 
 @protocol ClearentTransactions <NSObject>
