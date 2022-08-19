@@ -17,7 +17,11 @@ public final class ClearentUIManager: NSObject {
     public static let shared = ClearentUIManager()
     public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
     public var signatureEnabled: Bool = true
-    public var useCardReaderPaymentMethod: Bool = true
+    public var useCardReaderPaymentMethod: Bool = true {
+        didSet {
+            clearentWrapper.useCardReaderPaymentMethod = useCardReaderPaymentMethod
+        }
+    }
     public var tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages
     
     // MARK: Init
@@ -36,7 +40,7 @@ public final class ClearentUIManager: NSObject {
         
         ClearentWrapperDefaults.lastPairedReaderInfo = ClearentWrapperDefaults.recentlyPairedReaders?.first { $0.autojoin }
 
-        ClearentWrapper.shared.readerInfoReceived = { [weak self] _ in
+        clearentWrapper.readerInfoReceived = { [weak self] _ in
             DispatchQueue.main.async {
                 self?.readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
             }

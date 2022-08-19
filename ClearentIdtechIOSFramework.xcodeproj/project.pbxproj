@@ -682,6 +682,7 @@
 		19B0A07E27EC9FB1006DAA48 /* ClearentUI */ = {
 			isa = PBXGroup;
 			children = (
+				CC9FF465282BC127004B2185 /* ClearentUIManager.swift */,
 				19BD103B286EEBCF00F0E5C4 /* BrandConfigurator */,
 				0111819E283262D80025750A /* ReaderDetails */,
 				010394942803460E000A7A94 /* Common */,
@@ -713,7 +714,6 @@
 				BA40A34927F1B38C0041CCF7 /* ClearentWrapper.swift */,
 				BA40A34A27F1B38C0041CCF7 /* HttpClient.swift */,
 				BAEAD2D82810041100AA72F6 /* ClearentExtension.swift */,
-				CC9FF465282BC127004B2185 /* ClearentUIManager.swift */,
 				019AD47E28ABBB5A003A1595 /* ClearentErrors.swift */,
 			);
 			path = Wrapper;
