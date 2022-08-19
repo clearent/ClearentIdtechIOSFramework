@@ -46,3 +46,25 @@ extension UITextField {
         _ = resignFirstResponder()
     }
 }
+
+extension UITextField {
+    // Use to format value from textfield without losing the current selection
+    func resetCursorPosition(for newText: String, separator: String? = nil) {
+        guard let text = self.text, let selection = selectedTextRange, newText != text else { return }
+
+        // determine where new cursor position should start so the cursor doesn't get sent to the end
+        var diff = min(0, text.count - newText.count)
+        var cursorPosition = offset(from: beginningOfDocument, to: selection.start)
+        if let separator = separator, newText.count > cursorPosition,  newText[cursorPosition] == separator {
+            diff = 0
+        }
+        cursorPosition -= diff
+        
+        self.text = newText
+
+        // update selection
+        if let newPosition = position(from: beginningOfDocument, offset: cursorPosition) {
+            selectedTextRange = textRange(from: newPosition, to: newPosition)
+        }
+    }
+}
