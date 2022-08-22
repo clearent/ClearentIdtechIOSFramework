@@ -197,7 +197,7 @@ public protocol ClearentWrapperProtocol : AnyObject {
     func didReceiveInfo(info: UserInfo)
     
     /**
-     * Method called when new information about the current reader is gathered
+     * Method called when new information about the current reader is available
      */
     func didReceiveReaderInfo(reader: ReaderInfo?)
 }

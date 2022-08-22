@@ -16,14 +16,14 @@ public final class ClearentUIManager: NSObject {
 
     private let clearentWrapper = ClearentWrapper.shared
     @objc public static let shared = ClearentUIManager()
-    public var signatureEnabled: Bool = true
-    public var delegate: ClearentUIDelegate?
-    public var useCardReaderPaymentMethod: Bool = true {
+    @objc public var signatureEnabled: Bool = true
+    @objc public var delegate: ClearentUIDelegate?
+    @objc public var useCardReaderPaymentMethod: Bool = true {
         didSet {
             clearentWrapper.useCardReaderPaymentMethod = useCardReaderPaymentMethod
         }
     }
-    public var tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages
+    @objc public var tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages
     
     // MARK: Init
     
@@ -40,8 +40,7 @@ public final class ClearentUIManager: NSObject {
         }
         
         ClearentWrapperDefaults.lastPairedReaderInfo = ClearentWrapperDefaults.recentlyPairedReaders?.first { $0.autojoin }
-        
-        // call delegate orotaru
+        self.delegate?.didRecivedReaderInfo(reader: ClearentWrapperDefaults.lastPairedReaderInfo)
     }
     
     // MARK: Public
@@ -124,6 +123,6 @@ public final class ClearentUIManager: NSObject {
 }
 
 
-public protocol ClearentUIDelegate {
-    func didRecivedReaderInfo(reader: ReaderInfo?)
+@objc public protocol ClearentUIDelegate {
+    @objc func didRecivedReaderInfo(reader: ReaderInfo?)
 }

@@ -384,6 +384,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     }
     
     func didReceiveReaderInfo(reader: ReaderInfo?) {
-        print("INfo")
+        // Notify the user that new data is available for reader
+        ClearentUIManager.shared.delegate?.didRecivedReaderInfo(reader: reader)
     }
 }

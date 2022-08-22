@@ -11,7 +11,7 @@ public struct ReaderItem {
     var isConnecting: Bool = false
 }
 
-public class ReaderInfo: Codable {
+public class ReaderInfo: NSObject, Codable {
     public var readerName: String
     public var customReaderName: String?
     public var batterylevel: Int?
@@ -42,11 +42,11 @@ public class ReaderInfo: Codable {
     }
 }
 
-extension ReaderInfo: Equatable {
-    public static func == (lhs: ReaderInfo, rhs: ReaderInfo) -> Bool {
-        return lhs.uuid == rhs.uuid
-    }
-}
+//@objc extension ReaderInfo: Equatable {
+//    public static func == (lhs: ReaderInfo, rhs: ReaderInfo) -> Bool {
+//        return lhs.uuid == rhs.uuid
+//    }
+//}
 
 public extension ReaderInfo {
     func batteryStatus(flowFeedbackType: FlowFeedbackType? = nil) -> (iconName: String, title: String)? {

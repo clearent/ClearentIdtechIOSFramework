@@ -60,7 +60,7 @@ extension ClearentWrapperDefaults {
     private static func setupPairedReader(with newValue: ReaderInfo?) {
         ClearentWrapper.shared.delegate?.didReceiveReaderInfo(reader: newValue)
         
-        if var newPairedReader = newValue {
+        if let newPairedReader = newValue {
             // set first pairedReader with autojoin true
             if recentlyPairedReaders?.count ?? 0 == 0 {
                 newPairedReader.autojoin = true
@@ -70,7 +70,7 @@ extension ClearentWrapperDefaults {
         }
         // if pairedReader is nil, we need to set connected and autojoin to false for the corresponding item from the previously paired readers
         else {
-            if var defaultReaderInfo = lastPairedReaderInfo {
+            if let defaultReaderInfo = lastPairedReaderInfo {
                 defaultReaderInfo.isConnected = false
                 defaultReaderInfo.autojoin = false
                 ClearentWrapper.shared.updateReaderInRecentlyUsed(reader: defaultReaderInfo)
