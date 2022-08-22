@@ -24,8 +24,9 @@ extension ClearentWrapper: BluetoothScannerProtocol {
     
     func didUpdateBluetoothState(isOn: Bool) {
         isBluetoothOn = isOn
+        
         if (!isBluetoothOn) {
-            ClearentWrapperDefaults.pairedReaderInfo?.isConnected = false
+            ClearentWrapper.shared.disconnectFromReader()
         }
     }
     
