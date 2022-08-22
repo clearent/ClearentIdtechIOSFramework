@@ -35,11 +35,11 @@ class ClearentSignatureView: ClearentMarginableView {
     @IBAction func clearButtonWasTapped(_: Any) {
         drawingPanel.clearDrawing()
     }
-
+    
     @IBAction func doneButtonWasTapped(_: Any) {
         doneAction?(drawingPanel.bufferImage ?? UIImage())
     }
-
+    
     override func configure() {
         setupDescriptionLabel()
         setupDoneButton()
@@ -49,37 +49,37 @@ class ClearentSignatureView: ClearentMarginableView {
 
         NotificationCenter.default.addObserver(self, selector: #selector(orientationDidChange), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
-
+   
     @objc func orientationDidChange() {
         if UIDevice.current.orientation != previousOrientation {
             drawingPanel.clearDrawing()
             previousOrientation = UIDevice.current.orientation
         }
     }
-
+    
     deinit {
         NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
     }
-
+    
     // MARK: - Private
-
+    
     private func setupDescriptionLabel() {
-        descriptionLabel.text = "xsdk_signature_subtitle".localized
+        descriptionLabel.text = ClearentConstants.Localized.Signature.subtitle
         descriptionLabel.font = ClearentUIBrandConfigurator.shared.fonts.signatureSubtitleFont
         descriptionLabel.textAlignment = .left
         descriptionLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.signatureDescriptionMessageColor
     }
-
+    
     private func setupSignatureIndicator() {
         indicatorLine.backgroundColor = ClearentConstants.Color.base05
         indicatorLabel.textColor = ClearentConstants.Color.base05
     }
-
+    
     private func setupDoneButton() {
-        doneButton.title = "xsdk_signature_action".localized
+        doneButton.title = ClearentConstants.Localized.Signature.action
         doneButton.button.isUserInteractionEnabled = false
     }
-
+    
     private func setupRoundedCornersView() {
         roundedCornersView.layer.cornerRadius = Layout.cornerRadius
         roundedCornersView.layer.borderWidth = Layout.borderWidth

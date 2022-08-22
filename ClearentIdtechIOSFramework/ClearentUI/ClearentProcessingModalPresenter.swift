@@ -31,7 +31,6 @@ protocol ProcessingModalProtocol {
     func connectTo(reader: ReaderInfo)
     func updateTemporaryReaderName(name: String?)
     func enableDoneButtonForInput(enabled: Bool)
-    func fetchTipSetting(completion: @escaping () -> Void)
     func handleSignature(with image: UIImage)
     func sendManualEntryTransaction(with dataSource: ClearentPaymentDataSource)
 }
@@ -117,9 +116,9 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
 
     func startPairingFlow() {
-        let items = [FlowDataItem(type: .hint, object: "xsdk_pairing_prepare_pairing_reader_range".localized),
+        let items = [FlowDataItem(type: .hint, object: ClearentConstants.Localized.Pairing.readerRange),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
-                     FlowDataItem(type: .description, object: "xsdk_pairing_prepare_pairing_reader_button".localized),
+                     FlowDataItem(type: .description, object: ClearentConstants.Localized.Pairing.readerButton),
                      FlowDataItem(type: .userAction, object: FlowButtonType.pairInFlow)]
         let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.info, items: items)
         modalProcessingView?.updateContent(with: feedback)
@@ -188,13 +187,15 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         }
     }
     
-    func fetchTipSetting(completion: @escaping () -> Void) {
-        sdkWrapper.fetchTipSetting(completion: completion)
-    }
-    
     func handleSignature(with image: UIImage) {
         modalProcessingView?.showLoadingView()
-        ClearentWrapper.shared.sendSignatureWithImage(image: image)
+        do {
+            try sdkWrapper.sendSignatureWithImage(image: image)
+        } catch {
+            if let error = error as? ClearentError {
+                modalProcessingView?.dismissViewController(result: .failure(error))
+            }
+        }
     }
 
     func sendManualEntryTransaction(with dataSource: ClearentPaymentDataSource) {
@@ -223,7 +224,14 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 
     func resendSignature() {
         modalProcessingView?.showLoadingView()
-        sdkWrapper.resendSignature()
+        
+        ClearentWrapper.shared.resendSignature { [weak self] result in
+            guard let strongSelf = self else { return }
+            
+            if case .failure(_) = result {
+                strongSelf.modalProcessingView?.dismissViewController(result: result)
+            }
+        }
     }
 
     // MARK: Private
@@ -240,9 +248,10 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     private func startTipFlow() {
-        fetchTipSetting { [weak self] in
-            guard let strongSelf = self else { return }
-            let showTipsScreen = (strongSelf.sdkWrapper.tipEnabled ?? false) && strongSelf.tipsScreenWasNotShown
+        sdkWrapper.fetchTipSetting { [weak self] in
+            guard let strongSelf = self else { return }            
+            let showTipsScreen = ClearentWrapper.shared.tipEnabled && strongSelf.tipsScreenWasNotShown
+
             if showTipsScreen {
                 strongSelf.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: strongSelf.amountWithoutTip ?? 0)
                 strongSelf.tipsScreenWasNotShown = false
@@ -282,7 +291,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     private func showReaderNameOption() {
-        let items = [FlowDataItem(type: .hint, object: "xsdk_pairing_add_name_to_reader".localized),
+        let items = [FlowDataItem(type: .hint, object: ClearentConstants.Localized.Pairing.addReaderName),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
                      FlowDataItem(type: .userAction, object: FlowButtonType.addReaderName),
                      FlowDataItem(type: .userAction, object: FlowButtonType.renameReaderLater)]
@@ -292,7 +301,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     
     private func showRenameReader() {
         temporaryReaderName = nil
-        let items = [FlowDataItem(type: .hint, object: "xsdk_pairing_rename_your_reader".localized),
+        let items = [FlowDataItem(type: .hint, object: ClearentConstants.Localized.Pairing.renameReader),
                      FlowDataItem(type: .input, object: FlowInputType.nameInput),
                      FlowDataItem(type: .userAction, object: FlowButtonType.done)]
         let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.renameReaderDone, items: items)
@@ -301,7 +310,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     private func showSignatureScreen() {
-        let items = [FlowDataItem(type: .hint, object: "xsdk_signature_title".localized),
+        let items = [FlowDataItem(type: .hint, object: ClearentConstants.Localized.Signature.title),
                      FlowDataItem(type: .signature, object: nil)]
         let feedback = FlowFeedback(flow: .pairing(), type: .signature, items: items)
         modalProcessingView?.updateContent(with: feedback)
@@ -325,7 +334,14 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 
     private func startTransaction(saleEntity: SaleEntity, manualEntryCardInfo: ManualEntryCardInfo? = nil) {
         modalProcessingView?.showLoadingView()
-        sdkWrapper.startTransaction(with: saleEntity, manualEntryCardInfo: manualEntryCardInfo)
+        
+        do {
+            try sdkWrapper.startTransaction(with: saleEntity, manualEntryCardInfo: manualEntryCardInfo)
+        } catch {
+            if let error = error as? ClearentError {
+                modalProcessingView?.dismissViewController(result: .failure(error))
+            }
+        }
     }
 }
 
@@ -338,7 +354,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                 // display successful pairing content
                 var items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.pairingSuccessful),
                              FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader),
-                             FlowDataItem(type: .description, object: "xsdk_pairing_paired_successful".localized),
+                             FlowDataItem(type: .description, object: ClearentConstants.Localized.Pairing.readerSuccessfulPaired),
                              FlowDataItem(type: .userAction, object: FlowButtonType.done)]
                 if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo {
                     items.insert(FlowDataItem(type: .readerInfo, object: readerInfo), at: 0)

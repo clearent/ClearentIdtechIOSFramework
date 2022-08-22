@@ -26,7 +26,7 @@ enum TransactionType : String {
 
 class ClearentHttpClient {
     
-    let httpClient: HttpClient?
+    var httpClient: HttpClient? = nil
     let baseURL: String
     let apiKey: String
     
@@ -35,9 +35,11 @@ class ClearentHttpClient {
     public init(baseURL: String, apiKey: String) {
         self.baseURL = baseURL
         self.apiKey = apiKey
-        self.httpClient = HttpClient(baseURL: URL(string: baseURL)!)
+        
+        guard let url = URL(string: baseURL) else { return }
+        
+        self.httpClient = HttpClient(baseURL: url)
     }
-    
     
     // MARK - Public
     
@@ -58,9 +60,7 @@ class ClearentHttpClient {
     }
     
     public func sendSignature(base64Image: String, transactionID: Int, completion: @escaping (Data?, Error?) -> Void) {
-        
         let created = DateFormatter().string(from: Date())
-        
         let signatureURL = URL(string: baseURL + ClearentEndpoints.signature)
         let headers = headers(jwt: nil, apiKey: self.apiKey)
         let _ = HttpClient.makeRawRequest(to: signatureURL!, method: signatureHTTPMethod(base64Image: baseURL, created: created, transactionID: transactionID), headers: headers) { data, error in
@@ -118,7 +118,6 @@ class ClearentHttpClient {
         return HttpClient.HTTPMethod.POST(body)
     }
 }
-
 
 public protocol CodableProtocol: Codable {}
 

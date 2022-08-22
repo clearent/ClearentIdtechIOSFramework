@@ -36,7 +36,7 @@ class ClearentPaymentFooterView: ClearentXibView {
     
     private func setupCancelButton() {
         cancelButton.buttonStyle = .bordered
-        cancelButton.button.setTitle("xsdk_payment_manual_entry_user_action_cancel".localized, for: .normal)
+        cancelButton.button.setTitle(ClearentConstants.Localized.ManualEntry.footerCancel, for: .normal)
         
         cancelButton.action = {
             self.cancelButtonAction?()
@@ -45,7 +45,7 @@ class ClearentPaymentFooterView: ClearentXibView {
     
     private func setupConfirmButton() {
         confirmButton.buttonStyle = .filled
-        confirmButton.button.setTitle("xsdk_payment_manual_entry_user_action_confirm".localized, for: .normal)
+        confirmButton.button.setTitle(ClearentConstants.Localized.ManualEntry.footerConfirm, for: .normal)
         disableConfirmButton()
         
         confirmButton.action = {

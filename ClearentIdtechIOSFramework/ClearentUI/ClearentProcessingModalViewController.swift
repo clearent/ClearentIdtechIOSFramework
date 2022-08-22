@@ -156,7 +156,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             }
             return ClearentReadersTableView(dataSource: readersTableViewDataSource, delegate: self)
         case .input:
-            return ClearentTextField(currentReaderName: presenter?.editableReader?.customReaderName, inputName: "xsdk_pairing_reader_name".localized, hint: "xsdk_pairing_reader_name_input_hint".localized, delegate: self)
+            return ClearentTextField(currentReaderName: presenter?.editableReader?.customReaderName, inputName: ClearentConstants.Localized.Pairing.readerName, hint: ClearentConstants.Localized.Pairing.readerNameInputHint, delegate: self)
         case .tips:
             guard let amountInfo = object as? AmountInfo else { return nil }
             return tipOptionsListView(with: amountInfo)
@@ -189,11 +189,11 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     private func readerInfoView(readerInfo: ReaderInfo?) -> ClearentReaderStatusHeaderView? {
         guard let flowFeedbackType = ClearentWrapper.shared.flowType?.flowFeedbackType else { return nil }
         if readerInfo == nil && flowFeedbackType != .showReaders { return nil }
-        var name = readerInfo?.readerName ?? "xsdk_readers_list_no_reader_connected".localized
+        var name = readerInfo?.readerName ?? ClearentConstants.Localized.ReadersList.noReaderConnected
         if let customName = readerInfo?.customReaderName {
             name = customName
         }
-        let description = readerInfo == nil ? "xsdk_readers_list_select_reader".localized : nil
+        let description = readerInfo == nil ? ClearentConstants.Localized.ReadersList.selectReader : nil
         let signalStatus = readerInfo?.signalStatus(flowFeedbackType: flowFeedbackType, isConnecting: presenter?.selectedReaderFromReadersList != nil)
         let batteryStatus = readerInfo?.batteryStatus(flowFeedbackType: flowFeedbackType)
         let iconName = showOnTop ? ClearentConstants.IconName.expanded : nil

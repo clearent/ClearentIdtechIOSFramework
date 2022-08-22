@@ -14,9 +14,9 @@ public struct ReaderItem {
 public struct ReaderInfo: Codable {
     public var readerName: String
     public var customReaderName: String?
-    var batterylevel: Int?
-    var signalLevel: Int?
-    var isConnected: Bool {
+    public var batterylevel: Int?
+    public var signalLevel: Int?
+    public var isConnected: Bool {
         didSet {
             if isConnected == false {
                 signalLevel = nil
@@ -24,10 +24,10 @@ public struct ReaderInfo: Codable {
             }
         }
     }
-    var autojoin: Bool
-    var uuid: UUID?
-    var serialNumber: String?
-    var version: String?
+    public var autojoin: Bool
+    public var uuid: UUID?
+    public var serialNumber: String?
+    public var version: String?
 }
 
 extension ReaderInfo: Equatable {
@@ -56,11 +56,11 @@ public extension ReaderInfo {
         
         guard isConnected else {
             if flowFeedbackType == .searchDevices {
-                return (iconName: nil, title: "xsdk_pairing_connecting_reader".localized)
+                return (iconName: nil, title: ClearentConstants.Localized.Pairing.connecting)
             } else if flowFeedbackType == .showReaders, let isConnecting = isConnecting, isConnecting {
-                return (iconName: nil, title: "xsdk_pairing_connecting_reader".localized)
+                return (iconName: nil, title: ClearentConstants.Localized.Pairing.connecting)
             }
-            return (iconName: icon, title: "xsdk_reader_signal_idle".localized)
+            return (iconName: icon, title: ClearentConstants.Localized.ReaderInfo.idle)
         }
         
         switch signalLevel {
@@ -73,7 +73,7 @@ public extension ReaderInfo {
         default:
             icon = flowFeedbackType == .searchDevices ? nil : ClearentConstants.IconName.signalIdle
         }
-        let title = flowFeedbackType == .searchDevices ? "xsdk_pairing_connection_sucessful".localized : "xsdk_reader_signal_connected".localized
+        let title = flowFeedbackType == .searchDevices ? ClearentConstants.Localized.Pairing.connectionSuccessful : ClearentConstants.Localized.ReaderInfo.connected
         
         return (iconName: icon, title: title)
     }

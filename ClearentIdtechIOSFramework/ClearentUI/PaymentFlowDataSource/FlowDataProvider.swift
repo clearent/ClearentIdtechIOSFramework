@@ -65,7 +65,7 @@ class FlowDataProvider : NSObject {
     public func startTipTransaction(amountWithoutTip: Double) {
         let amountInfo = AmountInfo(amountWithoutTip: amountWithoutTip, availableTipPercentages: ClearentUIManager.shared.tipAmounts)
         
-        let items = [FlowDataItem(type: .title, object: "xsdk_tips_user_transaction_tip_title".localized),
+        let items = [FlowDataItem(type: .title, object: ClearentConstants.Localized.Tips.transactionTip),
                      FlowDataItem(type: .tips, object: amountInfo),
                      FlowDataItem(type: .userAction, object: FlowButtonType.transactionWithTip),
                      FlowDataItem(type: .userAction, object: FlowButtonType.transactionWithoutTip)]
@@ -83,7 +83,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         
         if error != nil {
             let errItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
-                            FlowDataItem(type: .title, object: "xsdk_signature_upload_failure_title".localized),
+                            FlowDataItem(type: .title, object: ClearentConstants.Localized.Signature.signatureUploadFailure),
                             FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                             FlowDataItem(type: .userAction, object: FlowButtonType.skipSignature)]
             
@@ -93,7 +93,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                     payload: errItems)
         } else {
             let transactionItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.transaction_completed),
-                                    FlowDataItem(type: .title, object: "xsdk_signature_upload_sucessful_title".localized)]
+                                    FlowDataItem(type: .title, object: ClearentConstants.Localized.Signature.signatureUploadSuccessful)]
             
             feedback = FlowDataFactory.component(with: .payment,
                                                  type: .info,
@@ -110,7 +110,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     
     func didEncounteredGeneralError() {
         let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
-                     FlowDataItem(type: .description, object: "xsdk_general_error_description".localized),
+                     FlowDataItem(type: .description, object: ClearentConstants.Localized.Error.generalErrorDescription),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         let feedback = FlowDataFactory.component(with: .payment,
@@ -125,7 +125,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         
         if let error = error {
             let errItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
-                            FlowDataItem(type: .title, object: "xsdk_general_error_title".localized),
+                            FlowDataItem(type: .title, object: ClearentConstants.Localized.Error.generalErrorTitle),
                             FlowDataItem(type: .description, object: error.message),
                             FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                             FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
@@ -136,7 +136,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                      payload: errItems)
         } else {
             let transactionItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.transaction_completed),
-                                    FlowDataItem(type: .title, object: "xsdk_payment_transaction_completed_description".localized)]
+                                    FlowDataItem(type: .title, object: ClearentConstants.Localized.FlowDataProvider.transactionCompleted)]
             
             feedback = FlowDataFactory.component(with: .payment,
                                                  type: .info,
@@ -161,7 +161,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .description, object: action.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .pressReaderButton, .connectionTimeout:
-            items = [FlowDataItem(type: .description, object: "xsdk_pairing_prepare_pairing_reader_range".localized),
+            items = [FlowDataItem(type: .description, object: ClearentConstants.Localized.Pairing.readerRange),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.press_button),
                      FlowDataItem(type: .description, object: action.description)]
             if ClearentWrapper.shared.flowType?.processType == .payment, connectionErrorDisplayed {
@@ -172,7 +172,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         case .tryICCAgain, .cardHasChip, .tryMSRAgain, .useMagstripe, .tapFailed:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
-                     FlowDataItem(type: .title, object: "xsdk_reader_error_title".localized),
+                     FlowDataItem(type: .title, object: ClearentConstants.Localized.Error.readerError),
                      FlowDataItem(type: .description, object: action.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
@@ -184,27 +184,27 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         case .noInternet:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
-                     FlowDataItem(type: .title, object: "xsdk_internet_error_title".localized),
+                     FlowDataItem(type: .title, object: ClearentConstants.Localized.Internet.error),
                      FlowDataItem(type: .description, object: action.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .noBluetooth:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
-                     FlowDataItem(type: .title, object: "xsdk_bluetooth_error_title".localized),
+                     FlowDataItem(type: .title, object: ClearentConstants.Localized.Bluetooth.error),
                      FlowDataItem(type: .description, object: action.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .noBluetoothPermission:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
-                     FlowDataItem(type: .title, object: "xsdk_bluetooth_permission_error_title".localized),
+                     FlowDataItem(type: .title, object: ClearentConstants.Localized.Bluetooth.permissionError),
                      FlowDataItem(type: .description, object: action.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.settings),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .failedToStartSwipe:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
-                     FlowDataItem(type: .title, object: "xsdk_reader_error_title".localized),
+                     FlowDataItem(type: .title, object: ClearentConstants.Localized.Error.readerError),
                      FlowDataItem(type: .description, object: action.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo),
@@ -212,7 +212,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         case .cardUnsupported, .cardBlocked, .cardExpired, .badChip:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
-                     FlowDataItem(type: .title, object: "xsdk_reader_error_title".localized),
+                     FlowDataItem(type: .title, object: ClearentConstants.Localized.Error.readerError),
                      FlowDataItem(type: .description, object: action.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo),
@@ -220,7 +220,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         case .transactionFailed:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
-                     FlowDataItem(type: .title, object: "xsdk_reader_error_title".localized),
+                     FlowDataItem(type: .title, object: ClearentConstants.Localized.Error.readerError),
                      FlowDataItem(type: .description, object: action.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo),
@@ -247,14 +247,14 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .description, object: info.description)]
         case .amountNotAllowedForTap:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
-                     FlowDataItem(type: .title, object: "xsdk_reader_error_title".localized),
+                     FlowDataItem(type: .title, object: ClearentConstants.Localized.Error.readerError),
                      FlowDataItem(type: .description, object: info.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .chipNotRecognized:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
-                     FlowDataItem(type: .title, object: "xsdk_reader_error_title".localized),
+                     FlowDataItem(type: .title, object: ClearentConstants.Localized.Error.readerError),
                      FlowDataItem(type: .description, object: info.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo),
@@ -292,7 +292,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     }
 
     func didStartPairing() {
-        let items = [FlowDataItem(type: .hint, object: "xsdk_pairing_select_reader".localized),
+        let items = [FlowDataItem(type: .hint, object: ClearentConstants.Localized.Pairing.selectReader),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
 
@@ -305,12 +305,16 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     }
     
     func didFindReaders(readers: [ReaderInfo]) {
-        let items = [FlowDataItem(type: .hint, object: "xsdk_pairing_select_reader".localized),
-                     FlowDataItem(type: .devicesFound, object: readers),
+        let title = readers.count > 0 ? ClearentConstants.Localized.Pairing.selectReader : ClearentConstants.Localized.Pairing.noReadersFoundTitle
+        let flowDataItem = readers.count > 0 ? FlowDataItem(type: .devicesFound, object: readers) : FlowDataItem(type: .description, object: ClearentConstants.Localized.Pairing.noReadersFoundDescription)
+        let flowFeedbackType = readers.count > 0 ? FlowFeedbackType.searchDevices : FlowFeedbackType.info
+        
+        let items = [FlowDataItem(type: .hint, object: title),
+                     flowDataItem,
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
 
         let feedback = FlowDataFactory.component(with: .pairing(),
-                                                 type: .searchDevices,
+                                                 type: flowFeedbackType,
                                                  readerInfo: nil,
                                                  payload: items)
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
@@ -340,30 +344,9 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
-    func didNotFindReaders() {
-        let items = [FlowDataItem(type: .hint, object: "xsdk_pairing_no_readers_found_title".localized),
-                     FlowDataItem(type: .description, object: "xsdk_pairing_no_readers_found_description".localized),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
-
-        let feedback = FlowDataFactory.component(with: .pairing(),
-                                                 type: .info,
-                                                 readerInfo: nil,
-                                                 payload: items)
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
-    }
-    
-    func didNotFindRecentlyUsedReaders() {
-        let items = [FlowDataItem(type: .description, object: "xsdk_pairing_no_readers_found_description".localized),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
-        let feedback = FlowDataFactory.component(with: .showReaders,
-                                                 type: .showReaders,
-                                                 readerInfo: ClearentWrapperDefaults.pairedReaderInfo,
-                                                 payload: items)
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
-    }
-    
     func didFindRecentlyUsedReaders(readers: [ReaderInfo]) {
-        let items = [FlowDataItem(type: .recentlyPaired, object: readers),
+        let flowDataItem = readers.count > 0 ? FlowDataItem(type: .recentlyPaired, object: readers) : FlowDataItem(type: .description, object: ClearentConstants.Localized.Pairing.noReadersFoundDescription)
+        let items = [flowDataItem,
                      FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
         
         let feedback = FlowDataFactory.component(with: .showReaders,
