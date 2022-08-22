@@ -382,4 +382,8 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                              payload: items)
         delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
+    
+    func didReceiveReaderInfo(reader: ReaderInfo?) {
+        print("INfo")
+    }
 }

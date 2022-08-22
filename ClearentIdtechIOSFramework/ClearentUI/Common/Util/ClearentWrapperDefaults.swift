@@ -58,7 +58,7 @@ extension ClearentWrapperDefaults {
     }
     
     private static func setupPairedReader(with newValue: ReaderInfo?) {
-        ClearentWrapper.shared.readerInfoReceived?(newValue)
+        ClearentWrapper.shared.delegate?.didReceiveReaderInfo(reader: newValue)
         
         if var newPairedReader = newValue {
             // set first pairedReader with autojoin true

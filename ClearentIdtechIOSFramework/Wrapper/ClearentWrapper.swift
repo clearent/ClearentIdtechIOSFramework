@@ -195,6 +195,11 @@ public protocol ClearentWrapperProtocol : AnyObject {
      * @info, UserInfo needed to be performed by the user
      */
     func didReceiveInfo(info: UserInfo)
+    
+    /**
+     * Method called when new information about the current reader is gathered
+     */
+    func didReceiveReaderInfo(reader: ReaderInfo?)
 }
 
 public final class ClearentWrapper : NSObject {
@@ -208,9 +213,6 @@ public final class ClearentWrapper : NSObject {
     
     /// Determines the current flow type
     public var flowType: (processType: ProcessType, flowFeedbackType: FlowFeedbackType?)?
-    
-    /// Closure called when reader info (signal, battery, reader name, connection status) is received
-    public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
     
     /// Specifies what payment flow should be displayed. If true, card reader is used. Otherwise, a form where the user has to enter manually the card info is displayed.
     public var useCardReaderPaymentMethod: Bool = true
