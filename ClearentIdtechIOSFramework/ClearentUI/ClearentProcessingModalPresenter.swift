@@ -145,7 +145,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     
     func handleUserAction(userAction: FlowButtonType) {
         switch userAction {
-        case .cancel, .done, .renameReaderLater, .skipSignature:
+        case .done, .renameReaderLater, .skipSignature:
             if ClearentWrapper.shared.flowType?.flowFeedbackType == .pairingDoneInfo {
                 showReaderNameOption()
             } else {
@@ -158,11 +158,11 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                     startTipFlow()
                     modalProcessingView?.positionViewOnTop(flag: false)
                 } else {
-                    let cancelled = userAction == .cancel
-                    let result = cancelled ? CompletionResult.failure(ClearentError.cancelledByUser) : CompletionResult.success(editableReader?.customReaderName)
-                    modalProcessingView?.dismissViewController(result: result)
+                    modalProcessingView?.dismissViewController(result: .success(editableReader?.customReaderName))
                 }
             }
+        case .cancel:
+            modalProcessingView?.dismissViewController(result: .failure(.cancelledByUser))
         case .retry, .pair:
             restartProcess(newPair: false)
         case .pairInFlow:
