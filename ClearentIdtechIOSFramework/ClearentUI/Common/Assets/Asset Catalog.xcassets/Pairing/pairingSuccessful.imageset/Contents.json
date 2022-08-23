@@ -1,0 +1,12 @@
+{
+  "images" : [
+    {
+      "filename" : "pairingSuccessful.svg",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

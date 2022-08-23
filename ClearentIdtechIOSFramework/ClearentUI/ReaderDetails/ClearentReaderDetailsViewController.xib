@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ClearentReaderDetailsViewController" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+            <connections>
+                <outlet property="autojoinView" destination="Xrv-n7-BFt" id="Hzv-Ff-37e"/>
+                <outlet property="batteryStatusView" destination="hii-ez-GMs" id="Hyf-wB-4NI"/>
+                <outlet property="connectedView" destination="mMf-Rb-yxr" id="o91-XM-9bA"/>
+                <outlet property="customNavigationItem" destination="B8m-5H-x4X" id="w5J-nt-NOs"/>
+                <outlet property="customReaderName" destination="dwA-ol-9Ru" id="sM0-nn-vUr"/>
+                <outlet property="navigationBar" destination="xbO-d2-hVQ" id="AAc-b9-hfE"/>
+                <outlet property="readerName" destination="o6o-lI-X3o" id="Zw8-EU-AUv"/>
+                <outlet property="removeReaderButton" destination="RMX-cF-dCe" id="aJ4-BJ-dP1"/>
+                <outlet property="serialNumberView" destination="gEZ-PY-iki" id="80s-ji-mZE"/>
+                <outlet property="signalStatusView" destination="qTP-SH-KEI" id="cGu-mN-BlH"/>
+                <outlet property="stackView" destination="ndA-by-iyK" id="uzg-JE-FZk"/>
+                <outlet property="versionNumberView" destination="6bw-yV-xhb" id="NWA-La-7rA"/>
+                <outlet property="view" destination="iN0-l3-epB" id="S2B-t5-vOG"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <navigationBar contentMode="scaleToFill" translucent="NO" backIndicatorImage="left-arrow" translatesAutoresizingMaskIntoConstraints="NO" id="xbO-d2-hVQ">
+                    <rect key="frame" x="8" y="68" width="398" height="44"/>
+                    <color key="barTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <items>
+                        <navigationItem title="Details" id="B8m-5H-x4X"/>
+                    </items>
+                </navigationBar>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="irp-yA-dbn">
+                    <rect key="frame" x="16" y="146" width="382" height="646"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="ndA-by-iyK" customClass="ClearentAdaptiveStackView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="382" height="868"/>
+                            <subviews>
+                                <view contentMode="scaleToFill" placeholderIntrinsicWidth="382" placeholderIntrinsicHeight="112.5" translatesAutoresizingMaskIntoConstraints="NO" id="mMf-Rb-yxr" customClass="ClearentLabelSwitch" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="0.0" width="382" height="112.5"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                </view>
+                                <view contentMode="scaleToFill" placeholderIntrinsicWidth="382" placeholderIntrinsicHeight="112.5" translatesAutoresizingMaskIntoConstraints="NO" id="qTP-SH-KEI" customClass="ClearentLabelWithIcon" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="112.5" width="382" height="112.5"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                </view>
+                                <view contentMode="scaleToFill" placeholderIntrinsicWidth="382" placeholderIntrinsicHeight="112.5" translatesAutoresizingMaskIntoConstraints="NO" id="hii-ez-GMs" customClass="ClearentLabelWithIcon" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="225" width="382" height="112.5"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                </view>
+                                <view contentMode="scaleToFill" placeholderIntrinsicWidth="382" placeholderIntrinsicHeight="112.5" translatesAutoresizingMaskIntoConstraints="NO" id="Xrv-n7-BFt" customClass="ClearentLabelSwitch" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="337.5" width="382" height="112.5"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                </view>
+                                <view contentMode="scaleToFill" placeholderIntrinsicWidth="382" placeholderIntrinsicHeight="112.5" translatesAutoresizingMaskIntoConstraints="NO" id="o6o-lI-X3o" customClass="ClearentInfoWithIcon" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="450" width="382" height="112.5"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                </view>
+                                <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="dwA-ol-9Ru" customClass="ClearentInfoWithIcon" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="562.5" width="382" height="128"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                </view>
+                                <view contentMode="scaleToFill" ambiguous="YES" placeholderIntrinsicWidth="382" placeholderIntrinsicHeight="65" translatesAutoresizingMaskIntoConstraints="NO" id="gEZ-PY-iki" customClass="ClearentInfoWithIcon" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="690.5" width="382" height="65"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                </view>
+                                <view contentMode="scaleToFill" ambiguous="YES" placeholderIntrinsicWidth="382" placeholderIntrinsicHeight="112.5" translatesAutoresizingMaskIntoConstraints="NO" id="6bw-yV-xhb" customClass="ClearentInfoWithIcon" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="755.5" width="382" height="112.5"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                </view>
+                            </subviews>
+                        </stackView>
+                    </subviews>
+                    <constraints>
+                        <constraint firstItem="ndA-by-iyK" firstAttribute="width" secondItem="irp-yA-dbn" secondAttribute="width" id="0Ge-2g-0yh"/>
+                        <constraint firstItem="ndA-by-iyK" firstAttribute="top" secondItem="irp-yA-dbn" secondAttribute="top" id="AVX-RZ-Tz8"/>
+                        <constraint firstItem="ndA-by-iyK" firstAttribute="leading" secondItem="irp-yA-dbn" secondAttribute="leading" id="LRs-YN-NXV"/>
+                        <constraint firstAttribute="trailing" secondItem="ndA-by-iyK" secondAttribute="trailing" id="mvU-PG-zXf"/>
+                        <constraint firstAttribute="bottom" secondItem="ndA-by-iyK" secondAttribute="bottom" id="weS-B2-AyD"/>
+                    </constraints>
+                </scrollView>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RMX-cF-dCe" customClass="ClearentPrimaryButton" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                    <rect key="frame" x="79" y="806" width="256" height="40"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="256" id="Tbu-ZU-0Sb"/>
+                        <constraint firstAttribute="height" constant="40" id="eXn-av-dd5"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="xbO-d2-hVQ" secondAttribute="trailing" constant="8" id="EPj-JY-HrU"/>
+                <constraint firstItem="xbO-d2-hVQ" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="24" id="aku-r0-vev"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="irp-yA-dbn" secondAttribute="trailing" constant="16" id="dGS-Jb-b9j"/>
+                <constraint firstItem="xbO-d2-hVQ" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="8" id="e1M-d3-8Xn"/>
+                <constraint firstItem="RMX-cF-dCe" firstAttribute="centerX" secondItem="vUN-kp-3ea" secondAttribute="centerX" id="npI-X5-W3q"/>
+                <constraint firstItem="irp-yA-dbn" firstAttribute="top" secondItem="xbO-d2-hVQ" secondAttribute="bottom" constant="34" id="q6P-k0-TzR"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="RMX-cF-dCe" secondAttribute="bottom" constant="16" id="rJJ-Ly-8hC"/>
+                <constraint firstItem="irp-yA-dbn" firstAttribute="bottom" secondItem="RMX-cF-dCe" secondAttribute="top" constant="-14" id="vzn-qb-4St"/>
+                <constraint firstItem="irp-yA-dbn" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="xzM-Sg-RlQ"/>
+            </constraints>
+            <point key="canvasLocation" x="374" y="102"/>
+        </view>
+    </objects>
+    <designables>
+        <designable name="hii-ez-GMs">
+            <size key="intrinsicContentSize" width="382" height="112.5"/>
+        </designable>
+        <designable name="qTP-SH-KEI">
+            <size key="intrinsicContentSize" width="382" height="112.5"/>
+        </designable>
+    </designables>
+    <resources>
+        <image name="left-arrow" width="8" height="12"/>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

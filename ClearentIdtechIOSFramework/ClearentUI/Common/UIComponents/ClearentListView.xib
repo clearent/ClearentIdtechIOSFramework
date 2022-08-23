@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ClearentListView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+            <connections>
+                <outlet property="bottomLayoutConstraint" destination="aDz-GX-dXZ" id="6gr-eE-4qF"/>
+                <outlet property="stackView" destination="L2v-iS-znc" id="KYr-BU-Rub"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="469" height="477"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="L2v-iS-znc" customClass="ClearentAdaptiveStackView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="0.0" width="469" height="477"/>
+                </stackView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <constraints>
+                <constraint firstItem="L2v-iS-znc" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="5Ha-cu-J9G"/>
+                <constraint firstItem="L2v-iS-znc" firstAttribute="trailing" secondItem="vUN-kp-3ea" secondAttribute="trailing" id="Jvm-5X-foL"/>
+                <constraint firstAttribute="bottom" secondItem="L2v-iS-znc" secondAttribute="bottom" id="aDz-GX-dXZ"/>
+                <constraint firstItem="L2v-iS-znc" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="m5x-OY-wfo"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="180.43478260869566" y="244.08482142857142"/>
+        </view>
+    </objects>
+</document>

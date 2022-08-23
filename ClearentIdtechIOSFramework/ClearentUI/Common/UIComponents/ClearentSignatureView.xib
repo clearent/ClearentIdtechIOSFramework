@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ClearentSignatureView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+            <connections>
+                <outlet property="bottomLayoutConstraint" destination="8cn-G4-KTV" id="PpU-DQ-Wwt"/>
+                <outlet property="clearButton" destination="2qF-Iw-9zT" id="1Ix-Sk-JC3"/>
+                <outlet property="descriptionLabel" destination="szP-6v-EWH" id="FTe-6I-RV3"/>
+                <outlet property="doneButton" destination="cHo-hh-jzX" id="tev-pb-caA"/>
+                <outlet property="drawingPanel" destination="QOm-Xu-c7c" id="ARE-VL-kKJ"/>
+                <outlet property="indicatorLabel" destination="s0W-pM-4PG" id="WWA-El-Jth"/>
+                <outlet property="indicatorLine" destination="ccM-uO-bcu" id="xh1-5i-AZA"/>
+                <outlet property="roundedCornersView" destination="ZpK-Zx-9Xn" id="2l8-gY-nYb"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="630" height="400"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="szP-6v-EWH">
+                    <rect key="frame" x="8" y="0.0" width="622" height="20.5"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZpK-Zx-9Xn">
+                    <rect key="frame" x="0.0" y="36.5" width="630" height="196"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QOm-Xu-c7c" customClass="ClearentDrawingPanel" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="36.5" width="630" height="196"/>
+                    <constraints>
+                        <constraint firstAttribute="height" priority="200" constant="196" id="aMd-51-m78"/>
+                    </constraints>
+                </view>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="X" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="s0W-pM-4PG">
+                    <rect key="frame" x="32" y="197.5" width="12.5" height="23"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="19"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ccM-uO-bcu" userLabel="Line">
+                    <rect key="frame" x="46.5" y="215.5" width="551.5" height="1"/>
+                    <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="1" id="dZf-vC-YK0"/>
+                    </constraints>
+                </view>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2qF-Iw-9zT" userLabel="Clear Button">
+                    <rect key="frame" x="564" y="36.5" width="58" height="31"/>
+                    <state key="normal" title="Button"/>
+                    <buttonConfiguration key="configuration" style="plain" title="Clear"/>
+                    <connections>
+                        <action selector="clearButtonWasTapped:" destination="-1" eventType="touchUpInside" id="OFq-Tc-0NN"/>
+                    </connections>
+                </button>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cHo-hh-jzX" customClass="ClearentPrimaryButton" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                    <rect key="frame" x="165" y="248.5" width="300" height="151.5"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="300" id="iBv-WD-Hxd"/>
+                    </constraints>
+                    <connections>
+                        <outletCollection property="gestureRecognizers" destination="Cvw-1G-Q1F" appends="YES" id="vT1-e1-foj"/>
+                    </connections>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="s0W-pM-4PG" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="32" id="44A-V5-s0t"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="szP-6v-EWH" secondAttribute="trailing" id="4EM-hk-lwu"/>
+                <constraint firstItem="ccM-uO-bcu" firstAttribute="bottom" secondItem="QOm-Xu-c7c" secondAttribute="bottom" constant="-16" id="51S-Hw-Asa"/>
+                <constraint firstItem="QOm-Xu-c7c" firstAttribute="trailing" secondItem="ZpK-Zx-9Xn" secondAttribute="trailing" id="6du-bu-Nbt"/>
+                <constraint firstItem="2qF-Iw-9zT" firstAttribute="trailing" secondItem="QOm-Xu-c7c" secondAttribute="trailing" constant="-8" id="8Af-ce-fQj"/>
+                <constraint firstAttribute="bottom" secondItem="cHo-hh-jzX" secondAttribute="bottom" id="8cn-G4-KTV"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="ccM-uO-bcu" secondAttribute="trailing" constant="32" id="Byc-XR-XgW"/>
+                <constraint firstItem="QOm-Xu-c7c" firstAttribute="leading" secondItem="ZpK-Zx-9Xn" secondAttribute="leading" id="CYv-Gj-i9T"/>
+                <constraint firstItem="QOm-Xu-c7c" firstAttribute="bottom" secondItem="ZpK-Zx-9Xn" secondAttribute="bottom" id="Ifp-E3-AGb"/>
+                <constraint firstItem="QOm-Xu-c7c" firstAttribute="bottom" secondItem="cHo-hh-jzX" secondAttribute="top" constant="-16" id="MXT-95-aWD"/>
+                <constraint firstItem="s0W-pM-4PG" firstAttribute="bottom" secondItem="ccM-uO-bcu" secondAttribute="bottom" constant="4" id="NZL-Du-CfV"/>
+                <constraint firstItem="QOm-Xu-c7c" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="Ov7-4W-D3S"/>
+                <constraint firstItem="QOm-Xu-c7c" firstAttribute="top" secondItem="szP-6v-EWH" secondAttribute="bottom" constant="16" id="So4-YA-5bD"/>
+                <constraint firstItem="cHo-hh-jzX" firstAttribute="centerX" secondItem="vUN-kp-3ea" secondAttribute="centerX" id="Tzc-tv-jhy"/>
+                <constraint firstItem="ccM-uO-bcu" firstAttribute="leading" secondItem="s0W-pM-4PG" secondAttribute="trailing" constant="2" id="Y2v-OC-FkA"/>
+                <constraint firstItem="2qF-Iw-9zT" firstAttribute="top" secondItem="QOm-Xu-c7c" secondAttribute="top" id="eVY-qx-tzT"/>
+                <constraint firstItem="szP-6v-EWH" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="8" id="gfc-uU-dvG"/>
+                <constraint firstItem="QOm-Xu-c7c" firstAttribute="top" secondItem="ZpK-Zx-9Xn" secondAttribute="top" id="glq-It-iZB"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="QOm-Xu-c7c" secondAttribute="trailing" id="kAt-0w-Rbp"/>
+                <constraint firstAttribute="top" secondItem="szP-6v-EWH" secondAttribute="top" id="yiS-lq-ovi"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="292.75362318840581" y="154.6875"/>
+        </view>
+        <tapGestureRecognizer id="Cvw-1G-Q1F">
+            <connections>
+                <action selector="doneButtonWasTapped:" destination="-1" id="Uzy-Dh-BPe"/>
+            </connections>
+        </tapGestureRecognizer>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

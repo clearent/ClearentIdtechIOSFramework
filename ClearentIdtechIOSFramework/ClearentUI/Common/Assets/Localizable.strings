@@ -1,0 +1,159 @@
+/* 
+  Localizable.strings
+  ClearentIdtechIOSFramework
+
+  Created by Ovidiu Rotaru on 07.04.2022.
+  Copyright © 2022 Clearent, L.L.C. All rights reserved.
+*/
+
+// MARK: Common
+"xsdk_keyboard_done" = "Done";
+
+// MARK: Pairing Flow
+// Texts that are displayed during the pairing flow
+
+"xsdk_pairing_pair_new_reader" = "Pair new reader";
+"xsdk_pairing_select_reader" = "Please select the reader you wish to pair with";
+"xsdk_pairing_connecting_reader" = "Connecting...";
+"xsdk_pairing_connection_sucessful" = "Connection successful";
+"xsdk_pairing_prepare_pairing_reader_range" = "Make sure the reader is turned on, in range of the device being paired/connected, and is not currently connected to a different device.";
+"xsdk_pairing_prepare_pairing_reader_button" = "Press and hold the button on the side of the reader to turn it on.";
+"xsdk_pairing_no_readers_found_title" = "No reader has been found. Please check that your reader is turned on and in range of the device.";
+"xsdk_pairing_no_readers_found_description" = "No readers available";
+"xsdk_pairing_paired_successful" = "Your reader is connected and ready to be used.";
+"xsdk_pairing_add_name_to_reader" = "Add a name to your reader";
+"xsdk_pairing_rename_your_reader" = "Rename your reader";
+"xsdk_pairing_user_action_pair" = "Pair";
+"xsdk_pairing_user_action_done" = "Done";
+"xsdk_pairing_user_action_settings" = "Settings";
+"xsdk_pairing_user_action_addName" = "Add";
+"xsdk_pairing_user_action_later" = "Maybe later";
+"xsdk_pairing_reader_name" = "Reader name";
+"xsdk_pairing_reader_name_input_hint" = "Input a custom name";
+
+// MARK: Payment Flow - General
+// Texts that are displayed during the payment flow
+
+"xsdk_payment_transaction_completed_description" = "Payment successful";
+
+// MARK: Payment Flow - Tips
+// Texts that are displayed on the tips screen (part of the payment flow)
+
+"xsdk_tips_percentage_and_value" = "%d%% (%@)";
+"xsdk_tips_custom_amount" = "Custom amount ($)";
+"xsdk_tips_user_transaction_tip_title" = "Would you like to add a tip?";
+"xsdk_tips_user_action_transaction_with_tip" = "Charge %@";
+"xsdk_tips_user_action_transaction_without_tip" = "Maybe next time";
+
+// MARK: Payment Flow - Signature
+// Texts that are displayed on the signature screen (part of the payment flow)
+
+"xsdk_signature_title" = "Customer signature";
+"xsdk_signature_subtitle" = "I agree to pay total amount pursuant to the cardholder agreement.";
+"xsdk_signature_action" = "Done";
+"xsdk_signature_error_action_skip" = "Skip";
+"xsdk_signature_upload_sucessful_title" = "Signature uploaded successfully";
+"xsdk_signature_upload_failure_title" = "Signature capture failed";
+
+// MARK: Payment Flow - Manually Enter Card Info
+
+"xsdk_payment_manual_entry_title" = "Please fill in the credit card information";
+
+"xsdk_payment_manual_entry_card_no" = "Credit Card Number";
+"xsdk_payment_manual_entry_card_no_error" = "Invalid credit card number";
+
+"xsdk_payment_manual_entry_exp_date" = "Exp. Date";
+"xsdk_payment_manual_entry_exp_date_error" = "Invalid expiration date";
+"xsdk_payment_manual_entry_exp_date_placeholder" = "mm/yy";
+
+"xsdk_payment_manual_entry_csc" = "Security Code";
+"xsdk_payment_manual_entry_csc_error" = "Invalid security code";
+"xsdk_payment_manual_entry_csc_placeholder" = "CVV";
+
+"xsdk_payment_manual_entry_cardholder_name" = "Cardholder Name (optional)";
+"xsdk_payment_manual_entry_cardholder_name_error" = "Invalid cardholder name";
+
+"xsdk_payment_manual_entry_billing_zip" = "Billing ZIP Code (optional)";
+"xsdk_payment_manual_entry_billing_zip_error" = "Invalid zip code";
+
+"xsdk_payment_manual_entry_additional_section_title" = "Additional Information";
+
+"xsdk_payment_manual_entry_invoice_no" = "Invoice No.";
+"xsdk_payment_manual_entry_invoice_no_error" = "Invoice number is too long";
+
+"xsdk_payment_manual_entry_order_no" = "Order No.";
+"xsdk_payment_manual_entry_order_no_error" = "Order number is too long";
+
+"xsdk_payment_manual_entry_company_name" = "Company Name";
+"xsdk_payment_manual_entry_company_name_error" = "Company name is too long";
+
+"xsdk_payment_manual_entry_customer_id" = "Customer ID";
+"xsdk_payment_manual_entry_customer_id_error" = "Customer ID is too long";
+
+"xsdk_payment_manual_entry_shipping_zip" = "Ship-to ZIP Code";
+"xsdk_payment_manual_entry_shipping_zip_error" = "Invalid zip code";
+
+"xsdk_payment_manual_entry_user_action_cancel" = "Cancel";
+"xsdk_payment_manual_entry_user_action_confirm" = "Confirm";
+
+
+// MARK: Readers list
+// Texts that are displayed on the readers list screen
+
+"xsdk_readers_list_no_reader_connected" = "No reader connected";
+"xsdk_readers_list_select_reader" = "Please select a reader to connect";
+
+// MARK: Reader signal
+// Texts that are displayed on top of the readers list screen
+
+"xsdk_reader_signal_idle" = "Not connected";
+"xsdk_reader_signal_connected" = "Connected";
+
+// MARK: Reader Details
+// Texts that are displayed on the reader details screen
+
+"xsdk_reader_details_connected" = "Connected";
+"xsdk_reader_details_signal_status" = "Signal status (%@)";
+"xsdk_reader_details_battery_status" = "Battery status (%@)";
+"xsdk_reader_details_autojoin_title" = "Auto-join";
+"xsdk_reader_details_autojoin_description" = "Everytime you log in, it will join this reader automatically";
+"xsdk_reader_details_readername_title" = "Reader name";
+"xsdk_reader_details_custom_readername_title" = "Custom reader name";
+"xsdk_reader_details_add_custom_readername_title" = "Add a custom name to your reader";
+"xsdk_reader_details_serialnumber_title" = "Serial number";
+"xsdk_reader_details_version_title" = "Version";
+"xsdk_reader_details_remove_reader" = "Remove reader";
+"xsdk_reader_details_remove_alert_title" = "Remove %@";
+"xsdk_reader_details_remove_alert_message" = "You are about to remove this reader from your app.\nAre you sure you want to proceed?";
+"xsdk_reader_details_remove_alert_confirm" = "Yes";
+"xsdk_reader_details_remove_alert_cancel" = "Cancel";
+"xsdk_reader_details_nav_title" = "Reader details";
+"xsdk_reader_details_signal_good" = "Good";
+"xsdk_reader_details_signal_medium" = "Medium";
+"xsdk_reader_details_signal_weak" = "Weak";
+
+// MARK: General errors
+// Texts that are displayed in case of a general error during the payment flow
+
+"xsdk_general_error_title" = "Transaction failed";
+"xsdk_general_error_description" = "Something went wrong";
+"xsdk_general_error_user_action_retry" = "Try Again";
+"xsdk_general_error_user_action_cancel" = "Cancel";
+"xsdk_general_error_user_action_manually_enter_card" = "Manually enter credit card details";
+
+// MARK: Reader error
+"xsdk_reader_error_title" = "Card read error";
+
+// MARK: Internet Connection
+// Texts that are displayed in case of no Internet connection
+
+"xsdk_internet_error_title" = "Check your connection";
+"xsdk_internet_no_connection" = "NO INTERNET";
+
+// MARK: Bluetooth
+// Texts that are displayed in case of no bluetooth connection
+
+"xsdk_bluetooth_error_title" = "Bluetooth is not on";
+"xsdk_bluetooth_permission_error_title" = "No bluetooth permission";
+"xsdk_bluetooth_turned_off" = "Bluetooth on this device is currently powered off.";
+"xsdk_bluetooth_no_permission" = "This app is not authorized to use Bluetooth Low Energy.";
