@@ -200,17 +200,19 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 
     func sendManualEntryTransaction(with dataSource: ClearentPaymentDataSource) {
         guard let amount = amountWithoutTip?.stringFormattedWithTwoDecimals,
-            let cardNo = dataSource.valueForType(.creditCardNo)?.replacingOccurrences(of: ClearentPaymentItemType.creditCardNo.separator, with: ""),
-            let date = dataSource.valueForType(.date)?.replacingOccurrences(of: ClearentPaymentItemType.date.separator, with: ""),
-            let csc = dataSource.valueForType(.securityCode) else { return }
+              let cardNo = dataSource.valueForType(.creditCardNo)?.replacingOccurrences(of: ClearentPaymentItemType.creditCardNo.separator, with: ""),
+              let date = dataSource.valueForType(.date)?.replacingOccurrences(of: ClearentPaymentItemType.date.separator, with: ""),
+              let csc = dataSource.valueForType(.securityCode),
+              let billingZipCode = dataSource.valueForType(.billingZipCode)?.replacingOccurrences(of: ClearentPaymentItemType.billingZipCode.separator, with: ""),
+              let shipToZipCode = dataSource.valueForType(.shippingZipCode)?.replacingOccurrences(of: ClearentPaymentItemType.shippingZipCode.separator, with: "") else { return }
 
         let cardInfo = ManualEntryCardInfo(card: cardNo, expirationDateMMYY: date, csc: csc)
         let name = ClearentCarholderName(fullName: dataSource.valueForType(.cardholderName))
         let billingInfo = ClientInformation(firstName: name.first,
                                             lastName: name.last,
                                             company: dataSource.valueForType(.companyName),
-                                            zip: dataSource.valueForType(.billingZipCode))
-        let shippingInfo = ClientInformation(zip: dataSource.valueForType(.shippingZipCode))
+                                            zip: billingZipCode)
+        let shippingInfo = ClientInformation(zip: shipToZipCode)
         let saleEntity = SaleEntity(amount: amount,
                                     tipAmount: tip?.stringFormattedWithTwoDecimals,
                                     billing: billingInfo,
