@@ -382,4 +382,9 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                              payload: items)
         delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
+    
+    func didReceiveReaderInfo(reader: ReaderInfo?) {
+        // Notify the user that new data is available for reader
+        ClearentUIManager.shared.delegate?.didRecivedReaderInfo(reader: reader)
+    }
 }

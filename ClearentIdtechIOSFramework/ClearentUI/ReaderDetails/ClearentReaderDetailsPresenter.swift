@@ -81,7 +81,7 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
 
     public func handleAutojoin(markAsAutojoin: Bool) {
         currentReader.autojoin = markAsAutojoin
-        guard var existingReaders = ClearentWrapperDefaults.recentlyPairedReaders else { return }
+        guard let existingReaders = ClearentWrapperDefaults.recentlyPairedReaders else { return }
 
         if let oldAutojoinIndex = existingReaders.firstIndex(where: { $0.autojoin == true }) {
             existingReaders[oldAutojoinIndex].autojoin = false
@@ -98,7 +98,7 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
             flowDataProvider.didFindRecentlyUsedReaders(readers: ClearentWrapper.shared.previouslyPairedReaders)
             navigationController?.popViewController(animated: true)
         } else {
-            ClearentWrapper.shared.readerInfoReceived?(nil)
+            ClearentUIManager.shared.delegate?.didRecivedReaderInfo(reader: nil)
             delegate?.shutDown(userAction: .done)
         }
     }

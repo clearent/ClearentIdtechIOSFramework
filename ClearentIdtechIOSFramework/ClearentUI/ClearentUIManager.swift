@@ -13,16 +13,17 @@ import Foundation
  *
  */
 public final class ClearentUIManager: NSObject {
+
     private let clearentWrapper = ClearentWrapper.shared
-    public static let shared = ClearentUIManager()
-    public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
-    public var signatureEnabled: Bool = true
-    public var useCardReaderPaymentMethod: Bool = true {
+    @objc public static let shared = ClearentUIManager()
+    @objc public var signatureEnabled: Bool = true
+    @objc public var delegate: ClearentUIDelegate?
+    @objc public var useCardReaderPaymentMethod: Bool = true {
         didSet {
             clearentWrapper.useCardReaderPaymentMethod = useCardReaderPaymentMethod
         }
     }
-    public var tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages
+    @objc public var tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages
     
     // MARK: Init
     
@@ -33,18 +34,13 @@ public final class ClearentUIManager: NSObject {
     
     func setupReaderInfo() {
         // reset connection status on app restart
-        if var connectedReader = ClearentWrapperDefaults.recentlyPairedReaders?.first(where: { $0.isConnected }) {
+        if let connectedReader = ClearentWrapperDefaults.recentlyPairedReaders?.first(where: { $0.isConnected }) {
             connectedReader.isConnected = false
             ClearentWrapper.shared.updateReaderInRecentlyUsed(reader: connectedReader)
         }
         
         ClearentWrapperDefaults.lastPairedReaderInfo = ClearentWrapperDefaults.recentlyPairedReaders?.first { $0.autojoin }
-
-        clearentWrapper.readerInfoReceived = { [weak self] _ in
-            DispatchQueue.main.async {
-                self?.readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
-            }
-        }
+        self.delegate?.didRecivedReaderInfo(reader: ClearentWrapperDefaults.lastPairedReaderInfo)
     }
     
     // MARK: Public
@@ -55,7 +51,7 @@ public final class ClearentUIManager: NSObject {
      * @param apiKey, the API Key in order to use the API
      * @param publicKey, needed for the card reader initialisation
      */
-    public func updateWith(baseURL: String, apiKey: String, publicKey: String) {
+    @objc public func updateWith(baseURL: String, apiKey: String, publicKey: String) {
         clearentWrapper.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey)
     }
     
@@ -64,24 +60,33 @@ public final class ClearentUIManager: NSObject {
      * @param amount, the amount to be charged in a transaction
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
-    public func paymentViewController(amount: Double, completion: ((CompletionResult) -> Void)?) -> UINavigationController {
-        viewController(processType: .payment, amount: amount, dismissCompletion: completion)
+    @objc public func paymentViewController(amount: Double, completion: ((ClearentResult) -> Void)?) -> UINavigationController {
+        viewController(processType: .payment, amount: amount, dismissCompletion: { result in
+            let result =  self.resultFor(completionResult: result)
+            completion?(result)
+        })
     }
     
     /**
      * Method returns a UIController that can handle the pairing process of a card reader
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
-    public func pairingViewController(completion: ((CompletionResult) -> Void)?) -> UINavigationController {
-        viewController(processType: .pairing(), dismissCompletion: completion)
+    @objc public func pairingViewController(completion: ((ClearentResult) -> Void)?) -> UINavigationController {
+        viewController(processType: .pairing(), dismissCompletion: { result in
+            let result =  self.resultFor(completionResult: result)
+            completion?(result)
+        })
     }
     
     /**
      * Method returns a UIController that will display a list containing current card reader informations and recently paired readers
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
-    public func readersViewController(completion: ((CompletionResult) -> Void)?) -> UINavigationController {
-        viewController(processType: .showReaders, dismissCompletion: completion)
+    @objc public func readersViewController(completion: ((ClearentResult) -> Void)?) -> UINavigationController {
+        viewController(processType: .showReaders, dismissCompletion: { result in
+            let result =  self.resultFor(completionResult: result)
+            completion?(result)
+        })
     }
 
     internal func viewController(processType: ProcessType, amount: Double? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UINavigationController {
@@ -96,4 +101,28 @@ public final class ClearentUIManager: NSObject {
         navigationController.modalPresentationStyle = .overFullScreen
         return navigationController
     }
+    
+    
+    private func resultFor(completionResult:CompletionResult) -> ClearentResult {
+        switch completionResult {
+        case .success(_):
+            return .processFinished
+        case .failure(let err):
+            switch err {
+            case .cancelledByUser:
+                return .cancelledByUser
+            case .apiKeyNotProvided:
+                return .apiKeyNotProvided
+            case .baseURLNotProvided:
+                return .baseURLNotProvided
+            case .publicKeyNotProvided:
+                return .publicKeyNotProvided
+            }
+        }
+    }
+}
+
+
+@objc public protocol ClearentUIDelegate {
+    @objc func didRecivedReaderInfo(reader: ReaderInfo?)
 }
