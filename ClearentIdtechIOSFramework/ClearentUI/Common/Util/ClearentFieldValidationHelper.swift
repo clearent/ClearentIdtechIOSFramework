@@ -31,7 +31,7 @@ class ClearentFieldValidationHelper {
     }
 
     static func isCardNumberValid(item: ClearentPaymentItem) -> Bool {
-        let cardNumberWithoutSpaces = item.enteredValue.replacingOccurrences(of: ClearentPaymentItemType.creditCardNo.separator, with: "")
+        let cardNumberWithoutSpaces = item.enteredValue.replacingOccurrences(of: item.type.separator, with: "")
         let luhnCheckPassed = luhnCheck(cardNumberWithoutSpaces)
         let regex = "\\d{15,\(item.maxNoOfChars)}"
         return luhnCheckPassed && evaluate(text: cardNumberWithoutSpaces, regex: regex)
@@ -57,8 +57,9 @@ class ClearentFieldValidationHelper {
     }
 
     static func isZipValid(item: ClearentPaymentItem) -> Bool {
-        let regex = "[A-Za-z\\d\\-]{5,\(item.maxNoOfChars)}"
-        return evaluate(text: item.enteredValue, regex: regex) || item.enteredValue.isEmpty
+        let zipWithoutHyphen = item.enteredValue.replacingOccurrences(of: item.type.separator, with: "")
+        let regex = "\\d{5}|\\d{\(item.maxNoOfChars)}"
+        return evaluate(text: zipWithoutHyphen, regex: regex) || item.enteredValue.isEmpty
     }
 
     static func hasValidLength(item: ClearentPaymentItem) -> Bool {
@@ -80,7 +81,7 @@ class ClearentFieldValidationHelper {
                                                         options: .reportProgress,
                                                         range: NSMakeRange(0, textWithoutSpaces.count),
                                                         withTemplate: "*")
-        sender.text = formattedCreditCardNo(text: hiddenText, item: item)
+        sender.text = formattedCardData(text: hiddenText, item: item)
 
         item.hiddenValue = (sender.text?.isEmpty ?? false) ? nil : sender.text
     }
@@ -105,11 +106,12 @@ class ClearentFieldValidationHelper {
     /**
      Inserts a separator (empty space) every 4 digits and force a max number of entered digits
      */
-    static func formattedCreditCardNo(text: String, item: ClearentPaymentItem) -> String {
+    static func formattedCardData(text: String, item: ClearentPaymentItem) -> String {
         let separator = item.type.separator
         let textWithoutSpaces = text.replacingOccurrences(of: separator, with: "")
         let maxText = String(textWithoutSpaces.prefix(item.maxNoOfChars))
-        let regex = try? NSRegularExpression(pattern: ".{4}(?!$)", options: .caseInsensitive)
+        let pattern = item.type == .creditCardNo ? ".{4}(?!$)" : ".{5}(?!$)"
+        let regex = try? NSRegularExpression(pattern: pattern, options: .caseInsensitive)
         let formattedText = regex?.stringByReplacingMatches(in: maxText,
                                                             options: .reportProgress,
                                                             range: NSMakeRange(0, maxText.count),
@@ -132,7 +134,7 @@ class ClearentFieldValidationHelper {
         return String(date.prefix(item.maxNoOfChars + separator.count))
     }
 
-    // MARK: - private
+    // MARK: - Private
 
     /**
      This function uses Luhn algorithm to validate credit card by check digit.

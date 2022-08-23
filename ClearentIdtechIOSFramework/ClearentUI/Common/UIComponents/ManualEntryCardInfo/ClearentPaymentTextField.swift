@@ -61,7 +61,7 @@ class ClearentPaymentTextField: ClearentXibView {
     func setupTextField(placeholder: String?, isFirstCell: Bool, isLastCell: Bool) {
         guard let item = item else { return }
 
-        textField.keyboardType = (item.type == .creditCardNo || item.type == .date || item.type == .securityCode) ? .numberPad : .default
+        textField.keyboardType = (item.type == .creditCardNo || item.type == .date || item.type == .securityCode || item.type == .billingZipCode || item.type == .shippingZipCode) ? .numberPad : .default
         textField.addNavigationAndDoneToKeyboard(previousAction: (target: self, action: #selector(previousButtonTapped), isEnabled: !isFirstCell), nextAction: (target: self, action: #selector(nextButtonTapped), isEnabled: !isLastCell))
         if let placeholder = placeholder {
             let attributes: [NSAttributedString.Key: Any] = [.font: ClearentUIBrandConfigurator.shared.fonts.textfieldPlaceholder,
@@ -92,8 +92,8 @@ class ClearentPaymentTextField: ClearentXibView {
         guard let text = sender.text, let item = item else { return }
         
         switch item.type {
-        case .creditCardNo:
-            let newText = ClearentFieldValidationHelper.formattedCreditCardNo(text: text, item: item)
+        case .creditCardNo, .billingZipCode, .shippingZipCode:
+            let newText = ClearentFieldValidationHelper.formattedCardData(text: text, item: item)
             textField.resetCursorPosition(for: newText, separator: item.type.separator)
         case.date:
             let newText = ClearentFieldValidationHelper.formattedExpirationDate(text: text, item: item)
