@@ -447,7 +447,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         
     [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Device disconnected"]];
     
-    if ([self.publicDelegate respondsToSelector:@selector(deviceDisconnected:)]) {
+    if ([self.publicDelegate respondsToSelector:@selector(deviceDisconnected)]) {
         [self.publicDelegate deviceDisconnected];
     }
     

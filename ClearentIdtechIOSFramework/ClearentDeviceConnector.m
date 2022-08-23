@@ -409,9 +409,11 @@ NSTimer *bluetoothSearchDisableTimer;
         bluetoothSearchDisableTimer = nil;
         [NSThread sleepForTimeInterval:0.2f];
     }
-    
-    bluetoothSearchDisableTimer = [NSTimer scheduledTimerWithTimeInterval:bluetoothMaximumScanInSeconds target:self selector:@selector(disableBluetoothSearch:) userInfo:nil repeats:false];
-    
+
+    // Timers require an active run loop which is not always available on background queues
+    dispatch_async(dispatch_get_main_queue(), ^{
+        bluetoothSearchDisableTimer = [NSTimer scheduledTimerWithTimeInterval:bluetoothMaximumScanInSeconds target:self selector:@selector(disableBluetoothSearch:) userInfo:nil repeats:false];
+    });
 }
 
 -(void) disableBluetoothSearch:(id) sender {

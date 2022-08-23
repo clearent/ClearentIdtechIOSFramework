@@ -15,6 +15,7 @@
 BOOL enhancedFeedback = NO;
 
 ClearentLumberjackRemoteLogger *clearentLumberjackRemoteLogger;
+DDFileLogger *clearentFileLogger;
 
 
 + (void) initLumberJack:(NSString *) baseUrl publicKey:(NSString *) publicKey
@@ -22,6 +23,7 @@ ClearentLumberjackRemoteLogger *clearentLumberjackRemoteLogger;
     [DDLog addLogger:[DDOSLogger sharedInstance]];
     
     clearentLumberjackRemoteLogger = [[ClearentLumberjackRemoteLogger alloc] init];
+    clearentFileLogger = [[DDFileLogger alloc] init];
     
     clearentLumberjackRemoteLogger.baseUrl = baseUrl;
     clearentLumberjackRemoteLogger.publicKey = publicKey;
@@ -29,6 +31,7 @@ ClearentLumberjackRemoteLogger *clearentLumberjackRemoteLogger;
    
 
     [DDLog addLogger:clearentLumberjackRemoteLogger];
+    [DDLog addLogger:clearentFileLogger];
 }
 
 + (void) logInfo:(NSString*) logMessage {

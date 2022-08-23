@@ -767,6 +767,7 @@
 				E76E42EE21232FB600F83B41 /* ClearentIdtechMacFramework */,
 				E76504F51FFC306100B345F6 /* Products */,
 				E765050E1FFC30F000B345F6 /* Frameworks */,
+				193765FC2892845C00B9FE84 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -993,6 +994,7 @@
 					};
 					E76504F31FFC306100B345F6 = {
 						CreatedOnToolsVersion = 9.2;
+						LastSwiftMigration = 1320;
 					};
 					E7CA495220E3C2230090CFFC = {
 						CreatedOnToolsVersion = 9.4.1;
@@ -1055,7 +1057,7 @@
 				01442D2228B3D836006DD15C /* ClearentIcon.xib in Resources */,
 				01442D1728B3D836006DD15C /* ClearentPairingReaderItem.xib in Resources */,
 				01442D3728B3D836006DD15C /* ClearentPaymentHeaderView.xib in Resources */,
-				01442D3428B3D836006DD15C /* ClearentManualEntryFormView.xib in Resources */,
+				01442D3428B3D836006DD15C /* ClearentManualEntryFormView.xib in Resources */
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1130,6 +1132,8 @@
 				01442D0A28B3D836006DD15C /* ProgressShapeLayer.swift in Sources */,
 				01442D5928B3D84D006DD15C /* ClearentExtension.swift in Sources */,
 				E7CA494220E171960090CFFC /* ClearentConfiguration.m in Sources */,
+				011181A22832630D0025750A /* ClearentReaderDetailsViewController.swift in Sources */,
+				0129F82E2825238300027BCE /* ClearentHintView.swift in Sources */,
 				E79BC82520B366300030FD8C /* Clearent_VP3300.m in Sources */,
 				01442D5B28B3D84D006DD15C /* HttpClient.swift in Sources */,
 				01442D4728B3D836006DD15C /* ClearentDefaultFonts.swift in Sources */,
@@ -1137,10 +1141,13 @@
 				E7A8BFA023311EE500FEBF48 /* ClearentContactlessConfigurator.m in Sources */,
 				01442D2A28B3D836006DD15C /* ClearentReaderStatusHeaderView.swift in Sources */,
 				E746CB612358983200C41DF1 /* ClearentPayment.m in Sources */,
+				011181AA2832735E0025750A /* ClearentLabelWithIcon.swift in Sources */,
 				4B32C0A22436612900CCF9B9 /* ClearentTransactions.m in Sources */,
 				01442D0028B3D836006DD15C /* NSDataExtension.swift in Sources */,
 				01442CF628B3D836006DD15C /* ClearentXibView.swift in Sources */,
 				E764E7722303182C0029B753 /* ClearentOfflineDeclineReceipt.m in Sources */,
+				BA40A34D27F1B38C0041CCF7 /* HttpClient.swift in Sources */,
+				19BD105E2886823C00F0E5C4 /* ClearentManualEntryFormView.swift in Sources */,
 				4BAEA888271C5F24007F5FCF /* ClearentLumberjackRemoteLogger.m in Sources */,
 				01442D1528B3D836006DD15C /* ClearentTextField.swift in Sources */,
 				01442CFE28B3D836006DD15C /* ClearentConstants.swift in Sources */,
@@ -1156,6 +1163,7 @@
 				01442D2328B3D836006DD15C /* ClearentListView.swift in Sources */,
 				01442D0828B3D836006DD15C /* StrokeAnimation.swift in Sources */,
 				E75891FC225522AB00288032 /* ClearentLogging.m in Sources */,
+				010394962803462F000A7A94 /* UIStackViewExtension.swift in Sources */,
 				E75891F7225522AB00288032 /* ClearentLoggingRequest.m in Sources */,
 				01442D4028B3D836006DD15C /* ClearentCarholderName.swift in Sources */,
 				01442C7A28B3D343006DD15C /* BluetoothScanner.swift in Sources */,
@@ -1163,7 +1171,10 @@
 				01442D3628B3D836006DD15C /* ClearentPaymentHeaderView.swift in Sources */,
 				01442D2828B3D836006DD15C /* ClearentLabelWithIcon.swift in Sources */,
 				4B32C0912432677F00CCF9B9 /* ClearentTransactionToken.m in Sources */,
+				019328DE2885B8000081C357 /* ClearentManualPaymentModel.swift in Sources */,
 				E7CA494520E1753D0090CFFC /* ClearentConfigurator.m in Sources */,
+				BAEAD2D92810041100AA72F6 /* ClearentExtension.swift in Sources */,
+				19BD1041287577D300F0E5C4 /* ClearentColorsDefaultPalette.swift in Sources */,
 				4BAEA885271C5CD8007F5FCF /* ClearentLumberjack.m in Sources */,
 				E726A0382258B5B400F3E8B7 /* ClearentCache.m in Sources */,
 				01442CFA28B3D836006DD15C /* ClearentApplicationOrientation.swift in Sources */,
@@ -1200,6 +1211,13 @@
 				01442D2C28B3D836006DD15C /* ClearentReadersTableView.swift in Sources */,
 				01442CFC28B3D836006DD15C /* UserDefaultsPersistence.swift in Sources */,
 				E7CA497520E579190090CFFC /* ClearentConfigFetcher.m in Sources */,
+				01EEC9242875AD3700AAB08E /* ClearentUIFonts.swift in Sources */,
+				0169C2E627FF1A4600B8B4DB /* ClearentAdaptiveStackView.swift in Sources */,
+				CC836ABF2848C2AC00DB4CBA /* ClearentTextField.swift in Sources */,
+				01ED8F662874577E001D6952 /* SaleEntity.swift in Sources */,
+				0169E76C286EEDF0000484CC /* ClearentApplicationOrientation.swift in Sources */,
+				CC1953B928213F5700DF3688 /* ClearentWrapperDefaults.swift in Sources */,
+				011181B32833B4450025750A /* ClearentReaderDetailsPresenter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1339,7 +1357,7 @@
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CODE_SIGN_FLAGS = "--remove-signature";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = "";
+				VALID_ARCHS = arm64;
 				"VALID_ARCHS[sdk=iphonesimulator*]" = "x86_64 i386";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
@@ -1410,6 +1428,7 @@
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CODE_SIGN_FLAGS = "--remove-signature";
 				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
 				VALIDATE_PRODUCT = YES;
 				VALID_ARCHS = "";
 				"VALID_ARCHS[sdk=iphonesimulator*]" = "x86_64 i386";
@@ -1467,7 +1486,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
-				SKIP_INSTALL = NO;
+				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1527,7 +1546,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
-				SKIP_INSTALL = NO;
+				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
