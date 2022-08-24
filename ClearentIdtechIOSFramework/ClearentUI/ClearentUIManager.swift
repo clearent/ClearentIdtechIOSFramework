@@ -15,7 +15,6 @@ import Foundation
 public final class ClearentUIManager: NSObject {
     private let clearentWrapper = ClearentWrapper.shared
     @objc public static let shared = ClearentUIManager()
-    @objc public var delegate: ClearentUIDelegate?
     public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
     @objc public var signatureEnabled: Bool = true
     @objc public var useCardReaderPaymentMethod: Bool = true {
@@ -34,16 +33,15 @@ public final class ClearentUIManager: NSObject {
     
     func setupReaderInfo() {
         // reset connection status on app restart
-        if let connectedReader = ClearentWrapperDefaults.recentlyPairedReaders?.first(where: { $0.isConnected }) {
+        if var connectedReader = ClearentWrapperDefaults.recentlyPairedReaders?.first(where: { $0.isConnected }) {
             connectedReader.isConnected = false
             ClearentWrapper.shared.updateReaderInRecentlyUsed(reader: connectedReader)
         }
         
         ClearentWrapperDefaults.lastPairedReaderInfo = ClearentWrapperDefaults.recentlyPairedReaders?.first { $0.autojoin }
 
-        clearentWrapper.readerInfoReceived = { [weak self] _ in
+        clearentWrapper.readerInfoReceived = { [weak self] reader in
             DispatchQueue.main.async {
-                self?.delegate?.didReciveReaderInfo(reader: ClearentWrapperDefaults.pairedReaderInfo)
                 self?.readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
             }
         }
@@ -116,8 +114,4 @@ public final class ClearentUIManager: NSObject {
             return err
         }
     }
-}
-
-@objc public protocol ClearentUIDelegate {
-    @objc func didReciveReaderInfo(reader: ReaderInfo?)
 }
