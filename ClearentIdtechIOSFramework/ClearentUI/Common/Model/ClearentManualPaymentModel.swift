@@ -7,7 +7,7 @@
 //
 
 enum ClearentPaymentItemType {
-    case creditCardNo, date, securityCode, cardholderName, billingZipCode, invoiceNo, orderNo, companyName, customerId, shippingZipCode
+    case creditCardNo, date, securityCode, cardholderFirstName, cardholderLastName, billingZipCode, invoiceNo, orderNo, companyName, customerId, shippingZipCode
 
     var separator: String {
         switch self {
@@ -65,7 +65,8 @@ class ClearentPaymentBaseSection: ClearentPaymentSection {
     var rows: [ClearentPaymentRow] = [
         ClearentPaymentRow(elements: [CreditCardNoItem()]),
         ClearentPaymentRow(elements: [DateItem(), SecurityCodeItem()]),
-        ClearentPaymentRow(elements: [CardholderNameItem()]),
+        ClearentPaymentRow(elements: [CardholderFirstNameItem()]),
+        ClearentPaymentRow(elements: [CardholderLastNameItem()]),
         ClearentPaymentRow(elements: [BillingZipCodeItem()])
     ]
 }
@@ -152,12 +153,30 @@ class SecurityCodeItem: ClearentPaymentItem {
     var hiddenValue: String?
 }
 
-class CardholderNameItem: ClearentPaymentItem {
-    var type: ClearentPaymentItemType { .cardholderName }
+class CardholderFirstNameItem: ClearentPaymentItem {
+    var type: ClearentPaymentItemType { .cardholderFirstName }
 
-    var title: String { ClearentConstants.Localized.ManualEntry.cardHolderName }
+    var title: String { ClearentConstants.Localized.ManualEntry.cardHolderFirstName }
     
-    var errorMessage: String? { ClearentConstants.Localized.ManualEntry.cardHolderNameError }
+    var errorMessage: String? { ClearentConstants.Localized.ManualEntry.cardHolderFirstNameError }
+    
+    var maxNoOfChars: Int { 50 }
+
+    var identifier: ItemIdentifier = nil
+
+    var isValid: Bool = true
+
+    var enteredValue: String = ""
+
+    var hiddenValue: String?
+}
+
+class CardholderLastNameItem: ClearentPaymentItem {
+    var type: ClearentPaymentItemType { .cardholderLastName }
+
+    var title: String { ClearentConstants.Localized.ManualEntry.cardHolderLastName }
+    
+    var errorMessage: String? { ClearentConstants.Localized.ManualEntry.cardHolderLastNameError }
     
     var maxNoOfChars: Int { 50 }
 

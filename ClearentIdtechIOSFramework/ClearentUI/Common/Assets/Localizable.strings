@@ -70,8 +70,11 @@
 "xsdk_payment_manual_entry_csc_error" = "Invalid security code";
 "xsdk_payment_manual_entry_csc_placeholder" = "CVV";
 
-"xsdk_payment_manual_entry_cardholder_name" = "Cardholder Name (optional)";
-"xsdk_payment_manual_entry_cardholder_name_error" = "Invalid cardholder name";
+"xsdk_payment_manual_entry_cardholder_first_name" = "First Name (optional)";
+"xsdk_payment_manual_entry_cardholder_first_name_error" = "Invalid first name";
+
+"xsdk_payment_manual_entry_cardholder_last_name" = "Last Name (optional)";
+"xsdk_payment_manual_entry_cardholder_last_name_error" = "Invalid last name";
 
 "xsdk_payment_manual_entry_billing_zip" = "Billing ZIP Code (optional)";
 "xsdk_payment_manual_entry_billing_zip_error" = "Invalid zip code";
