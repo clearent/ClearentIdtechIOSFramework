@@ -192,7 +192,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         do {
             try sdkWrapper.sendSignatureWithImage(image: image)
         } catch {
-            if let error = error as? ClearentError {
+            if let error = error as? ClearentResult {
                 modalProcessingView?.dismissViewController(result: .failure(error))
             }
         }
@@ -339,7 +339,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         do {
             try sdkWrapper.startTransaction(with: saleEntity, manualEntryCardInfo: manualEntryCardInfo)
         } catch {
-            if let error = error as? ClearentError {
+            if let error = error as? ClearentResult {
                 modalProcessingView?.dismissViewController(result: .failure(error))
             }
         }

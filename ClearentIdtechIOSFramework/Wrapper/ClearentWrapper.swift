@@ -417,7 +417,7 @@ public final class ClearentWrapper : NSObject {
         do {
             try sendSignatureWithImage(image: signatureImage)
         } catch {
-            if let error = error as? ClearentError {
+            if let error = error as? ClearentResult {
                 completion(.failure(error))
             }
         }
@@ -666,10 +666,10 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
-    private func checkForMissingKeys() -> ClearentError? {
-        guard !baseURL.isEmpty else { return ClearentError.baseURLNotProvided }
-        guard !apiKey.isEmpty else { return ClearentError.apiKeyNotProvided }
-        guard !publicKey.isEmpty else { return ClearentError.publicKeyNotProvided }
+    private func checkForMissingKeys() -> ClearentResult? {
+        guard !baseURL.isEmpty else { return ClearentResult.baseURLNotProvided }
+        guard !apiKey.isEmpty else { return ClearentResult.apiKeyNotProvided }
+        guard !publicKey.isEmpty else { return ClearentResult.publicKeyNotProvided }
         
         return nil
     }

@@ -8,29 +8,12 @@
 
 
 /// Used to determine whether a flow succeeded or failed. The assosiated value is of type String? and represents the custom name of the reader
-public typealias CompletionResult = Result<String?, ClearentError>
+public typealias CompletionResult = Result<String?, ClearentResult>
 
-public enum ClearentError: Error {
+@objc public enum ClearentResult:Int, Error {
      /// The user aborted the current flow
-    case cancelledByUser
+    case cancelledByUser = 0
 
-    /// No apiKey was passed to SDK
-    case apiKeyNotProvided
-
-    /// No baseURL was passed to SDK
-    case baseURLNotProvided
-    
-    /// No publicKey was passed to SDK
-    case publicKeyNotProvided
-}
-
-
-// Provide OBJ-C compatibility
-@objc public enum ClearentResult: Int {
-    
-    /// The user aborted the current flow
-   case cancelledByUser = 0
-    
     /// No apiKey was passed to SDK
     case apiKeyNotProvided
 
@@ -41,6 +24,6 @@ public enum ClearentError: Error {
     case publicKeyNotProvided
     
     /// Process finished
-    case processFinished
+    case processFinishedWithoutError
 }
 

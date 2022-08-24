@@ -40,14 +40,9 @@ public struct ReaderItem {
         self.serialNumber = serialNumber
         self.version = version
     }
-}
-
-extension ReaderInfo {
-    public override func isEqual(_ object: Any?) -> Bool {
-        if let object = object as? ReaderInfo {
-            return self.uuid == object.uuid
-        }
-        return false
+    
+    public static func == (lhs: ReaderInfo, rhs: ReaderInfo) -> Bool {
+        return lhs.uuid == rhs.uuid
     }
 }
 

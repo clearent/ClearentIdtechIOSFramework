@@ -111,18 +111,9 @@ public final class ClearentUIManager: NSObject {
     private func resultFor(completionResult:CompletionResult) -> ClearentResult {
         switch completionResult {
         case .success(_):
-            return .processFinished
+            return ClearentResult.processFinishedWithoutError
         case .failure(let err):
-            switch err {
-            case .cancelledByUser:
-                return .cancelledByUser
-            case .apiKeyNotProvided:
-                return .apiKeyNotProvided
-            case .baseURLNotProvided:
-                return .baseURLNotProvided
-            case .publicKeyNotProvided:
-                return .publicKeyNotProvided
-            }
+            return err
         }
     }
 }
