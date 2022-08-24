@@ -268,7 +268,7 @@ Objective-C example of the ClearenSDKUI  integration [Obj-C Example](https://).
 ```
 
 
-# Integrating the ClearentWrapper
+# Integrating the ClearentWrapper (Swift Only)
 
 
 ## Overview
