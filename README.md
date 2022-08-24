@@ -160,7 +160,7 @@ ClearentUIBrandConfigurator.shared.overriddenLocalizedStrings = [
 ```
 
 
-## Code Example
+## Swift Code Example
 
 Swift example of the ClearenSDKUI  integration [Swift Example](https://).
 
@@ -213,6 +213,59 @@ class ViewController: UIViewController {
 
 ```
 
+## Objective-C Code Example
+
+Objective-C example of the ClearenSDKUI  integration [Obj-C Example](https://).
+
+```
+#import "ViewController.h"
+#import <ClearentIdtechIOSFramework/ClearentIdtechIOSFramework.h>
+
+@interface ViewController ()
+@property (weak, nonatomic) IBOutlet UIButton *startTransactionButton;
+@property (weak, nonatomic) IBOutlet UIButton *showReaderDetailsButton;
+@property (weak, nonatomic) IBOutlet UIButton *pairNewReaderButton;
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view.
+    
+    [[ClearentUIManager shared] updateWithBaseURL:@"https...."
+                                           apiKey:@"api key..."
+                                        publicKey:@"publick key"];
+    
+    [[ClearentUIManager shared] setSignatureEnabled:NO];
+    
+    [UIFont loadFontsWithFonts:[NSArray arrayWithObjects: @"SF-Pro-Display-Bold.otf", @"SF-Pro-Text-Bold.otf", @"SF-Pro-Text-Medium.otf", nil] bundle:ClearentConstants.bundle];
+}
+
+- (IBAction)showReaderDetails:(id)sender {
+    UIViewController *vc = [[ClearentUIManager shared] readersViewControllerWithCompletion:^(enum ClearentResult result) {
+        //do omething that you want on dismiss
+    }];
+    [self presentViewController:vc animated:YES completion:nil];
+}
+
+- (IBAction)startPairing:(id)sender {
+    UIViewController *vc = [[ClearentUIManager shared] pairingViewControllerWithCompletion:^(enum ClearentResult result) {
+        //do omething that you want on dismiss
+    }];
+    [self presentViewController:vc animated:YES completion:nil];
+}
+
+- (IBAction)startTransaction:(id)sender {
+    UIViewController *vc = [[ClearentUIManager shared] paymentViewControllerWithAmount:20.0 completion:^(enum ClearentResult result) {
+        //do omething that you want on dismiss
+    }];
+    [self presentViewController:vc animated:YES completion:nil];
+}
+
+@end
+
+```
 
 
 # Integrating the ClearentWrapper
