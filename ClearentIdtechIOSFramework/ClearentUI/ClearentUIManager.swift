@@ -67,7 +67,7 @@ public final class ClearentUIManager: NSObject {
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
     @objc public func paymentViewController(amount: Double, completion: ((ClearentResult) -> Void)?) -> UINavigationController {
-        viewController(processType: .payment, dismissCompletion: { [weak self] result in
+        viewController(processType: .payment, amount: amount, dismissCompletion: { [weak self] result in
             guard let completionResult = self?.resultFor(completionResult: result) else { return }
             completion?(completionResult)
         })
