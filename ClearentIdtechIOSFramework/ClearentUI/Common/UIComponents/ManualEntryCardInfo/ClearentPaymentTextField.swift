@@ -61,7 +61,7 @@ class ClearentPaymentTextField: ClearentXibView {
     func setupTextField(placeholder: String?, isFirstCell: Bool, isLastCell: Bool) {
         guard let item = item else { return }
 
-        textField.keyboardType = (item.type == .creditCardNo || item.type == .date || item.type == .securityCode || item.type == .billingZipCode || item.type == .shippingZipCode) ? .numberPad : .default
+        textField.keyboardType = [.creditCardNo, .date, .securityCode, .billingZipCode, .shippingZipCode].contains(item.type) ? .numberPad : .default
         textField.addNavigationAndDoneToKeyboard(previousAction: (target: self, action: #selector(previousButtonTapped), isEnabled: !isFirstCell), nextAction: (target: self, action: #selector(nextButtonTapped), isEnabled: !isLastCell))
         if let placeholder = placeholder {
             let attributes: [NSAttributedString.Key: Any] = [.font: ClearentUIBrandConfigurator.shared.fonts.textfieldPlaceholder,
