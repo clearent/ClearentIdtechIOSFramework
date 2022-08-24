@@ -244,21 +244,21 @@ Objective-C example of the ClearenSDKUI  integration [Obj-C Example](https://).
 
 - (IBAction)showReaderDetails:(id)sender {
     UIViewController *vc = [[ClearentUIManager shared] readersViewControllerWithCompletion:^(enum ClearentResult result) {
-        //do omething that you want on dismiss
+        //do something that you want on dismiss
     }];
     [self presentViewController:vc animated:YES completion:nil];
 }
 
 - (IBAction)startPairing:(id)sender {
     UIViewController *vc = [[ClearentUIManager shared] pairingViewControllerWithCompletion:^(enum ClearentResult result) {
-        //do omething that you want on dismiss
+        //do something that you want on dismiss
     }];
     [self presentViewController:vc animated:YES completion:nil];
 }
 
 - (IBAction)startTransaction:(id)sender {
     UIViewController *vc = [[ClearentUIManager shared] paymentViewControllerWithAmount:20.0 completion:^(enum ClearentResult result) {
-        //do omething that you want on dismiss
+        //do something that you want on dismiss
     }];
     [self presentViewController:vc animated:YES completion:nil];
 }
