@@ -145,8 +145,10 @@ public class ClearentConstants {
             public static let csc = "xsdk_payment_manual_entry_csc".localized
             public static let cscPlaceholder = "xsdk_payment_manual_entry_csc_placeholder".localized
             public static let cscError = "xsdk_payment_manual_entry_csc_error".localized
-            public static let cardHolderName = "xsdk_payment_manual_entry_cardholder_name".localized
-            public static let cardHolderNameError = "xsdk_payment_manual_entry_cardholder_name_error".localized
+            public static let cardHolderFirstName = "xsdk_payment_manual_entry_cardholder_first_name".localized
+            public static let cardHolderFirstNameError = "xsdk_payment_manual_entry_cardholder_first_name_error".localized
+            public static let cardHolderLastName = "xsdk_payment_manual_entry_cardholder_last_name".localized
+            public static let cardHolderLastNameError = "xsdk_payment_manual_entry_cardholder_last_name_error".localized
             public static let billingZipCode = "xsdk_payment_manual_entry_billing_zip".localized
             public static let billingZipCodeError = "xsdk_payment_manual_entry_billing_zip_error".localized
             public static let invoiceNo = "xsdk_payment_manual_entry_invoice_no".localized

@@ -21,7 +21,7 @@ class ClearentFieldValidationHelper {
             return isExpirationDateValid(item: item)
         case .securityCode:
             return isSecurityCodeValid(item: item)
-        case .cardholderName:
+        case .cardholderFirstName, .cardholderLastName:
             return isCardholderNameValid(item: item)
         case .billingZipCode, .shippingZipCode:
             return isZipValid(item: item)

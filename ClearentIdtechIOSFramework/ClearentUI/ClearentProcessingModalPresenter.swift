@@ -207,9 +207,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
               let shipToZipCode = dataSource.valueForType(.shippingZipCode)?.replacingOccurrences(of: ClearentPaymentItemType.shippingZipCode.separator, with: "") else { return }
 
         let cardInfo = ManualEntryCardInfo(card: cardNo, expirationDateMMYY: date, csc: csc)
-        let name = ClearentCarholderName(fullName: dataSource.valueForType(.cardholderName))
-        let billingInfo = ClientInformation(firstName: name.first,
-                                            lastName: name.last,
+        let billingInfo = ClientInformation(firstName: dataSource.valueForType(.cardholderFirstName),
+                                            lastName: dataSource.valueForType(.cardholderLastName),
                                             company: dataSource.valueForType(.companyName),
                                             zip: billingZipCode)
         let shippingInfo = ClientInformation(zip: shipToZipCode)
