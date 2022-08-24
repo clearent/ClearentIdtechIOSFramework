@@ -1,5 +1,23 @@
 # iOS SDK Changelog
 
+## 1.1.166.019
+### 4/21/22
+Restored btServices service filter
+Added method setServiceUUID
+Added method setBLEDeviceTypeVP3300
+
+## 1.1.166.018
+### 3/28/22
+Changed mapping of status byte + 0xee00 to parser level instead of api level
+
+## 1.1.166.017
+### 3/14/22
+Changed deviceMessage to return on main thread without waiting to finish
+
+## 1.1.166.016
+### 3/3/22
+Check if centralmanager is power on state before attempting to scan
+
 ## 1.1.166.015
 ### 12/22/21
 Added fix to allow methods to execute properly within device connected callback

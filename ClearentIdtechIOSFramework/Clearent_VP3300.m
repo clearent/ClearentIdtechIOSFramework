@@ -87,9 +87,9 @@
     [[IDT_VP3300 sharedController] close];
 }
 
--(void) device_connectToUSB {
-    [[IDT_VP3300 sharedController] device_connectToUSB];
-}
+//-(void) device_connectToUSB {
+//    [[IDT_VP3300 sharedController] device_connectToUSB];
+//}
 
 -(RETURN_CODE) ctls_cancelTransaction {
     [self clearCurrentRequest];
@@ -348,14 +348,11 @@
 }
 
 -(void) device_disconnectBLE {
-    //now that we regard the incoming connection as more important than the cache we can regard the cache
-    //as a last chance fallback. I'm not sure why we would clear the cache out every time we disconnect anyway.
-    //[ClearentCache cacheLastUsedBluetoothDevice:nil bluetoothFriendlyName:nil];
     return [[IDT_VP3300 sharedController] device_disconnectBLE];
 }
 
 -(bool) device_enableBLEDeviceSearch:(NSUUID*)identifier {
-    [self setServiceScanFilterWithService1820];
+    [self setSupportedServiceScanFilters];
     return [[IDT_VP3300 sharedController] device_enableBLEDeviceSearch:identifier];
 }
 
@@ -443,8 +440,16 @@
     return [[IDT_Device sharedController] setServiceScanFilter:filter];
 }
 
-- (void) setServiceScanFilterWithService1820 {
-    NSArray<CBUUID *> *filter = [[NSArray alloc] initWithObjects:[CBUUID UUIDWithString:@"1820"], nil];
+- (void) setServiceScanFilters {
+    CBUUID *serviceFilterVP3300 = [CBUUID UUIDWithString:@"1820"];
+    NSArray<CBUUID *> *filter = [[NSArray alloc] initWithObjects:serviceFilterVP3300, nil];
+    [self setServiceScanFilter:filter];
+}
+
+- (void) setSupportedServiceScanFilters {
+    CBUUID *serviceFilterVP3300 = [CBUUID UUIDWithString:@"1820"];
+    CBUUID *serviceFilterVP3350 = [CBUUID UUIDWithString:@"0783b03e-8535-b5a0-7140-a304d2495cb7"];
+    NSArray<CBUUID *> *filter = [[NSArray alloc] initWithObjects:serviceFilterVP3300,serviceFilterVP3350, nil];
     [self setServiceScanFilter:filter];
 }
 

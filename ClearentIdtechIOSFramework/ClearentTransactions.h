@@ -6,13 +6,13 @@
 //  Copyright © 2020 Clearent, L.L.C. All rights reserved.
 //
 
-#import "IDT_VP3300.h"
 @class ClearentPaymentRequest;
 @class ClearentDelegate;
 @class Clearent_VP3300;
 @class ClearentResponse;
 @class ClearentConnection;
 #import "ClearentPayment.h"
+#import <IDTech/IDT_VP3300.h>
 
 
 @protocol ClearentTransactions <NSObject>

@@ -50,7 +50,7 @@
 	<key>NSBluetoothPeripheralUsageDescription</key>
 	<string>Required for Card Reader</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2018 Clearent LLC. All rights reserved.</string>
+	<string>Copyright © 2021 Clearent LLC. All rights reserved.</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 	<key>UIRequiredDeviceCapabilities</key>

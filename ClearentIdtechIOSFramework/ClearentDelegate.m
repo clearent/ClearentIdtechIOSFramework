@@ -35,6 +35,8 @@ static NSString *const TAC_ONLINE = @"DF15";
 static NSString *const DEVICE_SERIAL_NUMBER_EMV_TAG = @"DF78";
 static NSString *const KERNEL_VERSION_EMV_TAG = @"DF79";
 
+static NSString *const KERNEL_VERSION = @"EMV Common L2 V1.10.037";
+
 static NSString *const DEVICE_SERIAL_NUMBER_PLACEHOLDER = @"9999999999";
 static NSString *const KERNEL_BASE_VERSION = @"EMV Common L2 V1.10";
 static NSString *const KERNEL_VERSION_INCREMENTAL = @".037";
@@ -83,6 +85,8 @@ BOOL userNotifiedOfTimeOut = NO;
 
 BOOL transactionIsInProcess = NO;
 
+NSDictionary *enhancedMessages;
+
 
 - (instancetype) init : (id <Clearent_Public_IDTech_VP3300_Delegate>) publicDelegate clearentBaseUrl:(NSString*)clearentBaseUrl publicKey:(NSString*)publicKey idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance  {
     
@@ -129,9 +133,54 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         self.contactless = clearentVP3300Configuration.contactless;
         SEL configurationCallbackSelector = @selector(deviceMessage:);
         _clearentConfigurator = [[ClearentConfigurator alloc] init:self.baseUrl publicKey:self.publicKey callbackObject:self withSelector:configurationCallbackSelector sharedController:_idTechSharedInstance];
+        
+        
+        [self setEnhancedMessaging];
        
     }
     return self;
+}
+
+- (void) setEnhancedMessaging {
+    
+    
+    NSString *bundlePath =
+      [[NSBundle mainBundle] pathForResource:@"ClearentIdtechMessages"
+                                      ofType:@"bundle"];
+    if ([bundlePath length] > 0){
+        
+        NSBundle *resourcesBundle = [NSBundle bundleWithPath:bundlePath];
+        if (resourcesBundle != nil){
+            NSString *enhancedMessagingFilePath =
+                  [resourcesBundle pathForResource:@"enhancedmessages-v1"
+                                            ofType:@"txt"
+                                       inDirectory:nil];
+            if ([enhancedMessagingFilePath length] > 0){
+                
+                NSError *error;
+                NSString *fileContents = [NSString stringWithContentsOfFile:enhancedMessagingFilePath encoding:NSUTF8StringEncoding error:&error];
+
+                if (error) {
+                    NSLog(@"Error reading file: %@", error.localizedDescription);
+                } else {
+
+                    NSLog(@"contents: %@", fileContents);
+                    NSArray *listArray = [fileContents componentsSeparatedByString:@"\n"];
+                    NSLog(@"items = %d", [listArray count]);
+                
+                    enhancedMessages = [NSDictionary dictionaryWithContentsOfFile:enhancedMessagingFilePath];
+                }
+                
+            }
+        }
+    }
+    
+   
+     if(nil != enhancedMessages && enhancedMessages.count > 0) {
+         NSLog(@"ENHANCED MESSAGING INITIALIZED");
+     } else {
+         NSLog(@"NO ENHANCED MESSAGING");
+     }
 }
 
 - (instancetype) initWithPaymentCallback : (id <Clearent_Public_IDTech_VP3300_Delegate>)publicDelegate clearentVP3300Configuration:(id <ClearentVP3300Configuration>) clearentVP3300Configuration callbackObject:(id)callbackObject withSelector:(SEL)runTransactionSelector idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
@@ -301,84 +350,84 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 }
 
 - (NSString *) getFirmwareVersion {
-    NSString *firmwareVersion;
-    if([_idTechSharedInstance isConnected]) {
-        NSString *result;
-        RETURN_CODE rt = [_idTechSharedInstance device_getFirmwareVersion:&result];
-        if (RETURN_CODE_DO_SUCCESS == rt) {
-            firmwareVersion = result;
-        } else {
-            [ClearentLumberjack logError:@"getFirmwareVersion:device_getFirmwareVersion error"];
-            firmwareVersion = CLEARENT_INVALID_FIRMWARE_VERSION;
-        }
-    } else {
-        firmwareVersion = CLEARENT_INVALID_FIRMWARE_VERSION;
-        [ClearentLumberjack logError:@"getFirmwareVersion:reader disconnected"];
-    }
-            
+    NSString *firmwareVersion = CLEARENT_INVALID_FIRMWARE_VERSION;
     return firmwareVersion;
 }
 
 
 - (NSString *) getKernelVersion {
-    NSString *result;
-    RETURN_CODE rt = [_idTechSharedInstance emv_getEMVL2Version:&result];
-    if (RETURN_CODE_DO_SUCCESS == rt) {
-        NSString *kernelVersion;
-        if(result != nil && [result isEqualToString:KERNEL_BASE_VERSION]) {
-            if([result containsString:KERNEL_VERSION_INCREMENTAL]) {
-                kernelVersion = result;
-            } else {
-                result = [NSString stringWithFormat:@"%@%@", result,KERNEL_VERSION_INCREMENTAL];
-            }
-        }
-        return result;
-    } else{
-        [ClearentLumberjack logError:@"Failed to get kernel version. Use default"];
-        return [NSString stringWithFormat:@"%@%@", KERNEL_BASE_VERSION, KERNEL_VERSION_INCREMENTAL];
-    }
+    return KERNEL_VERSION;
 }
 
 - (NSString*) getDeviceSerialNumber {
-    
-    NSString *deviceSerialNumber = [self getDeviceSerialNumberFromReader ];
-    
-    if(deviceSerialNumber != nil) {
-        [ClearentCache cacheCurrentDeviceSerialNumber:deviceSerialNumber];
-        return deviceSerialNumber;
+
+    [self setDeviceSerialNumberWhenConnectedAndProvided];
+
+    if(self.deviceSerialNumber == nil) {
+        NSString *deviceSerialNumber = [self getDeviceSerialNumberFromReader ];
+
+        if(deviceSerialNumber != nil) {
+            [ClearentCache cacheCurrentDeviceSerialNumber:deviceSerialNumber];
+            return deviceSerialNumber;
+        }
+    } else {
+        return self.deviceSerialNumber;
     }
-    
-    [ClearentLumberjack logError:@"⚠️ Failed to get device serial number using config_getSerialNumber. Using all nines placeholder"];
-    
+
+    [ClearentLumberjack logError:@"⚠️ FAILED TO IDENTIFY DSN. USE ALL NINES"];
+
     return DEVICE_SERIAL_NUMBER_PLACEHOLDER;
 }
 
-- (NSString *) getDeviceSerialNumberFromReader {
-    
-    NSString *firstTenOfDeviceSerialNumber;
-    
-    for(int i = 0; i < 3; i++ ) {
-        [NSThread sleepForTimeInterval:0.7f];
-        if([_idTechSharedInstance isConnected]) {
-            NSString *result;
-            RETURN_CODE config_getSerialNumberRt = [_idTechSharedInstance config_getSerialNumber:&result];
-            if (RETURN_CODE_DO_SUCCESS == config_getSerialNumberRt) {
-                if (result != nil && [result length] >= 10) {
-                    firstTenOfDeviceSerialNumber = [result substringToIndex:10];
-                } else {
-                    firstTenOfDeviceSerialNumber = result;
-                }
-                break;
-            } else {
-                NSString *logErrorMessage =[NSString stringWithFormat:@"getDeviceSerialNumberFromReader fail %@",[_idTechSharedInstance device_getResponseCodeString:config_getSerialNumberRt]];
-                [ClearentLumberjack logError:logErrorMessage];
-            }
-        } else {
-            [ClearentLumberjack logError:@"getDeviceSerialNumberFromReader:reader disconnected"];
-            break;
-        }
+- (void) setDeviceSerialNumberWhenConnectedAndProvided {
+
+    if(self.clearentConnection != nil && [_idTechSharedInstance isConnected]) {
+
+       if(self.clearentConnection.lastFiveDigitsOfDeviceSerialNumber != nil && ![self.clearentConnection.lastFiveDigitsOfDeviceSerialNumber isEqualToString:@""]) {
+
+        NSString *fullIdTechFriendlyName = [ClearentConnection createFullIdTechFriendlyName:self.clearentConnection.lastFiveDigitsOfDeviceSerialNumber];
+
+        [ClearentCache cacheCurrentDeviceSerialNumber:fullIdTechFriendlyName];
+
+        self.deviceSerialNumber = fullIdTechFriendlyName;
+        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Connected with provided last 5 of dsn %@%@", @" friendlyName ", self.deviceSerialNumber]];
+
+      } else if(self.clearentConnection.fullFriendlyName != nil && ![self.clearentConnection.fullFriendlyName isEqualToString:@""]) {
+
+        [ClearentCache cacheCurrentDeviceSerialNumber:self.clearentConnection.fullFriendlyName];
+        self.deviceSerialNumber = self.clearentConnection.fullFriendlyName;
+        [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Conncted with provided full friendlyName %@%@", @" friendlyName ", self.deviceSerialNumber]];
+
+      }
     }
-    
+
+}
+
+- (NSString *) getDeviceSerialNumberFromReader {
+
+    NSString *firstTenOfDeviceSerialNumber;
+
+    if([_idTechSharedInstance isConnected]) {
+        NSString *result;
+        [ClearentLumberjack logInfo:@"ASKING READER FOR DSN"];
+        RETURN_CODE config_getSerialNumberRt = [_idTechSharedInstance config_getSerialNumber:&result];
+        if (RETURN_CODE_DO_SUCCESS == config_getSerialNumberRt) {
+            if (result != nil && [result length] >= 10) {
+                firstTenOfDeviceSerialNumber = [result substringToIndex:10];
+            } else {
+                firstTenOfDeviceSerialNumber = result;
+            }
+            NSString *logErrorMessage =[NSString stringWithFormat:@"DSN FOUND %@",firstTenOfDeviceSerialNumber];
+            [ClearentLumberjack logInfo:logErrorMessage];
+        } else {
+            NSString *logErrorMessage =[NSString stringWithFormat:@"getDeviceSerialNumberFromReader fail %@",[_idTechSharedInstance device_getResponseCodeString:config_getSerialNumberRt]];
+            [ClearentLumberjack logError:logErrorMessage];
+        }
+    } else {
+        [ClearentLumberjack logError:@"CANNOT ASK FOR DSN BECAUSE READER IS DISCONNECTED"];
+    }
+
+
     return firstTenOfDeviceSerialNumber;
 }
 
@@ -447,7 +496,10 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
         return;
     }
     
-    if(([message isEqualToString:CLEARENT_PLEASE_WAIT]
+    //TODO ugly solution. we need to stop idtech messages being sent back if we know we are in the middle of processing a successful read.
+    
+    if((processingCurrentRequest
+        || [message isEqualToString:CLEARENT_PLEASE_WAIT]
         || [message isEqualToString:CLEARENT_CARD_READ_OK_TO_REMOVE_CARD]
         || [message isEqualToString:CLEARENT_TRANSACTION_PROCESSING]
         || [message isEqualToString:CLEARENT_TRANSACTION_AUTHORIZING])) {
@@ -457,7 +509,10 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     //IDTech framework will never return timeout when its in the middle of a transaction. We have other errors to account for this.
     //This timeout is the result of the timer we have that wraps the entire transaction to account for a scenario where the
     //idtech framework cannot tell us to timeout. Ex- user inserts card but reader does not recognize and cannot report
-    if(transactionIsInProcess &&  [message isEqualToString:CLEARENT_TRANSACTION_FINAL_FALLBACK_ERROR]) {
+    if(transactionIsInProcess &&
+       ([message isEqualToString:CLEARENT_TRANSACTION_FINAL_FALLBACK_ERROR]
+        || [message isEqualToString:CLEARENT_TIMEOUT_ERROR_RESPONSE]
+        || [message isEqualToString:CLEARENT_TIMEOUT_ERROR_RESPONSE2])) {
         [ClearentLumberjack logInfo:@"deviceMessage:Dont callback with timeout message. Transaction is in process"];
         return;
     }
@@ -509,7 +564,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     } @catch (NSException *exception) {
         [ClearentLumberjack logInfo:@"monitorCardRemoval:Failed to retrieve the icc reader status"];
     } @finally {
-        if(!userNotifiedOfTimeOut) {
+        if(!userNotifiedOfTimeOut && [monitorCardRemovalTimer isValid]) {
             [self deviceMessage:CLEARENT_TRANSACTION_FINAL_FALLBACK_ERROR];
         }
     }
@@ -518,7 +573,11 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 
 - (void) sendFeedback:(NSString*) message {
 
-    if(message != nil && ([message isEqualToString:@"Timeout"] || [message isEqualToString:CLEARENT_TIMEOUT_ERROR_RESPONSE2] || [message isEqualToString:CLEARENT_TIMEOUT_ERROR_RESPONSE] || [message isEqualToString:CLEARENT_TRANSACTION_FINAL_FALLBACK_ERROR])) {
+    if(message != nil && ([message isEqualToString:@"Timeout"]
+        || [message isEqualToString:CLEARENT_TIMEOUT_ERROR_RESPONSE2]
+        || [message isEqualToString:CLEARENT_TIMEOUT_ERROR_RESPONSE]
+        || [message isEqualToString:CLEARENT_TRANSACTION_FINAL_FALLBACK_ERROR])) {
+        
         if(userNotifiedOfTimeOut) {
             return;
         } else {
@@ -531,25 +590,45 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     if(clearentFeedback.message != nil
        && ![clearentFeedback.message isEqualToString:@""]
        && ![clearentFeedback.message isEqualToString:@" "]) {
-       
-        [self feedback:clearentFeedback];
-        
-    }
-    
-}
-
-- (void) feedback:(ClearentFeedback*)clearentFeedback {
-    if ([self.publicDelegate respondsToSelector:@selector(feedback:)]) {
         
         [self disableCardRemovalTimerWhenFeedback:clearentFeedback];
         
-        [self.publicDelegate feedback:clearentFeedback];
+        if(processingCurrentRequest
+           && ([clearentFeedback.message isEqualToString:@"TERMINATED"]
+           || ![clearentFeedback.message isEqualToString:@"TERMINATE"])) {
+            [ClearentLumberjack logInfo:@"CLEARENT PROCESSING STARTED. SUPPRESS TERMINATED AND TERMINATE"];
+            return;
+        }
+        
+        if([clearentFeedback.message containsString:@"TRANSACTION FAILED"]) {
+            [ClearentLumberjack logInfo: [NSString stringWithFormat:@"ENHANCED MSG from %@ to %@", clearentFeedback.message, @"Try again or use a different card"]];
+            clearentFeedback.message = @"Try again or use a different card";
+            [self feedback:clearentFeedback];
+        } else if(nil != _clearentVP3300Configuration && _clearentVP3300Configuration.enableEnhancedFeedback) {
+            NSString *enhancedString = [enhancedMessages objectForKey:clearentFeedback.message];
+            if(nil != enhancedString) {
+                if(![enhancedString isEqualToString:@"SUPPRESS"]) {
+                    [ClearentLumberjack logInfo: [NSString stringWithFormat:@"ENHANCED MSG from %@ to %@", clearentFeedback.message, enhancedString]];
+                    clearentFeedback.message = enhancedString;
+                    [self feedback:clearentFeedback];
+                }
+            } else {
+                [ClearentLumberjack logInfo: [NSString stringWithFormat:@"NO ENHANCED MSG %@", clearentFeedback.message]];
+                [self feedback:clearentFeedback];
+            }
+        } else {
+            [self feedback:clearentFeedback];
+        }
+            
     }
+    
 }
 
 - (void) disableCardRemovalTimerWhenFeedback:(ClearentFeedback*)clearentFeedback {
     
-    if(clearentFeedback.message != nil
+    if(processingCurrentRequest || transactionIsInProcess) {
+        [self disableCardRemovalTimer];
+    } else if(clearentFeedback.message != nil
        && !([clearentFeedback.message isEqualToString:@""] || [clearentFeedback.message isEqualToString:@" "])
        && (clearentFeedback.feedBackMessageType == 4
            || [clearentFeedback.message isEqualToString:CLEARENT_CARD_READ_OK_TO_REMOVE_CARD]
@@ -561,6 +640,13 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     }
   
 }
+
+- (void) feedback:(ClearentFeedback*)clearentFeedback {
+    if ([self.publicDelegate respondsToSelector:@selector(feedback:)]) {
+        [self.publicDelegate feedback:clearentFeedback];
+    }
+}
+
                           
 - (void) handleContactlessError:(NSString*)contactlessError emvData:(IDTEMVData*)emvData {
     
@@ -943,18 +1029,39 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 
 - (void) emvTransactionData:(IDTEMVData*)emvData errorCode:(int)error{
   
-    
-    @try{
-        NSString *deviceResponseCodeString = [_idTechSharedInstance device_getResponseCodeString:error];
-        if(deviceResponseCodeString != nil && ![deviceResponseCodeString isEqualToString:@""] && ![deviceResponseCodeString containsString:@"no error file found"]) {
-            [ClearentLumberjack logInfo:[NSString stringWithFormat:@"EMV Transaction Data Response: = %@",deviceResponseCodeString]];
-        } else {
-            NSString *idtechErrorMessage = [ClearentUtils getIDtechErrorMessage:error];
-            [ClearentLumberjack logInfo:[NSString stringWithFormat:@"EMV Transaction Data Response: = %@",idtechErrorMessage]];
+    if(RETURN_CODE_CTLS_MSR_CANCELLED_BY_CARD_INSERT == error) {
+        [ClearentLumberjack logInfo:@"emvTransactionData:CTLS/MSR cancelled due to card insertion"];
+        return;
+    } else if(RETURN_CODE_CANNOT_START_CONTACT_EMV == error) {
+        [ClearentLumberjack logInfo:@"emvTransactionData:cannot start emv transaction at this time"];
+        return;
+    } else if(EMV_RESULT_CODE_V2_SWIPE_NON_ICC == error) {
+        [ClearentLumberjack logInfo:@"emvTransactionData:swipe captured from NON ICC"];
+    } else if(EMV_RESULT_CODE_V2_SWIPE_NON_ICC == error) {
+        [ClearentLumberjack logInfo:@"emvTransactionData:swipe captured from NON ICC"];
+    } else if(EMV_RESULT_CODE_FALLBACK_TO_CONTACT == error) {
+        [ClearentLumberjack logInfo:@"emvTransactionData:emvdata captured from ICC"];
+    } else if(EMV_RESULT_CODE_CTLS_TERMINATE_TRY_ANOTHER == error) {
+        [ClearentLumberjack logInfo:@"emvTransactionData:ctls transaction terminated"];
+        return;
+    } else if(RETURN_CODE_OK_NEXT_COMMAND == error || RETURN_CODE_DO_SUCCESS == error || RETURN_CODE_DO_SUCCESS == error || RETURN_CODE_NEO_SUCCESS == error) {
+        [ClearentLumberjack logInfo:@"emvTransactionData:error is a RETURN_CODE:success"];
+    } else if(RETURN_CODE_ERR_DISCONNECT == error || RETURN_CODE_ERR_DISCONNECT_ == error) {
+        [ClearentLumberjack logInfo:@"emvTransactionData:error is a RETURN_CODE:disconnected"];
+         [self deviceMessage:CLEARENT_DISCONNECT_WHILE_TRANSACTION];
+         return;
+    } else {
+        @try{
+            NSString *deviceResponseCodeString = [_idTechSharedInstance device_getResponseCodeString:error];
+            if(deviceResponseCodeString != nil && ![deviceResponseCodeString isEqualToString:@""] && ![deviceResponseCodeString containsString:@"no error file found"]) {
+                [ClearentLumberjack logInfo:[NSString stringWithFormat:@"EMV Transaction Data Response: = %@",deviceResponseCodeString]];
+            } else {
+                [ClearentLumberjack logInfo:[NSString stringWithFormat:@"emvTransactionData unknown error: = %d",error]];
+            }
         }
-    }
-    @catch (NSException *e) {
-        [ClearentLumberjack logInfo:@"Unknown EMV Transaction Data Response"];
+        @catch (NSException *e) {
+            [ClearentLumberjack logInfo:@"Unknown EMV Transaction Data Response"];
+        }
     }
     
 
@@ -1043,7 +1150,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
      } else if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_START_TRANS_SUCCESS) {
          emvErrorHandled = YES;
      } else if (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_DECLINED) {
-         [ClearentLumberjack logInfo:@"ignoring IDTECH authorization decline"];
+         //Do not send to remote log.
          emvErrorHandled = YES;
      } else if (emvData.cardData != nil && (emvData.resultCodeV2 == EMV_RESULT_CODE_V2_SWIPE_NON_ICC || emvData.resultCodeV2 == EMV_RESULT_CODE_MSR_SWIPE_CAPTURED || emvData.resultCodeV2 == EMV_RESULT_CODE_V2_USE_MAGSTRIPE)) {
            if(emvData.cardData.encTrack2 == nil && emvData.cardData.track2 == nil) {
@@ -1644,6 +1751,8 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     
     processingCurrentRequest = YES;
     
+    [monitorCardRemovalTimer invalidate];
+    
     //Complete the transaction as soon as possible so the idtech framework does not resend the current transaction.
     [_idTechSharedInstance emv_completeOnlineEMVTransaction:false hostResponseTags:nil];
 
@@ -1928,6 +2037,10 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     } else {
         [ClearentLumberjack logInfo:@"ClearentDelegate:cancelTransaction:fail"];
     }
+}
+
+- (void) resetTransaction {
+    [self disableCardRemovalTimer];
 }
 
 - (void) updatePublicKey:(NSString *)publicKey {

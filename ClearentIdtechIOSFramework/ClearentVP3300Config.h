@@ -15,10 +15,13 @@
 @property (nonatomic) BOOL contactlessAutoConfiguration;
 @property (nonatomic) BOOL contactless;
 @property (nonatomic) BOOL disableRemoteLogging;
+@property (nonatomic) BOOL enableEnhancedFeedback;
 
 - (instancetype) initContactlessNoConfiguration:(NSString*) baseUrl publicKey:(NSString*) publicKey;
 
 - (instancetype) initNoContactlessNoConfiguration:(NSString*) baseUrl publicKey:(NSString*) publicKey;
+
+- (instancetype) initEnableContactlessAndEnhancedFeedback:(NSString*) baseUrl publicKey:(NSString*) publicKey;
 
 @end
 

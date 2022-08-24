@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ClearentTransactions.h"
+
 #import "ClearentConnection.h"
 #import "ClearentResponse.h"
 #import "Clearent_VP3300.h"
@@ -308,7 +309,7 @@
 
 - (BOOL) isTransactionStarted: (RETURN_CODE) idTechReturnCode {
     
-    if(RETURN_CODE_OK_NEXT_COMMAND == idTechReturnCode || RETURN_CODE_DO_SUCCESS == idTechReturnCode) {
+    if(RETURN_CODE_OK_NEXT_COMMAND == idTechReturnCode || RETURN_CODE_DO_SUCCESS == idTechReturnCode || RETURN_CODE_DO_SUCCESS == idTechReturnCode || RETURN_CODE_NEO_SUCCESS == idTechReturnCode) {
         return YES;
     }
     return NO;
@@ -373,81 +374,25 @@
         deviceStartRt = RETURN_CODE_ERR_DISCONNECT;
         
     } else {
+        
+        [_clearentDelegate.idTechSharedInstance emv_disableAutoAuthenticateTransaction:FALSE];
+        [_clearentDelegate setClearentPayment:clearentPaymentRequest];
 
+        [self.clearentDelegate startFinalFeedbackMonitor:clearentPaymentRequest.timeout];
         //With a faster process there is a scenario where the idtech framework is still doing clean up activities from the previous transaction.
         //a slight delay can help.
         [NSThread sleepForTimeInterval:1.0f];
-        [_clearentDelegate.idTechSharedInstance emv_disableAutoAuthenticateTransaction:FALSE];
-        [_clearentDelegate setClearentPayment:clearentPaymentRequest];
-        
-        [self.clearentDelegate startFinalFeedbackMonitor:clearentPaymentRequest.timeout];
-        
-        [NSThread sleepForTimeInterval:.5f];
         deviceStartRt = [_clearentDelegate.idTechSharedInstance device_startTransaction:clearentPaymentRequest.amount amtOther:clearentPaymentRequest.amtOther type:clearentPaymentRequest.type timeout:clearentPaymentRequest.timeout tags:clearentPaymentRequest.tags forceOnline:clearentPaymentRequest.forceOnline  fallback:clearentPaymentRequest.fallback];
-        
-        [self remoteLogTransactionRequest: deviceStartRt];
+
     }
     
     return deviceStartRt;
     
 }
 
-- (void) remoteLogTransactionRequest: (RETURN_CODE) idtechReturnCode {
-    
-    if([self isTransactionStarted:idtechReturnCode]) {
-        
-        [ClearentLumberjack logInfo:@"TRANSACTION STARTED"];
-        
-    } else if([self isTransactionInvalid:idtechReturnCode]) {
-        
-        [ClearentLumberjack logInfo:@"TRANSACTION FAILED. bad parameters"];
-        
-    } else if(RETURN_CODE_MONO_AUDIO_ == idtechReturnCode) {
-        
-        [ClearentLumberjack logInfo:@"TRANSACTION FAILED. Possible unrecoverable error. Use reader reset button"];
-        
-    } else if([self isPreviousTransactionInProgress:idtechReturnCode]) {
-        
-        [ClearentLumberjack logInfo:@"TRANSACTION FAILED. Existing transaction."];
-        
-    } else if([self isDisconnected:idtechReturnCode]) {
-        
-        [ClearentLumberjack logInfo:@"TRANSACTION FAILED. Disconnected"];
-        
-    } else if([self isConnectionError:idtechReturnCode]) {
-        
-        [ClearentLumberjack logInfo:@"TRANSACTION FAILED. possible state - If the reader if OFF, but SDK thinks it still is connected."];
-        
-    } else {
-        
-        @try{
-            NSString *idtechErrorMessage = [ClearentUtils getIDtechErrorMessage:idtechReturnCode];
-            [ClearentLumberjack logInfo:[NSString stringWithFormat:@"%@ - %@", CLEARENT_RESPONSE_TRANSACTION_FAILED, idtechErrorMessage]];
-        }
-        @catch (NSException *e) {
-            [ClearentLumberjack logInfo:@"Could not figure out start transaction error"];
-        }
-        
-        @try{
-            NSString *deviceResponseCodeString = [_clearentDelegate.idTechSharedInstance device_getResponseCodeString:idtechReturnCode];
-            if(deviceResponseCodeString != nil && ![deviceResponseCodeString isEqualToString:@""] && ![deviceResponseCodeString containsString:@"no error file found"]) {
-                [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Start Transaction Error: = %@",deviceResponseCodeString]];
-            } else {
-                NSString *idtechErrorMessage = [ClearentUtils getIDtechErrorMessage:idtechReturnCode];
-                [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Start Transaction Error: = %@",idtechErrorMessage]];
-            }
-        }
-        @catch (NSException *e) {
-            [ClearentLumberjack logInfo:@"remoteLogTransactionRequest:Unknown Start Transaction Error Code "];
-            
-        }
-        
-        
-    }
-}
-
 -(RETURN_CODE) device_cancelTransaction {
     [self clearCurrentRequest];
+    [_clearentDelegate resetTransaction];
     return [_clearentDelegate.idTechSharedInstance device_cancelTransaction];
 }
 
@@ -529,49 +474,15 @@
 clearentConnection:(ClearentConnection*) clearentConnection {
     
     [_clearentDelegate setClearentPayment:clearentPaymentRequest];
-    
-    [ClearentLumberjack logInfo:@"startTransactionByReaderInterfaceMode"];
-    ClearentResponse *clearentResponse;
-    
-    RETURN_CODE startTransactionReturnCode = [self startTransactionByReaderInterfaceMode:_clearentDelegate.clearentConnection.readerInterfaceMode];
-    
-    if([self isTransactionStarted:startTransactionReturnCode]) {
-        clearentResponse = [[ClearentResponse alloc] init];
-        clearentResponse.idtechReturnCode = startTransactionReturnCode;
-        clearentResponse.response = CLEARENT_RESPONSE_TRANSACTION_STARTED;
-        clearentResponse.responseType = RESPONSE_SUCCESS;
-            
-        [ClearentLumberjack logInfo:@"startTransactionByReaderInterfaceMode: transaction started"];
-        
-    } else {
-            @try{
-                NSString *deviceResponseCodeString = [_clearentDelegate.idTechSharedInstance device_getResponseCodeString:startTransactionReturnCode];
-                NSString *idtechErrorMessage = [ClearentUtils getIDtechErrorMessage:startTransactionReturnCode];
-                if(deviceResponseCodeString != nil && ![deviceResponseCodeString isEqualToString:@""] && ([deviceResponseCodeString containsString:@"no reader attached"] || [deviceResponseCodeString containsString:@"Command not Allowed"])) {
-                    [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Start failed with Command not allowed. Possible contactless card in field issue. Start Transaction Error: = %@",deviceResponseCodeString]];
-                    [ClearentLumberjack logError:@"startTransactionByReaderInterfaceMode:deviceResponseCodeString"];
-                    clearentResponse = [self createFailedStartResponse];
-                }  else if(idtechErrorMessage != nil && ![idtechErrorMessage isEqualToString:@""] && ([idtechErrorMessage containsString:@"no reader attached"] || [idtechErrorMessage containsString:@"Command not Allowed"])) {
-                    [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Start failed with Command not allowed. Possible contactless card in field issue. Start Transaction Error: = %@",idtechErrorMessage]];
-                    [ClearentLumberjack logError:@"startTransactionByReaderInterfaceMode:idtechErrorMessage"];
-                    clearentResponse = [self createFailedStartResponse];
-                } else {
-                    [ClearentLumberjack logInfo:@"startTransactionByReaderInterfaceMode: retry loop of start transaction does not handle this error"];
-                }
-            }
-            @catch (NSException *e) {
-                [ClearentLumberjack logInfo:@"NSException. Unknown Start Transaction Error Code "];
-            }
-    }
-    
-    if(clearentResponse == nil || clearentResponse.response == nil) {
-        clearentResponse =  [self handleStartTransactionResult: startTransactionReturnCode];
-    }
-    
-    if(clearentResponse != nil && clearentResponse.responseType == RESPONSE_FAIL) {
-        [_clearentDelegate deviceMessage:clearentResponse.response];
-    }
-    return clearentResponse;
+
+     ClearentResponse *clearentResponse;
+
+     RETURN_CODE startTransactionReturnCode = [self startTransactionByReaderInterfaceMode:_clearentDelegate.clearentConnection.readerInterfaceMode];
+
+     clearentResponse =  [self handleStartTransactionResult: startTransactionReturnCode];
+
+     return clearentResponse;
+
 }
 
 - (ClearentResponse*) createFailedStartResponse {
@@ -582,41 +493,65 @@ clearentConnection:(ClearentConnection*) clearentConnection {
     
 }
 
+- (ClearentResponse*) createFailedStartResponse: (NSString*) responseMessage {
+    ClearentResponse *clearentResponse = [[ClearentResponse alloc] init];
+    clearentResponse.response = responseMessage;
+    clearentResponse.responseType = RESPONSE_FAIL;
+    return clearentResponse;
+}
+
 - (ClearentResponse*) handleStartTransactionResult: (RETURN_CODE) startTransactionReturnCode  {
     
     ClearentResponse *clearentResponse = [[ClearentResponse alloc] init];
-    
+
     clearentResponse.idtechReturnCode = startTransactionReturnCode;
-    
+
     if([self isTransactionStarted:startTransactionReturnCode]) {
-        
+        clearentResponse.idtechReturnCode = startTransactionReturnCode;
         clearentResponse.response = CLEARENT_RESPONSE_TRANSACTION_STARTED;
         clearentResponse.responseType = RESPONSE_SUCCESS;
-        
-        [ClearentLumberjack logInfo:@"handleStartTransactionErrors: transaction started"];
-        
+        [ClearentLumberjack logInfo:@"ℹ️ Transaction Started"];
+    } else if([self isDisconnected:startTransactionReturnCode]) {
+
+        clearentResponse = [self createFailedStartResponse:CLEARENT_START_TRANSACTION_FAILED_DISCONNECTED];
+
     } else if([self isTransactionInvalid:startTransactionReturnCode]) {
-        
+
+        clearentResponse = [self createFailedStartResponse:CLEARENT_START_TRANSACTION_FAILED_INVALID_TRANSACTION];
+
+    } else if(RETURN_CODE_MONO_AUDIO_ == startTransactionReturnCode) {
+
+        clearentResponse = [self createFailedStartResponse:CLEARENT_START_TRANSACTION_FAILED_MONO_ERROR];
+
+    } else if([self isPreviousTransactionInProgress:startTransactionReturnCode]) {
+
+        clearentResponse = [self createFailedStartResponse:CLEARENT_START_TRANSACTION_FAILED_EXISTING_TRANSACTION ];
+
+    } else if([self isConnectionError:startTransactionReturnCode]) {
+
+        clearentResponse = [self createFailedStartResponse:CLEARENT_START_TRANSACTION_FAILED_READER_OFF];
+
+        [ClearentLumberjack logInfo:@"⚠️ device_startTransaction FAILED. possible state - If the reader if OFF, but SDK thinks it still is connected."];
+    } else if([self isTransactionInvalid:startTransactionReturnCode]) {
+
         clearentResponse.response = CLEARENT_RESPONSE_INVALID_TRANSACTION;
         clearentResponse.responseType = RESPONSE_FAIL;
-        
+
     }
-    
+
     if(clearentResponse.response == nil) {
-        
+
         clearentResponse.responseType = RESPONSE_FAIL;
-        
+
         @try{
+            [ClearentLumberjack logInfo:[NSString stringWithFormat:@"⚠️ We tried to account for known errors. Use device_getResponseCodeString method to identify device_startTransaction return code %d",startTransactionReturnCode]];
             NSString *deviceResponseCodeString = [_clearentDelegate.idTechSharedInstance device_getResponseCodeString:startTransactionReturnCode];
             if(deviceResponseCodeString != nil && ![deviceResponseCodeString isEqualToString:@""] && ![deviceResponseCodeString containsString:@"no error file found"]) {
-                [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Start Transaction Error: = %@",deviceResponseCodeString]];
                 NSString *errorMessage = [NSString stringWithFormat:@"%@ - %@", CLEARENT_RESPONSE_TRANSACTION_FAILED, deviceResponseCodeString];
                 clearentResponse.response = errorMessage;
-
             } else {
-                NSString *idtechErrorMessage = [ClearentUtils getIDtechErrorMessage:startTransactionReturnCode];
-                [ClearentLumberjack logInfo:[NSString stringWithFormat:@"Start Transaction Error: = %@",idtechErrorMessage]];
-                NSString *errorMessage = [NSString stringWithFormat:@"%@ - %@", CLEARENT_RESPONSE_TRANSACTION_FAILED, idtechErrorMessage];
+                [ClearentLumberjack logInfo:[NSString stringWithFormat:@"⚠️ device_startTransaction return code not found with device_getResponseCodeString: = %d",startTransactionReturnCode]];
+                NSString *errorMessage = [NSString stringWithFormat:@"%@ - %d", CLEARENT_RESPONSE_TRANSACTION_FAILED, startTransactionReturnCode];
                 clearentResponse.response = errorMessage;
             }
         }
@@ -624,9 +559,14 @@ clearentConnection:(ClearentConnection*) clearentConnection {
             [ClearentLumberjack logInfo:@"Unknown Start Transaction Error Code "];
             clearentResponse.response = CLEARENT_RESPONSE_TRANSACTION_FAILED;
         }
-        
+
     }
-    
+
+    if(clearentResponse != nil && clearentResponse.responseType == RESPONSE_FAIL) {
+        [self device_cancelTransaction];
+        [_clearentDelegate deviceMessage:clearentResponse.response];
+    }
+
     return clearentResponse;
 }
 

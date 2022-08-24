@@ -228,7 +228,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     private func actionButton(userAction: FlowButtonType) -> ClearentPrimaryButton {
         let button = ClearentPrimaryButton()
         button.title = userAction.title
-        if [.cancel, .pairNewReader, .renameReaderLater, .transactionWithoutTip, .manuallyEnterCardInfo, .skipSignature].contains(userAction) {
+        if [.cancel, .pairNewReader, .renameReaderLater, .transactionWithoutTip, .skipSignature].contains(userAction) {
             button.buttonStyle = .bordered
         }
         if userAction == .transactionWithTip {
