@@ -34,7 +34,7 @@ public final class ClearentUIManager: NSObject {
     
     func setupReaderInfo() {
         // reset connection status on app restart
-        if var connectedReader = ClearentWrapperDefaults.recentlyPairedReaders?.first(where: { $0.isConnected }) {
+        if let connectedReader = ClearentWrapperDefaults.recentlyPairedReaders?.first(where: { $0.isConnected }) {
             connectedReader.isConnected = false
             ClearentWrapper.shared.updateReaderInRecentlyUsed(reader: connectedReader)
         }
@@ -43,7 +43,7 @@ public final class ClearentUIManager: NSObject {
 
         clearentWrapper.readerInfoReceived = { [weak self] _ in
             DispatchQueue.main.async {
-                self?.delegate?.didRecivedReaderInfo(reader: ClearentWrapperDefaults.pairedReaderInfo)
+                self?.delegate?.didReciveReaderInfo(reader: ClearentWrapperDefaults.pairedReaderInfo)
                 self?.readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
             }
         }
@@ -67,9 +67,9 @@ public final class ClearentUIManager: NSObject {
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
     @objc public func paymentViewController(amount: Double, completion: ((ClearentResult) -> Void)?) -> UINavigationController {
-        viewController(processType: .payment, dismissCompletion: { result in
-            let result =  self.resultFor(completionResult: result)
-            completion?(result)
+        viewController(processType: .payment, dismissCompletion: { [weak self] result in
+            guard let completionResult = self?.resultFor(completionResult: result) else { return }
+            completion?(completionResult)
         })
     }
     
@@ -78,9 +78,9 @@ public final class ClearentUIManager: NSObject {
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
     @objc public func pairingViewController(completion: ((ClearentResult) -> Void)?) -> UINavigationController {
-        viewController(processType: .pairing(), dismissCompletion: { result in
-            let result =  self.resultFor(completionResult: result)
-            completion?(result)
+        viewController(processType: .pairing(), dismissCompletion: { [weak self] result in
+            guard let completionResult = self?.resultFor(completionResult: result) else { return }
+            completion?(completionResult)
         })
     }
     
@@ -89,9 +89,9 @@ public final class ClearentUIManager: NSObject {
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
     @objc public func readersViewController(completion: ((ClearentResult) -> Void)?) -> UINavigationController {
-        viewController(processType: .showReaders, dismissCompletion: { result in
-            let result =  self.resultFor(completionResult: result)
-            completion?(result)
+        viewController(processType: .showReaders, dismissCompletion: {[weak self] result in
+            guard let completionResult = self?.resultFor(completionResult: result) else { return }
+            completion?(completionResult)
         })
     }
 
@@ -119,5 +119,5 @@ public final class ClearentUIManager: NSObject {
 }
 
 @objc public protocol ClearentUIDelegate {
-    @objc func didRecivedReaderInfo(reader: ReaderInfo?)
+    @objc func didReciveReaderInfo(reader: ReaderInfo?)
 }
