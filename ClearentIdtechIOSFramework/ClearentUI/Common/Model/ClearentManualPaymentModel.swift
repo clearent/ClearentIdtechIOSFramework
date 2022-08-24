@@ -15,6 +15,8 @@ enum ClearentPaymentItemType {
             return " "
         case .date:
             return "/"
+        case .billingZipCode, .shippingZipCode:
+            return "-"
         default:
             return ""
         }
@@ -196,7 +198,7 @@ class BillingZipCodeItem: ClearentPaymentItem {
     
     var errorMessage: String? { ClearentConstants.Localized.ManualEntry.billingZipCodeError }
     
-    var maxNoOfChars: Int { 10 }
+    var maxNoOfChars: Int { 9 }
 
     var identifier: ItemIdentifier = nil
 
@@ -290,7 +292,7 @@ class ShippingZipCodeItem: ClearentPaymentItem {
     
     var errorMessage: String? { ClearentConstants.Localized.ManualEntry.shippingZipCodeError }
     
-    var maxNoOfChars: Int { 10 }
+    var maxNoOfChars: Int { 9 }
 
     var identifier: ItemIdentifier = nil
 
