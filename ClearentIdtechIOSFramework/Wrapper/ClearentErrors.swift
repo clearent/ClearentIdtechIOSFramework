@@ -23,3 +23,24 @@ public enum ClearentError: Error {
     /// No publicKey was passed to SDK
     case publicKeyNotProvided
 }
+
+
+// Provide OBJ-C compatibility
+@objc public enum ClearentResult: Int {
+    
+    /// The user aborted the current flow
+   case cancelledByUser = 0
+    
+    /// No apiKey was passed to SDK
+    case apiKeyNotProvided
+
+    /// No baseURL was passed to SDK
+    case baseURLNotProvided
+    
+    /// No publicKey was passed to SDK
+    case publicKeyNotProvided
+    
+    /// Process finished
+    case processFinished
+}
+
