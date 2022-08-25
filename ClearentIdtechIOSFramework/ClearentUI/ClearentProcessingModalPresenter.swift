@@ -202,15 +202,17 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         guard let amount = amountWithoutTip?.stringFormattedWithTwoDecimals,
               let cardNo = dataSource.valueForType(.creditCardNo)?.replacingOccurrences(of: ClearentPaymentItemType.creditCardNo.separator, with: ""),
               let date = dataSource.valueForType(.date)?.replacingOccurrences(of: ClearentPaymentItemType.date.separator, with: ""),
-              let csc = dataSource.valueForType(.securityCode),
-              let billingZipCode = dataSource.valueForType(.billingZipCode)?.replacingOccurrences(of: ClearentPaymentItemType.billingZipCode.separator, with: ""),
-              let shipToZipCode = dataSource.valueForType(.shippingZipCode)?.replacingOccurrences(of: ClearentPaymentItemType.shippingZipCode.separator, with: "") else { return }
+              let csc = dataSource.valueForType(.securityCode) else { return }
 
         let cardInfo = ManualEntryCardInfo(card: cardNo, expirationDateMMYY: date, csc: csc)
+        
+        let billingZipCode = dataSource.valueForType(.billingZipCode)?.replacingOccurrences(of: ClearentPaymentItemType.billingZipCode.separator, with: "")
         let billingInfo = ClientInformation(firstName: dataSource.valueForType(.cardholderFirstName),
                                             lastName: dataSource.valueForType(.cardholderLastName),
                                             company: dataSource.valueForType(.companyName),
                                             zip: billingZipCode)
+        
+        let shipToZipCode = dataSource.valueForType(.shippingZipCode)?.replacingOccurrences(of: ClearentPaymentItemType.shippingZipCode.separator, with: "")
         let shippingInfo = ClientInformation(zip: shipToZipCode)
         let saleEntity = SaleEntity(amount: amount,
                                     tipAmount: tip?.stringFormattedWithTwoDecimals,
