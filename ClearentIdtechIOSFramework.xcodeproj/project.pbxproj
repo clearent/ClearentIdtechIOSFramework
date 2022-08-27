@@ -1272,11 +1272,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
-				"ARCHS[sdk=iphonesimulator*]" = (
-					x86_64,
-					i386,
-				);
+				ARCHS = arm64;
+				"ARCHS[sdk=iphonesimulator*]" = x86_64;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1337,7 +1335,7 @@
 				OTHER_CODE_SIGN_FLAGS = "--remove-signature";
 				SDKROOT = iphoneos;
 				VALID_ARCHS = arm64;
-				"VALID_ARCHS[sdk=iphonesimulator*]" = "x86_64 i386";
+				"VALID_ARCHS[sdk=iphonesimulator*]" = x86_64;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -1347,14 +1345,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					arm64,
-					armv7,
-				);
-				"ARCHS[sdk=iphonesimulator*]" = (
-					i386,
-					x86_64,
-				);
+				ARCHS = arm64;
+				"ARCHS[sdk=iphonesimulator*]" = x86_64;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -1409,8 +1402,8 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "";
-				"VALID_ARCHS[sdk=iphonesimulator*]" = "x86_64 i386";
+				VALID_ARCHS = arm64;
+				"VALID_ARCHS[sdk=iphonesimulator*]" = x86_64;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -1420,16 +1413,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ARCHS = (
-					arm64,
-					armv7,
-				);
+				ARCHS = arm64;
 				"ARCHS[sdk=iphonesimulator*]" = (
 					arm64,
 					x86_64,
-					i386,
 				);
-				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				CLANG_MODULES_AUTOLINK = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -1472,7 +1461,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TVOS_DEPLOYMENT_TARGET = "";
-				VALID_ARCHS = arm64;
+				VALID_ARCHS = "arm64 x86_64";
 				WATCHOS_DEPLOYMENT_TARGET = "";
 			};
 			name = Debug;
@@ -1481,16 +1470,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ARCHS = (
-					armv7,
-					arm64,
-				);
+				ARCHS = arm64;
 				"ARCHS[sdk=iphonesimulator*]" = (
-					i386,
 					x86_64,
 					arm64,
 				);
-				BUILD_LIBRARY_FOR_DISTRIBUTION = NO;
+				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				CLANG_MODULES_AUTOLINK = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -1531,7 +1516,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TVOS_DEPLOYMENT_TARGET = "";
-				VALID_ARCHS = arm64;
+				VALID_ARCHS = "arm64 x86_64";
 				WATCHOS_DEPLOYMENT_TARGET = "";
 			};
 			name = Release;
