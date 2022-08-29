@@ -83,6 +83,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         stackView.removeAllArrangedSubviews()
         stackView.isUserInteractionEnabled = true
         ClearentWrapper.shared.flowType = (feedback.flow, feedback.type)
+        
         feedback.items.forEach {
             if let component = uiComponent(for: $0) {
                 stackView.addArrangedSubview(component)
@@ -102,6 +103,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         ClearentWrapperDefaults.skipOnboarding = true
         ClearentWrapper.shared.stopContinousSearching()
         ClearentWrapper.shared.cancelTransaction()
+        
         DispatchQueue.main.async { [weak self] in
             self?.dismiss(animated: true, completion: nil)
             self?.dismissCompletion?(result)
@@ -164,6 +166,12 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             return signatureView()
         case .manualEntry:
             return manualEntryFormView()
+        case .error:
+            let errorDetailsView = ClearentErrorDetailsView()
+            guard let detailedErrorMessage = object as? String else { return nil }
+            
+            errorDetailsView.setup(with: detailedErrorMessage)
+            return errorDetailsView
         }
     }
     
@@ -184,6 +192,10 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         dataSource.delegate = manualEntryFormView
         
         return manualEntryFormView
+    }
+    
+    private func errorDetailsView() -> ClearentErrorDetailsView {
+        return ClearentErrorDetailsView()
     }
 
     private func readerInfoView(readerInfo: ReaderInfo?) -> ClearentReaderStatusHeaderView? {
