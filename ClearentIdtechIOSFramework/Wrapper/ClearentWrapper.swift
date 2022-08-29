@@ -215,7 +215,7 @@ public final class ClearentWrapper : NSObject {
     /// Specifies what payment flow should be displayed. If true, card reader is used. Otherwise, a form where the user has to enter manually the card info is displayed.
     public var useCardReaderPaymentMethod: Bool = true
     
-    weak var delegate: ClearentWrapperProtocol?
+    public weak var delegate: ClearentWrapperProtocol?
 
     private lazy var clearentVP3300: Clearent_VP3300 = {
         let config = ClearentVP3300Config(noContactlessNoConfiguration: baseURL, publicKey: publicKey)
