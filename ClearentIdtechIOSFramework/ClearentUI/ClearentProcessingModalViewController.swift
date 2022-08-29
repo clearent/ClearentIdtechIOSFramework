@@ -79,6 +79,9 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         stackView.positionView(onTop: flag, of: view)
     }
     
+    /*
+     This method will remove the current displayed content in the modall and will generate other UI using the feedback parameter.
+     */
     public func updateContent(with feedback: FlowFeedback) {
         stackView.removeAllArrangedSubviews()
         stackView.isUserInteractionEnabled = true
