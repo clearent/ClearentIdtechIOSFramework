@@ -24,7 +24,7 @@ public class ClearentErrorDetailsView: UIView, ClearentMarginable {
     
     public func setBottomMargin(margin: BottomMargin) {
         bottomLayoutConstraint = NSLayoutConstraint(item: textView, attribute: .bottomMargin, relatedBy: .equal, toItem: self, attribute: .bottomMargin, multiplier: 1.0, constant: -margin.constant)
-        configure()
+        configureLayout()
     }
     
     private var bottomLayoutConstraint: NSLayoutConstraint?
@@ -54,7 +54,7 @@ public class ClearentErrorDetailsView: UIView, ClearentMarginable {
     
     // MARK: - Private
     
-    private func configure() {
+    private func configureLayout() {
         addSubview(textView)
 
         textView.translatesAutoresizingMaskIntoConstraints = false
