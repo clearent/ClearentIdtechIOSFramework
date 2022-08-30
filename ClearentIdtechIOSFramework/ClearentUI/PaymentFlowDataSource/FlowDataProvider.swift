@@ -123,8 +123,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         let feedback: FlowFeedback
         
         if let error = error {
-            guard let linksItem = response.links?.first else { return }
-            guard let transactionResponse = response.payload.transaction else { return }
+            guard let linksItem = response.links?.first, let transactionResponse = response.payload.transaction else { return }
             let detailedErrorMessage = createDetailedErrorMessage(with: error, message: transactionResponse.message, transactionID: linksItem.id, exchangeID: response.exchange_id)
             
             let errorItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
@@ -389,6 +388,6 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     }
     
     private func createDetailedErrorMessage(with error: ResponseError, message: String, transactionID: String, exchangeID: String) -> String {
-        "Error code: \(error.code)\nError message: \(message)\nTransaction ID: \(transactionID)\nExchange ID: \(exchangeID)"
+        String(format: ClearentConstants.Localized.Error.detailedErrorMessage, error.code, message, transactionID, exchangeID)
     }
 }

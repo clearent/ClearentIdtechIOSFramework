@@ -167,11 +167,8 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         case .manualEntry:
             return manualEntryFormView()
         case .error:
-            let errorDetailsView = ClearentErrorDetailsView()
             guard let detailedErrorMessage = object as? String else { return nil }
-            
-            errorDetailsView.setup(with: detailedErrorMessage)
-            return errorDetailsView
+            return ClearentErrorDetailsView(detailerErrorMessage: detailedErrorMessage)
         }
     }
     
@@ -192,10 +189,6 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         dataSource.delegate = manualEntryFormView
         
         return manualEntryFormView
-    }
-    
-    private func errorDetailsView() -> ClearentErrorDetailsView {
-        return ClearentErrorDetailsView()
     }
 
     private func readerInfoView(readerInfo: ReaderInfo?) -> ClearentReaderStatusHeaderView? {

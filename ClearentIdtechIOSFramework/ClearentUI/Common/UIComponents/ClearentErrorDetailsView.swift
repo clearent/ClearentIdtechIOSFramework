@@ -30,12 +30,6 @@ public class ClearentErrorDetailsView: UIView, ClearentMarginable {
     private var bottomLayoutConstraint: NSLayoutConstraint?
     private var textView = UITextView()
     
-    // MARK: - Internal
-    
-    func setup(with detailedErrorMessage: String) {
-        textView.text = detailedErrorMessage
-    }
-    
     // MARK: - Init
     
     override init(frame: CGRect) {
@@ -46,19 +40,19 @@ public class ClearentErrorDetailsView: UIView, ClearentMarginable {
         super.init(coder: coder)
     }
     
-    convenience init() {
+    convenience init(detailerErrorMessage: String) {
         self.init(frame: .zero)
         
+        textView.text = detailerErrorMessage
         textView.isEditable = false
     }
     
     // MARK: - Private
     
     private func configureLayout() {
-        addSubview(textView)
-
-        textView.translatesAutoresizingMaskIntoConstraints = false
         guard let bottomLayoutConstraint = bottomLayoutConstraint else { return }
+        addSubview(textView)
+        textView.translatesAutoresizingMaskIntoConstraints = false
         
         let topAnchor = textView.topAnchor.constraint(equalTo: self.topAnchor, constant: Layout.topSpaceToContainerView)
         let leftAnchor = textView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 0)
