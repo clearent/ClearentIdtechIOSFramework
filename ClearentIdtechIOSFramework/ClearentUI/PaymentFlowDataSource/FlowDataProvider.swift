@@ -104,7 +104,6 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
-    
  
     // MARK - Transaction related
     
@@ -124,16 +123,19 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         let feedback: FlowFeedback
         
         if let error = error {
-            let errItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
+            guard let linksItem = response.links?.first, let transactionResponse = response.payload.transaction else { return }
+            let detailedErrorMessage = createDetailedErrorMessage(with: error, message: transactionResponse.message, transactionID: linksItem.id, exchangeID: response.exchange_id)
+            
+            let errorItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
                             FlowDataItem(type: .title, object: ClearentConstants.Localized.Error.generalErrorTitle),
-                            FlowDataItem(type: .description, object: error.message),
+                            FlowDataItem(type: .error, object: detailedErrorMessage),
                             FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                             FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
             
             feedback = FlowDataFactory.component(with: .payment,
                                                      type: .error,
                                                      readerInfo: fetchReaderInfo(),
-                                                     payload: errItems)
+                                                     payload: errorItems)
         } else {
             let transactionItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.transaction_completed),
                                     FlowDataItem(type: .title, object: ClearentConstants.Localized.FlowDataProvider.transactionCompleted)]
@@ -146,6 +148,14 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         }
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
         self.delegate?.didFinishTransaction(error: error)
+    }
+    
+    func deviceDidDisconnect() {
+        delegate?.deviceDidDisconnect()
+    }
+    
+    func didBeginContinuousSearching() {
+        self.delegate?.didBeginContinuousSearching()
     }
     
     func userActionNeeded(action: UserAction) {
@@ -287,10 +297,6 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         }
     }
 
-    func deviceDidDisconnect() {
-        delegate?.deviceDidDisconnect()
-    }
-
     func didStartPairing() {
         let items = [FlowDataItem(type: .hint, object: ClearentConstants.Localized.Pairing.selectReader),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
@@ -355,10 +361,6 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  payload: items)
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
-    
-    func didBeginContinuousSearching() {
-        self.delegate?.didBeginContinuousSearching()
-    }
 
     func didReceiveSignalStrength() {
         // when signal strength is received, content should be reloaded
@@ -366,6 +368,8 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             createFeedbackForSuccessfulPairing()
         }
     }
+    
+    // MARK: - Private
     
     private func createFeedbackForSuccessfulPairing() {
         guard var recentlyPairedReaders = ClearentWrapperDefaults.recentlyPairedReaders,
@@ -381,5 +385,9 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                              readerInfo: ClearentWrapperDefaults.pairedReaderInfo,
                                              payload: items)
         delegate?.didReceiveFlowFeedback(feedback: feedback)
+    }
+    
+    private func createDetailedErrorMessage(with error: ResponseError, message: String, transactionID: String, exchangeID: String) -> String {
+        String(format: ClearentConstants.Localized.Error.detailedErrorMessage, error.code, message, transactionID, exchangeID)
     }
 }

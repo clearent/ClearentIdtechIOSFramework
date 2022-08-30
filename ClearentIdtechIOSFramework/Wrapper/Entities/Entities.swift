@@ -11,8 +11,13 @@ import Foundation
 public struct TransactionResponse: Codable {
     var code: String
     var status: String
+    var exchange_id: String
     var links: [Links]?
     var payload: Payload
+    
+    enum CodingKeys: String, CodingKey {
+        case code, status, links, payload, exchange_id = "exchange-id"
+    }
 }
 
 public struct SignatureResponse: Codable {
@@ -30,6 +35,7 @@ public struct Links: Codable {
 
 public struct Payload: Codable {
     var error: ResponseError?
+    var transaction: Transaction?
     var payloadType: String
 }
 
@@ -40,5 +46,13 @@ public struct ResponseError: Codable {
     enum CodingKeys: String, CodingKey {
         case code = "result-code"
         case message = "error-message"
+    }
+}
+
+public struct Transaction: Codable {
+    var message: String
+    
+    enum CodingKeys: String, CodingKey {
+        case message = "display-message"
     }
 }

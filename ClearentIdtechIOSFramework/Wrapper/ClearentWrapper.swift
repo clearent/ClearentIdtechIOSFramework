@@ -389,7 +389,7 @@ public final class ClearentWrapper : NSObject {
     public func saleTransaction(jwt: String, saleEntity: SaleEntity) {
         httpClient.saleTransaction(jwt: jwt, saleEntity: saleEntity) { data, error in
             guard let responseData = data else { return }
-            
+
             do {
                 let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
                 guard let transactionError = decodedResponse.payload.error else {
@@ -397,7 +397,7 @@ public final class ClearentWrapper : NSObject {
                         if let linksItem = decodedResponse.links?.first {
                             self.lastTransactionID = linksItem.id
                         }
-                      
+
                         self.delegate?.didFinishTransaction(response: decodedResponse, error: nil)
                     }
                     return
@@ -436,6 +436,7 @@ public final class ClearentWrapper : NSObject {
                  let base64Image =  image.jpegData(compressionQuality: 1)?.base64EncodedString() ?? ""
                  httpClient.sendSignature(base64Image: base64Image, transactionID: tid) { data, error in
                      guard let responseData = data else { return }
+                     
                      do {
                          let decodedResponse = try JSONDecoder().decode(SignatureResponse.self, from: responseData)
                          DispatchQueue.main.async {
