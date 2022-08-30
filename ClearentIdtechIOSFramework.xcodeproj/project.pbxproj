@@ -73,7 +73,7 @@
 		01442D1F28B3D836006DD15C /* ClearentEmptySpace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442CB828B3D835006DD15C /* ClearentEmptySpace.swift */; };
 		01442D2028B3D836006DD15C /* ClearentSignatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442CB928B3D835006DD15C /* ClearentSignatureView.swift */; };
 		01442D2128B3D836006DD15C /* ClearentBaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442CBA28B3D835006DD15C /* ClearentBaseViewController.swift */; };
-		01442D2228B3D836006DD15C /* ClearentIcon.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01442CBB28B3D835006DD15C /* ClearentIcon.xib */; };
+		01442D2228B3D836006DD15C /* ClearentAnimationWithSubtitle.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01442CBB28B3D835006DD15C /* ClearentAnimationWithSubtitle.xib */; };
 		01442D2328B3D836006DD15C /* ClearentListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442CBC28B3D835006DD15C /* ClearentListView.swift */; };
 		01442D2428B3D836006DD15C /* ClearentTitleLabel.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01442CBD28B3D835006DD15C /* ClearentTitleLabel.xib */; };
 		01442D2528B3D836006DD15C /* ClearentReaderConnectivityStatusView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01442CBE28B3D835006DD15C /* ClearentReaderConnectivityStatusView.xib */; };
@@ -124,6 +124,12 @@
 		01442D5E28B3D84D006DD15C /* SignatureEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442D5528B3D84D006DD15C /* SignatureEntity.swift */; };
 		01442D5F28B3D84D006DD15C /* SaleEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442D5628B3D84D006DD15C /* SaleEntity.swift */; };
 		01442D6028B3D84D006DD15C /* MerchantSettingsEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442D5728B3D84D006DD15C /* MerchantSettingsEntity.swift */; };
+		01DC91AA28BE129B009FAE64 /* ArrayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DC91A928BE129B009FAE64 /* ArrayExtension.swift */; };
+		01E22E0028B77D9F004C4ADF /* SVGView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E22DFD28B77D9E004C4ADF /* SVGView.swift */; };
+		01E22E0228B77D9F004C4ADF /* SVGLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E22DFF28B77D9F004C4ADF /* SVGLoader.swift */; };
+		01E22E0528B77DDF004C4ADF /* card_animation.svg in Resources */ = {isa = PBXBuildFile; fileRef = 01E22E0428B77DDF004C4ADF /* card_animation.svg */; };
+		01E22E0828B7BAE3004C4ADF /* UIVIewExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E22E0728B7BAE3004C4ADF /* UIVIewExtension.swift */; };
+		01E22E1228B8D615004C4ADF /* ClearentAnimationWithSubtitle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E22E1128B8D615004C4ADF /* ClearentAnimationWithSubtitle.swift */; };
 		4B074F3C2447173200868E21 /* ClearentConfigFetcher_Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = E728DB1D20E669EB004C01E7 /* ClearentConfigFetcher_Tests.m */; };
 		4B074F3E244717E500868E21 /* ClearentConfiguration.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA494020E171830090CFFC /* ClearentConfiguration.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		4B074F3F244717EE00868E21 /* ClearentConfigFetcher.h in Headers */ = {isa = PBXBuildFile; fileRef = E7CA497320E578BC0090CFFC /* ClearentConfigFetcher.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -271,7 +277,7 @@
 		01442CB828B3D835006DD15C /* ClearentEmptySpace.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentEmptySpace.swift; sourceTree = "<group>"; };
 		01442CB928B3D835006DD15C /* ClearentSignatureView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentSignatureView.swift; sourceTree = "<group>"; };
 		01442CBA28B3D835006DD15C /* ClearentBaseViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentBaseViewController.swift; sourceTree = "<group>"; };
-		01442CBB28B3D835006DD15C /* ClearentIcon.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ClearentIcon.xib; sourceTree = "<group>"; };
+		01442CBB28B3D835006DD15C /* ClearentAnimationWithSubtitle.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ClearentAnimationWithSubtitle.xib; sourceTree = "<group>"; };
 		01442CBC28B3D835006DD15C /* ClearentListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentListView.swift; sourceTree = "<group>"; };
 		01442CBD28B3D835006DD15C /* ClearentTitleLabel.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ClearentTitleLabel.xib; sourceTree = "<group>"; };
 		01442CBE28B3D835006DD15C /* ClearentReaderConnectivityStatusView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ClearentReaderConnectivityStatusView.xib; sourceTree = "<group>"; };
@@ -322,6 +328,12 @@
 		01442D5528B3D84D006DD15C /* SignatureEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignatureEntity.swift; sourceTree = "<group>"; };
 		01442D5628B3D84D006DD15C /* SaleEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SaleEntity.swift; sourceTree = "<group>"; };
 		01442D5728B3D84D006DD15C /* MerchantSettingsEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MerchantSettingsEntity.swift; sourceTree = "<group>"; };
+		01DC91A928BE129B009FAE64 /* ArrayExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtension.swift; sourceTree = "<group>"; };
+		01E22DFD28B77D9E004C4ADF /* SVGView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SVGView.swift; sourceTree = "<group>"; };
+		01E22DFF28B77D9F004C4ADF /* SVGLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SVGLoader.swift; sourceTree = "<group>"; };
+		01E22E0428B77DDF004C4ADF /* card_animation.svg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = card_animation.svg; sourceTree = "<group>"; };
+		01E22E0728B7BAE3004C4ADF /* UIVIewExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIVIewExtension.swift; sourceTree = "<group>"; };
+		01E22E1128B8D615004C4ADF /* ClearentAnimationWithSubtitle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentAnimationWithSubtitle.swift; sourceTree = "<group>"; };
 		4B074F4624471B7900868E21 /* ClearentBluetoothDevice_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentBluetoothDevice_Tests.m; sourceTree = "<group>"; };
 		4B074F4824471F2700868E21 /* ClearentConnection_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentConnection_Tests.m; sourceTree = "<group>"; };
 		4B074F4A2447313900868E21 /* ClearentDeviceConnector_Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentDeviceConnector_Tests.m; sourceTree = "<group>"; };
@@ -504,12 +516,11 @@
 		01442C8828B3D835006DD15C /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				01442CE128B3D835006DD15C /* Assets */,
 				01442C8928B3D835006DD15C /* Util */,
 				01442C9628B3D835006DD15C /* Extensions */,
 				01442C9E28B3D835006DD15C /* UIComponents */,
 				01442CDA28B3D835006DD15C /* Model */,
-				01442CDD28B3D835006DD15C /* Fonts */,
-				01442CE128B3D835006DD15C /* Assets */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -517,6 +528,7 @@
 		01442C8928B3D835006DD15C /* Util */ = {
 			isa = PBXGroup;
 			children = (
+				01E22E0328B77DAD004C4ADF /* Animation */,
 				01442C8B28B3D835006DD15C /* AdaptiveStackView */,
 				01442C9028B3D835006DD15C /* ClearentApplicationOrientation.swift */,
 				01442C9128B3D835006DD15C /* ClearentColorExtension.swift */,
@@ -549,6 +561,8 @@
 				01442C9B28B3D835006DD15C /* UICollection.swift */,
 				01442C9C28B3D835006DD15C /* UIFontExtension.swift */,
 				01442C9D28B3D835006DD15C /* StringExtension.swift */,
+				01E22E0728B7BAE3004C4ADF /* UIVIewExtension.swift */,
+				01DC91A928BE129B009FAE64 /* ArrayExtension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -579,7 +593,7 @@
 				01442CB828B3D835006DD15C /* ClearentEmptySpace.swift */,
 				01442CB928B3D835006DD15C /* ClearentSignatureView.swift */,
 				01442CBA28B3D835006DD15C /* ClearentBaseViewController.swift */,
-				01442CBB28B3D835006DD15C /* ClearentIcon.xib */,
+				01442CBB28B3D835006DD15C /* ClearentAnimationWithSubtitle.xib */,
 				01442CBC28B3D835006DD15C /* ClearentListView.swift */,
 				01442CBD28B3D835006DD15C /* ClearentTitleLabel.xib */,
 				01442CBE28B3D835006DD15C /* ClearentReaderConnectivityStatusView.xib */,
@@ -593,6 +607,7 @@
 				01442CD728B3D835006DD15C /* ClearentLabelSwitch.xib */,
 				01442CD828B3D835006DD15C /* ClearentEmptySpace.xib */,
 				01442CD928B3D835006DD15C /* ClearentRoundedCornersStackView.swift */,
+				01E22E1128B8D615004C4ADF /* ClearentAnimationWithSubtitle.swift */,
 			);
 			path = UIComponents;
 			sourceTree = "<group>";
@@ -660,6 +675,8 @@
 		01442CE128B3D835006DD15C /* Assets */ = {
 			isa = PBXGroup;
 			children = (
+				01442CDD28B3D835006DD15C /* Fonts */,
+				01E22DFA28B77C65004C4ADF /* Animations */,
 				01442CE228B3D835006DD15C /* Asset Catalog.xcassets */,
 				01442CE328B3D835006DD15C /* Localizable.strings */,
 			);
@@ -702,6 +719,23 @@
 				01442D5728B3D84D006DD15C /* MerchantSettingsEntity.swift */,
 			);
 			path = Entities;
+			sourceTree = "<group>";
+		};
+		01E22DFA28B77C65004C4ADF /* Animations */ = {
+			isa = PBXGroup;
+			children = (
+				01E22E0428B77DDF004C4ADF /* card_animation.svg */,
+			);
+			path = Animations;
+			sourceTree = "<group>";
+		};
+		01E22E0328B77DAD004C4ADF /* Animation */ = {
+			isa = PBXGroup;
+			children = (
+				01E22DFF28B77D9F004C4ADF /* SVGLoader.swift */,
+				01E22DFD28B77D9E004C4ADF /* SVGView.swift */,
+			);
+			path = Animation;
 			sourceTree = "<group>";
 		};
 		E728DB4920E686CA004C01E7 /* test */ = {
@@ -1050,8 +1084,9 @@
 				E77687472062B66300284FF4 /* .gitignore in Resources */,
 				01442D0928B3D836006DD15C /* ClearentLoadingView.xib in Resources */,
 				01442D2428B3D836006DD15C /* ClearentTitleLabel.xib in Resources */,
-				01442D2228B3D836006DD15C /* ClearentIcon.xib in Resources */,
+				01442D2228B3D836006DD15C /* ClearentAnimationWithSubtitle.xib in Resources */,
 				01442D1728B3D836006DD15C /* ClearentPairingReaderItem.xib in Resources */,
+				01E22E0528B77DDF004C4ADF /* card_animation.svg in Resources */,
 				01442D3728B3D836006DD15C /* ClearentPaymentHeaderView.xib in Resources */,
 				01442D3428B3D836006DD15C /* ClearentManualEntryFormView.xib in Resources */,
 			);
@@ -1098,6 +1133,7 @@
 			files = (
 				4BC2D81C286A261900F362C9 /* ClearentEmvConfigurator.m in Sources */,
 				01442D3A28B3D836006DD15C /* ClearentPaymentSectionHeaderView.swift in Sources */,
+				01E22E1228B8D615004C4ADF /* ClearentAnimationWithSubtitle.swift in Sources */,
 				01442D3828B3D836006DD15C /* ClearentManualEntryFormView.swift in Sources */,
 				01442D4B28B3D836006DD15C /* ClearentProcessingModalViewController.swift in Sources */,
 				01442D0328B3D836006DD15C /* UITextField.swift in Sources */,
@@ -1129,6 +1165,7 @@
 				01442D5928B3D84D006DD15C /* ClearentExtension.swift in Sources */,
 				E7CA494220E171960090CFFC /* ClearentConfiguration.m in Sources */,
 				E79BC82520B366300030FD8C /* Clearent_VP3300.m in Sources */,
+				01E22E0228B77D9F004C4ADF /* SVGLoader.swift in Sources */,
 				01442D5B28B3D84D006DD15C /* HttpClient.swift in Sources */,
 				01442D4728B3D836006DD15C /* ClearentDefaultFonts.swift in Sources */,
 				01442D5A28B3D84D006DD15C /* ClearentErrors.swift in Sources */,
@@ -1153,10 +1190,12 @@
 				4BCD80B528745F2100507B3B /* ClearentIDTUtility.m in Sources */,
 				01442D2328B3D836006DD15C /* ClearentListView.swift in Sources */,
 				01442D0828B3D836006DD15C /* StrokeAnimation.swift in Sources */,
+				01E22E0028B77D9F004C4ADF /* SVGView.swift in Sources */,
 				CC5E5A3628B659D400F5C291 /* ReaderInfo.swift in Sources */,
 				E75891FC225522AB00288032 /* ClearentLogging.m in Sources */,
 				E75891F7225522AB00288032 /* ClearentLoggingRequest.m in Sources */,
 				01442C7A28B3D343006DD15C /* BluetoothScanner.swift in Sources */,
+				01E22E0828B7BAE3004C4ADF /* UIVIewExtension.swift in Sources */,
 				01442D3628B3D836006DD15C /* ClearentPaymentHeaderView.swift in Sources */,
 				01442D2828B3D836006DD15C /* ClearentLabelWithIcon.swift in Sources */,
 				4B32C0912432677F00CCF9B9 /* ClearentTransactionToken.m in Sources */,
@@ -1183,6 +1222,7 @@
 				01442D3328B3D836006DD15C /* ClearentPaymentDataSource.swift in Sources */,
 				01442D0F28B3D836006DD15C /* ClearentPrimaryButton.swift in Sources */,
 				01442D1B28B3D836006DD15C /* ClearentReaderConnectivityStatusView.swift in Sources */,
+				01DC91AA28BE129B009FAE64 /* ArrayExtension.swift in Sources */,
 				01442CF928B3D836006DD15C /* ClearentMarginable.swift in Sources */,
 				01442CEC28B3D836006DD15C /* ClearentUIManager.swift in Sources */,
 				01442CEE28B3D836006DD15C /* FlowDataProvider.swift in Sources */,

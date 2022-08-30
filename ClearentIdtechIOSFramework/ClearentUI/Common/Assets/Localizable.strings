@@ -33,8 +33,13 @@
 
 // MARK: Payment Flow - General
 // Texts that are displayed during the payment flow
-
 "xsdk_payment_transaction_completed_description" = "Payment successful";
+
+// MARK: Payment Flow - Reader interaction
+
+"xsdk_payment_transaction_reader_tap" = "Hold card near contactless symbol";
+"xsdk_payment_transaction_reader_insert" = "Fully insert card into reader";
+"xsdk_payment_transaction_reader_slide" = "Slide card through reader";
 
 // MARK: Payment Flow - Tips
 // Texts that are displayed on the tips screen (part of the payment flow)

@@ -157,8 +157,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
                      FlowDataItem(type: .description, object: action.description)]
         case .swipeInsert, .swipeTapOrInsert:
-            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
-                     FlowDataItem(type: .description, object: action.description),
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.animatedCardInteraction),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .pressReaderButton, .connectionTimeout:
             items = [FlowDataItem(type: .description, object: ClearentConstants.Localized.Pairing.readerRange),
@@ -171,7 +170,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             connectionErrorDisplayed = true
         case .tryICCAgain, .cardHasChip, .tryMSRAgain, .useMagstripe, .tapFailed:
             type = .warning
-            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.staticCardInteraction),
                      FlowDataItem(type: .title, object: ClearentConstants.Localized.Error.readerError),
                      FlowDataItem(type: .description, object: action.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo),
@@ -219,7 +218,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .transactionFailed:
             type = .warning
-            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.insert_card),
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.staticCardInteraction),
                      FlowDataItem(type: .title, object: ClearentConstants.Localized.Error.readerError),
                      FlowDataItem(type: .description, object: action.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
