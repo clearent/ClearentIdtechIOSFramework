@@ -1,5 +1,5 @@
 //
-//  UIVIewExtension.swift
+//  UIViewExtension.swift
 //  ClearentIdtechIOSFramework
 //
 //  Created by Carmen Jurcovan on 25.08.2022.

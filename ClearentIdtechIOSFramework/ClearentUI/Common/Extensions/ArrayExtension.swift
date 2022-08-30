@@ -9,7 +9,7 @@
 extension Array where Element: Equatable {
     /**
      * Used to get the next element in array.
-     * @param after,  specifies the element after which next item is taken
+     * @param after, specifies the element after which next item is taken
      * Returns: next element in array. If the last element is reached, next item returned will be the first in the array
      */
     func nextItem(after: Element) -> Element? {

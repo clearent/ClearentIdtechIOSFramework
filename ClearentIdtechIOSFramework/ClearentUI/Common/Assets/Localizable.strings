@@ -37,7 +37,7 @@
 
 // MARK: Payment Flow - Reader interaction
 
-"xsdk_payment_transaction_reader_tap" = "Hold card near contactless symbol";
+"xsdk_payment_transaction_reader_tap" = "Hold card on contactless symbol";
 "xsdk_payment_transaction_reader_insert" = "Fully insert card into reader";
 "xsdk_payment_transaction_reader_slide" = "Slide card through reader";
 

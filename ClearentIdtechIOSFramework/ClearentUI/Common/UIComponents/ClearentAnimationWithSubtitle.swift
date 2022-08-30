@@ -12,18 +12,17 @@ class ClearentAnimationWithSubtitle: ClearentMarginableView {
 
     @IBOutlet weak var animatedView: SVGView!
     @IBOutlet weak var subtitle: ClearentSubtitleLabel!
-
-    var bottomConstraint: NSLayoutConstraint?
+    
     private var timer: Timer?
-    var subtitles: [String]?
+    
+    var bottomConstraint: NSLayoutConstraint?
     
     override var margins: [BottomMargin] {
-        [ RelativeBottomMargin(constant: 24, relatedViewType: ClearentPrimaryButton.self) ]
+        [RelativeBottomMargin(constant: 24, relatedViewType: ClearentPrimaryButton.self)]
     }
 
     convenience init(animationName: String, subtitles: [String]?) {
         self.init()
-        self.subtitles = subtitles
         subtitle.title = subtitles?[0]
         animatedView.setupAnimation(name: animationName)
         timer = Timer.scheduledTimer(withTimeInterval: 3.3, repeats: true) { [weak self] _ in
