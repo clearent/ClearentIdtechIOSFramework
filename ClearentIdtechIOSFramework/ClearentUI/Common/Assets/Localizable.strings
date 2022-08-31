@@ -148,6 +148,7 @@
 "xsdk_general_error_user_action_retry" = "Try Again";
 "xsdk_general_error_user_action_cancel" = "Cancel";
 "xsdk_general_error_user_action_manually_enter_card" = "Manually enter credit card details";
+"xsdk_general_error_detailed_error_message" = "Error code: %@\nError message: %@\nTransaction ID: %@\nExchange ID: %@";
 
 // MARK: Reader error
 "xsdk_reader_error_title" = "Card read error";

@@ -39,6 +39,7 @@ public class BottomMargin {
 
 class RelativeBottomMargin: BottomMargin {
     var relatedViewType: UIView.Type
+    
     public init(constant: CGFloat, relatedViewType: UIView.Type) {
         self.relatedViewType = relatedViewType
         super.init(constant: constant)
