@@ -7,6 +7,10 @@
 //
 
 extension String {
+    /**
+     * Used to access a specific character in a string
+     * @param i, position of the character in the string
+     */
     subscript(i: Int) -> String {
         return String(self[index(startIndex, offsetBy: i)])
     }
