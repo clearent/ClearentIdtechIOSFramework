@@ -237,7 +237,11 @@ public final class ClearentWrapper : NSObject {
     private var isInternetOn = false
     private var signatureImage: UIImage?
     private var connectivityActionNeeded: UserAction? {
-        isBluetoothPermissionGranted  ? (isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : .noInternet) : .noBluetoothPermission
+        if useCardReaderPaymentMethod {
+            return isBluetoothPermissionGranted ? (isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : .noInternet) : .noBluetoothPermission
+        } else {
+            return isInternetOn ? nil : .noInternet
+        }
     }
     private lazy var httpClient: ClearentHttpClient = {
         ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
@@ -282,12 +286,7 @@ public final class ClearentWrapper : NSObject {
      * @param reconnectIfPossible, if  false  a connection that will search for bluetooth devices will be started, if true a connection with the last paired reader will be tried
      */
     public func startPairing(reconnectIfPossible: Bool) {
-        if let action = connectivityActionNeeded {
-            DispatchQueue.main.async {
-                self.delegate?.userActionNeeded(action: action)
-            }
-            return
-        }
+        if shouldDisplayConnectivityWarning() { return }
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let strongSelf = self else { return }
             
@@ -360,7 +359,7 @@ public final class ClearentWrapper : NSObject {
         
         self.saleEntity = saleEntity
         
-        if shouldDisplayBluetoothWarning() { return }
+        if shouldDisplayConnectivityWarning() { return }
         
         if let manualEntryCardInfo = manualEntryCardInfo {
             manualEntryTransaction(cardNo: manualEntryCardInfo.card, expirationDate: manualEntryCardInfo.expirationDateMMYY, csc: manualEntryCardInfo.csc)
@@ -428,6 +427,7 @@ public final class ClearentWrapper : NSObject {
      * @param image, UIImage to be uploaded
      */
     public func sendSignatureWithImage(image: UIImage) throws {
+        if shouldDisplayConnectivityWarning() { return }
         if let error = checkForMissingKeys() { throw error }
         
         if let id = lastTransactionID {
@@ -516,7 +516,7 @@ public final class ClearentWrapper : NSObject {
      * @param transactionID, ID of transcation to be voided
      */
     public func fetchTipSetting(completion: @escaping () -> Void) {
-        if shouldDisplayBluetoothWarning() { return }
+        if shouldDisplayConnectivityWarning() { return }
 
         httpClient.merchantSettings() { data, error in
             DispatchQueue.main.async {
@@ -562,14 +562,12 @@ public final class ClearentWrapper : NSObject {
     
     // MARK - Private
     
-    private func shouldDisplayBluetoothWarning() -> Bool {
-        if useCardReaderPaymentMethod {
-            if let action = connectivityActionNeeded {
-                DispatchQueue.main.async {
-                    self.delegate?.userActionNeeded(action: action)
-                }
-                return true
+    private func shouldDisplayConnectivityWarning() -> Bool {
+        if let action = connectivityActionNeeded {
+            DispatchQueue.main.async {
+                self.delegate?.userActionNeeded(action: action)
             }
+            return true
         }
         return false
     }
