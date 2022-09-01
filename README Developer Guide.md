@@ -61,7 +61,7 @@ The integrator's job is to get the controller using this method and display it o
 If you have a look at the implementation behind this, you will observe another two important UI components that are used in all cases where the SDK needs to display controllers.
 
 **ClearentProcessingModalViewController** and **ClearentProcessingModalPresenter** will be initialized and presented to the user. In order to initialize you need to provide some parameters like
-processType , showOnTop a reader if you use this to display the screen where the reader can be edited and also a dismiss completion.
+processType , showOnTop, a reader if you use this to display the screen where the reader can be edited and also a dismiss completion.
 
 **FlowDataProvider**
 
