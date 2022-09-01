@@ -8,9 +8,9 @@
 
 /*
  This class integrates the wrapper delegate methods and receives all feedback from the SDK.
- It will process and provide the information further to the UI part in way that is easier to create the UI by using it;s own protocol co communicate with the UI.
- Every time there is a new feedback that needs to be displayed a FlowFeedback object will be generated and ush thru the delegate method to the UI.
- Flow feedback contains everything that UI needs to display the new information.
+ It will process and provide the information further to the UI part in way that is easier to create the UI by using its own protocol to communicate with the UI.
+  Every time there is a new feedback that needs to be displayed, a FlowFeedback object will be generated and pushed through the delegate method to the UI.
+  Flow feedback contains everything that UI needs to display the new information.
  */
 
 import Foundation
