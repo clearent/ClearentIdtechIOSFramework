@@ -212,10 +212,10 @@ public final class ClearentWrapper : NSObject {
     /// Closure called when reader info (signal, battery, reader name, connection status) is received
     public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
     
-    /// Specifies what payment flow is preffered. If true, card reader is used. Otherwise, a form where the user has to enter manually the card info is displayed.
+    /// Specifies what payment flow is preferred. If true, card reader is used. Otherwise, a form where the user has to enter manually the card info is displayed.
     public var cardReaderPaymentIsPreffered: Bool = true
     
-    /// If card reader payment fails, the option to use manual payment can be displayed in UI as a fallback method
+    /// If card reader payment fails, the option to use manual payment can be displayed in UI as a fallback method. If user selects this method, useManualPaymentAsFallback needs to be set to true.
     public var useManualPaymentAsFallback: Bool?
     
     public weak var delegate: ClearentWrapperProtocol?

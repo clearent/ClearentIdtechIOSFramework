@@ -83,10 +83,10 @@ self.navigationController?.present(pairingVC, animated: true, completion: {})
 **Starting a transaction**
 
 Every time you start a transaction you need to pass the amount as Double to the payment controller.
-The SDK UI provides the option to enter the card details manualy or by using the card reader, use the **useCardReaderPaymentMethod** to choose the desired method.
+The SDK UI provides the option to enter the card details manualy or by using the card reader, use the **cardReaderPaymentIsPreffered** to choose the desired method. If this method fails, the option to use manual payment can be displayed in UI as a fallback method.
 
 ```
- ClearentUIManager.shared.useCardReaderPaymentMethod = true
+ ClearentUIManager.shared.cardReaderPaymentIsPreffered = true
 ```
 
 ```
