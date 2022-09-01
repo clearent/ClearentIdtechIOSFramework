@@ -23,6 +23,7 @@
 #import "ClearentBluetoothDevice.h"
 #import "ClearentDeviceConnector.h"
 #import "ClearentIDTUtility.h"
+#import "ClearentIdtechIOSFramework-Swift.h"
 
 #import <IDTech/IDT_VP3300.h>
 #import <IDTech/IDTCommon.h>
