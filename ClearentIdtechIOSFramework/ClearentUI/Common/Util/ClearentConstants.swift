@@ -224,7 +224,10 @@ import UIKit
             public static let generalErrorTitle = "xsdk_general_error_title".localized
             public static let generalErrorDescription = "xsdk_general_error_description".localized
             public static let readerError = "xsdk_reader_error_title".localized
-            public static let detailedErrorMessage = "xsdk_general_error_detailed_error_message".localized
+            public static let errorCode = "xsdk_general_error_code".localized
+            public static let errorMessage = "xsdk_general_error_message".localized
+            public static let transactionID = "xsdk_general_error_transaction_id".localized
+            public static let exchangeID = "xsdk_general_error_exchange_id".localized
         }
         
         enum FlowDataProvider {

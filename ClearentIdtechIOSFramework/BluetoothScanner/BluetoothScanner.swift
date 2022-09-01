@@ -104,6 +104,7 @@ extension BluetoothScanner: CBCentralManagerDelegate, CBPeripheralDelegate {
     
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
         guard let uuid = self.udid else {return}
+        
         if (peripheral.identifier.uuidString == uuid.uuidString) {
             let signal = levelForRSSI(RSSI: RSSI)
             self.delegate?.didReceivedSignalStrength(level: signal)
