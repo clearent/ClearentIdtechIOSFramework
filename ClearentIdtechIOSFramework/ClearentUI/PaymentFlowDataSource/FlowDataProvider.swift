@@ -123,9 +123,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         let feedback: FlowFeedback
         
         if let error = error {
-            guard let linksItem = response.links?.first, let transactionResponse = response.payload.transaction else { return }
-            let detailedErrorMessage = createDetailedErrorMessage(with: error, message: transactionResponse.message, transactionID: linksItem.id, exchangeID: response.exchange_id)
-            
+            let detailedErrorMessage = createDetailedErrorMessage(with: error.code, message: response.payload.transaction?.message, transactionID: response.links?.first?.id, exchangeID: response.exchange_id)
             let errorItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
                             FlowDataItem(type: .title, object: ClearentConstants.Localized.Error.generalErrorTitle),
                             FlowDataItem(type: .error, object: detailedErrorMessage),
@@ -386,7 +384,18 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
-    private func createDetailedErrorMessage(with error: ResponseError, message: String, transactionID: String, exchangeID: String) -> String {
-        String(format: ClearentConstants.Localized.Error.detailedErrorMessage, error.code, message, transactionID, exchangeID)
+    private func createDetailedErrorMessage(with errorCode: String, message: String?, transactionID: String?, exchangeID: String) -> String {
+        var detailedErrorMessage = String(format: ClearentConstants.Localized.Error.errorCode, errorCode)
+        
+        if let errorMessage = message {
+            detailedErrorMessage = detailedErrorMessage.appending(String(format: ClearentConstants.Localized.Error.errorMessage, errorMessage))
+        }
+        
+        if let transactionID = transactionID {
+            detailedErrorMessage = detailedErrorMessage.appending(String(format: ClearentConstants.Localized.Error.transactionID, transactionID))
+        }
+        detailedErrorMessage = detailedErrorMessage.appending(String(format: ClearentConstants.Localized.Error.exchangeID, exchangeID))
+        
+        return detailedErrorMessage
     }
 }

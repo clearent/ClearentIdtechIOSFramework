@@ -148,7 +148,10 @@
 "xsdk_general_error_user_action_retry" = "Try Again";
 "xsdk_general_error_user_action_cancel" = "Cancel";
 "xsdk_general_error_user_action_manually_enter_card" = "Manually enter credit card details";
-"xsdk_general_error_detailed_error_message" = "Error code: %@\nError message: %@\nTransaction ID: %@\nExchange ID: %@";
+"xsdk_general_error_code" = "Error code: %@\n";
+"xsdk_general_error_message" = "Error message: %@\n";
+"xsdk_general_error_transaction_id" = "Transaction ID: %@\n";
+"xsdk_general_error_exchange_id" = "Exchange ID: %@";
 
 // MARK: Reader error
 "xsdk_reader_error_title" = "Card read error";
