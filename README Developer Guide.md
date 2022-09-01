@@ -15,29 +15,27 @@ In order to pick and choose only the feedback that is important and it makes sen
 UserAction and UserInfo that will be initialised if any of the enum values will match the SDK feedback message.
 In order to handle more messages from the SDK you can just add a new case to each of these enums.
 
-We also implemented continuous search for readers, so if you call the **startPairing** method we will restart the search process automatically until you cancel it or call the **connectTo** method so if you implement the delegate be prepared to handle the **didFindReaders** method multiple times.
+Another available feature is continuous search for readers. When calling **startPairing** method, search process will be restarted automatically until it is cancelled or **connectTo** method is called. Therefore, if you implement the delegate, be prepared to handle the **didFindReaders** method multiple times.
 
-We wrapped the ClearentBluetoothDevice in ReadeInfo class and we added new fields like, connected, autoJoin, signalLevel, signalStrength.
-Also we created a mechanism to inform the host app of changes that occured to the curent paired device :
+**ClearentBluetoothDevice** was wrapped in **ReaderInfo** class and new fields were added: connected, autoJoin, signalLevel, signalStrength.
+Also, a mechanism was created to inform the host app of changes that occurred to the curent paired device :
 
 ```
 public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
 ```
-This clojure is defined in ```ClearentWrapper``` and can be called each time there is new info on the reader giving the integrator the chance to update the UI.
+This closure is defined in ```ClearentWrapper``` and can be called each time there is new info on the reader. This  gives the integrator the chance to update the UI.
 
 The ```ClearentWrapperProtocol``` can be used by the integrators that want to integrate without the SDK UI. This protocol is similar to the original delegate of the SDK but we introduced new naming and new methods that notify the integrator about every event but also fixes some issues.
 
-We created the ```ClearentWrapperProtocol``` to be used by integrator that want to integrate without the SDK UI. This protocol is similar to the original delegate of the SDK but we introduced new naming and new methods that notify the integrator what is happening in the SDK.
-
-Another functionality that was added is the cache that will store all readers that are paired with the app/sdk ClearentWrapperDefaults hold this values and
-``` ClearentExtension``` file will help with adding and removing items from the cache.
-
+Another functionality that was added is the cache that will store all readers that are paired with the app/sdk.
+ ``` ClearentWrapperDefaults``` hold these values and ``` ClearentExtension``` file will help with adding and removing items from the cache.
+ 
 The ```ClearentHttpClient``` knows to do a sale request, void and refund transactions but also fetch merchant settings or send signature files to the backend. Have a look on the Entities folder where you can find some of the entities that are used together with the http client.
 
 
 ## UI
 
-The UI part tries to simplify the integration of the SDK by reducing the amount the code needed to only a few lines. We created view-controllers for all the main features of the SDK and when someone wants to do a pairing, payment or check the readers list it will just fetch the proper controller from the SDK and display it modally on the screen. It has it's own folder ClearentUI folder.
+The UI part simplifies the integration of the SDK by reducing the amount of code needed to only a few lines. View controllers were created for all the main features/flows of the SDK. So, if pairing, payment or readers list flow has to be started, the integrator just needs to fetch the proper controller from the SDK UI and display it modally on the screen. It has it's own folder, named ```ClearentUI```.
 
 ClearentUIManager is a singleton class that will provide all these view controllers.
 
