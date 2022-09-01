@@ -13,7 +13,7 @@ enum SignalLevel: Int {
 }
 
 enum FlowDataKeys {
-    case readerInfo, graphicType, title, description, userAction, devicesFound, recentlyPaired, hint, input, tips, signature, manualEntry
+    case readerInfo, graphicType, title, description, userAction, devicesFound, recentlyPaired, hint, input, tips, signature, manualEntry, error
 }
 
 public enum FlowFeedbackType {
@@ -39,12 +39,14 @@ public enum ReaderStatusHeaderViewState {
 }
 
 enum FlowGraphicType {
-    case insert_card, press_button, transaction_completed, loading, error, warning, readerButton, reader, pairedReader, pairingSuccessful
+    case animatedCardInteraction, staticCardInteraction, press_button, transaction_completed, loading, error, warning, pairedReader, pairingSuccessful
     
-    var iconName: String? {
+    var name: String? {
         switch self {
-        case .insert_card:
-            return ClearentConstants.IconName.cardInteraction
+        case .animatedCardInteraction:
+            return ClearentConstants.AnimationName.cardInteraction
+        case .staticCardInteraction:
+            return ClearentConstants.IconName.staticCardInteraction
         case .press_button:
             return ClearentConstants.IconName.pressButtonOnReader
         case .transaction_completed:
@@ -54,12 +56,6 @@ enum FlowGraphicType {
         case .warning:
             return ClearentConstants.IconName.warning
         case .loading:
-            return nil
-        case .readerButton:
-            // TO DO - add the correct asset
-            return nil
-        case .reader:
-            // TO DO - add the correct asset
             return nil
         case .pairedReader:
             return ClearentConstants.IconName.reader

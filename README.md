@@ -215,7 +215,7 @@ class ViewController: UIViewController {
 
 ## Objective-C Code Example
 
-Objective-C example of the ClearenSDKUI  integration [Obj-C Example](https://).
+Objective-C example of the ClearenSDKUI  integration [Obj-C Example](https://github.com/clearent/idtech-ios-sdk/tree/main/ObjC-Example).
 
 ```
 #import "ViewController.h"

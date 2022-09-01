@@ -51,7 +51,7 @@ import UIKit
 
         // User Interaction
         static let pressButtonOnReader = "pressButtonOnReader"
-        static let cardInteraction = "cardInteraction"
+        static let staticCardInteraction = "cardInteraction"
         static let decreaseTip = "decreaseTipButton"
         static let increaseTip = "increaseTipButton"
 
@@ -81,6 +81,10 @@ import UIKit
         static let expandMedium = "expandMedium"
         static let collapseMedium = "collapseMedium"
         static let deleteButton = "smallDeleteButton"
+    }
+    
+    enum AnimationName {
+        static let cardInteraction = "card_animation"
     }
 
     enum Size {
@@ -130,6 +134,12 @@ import UIKit
             public static let signalMedium = "xsdk_reader_details_signal_medium".localized
             public static let signalStatus = "xsdk_reader_details_signal_status".localized
             public static let batteryStatus = "xsdk_reader_details_battery_status".localized
+        }
+        
+        enum ReaderInteraction {
+            public static let tap = "xsdk_payment_transaction_reader_tap".localized
+            public static let insert = "xsdk_payment_transaction_reader_insert".localized
+            public static let slide = "xsdk_payment_transaction_reader_slide".localized
         }
         
         enum ManualEntry {
@@ -214,6 +224,10 @@ import UIKit
             public static let generalErrorTitle = "xsdk_general_error_title".localized
             public static let generalErrorDescription = "xsdk_general_error_description".localized
             public static let readerError = "xsdk_reader_error_title".localized
+            public static let errorCode = "xsdk_general_error_code".localized
+            public static let errorMessage = "xsdk_general_error_message".localized
+            public static let transactionID = "xsdk_general_error_transaction_id".localized
+            public static let exchangeID = "xsdk_general_error_exchange_id".localized
         }
         
         enum FlowDataProvider {

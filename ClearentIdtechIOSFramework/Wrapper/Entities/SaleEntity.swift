@@ -18,7 +18,7 @@ public class SaleEntity: CodableProtocol {
     let billing, shipping: ClientInformation?
     let card, csc, customerID, invoice, orderID: String?
 
-    init(amount: String, tipAmount: String? = nil, softwareType: String? = nil, softwareTypeVersion: String? = nil, billing: ClientInformation? = nil, shipping: ClientInformation? = nil, card: String? = nil, csc: String? = nil, customerID: String? = nil, invoice: String? = nil, orderID: String? = nil) {
+    public init(amount: String, tipAmount: String? = nil, softwareType: String? = nil, softwareTypeVersion: String? = nil, billing: ClientInformation? = nil, shipping: ClientInformation? = nil, card: String? = nil, csc: String? = nil, customerID: String? = nil, invoice: String? = nil, orderID: String? = nil) {
         self.amount = amount
         self.tipAmount = tipAmount
         self.softwareType = softwareType
@@ -44,7 +44,7 @@ public class SaleEntity: CodableProtocol {
 
 // MARK: - ClientInformation
 
-struct ClientInformation: Codable {
+public struct ClientInformation: Codable {
     let company, firstName, fromZip, lastName, zip: String?
 
     enum CodingKeys: String, CodingKey {

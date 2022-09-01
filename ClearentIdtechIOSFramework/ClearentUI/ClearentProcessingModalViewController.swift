@@ -83,6 +83,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         stackView.removeAllArrangedSubviews()
         stackView.isUserInteractionEnabled = true
         ClearentWrapper.shared.flowType = (feedback.flow, feedback.type)
+        
         feedback.items.forEach {
             if let component = uiComponent(for: $0) {
                 stackView.addArrangedSubview(component)
@@ -102,6 +103,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         ClearentWrapperDefaults.skipOnboarding = true
         ClearentWrapper.shared.stopContinousSearching()
         ClearentWrapper.shared.cancelTransaction()
+        
         DispatchQueue.main.async { [weak self] in
             self?.dismiss(animated: true, completion: nil)
             self?.dismissCompletion?(result)
@@ -117,7 +119,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         case .graphicType:
             guard let graphic = object as? FlowGraphicType else { return nil }
             
-            return icon(with: graphic)
+            return graphicView(with: graphic)
         case .title:
             guard let text = object as? String else { return nil }
              
@@ -164,6 +166,9 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             return signatureView()
         case .manualEntry:
             return manualEntryFormView()
+        case .error:
+            guard let detailedErrorMessage = object as? String else { return nil }
+            return ClearentErrorDetailsView(detailerErrorMessage: detailedErrorMessage)
         }
     }
     
@@ -208,11 +213,18 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         return statusHeaderView
     }
 
-    private func icon(with graphic: FlowGraphicType) -> UIView? {
-        if let iconName = graphic.iconName, graphic != .loading {
-            return ClearentIcon(iconName: iconName)
+    private func graphicView(with graphic: FlowGraphicType) -> UIView? {
+        switch graphic {
+        case .animatedCardInteraction:
+            guard let graphicName = graphic.name else { return nil }
+            let subtitles = [ClearentConstants.Localized.ReaderInteraction.tap, ClearentConstants.Localized.ReaderInteraction.insert, ClearentConstants.Localized.ReaderInteraction.slide]
+            return ClearentAnimationWithSubtitle(animationName: graphicName, subtitles: subtitles)
+        case .loading:
+            return ClearentLoadingView()
+        default:
+            guard let graphicName = graphic.name else { return nil }
+            return ClearentIcon(iconName: graphicName)
         }
-        return ClearentLoadingView()
     }
 
     private func readersList(readersInfo: [ReaderInfo]) -> ClearentListView {

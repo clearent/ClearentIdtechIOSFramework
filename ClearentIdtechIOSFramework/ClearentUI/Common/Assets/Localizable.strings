@@ -33,8 +33,13 @@
 
 // MARK: Payment Flow - General
 // Texts that are displayed during the payment flow
-
 "xsdk_payment_transaction_completed_description" = "Payment successful";
+
+// MARK: Payment Flow - Reader interaction
+
+"xsdk_payment_transaction_reader_tap" = "Hold card on contactless symbol";
+"xsdk_payment_transaction_reader_insert" = "Fully insert card into reader";
+"xsdk_payment_transaction_reader_slide" = "Slide card through reader";
 
 // MARK: Payment Flow - Tips
 // Texts that are displayed on the tips screen (part of the payment flow)
@@ -143,6 +148,10 @@
 "xsdk_general_error_user_action_retry" = "Try Again";
 "xsdk_general_error_user_action_cancel" = "Cancel";
 "xsdk_general_error_user_action_manually_enter_card" = "Manually enter credit card details";
+"xsdk_general_error_code" = "Error code: %@\n";
+"xsdk_general_error_message" = "Error message: %@\n";
+"xsdk_general_error_transaction_id" = "Transaction ID: %@\n";
+"xsdk_general_error_exchange_id" = "Exchange ID: %@";
 
 // MARK: Reader error
 "xsdk_reader_error_title" = "Card read error";
