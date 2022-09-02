@@ -237,7 +237,7 @@ public final class ClearentWrapper : NSObject {
     private var isInternetOn = false
     private var signatureImage: UIImage?
     private var connectivityActionNeeded: UserAction? {
-        if useCardReaderPaymentMethod {
+        if useCardReaderPaymentMethod || flowType?.processType != .payment {
             return isBluetoothPermissionGranted ? (isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : .noInternet) : .noBluetoothPermission
         } else {
             return isInternetOn ? nil : .noInternet

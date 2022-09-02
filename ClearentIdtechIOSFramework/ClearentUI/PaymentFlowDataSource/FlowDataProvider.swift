@@ -34,7 +34,8 @@ public class FlowFeedback {
 
 class FlowDataFactory {
     class func component(with flow: ProcessType, type: FlowFeedbackType, readerInfo: ReaderInfo?, payload: [FlowDataItem]) -> FlowFeedback {
-        if (readerInfo != nil || !ClearentWrapper.shared.previouslyPairedReaders.isEmpty) && ClearentWrapper.shared.useCardReaderPaymentMethod {
+        let isNotManualPayment = ClearentWrapper.shared.useCardReaderPaymentMethod || ClearentWrapper.shared.flowType?.processType != .payment
+        if (readerInfo != nil || !ClearentWrapper.shared.previouslyPairedReaders.isEmpty) && isNotManualPayment {
             var allItems = [FlowDataItem(type: .readerInfo, object: readerInfo)]
             allItems.append(contentsOf: payload)
             
