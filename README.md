@@ -162,7 +162,7 @@ ClearentUIBrandConfigurator.shared.overriddenLocalizedStrings = [
 
 ## Swift Code Example
 
-Swift example of the ClearenSDKUI  integration [Swift Example](https://).
+Swift example of the ClearenSDKUI  integration [Swift Example]https://github.com/clearent/idtech-ios-sdk/tree/main/ExampleSwift).
 
 ```
 import UIKit
@@ -453,4 +453,4 @@ After the transaction is proccesed a delegate method will inform you about the s
 ```
 
 
-Full Swift example of the ClearenWrapper integration  integration [Swift Example](https://).
+Full Swift example of the ClearenWrapper integration  integration [Swift Example](https://github.com/clearent/idtech-ios-sdk/tree/main/ExampleSwiftWrapper).
