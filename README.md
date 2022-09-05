@@ -126,7 +126,7 @@ ClearentUIManager.shared.readerInfoReceived = { [weak self] reader in
 
 ## Customizing the SDK experience
 
-The SDK provides the option to customize the fonts, colors and texts used in the SDK. This can be achieved by overriding properties of the **ClearentUIBrandConfigurator** class that is a singleton. Check our [Swift Example]([https://](https://github.com/clearent/idtech-ios-sdk/tree/main/ExampleSwift) for full customization example.
+The SDK provides the option to customize the fonts, colors and texts used in the SDK. This can be achieved by overriding properties of the **ClearentUIBrandConfigurator** class that is a singleton. Check our [Swift Example](https://github.com/clearent/idtech-ios-sdk/tree/main/ExampleSwift) for full customization example.
 
 **Colors**
 ```
@@ -453,4 +453,4 @@ After the transaction is proccesed a delegate method will inform you about the s
 ```
 
 
-Full Swift example of the ClearenWrapper integration  integration [Swift Example](https://github.com/clearent/idtech-ios-sdk/tree/main/ExampleSwiftWrapper).
+Full Swift example of the ClearenWrapper integration  integration [Swift Wrapper Example](https://github.com/clearent/idtech-ios-sdk/tree/main/ExampleSwiftWrapper).
