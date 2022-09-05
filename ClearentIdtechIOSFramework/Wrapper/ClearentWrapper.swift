@@ -212,8 +212,11 @@ public final class ClearentWrapper : NSObject {
     /// Closure called when reader info (signal, battery, reader name, connection status) is received
     public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
     
-    /// Specifies what payment flow should be displayed. If true, card reader is used. Otherwise, a form where the user has to enter manually the card info is displayed.
-    public var useCardReaderPaymentMethod: Bool = true
+    /// Specifies what payment flow is preferred. If true, card reader is used. Otherwise, a form where the user has to enter manually the card info is displayed.
+    public var cardReaderPaymentIsPreffered: Bool = true
+    
+    /// If card reader payment fails, the option to use manual payment can be displayed in UI as a fallback method. If user selects this method, useManualPaymentAsFallback needs to be set to true.
+    public var useManualPaymentAsFallback: Bool?
     
     public weak var delegate: ClearentWrapperProtocol?
 
@@ -237,7 +240,7 @@ public final class ClearentWrapper : NSObject {
     private var isInternetOn = false
     private var signatureImage: UIImage?
     private var connectivityActionNeeded: UserAction? {
-        if useCardReaderPaymentMethod || flowType?.processType != .payment {
+        if cardReaderPaymentIsPreffered && useManualPaymentAsFallback == nil {
             return isBluetoothPermissionGranted ? (isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : .noInternet) : .noBluetoothPermission
         } else {
             return isInternetOn ? nil : .noInternet
@@ -326,6 +329,7 @@ public final class ClearentWrapper : NSObject {
      * Method that will cancel a transaction
      */
     public func cancelTransaction() {
+        useManualPaymentAsFallback = nil
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             self?.clearentVP3300.emv_cancelTransaction()
             self?.clearentVP3300.device_cancelTransaction()

@@ -44,6 +44,10 @@ class ClearentProcessingModalPresenter {
     private var tipsScreenWasNotShown = true
     // defines the process type set when the SDK UI starts
     private var processType: ProcessType
+    private var useCardReaderPaymentMethod: Bool {
+        ClearentWrapper.shared.cardReaderPaymentIsPreffered && ClearentWrapper.shared.useManualPaymentAsFallback == nil
+    }
+    
     var amountWithoutTip: Double?
     var tip: Double?
     var selectedReaderFromReadersList: ReaderItem?
@@ -177,7 +181,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             modalProcessingView?.positionViewOnTop(flag: true)
             showRenameReader()
         case .transactionWithTip, .transactionWithoutTip:
-            if sdkWrapper.useCardReaderPaymentMethod {
+            if useCardReaderPaymentMethod {
                 startCardReaderTransaction()
             } else {
                 startManualEntryTransaction()
@@ -242,7 +246,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     private func startTransactionFlow() {
         sdkFeedbackProvider.delegate = self
 
-        if sdkWrapper.useCardReaderPaymentMethod, !sdkWrapper.isReaderConnected() {
+        if useCardReaderPaymentMethod, !sdkWrapper.isReaderConnected() {
             shouldStartTransactionAfterRenameReader = ClearentWrapperDefaults.pairedReaderInfo == nil
             sdkWrapper.startPairing(reconnectIfPossible: true)
         } else {
@@ -259,7 +263,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                 strongSelf.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: strongSelf.amountWithoutTip ?? 0)
                 strongSelf.tipsScreenWasNotShown = false
             } else {
-                if strongSelf.sdkWrapper.useCardReaderPaymentMethod {
+                if strongSelf.useCardReaderPaymentMethod {
                     strongSelf.startCardReaderTransaction()
                 } else {
                     strongSelf.startManualEntryTransaction()

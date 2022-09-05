@@ -60,6 +60,9 @@ class FlowDataProvider : NSObject {
     
     let sdkWrapper = ClearentWrapper.shared
     var connectionErrorDisplayed = false
+    static var useCardReaderPaymentMethod: Bool {
+        ClearentWrapper.shared.cardReaderPaymentIsPreffered && ClearentWrapper.shared.useManualPaymentAsFallback == nil
+    }
     
     public override init() {
         super.init()
@@ -204,6 +207,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .noBluetooth:
+            guard FlowDataProvider.useCardReaderPaymentMethod else { return }
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
                      FlowDataItem(type: .title, object: ClearentConstants.Localized.Bluetooth.error),
