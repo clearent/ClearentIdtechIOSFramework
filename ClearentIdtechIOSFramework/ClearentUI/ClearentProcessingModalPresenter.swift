@@ -319,7 +319,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     private func showSignatureScreen() {
         let items = [FlowDataItem(type: .hint, object: ClearentConstants.Localized.Signature.title),
                      FlowDataItem(type: .signature, object: nil)]
-        let feedback = FlowFeedback(flow: .pairing(), type: .signature, items: items)
+        let feedback = FlowFeedback(flow: .payment, type: .signature, items: items)
         modalProcessingView?.updateContent(with: feedback)
     }
     

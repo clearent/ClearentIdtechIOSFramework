@@ -6,6 +6,13 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
+/*
+ This class integrates the wrapper delegate methods and receives all feedback from the SDK.
+ It will process and provide the information further to the UI part in way that is easier to create the UI by using its own protocol to communicate with the UI.
+  Every time there is a new feedback that needs to be displayed, a FlowFeedback object will be generated and pushed through the delegate method to the UI.
+  Flow feedback contains everything that UI needs to display the new information.
+ */
+
 import Foundation
 
 public struct FlowDataItem {
@@ -27,7 +34,8 @@ public class FlowFeedback {
 
 class FlowDataFactory {
     class func component(with flow: ProcessType, type: FlowFeedbackType, readerInfo: ReaderInfo?, payload: [FlowDataItem]) -> FlowFeedback {
-        if (readerInfo != nil || !ClearentWrapper.shared.previouslyPairedReaders.isEmpty) && FlowDataProvider.useCardReaderPaymentMethod {
+        let isNotManualPayment = ClearentWrapper.shared.useCardReaderPaymentMethod || ClearentWrapper.shared.flowType?.processType != .payment
+        if (readerInfo != nil || !ClearentWrapper.shared.previouslyPairedReaders.isEmpty) && isNotManualPayment {
             var allItems = [FlowDataItem(type: .readerInfo, object: readerInfo)]
             allItems.append(contentsOf: payload)
             
