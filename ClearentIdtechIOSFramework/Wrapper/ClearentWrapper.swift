@@ -250,7 +250,7 @@ public final class ClearentWrapper : NSObject {
     /// If card reader payment fails, the option to use manual payment can be displayed in UI as a fallback method. If user selects this method, useManualPaymentAsFallback needs to be set to true.
     public var useManualPaymentAsFallback: Bool?
     
-    /// If card reader payment fails, the option to use manual payment can be displayed in UI as a fallback method. If user selects this method, useManualPaymentAsFallback needs to be set to true.
+    /// Enables or disables the use of enhanced messages
     public var enableEnhancedMessaging: Bool = false
     
     /// Stores the enhanced messages read from the messages bundle
