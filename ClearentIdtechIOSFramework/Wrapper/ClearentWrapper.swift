@@ -34,7 +34,9 @@ public enum UserAction: String, CaseIterable {
          cardBlocked,
          cardExpired
     
-    var description: String {
+    
+
+    var message: String {
         switch self {
         case .pleaseWait:
             return CLEARENT_PLEASE_WAIT
@@ -85,8 +87,23 @@ public enum UserAction: String, CaseIterable {
         }
     }
     
+    var description: String? {
+        if (ClearentWrapper.shared.enableEnhancedMessaging == true && ClearentWrapper.shared.enhancedMessagesDict != nil) {
+            if let result = ClearentWrapper.shared.enhancedMessagesDict?[self.message] {
+                return (result == ClearentConstants.Messaging.suppress) ? nil : result
+            }
+            return nil
+        } else {
+            return message
+        }
+    }
+
     static func action(for text: String) -> UserAction? {
-        UserAction.allCases.first { $0.description == text }
+        if let action = UserAction.allCases.first(where: { $0.message == text }) {
+            return action
+        } else {
+            return (text == ClearentConstants.Messaging.suppress) ? nil :UserAction(rawValue: text)
+        }
     }
 }
 
@@ -97,7 +114,7 @@ public enum UserInfo: String, CaseIterable {
          amountNotAllowedForTap,
          chipNotRecognized
     
-    var description: String {
+    var message: String {
         switch self {
         case .authorizing:
             return CLEARENT_TRANSACTION_AUTHORIZING
@@ -112,8 +129,23 @@ public enum UserInfo: String, CaseIterable {
         }
     }
     
+    var description: String? {
+        if (ClearentWrapper.shared.enableEnhancedMessaging == true && ClearentWrapper.shared.enhancedMessagesDict != nil) {
+            if let result = ClearentWrapper.shared.enhancedMessagesDict?[self.message] {
+                return (result == ClearentConstants.Messaging.suppress) ? nil : result
+            }
+            return nil
+        } else {
+            return message
+        }
+    }
+    
     static func info(for text: String) -> UserInfo? {
-        UserInfo.allCases.first { $0.description == text }
+        if let info = UserInfo.allCases.first(where: { $0.message == text }) {
+            return info
+        } else {
+            return (text == ClearentConstants.Messaging.suppress) ? nil : UserInfo(rawValue: text)
+        }
     }
 }
 
@@ -217,6 +249,12 @@ public final class ClearentWrapper : NSObject {
     
     /// If card reader payment fails, the option to use manual payment can be displayed in UI as a fallback method. If user selects this method, useManualPaymentAsFallback needs to be set to true.
     public var useManualPaymentAsFallback: Bool?
+    
+    /// If card reader payment fails, the option to use manual payment can be displayed in UI as a fallback method. If user selects this method, useManualPaymentAsFallback needs to be set to true.
+    public var enableEnhancedMessaging: Bool = false
+    
+    /// Stores the enhanced messages read from the messages bundle
+    internal var enhancedMessagesDict: [String:String]?
     
     public weak var delegate: ClearentWrapperProtocol?
 
@@ -343,10 +381,15 @@ public final class ClearentWrapper : NSObject {
      * @param publicKey, publicKey used by the IDTech reader framework
      * @param apiKey, API Key used for http calls
      */
-    public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String) {
+    public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String, enableEnhancedMessaging: Bool) {
         self.baseURL = baseURL
         self.apiKey = apiKey
         self.publicKey = publicKey
+        self.enableEnhancedMessaging = enableEnhancedMessaging
+        
+        if (enableEnhancedMessaging) {
+            readEnhancedMessages()
+        }
     }
     
     

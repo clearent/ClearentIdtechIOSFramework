@@ -115,6 +115,18 @@ extension ClearentWrapper {
     
     // MARK - Private Logger related
     
+    internal func readEnhancedMessages() {
+        guard let path = Bundle.main.path(forResource: "ClearentIdtechMessages", ofType: "bundle") else {return}
+        let resourceBundle = Bundle(path: path)
+        if (resourceBundle != nil) {
+            if let filePath = resourceBundle?.path(forResource: "enhancedmessages-v1", ofType: "txt") {
+                if let dict = NSDictionary(contentsOfFile: filePath) {
+                    self.enhancedMessagesDict = dict as? [String:String]
+                }
+            }
+        }
+    }
+    
     internal func createLogFile() {
         DDLog.allLoggers.forEach { logger in
             if (logger.isKind(of: DDFileLogger.self)) {

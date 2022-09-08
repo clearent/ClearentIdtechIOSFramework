@@ -55,8 +55,8 @@ public final class ClearentUIManager: NSObject {
      * @param apiKey, the API Key in order to use the API
      * @param publicKey, needed for the card reader initialisation
      */
-    @objc public func updateWith(baseURL: String, apiKey: String, publicKey: String) {
-        clearentWrapper.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey)
+    @objc public func updateWith(baseURL: String, apiKey: String, publicKey: String, enableEnhancedMessaging: Bool) {
+        clearentWrapper.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey, enableEnhancedMessaging: enableEnhancedMessaging)
     }
     
     /**
