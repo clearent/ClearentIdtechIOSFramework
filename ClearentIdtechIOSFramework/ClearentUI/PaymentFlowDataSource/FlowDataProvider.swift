@@ -187,7 +187,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             }
             items?.append(FlowDataItem(type: .userAction, object: FlowButtonType.cancel))
             connectionErrorDisplayed = true
-        case .tryICCAgain, .cardHasChip, .tryMSRAgain, .useMagstripe, .swipeInsert:
+        case .tryICCAgain, .cardHasChip, .tryMSRAgain, .useMagstripe, .swipeInsert, .tapFailed:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.staticCardInteraction),
                      FlowDataItem(type: .title, object: ClearentConstants.Localized.Error.readerError),
