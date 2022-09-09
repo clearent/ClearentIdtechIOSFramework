@@ -111,21 +111,17 @@ extension ClearentWrapper {
             }
         }
     }
-    
-    
-    // MARK - Private Logger related
+
     
     internal func readEnhancedMessages() {
         guard let path = Bundle.main.path(forResource: "ClearentIdtechMessages", ofType: "bundle") else {return}
         let resourceBundle = Bundle(path: path)
-        if (resourceBundle != nil) {
-            if let filePath = resourceBundle?.path(forResource: "enhancedmessages-v1", ofType: "txt") {
-                if let dict = NSDictionary(contentsOfFile: filePath) {
-                    self.enhancedMessagesDict = dict as? [String:String]
-                }
-            }
+        if resourceBundle != nil, let filePath = resourceBundle?.path(forResource: "enhancedmessages-v1", ofType: "txt"), let dict = NSDictionary(contentsOfFile: filePath) {
+                   self.enhancedMessagesDict = dict as? [String:String]
         }
     }
+    
+    // MARK - Private Logger related
     
     internal func createLogFile() {
         DDLog.allLoggers.forEach { logger in
