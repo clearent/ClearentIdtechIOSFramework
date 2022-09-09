@@ -175,7 +175,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         case .pleaseWait:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
                      FlowDataItem(type: .description, object: action.description)]
-        case .swipeInsert, .swipeTapOrInsert:
+        case .swipeTapOrInsert:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.animatedCardInteraction),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .pressReaderButton, .connectionTimeout:
@@ -187,7 +187,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             }
             items?.append(FlowDataItem(type: .userAction, object: FlowButtonType.cancel))
             connectionErrorDisplayed = true
-        case .tryICCAgain, .cardHasChip, .tryMSRAgain, .useMagstripe, .tapFailed:
+        case .tryICCAgain, .cardHasChip, .tryMSRAgain, .useMagstripe, .swipeInsert, .tapFailed:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.staticCardInteraction),
                      FlowDataItem(type: .title, object: ClearentConstants.Localized.Error.readerError),
