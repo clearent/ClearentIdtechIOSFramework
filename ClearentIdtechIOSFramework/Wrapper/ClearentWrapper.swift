@@ -99,11 +99,10 @@ public enum UserAction: String, CaseIterable {
     }
     
     var description: String? {
-        if ClearentWrapper.shared.enableEnhancedMessaging && ClearentWrapper.shared.enhancedMessagesDict != nil {
-            guard let result = ClearentWrapper.shared.enhancedMessagesDict?[message] else { return nil }
+        if ClearentWrapper.shared.enableEnhancedMessaging, let dict = ClearentWrapper.shared.enhancedMessagesDict, let result = dict[message] {
             return result == ClearentConstants.Messaging.suppress ? nil : result
         }
-         return message
+        return message
     }
 
     static func action(for text: String) -> UserAction? {
