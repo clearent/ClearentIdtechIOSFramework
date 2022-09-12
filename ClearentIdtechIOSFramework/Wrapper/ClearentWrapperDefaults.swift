@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import AVFAudio
 
 private struct DefaultKeys {
     static let recentlyPairedReadersKey = "xsdk_recently+paired_readers_key"
@@ -17,7 +16,7 @@ private struct DefaultKeys {
 public class ClearentWrapperDefaults: UserDefaultsPersistence {
     static var lastPairedReaderInfo: ReaderInfo?
     
-    internal static var recentlyPairedReaders: [ReaderInfo]? {
+    internal static private(set) var recentlyPairedReaders: [ReaderInfo]? {
            
            get {
                if let savedReaderData = retrieveValue(forKey: DefaultKeys.recentlyPairedReadersKey) as? Data {
@@ -48,7 +47,7 @@ public class ClearentWrapperDefaults: UserDefaultsPersistence {
 }
 
 extension ClearentWrapperDefaults {
-    internal static var pairedReaderInfo: ReaderInfo? {
+    internal static private(set) var pairedReaderInfo: ReaderInfo? {
         get {
             lastPairedReaderInfo
         }

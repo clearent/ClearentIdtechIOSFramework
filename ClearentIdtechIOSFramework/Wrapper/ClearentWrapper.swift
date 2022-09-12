@@ -331,7 +331,6 @@ public final class ClearentWrapper : NSObject {
     public func cancelTransaction() {
         useManualPaymentAsFallback = nil
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            self?.clearentVP3300.emv_cancelTransaction()
             self?.clearentVP3300.device_cancelTransaction()
         }        
     }
