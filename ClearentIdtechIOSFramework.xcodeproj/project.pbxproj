@@ -534,7 +534,6 @@
 				01442C8B28B3D835006DD15C /* AdaptiveStackView */,
 				01442C9028B3D835006DD15C /* ClearentApplicationOrientation.swift */,
 				01442C9128B3D835006DD15C /* ClearentColorExtension.swift */,
-				01442C9228B3D835006DD15C /* UserDefaultsPersistence.swift */,
 				01442C9328B3D835006DD15C /* ClearentMoneyFormatter.swift */,
 				01442C9428B3D835006DD15C /* ClearentConstants.swift */,
 				01442C9528B3D835006DD15C /* ClearentFieldValidationHelper.swift */,
@@ -701,10 +700,10 @@
 		01442D4D28B3D84D006DD15C /* Wrapper */ = {
 			isa = PBXGroup;
 			children = (
-				CC5E5A3328B659D400F5C291 /* ClearentWrapperDefaults.swift */,
+				017D7DAD28CF439B005FB2EB /* UserDefaults */,
 				CC5E5A3428B659D400F5C291 /* ReaderInfo.swift */,
-				01442D4E28B3D84D006DD15C /* ClearentHttpClient.swift */,
 				01442D4F28B3D84D006DD15C /* ClearentExtension.swift */,
+				01442D4E28B3D84D006DD15C /* ClearentHttpClient.swift */,
 				01442D5028B3D84D006DD15C /* ClearentErrors.swift */,
 				01442D5128B3D84D006DD15C /* HttpClient.swift */,
 				01442D5228B3D84D006DD15C /* ClearentWrapper.swift */,
@@ -722,6 +721,15 @@
 				01442D5728B3D84D006DD15C /* MerchantSettingsEntity.swift */,
 			);
 			path = Entities;
+			sourceTree = "<group>";
+		};
+		017D7DAD28CF439B005FB2EB /* UserDefaults */ = {
+			isa = PBXGroup;
+			children = (
+				CC5E5A3328B659D400F5C291 /* ClearentWrapperDefaults.swift */,
+				01442C9228B3D835006DD15C /* UserDefaultsPersistence.swift */,
+			);
+			path = UserDefaults;
 			sourceTree = "<group>";
 		};
 		01E22DFA28B77C65004C4ADF /* Animations */ = {

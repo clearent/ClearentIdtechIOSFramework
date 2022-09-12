@@ -99,7 +99,7 @@ class ClearentReaderDetailsViewController: UIViewController {
         updateReaderInfo()
     }
 
-    func updateReaderInfo() {
+    private func updateReaderInfo() {
         setupReaderStatus()
         setupSerialNumber()
         setupCustomReaderName()
@@ -189,7 +189,7 @@ class ClearentReaderDetailsViewController: UIViewController {
         }
     }
 
-    func showRemoveReaderAlert() {
+    private func showRemoveReaderAlert() {
         let readerName = detailsPresenter.currentReader.customReaderName ?? detailsPresenter.currentReader.readerName
         let alertTitle = String(format: ClearentConstants.Localized.ReaderDetails.removeReaderAlertTitle, readerName)
         let alert = UIAlertController(title: alertTitle, message: ClearentConstants.Localized.ReaderDetails.removeReaderAlertDescription, preferredStyle: .alert)

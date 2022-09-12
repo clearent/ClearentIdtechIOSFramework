@@ -88,36 +88,6 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     func startFlow() {
         startProcess(isRestart: false, processType: processType)
     }
-    
-    private func startProcess(isRestart: Bool, processType: ProcessType, flowFeedbackType: FlowFeedbackType? = nil, newPair: Bool = false) {
-        ClearentWrapper.shared.flowType = (processType, flowFeedbackType)
-        
-        switch processType {
-        case let .pairing(withReader: readerInfo):
-            if isRestart {
-                sdkWrapper.startPairing(reconnectIfPossible: !newPair)
-            } else if let readerInfo = readerInfo {
-                // automatically connect to this reader
-                connectTo(reader: readerInfo)
-            } else {
-                startPairingFlow()
-            }
-        case .payment:
-            switch flowFeedbackType {
-            case .signature:
-                showSignatureScreen()
-            case .signatureError:
-                resendSignature()
-            default:
-                startTransactionFlow()
-            }
-        case .showReaders:
-            if isRestart { break }
-            showReadersList()
-        case .renameReader:
-            showRenameReader()
-        }
-    }
 
     func startPairingFlow() {
         let items = [FlowDataItem(type: .hint, object: ClearentConstants.Localized.Pairing.readerRange),
@@ -242,6 +212,36 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
 
     // MARK: Private
+    
+    private func startProcess(isRestart: Bool, processType: ProcessType, flowFeedbackType: FlowFeedbackType? = nil, newPair: Bool = false) {
+        ClearentWrapper.shared.flowType = (processType, flowFeedbackType)
+        
+        switch processType {
+        case let .pairing(withReader: readerInfo):
+            if isRestart {
+                sdkWrapper.startPairing(reconnectIfPossible: !newPair)
+            } else if let readerInfo = readerInfo {
+                // automatically connect to this reader
+                connectTo(reader: readerInfo)
+            } else {
+                startPairingFlow()
+            }
+        case .payment:
+            switch flowFeedbackType {
+            case .signature:
+                showSignatureScreen()
+            case .signatureError:
+                resendSignature()
+            default:
+                startTransactionFlow()
+            }
+        case .showReaders:
+            if isRestart { break }
+            showReadersList()
+        case .renameReader:
+            showRenameReader()
+        }
+    }
     
     private func startTransactionFlow() {
         sdkFeedbackProvider.delegate = self
