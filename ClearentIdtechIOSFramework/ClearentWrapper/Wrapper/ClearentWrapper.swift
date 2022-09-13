@@ -264,7 +264,9 @@ public final class ClearentWrapper : NSObject {
                          }
                          // error call delegate
                      } catch let jsonDecodingError {
-                         self.delegate?.didFinishedSignatureUploadWith(response: nil, error: ResponseError.init(code: ResponseErrorCode.saleReponseParseErrorCode.rawValue, message: ResponseErrorMessage.saleReponseParseErrorMessage.r))
+                         self.delegate?.didFinishedSignatureUploadWith(response:nil ,
+                                                                       error: ResponseError.init(code: ResponseErrorCode.saleReponseParseErrorCode.rawValue,
+                                                                                                 message: ResponseErrorMessage.saleReponseParseErrorMessage.rawValue))
                      }
                  }
             }

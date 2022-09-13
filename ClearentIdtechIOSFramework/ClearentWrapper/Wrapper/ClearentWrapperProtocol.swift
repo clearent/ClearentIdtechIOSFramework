@@ -64,14 +64,14 @@ public protocol ClearentWrapperProtocol : AnyObject {
      * @param response, transaction response as received from the API
      * @param error, if not null it will contain the error received from the API
      */
-    func didFinishTransaction(response: TransactionResponse, error: ResponseError?)
+    func didFinishTransaction(response: TransactionResponse?, error: ResponseError?)
     
     /**
      * Method called  when the process of uploading the signature image has completed
      * @param response, upload response as received from the API
      * @param error, if not null it will contain the error received from the API
      */
-     func didFinishedSignatureUploadWith(response: SignatureResponse, error: ResponseError?)
+     func didFinishedSignatureUploadWith(response: SignatureResponse?, error: ResponseError?)
     
     /**
      * Method called each time the reader needs an action from the user

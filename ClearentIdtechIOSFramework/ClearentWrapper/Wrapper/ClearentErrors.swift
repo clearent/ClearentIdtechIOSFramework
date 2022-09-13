@@ -34,6 +34,6 @@ enum ResponseErrorCode: String {
 }
 
 enum ResponseErrorMessage: String {
-    case saleReponseParseErrorMessage = "Http response could not be parsed."
-    case signatureUploadReponseParseErrorMessage = "Http response could not be parsed."
+    case saleReponseParseErrorMessage = "Sale request http response could not be parsed."
+    case signatureUploadReponseParseErrorMessage = "Signature upload request http response could not be parsed."
 }
