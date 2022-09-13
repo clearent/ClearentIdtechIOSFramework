@@ -9,36 +9,6 @@
 import Foundation
 import CocoaLumberjack
 
-extension ClearentWrapper: BluetoothScannerProtocol {
-    
-    var isBluetoothPermissionGranted: Bool {
-        if #available(iOS 13.1, *) {
-            return CBCentralManager.authorization == .allowedAlways
-        } else if #available(iOS 13.0, *) {
-            return CBCentralManager().authorization == .allowedAlways
-        }
-        
-        // Before iOS 13, Bluetooth permissions are not required
-        return true
-    }
-    
-    func didUpdateBluetoothState(isOn: Bool) {
-        isBluetoothOn = isOn
-        
-        if (!isBluetoothOn) {
-            ClearentWrapper.shared.disconnectFromReader()
-        }
-    }
-    
-    internal func didReceivedSignalStrength(level: SignalLevel) {
-        ClearentWrapperDefaults.pairedReaderInfo?.signalLevel = level.rawValue
-        delegate?.didReceiveSignalStrength()
-    }
-    
-    internal func didFinishWithError() {
-        self.delegate?.didFinishPairing()
-    }
-}
 
 extension ClearentWrapper {
     
@@ -152,5 +122,50 @@ extension ClearentWrapper {
             print("Could not read log file.")
         }
         return string
+    }
+}
+
+extension ClearentWrapper : ClearentManualEntryDelegate {
+    public func handleManualEntryError(_ message: String!) {
+        DispatchQueue.main.async {
+            if let action = UserAction.action(for: message) {
+                self.delegate?.userActionNeeded(action: action)
+            } else if let info = UserInfo.info(for: message) {
+                self.delegate?.didReceiveInfo(info: info)
+            } else {
+                self.delegate?.didEncounteredGeneralError()
+            }
+        }
+    }
+}
+
+extension ClearentWrapper: BluetoothScannerProtocol {
+    
+    var isBluetoothPermissionGranted: Bool {
+        if #available(iOS 13.1, *) {
+            return CBCentralManager.authorization == .allowedAlways
+        } else if #available(iOS 13.0, *) {
+            return CBCentralManager().authorization == .allowedAlways
+        }
+        
+        // Before iOS 13, Bluetooth permissions are not required
+        return true
+    }
+    
+    func didUpdateBluetoothState(isOn: Bool) {
+        isBluetoothOn = isOn
+        
+        if (!isBluetoothOn) {
+            ClearentWrapper.shared.disconnectFromReader()
+        }
+    }
+    
+    internal func didReceivedSignalStrength(level: SignalLevel) {
+        ClearentWrapperDefaults.pairedReaderInfo?.signalLevel = level.rawValue
+        delegate?.didReceiveSignalStrength()
+    }
+    
+    internal func didFinishWithError() {
+        self.delegate?.didFinishPairing()
     }
 }
