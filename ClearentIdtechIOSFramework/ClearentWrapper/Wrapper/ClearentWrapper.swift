@@ -519,8 +519,7 @@ public final class ClearentWrapper : NSObject {
             ClearentWrapper.shared.startDeviceInfoUpdate()
             let payment = ClearentPayment.init(sale: ())
             payment?.amount = Double(saleEntity.amount) ?? 0
-            let response = strongSelf.clearentVP3300.startTransaction(payment, clearentConnection: strongSelf.connection)
-            print("RRR \(response)")
+            strongSelf.clearentVP3300.startTransaction(payment, clearentConnection: strongSelf.connection)
         }
     }
 }
@@ -623,8 +622,8 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         ///  This method is deprecated
         
         DispatchQueue.main.async {
-            if (message == "token_generation_failed_message".localized) {
-                self.delegate?.didFinishTransaction(response: nil, error: ResponseError.init(code: "xsdk_general_error_title".localized, message: "token_generation_failed_message".localized))
+            if (message == "xsdk_token_generation_failed_message".localized) {
+                self.delegate?.didFinishTransaction(response: nil, error: ResponseError.init(code: "xsdk_general_error_title".localized, message: "xsdk_token_generation_failed_message".localized))
             }
         }
     }
