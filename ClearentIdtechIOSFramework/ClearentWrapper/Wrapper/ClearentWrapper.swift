@@ -220,6 +220,8 @@ public final class ClearentWrapper : NSObject {
                     self.delegate?.didFinishTransaction(response: decodedResponse, error: transactionError)
                 }
             } catch let jsonDecodingError {
+                self.delegate?.didFinishTransaction(response: nil, error: ResponseError.init(code: "xsdk_response_parsing_error".localized,
+                                                                                             message: "xsdk_http_response_parsing_error_message".localized))
                 print(jsonDecodingError)
             }
         }
@@ -265,8 +267,9 @@ public final class ClearentWrapper : NSObject {
                          // error call delegate
                      } catch let jsonDecodingError {
                          self.delegate?.didFinishedSignatureUploadWith(response:nil ,
-                                                                       error: ResponseError.init(code: ResponseErrorCode.saleReponseParseErrorCode.rawValue,
-                                                                                                 message: ResponseErrorMessage.saleReponseParseErrorMessage.rawValue))
+                                                                       error: ResponseError.init(code: "xsdk_response_parsing_error".localized,
+                                                                                                 message: "xsdk_http_response_parsing_error_message".localized))
+                         print(jsonDecodingError)
                      }
                  }
             }

@@ -26,14 +26,3 @@ public typealias CompletionResult = Result<String?, ClearentResult>
     /// Process finished
     case processFinishedWithoutError
 }
-
-
-enum ResponseErrorCode: String {
-    case saleReponseParseErrorCode = "sale_response_parsing_error"
-    case signatureUploadReponseParseError = "signature_response_parsing_error"
-}
-
-enum ResponseErrorMessage: String {
-    case saleReponseParseErrorMessage = "Sale request http response could not be parsed."
-    case signatureUploadReponseParseErrorMessage = "Signature upload request http response could not be parsed."
-}

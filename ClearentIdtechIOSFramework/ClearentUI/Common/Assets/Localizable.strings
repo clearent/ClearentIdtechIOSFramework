@@ -169,3 +169,10 @@
 "xsdk_bluetooth_permission_error_title" = "No bluetooth permission";
 "xsdk_bluetooth_turned_off" = "Bluetooth on this device is currently powered off.";
 "xsdk_bluetooth_no_permission" = "This app is not authorized to use Bluetooth Low Energy.";
+
+
+// MARK: API parse errors
+// Texts that are displayed in case of no bluetooth connection
+
+"xsdk_response_parsing_error" = "Parsing error";
+"xsdk_http_response_parsing_error_message" = "Http response could not be parsed.";
