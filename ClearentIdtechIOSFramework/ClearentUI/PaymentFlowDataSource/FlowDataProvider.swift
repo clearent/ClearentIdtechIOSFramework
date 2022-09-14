@@ -139,7 +139,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             if let response = response {
                 detailedErrorMessage = createDetailedErrorMessage(with: error.code, message: response.payload.transaction?.message, transactionID: response.links?.first?.id, exchangeID: response.exchange_id)
             } else {
-                detailedErrorMessage = createDetailedErrorMessage(with: error.code, message: error.message, transactionID: nil, exchangeID: "")
+                detailedErrorMessage = createDetailedErrorMessage(with: error.code, message: error.message, transactionID: nil, exchangeID: "-")
             }
             
             let errorItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
