@@ -618,7 +618,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     }
 
     public func deviceMessage(_ message: String!) {
-        /// It appears this is the only feedback we get if the publick key is not valid
+        /// It appears this is the only feedback we get if the public key is not valid
         ///  This method is deprecated
         
         DispatchQueue.main.async {
