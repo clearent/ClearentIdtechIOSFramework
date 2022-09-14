@@ -519,7 +519,8 @@ public final class ClearentWrapper : NSObject {
             ClearentWrapper.shared.startDeviceInfoUpdate()
             let payment = ClearentPayment.init(sale: ())
             payment?.amount = Double(saleEntity.amount) ?? 0
-            strongSelf.clearentVP3300.startTransaction(payment, clearentConnection: strongSelf.connection)
+            let response = strongSelf.clearentVP3300.startTransaction(payment, clearentConnection: strongSelf.connection)
+            print("RRR \(response)")
         }
     }
 }
@@ -618,7 +619,14 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     }
 
     public func deviceMessage(_ message: String!) {
-        print("Will be deprecated")
+        /// It appears this is the only feedback we get if the publick key is not valid
+        ///  This method is deprecated
+        
+        DispatchQueue.main.async {
+            if (message == "token_generation_failed_message".localized) {
+                self.delegate?.didFinishTransaction(response: nil, error: ResponseError.init(code: "xsdk_general_error_title".localized, message: "token_generation_failed_message".localized))
+            }
+        }
     }
     
     private func invalidateConnectionTimer() {

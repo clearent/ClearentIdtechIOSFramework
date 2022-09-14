@@ -176,3 +176,4 @@
 
 "xsdk_response_parsing_error" = "Parsing error";
 "xsdk_http_response_parsing_error_message" = "Http response could not be parsed.";
+"token_generation_failed_message" = "Create Transaction Token Failed. Unauthorized.";
