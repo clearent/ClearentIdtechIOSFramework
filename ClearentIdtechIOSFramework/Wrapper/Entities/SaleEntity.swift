@@ -12,15 +12,17 @@ public struct ManualEntryCardInfo {
     let csc: String
 }
 
-public class SaleEntity: CodableProtocol {
+public class SaleEntity: NSObject, CodableProtocol {
     var amount: String
-    var tipAmount, softwareType, softwareTypeVersion: String?
+    var tipAmount, salesTaxAmount, serviceFee, softwareType, softwareTypeVersion: String?
     let billing, shipping: ClientInformation?
     let card, csc, customerID, invoice, orderID: String?
 
-    public init(amount: String, tipAmount: String? = nil, softwareType: String? = nil, softwareTypeVersion: String? = nil, billing: ClientInformation? = nil, shipping: ClientInformation? = nil, card: String? = nil, csc: String? = nil, customerID: String? = nil, invoice: String? = nil, orderID: String? = nil) {
+    public init(amount: String, tipAmount: String? = nil, salesTaxAmount: String? = nil, serviceFee: String? = nil, softwareType: String? = nil, softwareTypeVersion: String? = nil, billing: ClientInformation? = nil, shipping: ClientInformation? = nil, card: String? = nil, csc: String? = nil, customerID: String? = nil, invoice: String? = nil, orderID: String? = nil) {
         self.amount = amount
         self.tipAmount = tipAmount
+        self.salesTaxAmount = salesTaxAmount
+        self.serviceFee = serviceFee
         self.softwareType = softwareType
         self.softwareTypeVersion = softwareTypeVersion
         self.billing = billing
@@ -32,11 +34,13 @@ public class SaleEntity: CodableProtocol {
         self.orderID = orderID
     }
 
-    enum CodingKeys: String, CodingKey {
+    enum CodingKeys: String, CodingKey, CaseIterable {
         case shipping, amount, billing, card, csc, invoice
         case customerID = "customer-id"
         case orderID = "order-id"
         case tipAmount = "tip-amount"
+        case salesTaxAmount = "sales-tax-amount"
+        case serviceFee = "service-fee"
         case softwareType = "software-type"
         case softwareTypeVersion = "software-type-version"
     }

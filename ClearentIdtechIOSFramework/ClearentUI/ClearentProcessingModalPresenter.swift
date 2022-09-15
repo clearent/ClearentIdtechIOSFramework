@@ -50,6 +50,7 @@ class ClearentProcessingModalPresenter {
     
     var amountWithoutTip: Double?
     var tip: Double?
+    var saleEntity: SaleEntity?
     var selectedReaderFromReadersList: ReaderItem?
     var sdkFeedbackProvider: FlowDataProvider
     var editableReader: ReaderInfo?
@@ -57,9 +58,10 @@ class ClearentProcessingModalPresenter {
 
     // MARK: Init
 
-    init(modalProcessingView: ClearentProcessingModalView, amount: Double?, processType: ProcessType) {
+    init(modalProcessingView: ClearentProcessingModalView, amount: Double?, saleEntity: SaleEntity? = nil, processType: ProcessType) {
         self.modalProcessingView = modalProcessingView
         amountWithoutTip = amount
+        self.saleEntity = saleEntity
         self.processType = processType
         sdkFeedbackProvider = FlowDataProvider()
         sdkFeedbackProvider.delegate = self
@@ -203,7 +205,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
 
     func sendManualEntryTransaction(with dataSource: ClearentPaymentDataSource) {
-        guard let amount = amountWithoutTip?.stringFormattedWithTwoDecimals,
+        guard let amount = saleEntity?.amount ?? amountWithoutTip?.stringFormattedWithTwoDecimals,
               let cardNo = dataSource.valueForType(.creditCardNo)?.replacingOccurrences(of: ClearentPaymentItemType.creditCardNo.separator, with: ""),
               let date = dataSource.valueForType(.date)?.replacingOccurrences(of: ClearentPaymentItemType.date.separator, with: ""),
               let csc = dataSource.valueForType(.securityCode) else { return }
@@ -273,7 +275,9 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
 
     private func startCardReaderTransaction() {
-        if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
+        if let saleEntity = saleEntity {
+            startTransaction(saleEntity: saleEntity)
+        } else if let amountFormatted = saleEntity?.amount {
             let saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals)
             startTransaction(saleEntity: saleEntity)
         }

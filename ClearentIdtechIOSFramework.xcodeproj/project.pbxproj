@@ -35,7 +35,6 @@
 		01442CF828B3D836006DD15C /* ClearentMarginableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442C8E28B3D835006DD15C /* ClearentMarginableView.swift */; };
 		01442CF928B3D836006DD15C /* ClearentMarginable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442C8F28B3D835006DD15C /* ClearentMarginable.swift */; };
 		01442CFA28B3D836006DD15C /* ClearentApplicationOrientation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442C9028B3D835006DD15C /* ClearentApplicationOrientation.swift */; };
-		01442CFB28B3D836006DD15C /* ClearentColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442C9128B3D835006DD15C /* ClearentColorExtension.swift */; };
 		01442CFC28B3D836006DD15C /* UserDefaultsPersistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442C9228B3D835006DD15C /* UserDefaultsPersistence.swift */; };
 		01442CFD28B3D836006DD15C /* ClearentMoneyFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442C9328B3D835006DD15C /* ClearentMoneyFormatter.swift */; };
 		01442CFE28B3D836006DD15C /* ClearentConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442C9428B3D835006DD15C /* ClearentConstants.swift */; };
@@ -124,6 +123,7 @@
 		01442D5E28B3D84D006DD15C /* SignatureEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442D5528B3D84D006DD15C /* SignatureEntity.swift */; };
 		01442D5F28B3D84D006DD15C /* SaleEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442D5628B3D84D006DD15C /* SaleEntity.swift */; };
 		01442D6028B3D84D006DD15C /* MerchantSettingsEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442D5728B3D84D006DD15C /* MerchantSettingsEntity.swift */; };
+		019CE57928D0819800B596B2 /* ClearentColorExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019CE57828D0819800B596B2 /* ClearentColorExtension.swift */; };
 		01DC91AA28BE129B009FAE64 /* ArrayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DC91A928BE129B009FAE64 /* ArrayExtension.swift */; };
 		01E22E0028B77D9F004C4ADF /* SVGView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E22DFD28B77D9E004C4ADF /* SVGView.swift */; };
 		01E22E0228B77D9F004C4ADF /* SVGLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E22DFF28B77D9F004C4ADF /* SVGLoader.swift */; };
@@ -240,7 +240,6 @@
 		01442C8E28B3D835006DD15C /* ClearentMarginableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentMarginableView.swift; sourceTree = "<group>"; };
 		01442C8F28B3D835006DD15C /* ClearentMarginable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentMarginable.swift; sourceTree = "<group>"; };
 		01442C9028B3D835006DD15C /* ClearentApplicationOrientation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentApplicationOrientation.swift; sourceTree = "<group>"; };
-		01442C9128B3D835006DD15C /* ClearentColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentColorExtension.swift; sourceTree = "<group>"; };
 		01442C9228B3D835006DD15C /* UserDefaultsPersistence.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaultsPersistence.swift; sourceTree = "<group>"; };
 		01442C9328B3D835006DD15C /* ClearentMoneyFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentMoneyFormatter.swift; sourceTree = "<group>"; };
 		01442C9428B3D835006DD15C /* ClearentConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentConstants.swift; sourceTree = "<group>"; };
@@ -329,6 +328,7 @@
 		01442D5528B3D84D006DD15C /* SignatureEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignatureEntity.swift; sourceTree = "<group>"; };
 		01442D5628B3D84D006DD15C /* SaleEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SaleEntity.swift; sourceTree = "<group>"; };
 		01442D5728B3D84D006DD15C /* MerchantSettingsEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MerchantSettingsEntity.swift; sourceTree = "<group>"; };
+		019CE57828D0819800B596B2 /* ClearentColorExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentColorExtension.swift; sourceTree = "<group>"; };
 		01DC91A928BE129B009FAE64 /* ArrayExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtension.swift; sourceTree = "<group>"; };
 		01E22DFD28B77D9E004C4ADF /* SVGView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SVGView.swift; sourceTree = "<group>"; };
 		01E22DFF28B77D9F004C4ADF /* SVGLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SVGLoader.swift; sourceTree = "<group>"; };
@@ -533,7 +533,6 @@
 				01E22E0328B77DAD004C4ADF /* Animation */,
 				01442C8B28B3D835006DD15C /* AdaptiveStackView */,
 				01442C9028B3D835006DD15C /* ClearentApplicationOrientation.swift */,
-				01442C9128B3D835006DD15C /* ClearentColorExtension.swift */,
 				01442C9228B3D835006DD15C /* UserDefaultsPersistence.swift */,
 				01442C9328B3D835006DD15C /* ClearentMoneyFormatter.swift */,
 				01442C9428B3D835006DD15C /* ClearentConstants.swift */,
@@ -556,6 +555,7 @@
 		01442C9628B3D835006DD15C /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				019CE57828D0819800B596B2 /* ClearentColorExtension.swift */,
 				01442C9728B3D835006DD15C /* NSDataExtension.swift */,
 				01442C9828B3D835006DD15C /* ClearentStringExtension.swift */,
 				01442C9928B3D835006DD15C /* UIStackViewExtension.swift */,
@@ -1149,7 +1149,6 @@
 				01442D0228B3D836006DD15C /* UIStackViewExtension.swift in Sources */,
 				4B32C08E2432586500CCF9B9 /* ClearentConnection.m in Sources */,
 				01442D3F28B3D836006DD15C /* ClearentManualPaymentModel.swift in Sources */,
-				01442CFB28B3D836006DD15C /* ClearentColorExtension.swift in Sources */,
 				E78E2E84224E847900943B14 /* ClearentUtils.m in Sources */,
 				01442D1828B3D836006DD15C /* ClearentDrawingPanel.swift in Sources */,
 				01442D3128B3D836006DD15C /* ClearentPaymentTextField.swift in Sources */,
@@ -1199,6 +1198,7 @@
 				E75891FC225522AB00288032 /* ClearentLogging.m in Sources */,
 				E75891F7225522AB00288032 /* ClearentLoggingRequest.m in Sources */,
 				01442C7A28B3D343006DD15C /* BluetoothScanner.swift in Sources */,
+				019CE57928D0819800B596B2 /* ClearentColorExtension.swift in Sources */,
 				01E22E0828B7BAE3004C4ADF /* UIViewExtension.swift in Sources */,
 				01442D3628B3D836006DD15C /* ClearentPaymentHeaderView.swift in Sources */,
 				01442D2828B3D836006DD15C /* ClearentLabelWithIcon.swift in Sources */,

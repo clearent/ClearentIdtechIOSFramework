@@ -72,6 +72,18 @@ public final class ClearentUIManager: NSObject {
     }
     
     /**
+     * Method returns a UIController that can handle the entire payment process
+     * @param saleEntity, the entity that contains all the necessary info to create a sale request
+     * @param completion, a closure to be executed once the clearent SDK UI is dimissed
+     */
+    @objc public func paymentViewController(saleEntity: SaleEntity, completion: ((ClearentResult) -> Void)?) -> UINavigationController {
+        viewController(processType: .payment, amount: 0, saleEntity: saleEntity, dismissCompletion: { [weak self] result in
+            guard let completionResult = self?.resultFor(completionResult: result) else { return }
+            completion?(completionResult)
+        })
+    }
+    
+    /**
      * Method returns a UIController that can handle the pairing process of a card reader
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
@@ -93,9 +105,9 @@ public final class ClearentUIManager: NSObject {
         })
     }
 
-    internal func viewController(processType: ProcessType, amount: Double? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UINavigationController {
+    internal func viewController(processType: ProcessType, amount: Double? = nil, saleEntity: SaleEntity? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UINavigationController {
         let viewController = ClearentProcessingModalViewController(showOnTop: processType == .showReaders || processType == .renameReader)
-        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, amount: amount, processType: processType)
+        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, amount: amount, saleEntity: saleEntity, processType: processType)
         presenter.editableReader = editableReader
         viewController.presenter = presenter
         viewController.dismissCompletion = dismissCompletion
