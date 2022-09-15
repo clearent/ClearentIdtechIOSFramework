@@ -32,9 +32,14 @@ public enum UserAction: String, CaseIterable {
          badChip,
          cardUnsupported,
          cardBlocked,
-         cardExpired
+         cardExpired,
+         authorizing,
+         processing,
+         amountNotAllowedForTap,
+         chipNotRecognized
     
-    var description: String {
+
+    var message: String {
         switch self {
         case .pleaseWait:
             return CLEARENT_PLEASE_WAIT
@@ -82,29 +87,10 @@ public enum UserAction: String, CaseIterable {
             return ClearentConstants.Localized.Bluetooth.turnedOff
         case .noBluetoothPermission:
             return ClearentConstants.Localized.Bluetooth.noPermission
-        }
-    }
-    
-    static func action(for text: String) -> UserAction? {
-        UserAction.allCases.first { $0.description == text }
-    }
-}
-
-public enum UserInfo: String, CaseIterable {
-    case authorizing,
-         processing,
-         goingOnline,
-         amountNotAllowedForTap,
-         chipNotRecognized
-    
-    var description: String {
-        switch self {
         case .authorizing:
             return CLEARENT_TRANSACTION_AUTHORIZING
         case .processing:
             return CLEARENT_TRANSACTION_PROCESSING
-        case .goingOnline:
-            return CLEARENT_TRANSLATING_CARD_TO_TOKEN
         case .amountNotAllowedForTap:
             return CLEARENT_TAP_OVER_MAX_AMOUNT
         case .chipNotRecognized:
@@ -112,8 +98,18 @@ public enum UserInfo: String, CaseIterable {
         }
     }
     
-    static func info(for text: String) -> UserInfo? {
-        UserInfo.allCases.first { $0.description == text }
+    var description: String? {
+        if ClearentWrapper.shared.enableEnhancedMessaging, let dict = ClearentWrapper.shared.enhancedMessagesDict, let result = dict[message] {
+            return result == ClearentConstants.Messaging.suppress ? nil : result
+        }
+        return message
+    }
+
+    static func action(for text: String) -> UserAction? {
+        if let action = UserAction.allCases.first(where: { $0.message == text }) {
+            return action
+        }
+        return (text == ClearentConstants.Messaging.suppress) ? nil :UserAction(rawValue: text)
     }
 }
 
@@ -188,13 +184,6 @@ public protocol ClearentWrapperProtocol : AnyObject {
      * @action, User Action needed to be performed by the user
      */
     func userActionNeeded(action: UserAction)
-    
-    /**
-     * Method called  each time the reader wants to inform the user
-     * @UserInfo, please check the enum for more cases
-     * @info, UserInfo needed to be performed by the user
-     */
-    func didReceiveInfo(info: UserInfo)
 }
 
 public final class ClearentWrapper : NSObject {
@@ -217,6 +206,12 @@ public final class ClearentWrapper : NSObject {
     
     /// If card reader payment fails, the option to use manual payment can be displayed in UI as a fallback method. If user selects this method, useManualPaymentAsFallback needs to be set to true.
     public var useManualPaymentAsFallback: Bool?
+    
+    /// Enables or disables the use of enhanced messages
+    public var enableEnhancedMessaging: Bool = false
+    
+    /// Stores the enhanced messages read from the messages bundle
+    internal var enhancedMessagesDict: [String:String]?
     
     public weak var delegate: ClearentWrapperProtocol?
 
@@ -343,10 +338,15 @@ public final class ClearentWrapper : NSObject {
      * @param publicKey, publicKey used by the IDTech reader framework
      * @param apiKey, API Key used for http calls
      */
-    public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String) {
+    public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String, enableEnhancedMessaging: Bool) {
         self.baseURL = baseURL
         self.apiKey = apiKey
         self.publicKey = publicKey
+        self.enableEnhancedMessaging = enableEnhancedMessaging
+        
+        if enableEnhancedMessaging {
+            readEnhancedMessages()
+        }
     }
     
     
@@ -741,16 +741,10 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
             DispatchQueue.main.async {
                 self.delegate?.didEncounteredGeneralError()
             }
-        case .USER_ACTION:
+        case .USER_ACTION, .INFO:
             if let action = UserAction.action(for: clearentFeedback.message) {
                 DispatchQueue.main.async {
                     self.delegate?.userActionNeeded(action: action)
-                }
-            }
-        case .INFO:
-            if let info = UserInfo.info(for: clearentFeedback.message) {
-                DispatchQueue.main.async {
-                    self.delegate?.didReceiveInfo(info: info)
                 }
             }
         case .BLUETOOTH:
@@ -837,8 +831,6 @@ extension ClearentWrapper : ClearentManualEntryDelegate {
         DispatchQueue.main.async {
             if let action = UserAction.action(for: message) {
                 self.delegate?.userActionNeeded(action: action)
-            } else if let info = UserInfo.info(for: message) {
-                self.delegate?.didReceiveInfo(info: info)
             } else {
                 self.delegate?.didEncounteredGeneralError()
             }

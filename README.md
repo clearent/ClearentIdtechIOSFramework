@@ -23,6 +23,9 @@ Clearent SDK UI is a wrapper over ClearentFrameworkSDK that provides payment cap
 
 3. **UI Customization**, Clearent SDK UI provides the integrator the chance to customize the fonts, colors and texts used in the UI, This is achieved by overwriting the public properties of each UI element that is exposed.
 
+1. **Enhanced Messages**, when this feature is enabled the the feedback that the SDK is providing uses friendlier messages, this messages are stored in the enhancedmessages-v1.txt file from the ClearentIdtechMessages bundle.
+    The host app will need to include the bundle in build phases copy resources section.
+
 
 ## Dependencies
 
@@ -199,8 +202,8 @@ class ViewController: UIViewController {
     func initSDK() {
         
         // Update the SDk with needed info to work properly
-        ClearentUIManager.shared.updateWith(baseURL: Api.baseURL, apiKey: Api.apiKey, publicKey: Api.publicKey)
-        
+        ClearentUIManager.shared.updateWith(baseURL: Constants.Api.baseURL, apiKey: Constants.Api.apiKey, publicKey: Constants.Api.publicKey, enableEnhancedMessaging: false)
+              
         // Load the default fonts from our SDK
         UIFont.loadFonts()
         
@@ -303,6 +306,9 @@ The safe keeping of the **API URL**, **API KEY** and the **PUBLIC KEY** is the i
 **ClearentWrapperProtocol** is the protocol you will need to implement in order to receive updates , error and notifications from the SDK. Each method from the protocol is documented in code.
 
 **ClearentWrapperDefaults** is a user default storage that holds information like currently paired reader and a list of previously paired readers. You should not save anything here the SDK handles this for you.
+
+1. **Enhanced Messages**, when this feature is enabled the the feedback that the SDK is providing uses friendlier messages, this messages are stored in the enhancedmessages-v1.txt file from the ClearentIdtechMessages bundle.
+    The host app will need to include the bundle in build phases copy resources section.
 
 ## Supported iOS versions
 
