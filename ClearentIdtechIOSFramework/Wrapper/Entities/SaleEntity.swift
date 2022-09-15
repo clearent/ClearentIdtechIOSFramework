@@ -34,7 +34,7 @@ public class SaleEntity: NSObject, CodableProtocol {
         self.orderID = orderID
     }
 
-    enum CodingKeys: String, CodingKey, CaseIterable {
+    enum CodingKeys: String, CodingKey {
         case shipping, amount, billing, card, csc, invoice
         case customerID = "customer-id"
         case orderID = "order-id"
