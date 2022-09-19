@@ -70,10 +70,10 @@ class FlowDataProvider : NSObject {
     }
     
     func fetchReaderInfo() -> ReaderInfo? {
-        return ClearentWrapperDefaults.pairedReaderInfo
+        ClearentWrapperDefaults.pairedReaderInfo
     }
     
-    public func startTipTransaction(amountWithoutTip: Double) {
+    func startTipTransaction(amountWithoutTip: Double) {
         let amountInfo = AmountInfo(amountWithoutTip: amountWithoutTip, availableTipPercentages: ClearentUIManager.shared.tipAmounts)
         
         let items = [FlowDataItem(type: .title, object: ClearentConstants.Localized.Tips.transactionTip),
@@ -83,6 +83,18 @@ class FlowDataProvider : NSObject {
         
         let feedback = FlowFeedback(flow: .payment, type: FlowFeedbackType.info, items: items)
 
+        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+    }
+    
+    func displayOfflineModeWarningMessage() {
+        let items = [FlowDataItem(type: .title, object: ClearentConstants.Localized.OfflineMode.offlineModeWarningMessageTitle),
+                     FlowDataItem(type: .description, object: ClearentConstants.Localized.OfflineMode.offlineModeWarningMessageDescription),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.confirmOfflineModeWarningMessage)]
+        let feedback = FlowDataFactory.component(with: .payment,
+                                                 type: .info,
+                                                 readerInfo:fetchReaderInfo(),
+                                                 payload: items)
+        
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
 }
@@ -98,10 +110,10 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                             FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                             FlowDataItem(type: .userAction, object: FlowButtonType.skipSignature)]
             
-           feedback = FlowDataFactory.component(with: .payment,
-                                                    type: .signatureError,
-                                                    readerInfo: fetchReaderInfo(),
-                                                    payload: errItems)
+            feedback = FlowDataFactory.component(with: .payment,
+                                                 type: .signatureError,
+                                                 readerInfo: fetchReaderInfo(),
+                                                 payload: errItems)
         } else {
             let transactionItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.transaction_completed),
                                     FlowDataItem(type: .title, object: ClearentConstants.Localized.Signature.signatureUploadSuccessful)]
@@ -244,6 +256,13 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+        case .offlineMode:
+            type = .warning
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
+                     FlowDataItem(type: .title, object: ClearentConstants.Localized.Internet.error),
+                     FlowDataItem(type: .description, object: action.description),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.confirmOfflineMode),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.denyOfflineMode)]
         }
         
         if let flowItems = items {

@@ -241,5 +241,18 @@ import UIKit
             public static let withoutTip = "xsdk_tips_user_action_transaction_without_tip".localized
             public static let withTip = "xsdk_tips_user_action_transaction_with_tip".localized
         }
+        
+        enum OfflineMode {
+            public static let enableOfflineMode = "xsdk_offline_mode_enable_title".localized
+            public static let offlineModeConfirmOption = "xsdk_offline_mode_confirm_option".localized
+            public static let offlineModeCancelOption = "xsdk_offline_mode_cancel_option".localized
+            public static let offlineModeConfirmationMessage = "xsdk_offline_mode_confirmation_message".localized
+            public static let offlineModeConfirmationMessageConfirm = "xsdk_offline_mode_confirmation_proceed".localized
+            public static let offlineModeConfirmationMessageCancel = "xsdk_offline_mode_confirmation_cancel".localized
+            public static let offlineModeWarningMessageTitle = "xsdk_offline_mode_warning_message_title".localized
+            public static let offlineModeWarningMessageDescription = "xsdk_offline_mode_warning_message_description".localized
+            public static let offlineModeEnabled = "xsdk_offline_mode_enabled".localized
+            public static let offlineModeWarningMessageConfirm = "xsdk_offline_mode_warning_message_confirmation".localized
+        }
     }
 }

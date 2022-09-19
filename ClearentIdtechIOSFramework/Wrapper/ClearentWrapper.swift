@@ -28,6 +28,7 @@ public enum UserAction: String, CaseIterable {
          noInternet,
          noBluetooth,
          noBluetoothPermission,
+         offlineMode,
          failedToStartSwipe,
          badChip,
          cardUnsupported,
@@ -82,6 +83,8 @@ public enum UserAction: String, CaseIterable {
             return ClearentConstants.Localized.Bluetooth.turnedOff
         case .noBluetoothPermission:
             return ClearentConstants.Localized.Bluetooth.noPermission
+        case .offlineMode:
+            return ClearentConstants.Localized.OfflineMode.enableOfflineMode
         }
     }
     
@@ -239,11 +242,14 @@ public final class ClearentWrapper : NSObject {
     private let monitor = NWPathMonitor()
     private var isInternetOn = false
     private var signatureImage: UIImage?
+    private var shouldAskForOfflineModePermission: Bool {
+        !isInternetOn && !isOfflineModeEnabled ? (isNewPaymentProcess ? true : false) : false
+    }
     private var connectivityActionNeeded: UserAction? {
         if cardReaderPaymentIsPreffered && useManualPaymentAsFallback == nil {
-            return isBluetoothPermissionGranted ? (isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : .noInternet) : .noBluetoothPermission
+            return isBluetoothPermissionGranted ? (isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : (isOfflineModeEnabled ? nil : .noInternet)) : .noBluetoothPermission
         } else {
-            return isInternetOn ? nil : .noInternet
+            return isInternetOn ? nil : (isOfflineModeEnabled ? nil : .noInternet)
         }
     }
     private lazy var httpClient: ClearentHttpClient = {
@@ -251,7 +257,9 @@ public final class ClearentWrapper : NSObject {
     }()
     internal var isBluetoothOn = false
     internal var tipEnabled = false
+    internal var isOfflineModeEnabled = false
     internal var shouldSendPressButton = false
+    internal var isNewPaymentProcess = true
     private var continuousSearchingTimer: Timer?
     private var connectToReaderTimer: Timer?
     private var shouldStopUpdatingReadersListDuringContinuousSearching: Bool? = false
@@ -263,7 +271,7 @@ public final class ClearentWrapper : NSObject {
         super.init()
 
         createLogFile()
-        self.startConnectionListener()
+        startConnectionListener()
         bleManager = BluetoothScanner.init(udid: nil, delegate: self)
         
         shouldBeginContinuousSearchingForReaders = { searchingEnabled in
@@ -289,7 +297,9 @@ public final class ClearentWrapper : NSObject {
      * @param reconnectIfPossible, if  false  a connection that will search for bluetooth devices will be started, if true a connection with the last paired reader will be tried
      */
     public func startPairing(reconnectIfPossible: Bool) {
+        if shouldDisplayOfflineModePermission() { return }
         if shouldDisplayConnectivityWarning() { return }
+        
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let strongSelf = self else { return }
             
@@ -363,6 +373,8 @@ public final class ClearentWrapper : NSObject {
         
         self.saleEntity = saleEntity
         
+        if shouldDisplayOfflineModePermission() { return }
+        
         if shouldDisplayConnectivityWarning() { return }
         
         if let manualEntryCardInfo = manualEntryCardInfo {
@@ -392,7 +404,7 @@ public final class ClearentWrapper : NSObject {
     public func saleTransaction(jwt: String, saleEntity: SaleEntity) {
         httpClient.saleTransaction(jwt: jwt, saleEntity: saleEntity) { data, error in
             guard let responseData = data else { return }
-
+        
             do {
                 let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
                 guard let transactionError = decodedResponse.payload.error else {
@@ -520,6 +532,7 @@ public final class ClearentWrapper : NSObject {
      * @param transactionID, ID of transcation to be voided
      */
     public func fetchTipSetting(completion: @escaping () -> Void) {
+        if shouldDisplayOfflineModePermission() { return }
         if shouldDisplayConnectivityWarning() { return }
 
         httpClient.merchantSettings() { data, error in
@@ -565,6 +578,16 @@ public final class ClearentWrapper : NSObject {
     }
     
     // MARK - Private
+    
+    private func shouldDisplayOfflineModePermission() -> Bool {
+        if let action = UserAction(rawValue: UserAction.offlineMode.rawValue), shouldAskForOfflineModePermission {
+            DispatchQueue.main.async {
+                self.delegate?.userActionNeeded(action: action)
+            }
+            return true
+        }
+        return false
+    }
     
     private func shouldDisplayConnectivityWarning() -> Bool {
         if let action = connectivityActionNeeded {
