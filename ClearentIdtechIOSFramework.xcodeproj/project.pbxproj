@@ -115,11 +115,6 @@
 		01442D4A28B3D836006DD15C /* ClearentUIBrandConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442CE928B3D835006DD15C /* ClearentUIBrandConfigurator.swift */; };
 		01442D4B28B3D836006DD15C /* ClearentProcessingModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442CEA28B3D835006DD15C /* ClearentProcessingModalViewController.swift */; };
 		01442D4C28B3D836006DD15C /* ClearentProcessingModalPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442CEB28B3D835006DD15C /* ClearentProcessingModalPresenter.swift */; };
-		01442D5828B3D84D006DD15C /* ClearentHttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442D4E28B3D84D006DD15C /* ClearentHttpClient.swift */; };
-		01442D5928B3D84D006DD15C /* ClearentExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442D4F28B3D84D006DD15C /* ClearentExtension.swift */; };
-		01442D5A28B3D84D006DD15C /* ClearentErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442D5028B3D84D006DD15C /* ClearentErrors.swift */; };
-		01442D5B28B3D84D006DD15C /* HttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442D5128B3D84D006DD15C /* HttpClient.swift */; };
-		01442D5C28B3D84D006DD15C /* ClearentWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442D5228B3D84D006DD15C /* ClearentWrapper.swift */; };
 		01442D5D28B3D84D006DD15C /* Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442D5428B3D84D006DD15C /* Entities.swift */; };
 		01442D5E28B3D84D006DD15C /* SignatureEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442D5528B3D84D006DD15C /* SignatureEntity.swift */; };
 		01442D5F28B3D84D006DD15C /* SaleEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442D5628B3D84D006DD15C /* SaleEntity.swift */; };
@@ -165,8 +160,15 @@
 		4BCD80B528745F2100507B3B /* ClearentIDTUtility.m in Sources */ = {isa = PBXBuildFile; fileRef = 4BCD80B428745F2100507B3B /* ClearentIDTUtility.m */; };
 		4BCD80B6287460F900507B3B /* ClearentIDTUtility.h in Headers */ = {isa = PBXBuildFile; fileRef = 4BCD80B328745EDD00507B3B /* ClearentIDTUtility.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4BE4F5322816B39A00357F8F /* IDTech.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BE4F5312816B39A00357F8F /* IDTech.xcframework */; };
-		CC5E5A3528B659D400F5C291 /* ClearentWrapperDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5E5A3328B659D400F5C291 /* ClearentWrapperDefaults.swift */; };
 		CC5E5A3628B659D400F5C291 /* ReaderInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5E5A3428B659D400F5C291 /* ReaderInfo.swift */; };
+		CCA86E4B28CF5DB300FF83FB /* ClearentWrapperEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA86E4528CF5DB300FF83FB /* ClearentWrapperEnums.swift */; };
+		CCA86E4C28CF5DB300FF83FB /* ClearentWrapperDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA86E4628CF5DB300FF83FB /* ClearentWrapperDefaults.swift */; };
+		CCA86E4D28CF5DB300FF83FB /* ClearentWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA86E4728CF5DB300FF83FB /* ClearentWrapper.swift */; };
+		CCA86E4E28CF5DB300FF83FB /* ClearentWrapperProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA86E4828CF5DB300FF83FB /* ClearentWrapperProtocol.swift */; };
+		CCA86E4F28CF5DB300FF83FB /* ClearentWrapperExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA86E4928CF5DB300FF83FB /* ClearentWrapperExtensions.swift */; };
+		CCA86E5128CF5DE200FF83FB /* ClearentErrors.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA86E5028CF5DE200FF83FB /* ClearentErrors.swift */; };
+		CCA86E5528CF5E0F00FF83FB /* ClearentHttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA86E5328CF5E0F00FF83FB /* ClearentHttpClient.swift */; };
+		CCA86E5628CF5E0F00FF83FB /* HttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA86E5428CF5E0F00FF83FB /* HttpClient.swift */; };
 		E702E5702364835B0032ED8D /* ClearentVP3300Config.m in Sources */ = {isa = PBXBuildFile; fileRef = E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */; };
 		E702E572236488630032ED8D /* ClearentPayment.h in Headers */ = {isa = PBXBuildFile; fileRef = E746CB5F235896EC00C41DF1 /* ClearentPayment.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E702E5732364886C0032ED8D /* ClearentVP3300Config.h in Headers */ = {isa = PBXBuildFile; fileRef = E702E571236485280032ED8D /* ClearentVP3300Config.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -320,11 +322,6 @@
 		01442CE928B3D835006DD15C /* ClearentUIBrandConfigurator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentUIBrandConfigurator.swift; sourceTree = "<group>"; };
 		01442CEA28B3D835006DD15C /* ClearentProcessingModalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentProcessingModalViewController.swift; sourceTree = "<group>"; };
 		01442CEB28B3D835006DD15C /* ClearentProcessingModalPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentProcessingModalPresenter.swift; sourceTree = "<group>"; };
-		01442D4E28B3D84D006DD15C /* ClearentHttpClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentHttpClient.swift; sourceTree = "<group>"; };
-		01442D4F28B3D84D006DD15C /* ClearentExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentExtension.swift; sourceTree = "<group>"; };
-		01442D5028B3D84D006DD15C /* ClearentErrors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentErrors.swift; sourceTree = "<group>"; };
-		01442D5128B3D84D006DD15C /* HttpClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpClient.swift; sourceTree = "<group>"; };
-		01442D5228B3D84D006DD15C /* ClearentWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentWrapper.swift; sourceTree = "<group>"; };
 		01442D5428B3D84D006DD15C /* Entities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Entities.swift; sourceTree = "<group>"; };
 		01442D5528B3D84D006DD15C /* SignatureEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignatureEntity.swift; sourceTree = "<group>"; };
 		01442D5628B3D84D006DD15C /* SaleEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SaleEntity.swift; sourceTree = "<group>"; };
@@ -370,8 +367,15 @@
 		4BCD80B428745F2100507B3B /* ClearentIDTUtility.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClearentIDTUtility.m; sourceTree = "<group>"; };
 		4BE12F30286B1BAF003283FB /* ClearentIdtechMessages.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = ClearentIdtechMessages.bundle; sourceTree = "<group>"; };
 		4BE4F5312816B39A00357F8F /* IDTech.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = IDTech.xcframework; sourceTree = "<group>"; };
-		CC5E5A3328B659D400F5C291 /* ClearentWrapperDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentWrapperDefaults.swift; sourceTree = "<group>"; };
 		CC5E5A3428B659D400F5C291 /* ReaderInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderInfo.swift; sourceTree = "<group>"; };
+		CCA86E4528CF5DB300FF83FB /* ClearentWrapperEnums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentWrapperEnums.swift; sourceTree = "<group>"; };
+		CCA86E4628CF5DB300FF83FB /* ClearentWrapperDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentWrapperDefaults.swift; sourceTree = "<group>"; };
+		CCA86E4728CF5DB300FF83FB /* ClearentWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentWrapper.swift; sourceTree = "<group>"; };
+		CCA86E4828CF5DB300FF83FB /* ClearentWrapperProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentWrapperProtocol.swift; sourceTree = "<group>"; };
+		CCA86E4928CF5DB300FF83FB /* ClearentWrapperExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentWrapperExtensions.swift; sourceTree = "<group>"; };
+		CCA86E5028CF5DE200FF83FB /* ClearentErrors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentErrors.swift; sourceTree = "<group>"; };
+		CCA86E5328CF5E0F00FF83FB /* ClearentHttpClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentHttpClient.swift; sourceTree = "<group>"; };
+		CCA86E5428CF5E0F00FF83FB /* HttpClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpClient.swift; sourceTree = "<group>"; };
 		E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentVP3300Config.m; sourceTree = "<group>"; };
 		E702E571236485280032ED8D /* ClearentVP3300Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentVP3300Config.h; sourceTree = "<group>"; };
 		E726A0362258B5A400F3E8B7 /* ClearentCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentCache.h; sourceTree = "<group>"; };
@@ -698,19 +702,15 @@
 			path = BrandConfigurator;
 			sourceTree = "<group>";
 		};
-		01442D4D28B3D84D006DD15C /* Wrapper */ = {
+		01442D4D28B3D84D006DD15C /* ClearentWrapper */ = {
 			isa = PBXGroup;
 			children = (
-				CC5E5A3328B659D400F5C291 /* ClearentWrapperDefaults.swift */,
 				CC5E5A3428B659D400F5C291 /* ReaderInfo.swift */,
-				01442D4E28B3D84D006DD15C /* ClearentHttpClient.swift */,
-				01442D4F28B3D84D006DD15C /* ClearentExtension.swift */,
-				01442D5028B3D84D006DD15C /* ClearentErrors.swift */,
-				01442D5128B3D84D006DD15C /* HttpClient.swift */,
-				01442D5228B3D84D006DD15C /* ClearentWrapper.swift */,
+				CCA86E5228CF5DED00FF83FB /* HttpClient */,
 				01442D5328B3D84D006DD15C /* Entities */,
+				CCA86E4328CF5D4C00FF83FB /* Wrapper */,
 			);
-			path = Wrapper;
+			path = ClearentWrapper;
 			sourceTree = "<group>";
 		};
 		01442D5328B3D84D006DD15C /* Entities */ = {
@@ -739,6 +739,28 @@
 				01E22DFD28B77D9E004C4ADF /* SVGView.swift */,
 			);
 			path = Animation;
+			sourceTree = "<group>";
+		};
+		CCA86E4328CF5D4C00FF83FB /* Wrapper */ = {
+			isa = PBXGroup;
+			children = (
+				CCA86E5028CF5DE200FF83FB /* ClearentErrors.swift */,
+				CCA86E4728CF5DB300FF83FB /* ClearentWrapper.swift */,
+				CCA86E4628CF5DB300FF83FB /* ClearentWrapperDefaults.swift */,
+				CCA86E4528CF5DB300FF83FB /* ClearentWrapperEnums.swift */,
+				CCA86E4928CF5DB300FF83FB /* ClearentWrapperExtensions.swift */,
+				CCA86E4828CF5DB300FF83FB /* ClearentWrapperProtocol.swift */,
+			);
+			path = Wrapper;
+			sourceTree = "<group>";
+		};
+		CCA86E5228CF5DED00FF83FB /* HttpClient */ = {
+			isa = PBXGroup;
+			children = (
+				CCA86E5328CF5E0F00FF83FB /* ClearentHttpClient.swift */,
+				CCA86E5428CF5E0F00FF83FB /* HttpClient.swift */,
+			);
+			path = HttpClient;
 			sourceTree = "<group>";
 		};
 		E728DB4920E686CA004C01E7 /* test */ = {
@@ -816,7 +838,7 @@
 		E76504F61FFC306100B345F6 /* ClearentIdtechIOSFramework */ = {
 			isa = PBXGroup;
 			children = (
-				01442D4D28B3D84D006DD15C /* Wrapper */,
+				01442D4D28B3D84D006DD15C /* ClearentWrapper */,
 				01442C7C28B3D835006DD15C /* ClearentUI */,
 				01442C7828B3D343006DD15C /* BluetoothScanner */,
 				E75891DD225522AB00288032 /* Logging */,
@@ -1153,7 +1175,9 @@
 				E78E2E84224E847900943B14 /* ClearentUtils.m in Sources */,
 				01442D1828B3D836006DD15C /* ClearentDrawingPanel.swift in Sources */,
 				01442D3128B3D836006DD15C /* ClearentPaymentTextField.swift in Sources */,
+				CCA86E4E28CF5DB300FF83FB /* ClearentWrapperProtocol.swift in Sources */,
 				01442CF828B3D836006DD15C /* ClearentMarginableView.swift in Sources */,
+				CCA86E4B28CF5DB300FF83FB /* ClearentWrapperEnums.swift in Sources */,
 				01442CF328B3D836006DD15C /* ClearentReaderDetailsPresenter.swift in Sources */,
 				195291EF28B7AB09002C4623 /* ClearentErrorDetailsView.swift in Sources */,
 				01442D0B28B3D836006DD15C /* ClearentLoadingView.swift in Sources */,
@@ -1163,25 +1187,24 @@
 				01442D0428B3D836006DD15C /* UICollection.swift in Sources */,
 				01442D0128B3D836006DD15C /* ClearentStringExtension.swift in Sources */,
 				01442D2B28B3D836006DD15C /* ClearentReadersTableViewCell.swift in Sources */,
-				CC5E5A3528B659D400F5C291 /* ClearentWrapperDefaults.swift in Sources */,
 				01442D2028B3D836006DD15C /* ClearentSignatureView.swift in Sources */,
 				01442D0A28B3D836006DD15C /* ProgressShapeLayer.swift in Sources */,
-				01442D5928B3D84D006DD15C /* ClearentExtension.swift in Sources */,
 				E7CA494220E171960090CFFC /* ClearentConfiguration.m in Sources */,
 				E79BC82520B366300030FD8C /* Clearent_VP3300.m in Sources */,
 				01E22E0228B77D9F004C4ADF /* SVGLoader.swift in Sources */,
-				01442D5B28B3D84D006DD15C /* HttpClient.swift in Sources */,
 				01442D4728B3D836006DD15C /* ClearentDefaultFonts.swift in Sources */,
-				01442D5A28B3D84D006DD15C /* ClearentErrors.swift in Sources */,
 				E7A8BFA023311EE500FEBF48 /* ClearentContactlessConfigurator.m in Sources */,
 				01442D2A28B3D836006DD15C /* ClearentReaderStatusHeaderView.swift in Sources */,
 				E746CB612358983200C41DF1 /* ClearentPayment.m in Sources */,
+				CCA86E5628CF5E0F00FF83FB /* HttpClient.swift in Sources */,
 				4B32C0A22436612900CCF9B9 /* ClearentTransactions.m in Sources */,
+				CCA86E4F28CF5DB300FF83FB /* ClearentWrapperExtensions.swift in Sources */,
 				01442D0028B3D836006DD15C /* NSDataExtension.swift in Sources */,
 				01442CF628B3D836006DD15C /* ClearentXibView.swift in Sources */,
 				E764E7722303182C0029B753 /* ClearentOfflineDeclineReceipt.m in Sources */,
 				4BAEA888271C5F24007F5FCF /* ClearentLumberjackRemoteLogger.m in Sources */,
 				01442D1528B3D836006DD15C /* ClearentTextField.swift in Sources */,
+				CCA86E4D28CF5DB300FF83FB /* ClearentWrapper.swift in Sources */,
 				01442CFE28B3D836006DD15C /* ClearentConstants.swift in Sources */,
 				01442D0728B3D836006DD15C /* ClearentPairingReaderItem.swift in Sources */,
 				4B32C09824335D5500CCF9B9 /* ClearentBluetoothDevice.m in Sources */,
@@ -1203,15 +1226,16 @@
 				01442D3628B3D836006DD15C /* ClearentPaymentHeaderView.swift in Sources */,
 				01442D2828B3D836006DD15C /* ClearentLabelWithIcon.swift in Sources */,
 				4B32C0912432677F00CCF9B9 /* ClearentTransactionToken.m in Sources */,
+				CCA86E5128CF5DE200FF83FB /* ClearentErrors.swift in Sources */,
 				E7CA494520E1753D0090CFFC /* ClearentConfigurator.m in Sources */,
 				4BAEA885271C5CD8007F5FCF /* ClearentLumberjack.m in Sources */,
 				E726A0382258B5B400F3E8B7 /* ClearentCache.m in Sources */,
 				01442CFA28B3D836006DD15C /* ClearentApplicationOrientation.swift in Sources */,
 				01442CF128B3D836006DD15C /* ClearentReaderDetailsViewController.swift in Sources */,
 				01442D4628B3D836006DD15C /* ClearentColorsDefaultPalette.swift in Sources */,
-				01442D5828B3D84D006DD15C /* ClearentHttpClient.swift in Sources */,
 				01442D0528B3D836006DD15C /* UIFontExtension.swift in Sources */,
 				01442D1628B3D836006DD15C /* ClearentSubtitleLabel.swift in Sources */,
+				CCA86E4C28CF5DB300FF83FB /* ClearentWrapperDefaults.swift in Sources */,
 				01442D5F28B3D84D006DD15C /* SaleEntity.swift in Sources */,
 				4B32C08B2432560600CCF9B9 /* ClearentResponse.m in Sources */,
 				01442CF028B3D836006DD15C /* AmountInfo.swift in Sources */,
@@ -1219,6 +1243,7 @@
 				01442D0E28B3D836006DD15C /* ClearentInfoWithIcon.swift in Sources */,
 				E79A4D94204F14B000E4BBF6 /* ClearentDelegate.m in Sources */,
 				01442D1328B3D836006DD15C /* ClearentIcon.swift in Sources */,
+				CCA86E5528CF5E0F00FF83FB /* ClearentHttpClient.swift in Sources */,
 				01442CFF28B3D836006DD15C /* ClearentFieldValidationHelper.swift in Sources */,
 				01442D3E28B3D836006DD15C /* ClearentRoundedCornersStackView.swift in Sources */,
 				E71E309521F7A0E3001C950A /* ClearentCard.m in Sources */,
@@ -1235,7 +1260,6 @@
 				01442D2F28B3D836006DD15C /* ClearentPaymentFieldCell.swift in Sources */,
 				01442D4828B3D836006DD15C /* ClearentUIColors.swift in Sources */,
 				01442D4928B3D836006DD15C /* ClearentUIFonts.swift in Sources */,
-				01442D5C28B3D84D006DD15C /* ClearentWrapper.swift in Sources */,
 				E7B89E3121F6A6A400078C73 /* ClearentManualEntry.m in Sources */,
 				01442CFD28B3D836006DD15C /* ClearentMoneyFormatter.swift in Sources */,
 				01442D2C28B3D836006DD15C /* ClearentReadersTableView.swift in Sources */,

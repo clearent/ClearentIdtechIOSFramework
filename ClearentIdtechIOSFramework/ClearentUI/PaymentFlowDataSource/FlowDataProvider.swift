@@ -89,7 +89,7 @@ class FlowDataProvider : NSObject {
 
 extension FlowDataProvider : ClearentWrapperProtocol {
     
-    func didFinishedSignatureUploadWith(response: SignatureResponse, error: ResponseError?) {
+    func didFinishedSignatureUploadWith(response: SignatureResponse?, error: ResponseError?) {
         let feedback: FlowFeedback
         
         if error != nil {
@@ -130,11 +130,18 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
         
-    func didFinishTransaction(response: TransactionResponse, error: ResponseError?) {
+    func didFinishTransaction(response: TransactionResponse?, error: ResponseError?) {
         let feedback: FlowFeedback
         
         if let error = error {
-            let detailedErrorMessage = createDetailedErrorMessage(with: error.code, message: response.payload.transaction?.message, transactionID: response.links?.first?.id, exchangeID: response.exchange_id)
+            
+            var detailedErrorMessage = ""
+            if let response = response {
+                detailedErrorMessage = createDetailedErrorMessage(with: error.code, message: response.payload.transaction?.message, transactionID: response.links?.first?.id, exchangeID: response.exchange_id)
+            } else {
+                detailedErrorMessage = createDetailedErrorMessage(with: error.code, message: error.message, transactionID: nil, exchangeID: "-")
+            }
+            
             let errorItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
                             FlowDataItem(type: .title, object: ClearentConstants.Localized.Error.generalErrorTitle),
                             FlowDataItem(type: .error, object: detailedErrorMessage),

@@ -123,6 +123,11 @@ self.navigationController?.present(readerDetailsVC, animated: true, completion: 
 ```
 The reader details will display the status of the current reader and a list of recently paired readers. From this list the user can navigate to the readers details.
 
+Another option for accesing the reader info is to use **ClearentWrapperDefaults** class that has two important public properties: 
+
+- recentlyPairedReaders ,a list of ReaderInfo objects, containing previously paired devices
+- pairedReaderInfo, a ReaderInfo? object representing the current paired reader
+
 
 **Reader Status**
 

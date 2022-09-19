@@ -26,4 +26,3 @@ public typealias CompletionResult = Result<String?, ClearentResult>
     /// Process finished
     case processFinishedWithoutError
 }
-
