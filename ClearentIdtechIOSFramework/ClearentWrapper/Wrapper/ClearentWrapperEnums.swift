@@ -31,9 +31,14 @@ public enum UserAction: String, CaseIterable {
          badChip,
          cardUnsupported,
          cardBlocked,
-         cardExpired
+         cardExpired,
+         authorizing,
+         processing,
+         amountNotAllowedForTap,
+         chipNotRecognized
     
-    var description: String {
+
+    var message: String {
         switch self {
         case .pleaseWait:
             return CLEARENT_PLEASE_WAIT
@@ -81,29 +86,10 @@ public enum UserAction: String, CaseIterable {
             return ClearentConstants.Localized.Bluetooth.turnedOff
         case .noBluetoothPermission:
             return ClearentConstants.Localized.Bluetooth.noPermission
-        }
-    }
-    
-    static func action(for text: String) -> UserAction? {
-        UserAction.allCases.first { $0.description == text }
-    }
-}
-
-public enum UserInfo: String, CaseIterable {
-    case authorizing,
-         processing,
-         goingOnline,
-         amountNotAllowedForTap,
-         chipNotRecognized
-    
-    var description: String {
-        switch self {
         case .authorizing:
             return CLEARENT_TRANSACTION_AUTHORIZING
         case .processing:
             return CLEARENT_TRANSACTION_PROCESSING
-        case .goingOnline:
-            return CLEARENT_TRANSLATING_CARD_TO_TOKEN
         case .amountNotAllowedForTap:
             return CLEARENT_TAP_OVER_MAX_AMOUNT
         case .chipNotRecognized:
@@ -111,7 +97,17 @@ public enum UserInfo: String, CaseIterable {
         }
     }
     
-    static func info(for text: String) -> UserInfo? {
-        UserInfo.allCases.first { $0.description == text }
+    var description: String? {
+        if ClearentWrapper.shared.enableEnhancedMessaging, let dict = ClearentWrapper.shared.enhancedMessagesDict, let result = dict[message] {
+            return result == ClearentConstants.Messaging.suppress ? nil : result
+        }
+        return message
+    }
+
+    static func action(for text: String) -> UserAction? {
+        if let action = UserAction.allCases.first(where: { $0.message == text }) {
+            return action
+        }
+        return (text == ClearentConstants.Messaging.suppress) ? nil :UserAction(rawValue: text)
     }
 }

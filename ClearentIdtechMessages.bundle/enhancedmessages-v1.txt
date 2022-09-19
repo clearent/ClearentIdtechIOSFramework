@@ -1,125 +1,129 @@
-0000	No error, beginning task
-0001	No response from reader
-0002	Invalid response data
-0003	Time out for task or CMD
-0004	Wrong parameter
-0005	SDK is doing MSR or ICC task
-0006	SDK is doing PINPad task
-0007	SDK is doing Other task
-0300	Key Type(TDES) of Session Key is not same as the related Master Key.
-0400	Related Key was not loaded.
-0500	Key Same.
-0702	PAN is Error Key.
-0D00	This Key had been loaded.
-0E00	Base Time was loaded.
-1800	Send “Cancel Command” after send “Get Encrypted PIN” &”Get Numeric “& “Get Amount”
-1900	Press “Cancel” key after send “Get Encrypted PIN” &”Get Numeric “& “Get Amount”
-30FF	Security Chip is not connect
-3000	Security Chip is deactivation & Device is In Removal Legally State.
-3101	Security Chip is activation &  Device is In Removal Legally State.
-5500	No Admin DUKPT Key.
-5501	Admin  DUKPT Key STOP.
-5502	Admin DUKPT Key KSN is Error.
-5503	Get Authentication Code1 Failed.
-5504	Validate Authentication Code Error.
-5505	Encrypt or Decrypt data failed.
-5506	Not Support the New Key Type.
-5507	New Key Index is Error.
-5508	Step Error.
-550F	Other Error.
-6000	Save or Config Failed / Or Read Config Error.
-6200	No Serial Number.
-6900	Invalid Command - Protocol is right, but task ID is invalid.
-6A00	Unsupported Command - Protocol and task ID are right, but command is invalid.
-6B00	Unknown parameter in command - Protocol task ID and command are right, but parameter is invalid.
-7200	Device is suspend (MKSK suspend or press password suspend).
-7300	PIN DUKPT is STOP (21 bit 1).
-7400	Device is Busy.
-E100	Can not enter sleep mode.
-E200	File has existed.
-E300	File has not existed.
-E400	Open File Error.
-E500	SmartCard Error.
-E600	Get MSR Card data is error.
-E700	Command time out.
-E800	File read or write is error.
-E900	Active 1850 error!
-EA00	Load bootloader error.
-EF00	Protocol Error- STX or ETX or check error.
-EB00	Picture is not exist.
-2C06	no card seated to request ATR
-2D01	Card Not Supported,
-2D03	Card Not Supported, wants CRC
-690D	Command not supported on reader without ICC support
-8100	ICC error time out on power-up
-8200	invalid TS character received
-8500	pps confirmation error
-8600	Unsupported F, D, or combination of F and D
-8700	protocol not supported EMV TD1 out of range
-8800	power not at proper level
-8900	ATR length too long
-8B01	EMV invalid TA1 byte value
-8B02	EMV TB1 required
-8B03	EMV Unsupported TB1 only 00 allowed
-8B04	EMV Card Error, invalid BWI or CWI
-8B06	EMV TB2 not allowed in ATR
-8B07	EMV TC2 out of range
-8B08	EMV TC2 out of range
-8B09	per EMV96 TA3 must be > 0xF
-8B10	ICC error on power-up
-8B11	EMV T=1 then TB3 required
-8B12	Card Error, invalid BWI or CWI
-8B13	Card Error, invalid BWI or CWI
-8B17	EMV TC1/TB3 conflict*
-8B20	EMV TD2 out of range must be T=1
-8C00	TCK error
-A304	connector has no voltage setting
-A305	ICC error on power-up invalid (SBLK(IFSD) exchange
-E301	ICC error after session start
-FF00	Request to go online
-FF01	EMV: Accept the offline transaction
-FF02	EMV: Decline the offline transaction
-FF03	EMV: Accept the online transaction
-FF04	EMV: Decline the online transaction
-FF05	EMV: Application may fallback to magstripe technology
-FF06	EMV: ICC detected tah the conditions of use are not satisfied
-FF07	EMV: ICC didn't accept transaction
-FF08	EMV: Transaction was cancelled
-FF09	EMV: Application was not selected by kernel or ICC format error or ICC missing data error
-FF0A	EMV: Transaction is terminated
-FF0B	EMV: Other EMV Error
-FFFF	NO RESPONSE
-
-0008	err response or data
-0009	no reader attached
-000A	did connection
-000B	mono audio is enabled
-000C	audio volume is too low
-000D	task or CMD be canceled
-
-0E00	Authorization Accepted
-0E01	Unable to go online
-0E02	Technical Issue
-0E03	Declined
-0E04	Issuer Referral transaction
-
-0F00	Accept the online transaction
-0F01	Decline the online transaction
-0F02	Request to go online
-0F03	Transaction is terminated
-0F05	Application was not selected by kernel or ICC format error or ICC missing data error
-0F07	ICC didn't accept transaction
-0F0A	Application may fallback to magstripe technology
-0F0C	Transaction was cancelled
-0F0D	Timeout
-0F0F	Other EMV Error
-0F10	Accept the offline transaction
-0F11	Decline the offline transaction
-
-0F21	ICC detected tah the conditions of use are not satisfied
-0F22	No app were found on card matching terminal configuration
-0F23	Terminal file does not exist
-0F24	CAPK file does not exist
-0F25	CRL Entry does not exist
-0FFE	Return code when blocking is disabled
-0FFF	Return code when command is not applicable on the selected device
+"TRY ICC AGAIN" = "Remove card and insert again";
+"time out for task or CMD" = "Request timed out - try again";
+"SDK is doing MSR or ICC task" = "Reader is busy - try again later or try with a different card";
+"no reader attached" = "Connect the reader and try again";
+"Attempt to contact online host failed" = "Check internet connection and try again";
+"Bad MSR Swipe" = "Swipe again or try with a different card";
+"SDK is doing EMV task" = "Reader is busy - try again later or try with a different card";
+"Unknown Command" = "Program Error - try again or try with a different card";
+"Unknown Sub-Command" = "Program Error - try again or try with a different card";
+"Failed Incorrect Parameter" = "Program Error - try again or try with a different card";
+"Command Not Supported" = "Program Error - try again or try with a different card";
+"Sub-Command Not Supported" = "Program Error - try again or try with a different card";
+"Parameter Not Supported / Status Abort Command Sub-Command Not Allowed" = "Program Error - try again or try with a different card";
+"Device Not Ready" = "Reader is busy - try again later or try with a different card";
+"Device is Busy." = "Reader is busy - try again later or try with a different card";
+"Get MSR Card data is error" = "Swipe again or try with a different card";
+"ICC communication timeout" = "Request timed out - try again";
+"EMV_DUPLICATE_CARD_DATA_ELEMENT" = "Two or more cards identified - tap again with one card only";
+"EMV_EXP_DATE_INCORRECT" = "Card is expired - try again with a different card";
+"Unable to go online" = "Check internet connection and try again";
+"Timeout" = "Request timed out - try again";
+"ICC communication timeout" = "Request timed out - try again";
+"CARD READ OK, REMOVE CARD" = "Remove the card";
+"BLUETOOTH CONNECTED" = "Reader is connected";
+"BLUETOOTH DISCONNECTED" = "Reader is not connected";
+"PLEASE SWIPE, TAP, OR INSERT" = "Tap, insert, or swipe the card";
+"PLEASE SWIPE" = "Tap, insert, or swipe the card";
+"INSERT/SWIPE CARD" = "Insert or swipe the card";
+"TIMEOUT" = "Request timed out - try again";
+"USE CHIP READER" = "Insert the card";
+"Contactless not supported. Insert card with chip first, then start transaction" = "Contactless not supported. Insert card with chip first, then start transaction";
+"This type (MSD) of contactless is not supported. Insert card with chip first, then start transaction" = "This type (MSD) of contactless is not supported. Insert card with chip first, then start transaction";
+"DEVICE NOT CONNECTED" = "Connect the reader and try again";
+"RETRY TAP" = "Tap the card again or insert instead";
+"CARD HAS CHIP. TRY INSERT" = "Insert the card";
+"USE MAGSTRIPE" = "Swipe the card";
+"CARD EXPIRED" = "Card is expired - try again with a different card";
+"CARD UNSUPPORTED" = "Card is not supported - try again with a different card";
+"AMOUNT IS OVER MAXIMUM LIMIT ALLOWED FOR TAP" = "Transaction amount exceeded for tap - insert card instead";
+"INSERT CARD" = "Insert the card";
+"TRY MSR AGAIN" = "Swipe again or try with a different card";
+"SEE PHONE" = "Confirm payment on phone";
+"Reader disconnected. Try again" = "Connect the reader and try again";
+"Invalid Transaction. Try again" = "Invalid transaction - try again or use a different card";
+"Transaction timeout. Try again" = "Request timed out - try again";
+"Reader disconnected during transaction. Try again" = "Connect the reader and try again";
+"no error, beginning task" = "Try again or use a different card";
+"no response from reader" = "Try again or use a different card";
+"invalid response data" = "Try again or use a different card";
+"err response or data" = "Try again or use a different card";
+"task or CMD be canceled" = "Try again or use a different card";
+"No Data Available" = "Try again or use a different card";
+"Use another card" = "Try again or use a different card";
+"EMV: Accept the offline transaction" = "Try again or use a different card";
+"EMV: Decline the offline transaction" = "Try again or use a different card";
+"EMV: Accept the online transaction" = "Try again or use a different card";
+"EMV: Decline the online transaction" = "Try again or use a different card";
+"EMV: Application may fallback to magstripe technology" = "Try again or use a different card";
+"EMV: ICC detected tah the conditions of use are not satisfied" = "Try again or use a different card";
+"EMV: ICC didn't accept transaction" = "Try again or use a different card";
+"EMV: Transaction was cancelled" = "Try again or use a different card";
+"EMV: Application was not selected by kernel or ICC format error or ICC missing data error" = "Try again or use a different card";
+"EMV: Transaction is terminated" = "Try again or use a different card";
+"EMV: Other EMV Error" = "Try again or use a different card";
+"ICC communication Error" = "Try again or use a different card";
+"EMV_PARSING_TAGS_FAILED" = "Try again or use a different card";
+"EMV_DATA_FORMAT_INCORRECT" = "Try again or use a different card";
+"EMV_NO_TERM_APP" = "Try again or use a different card";
+"EMV_NO_MATCHING_APP" = "Try again or use a different card";
+"EMV_MISSING_MANDATORY_OBJECT" = "Try again or use a different card";
+"EMV_APP_SELECTION_RETRY" = "Try again or use a different card";
+"EMV_GET_AMOUNT_ERROR" = "Try again or use a different card";
+"EMV_CARD_REJECTED" = "Try again or use a different card";
+"EMV_AIP_NOT_RECEIVED" = "Try again or use a different card";
+"EMV_AFL_NOT_RECEIVED" = "Try again or use a different card";
+"EMV_AFL_LEN_OUT_OF_RANGE" = "Try again or use a different card";
+"EMV_EFF_DATE_INCORRECT" = "Try again or use a different card";
+"EMV_ISS_COD_TBL_OUT_OF_RANGE" = "Try again or use a different card";
+"EMV_CRYPTOGRAM_TYPE_INCORRECT" = "Try again or use a different card";
+"EMV_PSE_NOT_SUPPORTED_BY_CARD" = "Try again or use a different card";
+"EMV_USER_SELECTED_LANGUAGE" = "Try again or use a different card";
+"EMV_SERVICE_NOT_ALLOWED" = "Try again or use a different card";
+"EMV_NO_TAG_FOUND" = "Try again or use a different card";
+"EMV_CARD_BLOCKED" = "Try again or use a different card";
+"EMV_LEN_INCORRECT" = "Try again or use a different card";
+"CARD_COM_ERROR" = "Try again or use a different card";
+"EMV_TSC_NOT_INCREASED" = "Try again or use a different card";
+"CVM_TYPE_UNKNOWN" = "Try again or use a different card";
+"CVM_AIP_NOT_SUPPORTED" = "Try again or use a different card";
+"CVM_TAG_8E_MISSING" = "Try again or use a different card";
+"CVM_TAG_8E_FORMAT_ERROR" = "Try again or use a different card";
+"CVM_CODE_IS_NOT_SUPPORTED" = "Try again or use a different card";
+"CVM_COND_CODE_IS_NOT_SUPPORTED" = "Try again or use a different card";
+"NO_MORE_CVM" = "Try again or use a different card";
+"Technical Issue" = "Try again or use a different card";
+"Declined" = "Try again or use a different card";
+"Issuer Referral transaction" = "Try again or use a different card";
+"Decline the online transaction" = "Try again or use a different card";
+"Transaction is terminated" = "Try again or use a different card";
+"ICC didn't accept transaction" = "Try again or use a different card";
+"Application may fallback to magstripe technology" = "Try again or use a different card";
+"Transaction was cancelled" = "Try again or use a different card";
+"Other EMV Error" = "Try again or use a different card";
+"ICC data error (such check sum error)" = "Try again or use a different card";
+"No AID or No Application Data" = "Try again or use a different card";
+"Card read error" = "Try again or use a different card";
+"Create Transaction Token Failed" = "Try again or use a different card";
+"Failed to read card" = "Try again or use a different card";
+"TAP FAILED" = "Try again or use a different card";
+"Transaction error. Use pin reset, then try again" = "Try again or use a different card";
+"Powering up reader..." = "SUPPRESS";
+"mono audio is enabled" = "SUPPRESS";
+"audio volume is too low" = "SUPPRESS";
+"task or CMD be canceled" = "SUPPRESS";
+"Fallback from Contact (ICC) to Magstripe" = "SUPPRESS";
+"Fallback from Contactless to Contact" = "SUPPRESS";
+"Fallback from Contactless to Magstripe" = "SUPPRESS";
+"Fallback from Contactless to Other Interface" = "SUPPRESS";
+"FALLBACK_SITUATION" = "SUPPRESS";
+"No message" = "SUPPRESS";
+"Reader configured and ready" = "SUPPRESS";
+"POWERING UNIPAY" = "SUPPRESS";
+"CARD SECURED" = "SUPPRESS";
+"GOING ONLINE" = "SUPPRESS";
+"AUTHORIZING..." = "SUPPRESS";
+"PROCESSING..." = "SUPPRESS";
+"PLEASE WAIT..." = "SUPPRESS";
+"PRESS BUTTON ON READER" = "SUPPRESS";
+"PLEASE WAIT" = "SUPPRESS";

@@ -81,7 +81,15 @@ extension ClearentWrapper {
             }
         }
     }
+
     
+    internal func readEnhancedMessages() {
+        guard let path = Bundle.main.path(forResource: "ClearentIdtechMessages", ofType: "bundle") else {return}
+        let resourceBundle = Bundle(path: path)
+        if resourceBundle != nil, let filePath = resourceBundle?.path(forResource: "enhancedmessages-v1", ofType: "txt"), let dict = NSDictionary(contentsOfFile: filePath) {
+                   self.enhancedMessagesDict = dict as? [String:String]
+        }
+    }
     
     // MARK - Private Logger related
     
@@ -130,8 +138,6 @@ extension ClearentWrapper : ClearentManualEntryDelegate {
         DispatchQueue.main.async {
             if let action = UserAction.action(for: message) {
                 self.delegate?.userActionNeeded(action: action)
-            } else if let info = UserInfo.info(for: message) {
-                self.delegate?.didReceiveInfo(info: info)
             } else {
                 self.delegate?.didEncounteredGeneralError()
             }

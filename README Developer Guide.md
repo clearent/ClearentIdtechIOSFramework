@@ -11,8 +11,15 @@ The enhanced sdk was developed to ease in the integration of the ClearentIDTechS
 
 **ClearentWrapper** class integrates the original SDK and implements all delegates.
 
-In order to pick and choose only the feedback that is important and it makes sense in the context of the SDK UI, two important enums were created:
-UserAction and UserInfo that will be initialised if any of the enum values will match the SDK feedback message.
+ClearentWrapper has a method that you can use to update the Public Key, API Key and the base URL also has a enableEnhancedMessaging boolean for enabling messages.
+```
+    ClearentWrapper.shared.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey, enableEnhancedMessaging: false)
+```
+
+Enabling the enhanced messages will use the enhancedmessages-v1.txt file from the ClearentIdtechMessages bundle to provide friendly messages to the user.
+
+In order to pick and choose only the feedback that is important and it makes sense in the context of the SDK UI, one important enum was created:
+UserAction, this will be initialised if any of the enum values will match the SDK feedback message, in case a case is not there the string of the feedback message will be used.
 In order to handle more messages from the SDK you can just add a new case to each of these enums.
 
 Another available feature is continuous search for readers. When calling **startPairing** method, search process will be restarted automatically until it is cancelled or **connectTo** method is called. Therefore, if you implement the delegate, be prepared to handle the **didFindReaders** method multiple times.

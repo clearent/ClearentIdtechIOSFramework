@@ -9,6 +9,7 @@ import Foundation
 import CocoaLumberjack
 import Network
 
+
 public final class ClearentWrapper : NSObject {
     
     public static let shared = ClearentWrapper()
@@ -29,6 +30,12 @@ public final class ClearentWrapper : NSObject {
     
     /// If card reader payment fails, the option to use manual payment can be displayed in UI as a fallback method. If user selects this method, useManualPaymentAsFallback needs to be set to true.
     public var useManualPaymentAsFallback: Bool?
+    
+    /// Enables or disables the use of enhanced messages
+    public var enableEnhancedMessaging: Bool = false
+    
+    /// Stores the enhanced messages read from the messages bundle
+    internal var enhancedMessagesDict: [String:String]?
     
     public weak var delegate: ClearentWrapperProtocol?
 
@@ -154,10 +161,15 @@ public final class ClearentWrapper : NSObject {
      * @param publicKey, publicKey used by the IDTech reader framework
      * @param apiKey, API Key used for http calls
      */
-    public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String) {
+    public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String, enableEnhancedMessaging: Bool) {
         self.baseURL = baseURL
         self.apiKey = apiKey
         self.publicKey = publicKey
+        self.enableEnhancedMessaging = enableEnhancedMessaging
+        
+        if enableEnhancedMessaging {
+            readEnhancedMessages()
+        }
     }
     
     
@@ -557,16 +569,10 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
             DispatchQueue.main.async {
                 self.delegate?.didEncounteredGeneralError()
             }
-        case .USER_ACTION:
+        case .USER_ACTION, .INFO:
             if let action = UserAction.action(for: clearentFeedback.message) {
                 DispatchQueue.main.async {
                     self.delegate?.userActionNeeded(action: action)
-                }
-            }
-        case .INFO:
-            if let info = UserInfo.info(for: clearentFeedback.message) {
-                DispatchQueue.main.async {
-                    self.delegate?.didReceiveInfo(info: info)
                 }
             }
         case .BLUETOOTH:
