@@ -13,6 +13,12 @@ import UIKit
     @objc public class var bundle: Bundle {
         return Bundle(for: FlowDataProvider.self)
     }
+    
+    // MARK: - Internal
+    
+    internal enum Messaging {
+        static let suppress = "SUPPRESS"
+    }
 
     // MARK: - Colors
 
