@@ -193,9 +193,9 @@ public final class ClearentWrapper : NSObject {
         self.saleEntity = saleEntity
         
         if shouldDisplayOfflineModePermission() { return }
-        
+
         if shouldDisplayConnectivityWarning() { return }
-        
+
         if let manualEntryCardInfo = manualEntryCardInfo {
             manualEntryTransaction(cardNo: manualEntryCardInfo.card, expirationDate: manualEntryCardInfo.expirationDateMMYY, csc: manualEntryCardInfo.csc)
         } else {
@@ -399,6 +399,15 @@ public final class ClearentWrapper : NSObject {
         connection?.searchBluetooth = false
         shouldBeginContinuousSearchingForReaders?(false)
         invalidateConnectionTimer()
+    }
+    
+    public func isReaderEncrypted() -> Bool? {
+        var response: NSData? = NSData()
+        _ = clearentVP3300.device_sendIDGCommand(0xC7, subCommand: 0x37, data: nil, response: &response)
+        
+        guard let response = response else { return nil }
+        
+        return response.int != ReaderEncryption.fullyEncrypted.rawValue ? false : true
     }
     
     // MARK - Private

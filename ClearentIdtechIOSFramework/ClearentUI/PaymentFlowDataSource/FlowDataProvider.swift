@@ -186,6 +186,17 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         self.delegate?.didBeginContinuousSearching()
     }
     
+    func showEncryptionWarning() {
+        let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
+                     FlowDataItem(type: .title, object: ClearentConstants.Localized.OfflineMode.offlineModeEncryptionWarningMessage),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+        let flowFeedback = FlowDataFactory.component(with: .payment,
+                                                     type: .warning,
+                                                     readerInfo: fetchReaderInfo(),
+                                                     payload: items)
+        self.delegate?.didReceiveFlowFeedback(feedback: flowFeedback)
+    }
+    
     func userActionNeeded(action: UserAction) {
         var items : [FlowDataItem]? = nil
         var type = FlowFeedbackType.info

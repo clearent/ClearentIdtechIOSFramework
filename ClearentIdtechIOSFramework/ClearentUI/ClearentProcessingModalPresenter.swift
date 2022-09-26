@@ -83,7 +83,13 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     func handleOfflineModeConfirmationOption() {
-        sdkFeedbackProvider.displayOfflineModeWarningMessage()
+        if let isReaderEncrypted = sdkWrapper.isReaderEncrypted() {
+            if !isReaderEncrypted {
+                sdkFeedbackProvider.showEncryptionWarning()
+            } else {
+                sdkFeedbackProvider.displayOfflineModeWarningMessage()
+            }
+        }
     }
     
     func enableDoneButtonForInput(enabled: Bool) {

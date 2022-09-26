@@ -114,3 +114,7 @@ public enum UserAction: String, CaseIterable {
         return (text == ClearentConstants.Messaging.suppress) ? nil :UserAction(rawValue: text)
     }
 }
+
+public enum ReaderEncryption: Int {
+    case notEncrypted, emvEncryption, msrEncryption, fullyEncrypted
+}

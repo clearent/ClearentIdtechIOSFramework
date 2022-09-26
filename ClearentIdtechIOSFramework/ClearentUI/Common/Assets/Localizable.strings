@@ -183,6 +183,7 @@
 "xsdk_offline_mode_warning_message_description" = "Offline transactions may decline once online mode is enabled and processing resumes.";
 "xsdk_offline_mode_enabled" = "Offline Mode Enabled";
 "xsdk_offline_mode_warning_message_confirmation" = "Ok";
+"xsdk_offline_mode_encryption_message" = "Please try again using an encrypted reader";
 
 // MARK: API parse errors
 // Texts that are displayed in case of no bluetooth connection
