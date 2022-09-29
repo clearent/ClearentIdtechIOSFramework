@@ -79,7 +79,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             }
         }
         
-        if ClearentWrapper.shared.isOfflineModeEnabled, feedback.flow == .payment {
+        if ClearentWrapper.shared.isOfflineModeConfirmed, feedback.flow == .payment {
             stackView.insertArrangedSubview(ClearentSubtitleLabel(text: ClearentConstants.Localized.OfflineMode.offlineModeEnabled), at: 1)
         }
     }

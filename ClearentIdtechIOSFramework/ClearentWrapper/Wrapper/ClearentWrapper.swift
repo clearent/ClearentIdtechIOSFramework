@@ -33,6 +33,9 @@ public final class ClearentWrapper : NSObject {
     /// Enables or disables the use of enhanced messages
     public var enableEnhancedMessaging: Bool = false
     
+    /// The state of the store & forward feature
+    public var offlineMode: OfflineModeState = .off
+    
     /// Stores the enhanced messages read from the messages bundle
     internal var enhancedMessagesDict: [String:String]?
     
@@ -58,13 +61,22 @@ public final class ClearentWrapper : NSObject {
     private var isInternetOn = false
     private var signatureImage: UIImage?
     private var shouldAskForOfflineModePermission: Bool {
-        !isInternetOn && !isOfflineModeEnabled ? (isNewPaymentProcess ? true : false) : false
+//        !isInternetOn && offlineMode == .off ? (isNewPaymentProcess ? true : false) : false
+        
+        switch offlineMode {
+        case .off:
+            return false
+        case .on:
+            return false
+        case .prompted:
+            return !isInternetOn ? (isNewPaymentProcess ? true : false) : false
+        }
     }
     private var connectivityActionNeeded: UserAction? {
         if cardReaderPaymentIsPreffered && useManualPaymentAsFallback == nil {
-            return isBluetoothPermissionGranted ? (isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : (isOfflineModeEnabled ? nil : .noInternet)) : .noBluetoothPermission
+            return isBluetoothPermissionGranted ? (isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : (isOfflineModeConfirmed ? nil : .noInternet)) : .noBluetoothPermission
         } else {
-            return isInternetOn ? nil : (isOfflineModeEnabled ? nil : .noInternet)
+            return isInternetOn ? nil : (isOfflineModeConfirmed ? nil : .noInternet)
         }
     }
     private lazy var httpClient: ClearentHttpClient = {
@@ -72,7 +84,7 @@ public final class ClearentWrapper : NSObject {
     }()
     internal var isBluetoothOn = false
     internal var tipEnabled = false
-    internal var isOfflineModeEnabled = false
+    internal var isOfflineModeConfirmed = false
     internal var shouldSendPressButton = false
     internal var isNewPaymentProcess = true
     private var continuousSearchingTimer: Timer?
@@ -166,12 +178,14 @@ public final class ClearentWrapper : NSObject {
      * @param baseURL, the backend endpoint
      * @param publicKey, publicKey used by the IDTech reader framework
      * @param apiKey, API Key used for http calls
+     * @param offlineMode, the state of the store & forward feature
      */
-    public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String, enableEnhancedMessaging: Bool) {
+    public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String, enableEnhancedMessaging: Bool, offlineMode: OfflineModeState) {
         self.baseURL = baseURL
         self.apiKey = apiKey
         self.publicKey = publicKey
         self.enableEnhancedMessaging = enableEnhancedMessaging
+        self.offlineMode = offlineMode
         
         if enableEnhancedMessaging {
             readEnhancedMessages()

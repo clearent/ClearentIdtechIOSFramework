@@ -118,3 +118,7 @@ public enum UserAction: String, CaseIterable {
 public enum ReaderEncryption: Int {
     case notEncrypted, emvEncryption, msrEncryption, fullyEncrypted
 }
+
+@objc public enum OfflineModeState: Int {
+    case off, on, prompted
+}

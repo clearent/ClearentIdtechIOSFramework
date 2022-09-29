@@ -83,6 +83,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     func handleOfflineModeConfirmationOption() {
+        ClearentWrapper.shared.isNewPaymentProcess = false
+        
         if let isReaderEncrypted = sdkWrapper.isReaderEncrypted() {
             if !isReaderEncrypted {
                 sdkFeedbackProvider.showEncryptionWarning()
@@ -185,6 +187,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             }
         case .cancel:
             ClearentWrapper.shared.isNewPaymentProcess = true
+            ClearentWrapper.shared.isOfflineModeConfirmed = false
             modalProcessingView?.dismissViewController(result: .failure(.cancelledByUser))
         case .retry, .pair:
             restartProcess(newPair: false)
@@ -212,7 +215,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         case .denyOfflineMode:
             modalProcessingView?.displayOfflineModeConfirmationMessage(for: .denyOfflineMode)
         case .confirmOfflineModeWarningMessage:
-            ClearentWrapper.shared.isOfflineModeEnabled = true
+            ClearentWrapper.shared.isOfflineModeConfirmed = true
             restartProcess(newPair: false)
         }
     }

@@ -22,6 +22,11 @@ public final class ClearentUIManager: NSObject {
             clearentWrapper.cardReaderPaymentIsPreffered = cardReaderPaymentIsPreferred
         }
     }
+    @objc public var offlineMode: OfflineModeState = .off {
+        didSet {
+            clearentWrapper.offlineMode = offlineMode
+        }
+    }
     @objc public var tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages
     
     // MARK: Init
@@ -54,9 +59,10 @@ public final class ClearentUIManager: NSObject {
      * @param baseURL, the endpoint of the backend
      * @param apiKey, the API Key in order to use the API
      * @param publicKey, needed for the card reader initialisation
+     * @param offlineMode, the state of the store & forward feature
      */
-    @objc public func updateWith(baseURL: String, apiKey: String, publicKey: String, enableEnhancedMessaging: Bool) {
-        clearentWrapper.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey, enableEnhancedMessaging: enableEnhancedMessaging)
+    @objc public func updateWith(baseURL: String, apiKey: String, publicKey: String, enableEnhancedMessaging: Bool, offlineMode: OfflineModeState) {
+        clearentWrapper.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey, enableEnhancedMessaging: enableEnhancedMessaging, offlineMode: offlineMode)
     }
     
     /**
