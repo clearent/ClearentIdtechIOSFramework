@@ -56,6 +56,10 @@ class OfflineModeManager {
     init(storage: TransactionStorageProtocol) {
         self.storage = storage
     }
+    
+    func addOfflineTransaction(transaction:OfflineTransaction) {
+        storage.save(transaction: transaction)
+    }
 }
 
 

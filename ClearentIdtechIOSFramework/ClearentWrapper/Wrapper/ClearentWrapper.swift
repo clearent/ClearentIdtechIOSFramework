@@ -99,6 +99,14 @@ public final class ClearentWrapper : NSObject {
                 self.shouldStopUpdatingReadersListDuringContinuousSearching = false
             }
         }
+        
+        let offlineManager = OfflineModeManager(storage: OfflineStorage())
+        
+        // Create and validate the transaction
+        var oftr = OfflineTransaction(transactionID: "1244", status: .new, type: .cardTransaction, paymentData: BasePaymentData())
+        
+        // Save the transaction
+        offlineManager.addOfflineTransaction(transaction: oftr)
     }
     
     // MARK - Public
@@ -318,7 +326,7 @@ public final class ClearentWrapper : NSObject {
     
     /**
      * Method that will void a transaction
-     * @param transactionID, ID of transaction to be voided
+     * @param transactionID, ID of OfflineModeManagertransaction to be voided
      */
     public func voidTransaction(transactionID: String) throws {
         if let error = checkForMissingKeys() { throw error }
@@ -345,7 +353,7 @@ public final class ClearentWrapper : NSObject {
     
     /**
      * Method that will fetch the tip settings for current mechant
-     * @param transactionID, ID of transcation to be voided
+     * @param transactionID, ID of transaction to be voided
      */
     public func fetchTipSetting(completion: @escaping () -> Void) {
         if shouldDisplayConnectivityWarning() { return }
