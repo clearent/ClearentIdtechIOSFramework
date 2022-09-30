@@ -82,7 +82,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     /*
      This method will remove the current displayed content in the modal and will generate other UI using the feedback parameter.
      */
-    public func updateContent(with feedback: FlowFeedback) {
+    func updateContent(with feedback: FlowFeedback) {
         stackView.removeAllArrangedSubviews()
         stackView.isUserInteractionEnabled = true
         ClearentWrapper.shared.flowType = (feedback.flow, feedback.type)
@@ -94,15 +94,15 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         }
     }
     
-    public func addLoadingViewToCurrentContent() {
+    func addLoadingViewToCurrentContent() {
         stackView.insertArrangedSubview(ClearentLoadingView(), at: 1)
     }
     
-    public func showLoadingView() {
+    func showLoadingView() {
         stackView.showLoadingView()
     }
 
-    public func dismissViewController(result: CompletionResult) {
+    func dismissViewController(result: CompletionResult) {
         ClearentWrapperDefaults.skipOnboarding = true
         ClearentWrapper.shared.stopContinousSearching()
         ClearentWrapper.shared.cancelTransaction()
@@ -113,6 +113,8 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         }
     }
 
+    // MARK: - Private
+    
     private func uiComponent(for item: FlowDataItem) -> UIView? {
         let object = item.object
         

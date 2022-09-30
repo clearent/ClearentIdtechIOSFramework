@@ -9,8 +9,8 @@
 import Foundation
 
 public class UserDefaultsPersistence {
-    
-    static let userDefaults = UserDefaults(suiteName: "xsdk_user_default_container_key")
+    static let clearentSdkPrefix = "xsdk"
+    static let userDefaults = UserDefaults(suiteName: "\(clearentSdkPrefix)_user_default_container_key")
     
     static func save(_ value: Any, forKey key: String) {
         guard let userDefaults = userDefaults else { return }
@@ -26,5 +26,15 @@ public class UserDefaultsPersistence {
         guard let userDefaults = userDefaults else { return }
         userDefaults.removeObject(forKey: key)
         userDefaults.synchronize()
+    }
+    
+    /// Deletes all saved user defaults which contain the clearentSdkPrefix
+    static func removeAllValues() {
+        guard let userDefaults = userDefaults else { return }
+        let allSavedKeys = userDefaults.dictionaryRepresentation().map { $0.key }
+        let identifiers = allSavedKeys.filter { $0.contains(clearentSdkPrefix) }
+        for key in identifiers {
+            removeValue(forKey: key)
+        }
     }
 }

@@ -79,7 +79,7 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
         ClearentWrapper.shared.disconnectFromReader()
     }
 
-    public func handleAutojoin(markAsAutojoin: Bool) {
+    func handleAutojoin(markAsAutojoin: Bool) {
         currentReader.autojoin = markAsAutojoin
         guard var existingReaders = ClearentWrapperDefaults.recentlyPairedReaders else { return }
 
