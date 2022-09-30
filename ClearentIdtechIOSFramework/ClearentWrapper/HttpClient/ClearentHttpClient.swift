@@ -8,7 +8,7 @@
 import Foundation
 
 private struct ClientInfo {
-    static let softwareType = "Xplor Mobile"
+    static let softwareType = "Xplor iOS Mobile"
     static let softwareTypeVersion = "1"
 }
 

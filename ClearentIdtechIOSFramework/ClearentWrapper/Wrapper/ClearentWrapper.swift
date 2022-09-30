@@ -9,193 +9,6 @@ import Foundation
 import CocoaLumberjack
 import Network
 
-public enum UserAction: String, CaseIterable {
-    case pleaseWait,
-         swipeTapOrInsert,
-         swipeInsert,
-         pressReaderButton,
-         removeCard,
-         tryICCAgain,
-         goingOnline,
-         cardSecured,
-         cardHasChip,
-         tryMSRAgain,
-         useMagstripe,
-         transactionStarted,
-         transactionFailed,
-         tapFailed,
-         connectionTimeout,
-         noInternet,
-         noBluetooth,
-         noBluetoothPermission,
-         failedToStartSwipe,
-         badChip,
-         cardUnsupported,
-         cardBlocked,
-         cardExpired
-    
-    var description: String {
-        switch self {
-        case .pleaseWait:
-            return CLEARENT_PLEASE_WAIT
-        case .swipeTapOrInsert:
-            return CLEARENT_USER_ACTION_3_IN_1_MESSAGE
-        case .swipeInsert:
-            return CLEARENT_USER_ACTION_2_IN_1_MESSAGE
-        case .pressReaderButton:
-            return CLEARENT_USER_ACTION_PRESS_BUTTON_MESSAGE
-        case .removeCard:
-            return CLEARENT_CARD_READ_OK_TO_REMOVE_CARD
-        case .tryICCAgain:
-            return CLEARENT_TRY_ICC_AGAIN
-        case .tryMSRAgain:
-            return CLEARENT_TRY_MSR_AGAIN
-        case .goingOnline:
-            return CLEARENT_TRANSLATING_CARD_TO_TOKEN
-        case .cardSecured:
-            return CLEARENT_SUCCESSFUL_TOKENIZATION_MESSAGE
-        case .cardHasChip:
-            return CLEARENT_CHIP_FOUND_ON_SWIPE
-        case .useMagstripe:
-            return CLEARENT_USE_MAGSTRIPE
-        case .transactionStarted:
-            return CLEARENT_RESPONSE_TRANSACTION_STARTED
-        case .transactionFailed:
-            return CLEARENT_RESPONSE_TRANSACTION_FAILED
-        case .tapFailed:
-            return CLEARENT_CONTACTLESS_FALLBACK_MESSAGE
-        case .failedToStartSwipe:
-            return CLEARENT_PULLED_CARD_OUT_EARLY
-        case .badChip:
-            return CLEARENT_BAD_CHIP
-        case .cardUnsupported:
-            return CLEARENT_CARD_UNSUPPORTED
-        case .cardBlocked:
-            return CLEARENT_CARD_BLOCKED
-        case .cardExpired:
-            return CLEARENT_CARD_EXPIRED
-        case .connectionTimeout:
-            return CLEARENT_USER_ACTION_PRESS_BUTTON_MESSAGE
-        case .noInternet:
-            return ClearentConstants.Localized.Internet.noConnection
-        case .noBluetooth:
-            return ClearentConstants.Localized.Bluetooth.turnedOff
-        case .noBluetoothPermission:
-            return ClearentConstants.Localized.Bluetooth.noPermission
-        }
-    }
-    
-    static func action(for text: String) -> UserAction? {
-        UserAction.allCases.first { $0.description == text }
-    }
-}
-
-public enum UserInfo: String, CaseIterable {
-    case authorizing,
-         processing,
-         goingOnline,
-         amountNotAllowedForTap,
-         chipNotRecognized
-    
-    var description: String {
-        switch self {
-        case .authorizing:
-            return CLEARENT_TRANSACTION_AUTHORIZING
-        case .processing:
-            return CLEARENT_TRANSACTION_PROCESSING
-        case .goingOnline:
-            return CLEARENT_TRANSLATING_CARD_TO_TOKEN
-        case .amountNotAllowedForTap:
-            return CLEARENT_TAP_OVER_MAX_AMOUNT
-        case .chipNotRecognized:
-            return CLEARENT_CHIP_UNRECOGNIZED
-        }
-    }
-    
-    static func info(for text: String) -> UserInfo? {
-        UserInfo.allCases.first { $0.description == text }
-    }
-}
-
-/**
- * This protocol is used to comunicate information and results regarding the interaction with the SDK
- */
-public protocol ClearentWrapperProtocol : AnyObject {
-    /**
-     * Method called right after a pairing process and a bluetooth search is started
-     */
-    func didStartPairing()
-    
-    /**
-     * Method called right after a successful connection to a card reader was completed
-     */
-    func didFinishPairing()
-    
-    /**
-     * Method called as a response to 'startDeviceInfoUpdate' method and indicates that new reader information is available
-     */
-    func didReceiveSignalStrength()
-    
-    /**
-     * Method called after a pairing process is started and card readers were found nearby
-     * @param readers, the list of readers available for pairing
-     */
-    func didFindReaders(readers:[ReaderInfo])
-    
-    /**
-     * Method called when the currently paired device disconnects
-     */
-    func deviceDidDisconnect()
-    
-    /**
-     * Method called after the 'connectTo' method was called by protocol implementing class, indicating that  a connection to the selected reader is beeing  established
-     */
-    func startedReaderConnection(with reader:ReaderInfo)
-    
-    /**
-     * Method called in response to method 'searchRecentlyUsedReaders' and indicated that recently readers were found
-     * @param readers. list of recently paired readers
-     */
-    func didFindRecentlyUsedReaders(readers:[ReaderInfo])
-    
-    /**
-     * Method called to indicate that continuous search of nearby readers has started
-     */
-    func didBeginContinuousSearching()
-    
-    /**
-     * Method called  when a general error is encountered in a payment/transaction process
-     */
-    func didEncounteredGeneralError()
-    
-    /**
-     * Method called when a transaction is finished
-     * @param response, transaction response as received from the API
-     * @param error, if not null it will contain the error received from the API
-     */
-    func didFinishTransaction(response: TransactionResponse, error: ResponseError?)
-    
-    /**
-     * Method called  when the process of uploading the signature image has completed
-     * @param response, upload response as received from the API
-     * @param error, if not null it will contain the error received from the API
-     */
-    func didFinishedSignatureUploadWith(response: SignatureResponse, error: ResponseError?)
-    
-    /**
-     * Method called each time the reader needs an action from the user
-     * @UserAction, please check the enum for more cases
-     * @action, User Action needed to be performed by the user
-     */
-    func userActionNeeded(action: UserAction)
-    
-    /**
-     * Method called  each time the reader wants to inform the user
-     * @UserInfo, please check the enum for more cases
-     * @info, UserInfo needed to be performed by the user
-     */
-    func didReceiveInfo(info: UserInfo)
-}
 
 public final class ClearentWrapper : NSObject {
     
@@ -217,6 +30,12 @@ public final class ClearentWrapper : NSObject {
     
     /// If card reader payment fails, the option to use manual payment can be displayed in UI as a fallback method. If user selects this method, useManualPaymentAsFallback needs to be set to true.
     public var useManualPaymentAsFallback: Bool?
+    
+    /// Enables or disables the use of enhanced messages
+    public var enableEnhancedMessaging: Bool = false
+    
+    /// Stores the enhanced messages read from the messages bundle
+    internal var enhancedMessagesDict: [String:String]?
     
     public weak var delegate: ClearentWrapperProtocol?
 
@@ -331,7 +150,6 @@ public final class ClearentWrapper : NSObject {
     public func cancelTransaction() {
         useManualPaymentAsFallback = nil
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            self?.clearentVP3300.emv_cancelTransaction()
             self?.clearentVP3300.device_cancelTransaction()
         }        
     }
@@ -343,10 +161,15 @@ public final class ClearentWrapper : NSObject {
      * @param publicKey, publicKey used by the IDTech reader framework
      * @param apiKey, API Key used for http calls
      */
-    public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String) {
+    public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String, enableEnhancedMessaging: Bool) {
         self.baseURL = baseURL
         self.apiKey = apiKey
         self.publicKey = publicKey
+        self.enableEnhancedMessaging = enableEnhancedMessaging
+        
+        if enableEnhancedMessaging {
+            readEnhancedMessages()
+        }
     }
     
     
@@ -409,6 +232,8 @@ public final class ClearentWrapper : NSObject {
                     self.delegate?.didFinishTransaction(response: decodedResponse, error: transactionError)
                 }
             } catch let jsonDecodingError {
+                self.delegate?.didFinishTransaction(response: nil, error: ResponseError.init(code: "xsdk_response_parsing_error".localized,
+                                                                                             message: "xsdk_http_response_parsing_error_message".localized))
                 print(jsonDecodingError)
             }
         }
@@ -453,6 +278,9 @@ public final class ClearentWrapper : NSObject {
                          }
                          // error call delegate
                      } catch let jsonDecodingError {
+                         self.delegate?.didFinishedSignatureUploadWith(response:nil ,
+                                                                       error: ResponseError.init(code: "xsdk_response_parsing_error".localized,
+                                                                                                 message: "xsdk_http_response_parsing_error_message".localized))
                          print(jsonDecodingError)
                      }
                  }
@@ -741,16 +569,10 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
             DispatchQueue.main.async {
                 self.delegate?.didEncounteredGeneralError()
             }
-        case .USER_ACTION:
+        case .USER_ACTION, .INFO:
             if let action = UserAction.action(for: clearentFeedback.message) {
                 DispatchQueue.main.async {
                     self.delegate?.userActionNeeded(action: action)
-                }
-            }
-        case .INFO:
-            if let info = UserInfo.info(for: clearentFeedback.message) {
-                DispatchQueue.main.async {
-                    self.delegate?.didReceiveInfo(info: info)
                 }
             }
         case .BLUETOOTH:
@@ -802,7 +624,14 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     }
 
     public func deviceMessage(_ message: String!) {
-        print("Will be deprecated")
+        /// It appears this is the only feedback we get if the public key is not valid
+        ///  This method is deprecated
+        
+        DispatchQueue.main.async {
+            if (message == "xsdk_token_generation_failed_message".localized) {
+                self.delegate?.didFinishTransaction(response: nil, error: ResponseError.init(code: "xsdk_general_error_title".localized, message: "xsdk_token_generation_failed_message".localized))
+            }
+        }
     }
     
     private func invalidateConnectionTimer() {
@@ -827,21 +656,6 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
             ClearentWrapperDefaults.pairedReaderInfo?.isConnected = false
             self.bleManager?.cancelPeripheralConnection()
             self.delegate?.deviceDidDisconnect()
-        }
-    }
-}
-
-
-extension ClearentWrapper : ClearentManualEntryDelegate {
-    public func handleManualEntryError(_ message: String!) {
-        DispatchQueue.main.async {
-            if let action = UserAction.action(for: message) {
-                self.delegate?.userActionNeeded(action: action)
-            } else if let info = UserInfo.info(for: message) {
-                self.delegate?.didReceiveInfo(info: info)
-            } else {
-                self.delegate?.didEncounteredGeneralError()
-            }
         }
     }
 }

@@ -89,7 +89,7 @@ class FlowDataProvider : NSObject {
 
 extension FlowDataProvider : ClearentWrapperProtocol {
     
-    func didFinishedSignatureUploadWith(response: SignatureResponse, error: ResponseError?) {
+    func didFinishedSignatureUploadWith(response: SignatureResponse?, error: ResponseError?) {
         let feedback: FlowFeedback
         
         if error != nil {
@@ -130,11 +130,18 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         self.delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
         
-    func didFinishTransaction(response: TransactionResponse, error: ResponseError?) {
+    func didFinishTransaction(response: TransactionResponse?, error: ResponseError?) {
         let feedback: FlowFeedback
         
         if let error = error {
-            let detailedErrorMessage = createDetailedErrorMessage(with: error.code, message: response.payload.transaction?.message, transactionID: response.links?.first?.id, exchangeID: response.exchange_id)
+            
+            var detailedErrorMessage = ""
+            if let response = response {
+                detailedErrorMessage = createDetailedErrorMessage(with: error.code, message: response.payload.transaction?.message, transactionID: response.links?.first?.id, exchangeID: response.exchange_id)
+            } else {
+                detailedErrorMessage = createDetailedErrorMessage(with: error.code, message: error.message, transactionID: nil, exchangeID: "-")
+            }
+            
             let errorItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
                             FlowDataItem(type: .title, object: ClearentConstants.Localized.Error.generalErrorTitle),
                             FlowDataItem(type: .error, object: detailedErrorMessage),
@@ -194,11 +201,8 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .description, object: action.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
-        case .removeCard, .cardSecured:
+        case .removeCard, .cardSecured, .authorizing:
             print("nothing to do here")
-        case .transactionStarted, .goingOnline:
-            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
-                     FlowDataItem(type: .description, object: action.description)]
         case .noInternet:
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
@@ -244,37 +248,20 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
-        }
-        
-        if let flowItems = items {
-            let feedback = FlowDataFactory.component(with: .payment,
-                                                     type: ClearentWrapper.shared.flowType?.flowFeedbackType ?? type,
-                                                     readerInfo: fetchReaderInfo(),
-                                                     payload: flowItems)
-            self.delegate?.didReceiveFlowFeedback(feedback: feedback)
-        }
-    }
-    
-    func didReceiveInfo(info: UserInfo) {
-        var items: [FlowDataItem]?
-        
-        switch info {
-        case .authorizing:
-            print("nothing to do here")
-        case .processing, .goingOnline:
+        case .processing, .goingOnline, .transactionStarted:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
-                     FlowDataItem(type: .description, object: info.description)]
+                     FlowDataItem(type: .description, object: action.description)]
         case .amountNotAllowedForTap:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
                      FlowDataItem(type: .title, object: ClearentConstants.Localized.Error.readerError),
-                     FlowDataItem(type: .description, object: info.description),
+                     FlowDataItem(type: .description, object: action.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .chipNotRecognized:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
                      FlowDataItem(type: .title, object: ClearentConstants.Localized.Error.readerError),
-                     FlowDataItem(type: .description, object: info.description),
+                     FlowDataItem(type: .description, object: action.description),
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
@@ -282,7 +269,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         
         if let flowItems = items {
             let feedback = FlowDataFactory.component(with: .payment,
-                                                     type: .info,
+                                                     type: ClearentWrapper.shared.flowType?.flowFeedbackType ?? type,
                                                      readerInfo: fetchReaderInfo(),
                                                      payload: flowItems)
             self.delegate?.didReceiveFlowFeedback(feedback: feedback)
