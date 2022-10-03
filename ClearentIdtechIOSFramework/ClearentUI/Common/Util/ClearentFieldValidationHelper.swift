@@ -52,7 +52,7 @@ class ClearentFieldValidationHelper {
     }
 
     static func isCardholderNameValid(item: ClearentPaymentItem) -> Bool {
-        let regex = "[A-Za-z\\s]{0,\(item.maxNoOfChars)}"
+        let regex = "[A-Za-z\\s\\-]{0,\(item.maxNoOfChars)}"
         return evaluate(text: item.enteredValue, regex: regex)
     }
 
@@ -70,13 +70,13 @@ class ClearentFieldValidationHelper {
     /**
      If the value is valid, it is masked by replacing all digits except the last 4 with '*'
      */
-    static func hideCardNumber(text: String, sender: UITextField, item: ClearentPaymentItem) {
+    static func hideCardNumber(sender: UITextField, item: ClearentPaymentItem) {
         var item = item
         guard let regex = try? NSRegularExpression(pattern: "\\d(?=\\d{4})", options: .caseInsensitive), item.isValid else {
             item.hiddenValue = nil
             return
         }
-        let textWithoutSpaces = text.replacingOccurrences(of: " ", with: "")
+        let textWithoutSpaces = item.enteredValue.replacingOccurrences(of: " ", with: "")
         let hiddenText = regex.stringByReplacingMatches(in: textWithoutSpaces,
                                                         options: .reportProgress,
                                                         range: NSMakeRange(0, textWithoutSpaces.count),
@@ -89,15 +89,15 @@ class ClearentFieldValidationHelper {
     /**
      If the value is valid, it is masked by replacing all digits with '*'
      */
-    static func hideSecurityCode(text: String, sender: UITextField, item: ClearentPaymentItem) {
+    static func hideSecurityCode(sender: UITextField, item: ClearentPaymentItem) {
         var item = item
         guard let regex = try? NSRegularExpression(pattern: "\\d", options: .caseInsensitive), item.isValid else {
             item.hiddenValue = nil
             return
         }
-        let formattedText = regex.stringByReplacingMatches(in: text,
+        let formattedText = regex.stringByReplacingMatches(in: item.enteredValue,
                                                            options: .reportProgress,
-                                                           range: NSMakeRange(0, text.count),
+                                                           range: NSMakeRange(0, item.enteredValue.count),
                                                            withTemplate: "*")
         sender.text = formattedText
         item.hiddenValue = formattedText.isEmpty ? nil : formattedText
