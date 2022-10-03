@@ -65,7 +65,7 @@ class ClearentPaymentBaseSection: ClearentPaymentSection {
     var isCollapsed: Bool = false
 
     var rows: [ClearentPaymentRow] = [
-        ClearentPaymentRow(elements: [CreditCardNoItem()]),
+        ClearentPaymentRow(elements: [CardNoItem()]),
         ClearentPaymentRow(elements: [DateItem(), SecurityCodeItem()]),
         ClearentPaymentRow(elements: [CardholderFirstNameItem()]),
         ClearentPaymentRow(elements: [CardholderLastNameItem()]),
@@ -89,7 +89,7 @@ class ClearentPaymentAdditionalSection: ClearentPaymentSection {
     ]
 }
 
-class CreditCardNoItem: ClearentPaymentItem {
+class CardNoItem: ClearentPaymentItem {
     var type: ClearentPaymentItemType { .creditCardNo }
     
     var title: String { ClearentConstants.Localized.ManualEntry.cardNo }
