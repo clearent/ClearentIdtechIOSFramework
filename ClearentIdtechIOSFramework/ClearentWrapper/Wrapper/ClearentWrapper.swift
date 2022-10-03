@@ -33,8 +33,11 @@ public final class ClearentWrapper : NSObject {
     /// Enables or disables the use of enhanced messages
     public var enableEnhancedMessaging: Bool = false
     
+    /// Enables or disables the use of the store & forward feature
+    public var enableOfflineMode: Bool = false
+    
     /// The state of the store & forward feature
-    public var offlineMode: OfflineModeState = .off
+    public var offlineModeState: OfflineModeState = .off
     
     /// Stores the enhanced messages read from the messages bundle
     internal var enhancedMessagesDict: [String:String]?
@@ -61,22 +64,18 @@ public final class ClearentWrapper : NSObject {
     private var isInternetOn = false
     private var signatureImage: UIImage?
     private var shouldAskForOfflineModePermission: Bool {
-//        !isInternetOn && offlineMode == .off ? (isNewPaymentProcess ? true : false) : false
-        
-        switch offlineMode {
-        case .off:
+        if !enableOfflineMode {
             return false
-        case .on:
-            return false
-        case .prompted:
-            return !isInternetOn ? (isNewPaymentProcess ? true : false) : false
-        }
-    }
-    private var connectivityActionNeeded: UserAction? {
-        if cardReaderPaymentIsPreffered && useManualPaymentAsFallback == nil {
-            return isBluetoothPermissionGranted ? (isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : (isOfflineModeConfirmed ? nil : .noInternet)) : .noBluetoothPermission
         } else {
-            return isInternetOn ? nil : (isOfflineModeConfirmed ? nil : .noInternet)
+            switch offlineModeState {
+            case .off:
+                return false
+            case .on:
+                isOfflineModeConfirmed = true
+                return false
+            case .prompted:
+                return !isInternetOn ? (isNewPaymentProcess ? true : false) : false
+            }
         }
     }
     private lazy var httpClient: ClearentHttpClient = {
@@ -91,6 +90,18 @@ public final class ClearentWrapper : NSObject {
     private var connectToReaderTimer: Timer?
     private var shouldStopUpdatingReadersListDuringContinuousSearching: Bool? = false
     internal var shouldBeginContinuousSearchingForReaders: ((_ searchingEnabled: Bool) -> Void)?
+    
+    private func connectivityActionNeeded(for processType: ProcessType) -> UserAction? {
+        if processType == .payment {
+            if cardReaderPaymentIsPreffered && useManualPaymentAsFallback == nil {
+                return isBluetoothPermissionGranted ? (isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : (isOfflineModeConfirmed ? nil : .noInternet)) : .noBluetoothPermission
+            } else {
+                return isInternetOn ? nil : (isOfflineModeConfirmed ? nil : .noInternet)
+            }
+        } else {
+            return isBluetoothPermissionGranted ? (isBluetoothOn ? nil : .noBluetooth) : .noBluetoothPermission
+        }
+    }
     
     // MARK: Init
     
@@ -124,8 +135,7 @@ public final class ClearentWrapper : NSObject {
      * @param reconnectIfPossible, if  false  a connection that will search for bluetooth devices will be started, if true a connection with the last paired reader will be tried
      */
     public func startPairing(reconnectIfPossible: Bool) {
-        if shouldDisplayOfflineModePermission() { return }
-        if shouldDisplayConnectivityWarning() { return }
+        if shouldDisplayConnectivityWarning(for: .pairing()) { return }
         
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let strongSelf = self else { return }
@@ -172,26 +182,28 @@ public final class ClearentWrapper : NSObject {
         }        
     }
      
-    
     /**
      * This method will update the current SDK keys
      * @param baseURL, the backend endpoint
      * @param publicKey, publicKey used by the IDTech reader framework
      * @param apiKey, API Key used for http calls
-     * @param offlineMode, the state of the store & forward feature
+     * @param enableOfflineMode, enables / disables the store & forward feature
      */
-    public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String, enableEnhancedMessaging: Bool, offlineMode: OfflineModeState) {
+    public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String, enableEnhancedMessaging: Bool, enableOfflineMode: Bool) {
         self.baseURL = baseURL
         self.apiKey = apiKey
         self.publicKey = publicKey
         self.enableEnhancedMessaging = enableEnhancedMessaging
-        self.offlineMode = offlineMode
+        self.enableOfflineMode = enableOfflineMode
         
         if enableEnhancedMessaging {
             readEnhancedMessages()
         }
+        
+        if enableOfflineMode {
+            self.offlineModeState = .prompted
+        }
     }
-    
     
     /**
      * This method will start a transaction, if manualEntryCardInfo is not null then a manual transaction will be performed otherwise a card reader transcation will be initiated
@@ -208,7 +220,7 @@ public final class ClearentWrapper : NSObject {
         
         if shouldDisplayOfflineModePermission() { return }
 
-        if shouldDisplayConnectivityWarning() { return }
+        if shouldDisplayConnectivityWarning(for: .payment) { return }
 
         if let manualEntryCardInfo = manualEntryCardInfo {
             manualEntryTransaction(cardNo: manualEntryCardInfo.card, expirationDate: manualEntryCardInfo.expirationDateMMYY, csc: manualEntryCardInfo.csc)
@@ -220,7 +232,6 @@ public final class ClearentWrapper : NSObject {
     /**
      * Method that will search for currently used readers and call the delegate methods with the results
      */
-    
     public func searchRecentlyUsedReaders() {
         if let recentlyUsedReaders = ClearentWrapperDefaults.recentlyPairedReaders, recentlyUsedReaders.count > 0 {
             delegate?.didFindRecentlyUsedReaders(readers: recentlyUsedReaders)
@@ -278,7 +289,7 @@ public final class ClearentWrapper : NSObject {
      * @param image, UIImage to be uploaded
      */
     public func sendSignatureWithImage(image: UIImage) throws {
-        if shouldDisplayConnectivityWarning() { return }
+        if shouldDisplayConnectivityWarning(for: .payment) { return }
         if let error = checkForMissingKeys() { throw error }
         
         if let id = lastTransactionID {
@@ -371,7 +382,7 @@ public final class ClearentWrapper : NSObject {
      */
     public func fetchTipSetting(completion: @escaping () -> Void) {
         if shouldDisplayOfflineModePermission() { return }
-        if shouldDisplayConnectivityWarning() { return }
+        if shouldDisplayConnectivityWarning(for: .payment) { return }
 
         httpClient.merchantSettings() { data, error in
             DispatchQueue.main.async {
@@ -436,8 +447,8 @@ public final class ClearentWrapper : NSObject {
         return false
     }
     
-    private func shouldDisplayConnectivityWarning() -> Bool {
-        if let action = connectivityActionNeeded {
+    private func shouldDisplayConnectivityWarning(for processType: ProcessType) -> Bool {
+        if let action = connectivityActionNeeded(for: processType) {
             DispatchQueue.main.async {
                 self.delegate?.userActionNeeded(action: action)
             }
