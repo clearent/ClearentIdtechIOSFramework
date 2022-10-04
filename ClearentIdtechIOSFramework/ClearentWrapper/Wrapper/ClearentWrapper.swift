@@ -100,13 +100,21 @@ public final class ClearentWrapper : NSObject {
             }
         }
         
-        let offlineManager = OfflineModeManager(storage: OfflineStorage())
+        // Init the offline manager
+        let offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: "123456789", account: "jam987654321"))
         
         // Create and validate the transaction
-        var oftr = OfflineTransaction(transactionID: "1244", status: .new, type: .cardTransaction, paymentData: BasePaymentData())
-        
+        let oftr = OfflineTransaction(transactionID: "1244", status: .new, type: .cardTransaction, paymentData: BasePaymentData())
+
         // Save the transaction
-        offlineManager.addOfflineTransaction(transaction: oftr)
+        offlineManager.saveOfflineTransaction(transaction: oftr)
+        
+        
+        /// retrive the saved item
+        let items = offlineManager.retriveAll()
+        
+        
+        print(items)
     }
     
     // MARK - Public
