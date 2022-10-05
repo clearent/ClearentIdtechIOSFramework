@@ -8,13 +8,13 @@
 
 import Foundation
 
-enum OfflineTransactionType : Int, Codable {
-    case cardReaderTransaction = 0
+enum OfflineTransactionType : String, Codable {
+    case cardReaderTransaction
     case manualTransaction
 }
 
-enum OfflineTransactionStatus : Int, Codable {
-    case error = 0
+enum OfflineTransactionStatus : String, Codable {
+    case error
     case new
 }
 

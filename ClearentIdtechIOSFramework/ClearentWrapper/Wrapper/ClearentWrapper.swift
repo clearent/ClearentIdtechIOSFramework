@@ -101,7 +101,7 @@ public final class ClearentWrapper : NSObject {
         }
         
         // Init the offline manager
-        let offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: "unique_service_name_1", account: "unique_account_2"))
+        let offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: "unique_service_name_2", account: "unique_account_3"))
         
         // Save an card reader transaction
         let saleEntity = SaleEntity(amount: "22.23")
