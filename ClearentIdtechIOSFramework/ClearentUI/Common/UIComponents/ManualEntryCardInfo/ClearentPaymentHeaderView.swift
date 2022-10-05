@@ -10,11 +10,20 @@ import Foundation
 import UIKit
 
 class ClearentPaymentHeaderView: ClearentXibView {
-    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var stackView: UIStackView!
+    
     
     override func configure() {
+        let titleLabel = UILabel()
         titleLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.manualPaymentTitleColor
         titleLabel.font = ClearentUIBrandConfigurator.shared.fonts.paymentViewTitleLabelFont
         titleLabel.text = ClearentConstants.Localized.ManualEntry.header
+        titleLabel.textAlignment = .center
+        
+        stackView.addArrangedSubview(titleLabel)
+        
+        if ClearentWrapper.shared.enableOfflineMode && ClearentWrapper.shared.offlineModeState != .off {
+            stackView.addArrangedSubview(ClearentSubtitleLabel(text: ClearentConstants.Localized.OfflineMode.offlineModeEnabled))
+        }
     }
 }

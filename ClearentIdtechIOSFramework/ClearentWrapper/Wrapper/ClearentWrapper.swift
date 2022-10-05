@@ -91,18 +91,6 @@ public final class ClearentWrapper : NSObject {
     private var shouldStopUpdatingReadersListDuringContinuousSearching: Bool? = false
     internal var shouldBeginContinuousSearchingForReaders: ((_ searchingEnabled: Bool) -> Void)?
     
-    private func connectivityActionNeeded(for processType: ProcessType) -> UserAction? {
-        if processType == .payment {
-            if cardReaderPaymentIsPreffered && useManualPaymentAsFallback == nil {
-                return isBluetoothPermissionGranted ? (isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : (isOfflineModeConfirmed ? nil : .noInternet)) : .noBluetoothPermission
-            } else {
-                return isInternetOn ? nil : (isOfflineModeConfirmed ? nil : .noInternet)
-            }
-        } else {
-            return isBluetoothPermissionGranted ? (isBluetoothOn ? nil : .noBluetooth) : .noBluetoothPermission
-        }
-    }
-    
     // MARK: Init
     
     private override init() {
@@ -217,8 +205,6 @@ public final class ClearentWrapper : NSObject {
         if let tip = saleEntity.tipAmount, !tip.canBeConverted(to: .utf8) { return }
         
         self.saleEntity = saleEntity
-        
-        if shouldDisplayOfflineModePermission() { return }
 
         if shouldDisplayConnectivityWarning(for: .payment) { return }
 
@@ -378,7 +364,7 @@ public final class ClearentWrapper : NSObject {
     
     /**
      * Method that will fetch the tip settings for current mechant
-     * @param transactionID, ID of transcation to be voided
+     * @param completion, the closure that will be called after receiving the data
      */
     public func fetchTipSetting(completion: @escaping () -> Void) {
         if shouldDisplayOfflineModePermission() { return }
@@ -447,8 +433,20 @@ public final class ClearentWrapper : NSObject {
         return false
     }
     
+    private func getConnectivityStatus(for processType: ProcessType) -> UserAction? {
+        if processType == .payment {
+            if cardReaderPaymentIsPreffered && useManualPaymentAsFallback == nil {
+                return isBluetoothPermissionGranted ? (isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : (isOfflineModeConfirmed ? nil : .noInternet)) : .noBluetoothPermission
+            } else {
+                return isInternetOn ? nil : (isOfflineModeConfirmed ? nil : .noInternet)
+            }
+        } else {
+            return isBluetoothPermissionGranted ? (isBluetoothOn ? nil : .noBluetooth) : .noBluetoothPermission
+        }
+    }
+    
     private func shouldDisplayConnectivityWarning(for processType: ProcessType) -> Bool {
-        if let action = connectivityActionNeeded(for: processType) {
+        if let action = getConnectivityStatus(for: processType) {
             DispatchQueue.main.async {
                 self.delegate?.userActionNeeded(action: action)
             }

@@ -85,12 +85,14 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     func handleOfflineModeConfirmationOption() {
         ClearentWrapper.shared.isNewPaymentProcess = false
         
-        if let isReaderEncrypted = sdkWrapper.isReaderEncrypted() {
+        if let isReaderEncrypted = sdkWrapper.isReaderEncrypted(), useCardReaderPaymentMethod {
             if !isReaderEncrypted {
                 sdkFeedbackProvider.showEncryptionWarning()
             } else {
                 sdkFeedbackProvider.displayOfflineModeWarningMessage()
             }
+        } else {
+            sdkFeedbackProvider.displayOfflineModeWarningMessage()
         }
     }
     
@@ -203,11 +205,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             modalProcessingView?.positionViewOnTop(flag: true)
             showRenameReader()
         case .transactionWithTip, .transactionWithoutTip:
-            if useCardReaderPaymentMethod {
-                startCardReaderTransaction()
-            } else {
-                startManualEntryTransaction()
-            }
+            useCardReaderPaymentMethod ? startCardReaderTransaction() : startManualEntryTransaction()
         case .manuallyEnterCardInfo:
             startManualEntryTransaction()
         case .confirmOfflineMode:
