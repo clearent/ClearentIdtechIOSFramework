@@ -6,7 +6,7 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
-public struct ManualEntryCardInfo {
+public struct ManualEntryCardInfo : CodableProtocol {
     let card: String
     let expirationDateMMYY: String
     let csc: String

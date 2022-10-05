@@ -101,19 +101,36 @@ public final class ClearentWrapper : NSObject {
         }
         
         // Init the offline manager
-        let offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: "123456789", account: "jam987654321"))
+        let offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: "unique_service_name_1", account: "unique_account_2"))
         
-        // Create and validate the transaction
-        let oftr = OfflineTransaction(transactionID: "1244", status: .new, type: .cardTransaction, paymentData: BasePaymentData())
-
-        // Save the transaction
-        offlineManager.saveOfflineTransaction(transaction: oftr)
+        // Save an card reader transaction
+        let saleEntity = SaleEntity(amount: "22.23")
+        let cardPaymentData = PaymentData(saleEntity: saleEntity, token: "a card reader generated token")
+        let offlineCardReaderTransaction = OfflineTransaction(status: .new, type: .cardReaderTransaction, paymentData: cardPaymentData)
+        
+        var status = offlineManager.saveOfflineTransaction(transaction: offlineCardReaderTransaction)
+        if (status == .success) {
+            print("card reader offline transaction saved")
+        } else {
+            print("card reader offline transaction error")
+        }
         
         
-        /// retrive the saved item
+        // Save an offline transaction
+        let cardInfo = ManualEntryCardInfo(card: "4761340000000019", expirationDateMMYY: "12/22", csc: "946")
+        let paymentData = PaymentData(saleEntity: saleEntity, cardInfo: cardInfo)
+        let offlineManualTransaction = OfflineTransaction(status: .new, type: .manualTransaction, paymentData: paymentData)
+        
+        status = offlineManager.saveOfflineTransaction(transaction: offlineManualTransaction)
+        if (status == .success) {
+            print("manual offline transaction saved")
+        } else {
+            print("manual offline transaction error")
+        }
+        
+    
+        // retrive the saved transactions
         let items = offlineManager.retriveAll()
-        
-        
         print(items)
     }
     

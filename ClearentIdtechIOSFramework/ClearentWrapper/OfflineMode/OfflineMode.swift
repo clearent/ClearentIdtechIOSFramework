@@ -9,7 +9,7 @@
 import Foundation
 
 enum OfflineTransactionType : Int, Codable {
-    case cardTransaction = 0
+    case cardReaderTransaction = 0
     case manualTransaction
 }
 
@@ -18,16 +18,16 @@ enum OfflineTransactionStatus : Int, Codable {
     case new
 }
 
-class BasePaymentData : CodableProtocol {
+class PaymentData : CodableProtocol {
     var saleEntity: SaleEntity?
-}
-
-class ManualPaymentData : BasePaymentData {
-    var cardData: String = ""
-}
-
-class CardPaymentData : BasePaymentData {
-    var token: String = ""
+    var cardInfo: ManualEntryCardInfo?
+    var token: String?
+    
+    init(saleEntity: SaleEntity, token: String? = nil, cardInfo: ManualEntryCardInfo? = nil) {
+        self.token = token
+        self.cardInfo = cardInfo
+        self.saleEntity = saleEntity
+    }
 }
 
 struct OfflineTransaction: CodableProtocol  {
@@ -35,9 +35,9 @@ struct OfflineTransaction: CodableProtocol  {
     var status: OfflineTransactionStatus
     var errorString: String?
     var type: OfflineTransactionType
-    var paymentData: BasePaymentData?
+    var paymentData: PaymentData
     
-    init(transactionID: String? = nil, status: OfflineTransactionStatus, errorString: String? = nil, type: OfflineTransactionType, paymentData: BasePaymentData? = nil) {
+    init(transactionID: String? = nil, status: OfflineTransactionStatus, errorString: String? = nil, type: OfflineTransactionType, paymentData: PaymentData) {
         self.transactionID  = (transactionID == nil) ? UUID().uuidString : transactionID
         self.status = status
         self.errorString = errorString
@@ -60,8 +60,8 @@ class OfflineModeManager {
         self.storage = storage
     }
     
-    func saveOfflineTransaction(transaction:OfflineTransaction) {
-        _ = storage.save(transaction: transaction)
+    func saveOfflineTransaction(transaction:OfflineTransaction) ->TransactionStoreStatus {
+        return storage.save(transaction: transaction)
     }
     
     func retriveAll() -> [OfflineTransaction] {
@@ -80,7 +80,7 @@ class KeyChainStorage: TransactionStorageProtocol {
         self.account = account
     }
     
-    func save(transaction: OfflineTransaction) -> TransactionStorageStatus {
+    func save(transaction: OfflineTransaction) -> TransactionStoreStatus {
         let oftr = transaction.encode()
         guard let encodedTransaction = oftr else { return .parsingError }
         
@@ -127,7 +127,7 @@ class KeyChainStorage: TransactionStorageProtocol {
         var result : [OfflineTransaction] = []
         var currentSavedItems: NSArray? = nil
         
-        // retrive the current saved data
+        // Retrive the current saved data
         let savedData = helper.read(service: serviceName, account: account)
         
         if let savedData = savedData {
@@ -140,7 +140,7 @@ class KeyChainStorage: TransactionStorageProtocol {
                             let decodedResponse = try JSONDecoder().decode(OfflineTransaction.self, from: newData)
                             result.append(decodedResponse)
                         } catch {
-                         
+                            //should cath an error here
                         }
                     }
                     
@@ -153,18 +153,18 @@ class KeyChainStorage: TransactionStorageProtocol {
         return result
     }
     
-    func updateTransaction(transaction: OfflineTransaction) -> TransactionStorageStatus {
+    func updateTransaction(transaction: OfflineTransaction) -> TransactionStoreStatus {
         return .genericError
     }
     
-    func deleteTransactionWith(id: String) -> TransactionStorageStatus {
+    func deleteTransactionWith(id: String) -> TransactionStoreStatus {
         return .genericError
     }
 }
 
 /// Posible errors when saving data
 
-enum TransactionStorageStatus: String {
+enum TransactionStoreStatus: String {
     case parsingError
     case success
     case genericError
@@ -178,15 +178,15 @@ enum TransactionStorageStatus: String {
 protocol TransactionStorageProtocol {
     
     /// Saves a offline transaction
-    func save(transaction: OfflineTransaction) -> TransactionStorageStatus
+    func save(transaction: OfflineTransaction) -> TransactionStoreStatus
     
     /// Retrives all transactions
     func retriveAll() -> [OfflineTransaction]
     
     /// Updates a transaction
-    func updateTransaction(transaction: OfflineTransaction) -> TransactionStorageStatus
+    func updateTransaction(transaction: OfflineTransaction) -> TransactionStoreStatus
     
     
     /// Deletes a transaction
-    func deleteTransactionWith(id: String) -> TransactionStorageStatus
+    func deleteTransactionWith(id: String) -> TransactionStoreStatus
 }
