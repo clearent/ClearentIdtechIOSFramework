@@ -14,9 +14,9 @@ enum OfflineTransactionType :String, Codable {
     case none
 }
 
-enum OfflineTransactionStatus: Codable {
-    case error(message:String, date: Date)
-    case new
+struct ErrorStatus: Codable {
+    var message: String
+    var updatedDate: Date
 }
 
 class PaymentData : CodableProtocol {
@@ -32,24 +32,18 @@ class PaymentData : CodableProtocol {
 struct OfflineTransaction: CodableProtocol  {
     var createdDate: Date?
     var transactionID: String?
-    var status: OfflineTransactionStatus
-    var errorString: String?
-    var type: OfflineTransactionType
     var paymentData: PaymentData
+    var errorStatus: ErrorStatus?
     
-    init(transactionID: String? = nil, createdDate: Date? = nil, status: OfflineTransactionStatus, errorString: String? = nil, type: OfflineTransactionType, paymentData: PaymentData) {
+    init(transactionID: String? = nil, createdDate: Date? = nil, errorStatus: ErrorStatus? = nil, paymentData: PaymentData) {
         self.createdDate = Date()
         self.transactionID  = (transactionID == nil) ? UUID().uuidString : transactionID
-        self.status = status
-        self.errorString = errorString
-        self.type = type
         self.paymentData = paymentData
+        self.errorStatus = errorStatus
     }
         
     enum CodingKeys: String, CodingKey {
-        case transactionID, errorString, paymentData
-        case status = "transaction-status"
-        case type = "transaction-type"
+        case transactionID, paymentData, createdDate, errorStatus
     }
     
     func transactionType() -> OfflineTransactionType {

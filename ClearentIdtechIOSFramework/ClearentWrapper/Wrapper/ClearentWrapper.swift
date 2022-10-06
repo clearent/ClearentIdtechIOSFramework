@@ -108,7 +108,7 @@ public final class ClearentWrapper : NSObject {
         // Save an card reader transaction
         let saleEntity = SaleEntity(amount: "22.23")
         let cardPaymentData = PaymentData(saleEntity: saleEntity, cardToken: "a card reader generated token")
-        let offlineCardReaderTransaction = OfflineTransaction(status: .new, type: .cardReaderTransaction, paymentData: cardPaymentData)
+        let offlineCardReaderTransaction = OfflineTransaction(paymentData: cardPaymentData)
 
         var status = offlineManager.saveOfflineTransaction(transaction: offlineCardReaderTransaction)
         if (status == .success) {
@@ -121,7 +121,7 @@ public final class ClearentWrapper : NSObject {
         // Save an offline transaction
         //let cardInfo = ManualEntryCardInfo(card: "4761340000000019", expirationDateMMYY: "12/22", csc: "946")
         let paymentData = PaymentData(saleEntity: saleEntity)
-        let offlineManualTransaction = OfflineTransaction(status: .new, type: .manualTransaction, paymentData: paymentData)
+        let offlineManualTransaction = OfflineTransaction(paymentData: paymentData)
 
         status = offlineManager.saveOfflineTransaction(transaction: offlineManualTransaction)
         if (status == .success) {
