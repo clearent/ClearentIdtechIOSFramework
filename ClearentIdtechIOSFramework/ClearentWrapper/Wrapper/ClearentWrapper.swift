@@ -227,7 +227,7 @@ public final class ClearentWrapper : NSObject {
      * @param SaleEntity,  holds informations used for the transcation
      * @param ManualEntryCardInfo,  all the information needed for a manual card transaction
      */
-    public func startTransaction(with saleEntity: SaleEntity, manualEntryCardInfo: ManualEntryCardInfo? = nil) throws {
+    public func startTransaction(with saleEntity: SaleEntity, isManualTransaction: Bool) throws {
         if let error = checkForMissingKeys() { throw error }
         
         if !saleEntity.amount.canBeConverted(to: .utf8) { return }
@@ -237,8 +237,8 @@ public final class ClearentWrapper : NSObject {
         
         if shouldDisplayConnectivityWarning() { return }
         
-        if let manualEntryCardInfo = manualEntryCardInfo {
-            manualEntryTransaction(cardNo: manualEntryCardInfo.card, expirationDate: manualEntryCardInfo.expirationDateMMYY, csc: manualEntryCardInfo.csc)
+        if isManualTransaction {
+            manualEntryTransaction(saleEntity: saleEntity)
         } else {
             cardReaderTransaction()
         }
@@ -556,17 +556,14 @@ public final class ClearentWrapper : NSObject {
     
     /**
      * Method that performs a manual card transaction
-     * @param cardNo, card number as String
-     * @param expirationDate, card expiration date as String
-     * @param csc, card security code as String
      */
-    private func manualEntryTransaction(cardNo: String, expirationDate: String, csc: String) {
+    private func manualEntryTransaction(saleEntity: SaleEntity) {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let strongSelf = self else { return }
             let card = ClearentCard()
-            card.card = cardNo
-            card.expirationDateMMYY = expirationDate
-            card.csc = csc
+            card.card = saleEntity.card
+            card.expirationDateMMYY = saleEntity.expirationDateMMYY
+            card.csc = saleEntity.csc
             strongSelf.clearentManualEntry.createTransactionToken(card)
         }
     }
