@@ -14,31 +14,31 @@ enum OfflineTransactionType :String, Codable {
     case none
 }
 
-enum OfflineTransactionStatus :String, Codable {
-    case error
+enum OfflineTransactionStatus: Codable {
+    case error(message:String, date: Date)
     case new
 }
 
 class PaymentData : CodableProtocol {
     var saleEntity: SaleEntity
-    var cardInfo: ManualEntryCardInfo?
     var cardToken: String?
     
-    init(saleEntity: SaleEntity, cardToken: String? = nil, cardInfo: ManualEntryCardInfo? = nil) {
+    init(saleEntity: SaleEntity, cardToken: String? = nil) {
         self.cardToken = cardToken
-        self.cardInfo = cardInfo
         self.saleEntity = saleEntity
     }
 }
 
 struct OfflineTransaction: CodableProtocol  {
+    var createdDate: Date?
     var transactionID: String?
     var status: OfflineTransactionStatus
     var errorString: String?
     var type: OfflineTransactionType
     var paymentData: PaymentData
     
-    init(transactionID: String? = nil, status: OfflineTransactionStatus, errorString: String? = nil, type: OfflineTransactionType, paymentData: PaymentData) {
+    init(transactionID: String? = nil, createdDate: Date? = nil, status: OfflineTransactionStatus, errorString: String? = nil, type: OfflineTransactionType, paymentData: PaymentData) {
+        self.createdDate = Date()
         self.transactionID  = (transactionID == nil) ? UUID().uuidString : transactionID
         self.status = status
         self.errorString = errorString
@@ -53,9 +53,9 @@ struct OfflineTransaction: CodableProtocol  {
     }
     
     func transactionType() -> OfflineTransactionType {
-        if (paymentData.cardInfo != nil && paymentData.cardToken == nil) {
-            return .manualTransaction
-        } else if (paymentData.cardToken != nil && paymentData.cardInfo == nil) {
+        if (paymentData.cardToken != nil) {
+            return .cardReaderTransaction
+        } else if (paymentData.saleEntity.card != nil && paymentData.cardToken == nil) {
             return .cardReaderTransaction
         }
         

@@ -119,8 +119,8 @@ public final class ClearentWrapper : NSObject {
 
 
         // Save an offline transaction
-        let cardInfo = ManualEntryCardInfo(card: "4761340000000019", expirationDateMMYY: "12/22", csc: "946")
-        let paymentData = PaymentData(saleEntity: saleEntity, cardInfo: cardInfo)
+        //let cardInfo = ManualEntryCardInfo(card: "4761340000000019", expirationDateMMYY: "12/22", csc: "946")
+        let paymentData = PaymentData(saleEntity: saleEntity)
         let offlineManualTransaction = OfflineTransaction(status: .new, type: .manualTransaction, paymentData: paymentData)
 
         status = offlineManager.saveOfflineTransaction(transaction: offlineManualTransaction)
