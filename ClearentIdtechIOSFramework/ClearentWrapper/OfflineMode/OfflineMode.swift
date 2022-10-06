@@ -148,55 +148,94 @@ class KeyChainStorage: TransactionStorageProtocol {
     }
     
     func updateTransaction(transaction: OfflineTransaction) -> TransactionStoreStatus {
-        return .genericError
-    }
-    
-    func deleteTransactionWith(id: String) -> TransactionStoreStatus {
+        // Retrive the current saved data
+        guard let savedData = helper.read(service: serviceName, account: account) else { return .genericError }
+        
         var result : [OfflineTransaction] = []
         var currentSavedItems: NSArray? = nil
         
-        // Retrive the current saved data
-        let savedData = helper.read(service: serviceName, account: account)
-        if let savedData = savedData {
-            do {
-                currentSavedItems = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSArray.self, from: savedData)
-                
-                var response : TransactionStoreStatus = .success
-                currentSavedItems?.forEach({ item in
-                    let data = item as? Data
-                    if let newData = data {
-                        do {
-                            let decodedResponse = try JSONDecoder().decode(OfflineTransaction.self, from: newData)
-                            result.append(decodedResponse)
-                        } catch {
-                            response = .parsingError
-                        }
-                    }
-                })
-                
-                let count = result.count
-                result.removeAll(where: {$0.transactionID! == id})
-                
-                if count == result.count {
-                    response = .transactionDoesNotExist
-                } else {
-                    let currentSavedItems: NSMutableArray = NSMutableArray.init(array: [])
-                    result.forEach { oftr in
-                        if let transaction = oftr.encode() {
-                            currentSavedItems.add(transaction)
-                        }
-                    }
-                    
-                    return saveOfflineTransactionArray(offlineTransactions: currentSavedItems)
-                }
-                
-                return response
-            } catch {
-                return .genericError
-            }
+        do {
+            currentSavedItems = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSArray.self, from: savedData)
+        } catch {
+            return .genericError
         }
         
-        return .genericError
+        var response : TransactionStoreStatus = .success
+        currentSavedItems?.forEach({ item in
+            let data = item as? Data
+            if let newData = data {
+                do {
+                    let decodedResponse = try JSONDecoder().decode(OfflineTransaction.self, from: newData)
+                    result.append(decodedResponse)
+                } catch {
+                    response = .parsingError
+                }
+            }
+        })
+        
+        let count = result.count
+        result.removeAll(where: {$0.transactionID! == transaction.transactionID})
+        
+        if count == result.count {
+            response = .transactionDoesNotExist
+        } else {
+            result.append(transaction)
+            let currentSavedItems: NSMutableArray = NSMutableArray.init(array: [])
+            result.forEach { oftr in
+                if let transaction = oftr.encode() {
+                    currentSavedItems.add(transaction)
+                }
+            }
+            
+            return saveOfflineTransactionArray(offlineTransactions: currentSavedItems)
+        }
+        
+        return response
+    }
+    
+    func deleteTransactionWith(id: String) -> TransactionStoreStatus {
+        // Retrive the current saved data
+        guard let savedData = helper.read(service: serviceName, account: account) else { return .genericError }
+      
+        var result : [OfflineTransaction] = []
+        var currentSavedItems: NSArray? = nil
+        
+        do {
+            currentSavedItems = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSArray.self, from: savedData)
+        } catch {
+            return .genericError
+        }
+        
+        var response : TransactionStoreStatus = .success
+        currentSavedItems?.forEach({ item in
+            let data = item as? Data
+            if let newData = data {
+                do {
+                    let decodedResponse = try JSONDecoder().decode(OfflineTransaction.self, from: newData)
+                    result.append(decodedResponse)
+                } catch {
+                    response = .parsingError
+                }
+            }
+        })
+        
+        let count = result.count
+        result.removeAll(where: {$0.transactionID! == id})
+        
+        if count == result.count {
+            response = .transactionDoesNotExist
+        } else {
+            let currentSavedItems: NSMutableArray = NSMutableArray.init(array: [])
+            result.forEach { oftr in
+                if let transaction = oftr.encode() {
+                    currentSavedItems.add(transaction)
+                }
+            }
+            
+            return saveOfflineTransactionArray(offlineTransactions: currentSavedItems)
+        }
+        
+        return response
     }
     
     
@@ -215,11 +254,6 @@ class KeyChainStorage: TransactionStorageProtocol {
             return .success
         }
     }
-    
-    
-//    private func unarchiveOfflineTransactions(data: Data?) -> [OfflineTransaction]? {
-//        
-//    }
 }
 
 /// Posible errors when saving data
@@ -246,7 +280,6 @@ protocol TransactionStorageProtocol {
     
     /// Updates a transaction
     func updateTransaction(transaction: OfflineTransaction) -> TransactionStoreStatus
-    
     
     /// Deletes a transaction
     func deleteTransactionWith(id: String) -> TransactionStoreStatus
