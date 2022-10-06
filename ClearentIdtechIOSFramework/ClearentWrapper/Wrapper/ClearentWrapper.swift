@@ -8,7 +8,7 @@
 import Foundation
 import CocoaLumberjack
 import Network
-
+import CryptoKit
 
 public final class ClearentWrapper : NSObject {
     
@@ -103,32 +103,34 @@ public final class ClearentWrapper : NSObject {
         // Init the offline manager
         let offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: "unique_service_name_2", account: "unique_account_3"))
         
-//        // Save an card reader transaction
-//        let saleEntity = SaleEntity(amount: "22.23")
-//        let cardPaymentData = PaymentData(saleEntity: saleEntity, token: "a card reader generated token")
-//        let offlineCardReaderTransaction = OfflineTransaction(status: .new, type: .cardReaderTransaction, paymentData: cardPaymentData)
-//
-//        var status = offlineManager.saveOfflineTransaction(transaction: offlineCardReaderTransaction)
-//        if (status == .success) {
-//            print("card reader offline transaction saved")
-//        } else {
-//            print("card reader offline transaction error")
-//        }
-//
-//
-//        // Save an offline transaction
-//        let cardInfo = ManualEntryCardInfo(card: "4761340000000019", expirationDateMMYY: "12/22", csc: "946")
-//        let paymentData = PaymentData(saleEntity: saleEntity, cardInfo: cardInfo)
-//        let offlineManualTransaction = OfflineTransaction(status: .new, type: .manualTransaction, paymentData: paymentData)
-//
-//        status = offlineManager.saveOfflineTransaction(transaction: offlineManualTransaction)
-//        if (status == .success) {
-//            print("manual offline transaction saved")
-//        } else {
-//            print("manual offline transaction error")
-//        }
-//
-    
+
+
+        // Save an card reader transaction
+        let saleEntity = SaleEntity(amount: "22.23")
+        let cardPaymentData = PaymentData(saleEntity: saleEntity, cardToken: "a card reader generated token")
+        let offlineCardReaderTransaction = OfflineTransaction(status: .new, type: .cardReaderTransaction, paymentData: cardPaymentData)
+
+        var status = offlineManager.saveOfflineTransaction(transaction: offlineCardReaderTransaction)
+        if (status == .success) {
+            print("card reader offline transaction saved")
+        } else {
+            print("card reader offline transaction error")
+        }
+
+
+        // Save an offline transaction
+        let cardInfo = ManualEntryCardInfo(card: "4761340000000019", expirationDateMMYY: "12/22", csc: "946")
+        let paymentData = PaymentData(saleEntity: saleEntity, cardInfo: cardInfo)
+        let offlineManualTransaction = OfflineTransaction(status: .new, type: .manualTransaction, paymentData: paymentData)
+
+        status = offlineManager.saveOfflineTransaction(transaction: offlineManualTransaction)
+        if (status == .success) {
+            print("manual offline transaction saved")
+        } else {
+            print("manual offline transaction error")
+        }
+        
+        
         // retrive the saved transactions
         var items = offlineManager.retriveAll()
         print(items)
@@ -270,7 +272,7 @@ public final class ClearentWrapper : NSObject {
                         if let linksItem = decodedResponse.links?.first {
                             self.lastTransactionID = linksItem.id
                         }
-
+                        
                         self.delegate?.didFinishTransaction(response: decodedResponse, error: nil)
                     }
                     return

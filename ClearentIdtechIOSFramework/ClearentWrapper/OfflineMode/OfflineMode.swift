@@ -8,23 +8,24 @@
 
 import Foundation
 
-enum OfflineTransactionType : String, Codable {
+enum OfflineTransactionType :String, Codable {
     case cardReaderTransaction
     case manualTransaction
+    case none
 }
 
-enum OfflineTransactionStatus : String, Codable {
+enum OfflineTransactionStatus :String, Codable {
     case error
     case new
 }
 
 class PaymentData : CodableProtocol {
-    var saleEntity: SaleEntity?
+    var saleEntity: SaleEntity
     var cardInfo: ManualEntryCardInfo?
-    var token: String?
+    var cardToken: String?
     
-    init(saleEntity: SaleEntity, token: String? = nil, cardInfo: ManualEntryCardInfo? = nil) {
-        self.token = token
+    init(saleEntity: SaleEntity, cardToken: String? = nil, cardInfo: ManualEntryCardInfo? = nil) {
+        self.cardToken = cardToken
         self.cardInfo = cardInfo
         self.saleEntity = saleEntity
     }
@@ -49,6 +50,16 @@ struct OfflineTransaction: CodableProtocol  {
         case transactionID, errorString, paymentData
         case status = "transaction-status"
         case type = "transaction-type"
+    }
+    
+    func transactionType() -> OfflineTransactionType {
+        if (paymentData.cardInfo != nil && paymentData.cardToken == nil) {
+            return .manualTransaction
+        } else if (paymentData.cardToken != nil && paymentData.cardInfo == nil) {
+            return .cardReaderTransaction
+        }
+        
+        return .none
     }
 }
 
@@ -204,6 +215,11 @@ class KeyChainStorage: TransactionStorageProtocol {
             return .success
         }
     }
+    
+    
+//    private func unarchiveOfflineTransactions(data: Data?) -> [OfflineTransaction]? {
+//        
+//    }
 }
 
 /// Posible errors when saving data
