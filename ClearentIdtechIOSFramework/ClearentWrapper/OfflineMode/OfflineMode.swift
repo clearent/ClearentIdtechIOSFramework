@@ -61,7 +61,7 @@ struct OfflineTransaction: CodableProtocol  {
         if (paymentData.cardToken != nil) {
             return .cardReaderTransaction
         } else if (paymentData.saleEntity.card != nil && paymentData.cardToken == nil) {
-            return .cardReaderTransaction
+            return .manualTransaction
         }
         
         return .none
@@ -114,12 +114,27 @@ class OfflineModeManager {
 
 class ClearentCryptor {
     
-    func encryptString(with key:SymmetricKey, data:String) -> String? {
-        return data
+    static func encryptString(with key:SymmetricKey, dataToEncrypt:String) -> ChaChaPoly.SealedBox? {
+        if let dataToEncrypt = dataToEncrypt.data(using: .utf8) {
+            if let cryptedBox = try? ChaChaPoly.seal(dataToEncrypt, using: key),
+              let sealedBox = try? ChaChaPoly.SealedBox(combined: cryptedBox.combined) {
+                return sealedBox
+            }
+        }
+       
+        return nil
     }
     
-    func decrypt(with key:SymmetricKey, encryptedData:String) -> String? {
-        return encryptedData
+    static func decrypt(with key:SymmetricKey, sealedBox:ChaChaPoly.SealedBox) -> String? {
+
+        let sealedBoxToOpen = try! ChaChaPoly.SealedBox(combined: sealedBox.combined)
+        let decryptedData = try! ChaChaPoly.open(sealedBox, using: key)
+        
+        if let decryptedString = String(data: decryptedData, encoding: .utf8) {
+            return decryptedString
+        }
+        
+        return nil
     }
 }
 
