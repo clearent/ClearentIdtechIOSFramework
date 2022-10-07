@@ -110,9 +110,9 @@ class ClearentPaymentTextField: ClearentXibView {
         
         switch item.type {
         case .creditCardNo:
-            ClearentFieldValidationHelper.hideCardNumber(text: text, sender: textField, item: item)
+            ClearentFieldValidationHelper.hideCardNumber(sender: textField, item: item)
         case .securityCode:
-            ClearentFieldValidationHelper.hideSecurityCode(text: text, sender: textField, item: item)
+            ClearentFieldValidationHelper.hideSecurityCode(sender: textField, item: item)
         default:
             break
         }
