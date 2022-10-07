@@ -99,13 +99,13 @@ public final class ClearentWrapper : NSObject {
                 self.shouldStopUpdatingReadersListDuringContinuousSearching = false
             }
         }
-        
+                
         // Init the offline manager
         let offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: "new1234", account: "test12"))
     
         // Save an card reader transaction
         let saleEntity = SaleEntity(amount: "22.23")
-        let cardPaymentData = PaymentData(saleEntity: saleEntity, cardToken: "plplplplplp")
+        let cardPaymentData = PaymentData(saleEntity: saleEntity, cardToken: Data(base64Encoded: "Test"))
         let offlineCardReaderTransaction = OfflineTransaction(paymentData: cardPaymentData)
 
         var status = offlineManager.saveOfflineTransaction(transaction: offlineCardReaderTransaction)
@@ -606,6 +606,10 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         }
 
         saleTransaction(jwt: clearentTransactionToken.jwt, saleEntity: saleEntity)
+    }
+    
+    public func successOfflineTransactionToken(_ clearentTransactionTokenRequestData: Data?) {
+        // create offline Transaction and save it
     }
     
     public func disconnectFromReader() {

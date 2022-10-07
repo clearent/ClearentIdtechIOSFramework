@@ -19,16 +19,26 @@ struct ErrorStatus: Codable {
     var updatedDate: Date
 }
 
+
+/**
+ * PaymentData class represents a manual or card reader payment data, basicly card information and sum/tips/client info.
+ * Can be encoded/decoded as json in order to be saved/retrived/processed.
+*/
 class PaymentData : CodableProtocol {
     var saleEntity: SaleEntity
-    var cardToken: String?
+    var cardToken: Data?
     
-    init(saleEntity: SaleEntity, cardToken: String? = nil) {
+    init(saleEntity: SaleEntity, cardToken: Data? = nil) {
         self.cardToken = cardToken
         self.saleEntity = saleEntity
     }
 }
 
+
+/**
+ * OfflineTransaction class represents an offline transaction.
+ * Can be encoded/decoded as json in order to be saved/retrived/processed.
+*/
 struct OfflineTransaction: CodableProtocol  {
     var createdDate: Date?
     var transactionID: String?
@@ -57,6 +67,9 @@ struct OfflineTransaction: CodableProtocol  {
     }
 }
 
+/**
+ * Offline Manager, handles the offlline transactions, saves, updates, deletes, retrives, processing and reporting.
+ */
 class OfflineModeManager {
     
     public var storage: TransactionStorageProtocol
@@ -251,7 +264,6 @@ class KeyChainStorage: TransactionStorageProtocol {
 }
 
 /// Posible errors when saving data
-
 enum TransactionStoreStatus: String {
     case parsingError
     case success
@@ -263,7 +275,6 @@ enum TransactionStoreStatus: String {
 
 
 /// Defines a protocol for the transactions storage
-
 protocol TransactionStorageProtocol {
     
     /// Saves a offline transaction

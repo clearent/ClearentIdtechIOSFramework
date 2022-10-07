@@ -1777,6 +1777,10 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     
     [self deviceMessage:CLEARENT_TRANSLATING_CARD_TO_TOKEN];
     [ClearentLumberjack logInfo:@"➡️ Call Clearent to produce transaction token"];
+    
+    if ([self.publicDelegate respondsToSelector:@selector(successOfflineTransactionToken:)]) {
+        [self.publicDelegate successOfflineTransactionToken:postData];
+    }
 
     [request setHTTPBody:postData];
     [request setHTTPMethod:@"POST"];
