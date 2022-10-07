@@ -28,7 +28,7 @@ final class KeychainHelper {
             let attributesToUpdate = [kSecValueData: data] as CFDictionary
 
             // Update existing item
-            SecItemUpdate(query, attributesToUpdate)
+            return SecItemUpdate(query, attributesToUpdate)
         }
         
         return status

@@ -101,13 +101,11 @@ public final class ClearentWrapper : NSObject {
         }
         
         // Init the offline manager
-        let offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: "unique_service_name_2", account: "unique_account_3"))
-        
-
-
+        let offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: "new1234", account: "test12"))
+    
         // Save an card reader transaction
         let saleEntity = SaleEntity(amount: "22.23")
-        let cardPaymentData = PaymentData(saleEntity: saleEntity, cardToken: "a card reader generated token")
+        let cardPaymentData = PaymentData(saleEntity: saleEntity, cardToken: "plplplplplp")
         let offlineCardReaderTransaction = OfflineTransaction(paymentData: cardPaymentData)
 
         var status = offlineManager.saveOfflineTransaction(transaction: offlineCardReaderTransaction)
@@ -121,7 +119,7 @@ public final class ClearentWrapper : NSObject {
         // Save an offline transaction
         //let cardInfo = ManualEntryCardInfo(card: "4761340000000019", expirationDateMMYY: "12/22", csc: "946")
         let paymentData = PaymentData(saleEntity: saleEntity)
-        let offlineManualTransaction = OfflineTransaction(paymentData: paymentData)
+        var offlineManualTransaction = OfflineTransaction(paymentData: paymentData)
 
         status = offlineManager.saveOfflineTransaction(transaction: offlineManualTransaction)
         if (status == .success) {
@@ -135,6 +133,14 @@ public final class ClearentWrapper : NSObject {
         var items = offlineManager.retriveAll()
         print(items)
         
+        
+        offlineManualTransaction.errorStatus = ErrorStatus(message: "Some Error Message", updatedDate: Date())
+        status = offlineManager.storage.updateTransaction(transaction: offlineManualTransaction)
+        if (status == .success) {
+            print("manual offline transaction updated")
+        } else {
+            print("manual offline transaction update error")
+        }
         
         let deleteStatus = offlineManager.storage.deleteTransactionWith(id: "11B50C53-7643-4995-ADAD-138FF8FBB619")
         
