@@ -401,7 +401,11 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                 }
             }
         } else {
-            startTipFlow()
+            if ClearentWrapper.shared.enableOfflineMode && ClearentWrapper.shared.offlineModeState == .on {
+                sdkFeedbackProvider.displayOfflineModeWarningMessage()
+            } else {
+                startTipFlow()
+            }
         }
     }
 

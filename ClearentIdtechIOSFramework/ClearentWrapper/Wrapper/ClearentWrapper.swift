@@ -189,12 +189,12 @@ public final class ClearentWrapper : NSObject {
         }
         
         if enableOfflineMode {
-            self.offlineModeState = .prompted
+            self.offlineModeState = .on
         }
     }
     
     /**
-     * This method will start a transaction, if manualEntryCardInfo is not null then a manual transaction will be performed otherwise a card reader transcation will be initiated
+     * This method will start a transaction, if manualEntryCardInfo is not null then a manual transaction will be performed otherwise a card reader transaction will be initiated
      * @param SaleEntity,  holds informations used for the transcation
      * @param ManualEntryCardInfo,  all the information needed for a manual card transaction
      */
@@ -271,7 +271,7 @@ public final class ClearentWrapper : NSObject {
     }
 
     /**
-     * Method that will send a jpeg with client signature tot the payment gateway for storage
+     * Method that will send a jpeg with client signature to the payment gateway for storage
      * @param image, UIImage to be uploaded
      */
     public func sendSignatureWithImage(image: UIImage) throws {
