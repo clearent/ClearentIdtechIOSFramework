@@ -44,13 +44,16 @@ public final class ClearentWrapper : NSObject {
         return Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
     }()
     
+    lazy var offlineManager: OfflineModeManager = OfflineModeManager(storage: KeyChainStorage(serviceName: "123456789", account: "123456"))
+    
     private lazy var clearentManualEntry: ClearentManualEntry = {
         return ClearentManualEntry(self, clearentBaseUrl: baseURL, publicKey: publicKey)
     }()
 
+    private var offlineTransaction: OfflineTransaction? = nil
     private var connection  = ClearentConnection(bluetoothSearch: ())
     private var baseURL: String = ""
-    private var apiKey: String = ""
+    public var apiKey: String = ""
     private var publicKey: String = ""
     private var saleEntity: SaleEntity?
     private var lastTransactionID: String?
@@ -100,8 +103,6 @@ public final class ClearentWrapper : NSObject {
             }
         }
                 
-        // Init the offline manager
-        let offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: "123456789", account: "123456"))
 
 //        // Save an card reader transaction
 //        let saleEntity = SaleEntity(amount: "22.23")
@@ -315,6 +316,13 @@ public final class ClearentWrapper : NSObject {
      * @param image, UIImage to be uploaded
      */
     public func sendSignatureWithImage(image: UIImage) throws {
+        
+        // if offline mode on
+        if let transactionID = offlineTransaction?.transactionID {
+            saveSignatureImageForTransaction(transactionID: transactionID, image: image)
+        }
+        
+        // else
         if shouldDisplayConnectivityWarning() { return }
         if let error = checkForMissingKeys() { throw error }
         
@@ -596,9 +604,19 @@ public final class ClearentWrapper : NSObject {
      *  @param transaction, represents an offline transaction
      */
     private func saveOfflineTransaction(transaction: OfflineTransaction) {
-        let offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: "123456789", account: "123456"))
+        offlineTransaction = transaction
         let status = offlineManager.saveOfflineTransaction(transaction: transaction)
         self.delegate?.didAcceptOfflineTransaction(err: status)
+    }
+    
+    /**
+     * Saves  the image represnting the user's signature
+     *  @param transactionID, the id of the transcation for wich we save the signature
+     *  @param the actual  image contianing the signature
+     */
+    private func saveSignatureImageForTransaction(transactionID:String, image: UIImage) {
+        let status = offlineManager.saveSignatureForTransaction(transactionID: transactionID, image: image)
+        self.delegate?.didAcceptOfflineSignature(err: status, transactionID: transactionID)
     }
 }
 

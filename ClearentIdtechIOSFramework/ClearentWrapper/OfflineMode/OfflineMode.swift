@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import CryptoKit
 
 enum OfflineTransactionType :String, Codable {
     case cardReaderTransaction
@@ -78,12 +79,47 @@ class OfflineModeManager {
         self.storage = storage
     }
     
-    func saveOfflineTransaction(transaction:OfflineTransaction) ->TransactionStoreStatus {
+    func saveOfflineTransaction(transaction:OfflineTransaction) -> TransactionStoreStatus {
         return storage.save(transaction: transaction)
     }
-    
+        
     func retriveAll() -> [OfflineTransaction] {
         return storage.retriveAll()
+    }
+    
+    func saveSignatureForTransaction(transactionID: String, image: UIImage) -> TransactionStoreStatus {
+        if let data = image.pngData() {
+            UserDefaults.standard.set(data, forKey: transactionID)
+            UserDefaults.standard.synchronize()
+            return .success
+        }
+            
+        return .genericError
+    }
+    
+    func retriveSignatureForTransaction(transactionID: String) -> UIImage! {
+        if let imageData = UserDefaults.standard.value(forKey: transactionID) as? Data {
+            if let sigantureImage = UIImage(data: imageData) {
+                return sigantureImage
+            }
+        }
+        
+        return nil
+    }
+}
+
+/**
+ * Cryptor Manager, handles the encryption and decryption
+ */
+
+class ClearentCryptor {
+    
+    func encryptString(with key:SymmetricKey, data:String) -> String? {
+        return data
+    }
+    
+    func decrypt(with key:SymmetricKey, encryptedData:String) -> String? {
+        return encryptedData
     }
 }
 
