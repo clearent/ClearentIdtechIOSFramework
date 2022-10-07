@@ -264,7 +264,7 @@ class KeyChainStorage: TransactionStorageProtocol {
 }
 
 /// Posible errors when saving data
-enum TransactionStoreStatus: String {
+public enum TransactionStoreStatus: String {
     case parsingError
     case success
     case genericError

@@ -101,59 +101,58 @@ public final class ClearentWrapper : NSObject {
         }
                 
         // Init the offline manager
-        let offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: "new1234", account: "test12"))
-    
-        // Save an card reader transaction
-        let saleEntity = SaleEntity(amount: "22.23")
-        let cardPaymentData = PaymentData(saleEntity: saleEntity, cardToken: Data(base64Encoded: "Test"))
-        let offlineCardReaderTransaction = OfflineTransaction(paymentData: cardPaymentData)
+        let offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: "123456789", account: "123456"))
 
-        var status = offlineManager.saveOfflineTransaction(transaction: offlineCardReaderTransaction)
-        if (status == .success) {
-            print("card reader offline transaction saved")
-        } else {
-            print("card reader offline transaction error")
-        }
+//        // Save an card reader transaction
+//        let saleEntity = SaleEntity(amount: "22.23")
+//        let cardPaymentData = PaymentData(saleEntity: saleEntity, cardToken: Data(base64Encoded: "Test"))
+//        let offlineCardReaderTransaction = OfflineTransaction(paymentData: cardPaymentData)
+//
+//        var status = offlineManager.saveOfflineTransaction(transaction: offlineCardReaderTransaction)
+//        if (status == .success) {
+//            print("card reader offline transaction saved")
+//        } else {
+//            print("card reader offline transaction error")
+//        }
+//
+//
+//        // Save an offline transaction
+//        let paymentData = PaymentData(saleEntity: saleEntity)
+//        var offlineManualTransaction = OfflineTransaction(paymentData: paymentData)
+//
+//        status = offlineManager.saveOfflineTransaction(transaction: offlineManualTransaction)
+//        if (status == .success) {
+//            print("manual offline transaction saved")
+//        } else {
+//            print("manual offline transaction error")
+//        }
 
 
-        // Save an offline transaction
-        //let cardInfo = ManualEntryCardInfo(card: "4761340000000019", expirationDateMMYY: "12/22", csc: "946")
-        let paymentData = PaymentData(saleEntity: saleEntity)
-        var offlineManualTransaction = OfflineTransaction(paymentData: paymentData)
-
-        status = offlineManager.saveOfflineTransaction(transaction: offlineManualTransaction)
-        if (status == .success) {
-            print("manual offline transaction saved")
-        } else {
-            print("manual offline transaction error")
-        }
-        
-        
         // retrive the saved transactions
         var items = offlineManager.retriveAll()
         print(items)
-        
-        
-        offlineManualTransaction.errorStatus = ErrorStatus(message: "Some Error Message", updatedDate: Date())
-        status = offlineManager.storage.updateTransaction(transaction: offlineManualTransaction)
-        if (status == .success) {
-            print("manual offline transaction updated")
-        } else {
-            print("manual offline transaction update error")
-        }
-        
-        let deleteStatus = offlineManager.storage.deleteTransactionWith(id: "11B50C53-7643-4995-ADAD-138FF8FBB619")
-        
-        if (deleteStatus == .success) {
-            print("deleted transaction")
-        } else {
-            print("some error on deletion")
-        }
-        
-        
-        // retrive the saved transactions
-        items = offlineManager.retriveAll()
-        print(items)
+
+
+//        offlineManualTransaction.errorStatus = ErrorStatus(message: "Some Error Message", updatedDate: Date())
+//        status = offlineManager.storage.updateTransaction(transaction: offlineManualTransaction)
+//        if (status == .success) {
+//            print("manual offline transaction updated")
+//        } else {
+//            print("manual offline transaction update error")
+//        }
+//
+//        let deleteStatus = offlineManager.storage.deleteTransactionWith(id: "11B50C53-7643-4995-ADAD-138FF8FBB619")
+//
+//        if (deleteStatus == .success) {
+//            print("deleted transaction")
+//        } else {
+//            print("some error on deletion")
+//        }
+//
+//
+//        // retrive the saved transactions
+//        items = offlineManager.retriveAll()
+//        print(items)
     }
     
     // MARK - Public
@@ -244,6 +243,11 @@ public final class ClearentWrapper : NSObject {
         if shouldDisplayConnectivityWarning() { return }
         
         if isManualTransaction {
+            // If offline mode is on
+            let offtr = OfflineTransaction(paymentData: PaymentData(saleEntity: saleEntity))
+            saveOfflineTransaction(transaction: offtr)
+            
+            // else
             manualEntryTransaction()
         } else {
             cardReaderTransaction()
@@ -425,7 +429,7 @@ public final class ClearentWrapper : NSObject {
     
     /**
      * Method that checks if a reader is already paired and connected
-     * return A bool indicating if there is a reader connected
+     * returns a bool indicating if there is a reader connected
      */
     public func isReaderConnected() -> Bool {
         return (ClearentWrapperDefaults.pairedReaderInfo != nil && ClearentWrapperDefaults.pairedReaderInfo?.isConnected == true)
@@ -586,6 +590,16 @@ public final class ClearentWrapper : NSObject {
             strongSelf.clearentVP3300.startTransaction(payment, clearentConnection: strongSelf.connection)
         }
     }
+    
+    /**
+     * Saves and validates offline transactions, calls a delegate method with the result
+     *  @param transaction, represents an offline transaction
+     */
+    private func saveOfflineTransaction(transaction: OfflineTransaction) {
+        let offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: "123456789", account: "123456"))
+        let status = offlineManager.saveOfflineTransaction(transaction: transaction)
+        self.delegate?.didAcceptedOfflineTransaction(err: status)
+    }
 }
 
 extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
@@ -609,7 +623,11 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     }
     
     public func successOfflineTransactionToken(_ clearentTransactionTokenRequestData: Data?) {
-        // create offline Transaction and save it
+        guard let saleEntity = saleEntity, let cardToken = clearentTransactionTokenRequestData else { return }
+        
+        let paymentData = PaymentData(saleEntity: saleEntity, cardToken: cardToken)
+        let offtr = OfflineTransaction(paymentData: paymentData)
+        saveOfflineTransaction(transaction: offtr)
     }
     
     public func disconnectFromReader() {

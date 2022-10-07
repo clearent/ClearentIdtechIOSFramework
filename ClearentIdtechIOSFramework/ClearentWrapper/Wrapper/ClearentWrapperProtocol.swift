@@ -67,6 +67,12 @@ public protocol ClearentWrapperProtocol : AnyObject {
     func didFinishTransaction(response: TransactionResponse?, error: ResponseError?)
     
     /**
+     * Method called when a offline transaction is finished
+     * @param error TransactionStoreStatus, the status off offline transaction proccesing
+     */
+    func didAcceptedOfflineTransaction(err:TransactionStoreStatus)
+    
+    /**
      * Method called  when the process of uploading the signature image has completed
      * @param response, upload response as received from the API
      * @param error, if not null it will contain the error received from the API
