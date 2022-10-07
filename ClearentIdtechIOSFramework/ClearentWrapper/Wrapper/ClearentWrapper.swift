@@ -229,9 +229,9 @@ public final class ClearentWrapper : NSObject {
     
     
     /**
-     * This method will start a transaction, if manualEntryCardInfo is not null then a manual transaction will be performed otherwise a card reader transcation will be initiated
+     * This method will start a transaction. If isManualTransaction is true, then a manual transaction will be performed otherwise a card reader transcation will be initiated
      * @param SaleEntity,  holds informations used for the transcation
-     * @param ManualEntryCardInfo,  all the information needed for a manual card transaction
+     * @param isManualTransaction,  specifies if the transaction is manual
      */
     public func startTransaction(with saleEntity: SaleEntity, isManualTransaction: Bool) throws {
         if let error = checkForMissingKeys() { throw error }
@@ -244,7 +244,7 @@ public final class ClearentWrapper : NSObject {
         if shouldDisplayConnectivityWarning() { return }
         
         if isManualTransaction {
-            manualEntryTransaction(saleEntity: saleEntity)
+            manualEntryTransaction()
         } else {
             cardReaderTransaction()
         }
@@ -563,9 +563,9 @@ public final class ClearentWrapper : NSObject {
     /**
      * Method that performs a manual card transaction
      */
-    private func manualEntryTransaction(saleEntity: SaleEntity) {
+    private func manualEntryTransaction() {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let strongSelf = self else { return }
+            guard let strongSelf = self, let saleEntity = strongSelf.saleEntity else { return }
             let card = ClearentCard()
             card.card = saleEntity.card
             card.expirationDateMMYY = saleEntity.expirationDateMMYY
