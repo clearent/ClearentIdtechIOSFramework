@@ -89,7 +89,7 @@ class FlowDataProvider : NSObject {
 
 extension FlowDataProvider : ClearentWrapperProtocol {
     
-    func didAcceptedOfflineTransaction(err: TransactionStoreStatus) {
+    func didAcceptOfflineTransaction(err: TransactionStoreStatus) {
         /// Add something UI here
     }
     

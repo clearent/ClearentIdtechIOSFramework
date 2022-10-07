@@ -598,7 +598,7 @@ public final class ClearentWrapper : NSObject {
     private func saveOfflineTransaction(transaction: OfflineTransaction) {
         let offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: "123456789", account: "123456"))
         let status = offlineManager.saveOfflineTransaction(transaction: transaction)
-        self.delegate?.didAcceptedOfflineTransaction(err: status)
+        self.delegate?.didAcceptOfflineTransaction(err: status)
     }
 }
 

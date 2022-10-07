@@ -70,7 +70,7 @@ public protocol ClearentWrapperProtocol : AnyObject {
      * Method called when a offline transaction is finished
      * @param error TransactionStoreStatus, the status off offline transaction proccesing
      */
-    func didAcceptedOfflineTransaction(err:TransactionStoreStatus)
+    func didAcceptOfflineTransaction(err:TransactionStoreStatus)
     
     /**
      * Method called  when the process of uploading the signature image has completed
