@@ -83,7 +83,7 @@ class FlowDataProvider : NSObject {
         
         let feedback = FlowFeedback(flow: .payment, type: FlowFeedbackType.info, items: items)
 
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
     func displayOfflineModeWarningMessage() {
@@ -95,7 +95,7 @@ class FlowDataProvider : NSObject {
                                                  readerInfo:fetchReaderInfo(),
                                                  payload: items)
         
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
 }
 
@@ -122,10 +122,10 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  type: .info,
                                                  readerInfo: fetchReaderInfo(),
                                                  payload: transactionItems)
-            self.delegate?.didFinishSignature()
+            delegate?.didFinishSignature()
         }
         
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
  
     // MARK - Transaction related
@@ -139,7 +139,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  type: .error,
                                                  readerInfo: fetchReaderInfo(),
                                                  payload: items)
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
         
     func didFinishTransaction(response: TransactionResponse?, error: ResponseError?) {
@@ -174,8 +174,8 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  payload: transactionItems)
             
         }
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
-        self.delegate?.didFinishTransaction(error: error)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
+        delegate?.didFinishTransaction(error: error)
     }
     
     func deviceDidDisconnect() {
@@ -183,7 +183,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     }
     
     func didBeginContinuousSearching() {
-        self.delegate?.didBeginContinuousSearching()
+        delegate?.didBeginContinuousSearching()
     }
     
     func showEncryptionWarning() {
@@ -194,7 +194,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                      type: .warning,
                                                      readerInfo: fetchReaderInfo(),
                                                      payload: items)
-        self.delegate?.didReceiveFlowFeedback(feedback: flowFeedback)
+        delegate?.didReceiveFlowFeedback(feedback: flowFeedback)
     }
     
     func userActionNeeded(action: UserAction) {
@@ -302,7 +302,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                      type: ClearentWrapper.shared.flowType?.flowFeedbackType ?? type,
                                                      readerInfo: fetchReaderInfo(),
                                                      payload: flowItems)
-            self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+            delegate?.didReceiveFlowFeedback(feedback: feedback)
         }
     }
     
@@ -333,7 +333,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  readerInfo: nil,
                                                  payload: items)
         
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
     func didFindReaders(readers: [ReaderInfo]) {
@@ -349,7 +349,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  type: flowFeedbackType,
                                                  readerInfo: nil,
                                                  payload: items)
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
      }
     
     func startedReaderConnection(with reader: ReaderInfo) {
@@ -373,7 +373,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  readerInfo: reader,
                                                  payload: items)
         }
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
     func didFindRecentlyUsedReaders(readers: [ReaderInfo]) {
@@ -385,7 +385,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  type: .showReaders,
                                                  readerInfo: ClearentWrapperDefaults.pairedReaderInfo,
                                                  payload: items)
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
 
     func didReceiveSignalStrength() {

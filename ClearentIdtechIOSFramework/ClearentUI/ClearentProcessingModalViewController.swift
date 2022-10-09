@@ -93,7 +93,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     func showLoadingView() {
         stackView.showLoadingView()
     }
-
+    
     func dismissViewController(result: CompletionResult) {
         ClearentWrapperDefaults.skipOnboarding = true
         ClearentWrapper.shared.stopContinousSearching()
@@ -205,7 +205,8 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     
     private func manualEntryFormView() -> ClearentManualEntryFormView {
         let dataSource = ClearentPaymentDataSource(with: [ClearentPaymentBaseSection(), ClearentPaymentAdditionalSection()])
-        let manualEntryFormView = ClearentManualEntryFormView(with: dataSource)
+        let offlineModeStatusMessage = (ClearentWrapper.shared.enableOfflineMode && ClearentWrapper.shared.offlineModeState != .off) ? ClearentConstants.Localized.OfflineMode.offlineModeEnabled : nil
+        let manualEntryFormView = ClearentManualEntryFormView(with: dataSource, offlineModeStatusMessage: offlineModeStatusMessage)
         manualEntryFormView.delegate = self
         dataSource.delegate = manualEntryFormView
         

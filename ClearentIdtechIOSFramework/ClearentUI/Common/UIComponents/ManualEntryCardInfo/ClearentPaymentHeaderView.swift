@@ -12,7 +12,6 @@ import UIKit
 class ClearentPaymentHeaderView: ClearentXibView {
     @IBOutlet weak var stackView: UIStackView!
     
-    
     override func configure() {
         let titleLabel = UILabel()
         titleLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.manualPaymentTitleColor
@@ -21,9 +20,11 @@ class ClearentPaymentHeaderView: ClearentXibView {
         titleLabel.textAlignment = .center
         
         stackView.addArrangedSubview(titleLabel)
-        
-        if ClearentWrapper.shared.enableOfflineMode && ClearentWrapper.shared.offlineModeState != .off {
-            stackView.addArrangedSubview(ClearentSubtitleLabel(text: ClearentConstants.Localized.OfflineMode.offlineModeEnabled))
-        }
+    }
+    
+    // MARK: - Public
+    
+    public func addOfflineModeStatus(_ value: String) {
+        stackView.addArrangedSubview(ClearentSubtitleLabel(text: value))
     }
 }

@@ -37,7 +37,7 @@ public final class ClearentWrapper : NSObject {
     public var enableOfflineMode: Bool = false
     
     /// The state of the store & forward feature
-    public var offlineModeState: OfflineModeState = .off
+    public var offlineModeState: OfflineModeState = .on
     
     /// Stores the enhanced messages read from the messages bundle
     internal var enhancedMessagesDict: [String:String]?
@@ -175,21 +175,15 @@ public final class ClearentWrapper : NSObject {
      * @param baseURL, the backend endpoint
      * @param publicKey, publicKey used by the IDTech reader framework
      * @param apiKey, API Key used for http calls
-     * @param enableOfflineMode, enables / disables the store & forward feature
      */
-    public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String, enableEnhancedMessaging: Bool, enableOfflineMode: Bool) {
+    public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String, enableEnhancedMessaging: Bool) {
         self.baseURL = baseURL
         self.apiKey = apiKey
         self.publicKey = publicKey
         self.enableEnhancedMessaging = enableEnhancedMessaging
-        self.enableOfflineMode = enableOfflineMode
         
         if enableEnhancedMessaging {
             readEnhancedMessages()
-        }
-        
-        if enableOfflineMode {
-            self.offlineModeState = .on
         }
     }
     
@@ -418,7 +412,7 @@ public final class ClearentWrapper : NSObject {
         
         guard let response = response else { return nil }
         
-        return response.int != ReaderEncryption.fullyEncrypted.rawValue ? false : true
+        return response.int == 3
     }
     
     // MARK - Private
