@@ -81,7 +81,16 @@ class OfflineModeManager {
     }
     
     func saveOfflineTransaction(transaction:OfflineTransaction) -> TransactionStoreStatus {
-        return storage.save(transaction: transaction)
+        var result: TransactionStoreStatus = .success
+        
+        if (transaction.transactionType() == .manualTransaction) {
+            result = validateManualOfflineTransaction(saleEntity: transaction.paymentData.saleEntity)
+            if (result != .success) {
+                return result
+            }
+        }
+       
+       return storage.save(transaction: transaction)
     }
         
     func retriveAll() -> [OfflineTransaction] {
