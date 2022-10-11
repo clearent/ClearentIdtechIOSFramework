@@ -207,7 +207,7 @@ class KeyChainStorage: TransactionStorageProtocol {
         // Retrive the current saved data
         let savedData = helper.read(service: serviceName, account: account)
       
-        // Unarachive, decode, decrypt the data and add it to the result array
+        // Unarchive, decode, decrypt the data and add it to the result array
         if let savedData = savedData {
             currentSavedItems = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSArray.self, from: savedData)
             currentSavedItems?.forEach({ item in
@@ -226,8 +226,8 @@ class KeyChainStorage: TransactionStorageProtocol {
         return result
     }
     
+    /// Fetches the saved data, serches for matching item , replaces the item  and saves the data, return an error if the item is not found
     func updateTransaction(transaction: OfflineTransaction) -> TransactionStoreStatus {
-        // Retrive the current saved data
         guard let savedData = helper.read(service: serviceName, account: account) else { return .genericError }
         
         var result : [OfflineTransaction] = []
