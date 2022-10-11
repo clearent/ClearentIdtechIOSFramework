@@ -73,6 +73,7 @@ struct OfflineTransaction: CodableProtocol  {
  */
 class OfflineModeManager {
     
+    static let encryptionKey = SymmetricKey(data:SHA256.hash(data: "some_secret_key_here".data(using: .utf8)!))
     public var storage: TransactionStorageProtocol
     
     init(storage: TransactionStorageProtocol) {
@@ -106,6 +107,28 @@ class OfflineModeManager {
         
         return nil
     }
+    
+    func validateManualOfflineTransaction(saleEntity: SaleEntity) -> TransactionStoreStatus {
+        if let cardNo = saleEntity.card, let csc = saleEntity.csc, let expirationDate = saleEntity.expirationDateMMYY {
+            
+            let cardnoItem = CreditCardNoItem()
+            cardnoItem.enteredValue = cardNo
+            
+            let securityCodeItem = SecurityCodeItem()
+            securityCodeItem.enteredValue = csc
+            
+            let expirationDateItem = DateItem()
+            expirationDateItem.enteredValue = expirationDate
+            
+            if (ClearentFieldValidationHelper.isCardNumberValid(item: cardnoItem) &&
+                ClearentFieldValidationHelper.isSecurityCodeValid(item: securityCodeItem) &&
+                ClearentFieldValidationHelper.isExpirationDateValid(item: expirationDateItem)) {
+                return .success
+            }
+        }
+        
+        return .validationError
+    }
 }
 
 /**
@@ -114,27 +137,19 @@ class OfflineModeManager {
 
 class ClearentCryptor {
     
-    static func encryptString(with key:SymmetricKey, dataToEncrypt:String) -> ChaChaPoly.SealedBox? {
-        if let dataToEncrypt = dataToEncrypt.data(using: .utf8) {
-            if let cryptedBox = try? ChaChaPoly.seal(dataToEncrypt, using: key),
-              let sealedBox = try? ChaChaPoly.SealedBox(combined: cryptedBox.combined) {
-                return sealedBox
-            }
+    static func encrypt(encryptionKey: SymmetricKey, contentData: Data) throws -> Data? {
+        var result : Data? = nil
+        do {
+            result = try ChaChaPoly.seal(contentData, using: encryptionKey).combined
+        } catch {
+            print("Unexpected error: \(error).")
         }
-       
-        return nil
+        return result
     }
     
-    static func decrypt(with key:SymmetricKey, sealedBox:ChaChaPoly.SealedBox) -> String? {
-
-        let sealedBoxToOpen = try! ChaChaPoly.SealedBox(combined: sealedBox.combined)
-        let decryptedData = try! ChaChaPoly.open(sealedBox, using: key)
-        
-        if let decryptedString = String(data: decryptedData, encoding: .utf8) {
-            return decryptedString
-        }
-        
-        return nil
+    static func decrypt(encryptionKey: SymmetricKey, encryptedContent: Data) throws -> Data? {
+        let sealedBox = try ChaChaPoly.SealedBox(combined: encryptedContent)
+        return try ChaChaPoly.open(sealedBox, using: encryptionKey)
     }
 }
 
@@ -153,23 +168,21 @@ class KeyChainStorage: TransactionStorageProtocol {
         let oftr = transaction.encode()
         guard let encodedTransaction = oftr else { return .parsingError }
         
-        var currentSavedItems: NSMutableArray
+        var currentSavedItems = NSMutableArray()
         
-        // retrive the current saved data
+        // Retrive the current saved data
         let savedData = helper.read(service: serviceName, account: account)
         
+        // Encrypt
+        let symmetricKey = OfflineModeManager.encryptionKey
+        guard let encryptedData = try? ClearentCryptor.encrypt(encryptionKey:symmetricKey , contentData: encodedTransaction) else { return .encryptionError }
+        
         if let savedData = savedData {
-            do {
-                let current = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSArray.self, from: savedData)
-                currentSavedItems = NSMutableArray.init(array: current!)
-                currentSavedItems.addObjects(from: [encodedTransaction])
-            } catch {
-                currentSavedItems = NSMutableArray()
-                currentSavedItems.addObjects(from: [encodedTransaction])
+            let current = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSArray.self, from: savedData)
+            if let current = current {
+                currentSavedItems = NSMutableArray.init(array: current)
+                currentSavedItems.addObjects(from: [encryptedData])
             }
-        } else {
-            currentSavedItems = NSMutableArray()
-            currentSavedItems.addObjects(from: [encodedTransaction])
         }
        
         return saveOfflineTransactionArray(offlineTransactions: currentSavedItems)
@@ -178,28 +191,27 @@ class KeyChainStorage: TransactionStorageProtocol {
     func retriveAll() -> [OfflineTransaction] {
         var result : [OfflineTransaction] = []
         var currentSavedItems: NSArray? = nil
+
+        // Decryption
+        let symmetricKey = OfflineModeManager.encryptionKey
         
         // Retrive the current saved data
         let savedData = helper.read(service: serviceName, account: account)
-        
+      
+        // Unarachive, decode, decrypt the data and add it to the result array
         if let savedData = savedData {
-            do {
-                currentSavedItems = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSArray.self, from: savedData)
-                currentSavedItems?.forEach({ item in
-                    let data = item as? Data
-                    if let newData = data {
-                        do {
-                            let decodedResponse = try JSONDecoder().decode(OfflineTransaction.self, from: newData)
+            currentSavedItems = try? NSKeyedUnarchiver.unarchivedObject(ofClass: NSArray.self, from: savedData)
+            currentSavedItems?.forEach({ item in
+                let data = item as? Data
+                if let newData = data {
+                    if let decryptedData = try? ClearentCryptor.decrypt(encryptionKey: symmetricKey, encryptedContent: newData) {
+                        let decodedResponse = try? JSONDecoder().decode(OfflineTransaction.self, from: decryptedData)
+                        if let decodedResponse = decodedResponse {
                             result.append(decodedResponse)
-                        } catch {
-                            //should cath an error here
                         }
                     }
-                    
-                })
-            } catch {
-                return []
-            }
+                }
+            })
         }
         
         return result
@@ -218,19 +230,21 @@ class KeyChainStorage: TransactionStorageProtocol {
             return .genericError
         }
         
+        let symmetricKey = OfflineModeManager.encryptionKey
+        
         var response : TransactionStoreStatus = .success
         currentSavedItems?.forEach({ item in
             let data = item as? Data
             if let newData = data {
-                do {
-                    let decodedResponse = try JSONDecoder().decode(OfflineTransaction.self, from: newData)
-                    result.append(decodedResponse)
-                } catch {
-                    response = .parsingError
+                if let decryptedData = try? ClearentCryptor.decrypt(encryptionKey: symmetricKey, encryptedContent: newData) {
+                    let decodedResponse = try? JSONDecoder().decode(OfflineTransaction.self, from: decryptedData)
+                    if let decodedResponse = decodedResponse {
+                        result.append(decodedResponse)
+                    }
                 }
             }
         })
-        
+                
         let count = result.count
         result.removeAll(where: {$0.transactionID! == transaction.transactionID})
         
@@ -241,7 +255,10 @@ class KeyChainStorage: TransactionStorageProtocol {
             let currentSavedItems: NSMutableArray = NSMutableArray.init(array: [])
             result.forEach { oftr in
                 if let transaction = oftr.encode() {
-                    currentSavedItems.add(transaction)
+                    let encryptedData = try? ClearentCryptor.encrypt(encryptionKey:symmetricKey , contentData: transaction)
+                        if let encryptedData = encryptedData {
+                            currentSavedItems.add(encryptedData)
+                        }
                 }
             }
             
@@ -264,13 +281,19 @@ class KeyChainStorage: TransactionStorageProtocol {
             return .genericError
         }
         
+        let encryptionKey = Data(base64Encoded: ClearentWrapper.shared.apiKey)
+        guard let key = encryptionKey else { return .encryptionError}
+        let symmetricKey = SymmetricKey(data: key)
+        
         var response : TransactionStoreStatus = .success
         currentSavedItems?.forEach({ item in
             let data = item as? Data
             if let newData = data {
                 do {
-                    let decodedResponse = try JSONDecoder().decode(OfflineTransaction.self, from: newData)
-                    result.append(decodedResponse)
+                    if let decryptedData = try? ClearentCryptor.decrypt(encryptionKey: symmetricKey, encryptedContent: newData) {
+                        let decodedResponse = try JSONDecoder().decode(OfflineTransaction.self, from: decryptedData)
+                        result.append(decodedResponse)
+                    }
                 } catch {
                     response = .parsingError
                 }
@@ -321,6 +344,7 @@ public enum TransactionStoreStatus: String {
     case genericError
     case fullDiskError
     case validationError
+    case encryptionError
     case transactionDoesNotExist
 }
 

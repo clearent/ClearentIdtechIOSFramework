@@ -44,7 +44,7 @@ public final class ClearentWrapper : NSObject {
         return Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
     }()
     
-    lazy var offlineManager: OfflineModeManager = OfflineModeManager(storage: KeyChainStorage(serviceName: "123456789", account: "123456"))
+    lazy var offlineManager: OfflineModeManager = OfflineModeManager(storage: KeyChainStorage(serviceName: "987654321", account: "654321"))
     
     private lazy var clearentManualEntry: ClearentManualEntry = {
         return ClearentManualEntry(self, clearentBaseUrl: baseURL, publicKey: publicKey)
