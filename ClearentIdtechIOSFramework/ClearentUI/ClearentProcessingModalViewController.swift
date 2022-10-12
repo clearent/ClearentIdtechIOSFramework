@@ -65,20 +65,6 @@ class ClearentProcessingModalViewController: ClearentBaseViewController {
 
 extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     
-    func updateUserActionButtonState(enabled: Bool) {
-        let button = stackView.findButtonInStack(with: FlowButtonType.done)
-        button?.isUserInteractionEnabled = enabled
-        if enabled {
-            button?.setFilledButton()
-        } else {
-            button?.setDisabledButton()
-        }
-    }
-    
-    func positionViewOnTop(flag: Bool) {
-        stackView.positionView(onTop: flag, of: view)
-    }
-    
     /*
      This method will remove the current displayed content in the modal and will generate other UI using the feedback parameter.
      */
@@ -92,6 +78,12 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
                 stackView.addArrangedSubview(component)
             }
         }
+        
+        if ClearentWrapper.shared.enableOfflineMode {
+            if (ClearentWrapper.shared.offlineModeState == .on) || (ClearentWrapper.shared.offlineModeState == .prompted && ClearentWrapper.shared.flowType?.processType == .payment && ClearentWrapper.shared.isOfflineModeConfirmed) {
+                stackView.insertArrangedSubview(ClearentSubtitleLabel(text: ClearentConstants.Localized.OfflineMode.offlineModeEnabled), at: 1)
+            }
+        }
     }
     
     func addLoadingViewToCurrentContent() {
@@ -101,7 +93,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     func showLoadingView() {
         stackView.showLoadingView()
     }
-
+    
     func dismissViewController(result: CompletionResult) {
         ClearentWrapperDefaults.skipOnboarding = true
         ClearentWrapper.shared.stopContinousSearching()
@@ -111,6 +103,29 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             self?.dismiss(animated: true, completion: nil)
             self?.dismissCompletion?(result)
         }
+    }
+    
+    func positionViewOnTop(flag: Bool) {
+        stackView.positionView(onTop: flag, of: view)
+    }
+    
+    func updateUserActionButtonState(enabled: Bool) {
+        let button = stackView.findButtonInStack(with: FlowButtonType.done)
+        button?.isUserInteractionEnabled = enabled
+        if enabled {
+            button?.setFilledButton()
+        } else {
+            button?.setDisabledButton()
+        }
+    }
+    
+    func displayOfflineModeConfirmationMessage(for flowType: FlowButtonType) {
+        let offlineModeAlert = UIAlertController(title: ClearentConstants.Localized.OfflineMode.offlineModeConfirmationMessage, message: nil, preferredStyle: .alert)
+        offlineModeAlert.addAction(UIAlertAction(title: ClearentConstants.Localized.OfflineMode.offlineModeConfirmationMessageCancel, style: .default, handler: { _ in }))
+        offlineModeAlert.addAction(UIAlertAction(title: ClearentConstants.Localized.OfflineMode.offlineModeConfirmationMessageConfirm, style: .default, handler: { [weak self] _ in
+            flowType == .confirmOfflineMode ? self?.presenter?.handleOfflineModeConfirmationOption() : self?.presenter?.handleOfflineModeCancelOption()
+        }))
+        present(offlineModeAlert, animated: true, completion: nil)
     }
 
     // MARK: - Private
@@ -190,7 +205,8 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     
     private func manualEntryFormView() -> ClearentManualEntryFormView {
         let dataSource = ClearentPaymentDataSource(with: [ClearentPaymentBaseSection(), ClearentPaymentAdditionalSection()])
-        let manualEntryFormView = ClearentManualEntryFormView(with: dataSource)
+        let offlineModeStatusMessage = (ClearentWrapper.shared.enableOfflineMode && ClearentWrapper.shared.offlineModeState != .off) ? ClearentConstants.Localized.OfflineMode.offlineModeEnabled : nil
+        let manualEntryFormView = ClearentManualEntryFormView(with: dataSource, offlineModeStatusMessage: offlineModeStatusMessage)
         manualEntryFormView.delegate = self
         dataSource.delegate = manualEntryFormView
         
@@ -246,13 +262,15 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     private func actionButton(userAction: FlowButtonType) -> ClearentPrimaryButton {
         let button = ClearentPrimaryButton()
         button.title = userAction.title
-        if [.cancel, .pairNewReader, .renameReaderLater, .transactionWithoutTip, .skipSignature].contains(userAction) {
+        button.type = userAction
+        
+        if [.cancel, .pairNewReader, .renameReaderLater, .transactionWithoutTip, .skipSignature, .denyOfflineMode].contains(userAction) {
             button.buttonStyle = .bordered
         }
+        
         if userAction == .transactionWithTip {
             button.title = userAction.transactionWithTipTitle(for: presenter?.amountWithoutTip)
         }
-        button.type = userAction
         button.action = { [weak self] in
             guard let strongSelf = self, let presenter = strongSelf.presenter else { return }
             presenter.handleUserAction(userAction: userAction)

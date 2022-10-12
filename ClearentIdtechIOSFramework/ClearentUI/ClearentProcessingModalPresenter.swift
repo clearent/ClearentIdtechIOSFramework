@@ -15,6 +15,7 @@ protocol ClearentProcessingModalView: AnyObject {
     func dismissViewController(result: CompletionResult)
     func positionViewOnTop(flag: Bool)
     func updateUserActionButtonState(enabled: Bool)
+    func displayOfflineModeConfirmationMessage(for flowType: FlowButtonType)
 }
 
 protocol ProcessingModalProtocol {
@@ -33,6 +34,8 @@ protocol ProcessingModalProtocol {
     func enableDoneButtonForInput(enabled: Bool)
     func handleSignature(with image: UIImage)
     func sendManualEntryTransaction(with dataSource: ClearentPaymentDataSource)
+    func handleOfflineModeCancelOption()
+    func handleOfflineModeConfirmationOption()
 }
 
 class ClearentProcessingModalPresenter {
@@ -74,6 +77,25 @@ class ClearentProcessingModalPresenter {
 }
 
 extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
+    func handleOfflineModeCancelOption() {
+        ClearentWrapper.shared.isNewPaymentProcess = false
+        restartProcess(newPair: false)
+    }
+    
+    func handleOfflineModeConfirmationOption() {
+        ClearentWrapper.shared.isNewPaymentProcess = false
+        
+        if let isReaderEncrypted = sdkWrapper.isReaderEncrypted(), useCardReaderPaymentMethod {
+            if !isReaderEncrypted {
+                sdkFeedbackProvider.showEncryptionWarning()
+            } else {
+                sdkFeedbackProvider.displayOfflineModeWarningMessage()
+            }
+        } else {
+            sdkFeedbackProvider.displayOfflineModeWarningMessage()
+        }
+    }
+    
     func enableDoneButtonForInput(enabled: Bool) {
         modalProcessingView?.updateUserActionButtonState(enabled: enabled)
     }
@@ -136,6 +158,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                 }
             }
         case .cancel:
+            ClearentWrapper.shared.isNewPaymentProcess = true
+            ClearentWrapper.shared.isOfflineModeConfirmed = false
             modalProcessingView?.dismissViewController(result: .failure(.cancelledByUser))
         case .retry, .pair:
             restartProcess(newPair: false)
@@ -151,13 +175,16 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             modalProcessingView?.positionViewOnTop(flag: true)
             showRenameReader()
         case .transactionWithTip, .transactionWithoutTip:
-            if useCardReaderPaymentMethod {
-                startCardReaderTransaction()
-            } else {
-                startManualEntryTransaction()
-            }
+            useCardReaderPaymentMethod ? startCardReaderTransaction() : startManualEntryTransaction()
         case .manuallyEnterCardInfo:
             startManualEntryTransaction()
+        case .confirmOfflineMode:
+            modalProcessingView?.displayOfflineModeConfirmationMessage(for: .confirmOfflineMode)
+        case .denyOfflineMode:
+            modalProcessingView?.displayOfflineModeConfirmationMessage(for: .denyOfflineMode)
+        case .confirmOfflineModeWarningMessage:
+            ClearentWrapper.shared.isOfflineModeConfirmed = true
+            restartProcess(newPair: false)
         }
     }
     
@@ -374,7 +401,11 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                 }
             }
         } else {
-            startTipFlow()
+            if ClearentWrapper.shared.enableOfflineMode && ClearentWrapper.shared.offlineModeState == .on {
+                sdkFeedbackProvider.displayOfflineModeWarningMessage()
+            } else {
+                startTipFlow()
+            }
         }
     }
 

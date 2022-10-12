@@ -25,7 +25,7 @@ class ClearentManualEntryFormView: ClearentXibView {
     
     // MARK: - Init
     
-    convenience init(with dataSource: ClearentPaymentDataSource) {
+    convenience init(with dataSource: ClearentPaymentDataSource, offlineModeStatusMessage: String?) {
         self.init()
         
         self.dataSource = dataSource
@@ -37,6 +37,10 @@ class ClearentManualEntryFormView: ClearentXibView {
         }
 
         ClearentPaymentFieldCell.register(tableView: tableView)
+        
+        if let offlineModeStatusMessage = offlineModeStatusMessage {
+            headerView.addOfflineModeStatus(offlineModeStatusMessage)
+        }
         
         footerView.cancelButtonAction = {
             self.delegate?.didTapOnCancelButton()

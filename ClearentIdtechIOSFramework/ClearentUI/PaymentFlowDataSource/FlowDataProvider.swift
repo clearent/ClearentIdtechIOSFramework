@@ -70,10 +70,10 @@ class FlowDataProvider : NSObject {
     }
     
     func fetchReaderInfo() -> ReaderInfo? {
-        return ClearentWrapperDefaults.pairedReaderInfo
+        ClearentWrapperDefaults.pairedReaderInfo
     }
     
-    public func startTipTransaction(amountWithoutTip: Double) {
+    func startTipTransaction(amountWithoutTip: Double) {
         let amountInfo = AmountInfo(amountWithoutTip: amountWithoutTip, availableTipPercentages: ClearentUIManager.shared.tipAmounts)
         
         let items = [FlowDataItem(type: .title, object: ClearentConstants.Localized.Tips.transactionTip),
@@ -83,7 +83,19 @@ class FlowDataProvider : NSObject {
         
         let feedback = FlowFeedback(flow: .payment, type: FlowFeedbackType.info, items: items)
 
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
+    }
+    
+    func displayOfflineModeWarningMessage() {
+        let items = [FlowDataItem(type: .title, object: ClearentConstants.Localized.OfflineMode.offlineModeWarningMessageTitle),
+                     FlowDataItem(type: .description, object: ClearentConstants.Localized.OfflineMode.offlineModeWarningMessageDescription),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.confirmOfflineModeWarningMessage)]
+        let feedback = FlowDataFactory.component(with: .payment,
+                                                 type: .info,
+                                                 readerInfo:fetchReaderInfo(),
+                                                 payload: items)
+        
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
 }
 
@@ -98,10 +110,10 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                             FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                             FlowDataItem(type: .userAction, object: FlowButtonType.skipSignature)]
             
-           feedback = FlowDataFactory.component(with: .payment,
-                                                    type: .signatureError,
-                                                    readerInfo: fetchReaderInfo(),
-                                                    payload: errItems)
+            feedback = FlowDataFactory.component(with: .payment,
+                                                 type: .signatureError,
+                                                 readerInfo: fetchReaderInfo(),
+                                                 payload: errItems)
         } else {
             let transactionItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.transaction_completed),
                                     FlowDataItem(type: .title, object: ClearentConstants.Localized.Signature.signatureUploadSuccessful)]
@@ -110,10 +122,10 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  type: .info,
                                                  readerInfo: fetchReaderInfo(),
                                                  payload: transactionItems)
-            self.delegate?.didFinishSignature()
+            delegate?.didFinishSignature()
         }
         
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
  
     // MARK - Transaction related
@@ -127,7 +139,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  type: .error,
                                                  readerInfo: fetchReaderInfo(),
                                                  payload: items)
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
         
     func didFinishTransaction(response: TransactionResponse?, error: ResponseError?) {
@@ -162,8 +174,8 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  payload: transactionItems)
             
         }
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
-        self.delegate?.didFinishTransaction(error: error)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
+        delegate?.didFinishTransaction(error: error)
     }
     
     func deviceDidDisconnect() {
@@ -171,7 +183,18 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     }
     
     func didBeginContinuousSearching() {
-        self.delegate?.didBeginContinuousSearching()
+        delegate?.didBeginContinuousSearching()
+    }
+    
+    func showEncryptionWarning() {
+        let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
+                     FlowDataItem(type: .title, object: ClearentConstants.Localized.OfflineMode.offlineModeEncryptionWarningMessage),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+        let flowFeedback = FlowDataFactory.component(with: .payment,
+                                                     type: .warning,
+                                                     readerInfo: fetchReaderInfo(),
+                                                     payload: items)
+        delegate?.didReceiveFlowFeedback(feedback: flowFeedback)
     }
     
     func userActionNeeded(action: UserAction) {
@@ -265,6 +288,13 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+        case .offlineMode:
+            type = .warning
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
+                     FlowDataItem(type: .title, object: ClearentConstants.Localized.Internet.error),
+                     FlowDataItem(type: .description, object: action.description),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.confirmOfflineMode),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.denyOfflineMode)]
         }
         
         if let flowItems = items {
@@ -272,7 +302,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                      type: ClearentWrapper.shared.flowType?.flowFeedbackType ?? type,
                                                      readerInfo: fetchReaderInfo(),
                                                      payload: flowItems)
-            self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+            delegate?.didReceiveFlowFeedback(feedback: feedback)
         }
     }
     
@@ -303,7 +333,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  readerInfo: nil,
                                                  payload: items)
         
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
     func didFindReaders(readers: [ReaderInfo]) {
@@ -319,7 +349,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  type: flowFeedbackType,
                                                  readerInfo: nil,
                                                  payload: items)
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
      }
     
     func startedReaderConnection(with reader: ReaderInfo) {
@@ -343,7 +373,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  readerInfo: reader,
                                                  payload: items)
         }
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
     func didFindRecentlyUsedReaders(readers: [ReaderInfo]) {
@@ -355,7 +385,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  type: .showReaders,
                                                  readerInfo: ClearentWrapperDefaults.pairedReaderInfo,
                                                  payload: items)
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
 
     func didReceiveSignalStrength() {

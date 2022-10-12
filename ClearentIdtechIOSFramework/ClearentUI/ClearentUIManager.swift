@@ -22,6 +22,16 @@ public final class ClearentUIManager: NSObject {
             clearentWrapper.cardReaderPaymentIsPreffered = cardReaderPaymentIsPreferred
         }
     }
+    @objc public var enableOfflineMode: Bool = false {
+        didSet {
+            clearentWrapper.enableOfflineMode = enableOfflineMode
+        }
+    }
+    @objc public var offlineModeState: OfflineModeState = .off {
+        didSet {
+            clearentWrapper.offlineModeState = offlineModeState
+        }
+    }
     @objc public var tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages
     
     // MARK: Init

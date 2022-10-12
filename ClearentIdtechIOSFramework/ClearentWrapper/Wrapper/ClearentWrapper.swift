@@ -9,7 +9,6 @@ import Foundation
 import CocoaLumberjack
 import Network
 
-
 public final class ClearentWrapper : NSObject {
     
     public static let shared = ClearentWrapper()
@@ -33,6 +32,12 @@ public final class ClearentWrapper : NSObject {
     
     /// Enables or disables the use of enhanced messages
     public var enableEnhancedMessaging: Bool = false
+    
+    /// Enables or disables the use of the store & forward feature
+    public var enableOfflineMode: Bool = false
+    
+    /// The state of the store & forward feature
+    public var offlineModeState: OfflineModeState = .on
     
     /// Stores the enhanced messages read from the messages bundle
     internal var enhancedMessagesDict: [String:String]?
@@ -58,11 +63,19 @@ public final class ClearentWrapper : NSObject {
     private let monitor = NWPathMonitor()
     private var isInternetOn = false
     private var signatureImage: UIImage?
-    private var connectivityActionNeeded: UserAction? {
-        if cardReaderPaymentIsPreffered && useManualPaymentAsFallback == nil {
-            return isBluetoothPermissionGranted ? (isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : .noInternet) : .noBluetoothPermission
+    private var shouldAskForOfflineModePermission: Bool {
+        if !enableOfflineMode {
+            return false
         } else {
-            return isInternetOn ? nil : .noInternet
+            switch offlineModeState {
+            case .off:
+                return false
+            case .on:
+                isOfflineModeConfirmed = true
+                return false
+            case .prompted:
+                return !isInternetOn ? (isNewPaymentProcess ? true : false) : false
+            }
         }
     }
     private lazy var httpClient: ClearentHttpClient = {
@@ -70,7 +83,9 @@ public final class ClearentWrapper : NSObject {
     }()
     internal var isBluetoothOn = false
     internal var tipEnabled = false
+    internal var isOfflineModeConfirmed = false
     internal var shouldSendPressButton = false
+    internal var isNewPaymentProcess = true
     private var continuousSearchingTimer: Timer?
     private var connectToReaderTimer: Timer?
     private var shouldStopUpdatingReadersListDuringContinuousSearching: Bool? = false
@@ -82,7 +97,7 @@ public final class ClearentWrapper : NSObject {
         super.init()
 
         createLogFile()
-        self.startConnectionListener()
+        startConnectionListener()
         bleManager = BluetoothScanner.init(udid: nil, delegate: self)
         
         shouldBeginContinuousSearchingForReaders = { searchingEnabled in
@@ -108,7 +123,8 @@ public final class ClearentWrapper : NSObject {
      * @param reconnectIfPossible, if  false  a connection that will search for bluetooth devices will be started, if true a connection with the last paired reader will be tried
      */
     public func startPairing(reconnectIfPossible: Bool) {
-        if shouldDisplayConnectivityWarning() { return }
+        if shouldDisplayConnectivityWarning(for: .pairing()) { return }
+        
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             guard let strongSelf = self else { return }
             
@@ -154,7 +170,6 @@ public final class ClearentWrapper : NSObject {
         }        
     }
      
-    
     /**
      * This method will update the current SDK keys
      * @param baseURL, the backend endpoint
@@ -172,9 +187,8 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
-    
     /**
-     * This method will start a transaction, if manualEntryCardInfo is not null then a manual transaction will be performed otherwise a card reader transcation will be initiated
+     * This method will start a transaction, if manualEntryCardInfo is not null then a manual transaction will be performed otherwise a card reader transaction will be initiated
      * @param SaleEntity,  holds informations used for the transcation
      * @param ManualEntryCardInfo,  all the information needed for a manual card transaction
      */
@@ -185,9 +199,9 @@ public final class ClearentWrapper : NSObject {
         if let tip = saleEntity.tipAmount, !tip.canBeConverted(to: .utf8) { return }
         
         self.saleEntity = saleEntity
-        
-        if shouldDisplayConnectivityWarning() { return }
-        
+
+        if shouldDisplayConnectivityWarning(for: .payment) { return }
+
         if let manualEntryCardInfo = manualEntryCardInfo {
             manualEntryTransaction(cardNo: manualEntryCardInfo.card, expirationDate: manualEntryCardInfo.expirationDateMMYY, csc: manualEntryCardInfo.csc)
         } else {
@@ -198,7 +212,6 @@ public final class ClearentWrapper : NSObject {
     /**
      * Method that will search for currently used readers and call the delegate methods with the results
      */
-    
     public func searchRecentlyUsedReaders() {
         if let recentlyUsedReaders = ClearentWrapperDefaults.recentlyPairedReaders, recentlyUsedReaders.count > 0 {
             delegate?.didFindRecentlyUsedReaders(readers: recentlyUsedReaders)
@@ -215,7 +228,7 @@ public final class ClearentWrapper : NSObject {
     public func saleTransaction(jwt: String, saleEntity: SaleEntity) {
         httpClient.saleTransaction(jwt: jwt, saleEntity: saleEntity) { data, error in
             guard let responseData = data else { return }
-
+        
             do {
                 let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
                 guard let transactionError = decodedResponse.payload.error else {
@@ -252,11 +265,11 @@ public final class ClearentWrapper : NSObject {
     }
 
     /**
-     * Method that will send a jpeg with client signature tot the payment gateway for storage
+     * Method that will send a jpeg with client signature to the payment gateway for storage
      * @param image, UIImage to be uploaded
      */
     public func sendSignatureWithImage(image: UIImage) throws {
-        if shouldDisplayConnectivityWarning() { return }
+        if shouldDisplayConnectivityWarning(for: .payment) { return }
         if let error = checkForMissingKeys() { throw error }
         
         if let id = lastTransactionID {
@@ -345,10 +358,11 @@ public final class ClearentWrapper : NSObject {
     
     /**
      * Method that will fetch the tip settings for current mechant
-     * @param transactionID, ID of transcation to be voided
+     * @param completion, the closure that will be called after receiving the data
      */
     public func fetchTipSetting(completion: @escaping () -> Void) {
-        if shouldDisplayConnectivityWarning() { return }
+        if shouldDisplayOfflineModePermission() { return }
+        if shouldDisplayConnectivityWarning(for: .payment) { return }
 
         httpClient.merchantSettings() { data, error in
             DispatchQueue.main.async {
@@ -392,10 +406,41 @@ public final class ClearentWrapper : NSObject {
         invalidateConnectionTimer()
     }
     
+    public func isReaderEncrypted() -> Bool? {
+        var response: NSData? = NSData()
+        _ = clearentVP3300.device_sendIDGCommand(0xC7, subCommand: 0x37, data: nil, response: &response)
+        
+        guard let response = response else { return nil }
+        
+        return response.int == 3
+    }
+    
     // MARK - Private
     
-    private func shouldDisplayConnectivityWarning() -> Bool {
-        if let action = connectivityActionNeeded {
+    private func shouldDisplayOfflineModePermission() -> Bool {
+        if let action = UserAction(rawValue: UserAction.offlineMode.rawValue), shouldAskForOfflineModePermission {
+            DispatchQueue.main.async {
+                self.delegate?.userActionNeeded(action: action)
+            }
+            return true
+        }
+        return false
+    }
+    
+    private func getConnectivityStatus(for processType: ProcessType) -> UserAction? {
+        if processType == .payment {
+            if cardReaderPaymentIsPreffered && useManualPaymentAsFallback == nil {
+                return isBluetoothPermissionGranted ? (isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : (isOfflineModeConfirmed ? nil : .noInternet)) : .noBluetoothPermission
+            } else {
+                return isInternetOn ? nil : (isOfflineModeConfirmed ? nil : .noInternet)
+            }
+        } else {
+            return isBluetoothPermissionGranted ? (isBluetoothOn ? nil : .noBluetooth) : .noBluetoothPermission
+        }
+    }
+    
+    private func shouldDisplayConnectivityWarning(for processType: ProcessType) -> Bool {
+        if let action = getConnectivityStatus(for: processType) {
             DispatchQueue.main.async {
                 self.delegate?.userActionNeeded(action: action)
             }
