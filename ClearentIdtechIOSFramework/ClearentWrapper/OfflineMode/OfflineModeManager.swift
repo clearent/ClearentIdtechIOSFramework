@@ -15,7 +15,6 @@ import CryptoKit
 class OfflineModeManager {
     
     public var storage: TransactionStorageProtocol
-    public var encryptionKey: SymmetricKey
     
     init(storage: TransactionStorageProtocol) {
         self.storage = storage
@@ -61,7 +60,7 @@ class OfflineModeManager {
     func validateManualOfflineTransaction(saleEntity: SaleEntity) -> TransactionStoreStatus {
         if let cardNo = saleEntity.card, let csc = saleEntity.csc, let expirationDate = saleEntity.expirationDateMMYY {
             
-            let cardnoItem = CreditCardNoItem()
+            let cardnoItem = CardNoItem()
             cardnoItem.enteredValue = cardNo
             
             let securityCodeItem = SecurityCodeItem()

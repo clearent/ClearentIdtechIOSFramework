@@ -6,10 +6,10 @@
   Copyright © 2022 Clearent, L.L.C. All rights reserved.
 */
 
-// MARK: Common
+// MARK: - Common
 "xsdk_keyboard_done" = "Done";
 
-// MARK: Pairing Flow
+// MARK: - Pairing Flow
 // Texts that are displayed during the pairing flow
 
 "xsdk_pairing_pair_new_reader" = "Pair new reader";
@@ -31,17 +31,17 @@
 "xsdk_pairing_reader_name" = "Reader name";
 "xsdk_pairing_reader_name_input_hint" = "Input a custom name";
 
-// MARK: Payment Flow - General
+// MARK: - Payment Flow - General
 // Texts that are displayed during the payment flow
 "xsdk_payment_transaction_completed_description" = "Payment successful";
 
-// MARK: Payment Flow - Reader interaction
+// MARK: - Payment Flow - Reader interaction
 
 "xsdk_payment_transaction_reader_tap" = "Hold card on contactless symbol";
 "xsdk_payment_transaction_reader_insert" = "Fully insert card into reader";
 "xsdk_payment_transaction_reader_slide" = "Slide card through reader";
 
-// MARK: Payment Flow - Tips
+// MARK: - Payment Flow - Tips
 // Texts that are displayed on the tips screen (part of the payment flow)
 
 "xsdk_tips_percentage_and_value" = "%d%% (%@)";
@@ -50,7 +50,7 @@
 "xsdk_tips_user_action_transaction_with_tip" = "Charge %@";
 "xsdk_tips_user_action_transaction_without_tip" = "Maybe next time";
 
-// MARK: Payment Flow - Signature
+// MARK: - Payment Flow - Signature
 // Texts that are displayed on the signature screen (part of the payment flow)
 
 "xsdk_signature_title" = "Customer signature";
@@ -60,7 +60,7 @@
 "xsdk_signature_upload_sucessful_title" = "Signature uploaded successfully";
 "xsdk_signature_upload_failure_title" = "Signature capture failed";
 
-// MARK: Payment Flow - Manually Enter Card Info
+// MARK: - Payment Flow - Manually Enter Card Info
 
 "xsdk_payment_manual_entry_title" = "Please fill in the credit card information";
 
@@ -105,19 +105,19 @@
 "xsdk_payment_manual_entry_user_action_confirm" = "Confirm";
 
 
-// MARK: Readers list
+// MARK: - Readers list
 // Texts that are displayed on the readers list screen
 
 "xsdk_readers_list_no_reader_connected" = "No reader connected";
 "xsdk_readers_list_select_reader" = "Please select a reader to connect";
 
-// MARK: Reader signal
+// MARK: - Reader signal
 // Texts that are displayed on top of the readers list screen
 
 "xsdk_reader_signal_idle" = "Not connected";
 "xsdk_reader_signal_connected" = "Connected";
 
-// MARK: Reader Details
+// MARK: - Reader Details
 // Texts that are displayed on the reader details screen
 
 "xsdk_reader_details_connected" = "Connected";
@@ -140,7 +140,7 @@
 "xsdk_reader_details_signal_medium" = "Medium";
 "xsdk_reader_details_signal_weak" = "Weak";
 
-// MARK: General errors
+// MARK: - General errors
 // Texts that are displayed in case of a general error during the payment flow
 
 "xsdk_general_error_title" = "Transaction failed";
@@ -153,16 +153,16 @@
 "xsdk_general_error_transaction_id" = "Transaction ID: %@\n";
 "xsdk_general_error_exchange_id" = "Exchange ID: %@";
 
-// MARK: Reader error
+// MARK: - Reader error
 "xsdk_reader_error_title" = "Card read error";
 
-// MARK: Internet Connection
+// MARK: - Internet Connection
 // Texts that are displayed in case of no Internet connection
 
 "xsdk_internet_error_title" = "Check your connection";
 "xsdk_internet_no_connection" = "NO INTERNET";
 
-// MARK: Bluetooth
+// MARK: - Bluetooth
 // Texts that are displayed in case of no bluetooth connection
 
 "xsdk_bluetooth_error_title" = "Bluetooth is not on";
@@ -170,6 +170,20 @@
 "xsdk_bluetooth_turned_off" = "Bluetooth on this device is currently powered off.";
 "xsdk_bluetooth_no_permission" = "This app is not authorized to use Bluetooth Low Energy.";
 
+// MARK: - Store & Forward
+// Texts that are displayed for store & forward feature
+
+"xsdk_offline_mode_enable_title" = "Enable offline mode?";
+"xsdk_offline_mode_confirm_option" = "Yes";
+"xsdk_offline_mode_cancel_option" = "No";
+"xsdk_offline_mode_confirmation_message" = "Are you sure?";
+"xsdk_offline_mode_confirmation_proceed" = "Yes";
+"xsdk_offline_mode_confirmation_cancel" = "No";
+"xsdk_offline_mode_warning_message_title" = "Warning - Offline Mode Enabled ";
+"xsdk_offline_mode_warning_message_description" = "Offline transactions may decline once online mode is enabled and processing resumes.";
+"xsdk_offline_mode_enabled" = "Offline Mode Enabled";
+"xsdk_offline_mode_warning_message_confirmation" = "Ok";
+"xsdk_offline_mode_encryption_message" = "Please try again using an encrypted reader";
 
 // MARK: API parse errors
 // Texts that are displayed in case of no bluetooth connection

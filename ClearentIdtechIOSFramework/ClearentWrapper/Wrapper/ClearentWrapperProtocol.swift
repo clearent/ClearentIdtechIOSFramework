@@ -39,12 +39,12 @@ public protocol ClearentWrapperProtocol : AnyObject {
     func deviceDidDisconnect()
     
     /**
-     * Method called after the 'connectTo' method was called by protocol implementing class, indicating that  a connection to the selected reader is beeing  established
+     * Method called after the 'connectTo' method was called by protocol implementing class, indicating that a connection to the selected reader is being established
      */
     func startedReaderConnection(with reader:ReaderInfo)
     
     /**
-     * Method called in response to method 'searchRecentlyUsedReaders' and indicated that recently readers were found
+     * Method called in response to method 'searchRecentlyUsedReaders' and indicates that recently readers were found
      * @param readers. list of recently paired readers
      */
     func didFindRecentlyUsedReaders(readers:[ReaderInfo])
@@ -55,7 +55,7 @@ public protocol ClearentWrapperProtocol : AnyObject {
     func didBeginContinuousSearching()
     
     /**
-     * Method called  when a general error is encountered in a payment/transaction process
+     * Method called when a general error is encountered in a payment/transaction process
      */
     func didEncounteredGeneralError()
     
@@ -91,4 +91,9 @@ public protocol ClearentWrapperProtocol : AnyObject {
      * @action, User Action needed to be performed by the user
      */
     func userActionNeeded(action: UserAction)
+    
+    /**
+     * Method called during a transaction process in case the reader's data is not encrypted. In order to perform transactions in offline mode, the reader should have both EMV & MSR encryption enabled. A warning message is displayed otherwise
+     */
+    func showEncryptionWarning()
 }

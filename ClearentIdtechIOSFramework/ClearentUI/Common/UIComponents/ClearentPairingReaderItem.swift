@@ -60,7 +60,7 @@ class ClearentPairingReaderItem: ClearentMarginableView {
         rightIconName = ClearentConstants.IconName.rightArrow
     }
 
-    @IBAction func viewWasPressed(_: Any) {
+    @IBAction func viewWasPressed() {
         action?()
     }
 }

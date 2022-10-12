@@ -65,6 +65,50 @@ class ClearentProcessingModalViewController: ClearentBaseViewController {
 
 extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     
+    /*
+     This method will remove the current displayed content in the modal and will generate other UI using the feedback parameter.
+     */
+    func updateContent(with feedback: FlowFeedback) {
+        stackView.removeAllArrangedSubviews()
+        stackView.isUserInteractionEnabled = true
+        ClearentWrapper.shared.flowType = (feedback.flow, feedback.type)
+        
+        feedback.items.forEach {
+            if let component = uiComponent(for: $0) {
+                stackView.addArrangedSubview(component)
+            }
+        }
+        
+        if ClearentWrapper.shared.enableOfflineMode {
+            if (ClearentWrapper.shared.offlineModeState == .on) || (ClearentWrapper.shared.offlineModeState == .prompted && ClearentWrapper.shared.flowType?.processType == .payment && ClearentWrapper.shared.isOfflineModeConfirmed) {
+                stackView.insertArrangedSubview(ClearentSubtitleLabel(text: ClearentConstants.Localized.OfflineMode.offlineModeEnabled), at: 1)
+            }
+        }
+    }
+    
+    func addLoadingViewToCurrentContent() {
+        stackView.insertArrangedSubview(ClearentLoadingView(), at: 1)
+    }
+    
+    func showLoadingView() {
+        stackView.showLoadingView()
+    }
+    
+    func dismissViewController(result: CompletionResult) {
+        ClearentWrapperDefaults.skipOnboarding = true
+        ClearentWrapper.shared.stopContinousSearching()
+        ClearentWrapper.shared.cancelTransaction()
+        
+        DispatchQueue.main.async { [weak self] in
+            self?.dismiss(animated: true, completion: nil)
+            self?.dismissCompletion?(result)
+        }
+    }
+    
+    func positionViewOnTop(flag: Bool) {
+        stackView.positionView(onTop: flag, of: view)
+    }
+    
     func updateUserActionButtonState(enabled: Bool) {
         let button = stackView.findButtonInStack(with: FlowButtonType.done)
         button?.isUserInteractionEnabled = enabled
@@ -75,44 +119,17 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         }
     }
     
-    func positionViewOnTop(flag: Bool) {
-        stackView.positionView(onTop: flag, of: view)
-    }
-    
-    /*
-     This method will remove the current displayed content in the modal and will generate other UI using the feedback parameter.
-     */
-    public func updateContent(with feedback: FlowFeedback) {
-        stackView.removeAllArrangedSubviews()
-        stackView.isUserInteractionEnabled = true
-        ClearentWrapper.shared.flowType = (feedback.flow, feedback.type)
-        
-        feedback.items.forEach {
-            if let component = uiComponent(for: $0) {
-                stackView.addArrangedSubview(component)
-            }
-        }
-    }
-    
-    public func addLoadingViewToCurrentContent() {
-        stackView.insertArrangedSubview(ClearentLoadingView(), at: 1)
-    }
-    
-    public func showLoadingView() {
-        stackView.showLoadingView()
+    func displayOfflineModeConfirmationMessage(for flowType: FlowButtonType) {
+        let offlineModeAlert = UIAlertController(title: ClearentConstants.Localized.OfflineMode.offlineModeConfirmationMessage, message: nil, preferredStyle: .alert)
+        offlineModeAlert.addAction(UIAlertAction(title: ClearentConstants.Localized.OfflineMode.offlineModeConfirmationMessageCancel, style: .default, handler: { _ in }))
+        offlineModeAlert.addAction(UIAlertAction(title: ClearentConstants.Localized.OfflineMode.offlineModeConfirmationMessageConfirm, style: .default, handler: { [weak self] _ in
+            flowType == .confirmOfflineMode ? self?.presenter?.handleOfflineModeConfirmationOption() : self?.presenter?.handleOfflineModeCancelOption()
+        }))
+        present(offlineModeAlert, animated: true, completion: nil)
     }
 
-    public func dismissViewController(result: CompletionResult) {
-        ClearentWrapperDefaults.skipOnboarding = true
-        ClearentWrapper.shared.stopContinousSearching()
-        ClearentWrapper.shared.cancelTransaction()
-        
-        DispatchQueue.main.async { [weak self] in
-            self?.dismiss(animated: true, completion: nil)
-            self?.dismissCompletion?(result)
-        }
-    }
-
+    // MARK: - Private
+    
     private func uiComponent(for item: FlowDataItem) -> UIView? {
         let object = item.object
         
@@ -188,7 +205,8 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     
     private func manualEntryFormView() -> ClearentManualEntryFormView {
         let dataSource = ClearentPaymentDataSource(with: [ClearentPaymentBaseSection(), ClearentPaymentAdditionalSection()])
-        let manualEntryFormView = ClearentManualEntryFormView(with: dataSource)
+        let offlineModeStatusMessage = (ClearentWrapper.shared.enableOfflineMode && ClearentWrapper.shared.offlineModeState != .off) ? ClearentConstants.Localized.OfflineMode.offlineModeEnabled : nil
+        let manualEntryFormView = ClearentManualEntryFormView(with: dataSource, offlineModeStatusMessage: offlineModeStatusMessage)
         manualEntryFormView.delegate = self
         dataSource.delegate = manualEntryFormView
         
@@ -244,13 +262,15 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     private func actionButton(userAction: FlowButtonType) -> ClearentPrimaryButton {
         let button = ClearentPrimaryButton()
         button.title = userAction.title
-        if [.cancel, .pairNewReader, .renameReaderLater, .transactionWithoutTip, .skipSignature].contains(userAction) {
+        button.type = userAction
+        
+        if [.cancel, .pairNewReader, .renameReaderLater, .transactionWithoutTip, .skipSignature, .denyOfflineMode].contains(userAction) {
             button.buttonStyle = .bordered
         }
+        
         if userAction == .transactionWithTip {
             button.title = userAction.transactionWithTipTitle(for: presenter?.amountWithoutTip)
         }
-        button.type = userAction
         button.action = { [weak self] in
             guard let strongSelf = self, let presenter = strongSelf.presenter else { return }
             presenter.handleUserAction(userAction: userAction)

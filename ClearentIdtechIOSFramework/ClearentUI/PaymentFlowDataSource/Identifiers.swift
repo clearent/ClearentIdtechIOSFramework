@@ -66,7 +66,7 @@ enum FlowGraphicType {
 }
 
 public enum FlowButtonType {
-    case cancel, retry, pair, done, skipSignature, pairNewReader, settings, pairInFlow, addReaderName, renameReaderLater, transactionWithTip, transactionWithoutTip, manuallyEnterCardInfo
+    case cancel, retry, pair, done, skipSignature, pairNewReader, settings, pairInFlow, addReaderName, renameReaderLater, transactionWithTip, transactionWithoutTip, manuallyEnterCardInfo, confirmOfflineMode, denyOfflineMode, confirmOfflineModeWarningMessage
 
     var title: String {
         switch self {
@@ -94,6 +94,12 @@ public enum FlowButtonType {
             return ClearentConstants.Localized.Tips.withoutTip
         case .manuallyEnterCardInfo:
             return ClearentConstants.Localized.Error.manualEntry
+        case .confirmOfflineMode:
+            return ClearentConstants.Localized.OfflineMode.offlineModeConfirmOption
+        case .denyOfflineMode:
+            return ClearentConstants.Localized.OfflineMode.offlineModeCancelOption
+        case .confirmOfflineModeWarningMessage:
+            return ClearentConstants.Localized.OfflineMode.offlineModeWarningMessageConfirm
         }
     }
 

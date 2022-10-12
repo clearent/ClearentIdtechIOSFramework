@@ -27,6 +27,7 @@ public enum UserAction: String, CaseIterable {
          noInternet,
          noBluetooth,
          noBluetoothPermission,
+         offlineMode,
          failedToStartSwipe,
          badChip,
          cardUnsupported,
@@ -94,6 +95,8 @@ public enum UserAction: String, CaseIterable {
             return CLEARENT_TAP_OVER_MAX_AMOUNT
         case .chipNotRecognized:
             return CLEARENT_CHIP_UNRECOGNIZED
+        case .offlineMode:
+            return ClearentConstants.Localized.OfflineMode.enableOfflineMode
         }
     }
     
@@ -110,4 +113,8 @@ public enum UserAction: String, CaseIterable {
         }
         return (text == ClearentConstants.Messaging.suppress) ? nil :UserAction(rawValue: text)
     }
+}
+
+@objc public enum OfflineModeState: Int {
+    case off, on, prompted
 }

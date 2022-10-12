@@ -15,6 +15,7 @@ protocol ClearentProcessingModalView: AnyObject {
     func dismissViewController(result: CompletionResult)
     func positionViewOnTop(flag: Bool)
     func updateUserActionButtonState(enabled: Bool)
+    func displayOfflineModeConfirmationMessage(for flowType: FlowButtonType)
 }
 
 protocol ProcessingModalProtocol {
@@ -33,6 +34,8 @@ protocol ProcessingModalProtocol {
     func enableDoneButtonForInput(enabled: Bool)
     func handleSignature(with image: UIImage)
     func sendManualEntryTransaction(with dataSource: ClearentPaymentDataSource)
+    func handleOfflineModeCancelOption()
+    func handleOfflineModeConfirmationOption()
 }
 
 class ClearentProcessingModalPresenter {
@@ -74,6 +77,25 @@ class ClearentProcessingModalPresenter {
 }
 
 extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
+    func handleOfflineModeCancelOption() {
+        ClearentWrapper.shared.isNewPaymentProcess = false
+        restartProcess(newPair: false)
+    }
+    
+    func handleOfflineModeConfirmationOption() {
+        ClearentWrapper.shared.isNewPaymentProcess = false
+        
+        if let isReaderEncrypted = sdkWrapper.isReaderEncrypted(), useCardReaderPaymentMethod {
+            if !isReaderEncrypted {
+                sdkFeedbackProvider.showEncryptionWarning()
+            } else {
+                sdkFeedbackProvider.displayOfflineModeWarningMessage()
+            }
+        } else {
+            sdkFeedbackProvider.displayOfflineModeWarningMessage()
+        }
+    }
+    
     func enableDoneButtonForInput(enabled: Bool) {
         modalProcessingView?.updateUserActionButtonState(enabled: enabled)
     }
@@ -87,36 +109,6 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     
     func startFlow() {
         startProcess(isRestart: false, processType: processType)
-    }
-    
-    private func startProcess(isRestart: Bool, processType: ProcessType, flowFeedbackType: FlowFeedbackType? = nil, newPair: Bool = false) {
-        ClearentWrapper.shared.flowType = (processType, flowFeedbackType)
-        
-        switch processType {
-        case let .pairing(withReader: readerInfo):
-            if isRestart {
-                sdkWrapper.startPairing(reconnectIfPossible: !newPair)
-            } else if let readerInfo = readerInfo {
-                // automatically connect to this reader
-                connectTo(reader: readerInfo)
-            } else {
-                startPairingFlow()
-            }
-        case .payment:
-            switch flowFeedbackType {
-            case .signature:
-                showSignatureScreen()
-            case .signatureError:
-                resendSignature()
-            default:
-                startTransactionFlow()
-            }
-        case .showReaders:
-            if isRestart { break }
-            showReadersList()
-        case .renameReader:
-            showRenameReader()
-        }
     }
 
     func startPairingFlow() {
@@ -166,6 +158,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                 }
             }
         case .cancel:
+            ClearentWrapper.shared.isNewPaymentProcess = true
+            ClearentWrapper.shared.isOfflineModeConfirmed = false
             modalProcessingView?.dismissViewController(result: .failure(.cancelledByUser))
         case .retry, .pair:
             restartProcess(newPair: false)
@@ -181,13 +175,16 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             modalProcessingView?.positionViewOnTop(flag: true)
             showRenameReader()
         case .transactionWithTip, .transactionWithoutTip:
-            if useCardReaderPaymentMethod {
-                startCardReaderTransaction()
-            } else {
-                startManualEntryTransaction()
-            }
+            useCardReaderPaymentMethod ? startCardReaderTransaction() : startManualEntryTransaction()
         case .manuallyEnterCardInfo:
             startManualEntryTransaction()
+        case .confirmOfflineMode:
+            modalProcessingView?.displayOfflineModeConfirmationMessage(for: .confirmOfflineMode)
+        case .denyOfflineMode:
+            modalProcessingView?.displayOfflineModeConfirmationMessage(for: .denyOfflineMode)
+        case .confirmOfflineModeWarningMessage:
+            ClearentWrapper.shared.isOfflineModeConfirmed = true
+            restartProcess(newPair: false)
         }
     }
     
@@ -243,6 +240,36 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
 
     // MARK: Private
+    
+    private func startProcess(isRestart: Bool, processType: ProcessType, flowFeedbackType: FlowFeedbackType? = nil, newPair: Bool = false) {
+        ClearentWrapper.shared.flowType = (processType, flowFeedbackType)
+        
+        switch processType {
+        case let .pairing(withReader: readerInfo):
+            if isRestart {
+                sdkWrapper.startPairing(reconnectIfPossible: !newPair)
+            } else if let readerInfo = readerInfo {
+                // automatically connect to this reader
+                connectTo(reader: readerInfo)
+            } else {
+                startPairingFlow()
+            }
+        case .payment:
+            switch flowFeedbackType {
+            case .signature:
+                showSignatureScreen()
+            case .signatureError:
+                resendSignature()
+            default:
+                startTransactionFlow()
+            }
+        case .showReaders:
+            if isRestart { break }
+            showReadersList()
+        case .renameReader:
+            showRenameReader()
+        }
+    }
     
     private func startTransactionFlow() {
         sdkFeedbackProvider.delegate = self
@@ -375,7 +402,11 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                 }
             }
         } else {
-            startTipFlow()
+            if ClearentWrapper.shared.enableOfflineMode && ClearentWrapper.shared.offlineModeState == .on {
+                sdkFeedbackProvider.displayOfflineModeWarningMessage()
+            } else {
+                startTipFlow()
+            }
         }
     }
 

@@ -27,7 +27,8 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
             RelativeBottomMargin(constant: 30, relatedViewType: ClearentIcon.self),
             RelativeBottomMargin(constant: 30, relatedViewType: ClearentAnimationWithSubtitle.self),
             RelativeBottomMargin(constant: 40, relatedViewType: ClearentLoadingView.self),
-            RelativeBottomMargin(constant: 24, relatedViewType: ClearentSubtitleLabel.self)
+            RelativeBottomMargin(constant: 24, relatedViewType: ClearentSubtitleLabel.self),
+            RelativeBottomMargin(constant: 30, relatedViewType: ClearentTitleLabel.self)
         ]
     }
     
