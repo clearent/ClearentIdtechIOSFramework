@@ -14,6 +14,9 @@ enum OfflineTransactionType :String, Codable {
     case none
 }
 
+/**
+ * ErrorStatus class represents an error received when the offline transaction is sent to the backend and fails
+*/
 struct ErrorStatus: Codable {
     var message: String
     var updatedDate: Date
@@ -41,10 +44,10 @@ struct OfflineTransaction: CodableProtocol  {
     }
     
     func transactionType() -> OfflineTransactionType {
-        if (paymentData.cardToken != nil) {
-            return .cardReaderTransaction
-        } else if (paymentData.saleEntity.card != nil && paymentData.cardToken == nil) {
+         if (paymentData.saleEntity.card != nil && paymentData.cardToken == nil) {
             return .manualTransaction
+        } else if (paymentData.cardToken != nil && paymentData.saleEntity.card == nil) {
+            return .cardReaderTransaction
         }
         
         return .none
@@ -91,4 +94,7 @@ protocol TransactionStorageProtocol {
     
     /// Deletes a transaction
     func deleteTransactionWith(id: String) -> TransactionStoreStatus
+    
+    // Deletes a transaction
+    func deleteAllData()
 }

@@ -78,6 +78,10 @@ class OfflineModeManager {
         
         return .validationError
     }
+    
+    func clearStorage() {
+        storage.deleteAllData()
+    }
 }
 
 /**

@@ -11,7 +11,7 @@ import CryptoKit
 
 /**
  * KeyChainStorage Implements the TransactionStorageProtocol
- * It saves encrypts/decrypts the saved data
+ * It saves/retrives encrypts/decrypts the saved data
 */
 
 class KeyChainStorage: TransactionStorageProtocol {
@@ -172,6 +172,9 @@ class KeyChainStorage: TransactionStorageProtocol {
         return response
     }
     
+    func deleteAllData() {
+        helper.delete(service: serviceName, account: account)
+    }
     
     private func saveOfflineTransactionArray(offlineTransactions:NSArray) -> TransactionStoreStatus {
         if let data = try? NSKeyedArchiver.archivedData(withRootObject: offlineTransactions as Any, requiringSecureCoding: true) {
