@@ -347,7 +347,7 @@ public final class ClearentWrapper : NSObject {
     
     /**
      * Method that will void a transaction
-     * @param transactionID, ID of OfflineModeManagertransaction to be voided
+     * @param transactionID, ID of the transaction to be voided
      */
     public func voidTransaction(transactionID: String) throws {
         if let error = checkForMissingKeys() { throw error }
