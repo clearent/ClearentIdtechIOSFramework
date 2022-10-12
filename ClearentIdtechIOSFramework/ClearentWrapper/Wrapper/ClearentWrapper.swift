@@ -118,58 +118,6 @@ public final class ClearentWrapper : NSObject {
                 self.shouldStopUpdatingReadersListDuringContinuousSearching = false
             }
         }
-                
-
-//        // Save an card reader transaction
-//        let saleEntity = SaleEntity(amount: "22.23")
-//        let cardPaymentData = PaymentData(saleEntity: saleEntity, cardToken: Data(base64Encoded: "Test"))
-//        let offlineCardReaderTransaction = OfflineTransaction(paymentData: cardPaymentData)
-//
-//        var status = offlineManager.saveOfflineTransaction(transaction: offlineCardReaderTransaction)
-//        if (status == .success) {
-//            print("card reader offline transaction saved")
-//        } else {
-//            print("card reader offline transaction error")
-//        }
-//
-//
-//        // Save an offline transaction
-//        let paymentData = PaymentData(saleEntity: saleEntity)
-//        var offlineManualTransaction = OfflineTransaction(paymentData: paymentData)
-//
-//        status = offlineManager.saveOfflineTransaction(transaction: offlineManualTransaction)
-//        if (status == .success) {
-//            print("manual offline transaction saved")
-//        } else {
-//            print("manual offline transaction error")
-//        }
-
-
-        // retrive the saved transactions
-        var items = offlineManager.retriveAll()
-        print(items)
-
-
-//        offlineManualTransaction.errorStatus = ErrorStatus(message: "Some Error Message", updatedDate: Date())
-//        status = offlineManager.storage.updateTransaction(transaction: offlineManualTransaction)
-//        if (status == .success) {
-//            print("manual offline transaction updated")
-//        } else {
-//            print("manual offline transaction update error")
-//        }
-//
-//        let deleteStatus = offlineManager.storage.deleteTransactionWith(id: "11B50C53-7643-4995-ADAD-138FF8FBB619")
-//
-//        if (deleteStatus == .success) {
-//            print("deleted transaction")
-//        } else {
-//            print("some error on deletion")
-//        }
-//
-//
-//        // retrive the saved transactions
-//        items = offlineManager.retriveAll()
-//        print(items)
     }
     
     // MARK - Public
