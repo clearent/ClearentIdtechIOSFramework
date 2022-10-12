@@ -14,8 +14,8 @@ import CryptoKit
  */
 class OfflineModeManager {
     
-    static let encryptionKey = SymmetricKey(data:SHA256.hash(data: "some_secret_key_here".data(using: .utf8)!))
     public var storage: TransactionStorageProtocol
+    public var encryptionKey: SymmetricKey
     
     init(storage: TransactionStorageProtocol) {
         self.storage = storage
@@ -82,7 +82,7 @@ class OfflineModeManager {
 }
 
 /**
- * Cryptor Manager, handles the encryption and decryption
+ * Crypto Helper, handles the encryption and decryption
  */
 
 class ClearentCryptor {
