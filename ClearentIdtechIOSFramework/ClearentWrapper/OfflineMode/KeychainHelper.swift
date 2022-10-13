@@ -1,3 +1,11 @@
+//
+//  KeychainHelper.swift
+//  ClearentIdtechIOSFramework
+//
+//  Created by Ovidiu Rotaru on 11.10.2022.
+//  Copyright © 2022 Clearent, L.L.C. All rights reserved.
+//
+
 import Foundation
 import CryptoKit
 

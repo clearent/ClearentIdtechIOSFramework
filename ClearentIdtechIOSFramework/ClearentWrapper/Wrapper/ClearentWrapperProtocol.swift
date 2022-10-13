@@ -67,8 +67,8 @@ public protocol ClearentWrapperProtocol : AnyObject {
     func didFinishTransaction(response: TransactionResponse?, error: ResponseError?)
     
     /**
-     * Method called when a offline transaction is finished
-     * @param error TransactionStoreStatus, the status off offline transaction proccesing
+     * Method called when an offline transaction is finished
+     * @param error TransactionStoreStatus, the status of the offline transaction processing
      */
     func didAcceptOfflineTransaction(err:TransactionStoreStatus)
     

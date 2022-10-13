@@ -374,7 +374,6 @@ public final class ClearentWrapper : NSObject {
     
     /**
      * Method that will fetch the tip settings for current mechant
-     * @param transactionID, ID of transaction to be voided
      * @param completion, the closure that will be called after receiving the data
      */
     public func fetchTipSetting(completion: @escaping () -> Void) {
