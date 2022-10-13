@@ -1763,8 +1763,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
         return;
     }
     
-    NSString *targetUrl = [NSString stringWithFormat:@"%@/%@", self.baseUrl, @"rest/v2/mobilejwt"];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    
     NSError *error;
     NSData *postData = [NSJSONSerialization dataWithJSONObject:clearentTransactionTokenRequest.asDictionary options:0 error:&error];
 
@@ -1776,12 +1775,21 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     }
     
     [self deviceMessage:CLEARENT_TRANSLATING_CARD_TO_TOKEN];
-    [ClearentLumberjack logInfo:@"➡️ Call Clearent to produce transaction token"];
     
     if ([self.publicDelegate respondsToSelector:@selector(successOfflineTransactionToken:)]) {
         [self.publicDelegate successOfflineTransactionToken:postData];
     }
+    
+    [self fetchTransactionToken: postData completion: nil];
+}
 
+- (void)fetchTransactionToken:(NSData*)postData completion:(void (^)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion {
+
+    processingCurrentRequest = YES;
+
+    [ClearentLumberjack logInfo:@"➡️ Call Clearent to produce transaction token"];
+    NSString *targetUrl = [NSString stringWithFormat:@"%@/%@", self.baseUrl, @"rest/v2/mobilejwt"];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setHTTPBody:postData];
     [request setHTTPMethod:@"POST"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
@@ -1803,7 +1811,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
           } else if(data != nil) {
               responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
               if(200 == [httpResponse statusCode]) {
-                  [self handleResponse:responseStr];
+                  [self handleResponse:responseStr completion: completion];
               } else {
                   [self handleError:responseStr];
               }
@@ -1837,7 +1845,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     }
 }
 
-- (void) handleResponse:(NSString *)response {
+- (void) handleResponse:(NSString *)response completion:(void (^)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion {
     NSData *data = [response dataUsingEncoding:NSUTF8StringEncoding];
     NSError *error;
     NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data
@@ -1855,7 +1863,12 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
             [self.publicDelegate successfulTransactionToken:response];
         }
         ClearentTransactionToken *clearentTransactionToken = [[ClearentTransactionToken alloc] initWithJson:response];
-        [self.publicDelegate successTransactionToken:clearentTransactionToken];
+        if (completion == nil) {
+            [self.publicDelegate successTransactionToken:clearentTransactionToken];
+        } else {
+            completion(clearentTransactionToken, nil);
+        }
+        
     } else {
         [ClearentLumberjack logError:@"handleResponse:Bad response when trying to make jwt"];
         [self deviceMessage:CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];

@@ -47,7 +47,7 @@ public final class ClearentWrapper : NSObject {
 
     private lazy var clearentVP3300: Clearent_VP3300 = {
         let config = ClearentVP3300Config(noContactlessNoConfiguration: baseURL, publicKey: publicKey)
-        return Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
+        return Clearent_VP3300(connectionHandling: self, clearentVP3300Configuration: config)
     }()
     
     lazy var offlineManager: OfflineModeManager = OfflineModeManager(storage: KeyChainStorage(serviceName: "987654321", account: "654321", encryptionKey: SymmetricKey(data:SHA256.hash(data: "some_secret_here".data(using: .utf8)!))))
@@ -196,8 +196,10 @@ public final class ClearentWrapper : NSObject {
      * @param SaleEntity,  holds informations used for the transcation
      * @param isManualTransaction,  specifies if the transaction is manual
      */
-    public func startTransaction(with saleEntity: SaleEntity, isManualTransaction: Bool) throws {
-        if let error = checkForMissingKeys() { throw error }
+    public func startTransaction(with saleEntity: SaleEntity, isManualTransaction: Bool, completion: @escaping((ClearentResultError?) -> Void)) {
+        if let error = checkForMissingKeys() {
+            completion(ClearentResultError(type: error))
+        }
         
         if !saleEntity.amount.canBeConverted(to: .utf8) { return }
         if let tip = saleEntity.tipAmount, !tip.canBeConverted(to: .utf8) { return }
@@ -211,7 +213,9 @@ public final class ClearentWrapper : NSObject {
             saveOfflineTransaction(transaction: offtr)
             
             // else
-            manualEntryTransaction()
+            manualEntryTransaction(saleEntity: saleEntity) { error in
+                completion(error)
+            }
         } else {
             cardReaderTransaction()
         }
@@ -233,42 +237,42 @@ public final class ClearentWrapper : NSObject {
      * @param jwt, Token received from the card reader
      * @param SaleEntity, information about the transaction
      */
-    public func saleTransaction(jwt: String, saleEntity: SaleEntity) {
+    public func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (TransactionResponse?, ClearentResultError?) -> Void) {
         httpClient.saleTransaction(jwt: jwt, saleEntity: saleEntity) { data, error in
             guard let responseData = data else { return }
         
             do {
                 let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
                 guard let transactionError = decodedResponse.payload.error else {
-                    DispatchQueue.main.async {
+                   // DispatchQueue.main.async {
                         if let linksItem = decodedResponse.links?.first {
                             self.lastTransactionID = linksItem.id
                         }
-                        
-                        self.delegate?.didFinishTransaction(response: decodedResponse, error: nil)
-                    }
+                        print("🍎 success: saleTransaction finished")
+                        completion(decodedResponse, nil)
+                        ///self.delegate?.didFinishTransaction(response: decodedResponse, error: nil)
+                   // }
                     return
                 }
-                DispatchQueue.main.async {
-                    self.delegate?.didFinishTransaction(response: decodedResponse, error: transactionError)
-                }
+                //DispatchQueue.main.async {
+                    print("🍎 error: saleTransaction finished: \(transactionError)")
+                    completion(decodedResponse, ClearentResultError(code: transactionError.code, message: transactionError.message, type: .networkError))
+                   // self.delegate?.didFinishTransaction(response: decodedResponse, error: transactionError)
+                //}
             } catch let jsonDecodingError {
-                self.delegate?.didFinishTransaction(response: nil, error: ResponseError.init(code: "xsdk_response_parsing_error".localized,
-                                                                                             message: "xsdk_http_response_parsing_error_message".localized))
+                completion(nil, ClearentResultError(code: "xsdk_response_parsing_error".localized, message: "xsdk_http_response_parsing_error_message".localized, type: .networkError))
+               // self.delegate?.didFinishTransaction(response: nil, error: ResponseError.init(code: "xsdk_response_parsing_error".localized,
+                                                                                             //message: "xsdk_http_response_parsing_error_message".localized))
                 print(jsonDecodingError)
             }
         }
     }
     
-    public func resendSignature(completion: (CompletionResult) -> Void) {
+    public func resendSignature(completion:  @escaping(ClearentResultError?) -> Void) {
         guard let signatureImage = signatureImage else { return }
-        
-        do {
-            try sendSignatureWithImage(image: signatureImage)
-        } catch {
-            if let error = error as? ClearentResult {
-                completion(.failure(error))
-            }
+
+        sendSignatureWithImage(image: signatureImage) { (_, error) in
+            completion(error)
         }
     }
 
@@ -276,7 +280,8 @@ public final class ClearentWrapper : NSObject {
      * Method that will send a jpeg with client signature to the payment gateway for storage
      * @param image, UIImage to be uploaded
      */
-    public func sendSignatureWithImage(image: UIImage) throws {
+
+    public func sendSignatureWithImage(image: UIImage, completion: @escaping (SignatureResponse?, ClearentResultError?) -> Void) {
         
         // if offline mode on
         if let transactionID = offlineTransaction?.transactionID {
@@ -284,10 +289,16 @@ public final class ClearentWrapper : NSObject {
         }
         
         // else
-        if shouldDisplayConnectivityWarning(for: .payment) { return }
+        if shouldDisplayConnectivityWarning(for: .payment) {
+            completion(nil, ClearentResultError(type: .networkError))
+            return
+        }
+        if let error = checkForMissingKeys() {
+            completion(nil, ClearentResultError(type: error))
+        }
 
-        if let error = checkForMissingKeys() { throw error }
-        
+        print("sendSignatureWithImage")
+
         if let id = lastTransactionID {
             if let tid = Int(id) {
                  signatureImage = image
@@ -297,19 +308,25 @@ public final class ClearentWrapper : NSObject {
                      
                      do {
                          let decodedResponse = try JSONDecoder().decode(SignatureResponse.self, from: responseData)
-                         DispatchQueue.main.async {
+                        // DispatchQueue.main.async {
                              guard let signatureError = decodedResponse.payload.error else {
                                  self.signatureImage = nil
-                                 self.delegate?.didFinishedSignatureUploadWith(response: decodedResponse, error: nil)
+                                 //self.delegate?.didFinishedSignatureUploadWith(response: decodedResponse, error: nil)
+                                 print("🍎 success: sendSignatureWithImage finished")
+                                 completion(decodedResponse, nil)
                                  return
                              }
-                             self.delegate?.didFinishedSignatureUploadWith(response: decodedResponse, error: signatureError)
-                         }
+                             //self.delegate?.didFinishedSignatureUploadWith(response: decodedResponse, error: signatureError)
+                             print("🍎 error: sendSignatureWithImage finished")
+                             completion(decodedResponse, ClearentResultError(code: signatureError.code, message: signatureError.message, type: .networkError))
+                        // }
                          // error call delegate
                      } catch let jsonDecodingError {
-                         self.delegate?.didFinishedSignatureUploadWith(response:nil ,
-                                                                       error: ResponseError.init(code: "xsdk_response_parsing_error".localized,
-                                                                                                 message: "xsdk_http_response_parsing_error_message".localized))
+                         //self.delegate?.didFinishedSignatureUploadWith(response:nil ,
+//                                                                       error: ResponseError.init(code: "xsdk_response_parsing_error".localized,
+//                                                                                                 message: "xsdk_http_response_parsing_error_message".localized))
+                         print("🍎 error: sendSignatureWithImage finished")
+                         completion(nil, ClearentResultError(code: "xsdk_response_parsing_error".localized, message: "xsdk_http_response_parsing_error_message".localized, type: .networkError))
                          print(jsonDecodingError)
                      }
                  }
@@ -322,8 +339,10 @@ public final class ClearentWrapper : NSObject {
      * @param jwt, Token generated by te card reader
      * @param amount, Amount to be refunded
      */
-    public func refundTransaction(jwt: String, amount: String) throws {
-        if let error = checkForMissingKeys() { throw error }
+    public func refundTransaction(jwt: String, amount: String, completion: @escaping (TransactionResponse?, ClearentResultError?) -> Void) {
+        if let error = checkForMissingKeys() {
+            completion(nil, ClearentResultError(type: error))
+        }
         
         httpClient.refundTransaction(jwt: jwt, saleEntity: SaleEntity(amount: amount)) { data, error in
             guard let responseData = data else { return }
@@ -331,14 +350,16 @@ public final class ClearentWrapper : NSObject {
             do {
                 let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
                 guard let transactionError = decodedResponse.payload.error else {
-                    DispatchQueue.main.async {
-                        self.delegate?.didFinishTransaction(response: decodedResponse, error: nil)
-                    }
+                   // DispatchQueue.main.async {
+                        completion(decodedResponse, nil)
+                       // self.delegate?.didFinishTransaction(response: decodedResponse, error: nil)
+                   // }
                     return
                 }
-                DispatchQueue.main.async {
-                    self.delegate?.didFinishTransaction(response: decodedResponse, error: transactionError)
-                }
+                //DispatchQueue.main.async {
+                    completion(decodedResponse, ClearentResultError(code: transactionError.code, message: transactionError.message, type: .networkError))
+                    //self.delegate?.didFinishTransaction(response: decodedResponse, error: transactionError)
+                //}
             } catch let jsonDecodingError {
                 print(jsonDecodingError)
             }
@@ -349,8 +370,10 @@ public final class ClearentWrapper : NSObject {
      * Method that will void a transaction
      * @param transactionID, ID of the transaction to be voided
      */
-    public func voidTransaction(transactionID: String) throws {
-        if let error = checkForMissingKeys() { throw error }
+    public func voidTransaction(transactionID: String, completion: @escaping (TransactionResponse?, ClearentResultError?) -> Void) {
+        if let error = checkForMissingKeys() {
+            completion(nil, ClearentResultError(type: error))
+        }
         
         httpClient.voidTransaction(transactionID: transactionID) { data, error in
             guard let responseData = data else { return }
@@ -358,14 +381,16 @@ public final class ClearentWrapper : NSObject {
             do {
                 let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
                 guard let transactionError = decodedResponse.payload.error else {
-                    DispatchQueue.main.async {
-                        self.delegate?.didFinishTransaction(response: decodedResponse, error: nil)
-                    }
+                    //DispatchQueue.main.async {
+                        completion(decodedResponse, nil)
+                        //self.delegate?.didFinishTransaction(response: decodedResponse, error: nil)
+                    //}
                     return
                 }
-                DispatchQueue.main.async {
-                    self.delegate?.didFinishTransaction(response: decodedResponse, error: transactionError)
-                }
+                //DispatchQueue.main.async {
+                    completion(decodedResponse, ClearentResultError(code: transactionError.code, message: transactionError.message, type: .networkError))
+                    //self.delegate?.didFinishTransaction(response: decodedResponse, error: transactionError)
+                //}
             } catch let jsonDecodingError {
                 print(jsonDecodingError)
             }
@@ -559,10 +584,10 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
-    private func checkForMissingKeys() -> ClearentResult? {
-        guard !baseURL.isEmpty else { return ClearentResult.baseURLNotProvided }
-        guard !apiKey.isEmpty else { return ClearentResult.apiKeyNotProvided }
-        guard !publicKey.isEmpty else { return ClearentResult.publicKeyNotProvided }
+    private func checkForMissingKeys() -> ClearentErrorType? {
+        guard !baseURL.isEmpty else { return ClearentErrorType.baseURLNotProvided }
+        guard !apiKey.isEmpty else { return ClearentErrorType.apiKeyNotProvided }
+        guard !publicKey.isEmpty else { return ClearentErrorType.publicKeyNotProvided }
         
         return nil
     }
@@ -570,14 +595,16 @@ public final class ClearentWrapper : NSObject {
     /**
      * Method that performs a manual card transaction
      */
-    private func manualEntryTransaction() {
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let strongSelf = self, let saleEntity = strongSelf.saleEntity else { return }
+    private func manualEntryTransaction(saleEntity: SaleEntity, completion: @escaping ((ClearentResultError?) -> Void)) {
+       // DispatchQueue.global(qos: .userInteractive).async { [weak self] in
+        let dispatchQueue = DispatchQueue(label: "Background", qos: .userInteractive, attributes: .concurrent)
+        dispatchQueue.async { [weak self] in
+            guard let strongSelf = self else { return }
             let card = ClearentCard()
             card.card = saleEntity.card
             card.expirationDateMMYY = saleEntity.expirationDateMMYY
             card.csc = saleEntity.csc
-            strongSelf.clearentManualEntry.createTransactionToken(card)
+            strongSelf.clearentManualEntry.createTransactionToken(card, completion: nil)
         }
     }
     
@@ -585,15 +612,43 @@ public final class ClearentWrapper : NSObject {
      * Method that will start a card reader transaction
      */
     private func cardReaderTransaction() {
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let strongSelf = self, let saleEntity = strongSelf.saleEntity else { return }
+        let dispatchQueue = DispatchQueue(label: "userInteractive", qos: .userInteractive, attributes: .concurrent)
+        dispatchQueue.async { [weak self] in
+            guard let strongSelf = self else { return }
             ClearentWrapper.shared.startDeviceInfoUpdate()
             let payment = ClearentPayment.init(sale: ())
-            payment?.amount = Double(saleEntity.amount) ?? 0
             strongSelf.clearentVP3300.startTransaction(payment, clearentConnection: strongSelf.connection)
         }
     }
     
+    private func offlineSale(offlineTransaction: OfflineTransaction, token: ClearentTransactionToken?, error: Error?, completion: @escaping ((ClearentResultError?) -> Void)) {
+        guard let token = token else {
+            completion(.init(type: .missingToken))
+            return
+        }
+
+        // make sure we have two decimals otherwise the API will return an error
+        let saleEntity = offlineTransaction.paymentData.saleEntity
+        saleEntity.amount = saleEntity.amount.setTwoDecimals()
+        saleEntity.tipAmount = saleEntity.tipAmount?.setTwoDecimals()
+        saleTransaction(jwt: token.jwt, saleEntity: saleEntity) { [weak self] (response, error) in
+            if let error = error {
+                completion(error)
+            } else {
+                guard let image = self?.offlineManager.retriveSignatureForTransaction(transactionID: offlineTransaction.transactionID) else {
+                    completion(ClearentResultError(type: .missingData))
+                    return
+                }
+                self?.sendSignatureWithImage(image: image) { (_, error) in
+                    if let error = error {
+                        completion(error)
+                    } else {
+                        completion(nil)
+                    }
+                }
+            }
+        }
+    }
     /**
      * Saves and validates offline transactions, calls a delegate method with the result
      *  @param transaction, represents an offline transaction
@@ -613,6 +668,68 @@ public final class ClearentWrapper : NSObject {
         let status = offlineManager.saveSignatureForTransaction(transactionID: transactionID, image: image)
         self.delegate?.didAcceptOfflineSignature(err: status, transactionID: transactionID)
     }
+    
+    public func processOfflineTransactions() {
+        offlineManager.storage.deleteAllData()
+        generateOfflineTransactions()
+        
+        let offlineTransactions = offlineManager.retriveAll()
+        var operations: [AsyncBlockOperation] = []
+        let operationQueue = OperationQueue()
+        operationQueue.qualityOfService = .utility
+        
+        let startTime = CFAbsoluteTimeGetCurrent()
+        for tr in offlineTransactions {
+            let blockOperation = AsyncBlockOperation { [weak self] operation in
+                guard let strongSelf = self else { return }
+                operation.state = .executing
+                
+                print("🍎tr: \(tr.paymentData.saleEntity.amount)")
+                let saleEntity = tr.paymentData.saleEntity
+                if tr.transactionType() == .manualTransaction {
+                    let card = ClearentCard()
+                    card.card = saleEntity.card
+                    card.expirationDateMMYY = saleEntity.expirationDateMMYY
+                    card.csc = saleEntity.csc
+                    strongSelf.clearentManualEntry.createTransactionToken(card) { [weak self](token, error) in
+                        self?.offlineSale(offlineTransaction: tr, token: token, error: error) { error in
+                            print("🍎 offlineSale finished manual: \(error?.message)")
+                            operation.state = .finished
+                        }
+                    }
+                } else {
+                    strongSelf.clearentVP3300.fetchTransactionToken(tr.paymentData.cardToken) { [weak self] (token, error) in
+                        self?.offlineSale(offlineTransaction: tr, token: token, error: error) { error in
+                            print("🍎 offlineSale finished card reader: \(error?.message)")
+                            operation.state = .finished
+                        }
+                    }
+                }
+            }
+            operationQueue.maxConcurrentOperationCount = 3
+            operations.append(blockOperation)
+        }
+        print("🍎 maxConcurrentOperationCount \(operationQueue.maxConcurrentOperationCount)")
+        DispatchQueue.global(qos: .background).async {
+            operationQueue.addOperations(operations, waitUntilFinished: true)
+            let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
+            print("🍎 Time elapsed for: \(timeElapsed) s.")
+            print("---🍎 Operations finished---")
+        }
+    }
+    
+    private func generateOfflineTransactions() {
+        for index in 1...25 {
+            let amount = "\(index).00"
+            let saleEntity1 = SaleEntity(amount: amount, card: "4111111111111111", csc: "999", expirationDateMMYY: "1122")
+            let paymentData1 = PaymentData(saleEntity: saleEntity1)
+            let offlineManualTr1 = OfflineTransaction(paymentData: paymentData1)
+            _ = offlineManager.saveOfflineTransaction(transaction: offlineManualTr1)
+        }
+
+        print("🍎 ITEMS COUNT: \(offlineManager.retriveAll().count)")
+    }
+
 }
 
 extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
@@ -620,19 +737,14 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     public func successTransactionToken(_ clearentTransactionToken: ClearentTransactionToken!) {
         guard let saleEntity = saleEntity else { return }
         // make sure we have two decimals otherwise the API will return an error
-        let amountArray = saleEntity.amount.split(separator: ".")
-        if (amountArray.last?.count == 1) {
-            saleEntity.amount = saleEntity.amount + "0"
-        }
+        saleEntity.amount = saleEntity.amount.setTwoDecimals()
+        saleEntity.tipAmount = saleEntity.tipAmount?.setTwoDecimals()
         
-        if let tipAmount = saleEntity.tipAmount {
-            let tipAmountArray = tipAmount.split(separator: ".")
-            if tipAmountArray.last?.count == 1 {
-                saleEntity.tipAmount = tipAmount + "0"
+        saleTransaction(jwt: clearentTransactionToken.jwt, saleEntity: saleEntity) { [weak self] (response, error) in
+            DispatchQueue.main.async {
+                self?.delegate?.didFinishTransaction(response: response, error: error)
             }
         }
-
-        saleTransaction(jwt: clearentTransactionToken.jwt, saleEntity: saleEntity)
     }
     
     public func successOfflineTransactionToken(_ clearentTransactionTokenRequestData: Data?) {
@@ -716,7 +828,9 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         
         DispatchQueue.main.async {
             if (message == "xsdk_token_generation_failed_message".localized) {
-                self.delegate?.didFinishTransaction(response: nil, error: ResponseError.init(code: "xsdk_general_error_title".localized, message: "xsdk_token_generation_failed_message".localized))
+                DispatchQueue.main.async {
+                    self.delegate?.didFinishTransaction(response: nil, error: ClearentResultError(code: "xsdk_general_error_title".localized, message: "xsdk_token_generation_failed_message".localized, type: .networkError))
+                }
             }
         }
     }

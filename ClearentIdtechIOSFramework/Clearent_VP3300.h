@@ -1584,6 +1584,8 @@ If you did not instruct the framework to do any configuration when you initializ
  */
 -(void) setPublicKey:(NSString*)publicKey;
 
+- (void)fetchTransactionToken:(NSData*)postData completion:(void (^_Nullable)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion;
+
 @end
 
 

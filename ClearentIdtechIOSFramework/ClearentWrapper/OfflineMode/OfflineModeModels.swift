@@ -28,13 +28,13 @@ struct ErrorStatus: Codable {
 */
 struct OfflineTransaction: CodableProtocol  {
     var createdDate: Date?
-    var transactionID: String?
+    var transactionID: String
     var paymentData: PaymentData
     var errorStatus: ErrorStatus?
     
-    init(transactionID: String? = nil, createdDate: Date? = nil, errorStatus: ErrorStatus? = nil, paymentData: PaymentData) {
+    init(createdDate: Date? = nil, errorStatus: ErrorStatus? = nil, paymentData: PaymentData) {
         self.createdDate = Date()
-        self.transactionID  = (transactionID == nil) ? UUID().uuidString : transactionID
+        self.transactionID  = UUID().uuidString
         self.paymentData = paymentData
         self.errorStatus = errorStatus
     }
