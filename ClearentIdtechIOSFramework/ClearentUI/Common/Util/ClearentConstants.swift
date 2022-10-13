@@ -16,6 +16,11 @@ import UIKit
     
     // MARK: - Internal
     
+    internal enum KeychainService {
+        static let account = "xplor_sdk_account"
+        static let serviceName = "xplor_sdk_offline_mode_service"
+    }
+    
     internal enum Messaging {
         static let suppress = "SUPPRESS"
     }

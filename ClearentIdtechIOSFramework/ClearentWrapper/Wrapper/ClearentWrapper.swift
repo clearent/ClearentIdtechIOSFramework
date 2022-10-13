@@ -35,7 +35,11 @@ public final class ClearentWrapper : NSObject {
     public var enableEnhancedMessaging: Bool = false
     
     /// Enables or disables the use of the store & forward feature
-    public var enableOfflineMode: Bool = false
+    internal var enableOfflineMode: Bool = false {
+        didSet {
+            clearentVP3300.setOfflineMode(enableOfflineMode)
+        }
+    }
     
     /// The state of the store & forward feature
     public var offlineModeState: OfflineModeState = .on
@@ -50,7 +54,7 @@ public final class ClearentWrapper : NSObject {
         return Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
     }()
     
-    lazy var offlineManager: OfflineModeManager = OfflineModeManager(storage: KeyChainStorage(serviceName: "987654321", account: "654321", encryptionKey: SymmetricKey(data:SHA256.hash(data: "some_secret_here".data(using: .utf8)!))))
+    var offlineManager: OfflineModeManager?
     
     private lazy var clearentManualEntry: ClearentManualEntry = {
         return ClearentManualEntry(self, clearentBaseUrl: baseURL, publicKey: publicKey)
@@ -121,6 +125,23 @@ public final class ClearentWrapper : NSObject {
     }
     
     // MARK - Public
+    
+    /**
+     * Method that should be called to enableOfflineMode
+     * @param key, encryption key usedf for encypting offline transactions
+     */
+    public func enableOfflineMode(key: SymmetricKey) {
+        enableOfflineMode = true
+        offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: ClearentConstants.KeychainService.serviceName, account: ClearentConstants.KeychainService.account, encryptionKey: key))
+    }
+    
+    /**
+     * Method that should be called to disableOfflineMode
+     */
+    public func disableOfflineMode() {
+        enableOfflineMode = false
+        offlineManager = nil
+    }
     
     /**
      * Method that will start the pairing process by creating a new connection and starting a bluetooth search.
@@ -599,7 +620,7 @@ public final class ClearentWrapper : NSObject {
      */
     private func saveOfflineTransaction(transaction: OfflineTransaction) {
         offlineTransaction = transaction
-        let status = offlineManager.saveOfflineTransaction(transaction: transaction)
+        guard let status = offlineManager?.saveOfflineTransaction(transaction: transaction) else { return  }
         self.delegate?.didAcceptOfflineTransaction(err: status)
     }
     
@@ -609,7 +630,7 @@ public final class ClearentWrapper : NSObject {
      *  @param the actual  image contianing the signature
      */
     private func saveSignatureImageForTransaction(transactionID:String, image: UIImage) {
-        let status = offlineManager.saveSignatureForTransaction(transactionID: transactionID, image: image)
+        guard let status = offlineManager?.saveSignatureForTransaction(transactionID: transactionID, image: image) else { return }
         self.delegate?.didAcceptOfflineSignature(err: status, transactionID: transactionID)
     }
 }

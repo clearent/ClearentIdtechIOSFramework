@@ -1580,9 +1580,14 @@ If you did not instruct the framework to do any configuration when you initializ
 - (void) sendRemoteLogs;
 
 /**
- *  if you've created  a Clearent_VP3300 object and just want to change the publicKey for a given Merchant you set the public key
+ *  If you've created  a Clearent_VP3300 object and just want to change the publicKey for a given Merchant you set the public key
  */
 -(void) setPublicKey:(NSString*)publicKey;
+
+/**
+ *  If you've created  a Clearent_VP3300 object and just want to change the offline mode fon or off
+ */
+-(void) setOfflineMode:(BOOL)offlineMode;
 
 @end
 
