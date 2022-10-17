@@ -77,8 +77,8 @@ class OfflineModeManager {
                 expirationDateItem.enteredValue = expirationDate
 
                 if ClearentFieldValidationHelper.isCardNumberValid(item: cardnoItem),
-                    ClearentFieldValidationHelper.isSecurityCodeValid(item: securityCodeItem),
-                    ClearentFieldValidationHelper.isExpirationDateValid(item: expirationDateItem) {
+                   ClearentFieldValidationHelper.isSecurityCodeValid(item: securityCodeItem){//,
+                    //ClearentFieldValidationHelper.isExpirationDateValid(item: expirationDateItem) {
                     return .success
                 }
             }
@@ -91,6 +91,18 @@ class OfflineModeManager {
 
     func clearStorage() {
         storage.deleteAllData()
+    }
+
+    // In case an error was received during the upload of offline transactions, update the transaction with the error
+    // Otherwise, delete the transaction
+    func updateOfflineTransaction(with error: ClearentResultError?, transaction: OfflineTransaction) -> TransactionStoreStatus {
+        if let error = error {
+            var transactionToBeUpdated = transaction
+            transactionToBeUpdated.errorStatus = ErrorStatus(error: error, updatedDate: Date())
+            return storage.updateTransaction(transaction: transactionToBeUpdated)
+        } else {
+            return storage.deleteTransactionWith(id: transaction.transactionID)
+        }
     }
 }
 

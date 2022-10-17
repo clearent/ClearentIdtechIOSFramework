@@ -71,11 +71,9 @@ static NSString *const EXPIRATION_DATE_REQUIRED = @"Expiration date required";
                  } else if(data != nil) {
                      responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                      if(200 == [httpResponse statusCode]) {
-                         printf("🍎 success: createTransactionToken\n");
                          [self handleResponse:responseStr completion: completion];
                      } else {
                          [self handleError:responseStr completion:completion];
-                         printf("🍎 error: createTransactionToken ");
                      }
                  }
                  data = nil;

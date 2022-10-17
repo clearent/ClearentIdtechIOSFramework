@@ -56,9 +56,7 @@ public final class ClearentWrapper : NSObject {
     
     var offlineManager: OfflineModeManager?
     
-    private lazy var clearentManualEntry: ClearentManualEntry = {
-        return ClearentManualEntry(self, clearentBaseUrl: baseURL, publicKey: publicKey)
-    }()
+    private var clearentManualEntry: ClearentManualEntry!
 
     private var offlineTransaction: OfflineTransaction? = nil
     private var connection  = ClearentConnection(bluetoothSearch: ())
@@ -210,6 +208,9 @@ public final class ClearentWrapper : NSObject {
         if enableEnhancedMessaging {
             readEnhancedMessages()
         }
+        
+        self.clearentManualEntry =  ClearentManualEntry(self, clearentBaseUrl: baseURL, publicKey: publicKey)
+
     }
     
     /**
@@ -219,7 +220,7 @@ public final class ClearentWrapper : NSObject {
      */
     public func startTransaction(with saleEntity: SaleEntity, isManualTransaction: Bool, completion: @escaping((ClearentResultError?) -> Void)) {
         if let error = checkForMissingKeys() {
-            completion(ClearentResultError(type: error))
+            completion(.init(type: error))
         }
         
         if !saleEntity.amount.canBeConverted(to: .utf8) { return }
@@ -265,25 +266,17 @@ public final class ClearentWrapper : NSObject {
             do {
                 let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
                 guard let transactionError = decodedResponse.payload.error else {
-                   // DispatchQueue.main.async {
-                        if let linksItem = decodedResponse.links?.first {
-                            self.lastTransactionID = linksItem.id
-                        }
-                        print("🍎 success: saleTransaction finished")
-                        completion(decodedResponse, nil)
-                        ///self.delegate?.didFinishTransaction(response: decodedResponse, error: nil)
-                   // }
+                    if let linksItem = decodedResponse.links?.first {
+                        self.lastTransactionID = linksItem.id
+                    }
+                    //print("🍎 success: saleTransaction finished")
+                    completion(decodedResponse, nil)
                     return
                 }
-                //DispatchQueue.main.async {
-                    print("🍎 error: saleTransaction finished: \(transactionError)")
-                    completion(decodedResponse, ClearentResultError(code: transactionError.code, message: transactionError.message, type: .networkError))
-                   // self.delegate?.didFinishTransaction(response: decodedResponse, error: transactionError)
-                //}
+                //print("🍎 error: saleTransaction finished: \(transactionError)")
+                completion(decodedResponse, ClearentResultError(code: transactionError.code, message: transactionError.message, type: .networkError))
             } catch let jsonDecodingError {
                 completion(nil, ClearentResultError(code: "xsdk_response_parsing_error".localized, message: "xsdk_http_response_parsing_error_message".localized, type: .networkError))
-               // self.delegate?.didFinishTransaction(response: nil, error: ResponseError.init(code: "xsdk_response_parsing_error".localized,
-                                                                                             //message: "xsdk_http_response_parsing_error_message".localized))
                 print(jsonDecodingError)
             }
         }
@@ -311,46 +304,41 @@ public final class ClearentWrapper : NSObject {
         
         // else
         if shouldDisplayConnectivityWarning(for: .payment) {
-            completion(nil, ClearentResultError(type: .networkError))
+            completion(nil, .init(type: .networkError))
             return
         }
-        if let error = checkForMissingKeys() {
-            completion(nil, ClearentResultError(type: error))
-        }
 
+        sendSignatureRequest(image: image, completion: completion)
+    }
+    
+    private func sendSignatureRequest(image: UIImage, completion: @escaping (SignatureResponse?, ClearentResultError?) -> Void) {
         print("sendSignatureWithImage")
-
-        if let id = lastTransactionID {
-            if let tid = Int(id) {
-                 signatureImage = image
-                 let base64Image =  image.jpegData(compressionQuality: 1)?.base64EncodedString() ?? ""
-                 httpClient.sendSignature(base64Image: base64Image, transactionID: tid) { data, error in
-                     guard let responseData = data else { return }
-                     
-                     do {
-                         let decodedResponse = try JSONDecoder().decode(SignatureResponse.self, from: responseData)
-                        // DispatchQueue.main.async {
-                             guard let signatureError = decodedResponse.payload.error else {
-                                 self.signatureImage = nil
-                                 //self.delegate?.didFinishedSignatureUploadWith(response: decodedResponse, error: nil)
-                                 print("🍎 success: sendSignatureWithImage finished")
-                                 completion(decodedResponse, nil)
-                                 return
-                             }
-                             //self.delegate?.didFinishedSignatureUploadWith(response: decodedResponse, error: signatureError)
-                             print("🍎 error: sendSignatureWithImage finished")
-                             completion(decodedResponse, ClearentResultError(code: signatureError.code, message: signatureError.message, type: .networkError))
-                        // }
-                         // error call delegate
-                     } catch let jsonDecodingError {
-                         //self.delegate?.didFinishedSignatureUploadWith(response:nil ,
-//                                                                       error: ResponseError.init(code: "xsdk_response_parsing_error".localized,
-//                                                                                                 message: "xsdk_http_response_parsing_error_message".localized))
-                         print("🍎 error: sendSignatureWithImage finished")
-                         completion(nil, ClearentResultError(code: "xsdk_response_parsing_error".localized, message: "xsdk_http_response_parsing_error_message".localized, type: .networkError))
-                         print(jsonDecodingError)
-                     }
-                 }
+        if let error = checkForMissingKeys() {
+            completion(nil, .init(type: error))
+        }
+        if let id = lastTransactionID, let tid = Int(id) {
+            signatureImage = image
+            let base64Image = image.jpegData(compressionQuality: 1)?.base64EncodedString() ?? ""
+            httpClient.sendSignature(base64Image: base64Image, transactionID: tid) { data, error in
+                guard let responseData = data else { return }
+                
+                do {
+                    let decodedResponse = try JSONDecoder().decode(SignatureResponse.self, from: responseData)
+                    DispatchQueue.main.async {
+                        guard let signatureError = decodedResponse.payload.error else {
+                            self.signatureImage = nil
+                            completion(decodedResponse, nil)
+                            return
+                        }
+                        completion(decodedResponse, .init(code: signatureError.code, message: signatureError.message, type: .networkError))
+                    }
+                // error call delegate
+                } catch let jsonDecodingError {
+                    DispatchQueue.main.async {
+                        completion(nil, ClearentResultError(code: "xsdk_response_parsing_error".localized, message: "xsdk_http_response_parsing_error_message".localized, type: .networkError))
+                        print(jsonDecodingError)
+                    }
+                }
             }
         }
     }
@@ -359,10 +347,11 @@ public final class ClearentWrapper : NSObject {
      * Method that will mark a transaction for refund
      * @param jwt, Token generated by te card reader
      * @param amount, Amount to be refunded
+     * @param completion, this is dispatched onto the main queue
      */
     public func refundTransaction(jwt: String, amount: String, completion: @escaping (TransactionResponse?, ClearentResultError?) -> Void) {
         if let error = checkForMissingKeys() {
-            completion(nil, ClearentResultError(type: error))
+            completion(nil, .init(type: error))
         }
         
         httpClient.refundTransaction(jwt: jwt, saleEntity: SaleEntity(amount: amount)) { data, error in
@@ -371,16 +360,12 @@ public final class ClearentWrapper : NSObject {
             do {
                 let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
                 guard let transactionError = decodedResponse.payload.error else {
-                   // DispatchQueue.main.async {
-                        completion(decodedResponse, nil)
-                       // self.delegate?.didFinishTransaction(response: decodedResponse, error: nil)
-                   // }
+                    completion(decodedResponse, nil)
                     return
                 }
-                //DispatchQueue.main.async {
-                    completion(decodedResponse, ClearentResultError(code: transactionError.code, message: transactionError.message, type: .networkError))
-                    //self.delegate?.didFinishTransaction(response: decodedResponse, error: transactionError)
-                //}
+                DispatchQueue.main.async {
+                    completion(decodedResponse, .init(code: transactionError.code, message: transactionError.message, type: .networkError))
+                }
             } catch let jsonDecodingError {
                 print(jsonDecodingError)
             }
@@ -390,10 +375,11 @@ public final class ClearentWrapper : NSObject {
     /**
      * Method that will void a transaction
      * @param transactionID, ID of the transaction to be voided
+     * @param completion, this is dispatched onto the main queue
      */
     public func voidTransaction(transactionID: String, completion: @escaping (TransactionResponse?, ClearentResultError?) -> Void) {
         if let error = checkForMissingKeys() {
-            completion(nil, ClearentResultError(type: error))
+            completion(nil, .init(type: error))
         }
         
         httpClient.voidTransaction(transactionID: transactionID) { data, error in
@@ -402,16 +388,14 @@ public final class ClearentWrapper : NSObject {
             do {
                 let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
                 guard let transactionError = decodedResponse.payload.error else {
-                    //DispatchQueue.main.async {
+                    DispatchQueue.main.async {
                         completion(decodedResponse, nil)
-                        //self.delegate?.didFinishTransaction(response: decodedResponse, error: nil)
-                    //}
+                    }
                     return
                 }
-                //DispatchQueue.main.async {
+                DispatchQueue.main.async {
                     completion(decodedResponse, ClearentResultError(code: transactionError.code, message: transactionError.message, type: .networkError))
-                    //self.delegate?.didFinishTransaction(response: decodedResponse, error: transactionError)
-                //}
+                }
             } catch let jsonDecodingError {
                 print(jsonDecodingError)
             }
@@ -616,8 +600,7 @@ public final class ClearentWrapper : NSObject {
      * Method that performs a manual card transaction
      */
     private func manualEntryTransaction(saleEntity: SaleEntity, completion: @escaping ((ClearentResultError?) -> Void)) {
-       // DispatchQueue.global(qos: .userInteractive).async { [weak self] in
-        let dispatchQueue = DispatchQueue(label: "Background", qos: .userInteractive, attributes: .concurrent)
+        let dispatchQueue = DispatchQueue(label: "xplor.UserInteractiveQueue", qos: .userInteractive, attributes: .concurrent)
         dispatchQueue.async { [weak self] in
             guard let strongSelf = self else { return }
             let card = ClearentCard()
@@ -632,7 +615,7 @@ public final class ClearentWrapper : NSObject {
      * Method that will start a card reader transaction
      */
     private func cardReaderTransaction() {
-        let dispatchQueue = DispatchQueue(label: "userInteractive", qos: .userInteractive, attributes: .concurrent)
+        let dispatchQueue = DispatchQueue(label: "xplor.UserInteractiveQueue", qos: .userInteractive, attributes: .concurrent)
         dispatchQueue.async { [weak self] in
             guard let strongSelf = self else { return }
             ClearentWrapper.shared.startDeviceInfoUpdate()
@@ -656,10 +639,10 @@ public final class ClearentWrapper : NSObject {
                 completion(error)
             } else {
                 guard let image = self?.offlineManager?.retriveSignatureForTransaction(transactionID: offlineTransaction.transactionID) else {
-                    completion(ClearentResultError(type: .missingSignatureImage))
+                    completion(.init(type: .missingSignatureImage))
                     return
                 }
-                self?.sendSignatureWithImage(image: image) { (_, error) in
+                self?.sendSignatureRequest(image:image) { (_, error) in
                     if let error = error {
                         completion(error)
                     } else {
@@ -689,22 +672,34 @@ public final class ClearentWrapper : NSObject {
         self.delegate?.didAcceptOfflineSignature(err: status, transactionID: transactionID)
     }
     
-    public func processOfflineTransactions() {
-        offlineManager?.storage.deleteAllData()
-        generateOfflineTransactions()
+    public func displayOfflineTransactions() {
+        let oldItems = offlineManager?.retriveAll()
         
+        print("🍎 ITEMS COUNT: \(offlineManager?.retriveAll().count)")
+        oldItems?.forEach {
+            if let error = $0.errorStatus {
+                print("🍎 id: \($0.transactionID), \(error.error.type.rawValue)")
+            } else {
+                print("🍎 id: \($0.transactionID), nil")
+            }
+            
+        }
+        generateOfflineTransactions()
+        guard let offlineTransactions = offlineManager?.retriveAll() else { return }
+        print("🍎 ITEMS COUNT: \(offlineManager?.retriveAll().count)")
+    }
+    
+    public func processOfflineTransactions() {
         guard let offlineTransactions = offlineManager?.retriveAll() else { return }
         var operations: [AsyncBlockOperation] = []
+        
         let operationQueue = OperationQueue()
         operationQueue.qualityOfService = .utility
-        
         let startTime = CFAbsoluteTimeGetCurrent()
         for tr in offlineTransactions {
             let blockOperation = AsyncBlockOperation { [weak self] operation in
                 guard let strongSelf = self else { return }
                 operation.state = .executing
-                
-                print("🍎tr: \(tr.paymentData.saleEntity.amount)")
                 let saleEntity = tr.paymentData.saleEntity
                 if tr.transactionType() == .manualTransaction {
                     let card = ClearentCard()
@@ -713,14 +708,16 @@ public final class ClearentWrapper : NSObject {
                     card.csc = saleEntity.csc
                     strongSelf.clearentManualEntry.createTransactionToken(card) { [weak self](token, error) in
                         self?.offlineSale(offlineTransaction: tr, token: token, error: error) { error in
-                            print("🍎 offlineSale finished manual: \(error?.message)")
+                            print("🍎 offlineSale finished manual id: \(tr.transactionID), error: \(error?.type.rawValue)")
+                            _ = self?.offlineManager?.updateOfflineTransaction(with: error, transaction: tr)
                             operation.state = .finished
                         }
                     }
                 } else {
                     strongSelf.clearentVP3300.fetchTransactionToken(tr.paymentData.cardToken) { [weak self] (token, error) in
                         self?.offlineSale(offlineTransaction: tr, token: token, error: error) { error in
-                            print("🍎 offlineSale finished card reader: \(error?.message)")
+                            print("🍎 offlineSale finished card reader id: \(tr.transactionID), error: \(error?.type.rawValue)")
+                            _ = self?.offlineManager?.updateOfflineTransaction(with: error, transaction: tr)
                             operation.state = .finished
                         }
                     }
@@ -730,24 +727,23 @@ public final class ClearentWrapper : NSObject {
             operations.append(blockOperation)
         }
         print("🍎 maxConcurrentOperationCount \(operationQueue.maxConcurrentOperationCount)")
-        DispatchQueue.global(qos: .background).async {
+        DispatchQueue.global(qos: .utility).async {
             operationQueue.addOperations(operations, waitUntilFinished: true)
             let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
             print("🍎 Time elapsed for: \(timeElapsed) s.")
             print("---🍎 Operations finished---")
         }
     }
-    
+
     private func generateOfflineTransactions() {
-        for index in 1...25 {
+        offlineManager?.storage.deleteAllData()
+        for index in 158...161 {
             let amount = "\(index).00"
-            let saleEntity1 = SaleEntity(amount: amount, card: "4111111111111111", csc: "999", expirationDateMMYY: "1122")
+            let saleEntity1 = SaleEntity(amount: amount, card: "4111 1111 1111 1111", csc: "999", expirationDateMMYY: "1123")
             let paymentData1 = PaymentData(saleEntity: saleEntity1)
             let offlineManualTr1 = OfflineTransaction(paymentData: paymentData1)
             _ = offlineManager?.saveOfflineTransaction(transaction: offlineManualTr1)
         }
-
-        print("🍎 ITEMS COUNT: \(offlineManager?.retriveAll().count)")
     }
 
 }

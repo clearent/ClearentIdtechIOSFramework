@@ -18,7 +18,7 @@ enum OfflineTransactionType :String, Codable {
  * ErrorStatus class represents an error received when the offline transaction is sent to the backend and fails
 */
 struct ErrorStatus: Codable {
-    var message: String
+    var error: ClearentResultError
     var updatedDate: Date
 }
 

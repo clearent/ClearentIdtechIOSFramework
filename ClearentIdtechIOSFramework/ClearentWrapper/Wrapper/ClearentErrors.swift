@@ -10,7 +10,7 @@
 /// Used to determine whether a flow succeeded or failed. The assosiated value is of type String? and represents the custom name of the reader
 public typealias CompletionResult = Result<String?, ClearentResultError>
 
-@objc public class ClearentResultError: NSObject, Error {
+@objc public class ClearentResultError: NSObject, Error, Codable {
     let type: ClearentErrorType
     let code: String?
     let message: String?
@@ -22,7 +22,7 @@ public typealias CompletionResult = Result<String?, ClearentResultError>
     }
 }
 
-@objc public enum ClearentErrorType: Int {
+@objc public enum ClearentErrorType: Int, Codable {
      /// The user aborted the current flow
     case cancelledByUser = 0
 
