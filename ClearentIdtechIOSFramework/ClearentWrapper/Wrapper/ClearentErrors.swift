@@ -8,9 +8,21 @@
 
 
 /// Used to determine whether a flow succeeded or failed. The assosiated value is of type String? and represents the custom name of the reader
-public typealias CompletionResult = Result<String?, ClearentResult>
+public typealias CompletionResult = Result<String?, ClearentResultError>
 
-@objc public enum ClearentResult:Int, Error {
+@objc public class ClearentResultError: NSObject, Error {
+    let type: ClearentErrorType
+    let code: String?
+    let message: String?
+    
+    init(code: String? = nil, message: String? = nil, type: ClearentErrorType) {
+        self.code = code
+        self.message = message
+        self.type = type
+    }
+}
+
+@objc public enum ClearentErrorType: Int {
      /// The user aborted the current flow
     case cancelledByUser = 0
 
@@ -22,7 +34,14 @@ public typealias CompletionResult = Result<String?, ClearentResult>
     
     /// No publicKey was passed to SDK
     case publicKeyNotProvided
+
+    case networkError
     
-    /// Process finished
-    case processFinishedWithoutError
+    case missingToken
+    
+    case missingSignatureImage
+    
+    var isMissingKeyError: Bool {
+        return [.apiKeyNotProvided, .baseURLNotProvided, .publicKeyNotProvided].contains(self)
+    }
 }

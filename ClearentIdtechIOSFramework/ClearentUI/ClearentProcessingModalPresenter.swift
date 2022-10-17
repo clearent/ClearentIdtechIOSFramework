@@ -160,7 +160,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         case .cancel:
             ClearentWrapper.shared.isNewPaymentProcess = true
             ClearentWrapper.shared.isOfflineModeConfirmed = false
-            modalProcessingView?.dismissViewController(result: .failure(.cancelledByUser))
+            modalProcessingView?.dismissViewController(result: .failure(ClearentResultError(type: .cancelledByUser)))
         case .retry, .pair:
             restartProcess(newPair: false)
         case .pairInFlow:
@@ -190,11 +190,13 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     
     func handleSignature(with image: UIImage) {
         modalProcessingView?.showLoadingView()
-        do {
-            try sdkWrapper.sendSignatureWithImage(image: image)
-        } catch {
-            if let error = error as? ClearentResult {
-                modalProcessingView?.dismissViewController(result: .failure(error))
+        sdkWrapper.sendSignatureWithImage(image: image) { [weak self] (response, error) in
+            DispatchQueue.main.async {
+                if let error = error, error.type.isMissingKeyError {
+                    self?.modalProcessingView?.dismissViewController(result: .failure(error))
+                } else {
+                    self?.sdkFeedbackProvider.didFinishedSignatureUploadWith(response: response, error: error)
+                }
             }
         }
     }
@@ -230,11 +232,10 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     func resendSignature() {
         modalProcessingView?.showLoadingView()
         
-        ClearentWrapper.shared.resendSignature { [weak self] result in
+        ClearentWrapper.shared.resendSignature { [weak self] error in
             guard let strongSelf = self else { return }
-            
-            if case .failure(_) = result {
-                strongSelf.modalProcessingView?.dismissViewController(result: result)
+            if let error = error {
+                strongSelf.modalProcessingView?.dismissViewController(result: .failure(error))
             }
         }
     }
@@ -369,12 +370,10 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 
     private func startTransaction(saleEntity: SaleEntity, isManualTransaction: Bool) {
         modalProcessingView?.showLoadingView()
-        
-        do {
-            try sdkWrapper.startTransaction(with: saleEntity, isManualTransaction: isManualTransaction)
-        } catch {
-            if let error = error as? ClearentResult {
-                modalProcessingView?.dismissViewController(result: .failure(error))
+        ClearentWrapper.shared.processOfflineTransactions()
+        sdkWrapper.startTransaction(with: saleEntity, isManualTransaction: isManualTransaction) { [weak self] error in
+            if let error = error {
+                self?.modalProcessingView?.dismissViewController(result: .failure(error))
             }
         }
     }
@@ -416,7 +415,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
         modalProcessingView?.updateContent(with: feedback)
     }
 
-    func didFinishTransaction(error: ResponseError?) {
+    func didFinishTransaction(error: ClearentResultError?) {
         if error == nil {
             if ClearentUIManager.shared.signatureEnabled {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {

@@ -97,7 +97,6 @@ class KeyChainStorage: TransactionStorageProtocol {
 
         let count = result.count
         result.removeAll(where: { $0.transactionID == transaction.transactionID })
-
         if count == result.count {
             response = .transactionDoesNotExist
         } else {
@@ -145,8 +144,8 @@ class KeyChainStorage: TransactionStorageProtocol {
         })
 
         let count = result.count
-        result.removeAll(where: { $0.transactionID == id })
 
+        result.removeAll(where: { $0.transactionID == id })
         if count == result.count {
             response = .transactionDoesNotExist
         } else {

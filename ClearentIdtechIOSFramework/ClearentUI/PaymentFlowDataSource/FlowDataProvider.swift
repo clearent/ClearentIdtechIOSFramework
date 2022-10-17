@@ -48,7 +48,7 @@ class FlowDataFactory {
 
 protocol FlowDataProtocol : AnyObject {
     func didFinishSignature()
-    func didFinishTransaction(error: ResponseError?)
+    func didFinishTransaction(error: ClearentResultError?)
     func deviceDidDisconnect()
     func didFinishedPairing()
     func didReceiveFlowFeedback(feedback: FlowFeedback)
@@ -105,7 +105,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         // handle offline signature
     }
     
-    func didFinishedSignatureUploadWith(response: SignatureResponse?, error: ResponseError?) {
+    func didFinishedSignatureUploadWith(response: SignatureResponse?, error: ClearentResultError?) {
         let feedback: FlowFeedback
         
         if error != nil {
@@ -150,7 +150,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         // handle offline transaction here
     }
         
-    func didFinishTransaction(response: TransactionResponse?, error: ResponseError?) {
+    func didFinishTransaction(response: TransactionResponse?, error: ClearentResultError?) {
         let feedback: FlowFeedback
         
         if let error = error {
@@ -421,7 +421,11 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
-    private func createDetailedErrorMessage(with errorCode: String, message: String?, transactionID: String?, exchangeID: String) -> String {
+    private func createDetailedErrorMessage(with errorCode: String?, message: String?, transactionID: String?, exchangeID: String) -> String {
+        guard let errorCode = errorCode else {
+            return ""
+        }
+
         var detailedErrorMessage = String(format: ClearentConstants.Localized.Error.errorCode, errorCode)
         
         if let errorMessage = message {

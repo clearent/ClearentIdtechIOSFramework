@@ -26,14 +26,15 @@ static NSString *const EXPIRATION_DATE_REQUIRED = @"Expiration date required";
         return self;
     }
 
-    - (void) handleManualEntryError:(NSString*)message {
+    - (void) handleManualEntryError:(NSString*)message completion:(void (^)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion {
         [ClearentLumberjack logError:message];
         [self.clearentManualEntryDelegate handleManualEntryError:message];
+        completion(nil, nil);
     }
-    
-    - (void) createTransactionToken:(ClearentCard*)clearentCard {
+
+    - (void) createTransactionToken:(ClearentCard*)clearentCard completion:(void (^)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion {
            if(clearentCard == nil || clearentCard.card == nil || [clearentCard.card isEqualToString:@""]) {
-               [self handleManualEntryError:CARD_REQUIRED];
+               [self handleManualEntryError:CARD_REQUIRED completion: completion];
                return;
            }
            if(clearentCard == nil || clearentCard.expirationDateMMYY == nil || [clearentCard.expirationDateMMYY isEqualToString:@""]) {
@@ -47,7 +48,7 @@ static NSString *const EXPIRATION_DATE_REQUIRED = @"Expiration date required";
            
            if (error) {
                [ClearentLumberjack logError:@"Failed to serialize card data"];
-               [self handleManualEntryError:GENERIC_ERROR_RESPONSE];
+               [self handleManualEntryError:GENERIC_ERROR_RESPONSE completion: completion];
                return;
            }
            
@@ -70,9 +71,11 @@ static NSString *const EXPIRATION_DATE_REQUIRED = @"Expiration date required";
                  } else if(data != nil) {
                      responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
                      if(200 == [httpResponse statusCode]) {
-                         [self handleResponse:responseStr];
+                         printf("🍎 success: createTransactionToken\n");
+                         [self handleResponse:responseStr completion: completion];
                      } else {
-                         [self handleError:responseStr];
+                         [self handleError:responseStr completion:completion];
+                         printf("🍎 error: createTransactionToken ");
                      }
                  }
                  data = nil;
@@ -82,27 +85,27 @@ static NSString *const EXPIRATION_DATE_REQUIRED = @"Expiration date required";
        }
 
        
-    - (void) handleError:(NSString*)response {
+    - (void) handleError:(NSString*)response completion:(void (^)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion {
            NSData *data = [response dataUsingEncoding:NSUTF8StringEncoding];
            NSError *error;
            NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data
                                                                           options:0
                                                                             error:&error];
            if (error) {
-               [self handleManualEntryError:GENERIC_ERROR_RESPONSE];
+               [self handleManualEntryError:GENERIC_ERROR_RESPONSE completion:completion];
            } else {
                NSDictionary *payloadDictionary = [jsonDictionary objectForKey:@"payload"];
                NSDictionary *errorDictionary = [payloadDictionary objectForKey:@"error"];
                NSString *errorMessage = [errorDictionary objectForKey:@"error-message"];
                if(errorMessage != nil) {
-                   [self handleManualEntryError:[NSString stringWithFormat:@"%@. %@.", GENERIC_ERROR_RESPONSE, errorMessage]];
+                   [self handleManualEntryError:[NSString stringWithFormat:@"%@. %@.", GENERIC_ERROR_RESPONSE, errorMessage] completion:completion];
                } else {
-                   [self handleManualEntryError:GENERIC_ERROR_RESPONSE];
+                   [self handleManualEntryError:GENERIC_ERROR_RESPONSE completion: completion];
                }
            }
        }
        
-    - (void) handleResponse:(NSString *)response {
+- (void) handleResponse:(NSString *)response completion:(void (^)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion {
            NSData *data = [response dataUsingEncoding:NSUTF8StringEncoding];
            NSError *error;
            NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data
@@ -118,7 +121,11 @@ static NSString *const EXPIRATION_DATE_REQUIRED = @"Expiration date required";
                    [self.clearentManualEntryDelegate successfulTransactionToken:response];
                }
                ClearentTransactionToken *clearentTransactionToken = [[ClearentTransactionToken alloc] initWithJson:response];
-               [self.clearentManualEntryDelegate successTransactionToken:clearentTransactionToken];
+               if (completion == nil) {
+                   [self.clearentManualEntryDelegate successTransactionToken:clearentTransactionToken];
+               } else {
+                   completion(clearentTransactionToken, nil);
+               }
            } else {
                [self handleManualEntryError:GENERIC_ERROR_RESPONSE];
            }
