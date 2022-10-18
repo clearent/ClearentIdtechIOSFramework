@@ -78,7 +78,7 @@ class OfflineModeManager {
 
                 if ClearentFieldValidationHelper.isCardNumberValid(item: cardnoItem),
                     ClearentFieldValidationHelper.isSecurityCodeValid(item: securityCodeItem),
-                    ClearentFieldValidationHelper.isExpirationDateValid(item: expirationDateItem) {
+                    ClearentFieldValidationHelper.isExpirationDateValidBeforeProcessing(item: expirationDateItem) {
                     return .success
                 }
             }
