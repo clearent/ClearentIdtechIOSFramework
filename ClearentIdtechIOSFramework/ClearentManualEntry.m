@@ -28,8 +28,11 @@ static NSString *const EXPIRATION_DATE_REQUIRED = @"Expiration date required";
 
     - (void) handleManualEntryError:(NSString*)message completion:(void (^)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion {
         [ClearentLumberjack logError:message];
-        [self.clearentManualEntryDelegate handleManualEntryError:message];
-        completion(nil, nil);
+        if (completion == nil) {
+            [self.clearentManualEntryDelegate handleManualEntryError:message];
+        } else {
+            completion(nil, nil);
+        }
     }
 
     - (void) createTransactionToken:(ClearentCard*)clearentCard completion:(void (^)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion {
@@ -73,7 +76,7 @@ static NSString *const EXPIRATION_DATE_REQUIRED = @"Expiration date required";
                      if(200 == [httpResponse statusCode]) {
                          [self handleResponse:responseStr completion: completion];
                      } else {
-                         [self handleError:responseStr completion:completion];
+                         [self handleError:responseStr completion: completion];
                      }
                  }
                  data = nil;
@@ -125,7 +128,7 @@ static NSString *const EXPIRATION_DATE_REQUIRED = @"Expiration date required";
                    completion(clearentTransactionToken, nil);
                }
            } else {
-               [self handleManualEntryError:GENERIC_ERROR_RESPONSE];
+               [self handleManualEntryError:GENERIC_ERROR_RESPONSE completion:completion];
            }
        }
 

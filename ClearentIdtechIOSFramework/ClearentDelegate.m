@@ -454,6 +454,10 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 }
 
 - (void) deviceMessage:(NSString*)message {
+    [self deviceMessage:message completion: nil];
+}
+
+- (void) deviceMessage:(NSString*)message completion:(void (^)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion {
     
     if(message == nil) {
         [ClearentLumberjack logInfo:@"deviceMessage:message nil"];
@@ -490,8 +494,12 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     }
     
     if([message isEqualToString:@"RETURN_CODE_LOW_VOLUME"]) {
-        if ([self.publicDelegate respondsToSelector:@selector(deviceMessage:)]) {
-            [self.publicDelegate deviceMessage:CLEARENT_AUDIO_JACK_LOW_VOLUME];
+        if (completion == nil) {
+            if ([self.publicDelegate respondsToSelector:@selector(deviceMessage:)]) {
+                [self.publicDelegate deviceMessage:CLEARENT_AUDIO_JACK_LOW_VOLUME];
+            }
+        } else {
+            completion(nil, nil);
         }
         return;
     }
@@ -530,10 +538,14 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     if([message containsString:@"BLE DEVICE FOUND"]) {
         [_clearentDeviceConnector handleBluetoothDeviceFound:message];
     } else {
-        if ([self.publicDelegate respondsToSelector:@selector(deviceMessage:)]) {
-            [self.publicDelegate deviceMessage:message];
+        if (completion == nil) {
+            if ([self.publicDelegate respondsToSelector:@selector(deviceMessage:)]) {
+                [self.publicDelegate deviceMessage:message];
+            }
+            [self sendFeedback:message];
+        } else {
+            completion(nil, nil);
         }
-        [self sendFeedback:message];
     }
 }
 
@@ -1818,7 +1830,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
               if(200 == [httpResponse statusCode]) {
                   [self handleResponse:responseStr completion: completion];
               } else {
-                  [self handleError:responseStr];
+                  [self handleError:responseStr completion:completion];
               }
           }
           processingCurrentRequest = NO;
@@ -1828,7 +1840,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
       }] resume];
 }
 
-- (void) handleError:(NSString*)response {
+- (void) handleError:(NSString*)response completion:(void (^)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion {
     NSData *data = [response dataUsingEncoding:NSUTF8StringEncoding];
     NSError *error;
     NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data
@@ -1836,15 +1848,15 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
                                                                      error:&error];
     if (error) {
         [ClearentLumberjack logError:@"handleError:Bad response when trying to make jwt"];
-        [self deviceMessage:CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
+        [self deviceMessage:CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE completion: completion];
     } else {
         NSDictionary *payloadDictionary = [jsonDictionary objectForKey:@"payload"];
         NSDictionary *errorDictionary = [payloadDictionary objectForKey:@"error"];
         NSString *errorMessage = [errorDictionary objectForKey:@"error-message"];
         if(errorMessage != nil) {
-             [self deviceMessage:[NSString stringWithFormat:@"%@. %@.", CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE, errorMessage]];
+            [self deviceMessage:[NSString stringWithFormat:@"%@. %@.", CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE, errorMessage] completion: completion];
         } else {
-           [self deviceMessage:CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
+            [self deviceMessage:CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE completion: completion];
         }
         [self clearCurrentRequest];
     }
