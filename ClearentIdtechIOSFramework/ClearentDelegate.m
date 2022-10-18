@@ -454,10 +454,10 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 }
 
 - (void) deviceMessage:(NSString*)message {
-    [self deviceMessage:message completion: nil];
+    [self deviceMessage:message completion:nil];
 }
 
-- (void) deviceMessage:(NSString*)message completion:(void (^)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion {
+- (void) deviceMessage:(NSString*)message completion:(void (^)(ClearentTransactionToken* _Nullable))completion {
     
     if(message == nil) {
         [ClearentLumberjack logInfo:@"deviceMessage:message nil"];
@@ -499,7 +499,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
                 [self.publicDelegate deviceMessage:CLEARENT_AUDIO_JACK_LOW_VOLUME];
             }
         } else {
-            completion(nil, nil);
+            completion(nil);
         }
         return;
     }
@@ -544,7 +544,7 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
             }
             [self sendFeedback:message];
         } else {
-            completion(nil, nil);
+            completion(nil);
         }
     }
 }
@@ -1800,7 +1800,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     [self fetchTransactionToken: postData completion: nil];
 }
 
-- (void)fetchTransactionToken:(NSData*)postData completion:(void (^)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion {
+- (void) fetchTransactionToken:(NSData*)postData completion:(void (^)(ClearentTransactionToken* _Nullable))completion {
 
     processingCurrentRequest = YES;
 
@@ -1840,7 +1840,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
       }] resume];
 }
 
-- (void) handleError:(NSString*)response completion:(void (^)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion {
+- (void) handleError:(NSString*)response completion:(void (^)(ClearentTransactionToken* _Nullable))completion {
     NSData *data = [response dataUsingEncoding:NSUTF8StringEncoding];
     NSError *error;
     NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data
@@ -1862,7 +1862,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     }
 }
 
-- (void) handleResponse:(NSString *)response completion:(void (^)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion {
+- (void) handleResponse:(NSString *)response completion:(void (^)(ClearentTransactionToken* _Nullable))completion {
     NSData *data = [response dataUsingEncoding:NSUTF8StringEncoding];
     NSError *error;
     NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data
@@ -1883,7 +1883,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
         if (completion == nil) {
             [self.publicDelegate successTransactionToken:clearentTransactionToken];
         } else {
-            completion(clearentTransactionToken, nil);
+            completion(clearentTransactionToken);
         }
         
     } else {

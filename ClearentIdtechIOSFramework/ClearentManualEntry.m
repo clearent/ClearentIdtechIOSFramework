@@ -26,20 +26,20 @@ static NSString *const EXPIRATION_DATE_REQUIRED = @"Expiration date required";
         return self;
     }
 
-    - (void) handleManualEntryError:(NSString*)message completion:(void (^)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion {
+    - (void) handleManualEntryError:(NSString*)message completion:(void (^)(ClearentTransactionToken* _Nullable))completion {
         [ClearentLumberjack logError:message];
         if (completion == nil) {
             [self.clearentManualEntryDelegate handleManualEntryError:message];
         } else {
-            completion(nil, nil);
+            completion(nil);
         }
     }
-
+    
     - (void) createTransactionToken:(ClearentCard*)clearentCard {
         [self createOfflineTransactionToken:clearentCard completion: nil];
     }
 
-    - (void) createOfflineTransactionToken:(ClearentCard*)clearentCard completion:(void (^)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion {
+    - (void) createOfflineTransactionToken:(ClearentCard*)clearentCard completion:(void (^)(ClearentTransactionToken* _Nullable))completion {
            if(clearentCard == nil || clearentCard.card == nil || [clearentCard.card isEqualToString:@""]) {
                [self handleManualEntryError:CARD_REQUIRED completion: completion];
                return;
@@ -90,7 +90,7 @@ static NSString *const EXPIRATION_DATE_REQUIRED = @"Expiration date required";
        }
 
        
-    - (void) handleError:(NSString*)response completion:(void (^)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion {
+    - (void) handleError:(NSString*)response completion:(void (^)(ClearentTransactionToken* _Nullable))completion {
            NSData *data = [response dataUsingEncoding:NSUTF8StringEncoding];
            NSError *error;
            NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data
@@ -110,7 +110,7 @@ static NSString *const EXPIRATION_DATE_REQUIRED = @"Expiration date required";
            }
        }
        
-- (void) handleResponse:(NSString *)response completion:(void (^)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion {
+    - (void) handleResponse:(NSString *)response completion:(void (^)(ClearentTransactionToken* _Nullable))completion {
            NSData *data = [response dataUsingEncoding:NSUTF8StringEncoding];
            NSError *error;
            NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data
@@ -129,7 +129,7 @@ static NSString *const EXPIRATION_DATE_REQUIRED = @"Expiration date required";
                if (completion == nil) {
                    [self.clearentManualEntryDelegate successTransactionToken:clearentTransactionToken];
                } else {
-                   completion(clearentTransactionToken, nil);
+                   completion(clearentTransactionToken);
                }
            } else {
                [self handleManualEntryError:GENERIC_ERROR_RESPONSE completion:completion];

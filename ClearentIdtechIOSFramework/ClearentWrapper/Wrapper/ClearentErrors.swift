@@ -6,19 +6,18 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
+/// Used to determine whether a flow succeeded or failed. The success case stores an optional string that represents the custom name of the reader
+public typealias CompletionResult = Result<String?, ClearentError>
 
-/// Used to determine whether a flow succeeded or failed. The assosiated value is of type String? and represents the custom name of the reader
-public typealias CompletionResult = Result<String?, ClearentResultError>
-
-@objc public class ClearentResultError: NSObject, Error, Codable {
+@objc public class ClearentError: NSObject, Error, Codable {
     let type: ClearentErrorType
     let code: String?
     let message: String?
     
-    init(code: String? = nil, message: String? = nil, type: ClearentErrorType) {
+    init(type: ClearentErrorType, code: String? = nil, message: String? = nil) {
+        self.type = type
         self.code = code
         self.message = message
-        self.type = type
     }
 }
 
@@ -35,7 +34,11 @@ public typealias CompletionResult = Result<String?, ClearentResultError>
     /// No publicKey was passed to SDK
     case publicKeyNotProvided
 
-    case networkError
+    case httpError
+    
+    case parseError
+    
+    case connectivityError
     
     case missingToken
     

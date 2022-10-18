@@ -74,7 +74,7 @@ public final class ClearentUIManager: NSObject {
      * @param amount, the amount to be charged in a transaction
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
-    @objc public func paymentViewController(amount: Double, completion: ((ClearentResultError?) -> Void)?) -> UINavigationController {
+    @objc public func paymentViewController(amount: Double, completion: ((ClearentError?) -> Void)?) -> UINavigationController {
         viewController(processType: .payment, amount: amount, dismissCompletion: { [weak self] result in
             let completionResult = self?.resultFor(completionResult: result)
             completion?(completionResult)
@@ -85,7 +85,7 @@ public final class ClearentUIManager: NSObject {
      * Method returns a UIController that can handle the pairing process of a card reader
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
-    @objc public func pairingViewController(completion: ((ClearentResultError?) -> Void)?) -> UINavigationController {
+    @objc public func pairingViewController(completion: ((ClearentError?) -> Void)?) -> UINavigationController {
         viewController(processType: .pairing(), dismissCompletion: { [weak self] result in
             let completionResult = self?.resultFor(completionResult: result)
             completion?(completionResult)
@@ -96,7 +96,7 @@ public final class ClearentUIManager: NSObject {
      * Method returns a UIController that will display a list containing current card reader informations and recently paired readers
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
-    @objc public func readersViewController(completion: ((ClearentResultError?) -> Void)?) -> UINavigationController {
+    @objc public func readersViewController(completion: ((ClearentError?) -> Void)?) -> UINavigationController {
         viewController(processType: .showReaders, dismissCompletion: {[weak self] result in
             let completionResult = self?.resultFor(completionResult: result)
             completion?(completionResult)
@@ -116,7 +116,7 @@ public final class ClearentUIManager: NSObject {
         return navigationController
     }
     
-    private func resultFor(completionResult: CompletionResult) -> ClearentResultError? {
+    private func resultFor(completionResult: CompletionResult) -> ClearentError? {
         switch completionResult {
         case .success(_):
             return nil

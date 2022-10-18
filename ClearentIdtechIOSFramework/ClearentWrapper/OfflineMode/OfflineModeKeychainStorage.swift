@@ -151,12 +151,13 @@ class KeyChainStorage: TransactionStorageProtocol {
         } else {
             let currentSavedItems: NSMutableArray = NSMutableArray(array: [])
             result.forEach { oftr in
-                if let transaction = oftr.encode() {
+                if let transaction = oftr.encode(), let encryptedData = try? ClearentCryptor.encrypt(encryptionKey:encryptionKey , contentData: transaction) {
                     currentSavedItems.add(transaction)
                 }
             }
-
-            return saveOfflineTransactionArray(offlineTransactions: currentSavedItems)
+            let tr = saveOfflineTransactionArray(offlineTransactions: currentSavedItems)
+            print("🍎 deleteTransactionWith saveOfflineTransactionArray: \(currentSavedItems.count)")
+            return tr
         }
 
         return response
@@ -175,7 +176,6 @@ class KeyChainStorage: TransactionStorageProtocol {
                 return .success
             }
         }
-
         return .encryptionError
     }
 }

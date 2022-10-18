@@ -570,7 +570,7 @@
     [clearentDelegate updateOfflineMode:offlineMode];
 }
 
-- (void)fetchTransactionToken:(NSData*)postData completion:(void (^)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion {
+- (void)fetchTransactionToken:(NSData*)postData completion:(void (^)(ClearentTransactionToken* _Nullable))completion {
     [clearentDelegate fetchTransactionToken:postData completion: completion];
 }
 

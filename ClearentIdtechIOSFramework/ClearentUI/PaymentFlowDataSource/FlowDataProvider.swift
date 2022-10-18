@@ -48,7 +48,7 @@ class FlowDataFactory {
 
 protocol FlowDataProtocol : AnyObject {
     func didFinishSignature()
-    func didFinishTransaction(error: ClearentResultError?)
+    func didFinishTransaction(error: ClearentError?)
     func deviceDidDisconnect()
     func didFinishedPairing()
     func didReceiveFlowFeedback(feedback: FlowFeedback)
@@ -105,7 +105,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         // handle offline signature
     }
     
-    func didFinishedSignatureUploadWith(response: SignatureResponse?, error: ClearentResultError?) {
+    func didFinishedSignatureUploadWith(response: SignatureResponse?, error: ClearentError?) {
         let feedback: FlowFeedback
         
         if error != nil {
@@ -121,7 +121,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         } else {
             let transactionItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.transaction_completed),
                                     FlowDataItem(type: .title, object: ClearentConstants.Localized.Signature.signatureUploadSuccessful)]
-
+            
             feedback = FlowDataFactory.component(with: .payment,
                                                  type: .info,
                                                  readerInfo: fetchReaderInfo(),
@@ -150,7 +150,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         // handle offline transaction here
     }
         
-    func didFinishTransaction(response: TransactionResponse?, error: ClearentResultError?) {
+    func didFinishTransaction(response: TransactionResponse?, error: ClearentError?) {
         let feedback: FlowFeedback
         
         if let error = error {

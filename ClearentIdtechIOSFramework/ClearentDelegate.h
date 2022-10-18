@@ -137,7 +137,7 @@ During a Contactless transaction, if events are enabled, they will be sent to th
 
 - (void) setEnhancedMessaging;
 
-- (void)fetchTransactionToken:(NSData*)postData completion:(void (^_Nullable)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion;
+- (void) fetchTransactionToken:(NSData*)postData completion:(void (^_Nullable)(ClearentTransactionToken* _Nullable))completion;
 
 @end
 

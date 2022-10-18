@@ -1589,7 +1589,7 @@ If you did not instruct the framework to do any configuration when you initializ
  */
 -(void) setOfflineMode:(BOOL)offlineMode;
 
-- (void)fetchTransactionToken:(NSData*)postData completion:(void (^_Nullable)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion;
+- (void) fetchTransactionToken:(NSData*)postData completion:(void (^_Nullable)(ClearentTransactionToken* _Nullable))completion;
 
 @end
 

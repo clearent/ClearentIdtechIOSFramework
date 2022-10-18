@@ -26,11 +26,11 @@
 
 - (void) createTransactionToken:(ClearentCard*)clearentCard;
 
-- (void) createOfflineTransactionToken:(ClearentCard*)clearentCard completion:(void (^_Nullable)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion;
+- (void) createOfflineTransactionToken:(ClearentCard*)clearentCard completion:(void (^_Nullable)(ClearentTransactionToken* _Nullable))completion;
 
 /**
  * Any errors will be returned here
  */
-- (void) handleManualEntryError:(NSString*)message;
+- (void) handleManualEntryError:(NSString*_Nullable)message;
 
 @end

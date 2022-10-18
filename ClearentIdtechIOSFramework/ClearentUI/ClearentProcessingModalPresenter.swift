@@ -410,7 +410,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
         modalProcessingView?.updateContent(with: feedback)
     }
 
-    func didFinishTransaction(error: ClearentResultError?) {
+    func didFinishTransaction(error: ClearentError?) {
         if error == nil {
             if ClearentUIManager.shared.signatureEnabled {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
