@@ -24,7 +24,9 @@
 - (id) init: (id <ClearentManualEntryDelegate>)clearentManualEntryDelegate clearentBaseUrl:(NSString*)clearentBaseUrl publicKey:(NSString*)publicKey ;
 
 
-- (void) createTransactionToken:(ClearentCard*)clearentCard completion:(void (^_Nullable)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion;
+- (void) createTransactionToken:(ClearentCard*)clearentCard;
+
+- (void) createOfflineTransactionToken:(ClearentCard*)clearentCard completion:(void (^_Nullable)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion;
 
 /**
  * Any errors will be returned here

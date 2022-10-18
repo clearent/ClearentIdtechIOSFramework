@@ -129,7 +129,7 @@ public final class ClearentWrapper : NSObject {
      * @param key, encryption key usedf for encypting offline transactions
      */
     public func enableOfflineMode(key: SymmetricKey) {
-        enableOfflineMode = true
+        enableOfflineMode = false
         offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: ClearentConstants.KeychainService.serviceName, account: ClearentConstants.KeychainService.account, encryptionKey: key))
     }
     
@@ -610,7 +610,7 @@ public final class ClearentWrapper : NSObject {
             card.card = saleEntity.card
             card.expirationDateMMYY = saleEntity.expirationDateMMYY
             card.csc = saleEntity.csc
-            strongSelf.clearentManualEntry.createTransactionToken(card, completion: nil)
+            strongSelf.clearentManualEntry.createTransactionToken(card)
         }
     }
     
@@ -673,6 +673,7 @@ public final class ClearentWrapper : NSObject {
     }
     
     public func processOfflineTransactions() {
+        
         guard let offlineTransactions = offlineManager?.retriveAll() else { return }
         var operations: [AsyncBlockOperation] = []
         
@@ -689,7 +690,7 @@ public final class ClearentWrapper : NSObject {
                     card.card = saleEntity.card
                     card.expirationDateMMYY = saleEntity.expirationDateMMYY
                     card.csc = saleEntity.csc
-                    strongSelf.clearentManualEntry.createTransactionToken(card) { [weak self](token, error) in
+                    strongSelf.clearentManualEntry.createOfflineTransactionToken(card) { [weak self](token, error) in
                         self?.uploadOfflineTransaction(offlineTransaction: tr, token: token, error: error) { error in
                             print("🍎 offlineSale finished manual id: \(tr.transactionID), error: \(String(describing: error?.type.rawValue))")
                             _ = self?.offlineManager?.updateOfflineTransaction(with: error, transaction: tr)
@@ -710,6 +711,7 @@ public final class ClearentWrapper : NSObject {
             operations.append(blockOperation)
         }
         DispatchQueue.global(qos: .utility).async {
+            Thread.sleep(forTimeInterval: 15)
             operationQueue.addOperations(operations, waitUntilFinished: true)
             let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
             print("---🍎 Operations finished, Time elapsed: \(timeElapsed) s.---")
@@ -735,7 +737,7 @@ public final class ClearentWrapper : NSObject {
     
     private func generateOfflineTransactions() {
         offlineManager?.storage.deleteAllData()
-        for index in 158...161 {
+        for index in 1...10 {
             let amount = "\(index).00"
             let saleEntity1 = SaleEntity(amount: amount, card: "4111 1111 1111 1111", csc: "999", expirationDateMMYY: "1123")
             let paymentData1 = PaymentData(saleEntity: saleEntity1)

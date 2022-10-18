@@ -35,13 +35,17 @@ static NSString *const EXPIRATION_DATE_REQUIRED = @"Expiration date required";
         }
     }
 
-    - (void) createTransactionToken:(ClearentCard*)clearentCard completion:(void (^)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion {
+    - (void) createTransactionToken:(ClearentCard*)clearentCard {
+        [self createOfflineTransactionToken:clearentCard completion: nil];
+    }
+
+    - (void) createOfflineTransactionToken:(ClearentCard*)clearentCard completion:(void (^)(ClearentTransactionToken* _Nullable, NSError* _Nullable))completion {
            if(clearentCard == nil || clearentCard.card == nil || [clearentCard.card isEqualToString:@""]) {
                [self handleManualEntryError:CARD_REQUIRED completion: completion];
                return;
            }
            if(clearentCard == nil || clearentCard.expirationDateMMYY == nil || [clearentCard.expirationDateMMYY isEqualToString:@""]) {
-               [self handleManualEntryError:EXPIRATION_DATE_REQUIRED];
+               [self handleManualEntryError:EXPIRATION_DATE_REQUIRED completion:completion];
                return;
            }
            NSString *targetUrl = [NSString stringWithFormat:@"%@/%@", self.clearentBaseUrl, @"rest/v2/mobilejwt/manual"];
@@ -69,7 +73,7 @@ static NSString *const EXPIRATION_DATE_REQUIRED = @"Expiration date required";
                  NSHTTPURLResponse *httpResponse = (NSHTTPURLResponse *) response;
                  NSString *responseStr = nil;
                  if(error != nil) {
-                     [self handleManualEntryError:error.description];
+                     [self handleManualEntryError:error.description completion:completion];
                     
                  } else if(data != nil) {
                      responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
@@ -113,7 +117,7 @@ static NSString *const EXPIRATION_DATE_REQUIRED = @"Expiration date required";
                                                                           options:0
                                                                             error:&error];
            if (error) {
-               [self handleManualEntryError:GENERIC_ERROR_RESPONSE];
+               [self handleManualEntryError:GENERIC_ERROR_RESPONSE completion:completion];
            }
            NSString *responseCode = [jsonDictionary objectForKey:@"code"];
            if([responseCode isEqualToString:@"200"]) {

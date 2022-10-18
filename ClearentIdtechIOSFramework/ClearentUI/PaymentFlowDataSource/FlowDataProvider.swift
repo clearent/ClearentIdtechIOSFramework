@@ -108,7 +108,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     func didFinishedSignatureUploadWith(response: SignatureResponse?, error: ClearentResultError?) {
         let feedback: FlowFeedback
         
-//        if error != nil {
+        if error != nil {
             let errItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
                             FlowDataItem(type: .title, object: ClearentConstants.Localized.Signature.signatureUploadFailure),
                             FlowDataItem(type: .userAction, object: FlowButtonType.retry),
@@ -118,16 +118,16 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  type: .signatureError,
                                                  readerInfo: fetchReaderInfo(),
                                                  payload: errItems)
-//        } else {
-//            let transactionItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.transaction_completed),
-//                                    FlowDataItem(type: .title, object: ClearentConstants.Localized.Signature.signatureUploadSuccessful)]
-//
-//            feedback = FlowDataFactory.component(with: .payment,
-//                                                 type: .info,
-//                                                 readerInfo: fetchReaderInfo(),
-//                                                 payload: transactionItems)
-//            delegate?.didFinishSignature()
-//        }
+        } else {
+            let transactionItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.transaction_completed),
+                                    FlowDataItem(type: .title, object: ClearentConstants.Localized.Signature.signatureUploadSuccessful)]
+
+            feedback = FlowDataFactory.component(with: .payment,
+                                                 type: .info,
+                                                 readerInfo: fetchReaderInfo(),
+                                                 payload: transactionItems)
+            delegate?.didFinishSignature()
+        }
         
         delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
