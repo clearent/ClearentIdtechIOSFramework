@@ -269,11 +269,9 @@ public final class ClearentWrapper : NSObject {
                     if let linksItem = decodedResponse.links?.first {
                         self.lastTransactionID = linksItem.id
                     }
-                    //print("🍎 success: saleTransaction finished")
                     completion(decodedResponse, nil)
                     return
                 }
-                //print("🍎 error: saleTransaction finished: \(transactionError)")
                 completion(decodedResponse, ClearentResultError(code: transactionError.code, message: transactionError.message, type: .networkError))
             } catch let jsonDecodingError {
                 completion(nil, ClearentResultError(code: "xsdk_response_parsing_error".localized, message: "xsdk_http_response_parsing_error_message".localized, type: .networkError))
@@ -282,11 +280,11 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
-    public func resendSignature(completion:  @escaping(ClearentResultError?) -> Void) {
+    public func resendSignature(completion: @escaping (SignatureResponse?, ClearentResultError?) -> Void) {
         guard let signatureImage = signatureImage else { return }
 
-        sendSignatureWithImage(image: signatureImage) { (_, error) in
-            completion(error)
+        sendSignatureWithImage(image: signatureImage) { (response, error) in
+            completion(response, .init(type: .networkError))
         }
     }
 
@@ -624,7 +622,7 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
-    private func offlineSale(offlineTransaction: OfflineTransaction, token: ClearentTransactionToken?, error: Error?, completion: @escaping ((ClearentResultError?) -> Void)) {
+    private func uploadOfflineTransaction(offlineTransaction: OfflineTransaction, token: ClearentTransactionToken?, error: Error?, completion: @escaping ((ClearentResultError?) -> Void)) {
         guard let token = token else {
             completion(.init(type: .missingToken))
             return
@@ -634,6 +632,7 @@ public final class ClearentWrapper : NSObject {
         let saleEntity = offlineTransaction.paymentData.saleEntity
         saleEntity.amount = saleEntity.amount.setTwoDecimals()
         saleEntity.tipAmount = saleEntity.tipAmount?.setTwoDecimals()
+        
         saleTransaction(jwt: token.jwt, saleEntity: saleEntity) { [weak self] (response, error) in
             if let error = error {
                 completion(error)
@@ -643,11 +642,7 @@ public final class ClearentWrapper : NSObject {
                     return
                 }
                 self?.sendSignatureRequest(image:image) { (_, error) in
-                    if let error = error {
-                        completion(error)
-                    } else {
-                        completion(nil)
-                    }
+                    completion(error)
                 }
             }
         }
@@ -707,7 +702,7 @@ public final class ClearentWrapper : NSObject {
                     card.expirationDateMMYY = saleEntity.expirationDateMMYY
                     card.csc = saleEntity.csc
                     strongSelf.clearentManualEntry.createTransactionToken(card) { [weak self](token, error) in
-                        self?.offlineSale(offlineTransaction: tr, token: token, error: error) { error in
+                        self?.uploadOfflineTransaction(offlineTransaction: tr, token: token, error: error) { error in
                             print("🍎 offlineSale finished manual id: \(tr.transactionID), error: \(error?.type.rawValue)")
                             _ = self?.offlineManager?.updateOfflineTransaction(with: error, transaction: tr)
                             operation.state = .finished
@@ -715,7 +710,7 @@ public final class ClearentWrapper : NSObject {
                     }
                 } else {
                     strongSelf.clearentVP3300.fetchTransactionToken(tr.paymentData.cardToken) { [weak self] (token, error) in
-                        self?.offlineSale(offlineTransaction: tr, token: token, error: error) { error in
+                        self?.uploadOfflineTransaction(offlineTransaction: tr, token: token, error: error) { error in
                             print("🍎 offlineSale finished card reader id: \(tr.transactionID), error: \(error?.type.rawValue)")
                             _ = self?.offlineManager?.updateOfflineTransaction(with: error, transaction: tr)
                             operation.state = .finished

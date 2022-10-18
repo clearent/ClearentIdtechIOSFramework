@@ -76,7 +76,7 @@ public final class ClearentUIManager: NSObject {
      */
     @objc public func paymentViewController(amount: Double, completion: ((ClearentResultError?) -> Void)?) -> UINavigationController {
         viewController(processType: .payment, amount: amount, dismissCompletion: { [weak self] result in
-            guard let completionResult = self?.resultFor(completionResult: result) else { return }
+            let completionResult = self?.resultFor(completionResult: result)
             completion?(completionResult)
         })
     }
@@ -87,7 +87,7 @@ public final class ClearentUIManager: NSObject {
      */
     @objc public func pairingViewController(completion: ((ClearentResultError?) -> Void)?) -> UINavigationController {
         viewController(processType: .pairing(), dismissCompletion: { [weak self] result in
-            guard let completionResult = self?.resultFor(completionResult: result) else { return }
+            let completionResult = self?.resultFor(completionResult: result)
             completion?(completionResult)
         })
     }
@@ -98,7 +98,7 @@ public final class ClearentUIManager: NSObject {
      */
     @objc public func readersViewController(completion: ((ClearentResultError?) -> Void)?) -> UINavigationController {
         viewController(processType: .showReaders, dismissCompletion: {[weak self] result in
-            guard let completionResult = self?.resultFor(completionResult: result) else { return }
+            let completionResult = self?.resultFor(completionResult: result)
             completion?(completionResult)
         })
     }
