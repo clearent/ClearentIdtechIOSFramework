@@ -46,6 +46,15 @@ class ClearentFieldValidationHelper {
         return !(endOfMonth < Date())
     }
 
+    static func isExpirationDateValidBeforeProcessing(item: ClearentPaymentItem) -> Bool {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "MMyy"
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        guard let date = dateFormatter.date(from: item.enteredValue),
+            let endOfMonth = Calendar.current.date(byAdding: .month, value: 1, to: date) else { return false }
+        return !(endOfMonth < Date())
+    }
+
     static func isSecurityCodeValid(item: ClearentPaymentItem) -> Bool {
         let regex = "\\d{3,\(item.maxNoOfChars)}"
         return evaluate(text: item.enteredValue, regex: regex)

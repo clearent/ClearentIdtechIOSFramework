@@ -39,8 +39,6 @@ public class SaleEntity: CodableProtocol {
     }
 }
 
-
-
 // MARK: - ClientInformation
 
 public struct ClientInformation: Codable {

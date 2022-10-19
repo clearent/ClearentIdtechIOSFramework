@@ -26,6 +26,10 @@ static NSString *const EXPIRATION_DATE_REQUIRED = @"Expiration date required";
         return self;
     }
 
+    - (void) handleManualEntryError:(NSString*)message {
+        [self handleManualEntryError:message completion:nil];
+    }
+
     - (void) handleManualEntryError:(NSString*)message completion:(void (^)(ClearentTransactionToken* _Nullable))completion {
         [ClearentLumberjack logError:message];
         if (completion == nil) {

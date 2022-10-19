@@ -640,6 +640,7 @@ public final class ClearentWrapper : NSObject {
         saleEntity.tipAmount = saleEntity.tipAmount?.setTwoDecimals()
         
         saleTransaction(jwt: token.jwt, saleEntity: saleEntity) { [weak self] (response, error) in
+            print("🍎saleTransaction")
             if let error = error {
                 completion(error)
             } else {
@@ -692,16 +693,21 @@ public final class ClearentWrapper : NSObject {
                     card.expirationDateMMYY = saleEntity.expirationDateMMYY
                     card.csc = saleEntity.csc
                     strongSelf.clearentManualEntry.createOfflineTransactionToken(card) { [weak self] token in
+                        print("🍎 createOfflineTransactionToken")
                         self?.uploadOfflineTransaction(offlineTransaction: tr, token: token) { error in
                             print("🍎 offlineSale finished manual id: \(tr.transactionID), error: \(String(describing: error?.type.rawValue))")
+                            print("🍎🍎🍎🍎🍎🍎")
                             _ = self?.offlineManager?.updateOfflineTransaction(with: error, transaction: tr)
                             operation.state = .finished
                         }
                     }
                 } else {
                     strongSelf.clearentVP3300.fetchTransactionToken(tr.paymentData.cardToken) { [weak self] token in
+                        print("🍎 createOfflineTransactionToken")
+                        
                         self?.uploadOfflineTransaction(offlineTransaction: tr, token: token) { error in
                             print("🍎 offlineSale finished card reader id: \(tr.transactionID), error: \(String(describing: error?.type.rawValue))")
+                            print("🍎🍎🍎🍎🍎🍎")
                             _ = self?.offlineManager?.updateOfflineTransaction(with: error, transaction: tr)
                             operation.state = .finished
                         }
@@ -711,6 +717,7 @@ public final class ClearentWrapper : NSObject {
             operationQueue.maxConcurrentOperationCount = 3
             operations.append(blockOperation)
         }
+        
         DispatchQueue.global(qos: .utility).async {
             //Thread.sleep(forTimeInterval: 2)
             operationQueue.addOperations(operations, waitUntilFinished: true)
@@ -736,7 +743,7 @@ public final class ClearentWrapper : NSObject {
     
     private func generateOfflineTransactions() {
         offlineManager?.storage.deleteAllData()
-        for index in 28...32 {
+        for index in 1...10 {
             let amount = "\(index).00"
             let saleEntity1 = SaleEntity(amount: amount, card: "4111 1111 1111 1111", csc: "999", expirationDateMMYY: "1123")
             let paymentData1 = PaymentData(saleEntity: saleEntity1)

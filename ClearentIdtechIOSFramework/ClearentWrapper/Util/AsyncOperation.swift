@@ -10,11 +10,7 @@ import Foundation
 
 open class AsyncOperation: Operation {
     public enum State: String {
-        case waiting = "isWaiting"
-        case ready = "isReady"
-        case executing = "isExecuting"
-        case finished = "isFinished"
-        case cancelled = "isCancelled"
+        case waiting, ready, executing, finished, cancelled
     }
 
     open var state: State = State.waiting {

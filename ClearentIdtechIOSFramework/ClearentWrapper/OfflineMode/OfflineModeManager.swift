@@ -77,8 +77,8 @@ class OfflineModeManager {
                 expirationDateItem.enteredValue = expirationDate
 
                 if ClearentFieldValidationHelper.isCardNumberValid(item: cardnoItem),
-                   ClearentFieldValidationHelper.isSecurityCodeValid(item: securityCodeItem){//,
-                    //ClearentFieldValidationHelper.isExpirationDateValid(item: expirationDateItem) {
+                    ClearentFieldValidationHelper.isSecurityCodeValid(item: securityCodeItem),
+                    ClearentFieldValidationHelper.isExpirationDateValidBeforeProcessing(item: expirationDateItem) {
                     return .success
                 }
             }

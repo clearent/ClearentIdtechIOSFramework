@@ -31,6 +31,6 @@
 /**
  * Any errors will be returned here
  */
-- (void) handleManualEntryError:(NSString*_Nullable)message;
+- (void) handleManualEntryError:(NSString*)message;
 
 @end
