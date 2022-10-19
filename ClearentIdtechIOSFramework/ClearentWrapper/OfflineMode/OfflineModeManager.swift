@@ -93,7 +93,7 @@ class OfflineModeManager {
         storage.deleteAllData()
     }
 
-    // In case an error was received during the upload of offline transactions, update the transaction with the error
+    // In case an error was received during the offline transactions upload, update the transaction with the error
     // Otherwise, delete the transaction
     func updateOfflineTransaction(with error: ClearentError?, transaction: OfflineTransaction) -> TransactionStoreStatus {
         if let error = error {

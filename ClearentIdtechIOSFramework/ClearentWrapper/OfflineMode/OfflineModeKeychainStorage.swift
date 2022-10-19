@@ -118,16 +118,16 @@ class KeyChainStorage: TransactionStorageProtocol {
     func deleteTransactionWith(id: String) -> TransactionStoreStatus {
         // Retrive the current saved data
         guard let savedData = helper.read(service: serviceName, account: account) else { return .genericError }
-        
+
         var result: [OfflineTransaction] = []
         var currentSavedItems: NSArray?
-        
+
         do {
             currentSavedItems = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSArray.self, from: savedData)
         } catch {
             return .genericError
         }
-        
+
         var response: TransactionStoreStatus = .success
         currentSavedItems?.forEach({ item in
             let data = item as? Data
@@ -142,7 +142,7 @@ class KeyChainStorage: TransactionStorageProtocol {
                 }
             }
         })
-        
+
         let count = result.count
         result.removeAll(where: { $0.transactionID == id })
         
@@ -160,7 +160,7 @@ class KeyChainStorage: TransactionStorageProtocol {
             
             return saveOfflineTransactionArray(offlineTransactions: currentSavedItems)
         }
-        
+
         return response
     }
 

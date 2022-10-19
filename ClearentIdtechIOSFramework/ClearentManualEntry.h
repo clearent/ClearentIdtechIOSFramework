@@ -36,7 +36,6 @@
  * @param clearentCard an object containing the card data inserted by the user
  * @param completion when a response is received from the backend, this completion is called
  */
-
 - (void) createOfflineTransactionToken:(ClearentCard*)clearentCard completion:(void (^_Nullable)(ClearentTransactionToken* _Nullable))completion;
 
 /**

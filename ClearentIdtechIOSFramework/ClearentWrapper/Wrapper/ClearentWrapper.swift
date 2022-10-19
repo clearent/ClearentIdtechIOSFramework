@@ -291,7 +291,7 @@ public final class ClearentWrapper : NSObject {
             completion(response, error)
         }
     }
-    
+
     /**
      * Method that will send a jpeg with client signature to the payment gateway for storage
      * @param image, UIImage to be uploaded
@@ -315,7 +315,6 @@ public final class ClearentWrapper : NSObject {
     }
     
     private func sendSignatureRequest(image: UIImage, completion: @escaping (SignatureResponse?, ClearentError?) -> Void) {
-        print("sendSignatureWithImage")
         if let error = checkForMissingKeys() {
             completion(nil, .init(type: error))
         }
