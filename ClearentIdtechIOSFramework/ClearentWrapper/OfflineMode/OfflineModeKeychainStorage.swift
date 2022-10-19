@@ -71,7 +71,7 @@ class KeyChainStorage: TransactionStorageProtocol {
         return result
     }
 
-    /// Fetches the saved data, serches for matching item , replaces the item  and saves the data, returns an error if the item is not found
+    /// Fetches the saved data, searches for matching item , replaces the item  and saves the data, returns an error if the item is not found
     /// If succesfull it will overwrite the data
     func updateTransaction(transaction: OfflineTransaction) -> TransactionStoreStatus {
         guard let savedData = helper.read(service: serviceName, account: account) else { return .genericError }
@@ -150,10 +150,12 @@ class KeyChainStorage: TransactionStorageProtocol {
         if count == result.count {
             response = .transactionDoesNotExist
         } else {
-            let currentSavedItems: NSMutableArray = NSMutableArray(array: [])
+            let currentSavedItems = NSMutableArray()
             result.forEach { oftr in
                 if let transaction = oftr.encode() {
-                    currentSavedItems.add(transaction)
+                    if let encryptedData = try? ClearentCryptor.encrypt(encryptionKey: encryptionKey, contentData: transaction) {
+                        currentSavedItems.add(encryptedData)
+                    }
                 }
             }
 
