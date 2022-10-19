@@ -74,26 +74,8 @@ class KeyChainStorage: TransactionStorageProtocol {
     /// Fetches the saved data, searches for matching item , replaces the item  and saves the data, returns an error if the item is not found
     /// If succesfull it will overwrite the data
     func updateTransaction(transaction: OfflineTransaction) -> TransactionStoreStatus {
-        guard let savedData = helper.read(service: serviceName, account: account) else { return .genericError }
-
-        var result: [OfflineTransaction] = []
-        var currentSavedItems: NSArray?
-
-        do {
-            currentSavedItems = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSArray.self, from: savedData)
-        } catch {
-            return .genericError
-        }
-
         var response: TransactionStoreStatus = .success
-        currentSavedItems?.forEach({ item in
-            let data = item as? Data
-            if let newData = data,
-               let decryptedData = try? ClearentCryptor.decrypt(encryptionKey: encryptionKey, encryptedContent: newData),
-               let decodedResponse = try? JSONDecoder().decode(OfflineTransaction.self, from: decryptedData) {
-               result.append(decodedResponse)
-            }
-        })
+        var result: [OfflineTransaction] = retriveAll()
 
         let count = result.count
         result.removeAll(where: { $0.transactionID == transaction.transactionID })
@@ -102,47 +84,15 @@ class KeyChainStorage: TransactionStorageProtocol {
             response = .transactionDoesNotExist
         } else {
             result.append(transaction)
-            let currentSavedItems: NSMutableArray = NSMutableArray(array: [])
-            result.forEach { oftr in
-                if let transaction = oftr.encode(),
-                   let encryptedData = try? ClearentCryptor.encrypt(encryptionKey:encryptionKey , contentData: transaction) {
-                   currentSavedItems.add(encryptedData)
-                }
-            }
-
-            return saveOfflineTransactionArray(offlineTransactions: currentSavedItems)
+            return encryptAndSaveTransactions(transactions: result)
         }
 
         return response
     }
 
     func deleteTransactionWith(id: String) -> TransactionStoreStatus {
-        // Retrive the current saved data
-        guard let savedData = helper.read(service: serviceName, account: account) else { return .genericError }
-
-        var result: [OfflineTransaction] = []
-        var currentSavedItems: NSArray?
-
-        do {
-            currentSavedItems = try NSKeyedUnarchiver.unarchivedObject(ofClass: NSArray.self, from: savedData)
-        } catch {
-            return .genericError
-        }
-
         var response: TransactionStoreStatus = .success
-        currentSavedItems?.forEach({ item in
-            let data = item as? Data
-            if let newData = data {
-                do {
-                    if let decryptedData = try? ClearentCryptor.decrypt(encryptionKey: encryptionKey, encryptedContent: newData) {
-                        let decodedResponse = try JSONDecoder().decode(OfflineTransaction.self, from: decryptedData)
-                        result.append(decodedResponse)
-                    }
-                } catch {
-                    response = .parsingError
-                }
-            }
-        })
+        var result: [OfflineTransaction] = retriveAll()
 
         let count = result.count
         result.removeAll(where: { $0.transactionID == id })
@@ -150,16 +100,7 @@ class KeyChainStorage: TransactionStorageProtocol {
         if count == result.count {
             response = .transactionDoesNotExist
         } else {
-            let currentSavedItems = NSMutableArray()
-            result.forEach { oftr in
-                if let transaction = oftr.encode() {
-                    if let encryptedData = try? ClearentCryptor.encrypt(encryptionKey: encryptionKey, contentData: transaction) {
-                        currentSavedItems.add(encryptedData)
-                    }
-                }
-            }
-
-            return saveOfflineTransactionArray(offlineTransactions: currentSavedItems)
+            return encryptAndSaveTransactions(transactions: result)
         }
 
         return response
@@ -169,6 +110,19 @@ class KeyChainStorage: TransactionStorageProtocol {
         helper.delete(service: serviceName, account: account)
     }
 
+    private func encryptAndSaveTransactions(transactions: [OfflineTransaction]) -> TransactionStoreStatus {
+        let currentSavedItems = NSMutableArray()
+        transactions.forEach { oftr in
+            if let transaction = oftr.encode() {
+                if let encryptedData = try? ClearentCryptor.encrypt(encryptionKey: encryptionKey, contentData: transaction) {
+                    currentSavedItems.add(encryptedData)
+                }
+            }
+        }
+
+        return saveOfflineTransactionArray(offlineTransactions: currentSavedItems)
+    }
+    
     private func saveOfflineTransactionArray(offlineTransactions: NSArray) -> TransactionStoreStatus {
         if let data = try? NSKeyedArchiver.archivedData(withRootObject: offlineTransactions as Any, requiringSecureCoding: true) {
             let result = helper.save(data, service: serviceName, account: account)
