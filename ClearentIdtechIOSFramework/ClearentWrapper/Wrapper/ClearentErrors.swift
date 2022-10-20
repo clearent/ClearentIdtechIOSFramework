@@ -34,14 +34,16 @@ public typealias CompletionResult = Result<String?, ClearentError>
     /// No publicKey was passed to SDK
     case publicKeyNotProvided
 
+    /// Error related to http response
     case httpError
     
-    case parseError
-    
+    /// No internet connection or bluetooth availabe
     case connectivityError
-    
+
+    /// No transaction token was received from backend
     case missingToken
     
+    /// Signature image not found on user defaults for offline transaction
     case missingSignatureImage
     
     var isMissingKeyError: Bool {

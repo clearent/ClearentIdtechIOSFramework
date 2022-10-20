@@ -139,7 +139,7 @@ During a Contactless transaction, if events are enabled, they will be sent to th
 
 
 /**
- * This method does a POST request to the backned in order to obtain a transaction token.
+ * This method does a POST request to obtain a transaction token.
  *
  * @param postData: this represents a token which will be inserted in the HTTPBody of the request
  * @param completion: the block that is being called after a reponse is received from backned

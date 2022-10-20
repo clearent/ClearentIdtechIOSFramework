@@ -28,6 +28,9 @@ public final class ClearentWrapper : NSObject {
     /// Specifies what payment flow is preferred. If true, card reader is used. Otherwise, a form where the user has to enter manually the card info is displayed.
     public var cardReaderPaymentIsPreffered: Bool = true
     
+    /// Specifies is signature feature should be enabled or not. If enabled, at the end of a transaction, a view where the user can draw a signature is displayed in UI.
+    public var signatureEnabled: Bool = true
+    
     /// If card reader payment fails, the option to use manual payment can be displayed in UI as a fallback method. If user selects this method, useManualPaymentAsFallback needs to be set to true.
     public var useManualPaymentAsFallback: Bool?
     
@@ -56,7 +59,7 @@ public final class ClearentWrapper : NSObject {
     
     var offlineManager: OfflineModeManager?
     
-    private var clearentManualEntry: ClearentManualEntry!
+    private var clearentManualEntry: ClearentManualEntry?
 
     private var offlineTransaction: OfflineTransaction? = nil
     private var connection  = ClearentConnection(bluetoothSearch: ())
@@ -209,8 +212,7 @@ public final class ClearentWrapper : NSObject {
             readEnhancedMessages()
         }
         
-        self.clearentManualEntry =  ClearentManualEntry(self, clearentBaseUrl: baseURL, publicKey: publicKey)
-
+        self.clearentManualEntry = ClearentManualEntry(self, clearentBaseUrl: baseURL, publicKey: publicKey)
     }
     
     /**
@@ -273,7 +275,7 @@ public final class ClearentWrapper : NSObject {
                 }
                 completion(decodedResponse, ClearentError(type: .httpError, code: transactionError.code, message: transactionError.message))
             } catch let jsonDecodingError {
-                completion(nil, ClearentError(type: .parseError, code: "xsdk_response_parsing_error".localized, message: "xsdk_http_response_parsing_error_message".localized))
+                completion(nil, ClearentError(type: .httpError, code: "xsdk_response_parsing_error".localized, message: "xsdk_http_response_parsing_error_message".localized))
                 print(jsonDecodingError)
             }
         }
@@ -337,7 +339,7 @@ public final class ClearentWrapper : NSObject {
                 // error call delegate
                 } catch let jsonDecodingError {
                     DispatchQueue.main.async {
-                        completion(nil, ClearentError(type: .parseError, code: "xsdk_response_parsing_error".localized, message: "xsdk_http_response_parsing_error_message".localized))
+                        completion(nil, ClearentError(type: .httpError, code: "xsdk_response_parsing_error".localized, message: "xsdk_http_response_parsing_error_message".localized))
                         print(jsonDecodingError)
                     }
                 }
@@ -462,9 +464,12 @@ public final class ClearentWrapper : NSObject {
         
         return response.int == 3
     }
-    
-    public func processOfflineTransactions() {
-        
+
+    /**
+     * Method that uploads all transactions that were made in offline mode
+     * @param completion, the closure that will be called after all offline transactions are processed
+     */
+    public func processOfflineTransactions(completion: @escaping (() -> Void)) {
         guard let offlineTransactions = offlineManager?.retriveAll() else { return }
         var operations: [AsyncBlockOperation] = []
         
@@ -480,7 +485,7 @@ public final class ClearentWrapper : NSObject {
                     card.card = saleEntity.card
                     card.expirationDateMMYY = saleEntity.expirationDateMMYY
                     card.csc = saleEntity.csc
-                    strongSelf.clearentManualEntry.createOfflineTransactionToken(card) { [weak self] token in
+                    strongSelf.clearentManualEntry?.createOfflineTransactionToken(card) { [weak self] token in
                         self?.sendOfflineTransaction(offlineTransaction: tr, token: token) { error in
                             _ = self?.offlineManager?.updateOfflineTransaction(with: error, transaction: tr)
                             operation.state = .finished
@@ -501,6 +506,9 @@ public final class ClearentWrapper : NSObject {
         
         DispatchQueue.global(qos: .utility).async {
             operationQueue.addOperations(operations, waitUntilFinished: true)
+            DispatchQueue.main.async {
+                completion()
+            }
         }
     }
 
@@ -650,7 +658,7 @@ public final class ClearentWrapper : NSObject {
             card.card = saleEntity.card
             card.expirationDateMMYY = saleEntity.expirationDateMMYY
             card.csc = saleEntity.csc
-            strongSelf.clearentManualEntry.createTransactionToken(card)
+            strongSelf.clearentManualEntry?.createTransactionToken(card)
         }
     }
     
@@ -679,9 +687,10 @@ public final class ClearentWrapper : NSObject {
         saleEntity.tipAmount = saleEntity.tipAmount?.setTwoDecimals()
         
         saleTransaction(jwt: token.jwt, saleEntity: saleEntity) { [weak self] (response, error) in
-            if let error = error {
+            guard let strongSelf = self else { return }
+            if error != nil || !strongSelf.signatureEnabled {
                 completion(error)
-            } else {
+            } else  {
                 guard let image = self?.offlineManager?.retriveSignatureForTransaction(transactionID: offlineTransaction.transactionID) else {
                     completion(.init(type: .missingSignatureImage))
                     return

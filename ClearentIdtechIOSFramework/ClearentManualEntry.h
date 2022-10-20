@@ -24,13 +24,13 @@
 - (id) init: (id <ClearentManualEntryDelegate>)clearentManualEntryDelegate clearentBaseUrl:(NSString*)clearentBaseUrl publicKey:(NSString*)publicKey ;
 
 /**
- * This method does a POST request to the backned in order to obtain a transaction token.
+ * This method does a POST request to obtain a transaction token.
  * @param clearentCard an object containing the card data inserted by the user
  */
 - (void) createTransactionToken:(ClearentCard*)clearentCard;
 
 /**
- * This method does a POST request to the backned in order to obtain a transaction token.
+ * This method does a POST request to obtain a transaction token.
  * This is similar to createTransactionToken method, the only difference is that in case of createTransactionToken, when the response is received, delegate methods are called instead of the completion block
  *
  * @param clearentCard an object containing the card data inserted by the user

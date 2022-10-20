@@ -89,7 +89,7 @@ class AsyncBlockOperation: AsyncOperation {
     }
 
     override func main() {
-        guard !self.isCancelled else { return }
+        guard !isCancelled else { return }
 
         closure(self)
     }
