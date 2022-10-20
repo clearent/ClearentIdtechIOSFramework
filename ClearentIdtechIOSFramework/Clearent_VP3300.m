@@ -566,6 +566,10 @@
     [ClearentLumberjack updatePublicKey:publicKey];
 }
 
+-(void) setOfflineMode:(BOOL)offlineMode {
+    [clearentDelegate updateOfflineMode:offlineMode];
+}
+
 @end
 
 

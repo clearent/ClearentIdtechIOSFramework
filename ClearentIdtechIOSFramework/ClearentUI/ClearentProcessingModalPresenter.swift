@@ -205,8 +205,6 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
               let date = dataSource.valueForType(.date)?.replacingOccurrences(of: ClearentPaymentItemType.date.separator, with: ""),
               let csc = dataSource.valueForType(.securityCode) else { return }
 
-        let cardInfo = ManualEntryCardInfo(card: cardNo, expirationDateMMYY: date, csc: csc)
-        
         let billingZipCode = dataSource.valueForType(.billingZipCode)?.replacingOccurrences(of: ClearentPaymentItemType.billingZipCode.separator, with: "")
         let billingInfo = ClientInformation(firstName: dataSource.valueForType(.cardholderFirstName),
                                             lastName: dataSource.valueForType(.cardholderLastName),
@@ -219,11 +217,14 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                                     tipAmount: tip?.stringFormattedWithTwoDecimals,
                                     billing: billingInfo,
                                     shipping: shippingInfo,
+                                    card: cardNo,
+                                    csc: csc,
                                     customerID: dataSource.valueForType(.customerId),
                                     invoice: dataSource.valueForType(.invoiceNo),
-                                    orderID: dataSource.valueForType(.orderNo))
+                                    orderID: dataSource.valueForType(.orderNo),
+                                    expirationDateMMYY: date)
 
-        startTransaction(saleEntity: saleEntity, manualEntryCardInfo: cardInfo)
+        startTransaction(saleEntity: saleEntity, isManualTransaction: true)
     }
 
     func resendSignature() {
@@ -302,7 +303,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     private func startCardReaderTransaction() {
         if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
             let saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals)
-            startTransaction(saleEntity: saleEntity)
+            startTransaction(saleEntity: saleEntity, isManualTransaction: false)
         }
     }
     
@@ -366,11 +367,11 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         }
     }
 
-    private func startTransaction(saleEntity: SaleEntity, manualEntryCardInfo: ManualEntryCardInfo? = nil) {
+    private func startTransaction(saleEntity: SaleEntity, isManualTransaction: Bool) {
         modalProcessingView?.showLoadingView()
         
         do {
-            try sdkWrapper.startTransaction(with: saleEntity, manualEntryCardInfo: manualEntryCardInfo)
+            try sdkWrapper.startTransaction(with: saleEntity, isManualTransaction: isManualTransaction)
         } catch {
             if let error = error as? ClearentResult {
                 modalProcessingView?.dismissViewController(result: .failure(error))

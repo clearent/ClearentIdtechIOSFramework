@@ -8,6 +8,7 @@
 import Foundation
 import CocoaLumberjack
 import Network
+import CryptoKit
 
 public final class ClearentWrapper : NSObject {
     
@@ -34,7 +35,11 @@ public final class ClearentWrapper : NSObject {
     public var enableEnhancedMessaging: Bool = false
     
     /// Enables or disables the use of the store & forward feature
-    public var enableOfflineMode: Bool = false
+    internal var enableOfflineMode: Bool = false {
+        didSet {
+            clearentVP3300.setOfflineMode(enableOfflineMode)
+        }
+    }
     
     /// The state of the store & forward feature
     public var offlineModeState: OfflineModeState = .on
@@ -49,13 +54,16 @@ public final class ClearentWrapper : NSObject {
         return Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
     }()
     
+    var offlineManager: OfflineModeManager?
+    
     private lazy var clearentManualEntry: ClearentManualEntry = {
         return ClearentManualEntry(self, clearentBaseUrl: baseURL, publicKey: publicKey)
     }()
 
+    private var offlineTransaction: OfflineTransaction? = nil
     private var connection  = ClearentConnection(bluetoothSearch: ())
     private var baseURL: String = ""
-    private var apiKey: String = ""
+    public var apiKey: String = ""
     private var publicKey: String = ""
     private var saleEntity: SaleEntity?
     private var lastTransactionID: String?
@@ -117,6 +125,23 @@ public final class ClearentWrapper : NSObject {
     }
     
     // MARK - Public
+    
+    /**
+     * Method that should be called to enableOfflineMode
+     * @param key, encryption key usedf for encypting offline transactions
+     */
+    public func enableOfflineMode(key: SymmetricKey) {
+        enableOfflineMode = true
+        offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: ClearentConstants.KeychainService.serviceName, account: ClearentConstants.KeychainService.account, encryptionKey: key))
+    }
+    
+    /**
+     * Method that should be called to disableOfflineMode
+     */
+    public func disableOfflineMode() {
+        enableOfflineMode = false
+        offlineManager = nil
+    }
     
     /**
      * Method that will start the pairing process by creating a new connection and starting a bluetooth search.
@@ -190,20 +215,24 @@ public final class ClearentWrapper : NSObject {
     /**
      * This method will start a transaction, if manualEntryCardInfo is not null then a manual transaction will be performed otherwise a card reader transaction will be initiated
      * @param SaleEntity,  holds informations used for the transcation
-     * @param ManualEntryCardInfo,  all the information needed for a manual card transaction
+     * @param isManualTransaction,  specifies if the transaction is manual
      */
-    public func startTransaction(with saleEntity: SaleEntity, manualEntryCardInfo: ManualEntryCardInfo? = nil) throws {
+    public func startTransaction(with saleEntity: SaleEntity, isManualTransaction: Bool) throws {
         if let error = checkForMissingKeys() { throw error }
         
         if !saleEntity.amount.canBeConverted(to: .utf8) { return }
         if let tip = saleEntity.tipAmount, !tip.canBeConverted(to: .utf8) { return }
         
         self.saleEntity = saleEntity
-
         if shouldDisplayConnectivityWarning(for: .payment) { return }
-
-        if let manualEntryCardInfo = manualEntryCardInfo {
-            manualEntryTransaction(cardNo: manualEntryCardInfo.card, expirationDate: manualEntryCardInfo.expirationDateMMYY, csc: manualEntryCardInfo.csc)
+        
+        if isManualTransaction {
+            // If offline mode is on
+            let offtr = OfflineTransaction(paymentData: PaymentData(saleEntity: saleEntity))
+            saveOfflineTransaction(transaction: offtr)
+            
+            // else
+            manualEntryTransaction()
         } else {
             cardReaderTransaction()
         }
@@ -236,7 +265,7 @@ public final class ClearentWrapper : NSObject {
                         if let linksItem = decodedResponse.links?.first {
                             self.lastTransactionID = linksItem.id
                         }
-
+                        
                         self.delegate?.didFinishTransaction(response: decodedResponse, error: nil)
                     }
                     return
@@ -269,7 +298,15 @@ public final class ClearentWrapper : NSObject {
      * @param image, UIImage to be uploaded
      */
     public func sendSignatureWithImage(image: UIImage) throws {
+        
+        // if offline mode on
+        if let transactionID = offlineTransaction?.transactionID {
+            saveSignatureImageForTransaction(transactionID: transactionID, image: image)
+        }
+        
+        // else
         if shouldDisplayConnectivityWarning(for: .payment) { return }
+
         if let error = checkForMissingKeys() { throw error }
         
         if let id = lastTransactionID {
@@ -331,7 +368,7 @@ public final class ClearentWrapper : NSObject {
     
     /**
      * Method that will void a transaction
-     * @param transactionID, ID of transaction to be voided
+     * @param transactionID, ID of the transaction to be voided
      */
     public func voidTransaction(transactionID: String) throws {
         if let error = checkForMissingKeys() { throw error }
@@ -384,7 +421,7 @@ public final class ClearentWrapper : NSObject {
     
     /**
      * Method that checks if a reader is already paired and connected
-     * return A bool indicating if there is a reader connected
+     * returns a bool indicating if there is a reader connected
      */
     public func isReaderConnected() -> Bool {
         return (ClearentWrapperDefaults.pairedReaderInfo != nil && ClearentWrapperDefaults.pairedReaderInfo?.isConnected == true)
@@ -552,17 +589,14 @@ public final class ClearentWrapper : NSObject {
     
     /**
      * Method that performs a manual card transaction
-     * @param cardNo, card number as String
-     * @param expirationDate, card expiration date as String
-     * @param csc, card security code as String
      */
-    private func manualEntryTransaction(cardNo: String, expirationDate: String, csc: String) {
+    private func manualEntryTransaction() {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let strongSelf = self else { return }
+            guard let strongSelf = self, let saleEntity = strongSelf.saleEntity else { return }
             let card = ClearentCard()
-            card.card = cardNo
-            card.expirationDateMMYY = expirationDate
-            card.csc = csc
+            card.card = saleEntity.card
+            card.expirationDateMMYY = saleEntity.expirationDateMMYY
+            card.csc = saleEntity.csc
             strongSelf.clearentManualEntry.createTransactionToken(card)
         }
     }
@@ -578,6 +612,26 @@ public final class ClearentWrapper : NSObject {
             payment?.amount = Double(saleEntity.amount) ?? 0
             strongSelf.clearentVP3300.startTransaction(payment, clearentConnection: strongSelf.connection)
         }
+    }
+    
+    /**
+     * Saves and validates offline transactions, calls a delegate method with the result
+     *  @param transaction, represents an offline transaction
+     */
+    private func saveOfflineTransaction(transaction: OfflineTransaction) {
+        offlineTransaction = transaction
+        guard let status = offlineManager?.saveOfflineTransaction(transaction: transaction) else { return  }
+        self.delegate?.didAcceptOfflineTransaction(err: status)
+    }
+    
+    /**
+     * Saves  the image represnting the user's signature
+     *  @param transactionID, the id of the transcation for wich we save the signature
+     *  @param the actual  image contianing the signature
+     */
+    private func saveSignatureImageForTransaction(transactionID:String, image: UIImage) {
+        guard let status = offlineManager?.saveSignatureForTransaction(transactionID: transactionID, image: image) else { return }
+        self.delegate?.didAcceptOfflineSignature(err: status, transactionID: transactionID)
     }
 }
 
@@ -599,6 +653,14 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
         }
 
         saleTransaction(jwt: clearentTransactionToken.jwt, saleEntity: saleEntity)
+    }
+    
+    public func successOfflineTransactionToken(_ clearentTransactionTokenRequestData: Data?) {
+        guard let saleEntity = saleEntity, let cardToken = clearentTransactionTokenRequestData else { return }
+        
+        let paymentData = PaymentData(saleEntity: saleEntity, cardToken: cardToken)
+        let offtr = OfflineTransaction(paymentData: paymentData)
+        saveOfflineTransaction(transaction: offtr)
     }
     
     public func disconnectFromReader() {

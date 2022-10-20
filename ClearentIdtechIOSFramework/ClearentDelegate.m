@@ -1777,6 +1777,15 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     
     [self deviceMessage:CLEARENT_TRANSLATING_CARD_TO_TOKEN];
     [ClearentLumberjack logInfo:@"➡️ Call Clearent to produce transaction token"];
+    
+    // If we are in offline mode call the delegate and stop
+    if (self.offlineMode && [self.publicDelegate respondsToSelector:@selector(successOfflineTransactionToken:)]) {
+        [self.publicDelegate successOfflineTransactionToken:postData];
+        
+        // For now we will also have the online transcation be processed
+        // processingCurrentRequest = NO;
+        // return;
+    }
 
     [request setHTTPBody:postData];
     [request setHTTPMethod:@"POST"];
@@ -2050,6 +2059,10 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
             _clearentConfigurator.publicKey = publicKey;
         }
     }
+}
+
+- (void) updateOfflineMode:(BOOL)offlineMode {
+    self.offlineMode = offlineMode;
 }
 
 @end

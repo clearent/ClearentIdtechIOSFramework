@@ -101,6 +101,10 @@ class FlowDataProvider : NSObject {
 
 extension FlowDataProvider : ClearentWrapperProtocol {
     
+    func didAcceptOfflineSignature(err: TransactionStoreStatus, transactionID: String) {
+        // handle offline signature
+    }
+    
     func didFinishedSignatureUploadWith(response: SignatureResponse?, error: ResponseError?) {
         let feedback: FlowFeedback
         
@@ -140,6 +144,10 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  readerInfo: fetchReaderInfo(),
                                                  payload: items)
         delegate?.didReceiveFlowFeedback(feedback: feedback)
+    }
+    
+    func didAcceptOfflineTransaction(err: TransactionStoreStatus) {
+        // handle offline transaction here
     }
         
     func didFinishTransaction(response: TransactionResponse?, error: ResponseError?) {

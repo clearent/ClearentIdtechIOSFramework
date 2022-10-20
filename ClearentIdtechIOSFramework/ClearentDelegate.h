@@ -29,6 +29,7 @@ typedef enum {SWIPE=90} supportedNonEmvEntryMode;
 @property(nonatomic) NSString *kernelVersion;
 @property(nonatomic) NSString *baseUrl;
 @property(nonatomic) NSString *publicKey;
+@property(nonatomic) BOOL offlineMode;
 @property(nonatomic) BOOL autoConfiguration;
 @property(nonatomic) BOOL contactless;
 @property(nonatomic) BOOL contactlessAutoConfiguration;
@@ -129,6 +130,8 @@ During a Contactless transaction, if events are enabled, they will be sent to th
 - (void) disableCardRemovalTimer;
 
 - (void) updatePublicKey:(NSString *)publicKey;
+
+- (void) updateOfflineMode:(BOOL)offlineMode;
 
 - (void) resetTransaction;
 

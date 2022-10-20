@@ -6,19 +6,14 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
-public struct ManualEntryCardInfo {
-    let card: String
-    let expirationDateMMYY: String
-    let csc: String
-}
-
 public class SaleEntity: CodableProtocol {
     var amount: String
     var tipAmount, softwareType, softwareTypeVersion: String?
     let billing, shipping: ClientInformation?
     let card, csc, customerID, invoice, orderID: String?
+    let expirationDateMMYY: String?
 
-    public init(amount: String, tipAmount: String? = nil, softwareType: String? = nil, softwareTypeVersion: String? = nil, billing: ClientInformation? = nil, shipping: ClientInformation? = nil, card: String? = nil, csc: String? = nil, customerID: String? = nil, invoice: String? = nil, orderID: String? = nil) {
+    public init(amount: String, tipAmount: String? = nil, softwareType: String? = nil, softwareTypeVersion: String? = nil, billing: ClientInformation? = nil, shipping: ClientInformation? = nil, card: String? = nil, csc: String? = nil, customerID: String? = nil, invoice: String? = nil, orderID: String? = nil, expirationDateMMYY: String? = nil) {
         self.amount = amount
         self.tipAmount = tipAmount
         self.softwareType = softwareType
@@ -30,6 +25,7 @@ public class SaleEntity: CodableProtocol {
         self.customerID = customerID
         self.invoice = invoice
         self.orderID = orderID
+        self.expirationDateMMYY = expirationDateMMYY
     }
 
     enum CodingKeys: String, CodingKey {
@@ -39,6 +35,7 @@ public class SaleEntity: CodableProtocol {
         case tipAmount = "tip-amount"
         case softwareType = "software-type"
         case softwareTypeVersion = "software-type-version"
+        case expirationDateMMYY = "exp-date"
     }
 }
 
