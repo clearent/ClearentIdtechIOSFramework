@@ -16,11 +16,7 @@ public final class ClearentUIManager: NSObject {
     private let clearentWrapper = ClearentWrapper.shared
     @objc public static let shared = ClearentUIManager()
     public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
-    @objc public var signatureEnabled: Bool = true {
-        didSet {
-            clearentWrapper.signatureEnabled = signatureEnabled
-        }
-    }
+    @objc public var signatureEnabled: Bool = true
     @objc public var cardReaderPaymentIsPreferred: Bool = true {
         didSet {
             clearentWrapper.cardReaderPaymentIsPreffered = cardReaderPaymentIsPreferred

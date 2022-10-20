@@ -28,9 +28,6 @@ public final class ClearentWrapper : NSObject {
     /// Specifies what payment flow is preferred. If true, card reader is used. Otherwise, a form where the user has to enter manually the card info is displayed.
     public var cardReaderPaymentIsPreffered: Bool = true
     
-    /// Specifies is signature feature should be enabled or not. If enabled, at the end of a transaction, a view where the user can draw a signature is displayed in UI.
-    public var signatureEnabled: Bool = true
-    
     /// If card reader payment fails, the option to use manual payment can be displayed in UI as a fallback method. If user selects this method, useManualPaymentAsFallback needs to be set to true.
     public var useManualPaymentAsFallback: Bool?
     
@@ -687,12 +684,11 @@ public final class ClearentWrapper : NSObject {
         saleEntity.tipAmount = saleEntity.tipAmount?.setTwoDecimals()
         
         saleTransaction(jwt: token.jwt, saleEntity: saleEntity) { [weak self] (response, error) in
-            guard let strongSelf = self else { return }
-            if error != nil || !strongSelf.signatureEnabled {
+            if error != nil {
                 completion(error)
             } else  {
                 guard let image = self?.offlineManager?.retriveSignatureForTransaction(transactionID: offlineTransaction.transactionID) else {
-                    completion(.init(type: .missingSignatureImage))
+                    completion(nil)
                     return
                 }
                 self?.sendSignatureRequest(image: image) { (_, error) in

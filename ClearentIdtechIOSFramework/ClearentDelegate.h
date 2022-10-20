@@ -141,8 +141,8 @@ During a Contactless transaction, if events are enabled, they will be sent to th
 /**
  * This method does a POST request to obtain a transaction token.
  *
- * @param postData: this represents a token which will be inserted in the HTTPBody of the request
- * @param completion: the block that is being called after a reponse is received from backned
+ * @param postData this represents a token which will be inserted in the HTTPBody of the request
+ * @param completion the block that is being called after a reponse is received from backend
  */
 - (void) fetchTransactionToken:(NSData*)postData completion:(void (^_Nullable)(ClearentTransactionToken* _Nullable))completion;
 
