@@ -205,7 +205,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     
     private func manualEntryFormView() -> ClearentManualEntryFormView {
         let dataSource = ClearentPaymentDataSource(with: [ClearentPaymentBaseSection(), ClearentPaymentAdditionalSection()])
-        let offlineModeStatusMessage = (ClearentWrapper.shared.enableOfflineMode && ClearentWrapper.shared.offlineModeState != .off) ? ClearentConstants.Localized.OfflineMode.offlineModeEnabled : nil
+        let offlineModeStatusMessage = (ClearentWrapper.configuration.enableOfflineMode && ClearentWrapper.shared.offlineModeState != .off) ? ClearentConstants.Localized.OfflineMode.offlineModeEnabled : nil
         let manualEntryFormView = ClearentManualEntryFormView(with: dataSource, offlineModeStatusMessage: offlineModeStatusMessage)
         manualEntryFormView.delegate = self
         dataSource.delegate = manualEntryFormView

@@ -280,7 +280,10 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     private func startTipFlow() {
-        sdkWrapper.fetchTipSetting { [weak self] in
+        sdkWrapper.fetchTipSetting { [weak self] error in
+            if let error = error, error.type.isMissingKeyError {
+                self?.modalProcessingView?.dismissViewController(result: .failure(error))
+            }
             guard let strongSelf = self else { return }            
             let showTipsScreen = ClearentWrapper.shared.tipEnabled && strongSelf.tipsScreenWasNotShown
 
@@ -412,7 +415,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
 
     func didFinishTransaction(error: ClearentError?) {
         if error == nil {
-            if ClearentUIManager.shared.signatureEnabled {
+            if ClearentUIManager.configuration.signatureEnabled {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                     self.showSignatureScreen()
                 }

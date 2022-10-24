@@ -101,7 +101,7 @@ public enum UserAction: String, CaseIterable {
     }
     
     var description: String? {
-        if ClearentWrapper.shared.enableEnhancedMessaging, let dict = ClearentWrapper.shared.enhancedMessagesDict, let result = dict[message] {
+        if ClearentWrapper.configuration.enableEnhancedMessaging, let dict = ClearentWrapper.shared.enhancedMessagesDict, let result = dict[message] {
             return result == ClearentConstants.Messaging.suppress ? nil : result
         }
         return message

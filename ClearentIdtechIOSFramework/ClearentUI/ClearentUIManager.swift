@@ -15,29 +15,28 @@ import Foundation
 public final class ClearentUIManager: NSObject {
     private let clearentWrapper = ClearentWrapper.shared
     @objc public static let shared = ClearentUIManager()
-    public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
-    @objc public var signatureEnabled: Bool = true
+    
+    @objc public static var configuration: ClearentUIManagerConfiguration!
+
     @objc public var cardReaderPaymentIsPreferred: Bool = true {
         didSet {
             clearentWrapper.cardReaderPaymentIsPreffered = cardReaderPaymentIsPreferred
         }
     }
-    @objc public var enableOfflineMode: Bool = false {
-        didSet {
-            clearentWrapper.enableOfflineMode = enableOfflineMode
-        }
-    }
+
     @objc public var offlineModeState: OfflineModeState = .off {
         didSet {
             clearentWrapper.offlineModeState = offlineModeState
         }
     }
-    @objc public var tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages
-    
+
     // MARK: Init
     
-    public override init() {
-        super.init()
+    /**
+     * This method will update the SDK with the necessary configuration to work properly
+     */
+    public func initialize(with configuration: ClearentUIManagerConfiguration) {
+        ClearentUIManager.configuration = configuration
         setupReaderInfo()
     }
     
@@ -49,26 +48,17 @@ public final class ClearentUIManager: NSObject {
         }
         
         ClearentWrapperDefaults.lastPairedReaderInfo = ClearentWrapperDefaults.recentlyPairedReaders?.first { $0.autojoin }
-
-        clearentWrapper.readerInfoReceived = { [weak self] reader in
+        
+        ClearentWrapper.configuration.readerInfoReceived = { reader in
             DispatchQueue.main.async {
-                self?.readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
+                ClearentUIManager.configuration.readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
             }
         }
     }
     
     // MARK: Public
     
-    /**
-     * Method updates the SDK with needed parameters to work properly
-     * @param baseURL, the endpoint of the backend
-     * @param apiKey, the API Key in order to use the API
-     * @param publicKey, needed for the card reader initialisation
-     */
-    @objc public func updateWith(baseURL: String, apiKey: String, publicKey: String, enableEnhancedMessaging: Bool) {
-        clearentWrapper.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey, enableEnhancedMessaging: enableEnhancedMessaging)
-    }
-    
+
     /**
      * Method returns a UIController that can handle the entire payment process
      * @param amount, the amount to be charged in a transaction
