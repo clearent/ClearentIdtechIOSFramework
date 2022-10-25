@@ -128,6 +128,7 @@ public final class ClearentWrapper : NSObject {
      * @param reconnectIfPossible, if  false  a connection that will search for bluetooth devices will be started, if true a connection with the last paired reader will be tried
      */
     public func startPairing(reconnectIfPossible: Bool) {
+        if shouldDisplayConnectivityWarning(for: .pairing()) { return }
         readerRepository?.startPairing(reconnectIfPossible: reconnectIfPossible)
     }
         
@@ -201,7 +202,10 @@ public final class ClearentWrapper : NSObject {
         if let tip = saleEntity.tipAmount, !tip.canBeConverted(to: .utf8) { return }
         
         self.saleEntity = saleEntity
-        if shouldDisplayConnectivityWarning(for: .payment) { return }
+        if shouldDisplayConnectivityWarning(for: .payment) {
+            completion(.init(type: .connectivityError))
+            return
+        }
         
         if isManualTransaction {
             // If offline mode is on
