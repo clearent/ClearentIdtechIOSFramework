@@ -103,14 +103,14 @@ class ReaderRepository: ReaderRepositoryProtocol {
         }
     }
     
+    func startTransaction(payment: ClearentPayment?) {
+        clearentVP3300.startTransaction(payment, clearentConnection: connection)
+    }
+    
     func cancelTransaction() {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             self?.clearentVP3300.device_cancelTransaction()
         }
-    }
-    
-    func startTransaction(payment: ClearentPayment?) {
-        clearentVP3300.startTransaction(payment, clearentConnection: connection)
     }
     
     func isReaderConnected() -> Bool {

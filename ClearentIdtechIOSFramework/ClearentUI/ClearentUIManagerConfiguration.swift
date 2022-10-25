@@ -6,8 +6,6 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
-import Combine
-
 @objc public class ClearentUIManagerConfiguration: ClearentWrapperConfiguration {
     public var tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages
     public var signatureEnabled: Bool = true
