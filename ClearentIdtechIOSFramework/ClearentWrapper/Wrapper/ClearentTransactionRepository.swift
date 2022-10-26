@@ -28,13 +28,13 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     var offlineManager: OfflineModeManager?
     private var lastTransactionID: String?
     private var signatureImage: UIImage?
-    private var httpClient: ClearentHttpClient
+    private var httpClient: ClearentHttpClientProtocol
     private var clearentManualEntry: ClearentManualEntry?
     private var clearentVP3300: Clearent_VP3300?
     private var offlineTransaction: OfflineTransaction? = nil
     
-    init(baseURL: String, apiKey: String, clearentVP3300: Clearent_VP3300, clearentManualEntry: ClearentManualEntry?) {
-        self.httpClient = ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
+    init(httpClient: ClearentHttpClientProtocol? = nil, baseURL: String, apiKey: String, clearentVP3300: Clearent_VP3300, clearentManualEntry: ClearentManualEntry?) {
+        self.httpClient = httpClient ?? ClearentDefaultHttpClient(baseURL: baseURL, apiKey: apiKey)
         super.init()
         self.clearentManualEntry = clearentManualEntry
         self.clearentVP3300 = clearentVP3300
@@ -42,8 +42,11 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     
     func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (TransactionResponse?, ClearentError?) -> Void) {
         httpClient.saleTransaction(jwt: jwt, saleEntity: saleEntity) { data, error in
-            guard let responseData = data else { return }
-        
+            guard let responseData = data else {
+                completion(nil, ClearentError(type: .httpError))
+                return
+            }
+
             do {
                 let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
                 guard let transactionError = decodedResponse.payload.error else {
