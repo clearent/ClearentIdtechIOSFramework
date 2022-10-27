@@ -80,7 +80,10 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         }
         
         if ClearentWrapper.shared.enableOfflineMode {
-            if (ClearentWrapper.shared.offlineModeState == .on) || (ClearentWrapper.shared.offlineModeState == .prompted && ClearentWrapper.shared.flowType?.processType == .payment && ClearentWrapper.shared.isOfflineModeConfirmed) {
+            let offlineModeConfirmedDuringPayment = ClearentWrapper.shared.flowType?.processType == .payment && ClearentWrapper.shared.offlineModeState != .off && ClearentWrapper.shared.isOfflineModeConfirmed
+            let offlineModeEnabled = [.pairing(), .showReaders].contains(ClearentWrapper.shared.flowType?.processType) && ClearentWrapper.shared.offlineModeState == .on
+            
+            if offlineModeConfirmedDuringPayment || offlineModeEnabled {
                 stackView.insertArrangedSubview(ClearentSubtitleLabel(text: ClearentConstants.Localized.OfflineMode.offlineModeEnabled), at: 1)
             }
         }
