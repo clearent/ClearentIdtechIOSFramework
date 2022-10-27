@@ -454,6 +454,10 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
 }
 
 - (void) deviceMessage:(NSString*)message {
+    [self deviceMessage:message completion:nil];
+}
+
+- (void) deviceMessage:(NSString*)message completion:(void (^)(ClearentTransactionToken* _Nullable))completion {
     
     if(message == nil) {
         [ClearentLumberjack logInfo:@"deviceMessage:message nil"];
@@ -490,8 +494,12 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     }
     
     if([message isEqualToString:@"RETURN_CODE_LOW_VOLUME"]) {
-        if ([self.publicDelegate respondsToSelector:@selector(deviceMessage:)]) {
-            [self.publicDelegate deviceMessage:CLEARENT_AUDIO_JACK_LOW_VOLUME];
+        if (completion == nil) {
+            if ([self.publicDelegate respondsToSelector:@selector(deviceMessage:)]) {
+                [self.publicDelegate deviceMessage:CLEARENT_AUDIO_JACK_LOW_VOLUME];
+            }
+        } else {
+            completion(nil);
         }
         return;
     }
@@ -530,10 +538,14 @@ idTechSharedInstance: (IDT_VP3300*) idTechSharedInstance {
     if([message containsString:@"BLE DEVICE FOUND"]) {
         [_clearentDeviceConnector handleBluetoothDeviceFound:message];
     } else {
-        if ([self.publicDelegate respondsToSelector:@selector(deviceMessage:)]) {
-            [self.publicDelegate deviceMessage:message];
+        if (completion == nil) {
+            if ([self.publicDelegate respondsToSelector:@selector(deviceMessage:)]) {
+                [self.publicDelegate deviceMessage:message];
+            }
+            [self sendFeedback:message];
+        } else {
+            completion(nil);
         }
-        [self sendFeedback:message];
     }
 }
 
@@ -1763,8 +1775,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
         return;
     }
     
-    NSString *targetUrl = [NSString stringWithFormat:@"%@/%@", self.baseUrl, @"rest/v2/mobilejwt"];
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
+    
     NSError *error;
     NSData *postData = [NSJSONSerialization dataWithJSONObject:clearentTransactionTokenRequest.asDictionary options:0 error:&error];
 
@@ -1776,7 +1787,6 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     }
     
     [self deviceMessage:CLEARENT_TRANSLATING_CARD_TO_TOKEN];
-    [ClearentLumberjack logInfo:@"➡️ Call Clearent to produce transaction token"];
     
     // If we are in offline mode call the delegate and stop
     if (self.offlineMode && [self.publicDelegate respondsToSelector:@selector(successOfflineTransactionToken:)]) {
@@ -1786,7 +1796,17 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
         // processingCurrentRequest = NO;
         // return;
     }
+    
+    [self fetchTransactionToken: postData completion: nil];
+}
 
+- (void) fetchTransactionToken:(NSData*)postData completion:(void (^)(ClearentTransactionToken* _Nullable))completion {
+
+    processingCurrentRequest = YES;
+
+    [ClearentLumberjack logInfo:@"➡️ Call Clearent to produce transaction token"];
+    NSString *targetUrl = [NSString stringWithFormat:@"%@/%@", self.baseUrl, @"rest/v2/mobilejwt"];
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] init];
     [request setHTTPBody:postData];
     [request setHTTPMethod:@"POST"];
     [request setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
@@ -1808,9 +1828,9 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
           } else if(data != nil) {
               responseStr = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
               if(200 == [httpResponse statusCode]) {
-                  [self handleResponse:responseStr];
+                  [self handleResponse:responseStr completion: completion];
               } else {
-                  [self handleError:responseStr];
+                  [self handleError:responseStr completion:completion];
               }
           }
           processingCurrentRequest = NO;
@@ -1820,7 +1840,7 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
       }] resume];
 }
 
-- (void) handleError:(NSString*)response {
+- (void) handleError:(NSString*)response completion:(void (^)(ClearentTransactionToken* _Nullable))completion {
     NSData *data = [response dataUsingEncoding:NSUTF8StringEncoding];
     NSError *error;
     NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data
@@ -1828,21 +1848,21 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
                                                                      error:&error];
     if (error) {
         [ClearentLumberjack logError:@"handleError:Bad response when trying to make jwt"];
-        [self deviceMessage:CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
+        [self deviceMessage:CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE completion: completion];
     } else {
         NSDictionary *payloadDictionary = [jsonDictionary objectForKey:@"payload"];
         NSDictionary *errorDictionary = [payloadDictionary objectForKey:@"error"];
         NSString *errorMessage = [errorDictionary objectForKey:@"error-message"];
         if(errorMessage != nil) {
-             [self deviceMessage:[NSString stringWithFormat:@"%@. %@.", CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE, errorMessage]];
+            [self deviceMessage:[NSString stringWithFormat:@"%@. %@.", CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE, errorMessage] completion: completion];
         } else {
-           [self deviceMessage:CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];
+            [self deviceMessage:CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE completion: completion];
         }
         [self clearCurrentRequest];
     }
 }
 
-- (void) handleResponse:(NSString *)response {
+- (void) handleResponse:(NSString *)response completion:(void (^)(ClearentTransactionToken* _Nullable))completion {
     NSData *data = [response dataUsingEncoding:NSUTF8StringEncoding];
     NSError *error;
     NSDictionary *jsonDictionary = [NSJSONSerialization JSONObjectWithData:data
@@ -1860,7 +1880,12 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
             [self.publicDelegate successfulTransactionToken:response];
         }
         ClearentTransactionToken *clearentTransactionToken = [[ClearentTransactionToken alloc] initWithJson:response];
-        [self.publicDelegate successTransactionToken:clearentTransactionToken];
+        if (completion == nil) {
+            [self.publicDelegate successTransactionToken:clearentTransactionToken];
+        } else {
+            completion(clearentTransactionToken);
+        }
+        
     } else {
         [ClearentLumberjack logError:@"handleResponse:Bad response when trying to make jwt"];
         [self deviceMessage:CLEARENT_GENERIC_TRANSACTION_TOKEN_ERROR_RESPONSE];

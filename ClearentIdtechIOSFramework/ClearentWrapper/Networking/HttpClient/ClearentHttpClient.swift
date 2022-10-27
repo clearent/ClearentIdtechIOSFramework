@@ -24,7 +24,15 @@ enum TransactionType : String {
     case sale = "SALE", refund = "REFUND", void = "VOID"
 }
 
-class ClearentHttpClient {
+protocol ClearentHttpClientProtocol {
+    func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (Data?, Error?) -> Void)
+    func refundTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (Data?, Error?) -> Void)
+    func voidTransaction(transactionID: String, completion: @escaping (Data?, Error?) -> Void)
+    func sendSignature(base64Image: String, transactionID: Int, completion: @escaping (Data?, Error?) -> Void)
+    func merchantSettings(completion: @escaping (Data?, Error?) -> Void)
+}
+
+class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
     
     var httpClient: HttpClient? = nil
     let baseURL: String
@@ -43,7 +51,8 @@ class ClearentHttpClient {
     
     // MARK - Public
     
-    public func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (Data?, Error?) -> Void) {
+    func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (Data?, Error?) -> Void) {
+
         let saleURL = URL(string: baseURL + ClearentEndpoints.sale)
         let headers = headers(jwt: jwt, apiKey: self.apiKey)
         let _ = HttpClient.makeRawRequest(to: saleURL!, method: transactionMethod(type: TransactionType.sale.rawValue, saleEntity: saleEntity), headers: headers) { data, error in
@@ -51,7 +60,7 @@ class ClearentHttpClient {
         }
     }
     
-    public func refundTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (Data?, Error?) -> Void) {
+    func refundTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (Data?, Error?) -> Void) {
         let refundURL = URL(string: baseURL + ClearentEndpoints.refund)
         let headers = headers(jwt: jwt, apiKey: self.apiKey)
         let _ = HttpClient.makeRawRequest(to: refundURL!, method: transactionMethod(type: TransactionType.refund.rawValue, saleEntity: saleEntity), headers: headers) { data, error in
@@ -59,7 +68,7 @@ class ClearentHttpClient {
         }
     }
     
-    public func sendSignature(base64Image: String, transactionID: Int, completion: @escaping (Data?, Error?) -> Void) {
+    func sendSignature(base64Image: String, transactionID: Int, completion: @escaping (Data?, Error?) -> Void) {
         let created = DateFormatter().string(from: Date())
         let signatureURL = URL(string: baseURL + ClearentEndpoints.signature)
         let headers = headers(jwt: nil, apiKey: self.apiKey)
@@ -68,7 +77,7 @@ class ClearentHttpClient {
         }
     }
     
-    public func voidTransaction(transactionID: String, completion: @escaping (Data?, Error?) -> Void) {
+    func voidTransaction(transactionID: String, completion: @escaping (Data?, Error?) -> Void) {
         let voidURL = URL(string: baseURL + ClearentEndpoints.void)
         let headers = headers(jwt: nil, apiKey: self.apiKey)
         let _ = HttpClient.makeRawRequest(to: voidURL!, method: voidHTTPMethod(transactionID: transactionID), headers: headers) { data, error in
@@ -76,7 +85,7 @@ class ClearentHttpClient {
         }
     }
     
-    public func merchantSettings(completion: @escaping (Data?, Error?) -> Void) {
+    func merchantSettings(completion: @escaping (Data?, Error?) -> Void) {
         let settingsURL = URL(string: baseURL + ClearentEndpoints.settings)
         let headers = headers(jwt: nil, apiKey: self.apiKey)
         let _ = HttpClient.makeRawRequest(to: settingsURL!,  headers: headers) { data, error in

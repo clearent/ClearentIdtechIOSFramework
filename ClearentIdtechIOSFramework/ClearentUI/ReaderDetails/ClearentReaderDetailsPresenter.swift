@@ -98,7 +98,7 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
             flowDataProvider.didFindRecentlyUsedReaders(readers: ClearentWrapper.shared.previouslyPairedReaders)
             navigationController?.popViewController(animated: true)
         } else {
-            ClearentWrapper.shared.readerInfoReceived?(nil)
+            ClearentWrapper.configuration.readerInfoReceived?(nil)
             delegate?.shutDown(userAction: .done)
         }
     }

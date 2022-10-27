@@ -103,7 +103,7 @@ import UIKit
         public static let modalStackViewMargin = 32.0
     }
     
-    enum Tips {
+    public enum Tips {
         public static let defaultTipPercentages = [15, 18, 20]
         public static let minCustomTipValue: Double = 0.01
     }

@@ -132,7 +132,6 @@ class KeyChainStorage: TransactionStorageProtocol {
                 return .success
             }
         }
-
         return .encryptionError
     }
 }

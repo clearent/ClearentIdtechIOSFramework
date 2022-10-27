@@ -92,6 +92,18 @@ class OfflineModeManager {
     func clearStorage() {
         storage.deleteAllData()
     }
+
+    // In case an error was received during the offline transactions upload, update the transaction with the error
+    // Otherwise, delete the transaction
+    func updateOfflineTransaction(with error: ClearentError?, transaction: OfflineTransaction) -> TransactionStoreStatus {
+        if let error = error {
+            var transactionToBeUpdated = transaction
+            transactionToBeUpdated.errorStatus = ErrorStatus(error: error, updatedDate: Date())
+            return storage.updateTransaction(transaction: transactionToBeUpdated)
+        } else {
+            return storage.deleteTransactionWith(id: transaction.transactionID)
+        }
+    }
 }
 
 /**
