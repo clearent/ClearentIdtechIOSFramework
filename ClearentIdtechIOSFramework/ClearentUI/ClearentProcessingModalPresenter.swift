@@ -161,7 +161,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             ClearentWrapper.shared.isNewPaymentProcess = true
             ClearentWrapper.shared.isOfflineModeConfirmed = false
             ClearentWrapper.shared.offlineModeWarningDisplayed = false
-            modalProcessingView?.dismissViewController(result: .failure(.cancelledByUser))
+            modalProcessingView?.dismissViewController(result: .failure(.init(type: .cancelledByUser)))
         case .retry, .pair:
             restartProcess(newPair: false)
         case .pairInFlow:

@@ -46,17 +46,6 @@ public final class ClearentWrapper : NSObject {
             clearentVP3300.setOfflineMode(enableOfflineMode)
         }
     }
-<<<<<<< HEAD
-=======
-    
-    /// The state of the store & forward feature
-    public var offlineModeState: OfflineModeState = .off
-    
-    /// Stores the enhanced messages read from the messages bundle
-    internal var enhancedMessagesDict: [String:String]?
-    
-    public weak var delegate: ClearentWrapperProtocol?
->>>>>>> origin/feature/#19020-process-transactions
 
     /// Stores the enhanced messages read from the messages bundle
     var enhancedMessagesDict: [String:String]?
@@ -87,7 +76,8 @@ public final class ClearentWrapper : NSObject {
 
     private var readerRepository: ReaderRepositoryProtocol?
     private var transactionRepository: TransactionRepositoryProtocol?
-
+    var offlineModeWarningDisplayed = false
+    
     // MARK: Init
     
     private override init() {
