@@ -74,7 +74,7 @@ class FlowDataProvider : NSObject {
     }
     
     func startTipTransaction(amountWithoutTip: Double) {
-        let amountInfo = AmountInfo(amountWithoutTip: amountWithoutTip, availableTipPercentages: ClearentUIManager.shared.tipAmounts)
+        let amountInfo = AmountInfo(amountWithoutTip: amountWithoutTip, availableTipPercentages: ClearentUIManager.configuration.tipAmounts)
         
         let items = [FlowDataItem(type: .title, object: ClearentConstants.Localized.Tips.transactionTip),
                      FlowDataItem(type: .tips, object: amountInfo),
