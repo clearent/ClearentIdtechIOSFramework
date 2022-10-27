@@ -42,7 +42,7 @@ public final class ClearentWrapper : NSObject {
     }
     
     /// The state of the store & forward feature
-    public var offlineModeState: OfflineModeState = .on
+    public var offlineModeState: OfflineModeState = .off
     
     /// Stores the enhanced messages read from the messages bundle
     internal var enhancedMessagesDict: [String:String]?
@@ -74,10 +74,7 @@ public final class ClearentWrapper : NSObject {
             return false
         } else {
             switch offlineModeState {
-            case .off:
-                return false
-            case .on:
-                isOfflineModeConfirmed = true
+            case .off, .on:
                 return false
             case .prompted:
                 return !isInternetOn ? (isNewPaymentProcess ? true : false) : false
@@ -90,6 +87,7 @@ public final class ClearentWrapper : NSObject {
     internal var isBluetoothOn = false
     internal var tipEnabled = false
     internal var isOfflineModeConfirmed = false
+    internal var offlineModeWarningDisplayed = false
     internal var shouldSendPressButton = false
     internal var isNewPaymentProcess = true
     private var continuousSearchingTimer: Timer?
@@ -524,9 +522,9 @@ public final class ClearentWrapper : NSObject {
     private func getConnectivityStatus(for processType: ProcessType) -> UserAction? {
         if processType == .payment {
             if cardReaderPaymentIsPreffered && useManualPaymentAsFallback == nil {
-                return isBluetoothPermissionGranted ? (isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : (isOfflineModeConfirmed ? nil : .noInternet)) : .noBluetoothPermission
+                return isBluetoothPermissionGranted ? (isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : ((isOfflineModeConfirmed || offlineModeState == .on) ? nil : .noInternet)) : .noBluetoothPermission
             } else {
-                return isInternetOn ? nil : (isOfflineModeConfirmed ? nil : .noInternet)
+                return isInternetOn ? nil : ((isOfflineModeConfirmed || offlineModeState == .on) ? nil : .noInternet)
             }
         } else {
             return isBluetoothPermissionGranted ? (isBluetoothOn ? nil : .noBluetooth) : .noBluetoothPermission
