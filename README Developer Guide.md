@@ -17,7 +17,7 @@ ClearentWrapper has a method that sets the configuration needed by the SDK to wo
     public func initialize(with config: ClearentWrapperConfiguration)
 ```
 
-The configuration can be accessed like in the following line because it's a static parameter:
+Because it's a static parameter, the configuration can be accessed like this:
 
 ```
    ClearentWrapper.configuration
@@ -25,11 +25,11 @@ The configuration can be accessed like in the following line because it's a stat
 
 **ClearentWrapperConfiguration** contains the following parameters: baseURL, apiKey, publicKey, enableEnhancedMessaging, enableOfflineMode, readerInfoReceived.
 
-readerInfoReceived is a closure that can be called each time there is new info on the reader. This  gives the integrator the chance to update the UI. This way, the host app is informed of changes that occurred to the curent paired device:
+readerInfoReceived is a closure that can be called each time there is new info on the reader. This gives the integrator the chance to update the UI. This way, the host app is informed of changes that occurred to the current paired device:
 
 
 ```
-public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
+   public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
 ```
 
 Enabling the enhanced messages will use the enhancedmessages-v1.txt file from the ClearentIdtechMessages bundle to provide friendly messages to the user.

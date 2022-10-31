@@ -63,7 +63,7 @@ The SDK supports current version of iOS and two previous versions. Curently 13, 
 
 ## How to Integrate
 
-In order to integrate the **SDK UI** you will need to create a configuration object and pass it to SDK UI 
+In order to integrate the **SDK UI** you will need to create a configuration object and pass it ClearentUIManager like in the following example: 
 
 ```
   let uiManagerConfig = ClearentUIManagerConfiguration(baseURL: baseURL, apiKey: apiKey, publicKey: publickKey, readerInfoReceived: nil, tipAmounts: [1, 2, 3], signatureEnabled: true)
@@ -257,7 +257,6 @@ Objective-C example of the ClearenSDKUI  integration [Obj-C Example](https://git
                                                                                                     publicKey:@"publick key"
                                                                                                     enableEnhancedMessaging:false
                                                                                                     enableOfflineMode:false
-
                                                                                                     tipAmounts: @[@10, @15, @20]
                                                                                                     signatureEnabled:true];
     [[ClearentUIManager shared] initializeWith: configuration];
@@ -287,7 +286,6 @@ Objective-C example of the ClearenSDKUI  integration [Obj-C Example](https://git
 }
 
 @end
-
 
 ```
 
@@ -349,7 +347,7 @@ After the transaction is completed the delegate method didFinishTransaction(resp
 
 **2. Performing a transaction using manual card entry.**
 
-You can start a transaction using startTransaction(with saleEntity: SaleEntity, isManualTransaction: Bool, completion: @escaping((ClearentError?) -> Void))
+You can start a transaction using startTransaction(with saleEntity: SaleEntity, isManualTransaction: Bool, completion: @escaping((ClearentError?) -> Void)) method.
 
 
 **Cancelling , voiding and refunding a transaction**
@@ -434,6 +432,7 @@ Using a card reader
    // Define a SaleEntity, you can also add client information on the SaleEntity
    let saleEntity = SaleEntity(amount: 22.0, tipAmount: 5)
    ClearentWrapper.shared.startTransaction(with: SaleEntity, isManualTransaction: false) { error in
+       // handle completion
    }
 ```
 
@@ -443,6 +442,7 @@ Using manual card entry
    // Create a SaleEntity object and, besides amount, add card info
    let saleEntity = SaleEntity(amount: 22.0, tipAmount: 5, card: "4111111111111111", csc: "999", expirationDateMMYY: "11/28")
    ClearentWrapper.shared.startTransaction(with: saleEntity, manualEntryCardInfo: true) { error in
+      // handle completion
    }
 ```
 
