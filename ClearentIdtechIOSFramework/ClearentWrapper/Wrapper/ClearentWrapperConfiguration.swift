@@ -6,7 +6,7 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
-public class ClearentWrapperConfiguration: NSObject {
+@objc public class ClearentWrapperConfiguration: NSObject {
     public var baseURL: String
     public var apiKey: String
     public var publicKey: String
@@ -17,12 +17,11 @@ public class ClearentWrapperConfiguration: NSObject {
     /// Closure called when reader info (signal, battery, reader name, connection status) is received
     public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
     
-    public init(baseURL: String, apiKey: String, publicKey: String, enableEnhancedMessaging: Bool = false, enableOfflineMode: Bool = false, readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?) {
+    public init(baseURL: String, apiKey: String, publicKey: String, enableEnhancedMessaging: Bool = false, enableOfflineMode: Bool = false) {
         self.baseURL = baseURL
         self.apiKey = apiKey
         self.publicKey = publicKey
         self.enableEnhancedMessaging = enableEnhancedMessaging
         self.enableOfflineMode = enableOfflineMode
-        self.readerInfoReceived = readerInfoReceived
     }
 }

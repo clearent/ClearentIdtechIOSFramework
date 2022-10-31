@@ -191,6 +191,7 @@ public final class ClearentWrapper : NSObject {
      * This method will start a transaction, if manualEntryCardInfo is not null then a manual transaction will be performed otherwise a card reader transaction will be initiated
      * @param SaleEntity,  holds informations used for the transcation
      * @param isManualTransaction,  specifies if the transaction is manual
+     * @param completion, the closure that will be called after a sale response is received. This  is dispatched onto the main queue
      */
     public func startTransaction(with saleEntity: SaleEntity, isManualTransaction: Bool, completion: @escaping((ClearentError?) -> Void)) {
         if let error = checkForMissingKeys() {

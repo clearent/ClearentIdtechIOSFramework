@@ -11,9 +11,25 @@ The enhanced sdk was developed to ease in the integration of the ClearentIDTechS
 
 **ClearentWrapper** class integrates the original SDK and implements all delegates.
 
-ClearentWrapper has a method that you can use to update the Public Key, API Key and the base URL also has a enableEnhancedMessaging boolean for enabling messages.
+ClearentWrapper has a method that sets the configuration needed by the SDK to work properly. 
+
 ```
-    ClearentWrapper.shared.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey, enableEnhancedMessaging: false)
+    public func initialize(with config: ClearentWrapperConfiguration)
+```
+
+The configuration can be accessed like in the following line because it's a static parameter:
+
+```
+   ClearentWrapper.configuration
+```
+
+**ClearentWrapperConfiguration** contains the following parameters: baseURL, apiKey, publicKey, enableEnhancedMessaging, enableOfflineMode, readerInfoReceived.
+
+readerInfoReceived is a closure that can be called each time there is new info on the reader. This  gives the integrator the chance to update the UI. This way, the host app is informed of changes that occurred to the curent paired device:
+
+
+```
+public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
 ```
 
 Enabling the enhanced messages will use the enhancedmessages-v1.txt file from the ClearentIdtechMessages bundle to provide friendly messages to the user.
@@ -25,12 +41,6 @@ In order to handle more messages from the SDK you can just add a new case to eac
 Another available feature is continuous search for readers. When calling **startPairing** method, search process will be restarted automatically until it is cancelled or **connectTo** method is called. Therefore, if you implement the delegate, be prepared to handle the **didFindReaders** method multiple times.
 
 **ClearentBluetoothDevice** was wrapped in **ReaderInfo** class and new fields were added: connected, autoJoin, signalLevel, signalStrength.
-Also, a mechanism was created to inform the host app of changes that occurred to the curent paired device :
-
-```
-public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
-```
-This closure is defined in ```ClearentWrapper``` and can be called each time there is new info on the reader. This  gives the integrator the chance to update the UI.
 
 The ```ClearentWrapperProtocol``` can be used by the integrators that want to integrate without the SDK UI. This protocol is similar to the original delegate of the SDK but we introduced new naming and new methods that notify the integrator about every event but also fixes some issues.
 
@@ -53,11 +63,11 @@ Here is one from the interface methods:
 * Method returns a UIController that can handle the pairing process of a card reader
 * @param completion, a closure to be executed once the clearent SDK UI is dismissed
 */
-@objc public func pairingViewController(completion: ((ClearentResult) -> Void)?) -> UINavigationController {
-viewController(processType: .pairing(), dismissCompletion: { [weak self] result in
-guard let completionResult = self?.resultFor(completionResult: result) else { return }
-completion?(completionResult)
-})
+@objc public func pairingViewController(completion: ((ClearentError) -> Void)?) -> UINavigationController {
+    viewController(processType: .pairing(), dismissCompletion: { [weak self] result in
+        let completionResult = self?.resultFor(completionResult: result)
+        completion?(completionResult)
+    })
 }
 ```
 
@@ -74,12 +84,12 @@ This class integrates the **ClearentWrapper** and it is a middle layer between t
 
 ```
 protocol FlowDataProtocol : AnyObject {
-func didFinishSignature()
-func didFinishTransaction(error: ResponseError?)
-func deviceDidDisconnect()
-func didFinishedPairing()
-func didReceiveFlowFeedback(feedback: FlowFeedback)
-func didBeginContinuousSearching()
+  func didFinishSignature()
+  func didFinishTransaction(error: ClearentError?)
+  func deviceDidDisconnect()
+  func didFinishedPairing()
+  func didReceiveFlowFeedback(feedback: FlowFeedback)
+  func didBeginContinuousSearching()
 }
 ```
 
