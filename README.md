@@ -66,7 +66,7 @@ The SDK supports current version of iOS and two previous versions. Curently 13, 
 In order to integrate the **SDK UI** you will need to create a configuration object and pass it ClearentUIManager like in the following example: 
 
 ```
-  let uiManagerConfig = ClearentUIManagerConfiguration(baseURL: baseURL, apiKey: apiKey, publicKey: publickKey, readerInfoReceived: nil, tipAmounts: [1, 2, 3], signatureEnabled: true)
+  let uiManagerConfig = ClearentUIManagerConfiguration(baseURL: baseURL, apiKey: apiKey, publicKey: publickKey, tipAmounts: [1, 2, 3], signatureEnabled: true)
   ClearentUIManager.shared.initialize(with: uiManagerConfig)
 ```
 
@@ -197,7 +197,7 @@ class ViewController: UIViewController {
     func initSDK() {
         
         // Setup the SDK with needed config to work properly
-        let uiManagerConfiguration = ClearentUIManagerConfiguration(baseURL: "https....", apiKey: "api key...", publicKey: "public key", readerInfoReceived: nil)
+        let uiManagerConfiguration = ClearentUIManagerConfiguration(baseURL: "https....", apiKey: "api key...", publicKey: "public key")
         ClearentUIManager.shared.initialize(with: uiManagerConfiguration)
         
         // Load the default fonts from our SDK
