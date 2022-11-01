@@ -191,7 +191,7 @@ public final class ClearentWrapper : NSObject {
      * This method will start a transaction, if manualEntryCardInfo is not null then a manual transaction will be performed otherwise a card reader transaction will be initiated
      * @param SaleEntity,  holds informations used for the transcation
      * @param isManualTransaction,  specifies if the transaction is manual
-     * @param completion, the closure that will be called after a sale response is received
+     * @param completion, the closure that will be called when a missing key error is detected
      */
     public func startTransaction(with saleEntity: SaleEntity, isManualTransaction: Bool, completion: @escaping((ClearentError?) -> Void)) {
         if let error = checkForMissingKeys() {
@@ -203,7 +203,6 @@ public final class ClearentWrapper : NSObject {
         
         self.saleEntity = saleEntity
         if shouldDisplayConnectivityWarning(for: .payment) {
-            completion(.init(type: .connectivityError))
             return
         }
         
