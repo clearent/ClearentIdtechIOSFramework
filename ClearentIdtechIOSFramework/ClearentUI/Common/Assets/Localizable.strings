@@ -140,6 +140,22 @@
 "xsdk_reader_details_signal_medium" = "Medium";
 "xsdk_reader_details_signal_weak" = "Weak";
 
+// MARK: - Offline Results Report
+// Texts that are displayed on offline results screen
+
+"xsdk_offline_report_nav_title" = "Offline Results";
+"xsdk_offline_info" = "Upload complete. Please review offline results before proceeding.";
+
+"xsdk_offline_report_entry_approved_count" = "Approved Count:";
+"xsdk_offline_report_entry_approved_amount" = "Approved Amount:";
+"xsdk_offline_report_entry_declined_count" = "Declined Count:";
+"xsdk_offline_report_entry_declined_amount" = "Declined Amount:";
+"xsdk_offline_report_entry_error_count" = "Error Count:";
+"xsdk_offline_report_entry_error_amount" = "Error Amount:";
+
+"xsdk_offline_report_save_error_log" = "Save Error Log";
+"xsdk_offline_report_clear_report" = "Clear and Proceed”;
+
 // MARK: - General errors
 // Texts that are displayed in case of a general error during the payment flow
 

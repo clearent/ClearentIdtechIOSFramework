@@ -125,6 +125,12 @@ import UIKit
             public static let permissionError = "xsdk_bluetooth_permission_error_title".localized
         }
         
+        enum OfflineReport {
+            public static let navigationItem = "xsdk_offline_report_nav_title".localized
+            public static let clearButtonTitle = "xsdk_offline_report_clear_report".localized
+            public static let saveLogButtonTitle = "xsdk_offline_report_save_error_log".localized
+        }
+        
         enum ReaderDetails {
             public static let navigationItem = "xsdk_reader_details_nav_title".localized
             public static let connected = "xsdk_reader_details_connected".localized
