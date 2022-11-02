@@ -9,7 +9,6 @@
 import Foundation
 
 protocol ClearentOfflineModeReportProtocol {
-    func 
     func clearAndProceed()
 }
 
