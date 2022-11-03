@@ -8,8 +8,15 @@
 
 import Foundation
 
+struct ReportItem {
+    let itemName: String
+    let itemValue :String
+    let isAmount: Bool
+}
+
 protocol ClearentOfflineModeReportProtocol {
     func clearAndProceed()
+    func itemCount() -> Int
 }
 
 class ClearentOfflineModeReportPresenter {

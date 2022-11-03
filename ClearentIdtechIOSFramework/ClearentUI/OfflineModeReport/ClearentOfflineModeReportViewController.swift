@@ -13,11 +13,20 @@ class ClearentOfflineModeReportViewController: UIViewController {
     @IBOutlet weak var navigationBar: UINavigationBar!
     @IBOutlet weak var customNavigationItem: UINavigationItem!
     @IBOutlet weak var clearReportButton: ClearentPrimaryButton!
+    @IBOutlet weak var saveErrorLogButton: ClearentPrimaryButton!
+    @IBOutlet weak var infoLabel: UILabel!
+    @IBOutlet weak var tableView: UITableView!
+    
+    private var defaultCellIdentifier = "kOfflineResultCell"
     
     public override func viewDidLoad() {
         super.viewDidLoad()
+        
         setupNavigationBar()
+        setupInfoLabel()
         setupButtons()
+        tableView.dataSource = self
+        ClearentOfflineResultTableViewCell.register(tableView: tableView)
     }
     
     override public func viewWillAppear(_ animated: Bool) {
@@ -40,7 +49,19 @@ class ClearentOfflineModeReportViewController: UIViewController {
         customNavigationItem.title = ClearentConstants.Localized.OfflineReport.navigationItem
     }
     
+    private func setupInfoLabel() {
+        self.infoLabel.text = ClearentConstants.Localized.OfflineReport.infoLabeltext
+        self.infoLabel.font = ClearentUIBrandConfigurator.shared.fonts.sectionTitleLabelFont
+        self.infoLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.subtitleLabelColor
+    }
+    
     private func setupButtons() {
+        saveErrorLogButton.title = ClearentConstants.Localized.OfflineReport.saveLogButtonTitle
+        saveErrorLogButton.buttonStyle = .link
+        saveErrorLogButton.action = { [weak self] in
+            //self?.showRemoveReaderAlert()
+        }
+        
         clearReportButton.title = ClearentConstants.Localized.OfflineReport.clearButtonTitle
         clearReportButton.buttonStyle = .filled
         clearReportButton.action = { [weak self] in
@@ -50,5 +71,25 @@ class ClearentOfflineModeReportViewController: UIViewController {
     
     @objc func didPressBackButton() {
         navigationController?.popViewController(animated: true)
+    }
+}
+
+extension ClearentOfflineModeReportViewController: UITableViewDataSource {
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+       // guard let dataSource = dataSource else { return 0 }
+        return 6
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: ClearentOfflineResultTableViewCell.identifier,
+                                                              for: indexPath) as? ClearentOfflineResultTableViewCell else { return UITableViewCell() }
+        
+        
+
+        cell.itemNameLabel.text = "Declined Amount"
+        cell.itemValueLabel.text = "$20"
+               
+        return cell
     }
 }

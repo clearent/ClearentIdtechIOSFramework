@@ -129,6 +129,7 @@ import UIKit
             public static let navigationItem = "xsdk_offline_report_nav_title".localized
             public static let clearButtonTitle = "xsdk_offline_report_clear_report".localized
             public static let saveLogButtonTitle = "xsdk_offline_report_save_error_log".localized
+            public static let infoLabeltext = "xsdk_offline_info".localized
         }
         
         enum ReaderDetails {
