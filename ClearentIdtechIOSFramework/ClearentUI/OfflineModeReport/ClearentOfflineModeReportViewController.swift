@@ -18,6 +18,7 @@ class ClearentOfflineModeReportViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     
     private var defaultCellIdentifier = "kOfflineResultCell"
+    var reportPresenter: ClearentOfflineModeReportViewProtocol!
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -77,18 +78,14 @@ class ClearentOfflineModeReportViewController: UIViewController {
 extension ClearentOfflineModeReportViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-       // guard let dataSource = dataSource else { return 0 }
-        return 6
+        return reportPresenter.itemCount()
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: ClearentOfflineResultTableViewCell.identifier,
                                                               for: indexPath) as? ClearentOfflineResultTableViewCell else { return UITableViewCell() }
-        
-        
-
-        cell.itemNameLabel.text = "Declined Amount"
-        cell.itemValueLabel.text = "$20"
+        let item = reportPresenter.itemForIndexPath(indexPath: indexPath)
+        cell.setup(item:item)
                
         return cell
     }

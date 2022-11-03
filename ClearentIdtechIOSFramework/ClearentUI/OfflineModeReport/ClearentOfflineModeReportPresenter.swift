@@ -14,11 +14,36 @@ struct ReportItem {
     let isAmount: Bool
 }
 
-protocol ClearentOfflineModeReportProtocol {
+protocol ClearentOfflineModeReportViewProtocol {
     func clearAndProceed()
+    func saveErrorLog()
     func itemCount() -> Int
+    func itemForIndexPath(indexPath: IndexPath) -> ReportItem
 }
 
 class ClearentOfflineModeReportPresenter {
+    private var dataSource: [ReportItem]
     
+    init() {
+        dataSource = []
+    }
+}
+
+extension ClearentOfflineModeReportPresenter : ClearentOfflineModeReportViewProtocol {
+    
+    func saveErrorLog() {
+        
+    }
+    
+    func clearAndProceed() {
+        // do something
+    }
+    
+    func itemCount() -> Int {
+        return 6 //dataSource.count
+    }
+    
+    func itemForIndexPath(indexPath: IndexPath) -> ReportItem {
+        ReportItem(itemName: "Something", itemValue: "40", isAmount: true)
+    }
 }
