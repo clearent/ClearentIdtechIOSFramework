@@ -33,12 +33,16 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     private var clearentVP3300: Clearent_VP3300?
     private var offlineTransaction: OfflineTransaction? = nil
     
+    // MARK: - Init
+    
     init(httpClient: ClearentHttpClientProtocol? = nil, baseURL: String, apiKey: String, clearentVP3300: Clearent_VP3300, clearentManualEntry: ClearentManualEntry?) {
         self.httpClient = httpClient ?? ClearentDefaultHttpClient(baseURL: baseURL, apiKey: apiKey)
         super.init()
         self.clearentManualEntry = clearentManualEntry
         self.clearentVP3300 = clearentVP3300
     }
+    
+    // MARK: - Internal
     
     func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (TransactionResponse?, ClearentError?) -> Void) {
         httpClient.saleTransaction(jwt: jwt, saleEntity: saleEntity) { data, error in
@@ -190,7 +194,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     }
     
     /**
-     * Method that performs a manual card transaction
+     * Method that performs a manual card transaction.
      */
      func manualEntryTransaction(saleEntity: SaleEntity) {
         let dispatchQueue = DispatchQueue(label: "xplor.UserInteractiveQueue", qos: .userInteractive, attributes: .concurrent)
@@ -205,7 +209,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     }
     
     /**
-     * Saves and validates offline transactions, calls a delegate method with the result
+     * Saves and validates offline transactions, calls a delegate method with the result.
      *  @param transaction, represents an offline transaction
      */
     func saveOfflineTransaction(paymentData: PaymentData) {
@@ -216,7 +220,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     }
     
     /**
-     * Saves  the image represnting the user's signature
+     * Saves the image represnting the user's signature.
      *  @param transactionID, the id of the transcation for wich we save the signature
      *  @param the actual  image contianing the signature
      */
@@ -229,6 +233,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     }
     
     // MARK: - Private
+    
     private func sendOfflineTransaction(offlineTransaction: OfflineTransaction, token: ClearentTransactionToken?, completion: @escaping ((ClearentError?) -> Void)) {
         guard let token = token else {
             completion(.init(type: .missingToken))

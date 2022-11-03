@@ -43,6 +43,8 @@ class ReaderRepository: ReaderRepositoryProtocol {
     private var connectToReaderTimer: Timer?
     private var shouldBeginContinuousSearchingForReaders: ((_ searchingEnabled: Bool) -> Void)?
     private var shouldSendPressButton = false
+    
+    // MARK: - Init
 
     init(clearentVP3300: Clearent_VP3300) {
         self.clearentVP3300 = clearentVP3300
@@ -63,6 +65,8 @@ class ReaderRepository: ReaderRepositoryProtocol {
             }
         }
     }
+    
+    // MARK: - Internal
     
     func startPairing(reconnectIfPossible: Bool) {
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
