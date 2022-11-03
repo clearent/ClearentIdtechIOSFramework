@@ -160,7 +160,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         case .cancel:
             ClearentWrapper.shared.isNewPaymentProcess = true
             ClearentWrapper.shared.isOfflineModeConfirmed = false
-            ClearentWrapper.shared.offlineModeWarningDisplayed = false
+            ClearentUIManager.shared.offlineModeWarningDisplayed = false
             modalProcessingView?.dismissViewController(result: .failure(.init(type: .cancelledByUser)))
         case .retry, .pair:
             restartProcess(newPair: false)
@@ -185,7 +185,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             modalProcessingView?.displayOfflineModeConfirmationMessage(for: .denyOfflineMode)
         case .confirmOfflineModeWarningMessage:
             ClearentWrapper.shared.isOfflineModeConfirmed = true
-            ClearentWrapper.shared.offlineModeWarningDisplayed = true
+            ClearentUIManager.shared.offlineModeWarningDisplayed = true
             restartProcess(newPair: false)
         }
     }
@@ -276,7 +276,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         if useCardReaderPaymentMethod, !sdkWrapper.isReaderConnected() {
             shouldStartTransactionAfterRenameReader = ClearentWrapperDefaults.pairedReaderInfo == nil
             sdkWrapper.startPairing(reconnectIfPossible: true)
-        } else if ClearentWrapper.shared.enableOfflineMode, ClearentWrapper.shared.offlineModeState == .on, !ClearentWrapper.shared.offlineModeWarningDisplayed {
+        } else if ClearentWrapper.configuration.enableOfflineMode, ClearentUIManager.configuration.offlineModeState == .on, !ClearentUIManager.shared.offlineModeWarningDisplayed {
             sdkFeedbackProvider.displayOfflineModeWarningMessage()
         } else {
             startTipFlow()
@@ -373,6 +373,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 
     private func startTransaction(saleEntity: SaleEntity, isManualTransaction: Bool) {
         modalProcessingView?.showLoadingView()
+        
         sdkWrapper.startTransaction(with: saleEntity, isManualTransaction: isManualTransaction) { [weak self] error in
             if let error = error {
                 self?.modalProcessingView?.dismissViewController(result: .failure(error))
@@ -403,7 +404,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                 }
             }
         } else {
-            if ClearentWrapper.shared.enableOfflineMode && ClearentWrapper.shared.offlineModeState == .on {
+            if ClearentWrapper.configuration.enableOfflineMode && ClearentUIManager.configuration.offlineModeState == .on {
                 sdkFeedbackProvider.displayOfflineModeWarningMessage()
             } else {
                 startTipFlow()
