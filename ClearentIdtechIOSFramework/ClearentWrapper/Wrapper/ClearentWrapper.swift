@@ -110,6 +110,7 @@ public final class ClearentWrapper : NSObject {
      * @param key, encryption key usedf for encypting offline transactions
      */
     public func enableOfflineMode(key: SymmetricKey) {
+        enableOfflineMode = true
         ClearentWrapper.configuration.enableOfflineMode = true
         transactionRepository?.offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: ClearentConstants.KeychainService.serviceName, account: ClearentConstants.KeychainService.account, encryptionKey: key))
     }
@@ -120,6 +121,14 @@ public final class ClearentWrapper : NSObject {
     public func disableOfflineMode() {
         ClearentWrapper.configuration.enableOfflineMode = false
         transactionRepository?.offlineManager = nil
+    }
+    
+    
+    /**
+     * Method will retrive all saved offline transactions if the encryption key provided is valid and can decrypt them
+     */
+    public func retriveAllOfflineTransactions() -> [OfflineTransaction]? {
+        return transactionRepository?.fetchOfflineTransactions()
     }
     
     /**

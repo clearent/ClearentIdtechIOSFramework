@@ -20,6 +20,7 @@ protocol TransactionRepositoryProtocol {
     func manualEntryTransaction(saleEntity: SaleEntity)
     func saveOfflineTransaction(paymentData: PaymentData)
     func saveSignatureImageForTransaction(image: UIImage)
+    func fetchOfflineTransactions() -> [OfflineTransaction]?
 }
 
 class TransactionRepository: NSObject, TransactionRepositoryProtocol {
@@ -213,6 +214,13 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         offlineTransaction = offtr
         guard let status = offlineManager?.saveOfflineTransaction(transaction: offtr) else { return  }
         self.delegate?.didAcceptOfflineTransaction(err: status)
+    }
+    
+    /**
+     * Retrive all stored offline transactions
+     */
+    func fetchOfflineTransactions() -> [OfflineTransaction]? {
+        return offlineManager?.retriveAll()
     }
     
     /**

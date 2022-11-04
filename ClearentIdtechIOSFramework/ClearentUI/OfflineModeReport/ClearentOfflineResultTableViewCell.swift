@@ -35,7 +35,7 @@ class ClearentOfflineResultTableViewCell: UITableViewCell {
     }
     
     public func setup(item: ReportItem) {
-        self.itemNameLabel.text = item.itemName + ":"
+        self.itemNameLabel.text = item.itemName
         let prefix = (item.isAmount) ? "$" : ""
         self.itemValueLabel.text = prefix + item.itemValue
     }

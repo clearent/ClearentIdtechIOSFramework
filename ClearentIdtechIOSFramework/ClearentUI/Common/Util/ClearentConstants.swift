@@ -130,6 +130,13 @@ import UIKit
             public static let clearButtonTitle = "xsdk_offline_report_clear_report".localized
             public static let saveLogButtonTitle = "xsdk_offline_report_save_error_log".localized
             public static let infoLabeltext = "xsdk_offline_info".localized
+            
+            public static let approvedCount = "xsdk_offline_report_entry_approved_count".localized
+            public static let approvedAmount = "xsdk_offline_report_entry_approved_amount".localized
+            public static let declinedCount = "xsdk_offline_report_entry_declined_count".localized
+            public static let declinedAmount = "xsdk_offline_report_entry_declined_amount".localized
+            public static let errorCount = "xsdk_offline_report_entry_error_count".localized
+            public static let errorAmount = "xsdk_offline_report_entry_error_amount".localized
         }
         
         enum ReaderDetails {
