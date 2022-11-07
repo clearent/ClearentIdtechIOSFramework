@@ -57,7 +57,9 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
                     completion(decodedResponse, nil)
                     return
                 }
-                completion(decodedResponse, ClearentError(type: .httpError, code: transactionError.code, message: transactionError.message))
+                
+                let errType = (decodedResponse.payload.transaction?.result == TransactionStatus.declined) ? ClearentErrorType.gatewayDeclined : ClearentErrorType.httpError
+                completion(decodedResponse, ClearentError(type: errType, code: transactionError.code, message: transactionError.message))
             } catch let jsonDecodingError {
                 completion(nil, ClearentError(type: .httpError, code: "xsdk_response_parsing_error".localized, message: "xsdk_http_response_parsing_error_message".localized))
                 print(jsonDecodingError)
@@ -148,7 +150,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
             }
         }
     }
-    
+        
     func processOfflineTransactions(completion: @escaping (() -> Void)) {
         guard let offlineTransactions = offlineManager?.retriveAll() else { return }
         var operations: [AsyncBlockOperation] = []

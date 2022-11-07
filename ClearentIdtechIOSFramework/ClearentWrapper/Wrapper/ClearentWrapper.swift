@@ -36,7 +36,7 @@ public final class ClearentWrapper : NSObject {
     public var useManualPaymentAsFallback: Bool?
 
     /// The state of the store & forward feature
-    public var offlineModeState: OfflineModeState = .on
+    public var offlineModeState: OfflineModeState = .prompted
     
     public static var configuration: ClearentWrapperConfiguration!
     
@@ -329,6 +329,14 @@ public final class ClearentWrapper : NSObject {
                 completion(nil)
             }
         }
+    }
+    
+    /**
+     * Method return the Offlinemanager instance
+     */
+    
+    func retriveOfflineManager() -> OfflineModeManager? {
+        return transactionRepository?.offlineManager
     }
     
     /**

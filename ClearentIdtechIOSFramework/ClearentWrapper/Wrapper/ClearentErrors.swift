@@ -52,4 +52,6 @@ public typealias CompletionResult = Result<String?, ClearentError>
     var isMissingKeyError: Bool {
         return [.apiKeyNotProvided, .baseURLNotProvided, .publicKeyNotProvided].contains(self)
     }
+    
+    case none
 }

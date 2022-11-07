@@ -51,8 +51,15 @@ public struct ResponseError: Codable {
 
 public struct Transaction: Codable {
     var message: String
+    var result: String
     
     enum CodingKeys: String, CodingKey {
         case message = "display-message"
+        case result = "result"
     }
+}
+
+struct TransactionStatus {
+    static let approved = "APPROVED"
+    static let declined = "DECLINED"
 }

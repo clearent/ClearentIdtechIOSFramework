@@ -40,7 +40,7 @@ class ClearentOfflineModeReportPresenter {
         
         transactions?.forEach({ transaction in
             if let errorStatus = transaction.errorStatus {
-                if errorStatus.error.type == .httpError {
+                if errorStatus.error.type == .gatewayDeclined {
                     declinedCount = declinedCount + 1
                     if let amount = Double(transaction.paymentData.saleEntity.amount) {
                         declinedAmount = declinedAmount + amount
@@ -50,11 +50,11 @@ class ClearentOfflineModeReportPresenter {
                     if let amount = Double(transaction.paymentData.saleEntity.amount) {
                         errorAmount = errorAmount + amount
                     }
-                }
-            } else {
-                approvedCount = approvedCount + 1
-                if let amount = Double(transaction.paymentData.saleEntity.amount) {
-                    approvedAmount = approvedAmount + amount
+                } else if errorStatus.error.type == .none  {
+                    approvedCount = approvedCount + 1
+                    if let amount = Double(transaction.paymentData.saleEntity.amount) {
+                        approvedAmount = approvedAmount + amount
+                    }
                 }
             }
         })
@@ -78,7 +78,13 @@ extension ClearentOfflineModeReportPresenter : ClearentOfflineModeReportViewProt
     }
     
     func clearAndProceed() {
-        // do something
+        let offlineManager = ClearentWrapper.shared.retriveOfflineManager()
+        let allTransactions = offlineManager?.retriveAll()
+        allTransactions?.forEach({ tr in
+            _ = offlineManager?.storage.deleteTransactionWith(id: tr.transactionID)
+        })
+        
+        updateDataSource()
     }
     
     func itemCount() -> Int {

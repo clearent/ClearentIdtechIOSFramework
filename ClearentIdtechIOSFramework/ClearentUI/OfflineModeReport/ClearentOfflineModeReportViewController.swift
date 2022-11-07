@@ -60,13 +60,14 @@ class ClearentOfflineModeReportViewController: UIViewController {
         saveErrorLogButton.title = ClearentConstants.Localized.OfflineReport.saveLogButtonTitle
         saveErrorLogButton.buttonStyle = .link
         saveErrorLogButton.action = { [weak self] in
-            //self?.showRemoveReaderAlert()
+            self?.reportPresenter.saveErrorLog()
         }
         
         clearReportButton.title = ClearentConstants.Localized.OfflineReport.clearButtonTitle
         clearReportButton.buttonStyle = .filled
         clearReportButton.action = { [weak self] in
-            //self?.showRemoveReaderAlert()
+            self?.reportPresenter.clearAndProceed()
+            self?.tableView.reloadData()
         }
     }
     
