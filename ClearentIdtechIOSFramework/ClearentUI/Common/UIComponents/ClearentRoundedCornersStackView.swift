@@ -44,6 +44,6 @@ class ClearentRoundedCornersStackView: ClearentAdaptiveStackView {
     private func setup() {
         addRoundedCorners(backgroundColor: Layout.backgroundColor, radius: Layout.cornerRadius, margin: Layout.margin)
         backgroundColor = .white
-        showLoadingView()
+       // showLoadingView()
     }
 }

@@ -267,6 +267,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             showReadersList()
         case .renameReader:
             showRenameReader()
+        case .showSettings:
+            break;
         }
     }
     

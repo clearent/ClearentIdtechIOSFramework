@@ -21,14 +21,16 @@ public enum FlowFeedbackType {
 }
 
 public enum ProcessType: Equatable {
-    case pairing(withReader: ReaderInfo? = nil), payment, showReaders, renameReader
+    case pairing(withReader: ReaderInfo? = nil), payment, showReaders, renameReader, showSettings
     
     public static func == (lhs: ProcessType, rhs: ProcessType) -> Bool {
         switch (lhs, rhs) {
-        case (.pairing, .pairing): return true
-        case (.payment, .payment): return true
-        case (.showReaders, .showReaders): return true
-        case (.renameReader, .renameReader): return true
+        case (.pairing, .pairing),
+            (.payment, .payment),
+            (.showReaders, .showReaders),
+            (.renameReader, .renameReader),
+            (.showSettings, .showSettings):
+            return true
         default: return false
         }
     }

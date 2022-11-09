@@ -52,7 +52,7 @@ public protocol ClearentUIColors {
     
     // MARK: - ClearentTitleLabel
     
-    // The label's text color (also used in ClearentReaderDetailsScreen)
+    // The label's text color (also used in ClearentReaderDetailsScreen and ClearentSettingsModalViewController)
     var titleLabelColor: UIColor { get }
     
     // MARK: - ClearentSubtitleLabel

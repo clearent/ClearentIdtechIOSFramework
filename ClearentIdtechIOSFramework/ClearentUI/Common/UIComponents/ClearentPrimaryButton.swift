@@ -67,10 +67,16 @@ public class ClearentPrimaryButton: ClearentMarginableView {
             button.setTitle(title, for: .normal)
         }
     }
+    
+    var cornerRadius: CGFloat = 20 {
+        didSet {
+            button.layer.cornerRadius = cornerRadius
+        }
+    }
 
     public override func configure() {
         setFilledButton()
-        button.layer.cornerRadius = button.bounds.height / 2
+        cornerRadius = button.bounds.height / 2
         button.layer.masksToBounds = true
         textFont = ClearentUIBrandConfigurator.shared.fonts.primaryButtonTextFont
     }

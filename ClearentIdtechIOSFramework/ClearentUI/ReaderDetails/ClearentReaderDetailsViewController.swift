@@ -63,7 +63,7 @@ class ClearentReaderDetailsViewController: UIViewController {
         connectedView.valueChangedAction = { [weak self] isOn in
             guard let strongSelf = self else { return }
             if isOn {
-                let modalVC = ClearentUIManager.shared.viewController(processType: .pairing(withReader: strongSelf.readerInfo)) { result in
+                let modalVC = ClearentUIManager.shared.navigationController(processType: .pairing(withReader: strongSelf.readerInfo)) { result in
                     if case .success(_) = result {
                         strongSelf.didChangedConnectionStatus(isConnected: true)
                     } else {
@@ -130,7 +130,7 @@ class ClearentReaderDetailsViewController: UIViewController {
         customReaderName.titleText = ClearentConstants.Localized.ReaderDetails.customReaderName
         customReaderName.editButtonPressed = { [weak self] in
             guard let strongSelf = self else { return }
-            let modalVC = ClearentUIManager.shared.viewController(processType: .renameReader, editableReader: self?.detailsPresenter.currentReader) { result in
+            let modalVC = ClearentUIManager.shared.navigationController(processType: .renameReader, editableReader: self?.detailsPresenter.currentReader) { result in
                 if case let.success(customName) = result {
                     strongSelf.didChangedCustomReaderName(customName: customName)
                 }
