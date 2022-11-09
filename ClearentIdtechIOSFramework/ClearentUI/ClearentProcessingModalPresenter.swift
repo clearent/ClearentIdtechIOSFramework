@@ -305,16 +305,24 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
 
     private func startCardReaderTransaction() {
-        if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
-            let saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals)
-            startTransaction(saleEntity: saleEntity, isManualTransaction: false)
+        if ClearentWrapper.configuration.enableOfflineMode, ClearentUIManager.configuration.offlineModeState == .on, !isOfflineModeConfirmed {
+            sdkFeedbackProvider.displayOfflineModeWarningMessage()
+        } else {
+            if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
+                let saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals)
+                startTransaction(saleEntity: saleEntity, isManualTransaction: false)
+            }
         }
     }
     
     private func startManualEntryTransaction() {
-        let items = [FlowDataItem(type: .manualEntry, object: nil)]
-        let feedback = FlowFeedback(flow: .payment, type: FlowFeedbackType.info, items: items)
-        modalProcessingView?.updateContent(with: feedback)
+        if ClearentWrapper.configuration.enableOfflineMode, ClearentUIManager.configuration.offlineModeState == .on, !isOfflineModeConfirmed {
+            sdkFeedbackProvider.displayOfflineModeWarningMessage()
+        } else {
+            let items = [FlowDataItem(type: .manualEntry, object: nil)]
+            let feedback = FlowFeedback(flow: .payment, type: FlowFeedbackType.info, items: items)
+            modalProcessingView?.updateContent(with: feedback)
+        }
     }
     
     private func showReadersList() {
