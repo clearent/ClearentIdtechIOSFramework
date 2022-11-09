@@ -6,7 +6,7 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
-/// Used to determine whether a flow succeeded or failed. The success case stores an optional string that represents the custom name of the reader
+/// Used to determine whether a flow succeeded or failed. The success case stores an optional string that represents the custom name of the reader.
 public typealias CompletionResult = Result<String?, ClearentError>
 
 @objc public class ClearentError: NSObject, Error, Codable {
@@ -21,7 +21,7 @@ public typealias CompletionResult = Result<String?, ClearentError>
     }
 }
 
-@objc public enum ClearentErrorType: Int, Codable {
+@objc public enum ClearentErrorType: Int, Error, Codable {
      /// The user aborted the current flow
     case cancelledByUser = 0
 
@@ -33,6 +33,9 @@ public typealias CompletionResult = Result<String?, ClearentError>
     
     /// No publicKey was passed to SDK
     case publicKeyNotProvided
+    
+    /// No encryption key for offline mode was passed to SDK
+    case offlineModeEncryptionKeyNotProvided
 
     /// Error related to http response
     case httpError

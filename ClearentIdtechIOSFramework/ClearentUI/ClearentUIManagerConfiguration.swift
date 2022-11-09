@@ -26,12 +26,12 @@ import CryptoKit
         ClearentWrapper.shared.initialize(with: ClearentWrapperConfiguration(baseURL: baseURL, apiKey: apiKey, publicKey: publicKey, enableEnhancedMessaging: enableEnhancedMessaging))
     }
     
-    @objc public init(baseURL: String, apiKey: String, publicKey: String, enableOfflineMode: Bool, offlineModeEncryptionKeyData: Data, enableEnhancedMessaging: Bool = false, tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages, signatureEnabled: Bool = true) {
+    @objc public init(baseURL: String, apiKey: String, publicKey: String, offlineModeEncryptionKeyData: Data, enableEnhancedMessaging: Bool = false, tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages, signatureEnabled: Bool = true) {
         self.tipAmounts = tipAmounts
         self.signatureEnabled = signatureEnabled
         
-        super.init(baseURL: baseURL, apiKey: apiKey, publicKey: publicKey, enableOfflineMode: enableOfflineMode, offlineModeEncryptionKeyData: offlineModeEncryptionKeyData, enableEnhancedMessaging: enableEnhancedMessaging)
+        super.init(baseURL: baseURL, apiKey: apiKey, publicKey: publicKey, offlineModeEncryptionKeyData: offlineModeEncryptionKeyData, enableEnhancedMessaging: enableEnhancedMessaging)
         
-        ClearentWrapper.shared.initialize(with: ClearentWrapperConfiguration(baseURL: baseURL, apiKey: apiKey, publicKey: publicKey, enableOfflineMode: enableEnhancedMessaging, offlineModeEncryptionKeyData: offlineModeEncryptionKeyData, enableEnhancedMessaging: enableEnhancedMessaging))
+        ClearentWrapper.shared.initialize(with: ClearentWrapperConfiguration(baseURL: baseURL, apiKey: apiKey, publicKey: publicKey, offlineModeEncryptionKeyData: offlineModeEncryptionKeyData, enableEnhancedMessaging: enableEnhancedMessaging))
     }
 }
