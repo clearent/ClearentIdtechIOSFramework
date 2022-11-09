@@ -305,7 +305,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
 
     private func startCardReaderTransaction() {
-        if ClearentWrapper.configuration.enableOfflineMode, ClearentUIManager.configuration.offlineModeState == .on, !isOfflineModeConfirmed {
+        if shouldDisplayOfflineModeWarningMessage() {
             sdkFeedbackProvider.displayOfflineModeWarningMessage()
         } else {
             if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
@@ -316,13 +316,20 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     private func startManualEntryTransaction() {
-        if ClearentWrapper.configuration.enableOfflineMode, ClearentUIManager.configuration.offlineModeState == .on, !isOfflineModeConfirmed {
+        if shouldDisplayOfflineModeWarningMessage() {
             sdkFeedbackProvider.displayOfflineModeWarningMessage()
         } else {
             let items = [FlowDataItem(type: .manualEntry, object: nil)]
             let feedback = FlowFeedback(flow: .payment, type: FlowFeedbackType.info, items: items)
             modalProcessingView?.updateContent(with: feedback)
         }
+    }
+    
+    private func shouldDisplayOfflineModeWarningMessage() -> Bool {
+        if ClearentWrapper.configuration.enableOfflineMode, ClearentUIManager.configuration.offlineModeState == .on, !isOfflineModeConfirmed {
+            return true
+        }
+        return false
     }
     
     private func showReadersList() {
