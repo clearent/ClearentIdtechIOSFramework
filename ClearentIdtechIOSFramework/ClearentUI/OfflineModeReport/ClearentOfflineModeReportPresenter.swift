@@ -81,7 +81,9 @@ extension ClearentOfflineModeReportPresenter : ClearentOfflineModeReportViewProt
         let offlineManager = ClearentWrapper.shared.retriveOfflineManager()
         let allTransactions = offlineManager?.retriveAll()
         allTransactions?.forEach({ tr in
-            _ = offlineManager?.storage.deleteTransactionWith(id: tr.transactionID)
+            if tr.errorStatus != nil {
+                _ = offlineManager?.storage.deleteTransactionWith(id: tr.transactionID)
+            }
         })
         
         updateDataSource()
