@@ -80,7 +80,9 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         }
             
         if shouldDisplayOfflineModeLabel() {
-            stackView.insertArrangedSubview(ClearentSubtitleLabel(text: ClearentConstants.Localized.OfflineMode.offlineModeEnabled), at: 1)
+            let x = ClearentIconAndLabel(icon: UIImage(named: ClearentConstants.IconName.smallWarning, in: ClearentConstants.bundle, compatibleWith: nil), text: String(format: ClearentConstants.Localized.OfflineMode.offlineModeEnabled, "xx"))
+            stackView.insertArrangedSubview(x, at: 1)
+            stackView.layoutSubviews()
         }
     }
     
@@ -199,6 +201,16 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         case .error:
             guard let detailedErrorMessage = object as? String else { return nil }
             return ClearentErrorDetailsView(detailerErrorMessage: detailedErrorMessage)
+        case .smallWarningLabel:
+            guard let text = object as? String else { return nil }
+            
+            let stack = UIStackView()
+            stack.axis = .horizontal
+            
+            let warningImage = graphicView(with: FlowGraphicType.warning)
+            stack.insertArrangedSubview(warningImage!, at: 0)
+            stack.insertArrangedSubview(ClearentWarninglabel(text: text), at: 1)
+            return stack
         }
     }
     
@@ -214,7 +226,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     
     private func manualEntryFormView() -> ClearentManualEntryFormView {
         let dataSource = ClearentPaymentDataSource(with: [ClearentPaymentBaseSection(), ClearentPaymentAdditionalSection()])
-        let offlineModeStatusMessage = shouldDisplayOfflineModeLabel() ? ClearentConstants.Localized.OfflineMode.offlineModeEnabled : nil
+        let offlineModeStatusMessage = shouldDisplayOfflineModeLabel() ? String(format: ClearentConstants.Localized.OfflineMode.offlineModeEnabled, "xx") : nil
         let manualEntryFormView = ClearentManualEntryFormView(with: dataSource, offlineModeStatusMessage: offlineModeStatusMessage)
         manualEntryFormView.delegate = self
         dataSource.delegate = manualEntryFormView

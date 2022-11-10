@@ -160,7 +160,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                     modalProcessingView?.dismissViewController(result: .success(editableReader?.customReaderName))
                 }
             }
-        case .cancel:
+        case .cancel, .denyOfflineMode:
             ClearentWrapper.shared.isNewPaymentProcess = true
             isOfflineModeConfirmed = false
             ClearentUIManager.shared.offlineModeWarningDisplayed = false
@@ -184,8 +184,6 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             startManualEntryTransaction()
         case .confirmOfflineMode:
             modalProcessingView?.displayOfflineModeConfirmationMessage(for: .confirmOfflineMode)
-        case .denyOfflineMode:
-            modalProcessingView?.displayOfflineModeConfirmationMessage(for: .denyOfflineMode)
         case .confirmOfflineModeWarningMessage:
             isOfflineModeConfirmed = true
             ClearentUIManager.shared.offlineModeWarningDisplayed = true

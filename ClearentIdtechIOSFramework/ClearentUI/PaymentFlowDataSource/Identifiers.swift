@@ -13,7 +13,7 @@ enum SignalLevel: Int {
 }
 
 enum FlowDataKeys {
-    case readerInfo, graphicType, title, description, userAction, devicesFound, recentlyPaired, hint, input, tips, signature, manualEntry, error
+    case readerInfo, graphicType, title, description, userAction, devicesFound, recentlyPaired, hint, input, tips, signature, manualEntry, error, smallWarningLabel
 }
 
 public enum FlowFeedbackType {
@@ -39,7 +39,7 @@ public enum ReaderStatusHeaderViewState {
 }
 
 enum FlowGraphicType {
-    case animatedCardInteraction, staticCardInteraction, press_button, transaction_completed, loading, error, warning, pairedReader, pairingSuccessful
+    case animatedCardInteraction, staticCardInteraction, press_button, transaction_completed, loading, error, warning, smallWarning, pairedReader, pairingSuccessful
     
     var name: String? {
         switch self {
@@ -55,6 +55,8 @@ enum FlowGraphicType {
             return ClearentConstants.IconName.error
         case .warning:
             return ClearentConstants.IconName.warning
+        case .smallWarning:
+            return ClearentConstants.IconName.smallWarning
         case .loading:
             return nil
         case .pairedReader:
