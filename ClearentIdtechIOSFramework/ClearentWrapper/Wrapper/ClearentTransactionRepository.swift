@@ -235,7 +235,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
              let status = offlineManager?.saveSignatureForTransaction(transactionID: transactionID, image: image) else {
             return
         }
-        delegate?.didAcceptOfflineSignature(error: status, transactionID: transactionID)
+        delegate?.didAcceptOfflineSignature(status: status, transactionID: transactionID)
     }
     
     // MARK: - Private

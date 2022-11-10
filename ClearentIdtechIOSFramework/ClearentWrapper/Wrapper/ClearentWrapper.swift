@@ -91,10 +91,7 @@ public final class ClearentWrapper : NSObject {
     
     /**
      * Method that should be called to enable offline mode.
-     * @param key, encryption key used for encrypting offline transactions
      */
-    
-    //remove key from this one
     public func enableOfflineMode() throws {
         guard let offlineModeEncryptionKey = ClearentWrapper.configuration.offlineModeEncryptionKey else { throw ClearentErrorType.offlineModeEncryptionKeyNotProvided }
         
@@ -400,7 +397,6 @@ public final class ClearentWrapper : NSObject {
 extension ClearentWrapper: Clearent_Public_IDTech_VP3300_Delegate {
     
     public func successTransactionToken(_ clearentTransactionToken: ClearentTransactionToken!) {
-//        guard let saleEntity = saleEntity else { return }
         // make sure we have two decimals otherwise the API will return an error
         saleEntity.amount = saleEntity.amount.setTwoDecimals()
         saleEntity.tipAmount = saleEntity.tipAmount?.setTwoDecimals()
@@ -413,7 +409,6 @@ extension ClearentWrapper: Clearent_Public_IDTech_VP3300_Delegate {
     }
     
     public func successOfflineTransactionToken(_ clearentTransactionTokenRequestData: Data?) {
-//        guard let saleEntity = saleEntity,
         guard let cardToken = clearentTransactionTokenRequestData else { return }
         let paymentData = PaymentData(saleEntity: saleEntity, cardToken: cardToken)
         
