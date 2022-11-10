@@ -36,7 +36,7 @@ public final class ClearentWrapper : NSObject {
     public var useManualPaymentAsFallback: Bool?
 
     /// The state of the store & forward feature
-    public var offlineModeState: OfflineModeState = .on
+    public var offlineModeState: OfflineModeState = .prompted
     
     public static var configuration: ClearentWrapperConfiguration!
     
@@ -110,6 +110,7 @@ public final class ClearentWrapper : NSObject {
      * @param key, encryption key usedf for encypting offline transactions
      */
     public func enableOfflineMode(key: SymmetricKey) {
+        enableOfflineMode = true
         ClearentWrapper.configuration.enableOfflineMode = true
         transactionRepository?.offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: ClearentConstants.KeychainService.serviceName, account: ClearentConstants.KeychainService.account, encryptionKey: key))
     }
@@ -120,6 +121,14 @@ public final class ClearentWrapper : NSObject {
     public func disableOfflineMode() {
         ClearentWrapper.configuration.enableOfflineMode = false
         transactionRepository?.offlineManager = nil
+    }
+    
+    
+    /**
+     * Method will retrive all saved offline transactions if the encryption key provided is valid and can decrypt them
+     */
+    public func retriveAllOfflineTransactions() -> [OfflineTransaction]? {
+        return transactionRepository?.fetchOfflineTransactions()
     }
     
     /**
@@ -320,6 +329,14 @@ public final class ClearentWrapper : NSObject {
                 completion(nil)
             }
         }
+    }
+    
+    /**
+     * Method return the Offlinemanager instance
+     */
+    
+    func retriveOfflineManager() -> OfflineModeManager? {
+        return transactionRepository?.offlineManager
     }
     
     /**

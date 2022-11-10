@@ -79,4 +79,8 @@ public protocol ClearentUIFonts {
     // MARK: - ClearentPaymentTextField
     
     var textfieldPlaceholder: UIFont { get }
+    
+    // MARK: - OfflineResultItem
+    
+    var offlineResultItemLabelFont: UIFont { get }
 }

@@ -29,6 +29,10 @@ class ClearentColorsDefaultPalette: ClearentUIColors {
     
     var borderedButtonTextColor: UIColor { UIColor(hexString: "272431") }
     
+    var linkButtonTextColor: UIColor { UIColor(hexString: "6923F4") }
+    
+    var linkButtonDisabledTextColor: UIColor { UIColor(hexString: "C3ADFF") }
+    
     var enabledTextColor: UIColor { UIColor(hexString: "#FFFFFF") }
     
     var disabledTextColor: UIColor { UIColor(hexString: "#FFFFFF") }

@@ -59,4 +59,6 @@ class ClearentDefaultFonts: ClearentUIFonts {
     var sectionTitleLabelFont: UIFont { proTextLarge }
     
     var textfieldPlaceholder: UIFont { proTextNormal }
+    
+    var offlineResultItemLabelFont: UIFont { proTextNormal }
 }
