@@ -117,7 +117,7 @@ public final class ClearentUIManager: NSObject {
         navigationController.modalPresentationStyle = .overFullScreen
         return navigationController
     }
-    
+
     private func processingModalViewController(processType: ProcessType, amount: Double? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UIViewController {
         let viewController = ClearentProcessingModalViewController(showOnTop: processType == .showReaders || processType == .renameReader)
         let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, amount: amount, processType: processType)

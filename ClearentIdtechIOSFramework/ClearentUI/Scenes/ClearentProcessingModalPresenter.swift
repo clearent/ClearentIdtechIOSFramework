@@ -41,6 +41,7 @@ protocol ProcessingModalProtocol {
 }
 
 class ClearentProcessingModalPresenter {
+    
     // MARK: - Properties
 
     private weak var modalProcessingView: ClearentProcessingModalView?

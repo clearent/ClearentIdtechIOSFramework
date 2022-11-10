@@ -73,7 +73,7 @@ extension ClearentOfflineModeReportPresenter : ClearentOfflineModeReportViewProt
     }
     
     func clearAndProceed() {
-        let offlineManager = ClearentWrapper.shared.retriveOfflineManager()
+        let offlineManager = ClearentWrapper.shared.retrieveOfflineManager()
         let allTransactions = offlineManager?.retriveAll()
         allTransactions?.forEach({ tr in
             if tr.errorStatus != nil {

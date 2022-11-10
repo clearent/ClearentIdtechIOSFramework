@@ -13,10 +13,14 @@ protocol ClearentSettingsPresenterView: AnyObject {
 }
 
 protocol ClearentSettingsPresenterProtocol {
-
+    var offlineStatusDescription: String? { get set }
+    var offlineStatusDescriptionColor: UIColor? { get set }
+    var offlineStatusButtonTitle: String? { get set }
+    var offlineStatusButtonAction: (() -> Void)? { get set }
+    func updateOfflineStatus()
 }
 
-class ClearentSettingsPresenter {
+class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
     // MARK: - Properties
 
     private weak var settingsPresenterView: ClearentSettingsPresenterView?
@@ -36,7 +40,10 @@ class ClearentSettingsPresenter {
     }
     
     func updateOfflineStatus() {
-        guard let offlineManager = ClearentWrapper.shared.retriveOfflineManager() else { return }
+        guard let offlineManager = ClearentWrapper.shared.retrieveOfflineManager() else {
+            settingsPresenterView?.removeOfflineStatusView()
+            return
+        }
         
         if offlineManager.containsReport() {
             if offlineManager.reportContainsErrors() {
@@ -55,7 +62,9 @@ class ClearentSettingsPresenter {
         settingsPresenterView?.updateOfflineStatusView(inProgress: false)
     }
 
-    func setupPendingTransactions(counter: Int) {
+    // MARK: - Private
+    
+    private func setupPendingTransactions(counter: Int) {
         if counter > 1 {
             offlineStatusDescription = String(format: "xsdk_offline_mode_transactions".localized, counter)
         } else {
@@ -71,7 +80,7 @@ class ClearentSettingsPresenter {
         }
     }
     
-    func setupUploadSuccessfully() {
+    private func setupUploadSuccessfully() {
         offlineStatusDescription = "xsdk_offline_mode_upload_success".localized
         offlineStatusButtonTitle = "xsdk_offline_mode_btn_report".localized
         offlineStatusDescriptionColor = ClearentUIBrandConfigurator.shared.colorPalette.settingsOfflineStatusLabelSuccess
@@ -80,7 +89,7 @@ class ClearentSettingsPresenter {
         }
     }
     
-    func setupUploadFail() {
+    private func setupUploadFail() {
         offlineStatusDescription = "xsdk_offline_mode_upload_errors".localized
         offlineStatusButtonTitle = "xsdk_offline_mode_btn_report".localized
         offlineStatusDescriptionColor = ClearentUIBrandConfigurator.shared.colorPalette.settingsOfflineStatusLabelFail

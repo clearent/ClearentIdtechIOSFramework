@@ -15,7 +15,7 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     @IBOutlet var offlineStatusView: ClearentLabelWithButton!
     @IBOutlet var doneButton: ClearentPrimaryButton!
     
-    var presenter: ClearentSettingsPresenter?
+    var presenter: ClearentSettingsPresenterProtocol?
     var dismissCompletion: ((CompletionResult) -> Void)?
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -54,15 +54,30 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         enableOfflineMode.titleText = "xsdk_offline_mode_switch_enabled".localized
         enableOfflineMode.titleTextColor = ClearentUIBrandConfigurator.shared.colorPalette.titleLabelColor
         enableOfflineMode.descriptionText = nil
+        enableOfflineMode.isOn = ClearentWrapper.configuration.enableOfflineMode
         enableOfflineMode.valueChangedAction = { isOn in
-            
+            self.enablePromptMode.isUserInteractionEnabled = isOn
+            if isOn {
+                do {
+                    try ClearentWrapper.shared.enableOfflineMode()
+                } catch {
+                    print("Error: \(error)")
+                }
+            } else {
+                ClearentWrapper.shared.disableOfflineMode()
+            }
         }
         
         enablePromptMode.titleText = "xsdk_offline_mode_switch_enable_prompt".localized
         enablePromptMode.titleTextColor = ClearentUIBrandConfigurator.shared.colorPalette.titleLabelColor
         enablePromptMode.descriptionText = nil
+        enablePromptMode.isOn = ClearentUIManager.configuration.offlineModeState == .prompted
         enablePromptMode.valueChangedAction = { isOn in
-            // TODO
+            if isOn {
+                ClearentUIManager.configuration.offlineModeState = .prompted
+            } else {
+                ClearentUIManager.configuration.offlineModeState = .on
+            }
         }
     }
     
