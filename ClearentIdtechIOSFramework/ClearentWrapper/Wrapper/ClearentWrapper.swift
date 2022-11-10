@@ -12,6 +12,8 @@ import CryptoKit
 
 public final class ClearentWrapper : NSObject {
     
+    // MARK: - Public properties
+    
     public static let shared = ClearentWrapper()
     
     public weak var delegate: ClearentWrapperProtocol? {
@@ -21,7 +23,7 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
-    /// The list of readers  stored in user defaults, that were previoulsy paired
+    /// The list of readers stored in user defaults that were previously paired.
     public var previouslyPairedReaders: [ReaderInfo] {
         ClearentWrapperDefaults.recentlyPairedReaders ?? []
     }
@@ -34,68 +36,46 @@ public final class ClearentWrapper : NSObject {
     
     /// If card reader payment fails, the option to use manual payment can be displayed in UI as a fallback method. If user selects this method, useManualPaymentAsFallback needs to be set to true.
     public var useManualPaymentAsFallback: Bool?
-
-    /// The state of the store & forward feature
-    public var offlineModeState: OfflineModeState = .prompted
     
     public static var configuration: ClearentWrapperConfiguration!
     
-    /// Enables or disables the use of the store & forward feature
-    var enableOfflineMode: Bool = false {
-        didSet {
-            clearentVP3300.setOfflineMode(enableOfflineMode)
-        }
-    }
-
+    // MARK: - Internal properties
+    
     /// Stores the enhanced messages read from the messages bundle
     var enhancedMessagesDict: [String:String]?
+    
     var tipEnabled: Bool { transactionRepository?.tipEnabled ?? false }
-    var isOfflineModeConfirmed = false
     var isNewPaymentProcess = true
     
+    // MARK: - Private properties
+    
     private var clearentVP3300: Clearent_VP3300!
-    private var saleEntity: SaleEntity?
+    private var saleEntity = SaleEntity(amount: "")
     private let monitor = NWPathMonitor()
+    private var readerRepository: ReaderRepositoryProtocol?
+    private var transactionRepository: TransactionRepositoryProtocol?
     private var isInternetOn: Bool = false {
         didSet {
             readerRepository?.isInternetOn = isInternetOn
         }
     }
-    private var shouldAskForOfflineModePermission: Bool {
-        if !ClearentWrapper.configuration.enableOfflineMode {
-            return false
-        } else {
-            switch offlineModeState {
-            case .off, .on:
-                return false
-            case .prompted:
-                return !isInternetOn ? (isNewPaymentProcess ? true : false) : false
-            }
-        }
-    }
-
-    private var readerRepository: ReaderRepositoryProtocol?
-    private var transactionRepository: TransactionRepositoryProtocol?
-    var offlineModeWarningDisplayed = false
     
-    // MARK: Init
+    // MARK: - Init
     
     private override init() {
         super.init()
-
+        
         createLogFile()
         startConnectionListener()
     }
     
-    // MARK - Public
+    // MARK: - Public
+    
     /**
-     * This method will update the SDK with the necessary configuration to work properly
+     * This method updates the SDK with the necessary configuration to work properly.
      */
     public func initialize(with config: ClearentWrapperConfiguration) {
         ClearentWrapper.configuration = config
-        if config.enableEnhancedMessaging {
-            readEnhancedMessages()
-        }
         
         let VP3300Config = ClearentVP3300Config(noContactlessNoConfiguration: ClearentWrapper.configuration.baseURL, publicKey: ClearentWrapper.configuration.publicKey)
         clearentVP3300 = Clearent_VP3300(connectionHandling: self, clearentVP3300Configuration: VP3300Config)
@@ -103,24 +83,33 @@ public final class ClearentWrapper : NSObject {
         
         let manualEntry = ClearentManualEntry(self, clearentBaseUrl: config.baseURL, publicKey: config.publicKey)
         transactionRepository = TransactionRepository(baseURL: config.baseURL, apiKey: config.apiKey, clearentVP3300: clearentVP3300, clearentManualEntry: manualEntry)
-    }
-
-    /**
-     * Method that should be called to enableOfflineMode
-     * @param key, encryption key usedf for encypting offline transactions
-     */
-    public func enableOfflineMode(key: SymmetricKey) {
-        enableOfflineMode = true
-        ClearentWrapper.configuration.enableOfflineMode = true
-        transactionRepository?.offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: ClearentConstants.KeychainService.serviceName, account: ClearentConstants.KeychainService.account, encryptionKey: key))
+        
+        if config.enableEnhancedMessaging {
+            readEnhancedMessages()
+        }
     }
     
     /**
-     * Method that should be called to disableOfflineMode
+     * Method that should be called to enable offline mode.
+     * @param key, encryption key used for encrypting offline transactions
+     */
+    
+    //remove key from this one
+    public func enableOfflineMode() throws {
+        guard let offlineModeEncryptionKey = ClearentWrapper.configuration.offlineModeEncryptionKey else { throw ClearentErrorType.offlineModeEncryptionKeyNotProvided }
+        
+        transactionRepository?.offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: ClearentConstants.KeychainService.serviceName, account: ClearentConstants.KeychainService.account, encryptionKey: offlineModeEncryptionKey))
+        clearentVP3300.setOfflineMode(true)
+        ClearentWrapper.configuration.enableOfflineMode = true
+    }
+    
+    /**
+     * Method that should be called to disable offline mode.
      */
     public func disableOfflineMode() {
-        ClearentWrapper.configuration.enableOfflineMode = false
         transactionRepository?.offlineManager = nil
+        clearentVP3300.setOfflineMode(false)
+        ClearentWrapper.configuration.enableOfflineMode = false
     }
     
     
@@ -132,16 +121,17 @@ public final class ClearentWrapper : NSObject {
     }
     
     /**
-     * Method that will start the pairing process by creating a new connection and starting a bluetooth search.
+     * Method that starts the pairing process by creating a new connection and starting a bluetooth search.
      * @param reconnectIfPossible, if  false  a connection that will search for bluetooth devices will be started, if true a connection with the last paired reader will be tried
      */
     public func startPairing(reconnectIfPossible: Bool) {
-        if shouldDisplayConnectivityWarning(for: .pairing()) { return }
+        if checkForConnectivityWarning(for: .pairing()) { return }
+        
         readerRepository?.startPairing(reconnectIfPossible: reconnectIfPossible)
     }
-        
+    
     /**
-     * Method that will try to initiate a connection to a specific reader
+     * Method that tries to initiate a connection to a specific reader.
      * @param reader, the card reader to connect to
      */
     public func connectTo(reader: ReaderInfo) {
@@ -149,7 +139,7 @@ public final class ClearentWrapper : NSObject {
     }
     
     /**
-     * Method that will cancel a transaction
+     * Method that cancels a transaction.
      */
     public func cancelTransaction() {
         useManualPaymentAsFallback = nil
@@ -157,14 +147,14 @@ public final class ClearentWrapper : NSObject {
     }
     
     /**
-     * Method that will search for currently used readers and call the delegate methods with the results
+     * Method that searches for currently used readers and calls the delegate methods with the results.
      */
     public func searchRecentlyUsedReaders() {
         readerRepository?.searchRecentlyUsedReaders()
     }
     
     /**
-     * Method that checks if a reader is already paired and connected
+     * Method that checks if a reader is already paired and connected.
      * returns a bool indicating if there is a reader connected
      */
     public func isReaderConnected() -> Bool {
@@ -184,20 +174,8 @@ public final class ClearentWrapper : NSObject {
         readerRepository?.isReaderEncrypted()
     }
     
-    func updateReaderInRecentlyUsed(reader: ReaderInfo) {
-        readerRepository?.updateReaderInRecentlyUsed(reader: reader)
-    }
-    
-    func removeReaderFromRecentlyUsed(reader: ReaderInfo) {
-        readerRepository?.removeReaderFromRecentlyUsed(reader: reader)
-    }
-    
-    func addReaderToRecentlyUsed(reader: ReaderInfo) {
-        readerRepository?.addReaderToRecentlyUsed(reader: reader)
-    }
-    
     /**
-     * This method will start a transaction, if manualEntryCardInfo is not null then a manual transaction will be performed otherwise a card reader transaction will be initiated
+     * Method that starts a transaction. If manualEntryCardInfo is not null then a manual transaction will be performed otherwise a card reader transaction will be initiated.
      * @param SaleEntity,  holds informations used for the transcation
      * @param isManualTransaction,  specifies if the transaction is manual
      * @param completion, the closure that will be called when a missing key error is detected
@@ -211,26 +189,38 @@ public final class ClearentWrapper : NSObject {
         if let tip = saleEntity.tipAmount, !tip.canBeConverted(to: .utf8) { return }
         
         self.saleEntity = saleEntity
-        if shouldDisplayConnectivityWarning(for: .payment) {
-            return
-        }
         
-        if isManualTransaction {
-            // If offline mode is on
-            transactionRepository?.saveOfflineTransaction(paymentData: PaymentData(saleEntity: saleEntity))
-            
-            // else
-            transactionRepository?.manualEntryTransaction(saleEntity: saleEntity)
+        if ClearentWrapper.configuration.enableOfflineMode {
+            if isManualTransaction {
+                transactionRepository?.saveOfflineTransaction(paymentData: PaymentData(saleEntity: saleEntity))
+            } else {
+                if let userAction = getBluetoothConnectivityStatus() {
+                    self.delegate?.userActionNeeded(action: userAction)
+                    return
+                }
+                readerRepository?.cardReaderTransaction()
+            }
+        } else if isInternetOn {
+            if isManualTransaction {
+                transactionRepository?.manualEntryTransaction(saleEntity: saleEntity)
+            } else {
+                if let userAction = getBluetoothConnectivityStatus() {
+                    self.delegate?.userActionNeeded(action: userAction)
+                    return
+                }
+                readerRepository?.cardReaderTransaction()
+            }
         } else {
-            readerRepository?.cardReaderTransaction()
+            self.delegate?.userActionNeeded(action: .noInternet)
+            return
         }
     }
     
     /**
-     * Method that will send a transaction to the payment gateway for processing
-     * @param jwt, Token received from the card reader
+     * Method that sends a transaction to the payment gateway for processing.
+     * @param jwt, token received from the card reader
      * @param SaleEntity, information about the transaction
-     * @param completion, the closure that will be called after a sale response is received. This  is dispatched onto the main queue
+     * @param completion, the closure that will be called after a sale response is received. This is dispatched onto the main queue
      */
     public func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (TransactionResponse?, ClearentError?) -> Void) {
         transactionRepository?.saleTransaction(jwt: jwt, saleEntity: saleEntity) { (response, error) in
@@ -239,51 +229,36 @@ public final class ClearentWrapper : NSObject {
             }
         }
     }
-
+    
     /**
-     * Method that will resend the last client signature image to the payment gateway for storage
+     * Method that resends the last client signature image to the payment gateway for storage.
      * @param completion, the closure that will be called after a send signature response is received. This is dispatched onto the main queue
      */
     
-    public func resendSignature(completion: @escaping (SignatureResponse?, ClearentError?) -> Void) {
-        if shouldDisplayConnectivityWarning(for: .payment) {
-            completion(nil, .init(type: .connectivityError))
-            return
-        }
-        
-        transactionRepository?.resendSignature() { (response, error) in
-            DispatchQueue.main.async {
-                completion(response, error)
-            }
-        }
-    }
-
     /**
-     * Method that will send a jpeg with client signature to the payment gateway for storage
+     * Method that sends a jpeg with client signature to the payment gateway for storage.
      * @param image, UIImage to be uploaded
      * @param completion, the closure that will be called after a send signature response is received. This is dispatched onto the main queue
      */
-
+    
     public func sendSignatureWithImage(image: UIImage, completion: @escaping (SignatureResponse?, ClearentError?) -> Void) {
-        // if offline mode on
-        transactionRepository?.saveSignatureImageForTransaction(image: image)
-        
-        // else
-        if shouldDisplayConnectivityWarning(for: .payment) {
+        if ClearentWrapper.configuration.enableOfflineMode {
+            transactionRepository?.saveSignatureImageForTransaction(image: image)
+        } else if checkForConnectivityWarning(for: .payment) {
             completion(nil, .init(type: .connectivityError))
             return
-        }
-        
-        transactionRepository?.sendSignatureRequest(image: image) { (response, error) in
-            DispatchQueue.main.async {
-                completion(response, error)
+        } else {
+            transactionRepository?.sendSignatureRequest(image: image) { (response, error) in
+                DispatchQueue.main.async {
+                    completion(response, error)
+                }
             }
         }
     }
-
+    
     /**
-     * Method that will mark a transaction for refund
-     * @param jwt, Token generated by te card reader
+     * Method that marks a transaction for refund.
+     * @param jwt, token generated by te card reader
      * @param amount, Amount to be refunded
      * @param completion, the closure that will be called after refund response is received. This is dispatched onto the main queue
      */
@@ -299,7 +274,7 @@ public final class ClearentWrapper : NSObject {
     }
     
     /**
-     * Method that will void a transaction
+     * Method that voids a transaction.
      * @param transactionID, ID of the transaction to be voided
      * @param completion, the closure that will be called after void response is received. This is dispatched onto the main queue
      */
@@ -315,7 +290,7 @@ public final class ClearentWrapper : NSObject {
     }
     
     /**
-     * Method that will fetch the tip settings for current mechant
+     * Method that fetches the tip settings for the current mechant.
      * @param completion, the closure that will be called after receiving the data. This is dispatched onto the main queue
      */
     public func fetchTipSetting(completion: @escaping (ClearentError?) -> Void) {
@@ -323,7 +298,9 @@ public final class ClearentWrapper : NSObject {
             completion(.init(type: error))
             return
         }
-        if shouldDisplayOfflineModePermission(), shouldDisplayConnectivityWarning(for: .payment) { return }
+        
+        if checkForConnectivityWarning(for: .payment) { return }
+        
         transactionRepository?.fetchTipSetting() {
             DispatchQueue.main.async {
                 completion(nil)
@@ -350,34 +327,56 @@ public final class ClearentWrapper : NSObject {
             }
         }
     }
-
-    // MARK - Private
     
-    private func shouldDisplayOfflineModePermission() -> Bool {
-        if let action = UserAction(rawValue: UserAction.offlineMode.rawValue), shouldAskForOfflineModePermission {
-            DispatchQueue.main.async {
-                self.delegate?.userActionNeeded(action: action)
-            }
-            return true
+    // MARK: - Internal
+    
+    func resendSignature(completion: @escaping (SignatureResponse?, ClearentError?) -> Void) {
+        if checkForConnectivityWarning(for: .payment) {
+            completion(nil, .init(type: .connectivityError))
+            return
         }
-        return false
+        
+        transactionRepository?.resendSignature() { (response, error) in
+            DispatchQueue.main.async {
+                completion(response, error)
+            }
+        }
+    }
+    
+    func updateReaderInRecentlyUsed(reader: ReaderInfo) {
+        readerRepository?.updateReaderInRecentlyUsed(reader: reader)
+    }
+    
+    func removeReaderFromRecentlyUsed(reader: ReaderInfo) {
+        readerRepository?.removeReaderFromRecentlyUsed(reader: reader)
+    }
+    
+    func addReaderToRecentlyUsed(reader: ReaderInfo) {
+        readerRepository?.addReaderToRecentlyUsed(reader: reader)
+    }
+    
+    // MARK: - Private
+    
+    private func getBluetoothConnectivityStatus() -> UserAction? {
+        let isBluetoothPermissionGranted = readerRepository?.isBluetoothPermissionGranted ?? false
+        let isBluetoothOn = readerRepository?.isBluetoothOn ?? false
+        
+        return isBluetoothPermissionGranted ? (isBluetoothOn ? nil : .noBluetooth) : .noBluetoothPermission
     }
     
     private func getConnectivityStatus(for processType: ProcessType) -> UserAction? {
-        let isBluetoothPermissionGranted = readerRepository?.isBluetoothPermissionGranted ?? false
-        let isBluetoothOn = readerRepository?.isBluetoothOn ?? false
         if processType == .payment {
             if cardReaderPaymentIsPreffered && useManualPaymentAsFallback == nil {
-                return isBluetoothPermissionGranted ? (isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : ((isOfflineModeConfirmed || offlineModeState == .on) ? nil : .noInternet)) : .noBluetoothPermission
+                return isInternetOn ? getBluetoothConnectivityStatus() : .noInternet
             } else {
-                return isInternetOn ? nil : ((isOfflineModeConfirmed || offlineModeState == .on) ? nil : .noInternet)
+                return isInternetOn ? nil : .noInternet
             }
         } else {
-            return isBluetoothPermissionGranted ? (isBluetoothOn ? nil : .noBluetooth) : .noBluetoothPermission
+            return getBluetoothConnectivityStatus()
         }
     }
     
-    private func shouldDisplayConnectivityWarning(for processType: ProcessType) -> Bool {
+    private func checkForConnectivityWarning(for processType: ProcessType) -> Bool {
         if let action = getConnectivityStatus(for: processType) {
             DispatchQueue.main.async {
                 self.delegate?.userActionNeeded(action: action)
@@ -417,7 +416,7 @@ public final class ClearentWrapper : NSObject {
 extension ClearentWrapper: Clearent_Public_IDTech_VP3300_Delegate {
     
     public func successTransactionToken(_ clearentTransactionToken: ClearentTransactionToken!) {
-        guard let saleEntity = saleEntity else { return }
+//        guard let saleEntity = saleEntity else { return }
         // make sure we have two decimals otherwise the API will return an error
         saleEntity.amount = saleEntity.amount.setTwoDecimals()
         saleEntity.tipAmount = saleEntity.tipAmount?.setTwoDecimals()
@@ -430,9 +429,10 @@ extension ClearentWrapper: Clearent_Public_IDTech_VP3300_Delegate {
     }
     
     public func successOfflineTransactionToken(_ clearentTransactionTokenRequestData: Data?) {
-        guard let saleEntity = saleEntity, let cardToken = clearentTransactionTokenRequestData else { return }
+//        guard let saleEntity = saleEntity,
+        guard let cardToken = clearentTransactionTokenRequestData else { return }
         let paymentData = PaymentData(saleEntity: saleEntity, cardToken: cardToken)
-
+        
         transactionRepository?.saveOfflineTransaction(paymentData: paymentData)
     }
     
@@ -468,7 +468,7 @@ extension ClearentWrapper: Clearent_Public_IDTech_VP3300_Delegate {
                         self.delegate?.userActionNeeded(action: action)
                     }
                 }
-            } else  if let action = UserAction.action(for: clearentFeedback.message) {
+            } else if let action = UserAction.action(for: clearentFeedback.message) {
                 DispatchQueue.main.async {
                     self.delegate?.userActionNeeded(action: action)
                 }
@@ -487,10 +487,10 @@ extension ClearentWrapper: Clearent_Public_IDTech_VP3300_Delegate {
     public func bluetoothDevices(_ bluetoothDevices: [ClearentBluetoothDevice]!) {
         readerRepository?.bluetoothDevices(bluetoothDevices)
     }
-
+    
     public func deviceMessage(_ message: String!) {
         /// It appears this is the only feedback we get if the public key is not valid
-        ///  This method is deprecated
+        /// This method is deprecated
         if (message == "xsdk_token_generation_failed_message".localized) {
             DispatchQueue.main.async {
                 self.delegate?.didFinishTransaction(response: nil, error: ClearentError(type: .missingToken, code: "xsdk_general_error_title".localized, message: "xsdk_token_generation_failed_message".localized))

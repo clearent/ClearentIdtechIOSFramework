@@ -55,7 +55,7 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         enableOfflineMode.titleTextColor = ClearentUIBrandConfigurator.shared.colorPalette.titleLabelColor
         enableOfflineMode.descriptionText = nil
         enableOfflineMode.valueChangedAction = { isOn in
-            // TODO
+            
         }
         
         enablePromptMode.titleText = "xsdk_offline_mode_switch_enable_prompt".localized

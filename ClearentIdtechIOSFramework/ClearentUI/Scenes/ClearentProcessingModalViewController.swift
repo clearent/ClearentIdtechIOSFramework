@@ -78,14 +78,9 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
                 stackView.addArrangedSubview(component)
             }
         }
-        
-        if ClearentWrapper.shared.enableOfflineMode {
-            let offlineModeConfirmedDuringPayment = ClearentWrapper.shared.flowType?.processType == .payment && ClearentWrapper.shared.offlineModeState != .off && ClearentWrapper.shared.isOfflineModeConfirmed
-            let offlineModeEnabled = [.pairing(), .showReaders].contains(ClearentWrapper.shared.flowType?.processType) && ClearentWrapper.shared.offlineModeState == .on
             
-            if offlineModeConfirmedDuringPayment || offlineModeEnabled {
-                stackView.insertArrangedSubview(ClearentSubtitleLabel(text: ClearentConstants.Localized.OfflineMode.offlineModeEnabled), at: 1)
-            }
+        if shouldDisplayOfflineModeLabel() {
+            stackView.insertArrangedSubview(ClearentSubtitleLabel(text: ClearentConstants.Localized.OfflineMode.offlineModeEnabled), at: 1)
         }
     }
     
@@ -132,6 +127,17 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     }
 
     // MARK: - Private
+    
+    private func shouldDisplayOfflineModeLabel() -> Bool {
+        if ClearentWrapper.configuration.enableOfflineMode {
+            let offlineModeConfirmedDuringPayment = [.payment].contains(ClearentWrapper.shared.flowType?.processType) && presenter?.isOfflineModeConfirmed == true
+            let offlineModeAlwaysEnabled = [.pairing(), .showReaders].contains(ClearentWrapper.shared.flowType?.processType) && ClearentWrapper.configuration.enableOfflineMode && ClearentUIManager.configuration.offlineModeState == .on
+            
+            return offlineModeAlwaysEnabled || offlineModeConfirmedDuringPayment
+        }
+        
+        return false
+    }
     
     private func uiComponent(for item: FlowDataItem) -> UIView? {
         let object = item.object
@@ -208,7 +214,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     
     private func manualEntryFormView() -> ClearentManualEntryFormView {
         let dataSource = ClearentPaymentDataSource(with: [ClearentPaymentBaseSection(), ClearentPaymentAdditionalSection()])
-        let offlineModeStatusMessage = (ClearentWrapper.configuration.enableOfflineMode && ClearentWrapper.shared.offlineModeState != .off) ? ClearentConstants.Localized.OfflineMode.offlineModeEnabled : nil
+        let offlineModeStatusMessage = shouldDisplayOfflineModeLabel() ? ClearentConstants.Localized.OfflineMode.offlineModeEnabled : nil
         let manualEntryFormView = ClearentManualEntryFormView(with: dataSource, offlineModeStatusMessage: offlineModeStatusMessage)
         manualEntryFormView.delegate = self
         dataSource.delegate = manualEntryFormView

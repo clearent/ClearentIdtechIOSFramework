@@ -67,7 +67,6 @@ class ClearentSettingsPresenter {
             self?.settingsPresenterView?.updateOfflineStatusView(inProgress: true)
             ClearentWrapper.shared.processOfflineTransactions() {
                 self?.updateOfflineStatus()
-               
             }
         }
     }

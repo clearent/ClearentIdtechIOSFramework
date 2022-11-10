@@ -9,7 +9,7 @@
 import Foundation
 
 /**
- * This class is to be used as a singleton and its main purpose is to start different processes from the SDK by providing UIControllers that will handle the entire process
+ * This class is to be used as a singleton and its main purpose is to start different processes from the SDK by providing UINavigationControllers that handles the entire process.
  *
  */
 public final class ClearentUIManager: NSObject {
@@ -23,17 +23,13 @@ public final class ClearentUIManager: NSObject {
             clearentWrapper.cardReaderPaymentIsPreffered = cardReaderPaymentIsPreferred
         }
     }
-
-    @objc public var offlineModeState: OfflineModeState = .off {
-        didSet {
-            clearentWrapper.offlineModeState = offlineModeState
-        }
-    }
+    
+    var offlineModeWarningDisplayed = false
 
     // MARK: Init
     
     /**
-     * This method will update the SDK with the necessary configuration to work properly
+     * This method updates the SDK with the necessary configuration to work properly.
      */
     public func initialize(with configuration: ClearentUIManagerConfiguration) {
         ClearentUIManager.configuration = configuration
@@ -58,9 +54,8 @@ public final class ClearentUIManager: NSObject {
     
     // MARK: Public
     
-
     /**
-     * Method returns a UIController that can handle the entire payment process
+     * Method that returns a UINavigationController that can handle the entire payment process.
      * @param amount, the amount to be charged in a transaction
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
@@ -72,7 +67,7 @@ public final class ClearentUIManager: NSObject {
     }
     
     /**
-     * Method returns a UIController that can handle the pairing process of a card reader
+     * Method that returns a UINavigationController that can handle the pairing process of a card reader.
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
     @objc public func pairingViewController(completion: ((ClearentError?) -> Void)?) -> UINavigationController {
@@ -83,7 +78,7 @@ public final class ClearentUIManager: NSObject {
     }
     
     /**
-     * Method returns a UIController that will display a list containing current card reader informations and recently paired readers
+     * Method that returns a UINavigationController that will display a list containing current card reader informations and recently paired readers.
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
     @objc public func readersViewController(completion: ((ClearentError?) -> Void)?) -> UINavigationController {
