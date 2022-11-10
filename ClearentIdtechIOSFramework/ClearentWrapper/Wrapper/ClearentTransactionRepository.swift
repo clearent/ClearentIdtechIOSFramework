@@ -10,6 +10,7 @@ protocol TransactionRepositoryProtocol {
     var delegate: ClearentWrapperProtocol? { get set }
     var tipEnabled: Bool { get set }
     var offlineManager: OfflineModeManager? { get set }
+    
     func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
     func sendSignatureRequest(image: UIImage, completion: @escaping (SignatureResponse?, ClearentError?) -> Void)
     func resendSignature(completion: @escaping (SignatureResponse?, ClearentError?) -> Void)
@@ -34,6 +35,8 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     private var clearentVP3300: Clearent_VP3300?
     private var offlineTransaction: OfflineTransaction? = nil
     
+    // MARK: - Init
+    
     init(httpClient: ClearentHttpClientProtocol? = nil, baseURL: String, apiKey: String, clearentVP3300: Clearent_VP3300, clearentManualEntry: ClearentManualEntry?) {
         self.httpClient = httpClient ?? ClearentDefaultHttpClient(baseURL: baseURL, apiKey: apiKey)
         super.init()
@@ -41,8 +44,11 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         self.clearentVP3300 = clearentVP3300
     }
     
+    // MARK: - Internal
+    
     func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (TransactionResponse?, ClearentError?) -> Void) {
-        httpClient.saleTransaction(jwt: jwt, saleEntity: saleEntity) { data, error in
+        httpClient.saleTransaction(jwt: jwt, saleEntity: saleEntity) { [weak self] data, error in
+            guard let strongSelf = self else { return }
             guard let responseData = data else {
                 completion(nil, ClearentError(type: .httpError))
                 return
@@ -52,7 +58,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
                 let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
                 guard let transactionError = decodedResponse.payload.error else {
                     if let linksItem = decodedResponse.links?.first {
-                        self.lastTransactionID = linksItem.id
+                        strongSelf.lastTransactionID = linksItem.id
                     }
                     completion(decodedResponse, nil)
                     return
@@ -112,13 +118,14 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         if let id = lastTransactionID, let tid = Int(id) {
             signatureImage = image
             let base64Image = image.jpegData(compressionQuality: 1)?.base64EncodedString() ?? ""
-            httpClient.sendSignature(base64Image: base64Image, transactionID: tid) { data, error in
+            httpClient.sendSignature(base64Image: base64Image, transactionID: tid) { [weak self] data, error in
+                guard let strongSelf = self else { return }
                 guard let responseData = data else { return }
                 
                 do {
                     let decodedResponse = try JSONDecoder().decode(SignatureResponse.self, from: responseData)
                     guard let signatureError = decodedResponse.payload.error else {
-                        self.signatureImage = nil
+                        strongSelf.signatureImage = nil
                         completion(decodedResponse, nil)
                         return
                     }
@@ -133,7 +140,9 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     }
     
     func fetchTipSetting(completion: @escaping () -> Void) {
-        httpClient.merchantSettings() { data, error in
+        httpClient.merchantSettings() { [weak self] data, error in
+            guard let strongSelf = self else { return }
+            
             DispatchQueue.main.async {
                 do {
                     guard let data = data else {
@@ -142,7 +151,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
                     }
                     
                     let decodedResponse = try JSONDecoder().decode(MerchantSettingsEntity.self, from: data)
-                    self.tipEnabled = decodedResponse.payload.terminalSettings.enableTip
+                    strongSelf.tipEnabled = decodedResponse.payload.terminalSettings.enableTip
                 } catch let jsonDecodingError {
                     print(jsonDecodingError)
                 }
@@ -157,26 +166,27 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         
         let operationQueue = OperationQueue()
         operationQueue.qualityOfService = .utility
-        for tr in offlineTransactions {
+        for transaction in offlineTransactions {
             let blockOperation = AsyncBlockOperation { [weak self] operation in
                 guard let strongSelf = self else { return }
                 operation.state = .executing
-                let saleEntity = tr.paymentData.saleEntity
-                if tr.transactionType() == .manualTransaction {
+                let saleEntity = transaction.paymentData.saleEntity
+                
+                if transaction.transactionType() == .manualTransaction {
                     let card = ClearentCard()
                     card.card = saleEntity.card
                     card.expirationDateMMYY = saleEntity.expirationDateMMYY
                     card.csc = saleEntity.csc
                     strongSelf.clearentManualEntry?.createOfflineTransactionToken(card) { [weak self] token in
-                        self?.sendOfflineTransaction(offlineTransaction: tr, token: token) { error in
-                            _ = self?.offlineManager?.updateOfflineTransaction(with: error, transaction: tr)
+                        self?.sendOfflineTransaction(offlineTransaction: transaction, token: token) { error in
+                            _ = self?.offlineManager?.updateOfflineTransaction(with: error, transaction: transaction)
                             operation.state = .finished
                         }
                     }
                 } else {
-                    strongSelf.clearentVP3300?.fetchTransactionToken(tr.paymentData.cardToken) { [weak self] token in
-                        self?.sendOfflineTransaction(offlineTransaction: tr, token: token) { error in
-                            _ = self?.offlineManager?.updateOfflineTransaction(with: error, transaction: tr)
+                    strongSelf.clearentVP3300?.fetchTransactionToken(transaction.paymentData.cardToken) { [weak self] token in
+                        self?.sendOfflineTransaction(offlineTransaction: transaction, token: token) { error in
+                            _ = self?.offlineManager?.updateOfflineTransaction(with: error, transaction: transaction)
                             operation.state = .finished
                         }
                     }
@@ -193,7 +203,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     }
     
     /**
-     * Method that performs a manual card transaction
+     * Method that performs a manual card transaction.
      */
      func manualEntryTransaction(saleEntity: SaleEntity) {
         let dispatchQueue = DispatchQueue(label: "xplor.UserInteractiveQueue", qos: .userInteractive, attributes: .concurrent)
@@ -208,37 +218,38 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     }
     
     /**
-     * Saves and validates offline transactions, calls a delegate method with the result
+     * Saves and validates offline transactions, calls a delegate method with the result.
      *  @param transaction, represents an offline transaction
      */
     func saveOfflineTransaction(paymentData: PaymentData) {
-        let offtr = OfflineTransaction(paymentData: paymentData)
-        offlineTransaction = offtr
-        guard let status = offlineManager?.saveOfflineTransaction(transaction: offtr) else { return  }
-        self.delegate?.didAcceptOfflineTransaction(err: status)
+        let offlineTransaction = OfflineTransaction(paymentData: paymentData)
+        self.offlineTransaction = offlineTransaction
+        guard let status = offlineManager?.saveOfflineTransaction(transaction: offlineTransaction) else { return  }
+        delegate?.didAcceptOfflineTransaction(status: status)
     }
     
     /**
-     * Retrive all stored offline transactions
+     * Retrieve all stored offline transactions
      */
     func fetchOfflineTransactions() -> [OfflineTransaction]? {
         return offlineManager?.retriveAll()
     }
     
     /**
-     * Saves  the image represnting the user's signature
-     *  @param transactionID, the id of the transcation for wich we save the signature
-     *  @param the actual  image contianing the signature
+     * Saves  the image representing the user's signature
+     *  @param transactionID, the id of the transaction for wich we save the signature
+     *  @param the actual image containing the signature
      */
     func saveSignatureImageForTransaction(image: UIImage) {
         guard let transactionID = offlineTransaction?.transactionID,
              let status = offlineManager?.saveSignatureForTransaction(transactionID: transactionID, image: image) else {
             return
         }
-        self.delegate?.didAcceptOfflineSignature(err: status, transactionID: transactionID)
+        delegate?.didAcceptOfflineSignature(status: status, transactionID: transactionID)
     }
     
     // MARK: - Private
+    
     private func sendOfflineTransaction(offlineTransaction: OfflineTransaction, token: ClearentTransactionToken?, completion: @escaping ((ClearentError?) -> Void)) {
         guard let token = token else {
             completion(.init(type: .missingToken))

@@ -23,6 +23,7 @@ class OfflineModeManager {
         var result: TransactionStoreStatus = .success
         
         result = validateOfflineTransaction(transaction: transaction)
+        
         if result != .success {
             return result
         }
@@ -115,6 +116,7 @@ class OfflineModeManager {
 class ClearentCryptor {
     static func encrypt(encryptionKey: SymmetricKey, contentData: Data) throws -> Data? {
         var result: Data?
+        
         do {
             result = try ChaChaPoly.seal(contentData, using: encryptionKey).combined
         } catch {

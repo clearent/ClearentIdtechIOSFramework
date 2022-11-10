@@ -60,14 +60,28 @@ class FlowDataProvider : NSObject {
     
     let sdkWrapper = ClearentWrapper.shared
     var connectionErrorDisplayed = false
+    
+    private var shouldAskForOfflineModePermission: Bool {
+        switch ClearentUIManager.configuration.offlineModeState {
+        case .on:
+            return false
+        case .prompted:
+            return sdkWrapper.isNewPaymentProcess ? true : false
+        }
+    }
+    
     static var useCardReaderPaymentMethod: Bool {
         ClearentWrapper.shared.cardReaderPaymentIsPreffered && ClearentWrapper.shared.useManualPaymentAsFallback == nil
     }
+    
+    // MARK: - Init
     
     public override init() {
         super.init()
         sdkWrapper.delegate = self
     }
+    
+    // MARK: - Internal
     
     func fetchReaderInfo() -> ReaderInfo? {
         ClearentWrapperDefaults.pairedReaderInfo
@@ -101,7 +115,7 @@ class FlowDataProvider : NSObject {
 
 extension FlowDataProvider : ClearentWrapperProtocol {
     
-    func didAcceptOfflineSignature(err: TransactionStoreStatus, transactionID: String) {
+    func didAcceptOfflineSignature(status: TransactionStoreStatus, transactionID: String) {
         // handle offline signature
     }
     
@@ -146,7 +160,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
-    func didAcceptOfflineTransaction(err: TransactionStoreStatus) {
+    func didAcceptOfflineTransaction(status: TransactionStoreStatus) {
         // handle offline transaction here
     }
         
@@ -220,6 +234,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             items = [FlowDataItem(type: .description, object: ClearentConstants.Localized.Pairing.readerRange),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.press_button),
                      FlowDataItem(type: .description, object: action.description)]
+            
             if ClearentWrapper.shared.flowType?.processType == .payment, connectionErrorDisplayed {
                 items?.append(FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo))
             }
@@ -236,11 +251,31 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             print("nothing to do here")
         case .noInternet:
             type = .warning
-            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
-                     FlowDataItem(type: .title, object: ClearentConstants.Localized.Internet.error),
-                     FlowDataItem(type: .description, object: action.description),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.retry),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+            
+            if !ClearentWrapper.configuration.enableOfflineMode {
+                items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
+                         FlowDataItem(type: .title, object: ClearentConstants.Localized.Internet.error),
+                         FlowDataItem(type: .description, object: action.description),
+                         FlowDataItem(type: .userAction, object: FlowButtonType.retry),
+                         FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+            } else {
+                if ClearentUIManager.configuration.offlineModeState == .on {
+                    displayOfflineModeWarningMessage()
+                    return
+                } else if sdkWrapper.isNewPaymentProcess {
+                    items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
+                             FlowDataItem(type: .title, object: ClearentConstants.Localized.OfflineMode.enableOfflineMode),
+                             FlowDataItem(type: .description, object: action.description),
+                             FlowDataItem(type: .userAction, object: FlowButtonType.confirmOfflineMode),
+                             FlowDataItem(type: .userAction, object: FlowButtonType.denyOfflineMode)]
+                } else {
+                    items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
+                             FlowDataItem(type: .title, object: ClearentConstants.Localized.Internet.error),
+                             FlowDataItem(type: .description, object: action.description),
+                             FlowDataItem(type: .userAction, object: FlowButtonType.retry),
+                             FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+                }
+            }
         case .noBluetooth:
             guard FlowDataProvider.useCardReaderPaymentMethod else { return }
             type = .warning
@@ -296,13 +331,6 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                      FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
-        case .offlineMode:
-            type = .warning
-            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
-                     FlowDataItem(type: .title, object: ClearentConstants.Localized.Internet.error),
-                     FlowDataItem(type: .description, object: action.description),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.confirmOfflineMode),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.denyOfflineMode)]
         }
         
         if let flowItems = items {

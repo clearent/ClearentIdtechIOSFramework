@@ -24,6 +24,8 @@ protocol ProcessingModalProtocol {
     var tip: Double? { get set }
     var sdkFeedbackProvider: FlowDataProvider { get set }
     var selectedReaderFromReadersList: ReaderItem? { get set }
+    var isOfflineModeConfirmed: Bool { get set }
+    
     func handleUserAction(userAction: FlowButtonType)
     func restartProcess(newPair: Bool)
     func startFlow()
@@ -39,6 +41,7 @@ protocol ProcessingModalProtocol {
 }
 
 class ClearentProcessingModalPresenter {
+    
     // MARK: - Properties
 
     private weak var modalProcessingView: ClearentProcessingModalView?
@@ -57,6 +60,7 @@ class ClearentProcessingModalPresenter {
     var sdkFeedbackProvider: FlowDataProvider
     var editableReader: ReaderInfo?
     var shouldStartTransactionAfterRenameReader = false
+    var isOfflineModeConfirmed = false
 
     // MARK: Init
 
@@ -159,8 +163,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             }
         case .cancel:
             ClearentWrapper.shared.isNewPaymentProcess = true
-            ClearentWrapper.shared.isOfflineModeConfirmed = false
-            ClearentWrapper.shared.offlineModeWarningDisplayed = false
+            isOfflineModeConfirmed = false
+            ClearentUIManager.shared.offlineModeWarningDisplayed = false
             modalProcessingView?.dismissViewController(result: .failure(.init(type: .cancelledByUser)))
         case .retry, .pair:
             restartProcess(newPair: false)
@@ -184,14 +188,19 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         case .denyOfflineMode:
             modalProcessingView?.displayOfflineModeConfirmationMessage(for: .denyOfflineMode)
         case .confirmOfflineModeWarningMessage:
-            ClearentWrapper.shared.isOfflineModeConfirmed = true
-            ClearentWrapper.shared.offlineModeWarningDisplayed = true
-            restartProcess(newPair: false)
+            isOfflineModeConfirmed = true
+            ClearentUIManager.shared.offlineModeWarningDisplayed = true
+            sdkFeedbackProvider.delegate = self
+            modalProcessingView?.showLoadingView()
+            
+            useCardReaderPaymentMethod ? startCardReaderTransaction() : startManualEntryTransaction()
+            
         }
     }
     
     func handleSignature(with image: UIImage) {
         modalProcessingView?.showLoadingView()
+        
         sdkWrapper.sendSignatureWithImage(image: image) { [weak self] (response, error) in
             if let error = error, error.type.isMissingKeyError {
                 self?.modalProcessingView?.dismissViewController(result: .failure(error))
@@ -276,8 +285,6 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         if useCardReaderPaymentMethod, !sdkWrapper.isReaderConnected() {
             shouldStartTransactionAfterRenameReader = ClearentWrapperDefaults.pairedReaderInfo == nil
             sdkWrapper.startPairing(reconnectIfPossible: true)
-        } else if ClearentWrapper.shared.enableOfflineMode, ClearentWrapper.shared.offlineModeState == .on, !ClearentWrapper.shared.offlineModeWarningDisplayed {
-            sdkFeedbackProvider.displayOfflineModeWarningMessage()
         } else {
             startTipFlow()
         }
@@ -294,27 +301,36 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             if showTipsScreen {
                 strongSelf.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: strongSelf.amountWithoutTip ?? 0)
                 strongSelf.tipsScreenWasNotShown = false
-            } else {
-                if strongSelf.useCardReaderPaymentMethod {
-                    strongSelf.startCardReaderTransaction()
-                } else {
-                    strongSelf.startManualEntryTransaction()
-                }
             }
         }
     }
 
     private func startCardReaderTransaction() {
-        if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
-            let saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals)
-            startTransaction(saleEntity: saleEntity, isManualTransaction: false)
+        if shouldDisplayOfflineModeWarningMessage() {
+            sdkFeedbackProvider.displayOfflineModeWarningMessage()
+        } else {
+            if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
+                let saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals)
+                startTransaction(saleEntity: saleEntity, isManualTransaction: false)
+            }
         }
     }
     
     private func startManualEntryTransaction() {
-        let items = [FlowDataItem(type: .manualEntry, object: nil)]
-        let feedback = FlowFeedback(flow: .payment, type: FlowFeedbackType.info, items: items)
-        modalProcessingView?.updateContent(with: feedback)
+        if shouldDisplayOfflineModeWarningMessage() {
+            sdkFeedbackProvider.displayOfflineModeWarningMessage()
+        } else {
+            let items = [FlowDataItem(type: .manualEntry, object: nil)]
+            let feedback = FlowFeedback(flow: .payment, type: FlowFeedbackType.info, items: items)
+            modalProcessingView?.updateContent(with: feedback)
+        }
+    }
+    
+    private func shouldDisplayOfflineModeWarningMessage() -> Bool {
+        if ClearentWrapper.configuration.enableOfflineMode, ClearentUIManager.configuration.offlineModeState == .on, !isOfflineModeConfirmed {
+            return true
+        }
+        return false
     }
     
     private func showReadersList() {
@@ -373,6 +389,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 
     private func startTransaction(saleEntity: SaleEntity, isManualTransaction: Bool) {
         modalProcessingView?.showLoadingView()
+        
         sdkWrapper.startTransaction(with: saleEntity, isManualTransaction: isManualTransaction) { [weak self] error in
             if let error = error {
                 self?.modalProcessingView?.dismissViewController(result: .failure(error))
@@ -403,11 +420,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
                 }
             }
         } else {
-            if ClearentWrapper.shared.enableOfflineMode && ClearentWrapper.shared.offlineModeState == .on {
-                sdkFeedbackProvider.displayOfflineModeWarningMessage()
-            } else {
-                startTipFlow()
-            }
+            startTransactionFlow()
         }
     }
 
