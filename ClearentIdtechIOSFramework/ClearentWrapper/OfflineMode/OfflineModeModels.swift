@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum OfflineTransactionType :String, Codable {
+public enum OfflineTransactionType :String, Codable {
     case cardReaderTransaction
     case manualTransaction
     case none
@@ -17,7 +17,7 @@ enum OfflineTransactionType :String, Codable {
 /**
  * ErrorStatus class represents an error received when the offline transaction is sent to the backend and fails
 */
-struct ErrorStatus: Codable {
+public struct ErrorStatus: Codable {
     var error: ClearentError
     var updatedDate: Date
 }
@@ -26,7 +26,7 @@ struct ErrorStatus: Codable {
  * OfflineTransaction class represents an offline transaction.
  * Can be encoded/decoded as json in order to be saved/retrived/processed.
 */
-struct OfflineTransaction: CodableProtocol  {
+public struct OfflineTransaction: CodableProtocol  {
     var createdDate: Date?
     var transactionID: String
     var paymentData: PaymentData

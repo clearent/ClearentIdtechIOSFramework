@@ -40,6 +40,9 @@ public typealias CompletionResult = Result<String?, ClearentError>
     /// Error related to http response
     case httpError
     
+    /// Error related to transaction response
+    case gatewayDeclined
+    
     /// No internet connection or bluetooth availabe
     case connectivityError
 
@@ -52,4 +55,6 @@ public typealias CompletionResult = Result<String?, ClearentError>
     var isMissingKeyError: Bool {
         return [.apiKeyNotProvided, .baseURLNotProvided, .publicKeyNotProvided].contains(self)
     }
+    
+    case none
 }

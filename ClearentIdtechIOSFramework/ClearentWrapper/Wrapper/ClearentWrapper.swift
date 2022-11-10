@@ -109,6 +109,14 @@ public final class ClearentWrapper : NSObject {
         ClearentWrapper.configuration.enableOfflineMode = false
     }
     
+    
+    /**
+     * Method will retrive all saved offline transactions if the encryption key provided is valid and can decrypt them
+     */
+    public func retriveAllOfflineTransactions() -> [OfflineTransaction]? {
+        return transactionRepository?.fetchOfflineTransactions()
+    }
+    
     /**
      * Method that starts the pairing process by creating a new connection and starting a bluetooth search.
      * @param reconnectIfPossible, if  false  a connection that will search for bluetooth devices will be started, if true a connection with the last paired reader will be tried
@@ -298,8 +306,16 @@ public final class ClearentWrapper : NSObject {
     }
     
     /**
-     * Method that uploads all the transactions that were made in offline mode.
-     * @param completion, the closure that will be called after all offline transactions are processed. This is dispatched onto the main queue
+     * Method that returns the offline manager instance
+     */
+    
+    func retrieveOfflineManager() -> OfflineModeManager? {
+        transactionRepository?.offlineManager
+    }
+    
+    /**
+     * Method that uploads all the transactions that were made in offline mode
+     * @param completion, the closure that is called after all the offline transactions are processed. This is dispatched onto the main queue.
      */
     public func processOfflineTransactions(completion: @escaping (() -> Void)) {
         transactionRepository?.processOfflineTransactions() {
