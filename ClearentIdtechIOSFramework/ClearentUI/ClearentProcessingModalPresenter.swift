@@ -121,10 +121,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
 
     func showDetailsScreen(for reader: ReaderItem, allReaders _: [ReaderItem], flowDataProvider: FlowDataProvider, on navigationController: UINavigationController) {
-        let vc = ClearentOfflineModeReportViewController(nibName: String(describing: ClearentOfflineModeReportViewController.self), bundle: ClearentConstants.bundle)
-        vc.reportPresenter = ClearentOfflineModeReportPresenter()
-//        let vc = ClearentReaderDetailsViewController(nibName: String(describing: ClearentReaderDetailsViewController.self), bundle: ClearentConstants.bundle)
-//        vc.detailsPresenter = ClearentReaderDetailsPresenter(currentReader: reader, flowDataProvider: flowDataProvider, navigationController: navigationController, delegate: self)
+        let vc = ClearentReaderDetailsViewController(nibName: String(describing: ClearentReaderDetailsViewController.self), bundle: ClearentConstants.bundle)
+        vc.detailsPresenter = ClearentReaderDetailsPresenter(currentReader: reader, flowDataProvider: flowDataProvider, navigationController: navigationController, delegate: self)
         navigationController.pushViewController(vc, animated: true)
     }
     
