@@ -39,22 +39,17 @@ class ClearentOfflineModeReportPresenter {
         var errorAmount = 0.0
         
         transactions?.forEach({ transaction in
-            if let errorStatus = transaction.errorStatus {
+            if let errorStatus = transaction.errorStatus,
+               let amount = Double(transaction.paymentData.saleEntity.amount) {
                 if errorStatus.error.type == .gatewayDeclined {
-                    declinedCount = declinedCount + 1
-                    if let amount = Double(transaction.paymentData.saleEntity.amount) {
-                        declinedAmount = declinedAmount + amount
-                    }
+                    declinedCount += 1
+                    declinedAmount += amount
                 } else if errorStatus.error.type == .httpError {
-                    errorCount = errorCount + 1
-                    if let amount = Double(transaction.paymentData.saleEntity.amount) {
-                        errorAmount = errorAmount + amount
-                    }
+                    errorCount += 1
+                    errorAmount +=  amount
                 } else if errorStatus.error.type == .none  {
-                    approvedCount = approvedCount + 1
-                    if let amount = Double(transaction.paymentData.saleEntity.amount) {
-                        approvedAmount = approvedAmount + amount
-                    }
+                    approvedCount += 1
+                    approvedAmount += amount
                 }
             }
         })
