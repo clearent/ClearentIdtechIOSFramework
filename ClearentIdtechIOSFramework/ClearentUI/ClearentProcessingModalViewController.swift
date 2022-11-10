@@ -66,7 +66,7 @@ class ClearentProcessingModalViewController: ClearentBaseViewController {
 extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     
     /*
-     This method will remove the current displayed content in the modal and will generate other UI using the feedback parameter.
+     This method removes the current displayed content in the modal and generates new UI content using the feedback parameter.
      */
     func updateContent(with feedback: FlowFeedback) {
         stackView.removeAllArrangedSubviews()
