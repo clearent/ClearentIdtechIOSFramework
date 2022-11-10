@@ -60,7 +60,7 @@ public protocol ClearentUIColors {
     // The label's text color (also used in ClearentReaderDetailsScreen)
     var subtitleLabelColor: UIColor { get }
     
-    // The warning label's text color (also usedto indicate offlineMode)
+    // The warning label's text color (also used to indicate offline mode)
     var subtitleWarningLabelColor: UIColor { get }
     
     // MARK: - ClearentReaderStatusHeaderView

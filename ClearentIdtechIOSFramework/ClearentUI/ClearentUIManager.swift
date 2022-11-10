@@ -91,19 +91,15 @@ public final class ClearentUIManager: NSObject {
     /**
      * Method that returns the number of unproccesed offline transactions
      */
-    @objc public func allUnproccesedOfflineTransactionsCount() -> Int {
+    @objc public func allUnprocessedOfflineTransactionsCount() -> Int {
         let offlineManager = clearentWrapper.retriveOfflineManager()
-        let unprocessedOfflineTransactions = offlineManager?.retriveAll().filter({ tr in
-            return tr.errorStatus != nil
-        })
-        
-        return unprocessedOfflineTransactions?.count ?? 0
+        return offlineManager?.unproccesedTransactionsCount() ?? 0
     }
     
     /**
      * Method that returns a bool representing if we should display the offline mode warning
      */
-    @objc public func shouldDIsplayOfflineModeWarning() -> Bool {
+    @objc public func shouldDisplayOfflineModeWarning() -> Bool {
         return offlineModeWarningDisplayed
     }
 
