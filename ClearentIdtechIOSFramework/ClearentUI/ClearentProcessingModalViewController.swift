@@ -201,16 +201,6 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         case .error:
             guard let detailedErrorMessage = object as? String else { return nil }
             return ClearentErrorDetailsView(detailerErrorMessage: detailedErrorMessage)
-        case .smallWarningLabel:
-            guard let text = object as? String else { return nil }
-            
-            let stack = UIStackView()
-            stack.axis = .horizontal
-            
-            let warningImage = graphicView(with: FlowGraphicType.warning)
-            stack.insertArrangedSubview(warningImage!, at: 0)
-            stack.insertArrangedSubview(ClearentWarninglabel(text: text), at: 1)
-            return stack
         }
     }
     
