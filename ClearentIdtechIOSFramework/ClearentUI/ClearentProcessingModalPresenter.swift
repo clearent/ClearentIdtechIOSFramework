@@ -38,6 +38,7 @@ protocol ProcessingModalProtocol {
     func sendManualEntryTransaction(with dataSource: ClearentPaymentDataSource)
     func handleOfflineModeCancelOption()
     func handleOfflineModeConfirmationOption()
+    func offlineTransactionsWarningText() -> String
 }
 
 class ClearentProcessingModalPresenter {
@@ -80,6 +81,11 @@ class ClearentProcessingModalPresenter {
 }
 
 extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
+    
+    func offlineTransactionsWarningText() -> String {
+        return String(format: ClearentConstants.Localized.OfflineMode.offlineModeEnabled, ClearentUIManager.shared.allUnproccesedOfflineTransactionsCount())
+    }
+    
     func handleOfflineModeCancelOption() {
         ClearentWrapper.shared.isNewPaymentProcess = false
         restartProcess(newPair: false)

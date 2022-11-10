@@ -80,8 +80,8 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         }
             
         if shouldDisplayOfflineModeLabel() {
-            let offlineTransactionsCount = String(describing:ClearentUIManager.shared.allUnproccesedOfflineTransactionsCount())
-            let x = ClearentIconAndLabel(icon: UIImage(named: ClearentConstants.IconName.smallWarning, in: ClearentConstants.bundle, compatibleWith: nil), text: String(format: ClearentConstants.Localized.OfflineMode.offlineModeEnabled, offlineTransactionsCount))
+            guard let offlineWarningText = presenter?.offlineTransactionsWarningText() else { return }
+            let x = ClearentIconAndLabel(icon: UIImage(named: ClearentConstants.IconName.smallWarning, in: ClearentConstants.bundle, compatibleWith: nil), text: offlineWarningText)
             stackView.insertArrangedSubview(x, at: 1)
             stackView.layoutSubviews()
         }
