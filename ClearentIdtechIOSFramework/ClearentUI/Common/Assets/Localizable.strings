@@ -213,8 +213,10 @@
 "xsdk_offline_mode_subtitle" = "Offline mode options";
 "xsdk_offline_mode_switch_enabled" = "Put app in offline mode";
 "xsdk_offline_mode_switch_enable_prompt" = "Only prompt if no internet";
-"xsdk_offline_mode_transactions" = "You have %@ offline transactions";
+"xsdk_offline_mode_transactions" = "You have %i offline transactions";
 "xsdk_offline_mode_one_transaction" = "You have 1 offline transaction";
+"xsdk_offline_mode_upload_errors" = "Upload completed with errors";
+"xsdk_offline_mode_upload_success" = "Upload completed successfully";
 "xsdk_offline_mode_btn_process" = "Process";
 "xsdk_offline_mode_btn_report" = "Report";
 "xsdk_offline_mode_btn_done" = "OK";

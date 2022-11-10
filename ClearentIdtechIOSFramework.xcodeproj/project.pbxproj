@@ -533,10 +533,8 @@
 			isa = PBXGroup;
 			children = (
 				014AA0FF2917C52C001918F5 /* Scenes */,
-				CC2BAC2829125B3A000C5546 /* OfflineModeReport */,
 				016BFEA12906E99E006F26B6 /* ClearentUIManagerConfiguration.swift */,
 				01442C7E28B3D835006DD15C /* PaymentFlowDataSource */,
-				01442C8328B3D835006DD15C /* ReaderDetails */,
 				01442C8828B3D835006DD15C /* Common */,
 				01442CE428B3D835006DD15C /* BrandConfigurator */,
 				01442CBA28B3D835006DD15C /* ClearentBaseViewController.swift */,
@@ -773,12 +771,12 @@
 		014AA0FF2917C52C001918F5 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				01A31742291CE0CD00FB6CB9 /* SettingsScreen */,
+				01442C8328B3D835006DD15C /* ReaderDetails */,
+				CC2BAC2829125B3A000C5546 /* OfflineModeReport */,
 				014AA0FD2917C417001918F5 /* ClearentProcessingModalViewController.xib */,
 				01442CEA28B3D835006DD15C /* ClearentProcessingModalViewController.swift */,
 				01442CEB28B3D835006DD15C /* ClearentProcessingModalPresenter.swift */,
-				014AA0EC291531AA001918F5 /* ClearentSettingsModalViewController.swift */,
-				014AA1022917C75F001918F5 /* ClearentSettingsModalViewController.xib */,
-				014AA0EE291531BB001918F5 /* ClearentSettingsModalPresenter.swift */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -817,6 +815,16 @@
 				01442D5328B3D84D006DD15C /* Entities */,
 			);
 			path = Networking;
+			sourceTree = "<group>";
+		};
+		01A31742291CE0CD00FB6CB9 /* SettingsScreen */ = {
+			isa = PBXGroup;
+			children = (
+				014AA0EC291531AA001918F5 /* ClearentSettingsModalViewController.swift */,
+				014AA1022917C75F001918F5 /* ClearentSettingsModalViewController.xib */,
+				014AA0EE291531BB001918F5 /* ClearentSettingsModalPresenter.swift */,
+			);
+			path = SettingsScreen;
 			sourceTree = "<group>";
 		};
 		01E22DFA28B77C65004C4ADF /* Animations */ = {

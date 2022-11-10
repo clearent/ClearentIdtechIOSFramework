@@ -14,8 +14,8 @@
                 <outlet property="doneButton" destination="qvS-xB-3xk" id="7hL-Rp-Kbw"/>
                 <outlet property="enableOfflineMode" destination="YvF-Jp-B5R" id="oBh-5X-T3u"/>
                 <outlet property="enablePromptMode" destination="SF4-Ln-73M" id="0fC-g6-3sk"/>
-                <outlet property="offlineModeSubtitle" destination="b9m-5T-Mp4" id="y7F-SU-ujf"/>
-                <outlet property="progressView" destination="sF1-XE-yMJ" id="nnr-6z-BU2"/>
+                <outlet property="offlineSectionSubtitle" destination="b9m-5T-Mp4" id="y7F-SU-ujf"/>
+                <outlet property="offlineStatusView" destination="sF1-XE-yMJ" id="nnr-6z-BU2"/>
                 <outlet property="titleLabel" destination="jm9-My-LzE" id="yA5-VL-3HG"/>
                 <outlet property="view" destination="9jK-Xv-dox" id="Q1D-4E-XXj"/>
             </connections>

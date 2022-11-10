@@ -108,7 +108,7 @@ public final class ClearentUIManager: NSObject {
 
         var viewController: UIViewController?
         if processType == .showSettings {
-            viewController = ClearentSettingsModalViewController()
+            viewController = settingsViewController(dismissCompletion: dismissCompletion)
         } else {
             viewController = processingModalViewController(processType: processType, amount: amount, editableReader: editableReader, dismissCompletion: dismissCompletion)
         }
@@ -123,10 +123,18 @@ public final class ClearentUIManager: NSObject {
         return navigationController
     }
     
-    func processingModalViewController(processType: ProcessType, amount: Double? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UIViewController {
+    private func processingModalViewController(processType: ProcessType, amount: Double? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UIViewController {
         let viewController = ClearentProcessingModalViewController(showOnTop: processType == .showReaders || processType == .renameReader)
         let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, amount: amount, processType: processType)
         presenter.editableReader = editableReader
+        viewController.presenter = presenter
+        viewController.dismissCompletion = dismissCompletion
+        return viewController
+    }
+    
+    private func settingsViewController(dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UIViewController {
+        let viewController = ClearentSettingsModalViewController()
+        let presenter = ClearentSettingsPresenter(settingsPresenterView: viewController)
         viewController.presenter = presenter
         viewController.dismissCompletion = dismissCompletion
         return viewController

@@ -36,8 +36,21 @@ class ClearentLabelWithButton: ClearentMarginableView {
         }
     }
     
+    var buttonTitle: String? {
+        didSet {
+            button.title = buttonTitle
+        }
+    }
+    
+    var buttonAction: (() -> Void)? {
+        didSet {
+            button.action = buttonAction
+        }
+    }
+    
     override func configure() {
         descriptionFont = ClearentUIBrandConfigurator.shared.fonts.settingsScreenOfflineModeProcessLabel
         button.cornerRadius = button.bounds.height/2
+        button.action = buttonAction
     }
 }

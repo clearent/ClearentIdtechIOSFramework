@@ -106,6 +106,16 @@ class OfflineModeManager {
             return storage.updateTransaction(transaction: transactionToBeUpdated)
         }
     }
+    
+    func containsReport() -> Bool {
+        let processedTransaction = retriveAll().first(where: { $0.errorStatus != nil })
+        return processedTransaction != nil
+    }
+    
+    func reportContainsErrors() -> Bool {
+        let failedTransaction = retriveAll().first(where: { $0.errorStatus != nil && $0.errorStatus?.error != .none })
+        return failedTransaction != nil
+    }
 }
 
 /**
