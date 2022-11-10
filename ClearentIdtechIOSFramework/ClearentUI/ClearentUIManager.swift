@@ -87,6 +87,25 @@ public final class ClearentUIManager: NSObject {
             completion?(completionResult)
         })
     }
+    
+    /**
+     * Method that returns the number of unproccesed offline transactions
+     */
+    @objc public func allUnproccesedOfflineTransactionsCount() -> Int {
+        let offlineManager = clearentWrapper.retriveOfflineManager()
+        let unprocessedOfflineTransactions = offlineManager?.retriveAll().filter({ tr in
+            return tr.errorStatus != nil
+        })
+        
+        return unprocessedOfflineTransactions?.count ?? 0
+    }
+    
+    /**
+     * Method that returns a bool representing if we should display the offline mode warning
+     */
+    @objc public func shouldDIsplayOfflineModeWarning() -> Bool {
+        return offlineModeWarningDisplayed
+    }
 
     internal func viewController(processType: ProcessType, amount: Double? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UINavigationController {
         let viewController = ClearentProcessingModalViewController(showOnTop: processType == .showReaders || processType == .renameReader)

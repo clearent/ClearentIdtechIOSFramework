@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ClearentIconAndLabel: ClearentMarginableView {
+public class ClearentIconAndLabel: ClearentMarginableView {
 
     @IBOutlet weak var iconImageView: UIImageView!
     @IBOutlet weak var textLabel: UILabel!
@@ -49,8 +49,15 @@ class ClearentIconAndLabel: ClearentMarginableView {
         textLabel.text = text
     }
     
-    override func configure() {
+    public override func configure() {
         font = ClearentUIBrandConfigurator.shared.fonts.statusLabelFont
         textColor = ClearentUIBrandConfigurator.shared.colorPalette.subtitleWarningLabelColor
+    }
+    
+    public func update(icon: UIImage?, text: String) {
+        if let image = icon {
+            self.iconImageView.image = image
+        }
+        textLabel.text = text
     }
 }
