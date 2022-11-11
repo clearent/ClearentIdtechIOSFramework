@@ -325,6 +325,15 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
+    /**
+     * Method return the Offlinemanager instance
+     */
+    
+    func retriveOfflineManager() -> OfflineModeManager? {
+        return transactionRepository?.offlineManager
+    }
+
+    
     // MARK: - Internal
     
     func resendSignature(completion: @escaping (SignatureResponse?, ClearentError?) -> Void) {

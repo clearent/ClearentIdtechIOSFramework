@@ -81,7 +81,10 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         }
             
         if shouldDisplayOfflineModeLabel() {
-            stackView.insertArrangedSubview(ClearentSubtitleLabel(text: ClearentConstants.Localized.OfflineMode.offlineModeEnabled), at: 1)
+            guard let offlineWarningText = presenter?.offlineTransactionsWarningText() else { return }
+            let x = ClearentIconAndLabel(icon: UIImage(named: ClearentConstants.IconName.smallWarning, in: ClearentConstants.bundle, compatibleWith: nil), text: offlineWarningText)
+            stackView.insertArrangedSubview(x, at: 1)
+            stackView.layoutSubviews()
         }
     }
     
@@ -215,7 +218,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     
     private func manualEntryFormView() -> ClearentManualEntryFormView {
         let dataSource = ClearentPaymentDataSource(with: [ClearentPaymentBaseSection(), ClearentPaymentAdditionalSection()])
-        let offlineModeStatusMessage = shouldDisplayOfflineModeLabel() ? ClearentConstants.Localized.OfflineMode.offlineModeEnabled : nil
+        let offlineModeStatusMessage = shouldDisplayOfflineModeLabel() ? String(format: ClearentConstants.Localized.OfflineMode.offlineModeEnabled, "xx") : nil
         let manualEntryFormView = ClearentManualEntryFormView(with: dataSource, offlineModeStatusMessage: offlineModeStatusMessage)
         manualEntryFormView.delegate = self
         dataSource.delegate = manualEntryFormView

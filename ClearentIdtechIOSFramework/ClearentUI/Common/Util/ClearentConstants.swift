@@ -69,6 +69,7 @@ import UIKit
         // Information
         static let error = "error"
         static let warning = "warning"
+        static let smallWarning = "small_warning"
         static let success = "success"
 
         // Pairing
@@ -276,6 +277,7 @@ import UIKit
             public static let offlineModeConfirmationMessageCancel = "xsdk_offline_mode_confirmation_cancel".localized
             public static let offlineModeWarningMessageTitle = "xsdk_offline_mode_warning_message_title".localized
             public static let offlineModeWarningMessageDescription = "xsdk_offline_mode_warning_message_description".localized
+            public static let offlineModeWarningConfirmationDescription = "xsdk_offline_mode_warning_confirmation_description".localized
             public static let offlineModeEnabled = "xsdk_offline_mode_enabled".localized
             public static let offlineModeWarningMessageConfirm = "xsdk_offline_mode_warning_message_confirmation".localized
             public static let offlineModeEncryptionWarningMessage = "xsdk_offline_mode_encryption_message".localized

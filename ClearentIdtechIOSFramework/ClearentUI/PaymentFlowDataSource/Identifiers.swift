@@ -41,7 +41,7 @@ public enum ReaderStatusHeaderViewState {
 }
 
 enum FlowGraphicType {
-    case animatedCardInteraction, staticCardInteraction, press_button, transaction_completed, loading, error, warning, pairedReader, pairingSuccessful
+    case animatedCardInteraction, staticCardInteraction, press_button, transaction_completed, loading, error, warning, smallWarning, pairedReader, pairingSuccessful
     
     var name: String? {
         switch self {
@@ -57,6 +57,8 @@ enum FlowGraphicType {
             return ClearentConstants.IconName.error
         case .warning:
             return ClearentConstants.IconName.warning
+        case .smallWarning:
+            return ClearentConstants.IconName.smallWarning
         case .loading:
             return nil
         case .pairedReader:

@@ -49,6 +49,8 @@ class ClearentColorsDefaultPalette: ClearentUIColors {
     
     var subtitleLabelColor: UIColor { UIColor(hexString: "#6A6D7D") }
     
+    var subtitleWarningLabelColor: UIColor { UIColor(hexString: "#FA8A07") }
+    
     var readerNameColor: UIColor { UIColor(hexString: "1B181F") }
     
     var readerStatusLabelColor: UIColor { UIColor(hexString: "#6A6D7D") }

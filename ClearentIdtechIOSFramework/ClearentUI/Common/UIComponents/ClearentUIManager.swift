@@ -89,6 +89,7 @@ public final class ClearentUIManager: NSObject {
     }
     
     /**
+<<<<<<< HEAD:ClearentIdtechIOSFramework/ClearentUI/Common/UIComponents/ClearentUIManager.swift
      * Method returns a UIController that will display a list containing current card reader informations and recently paired readers
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
@@ -99,8 +100,23 @@ public final class ClearentUIManager: NSObject {
         })
     }
     
-    func navigationController(processType: ProcessType, amount: Double? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UINavigationController {
+    @objc public func allUnproccesedOfflineTransactionsCount() -> Int {
+        let offlineManager = clearentWrapper.retriveOfflineManager()
+        let unprocessedOfflineTransactions = offlineManager?.retriveAll().filter({ tr in
+            return tr.errorStatus == nil
+        })
+        
+        return unprocessedOfflineTransactions?.count ?? 0
+    }
+    
+    /**
+     * Method that returns a bool representing if we should display the offline mode warning
+     */
+    @objc public func shouldDIsplayOfflineModeWarning() -> Bool {
+        return offlineModeWarningDisplayed
+    }
 
+    func navigationController(processType: ProcessType, amount: Double? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UINavigationController {
         var viewController: UIViewController?
         if processType == .showSettings {
             viewController = settingsViewController(dismissCompletion: dismissCompletion)
