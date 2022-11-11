@@ -44,12 +44,12 @@ class ClearentOfflineModeReportPresenter {
                 if errorStatus.error.type == .gatewayDeclined {
                     declinedCount += 1
                     declinedAmount += amount
-                } else if errorStatus.error.type == .httpError {
-                    errorCount += 1
-                    errorAmount +=  amount
                 } else if errorStatus.error.type == .none  {
                     approvedCount += 1
                     approvedAmount += amount
+                } else {
+                    errorCount += 1
+                    errorAmount +=  amount
                 }
             }
         })

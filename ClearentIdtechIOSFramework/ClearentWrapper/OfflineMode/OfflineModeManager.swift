@@ -95,7 +95,7 @@ class OfflineModeManager {
     }
     
     func unproccesedTransactionsCount() -> Int {
-        let unprocessedOfflineTransactions = retriveAll().filter({ tr in
+        let unprocessedOfflineTransactions = retrieveAll().filter({ tr in
             return tr.errorStatus == nil
         })
         
@@ -117,13 +117,11 @@ class OfflineModeManager {
     }
     
     func containsReport() -> Bool {
-        let processedTransaction = retriveAll().first(where: { $0.errorStatus != nil })
-        return processedTransaction != nil
+        retrieveAll().first(where: { $0.errorStatus != nil }) != nil
     }
     
     func reportContainsErrors() -> Bool {
-        let failedTransaction = retriveAll().first(where: { $0.errorStatus != nil && $0.errorStatus?.error.type != ClearentErrorType.none })
-        return failedTransaction != nil
+        retrieveAll().first(where: { $0.errorStatus != nil && $0.errorStatus?.error.type != ClearentErrorType.none }) != nil
     }
 }
 

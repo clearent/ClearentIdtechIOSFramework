@@ -52,7 +52,7 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
                 setupUploadSuccessfully()
             }
         } else {
-            let pendingTransactions = offlineManager.retriveAll().filter({ $0.errorStatus == nil }).count
+            let pendingTransactions = offlineManager.retrieveAll().filter({ $0.errorStatus == nil }).count
             if pendingTransactions > 0 {
                 setupPendingTransactions(counter: pendingTransactions)
             } else {

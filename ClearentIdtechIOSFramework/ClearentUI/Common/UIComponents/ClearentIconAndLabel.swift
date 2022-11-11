@@ -25,6 +25,7 @@ public class ClearentIconAndLabel: ClearentMarginableView {
             RelativeBottomMargin(constant: 20, relatedViewType: ClearentReadersTableView.self),
             RelativeBottomMargin(constant: 20, relatedViewType: ClearentListView.self),
             RelativeBottomMargin(constant: 43, relatedViewType: ClearentLoadingView.self),
+            RelativeBottomMargin(constant: 24, relatedViewType: ClearentTitleLabel.self),
             BottomMargin(constant: 80)
         ]
     }
