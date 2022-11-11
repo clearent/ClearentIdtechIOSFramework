@@ -10,7 +10,7 @@ import CryptoKit
 import Foundation
 
 /**
- * Offline Manager, handles the offlline transactions, saves, updates, deletes, retrives, processing and reporting.
+ * Offline Manager, handles the offlline transactions, saves, updates, deletes, retrieves, processing and reporting.
  */
 class OfflineModeManager {
     public var storage: TransactionStorageProtocol
@@ -31,8 +31,8 @@ class OfflineModeManager {
         return storage.save(transaction: transaction)
     }
 
-    func retriveAll() -> [OfflineTransaction] {
-        return storage.retriveAll()
+    func retrieveAll() -> [OfflineTransaction] {
+        return storage.retrieveAll()
     }
 
     func saveSignatureForTransaction(transactionID: String, image: UIImage) -> TransactionStoreStatus {
@@ -45,7 +45,7 @@ class OfflineModeManager {
         return .genericError
     }
 
-    func retriveSignatureForTransaction(transactionID: String) -> UIImage! {
+    func retrieveSignatureForTransaction(transactionID: String) -> UIImage! {
         if let imageData = UserDefaults.standard.value(forKey: transactionID) as? Data {
             if let sigantureImage = UIImage(data: imageData) {
                 return sigantureImage

@@ -31,7 +31,7 @@ public protocol ClearentWrapperProtocol : AnyObject {
      * Method called after a pairing process is started and card readers were found nearby.
      * @param readers, the list of readers available for pairing
      */
-    func didFindReaders(readers:[ReaderInfo])
+    func didFindReaders(readers: [ReaderInfo])
     
     /**
      * Method called when the currently paired device disconnects.
@@ -41,13 +41,13 @@ public protocol ClearentWrapperProtocol : AnyObject {
     /**
      * Method called after the 'connectTo' method was called by protocol implementing class, indicating that a connection to the selected reader is being established.
      */
-    func startedReaderConnection(with reader:ReaderInfo)
+    func startedReaderConnection(with reader: ReaderInfo)
     
     /**
      * Method called in response to method 'searchRecentlyUsedReaders' and indicates that recently readers were found.
      * @param readers. list of recently paired readers
      */
-    func didFindRecentlyUsedReaders(readers:[ReaderInfo])
+    func didFindRecentlyUsedReaders(readers: [ReaderInfo])
     
     /**
      * Method called to indicate that continuous search of nearby readers has started.

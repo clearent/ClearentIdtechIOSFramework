@@ -205,7 +205,8 @@ import UIKit
             public static let action = "xsdk_signature_action".localized
             public static let skip = "xsdk_signature_error_action_skip".localized
             public static let signatureUploadFailure = "xsdk_signature_upload_failure_title".localized
-            public static let signatureUploadSuccessful = "xsdk_signature_upload_sucessful_title".localized
+            public static let signatureUploadSuccessfully = "xsdk_signature_upload_sucessful_title".localized
+            public static let signatureAcceptedSuccessfully = "xsdk_signature_accepted_succesful_title".localized
         }
         
         enum Keyboard {
@@ -258,6 +259,8 @@ import UIKit
         
         enum FlowDataProvider {
             public static let transactionCompleted = "xsdk_payment_transaction_completed_description".localized
+            public static let transactionAccepted = "xsdk_payment_transaction_accepted_description".localized
+            public static let transactionNotAccepted = "xsdk_payment_transaction_not_accepted_description".localized
         }
         
         enum Tips {

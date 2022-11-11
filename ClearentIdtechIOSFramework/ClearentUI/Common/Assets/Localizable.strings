@@ -34,6 +34,8 @@
 // MARK: - Payment Flow - General
 // Texts that are displayed during the payment flow
 "xsdk_payment_transaction_completed_description" = "Payment successful";
+"xsdk_payment_transaction_accepted_description" = "Offline transaction successfully accepted";
+"xsdk_payment_transaction_not_accepted_description" = "Offline transaction has not been accepted";
 
 // MARK: - Payment Flow - Reader interaction
 
@@ -58,6 +60,7 @@
 "xsdk_signature_action" = "Done";
 "xsdk_signature_error_action_skip" = "Skip";
 "xsdk_signature_upload_sucessful_title" = "Signature uploaded successfully";
+"xsdk_signature_accepted_succesful_title" = "Signature accepted successfully";
 "xsdk_signature_upload_failure_title" = "Signature capture failed";
 
 // MARK: - Payment Flow - Manually Enter Card Info

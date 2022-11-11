@@ -1792,9 +1792,8 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     if (self.offlineMode && [self.publicDelegate respondsToSelector:@selector(successOfflineTransactionToken:)]) {
         [self.publicDelegate successOfflineTransactionToken:postData];
         
-        // For now we will also have the online transcation be processed
-        // processingCurrentRequest = NO;
-        // return;
+        processingCurrentRequest = NO;
+        return;
     }
     
     [self fetchTransactionToken: postData completion: nil];

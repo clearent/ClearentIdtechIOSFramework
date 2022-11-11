@@ -405,6 +405,21 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 }
 
 extension ClearentProcessingModalPresenter: FlowDataProtocol {
+    
+    func didFinishSignature() {
+        successfulDissmissViewWithDelay()
+    }
+    
+    func didFinishTransaction() {
+        if ClearentUIManager.configuration.signatureEnabled {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                self.showSignatureScreen()
+            }
+        } else {
+            successfulDissmissViewWithDelay()
+        }
+    }
+    
     func deviceDidDisconnect() {}
 
     func didFinishedPairing() {
@@ -434,22 +449,6 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
         ClearentApplicationOrientation.customOrientationMaskClosure?(UIInterfaceOrientationMask.portrait)
         UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
         modalProcessingView?.updateContent(with: feedback)
-    }
-
-    func didFinishTransaction(error: ClearentError?) {
-        if error == nil {
-            if ClearentUIManager.configuration.signatureEnabled {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                    self.showSignatureScreen()
-                }
-            } else {
-                successfulDissmissViewWithDelay()
-            }
-        }
-    }
-    
-    func didFinishSignature() {
-        successfulDissmissViewWithDelay()
     }
 
     func didBeginContinuousSearching() {

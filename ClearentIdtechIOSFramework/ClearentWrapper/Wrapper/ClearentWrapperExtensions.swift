@@ -14,7 +14,7 @@ extension ClearentWrapper {
     
     // MARK - Public Logger related
     
-    public func retriveLoggFileContents() -> String {
+    public func retrieveLoggFileContents() -> String {
         var logs = ""
         let fileInfo = fetchLoggerFileInfo()
         if let newFileInfo = fileInfo {
