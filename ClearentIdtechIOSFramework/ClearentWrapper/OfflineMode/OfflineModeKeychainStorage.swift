@@ -11,7 +11,7 @@ import Foundation
 
 /**
  * KeyChainStorage Implements the TransactionStorageProtocol
- * It saves/retrives encrypts/decrypts the saved data
+ * It saves / retrieves encrypts / decrypts the saved data
  */
 
 class KeyChainStorage: TransactionStorageProtocol {
@@ -48,11 +48,11 @@ class KeyChainStorage: TransactionStorageProtocol {
         return saveOfflineTransactionArray(offlineTransactions: currentSavedItems)
     }
 
-    func retriveAll() -> [OfflineTransaction] {
+    func retrieveAll() -> [OfflineTransaction] {
         var result: [OfflineTransaction] = []
         var currentSavedItems: NSArray?
 
-        // Retrive the current saved data
+        // Retrieve the current saved data
         let savedData = helper.read(service: serviceName, account: account)
 
         // Unarchive, decode, decrypt data
@@ -75,7 +75,7 @@ class KeyChainStorage: TransactionStorageProtocol {
     /// If succesfull it will overwrite the data
     func updateTransaction(transaction: OfflineTransaction) -> TransactionStoreStatus {
         var response: TransactionStoreStatus = .success
-        var result: [OfflineTransaction] = retriveAll()
+        var result: [OfflineTransaction] = retrieveAll()
 
         let count = result.count
         result.removeAll(where: { $0.transactionID == transaction.transactionID })
@@ -92,7 +92,7 @@ class KeyChainStorage: TransactionStorageProtocol {
 
     func deleteTransactionWith(id: String) -> TransactionStoreStatus {
         var response: TransactionStoreStatus = .success
-        var result: [OfflineTransaction] = retriveAll()
+        var result: [OfflineTransaction] = retrieveAll()
 
         let count = result.count
         result.removeAll(where: { $0.transactionID == id })
@@ -112,8 +112,9 @@ class KeyChainStorage: TransactionStorageProtocol {
 
     private func encryptAndSaveTransactions(transactions: [OfflineTransaction]) -> TransactionStoreStatus {
         let currentSavedItems = NSMutableArray()
-        transactions.forEach { oftr in
-            if let transaction = oftr.encode() {
+        
+        transactions.forEach { offlineTransaction in
+            if let transaction = offlineTransaction.encode() {
                 if let encryptedData = try? ClearentCryptor.encrypt(encryptionKey: encryptionKey, contentData: transaction) {
                     currentSavedItems.add(encryptedData)
                 }

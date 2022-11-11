@@ -24,7 +24,7 @@ public struct ErrorStatus: Codable {
 
 /**
  * OfflineTransaction class represents an offline transaction.
- * Can be encoded/decoded as json in order to be saved/retrived/processed.
+ * Can be encoded / decoded as json in order to be saved / retrieved / processed.
 */
 public struct OfflineTransaction: CodableProtocol  {
     var createdDate: Date?
@@ -56,7 +56,7 @@ public struct OfflineTransaction: CodableProtocol  {
 
 /**
  * PaymentData class represents a manual or card reader payment data, basicly card information and sum/tips/client info.
- * Can be encoded/decoded as json in order to be saved/retrived/processed.
+ * Can be encoded / decoded as json in order to be saved / retrieved / processed.
 */
 class PaymentData : CodableProtocol {
     var saleEntity: SaleEntity
@@ -83,11 +83,11 @@ public enum TransactionStoreStatus: String {
 /// Defines a protocol for the transactions storage
 protocol TransactionStorageProtocol {
     
-    /// Saves a offline transaction
+    /// Saves an offline transaction
     func save(transaction: OfflineTransaction) -> TransactionStoreStatus
     
-    /// Retrives all transactions
-    func retriveAll() -> [OfflineTransaction]
+    /// Retrieves all the transactions
+    func retrieveAll() -> [OfflineTransaction]
     
     /// Updates a transaction
     func updateTransaction(transaction: OfflineTransaction) -> TransactionStoreStatus

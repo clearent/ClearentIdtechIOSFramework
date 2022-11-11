@@ -118,6 +118,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         if let id = lastTransactionID, let tid = Int(id) {
             signatureImage = image
             let base64Image = image.jpegData(compressionQuality: 1)?.base64EncodedString() ?? ""
+            
             httpClient.sendSignature(base64Image: base64Image, transactionID: tid) { [weak self] data, error in
                 guard let strongSelf = self else { return }
                 guard let responseData = data else { return }
@@ -161,7 +162,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     }
         
     func processOfflineTransactions(completion: @escaping (() -> Void)) {
-        guard let offlineTransactions = offlineManager?.retriveAll() else { return }
+        guard let offlineTransactions = offlineManager?.retrieveAll() else { return }
         var operations: [AsyncBlockOperation] = []
         
         let operationQueue = OperationQueue()
@@ -177,6 +178,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
                     card.card = saleEntity.card
                     card.expirationDateMMYY = saleEntity.expirationDateMMYY
                     card.csc = saleEntity.csc
+                    
                     strongSelf.clearentManualEntry?.createOfflineTransactionToken(card) { [weak self] token in
                         self?.sendOfflineTransaction(offlineTransaction: transaction, token: token) { error in
                             _ = self?.offlineManager?.updateOfflineTransaction(with: error, transaction: transaction)
@@ -207,6 +209,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
      */
      func manualEntryTransaction(saleEntity: SaleEntity) {
         let dispatchQueue = DispatchQueue(label: "xplor.UserInteractiveQueue", qos: .userInteractive, attributes: .concurrent)
+         
         dispatchQueue.async { [weak self] in
             guard let strongSelf = self else { return }
             let card = ClearentCard()
@@ -232,7 +235,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
      * Retrieve all stored offline transactions
      */
     func fetchOfflineTransactions() -> [OfflineTransaction]? {
-        return offlineManager?.retriveAll()
+        return offlineManager?.retrieveAll()
     }
     
     /**
@@ -265,7 +268,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
             if error != nil {
                 completion(error)
             } else  {
-                guard let image = self?.offlineManager?.retriveSignatureForTransaction(transactionID: offlineTransaction.transactionID) else {
+                guard let image = self?.offlineManager?.retrieveSignatureForTransaction(transactionID: offlineTransaction.transactionID) else {
                     completion(nil)
                     return
                 }
