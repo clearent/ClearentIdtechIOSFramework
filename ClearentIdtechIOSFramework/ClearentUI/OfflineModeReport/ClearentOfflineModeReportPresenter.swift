@@ -29,7 +29,7 @@ class ClearentOfflineModeReportPresenter {
     }
     
     func updateDataSource() {
-        let transactions = ClearentWrapper.shared.retriveAllOfflineTransactions()
+        let transactions = ClearentWrapper.shared.retrieveAllOfflineTransactions()
         
         var approvedCount = 0
         var approvedAmount = 0.0
@@ -68,13 +68,11 @@ class ClearentOfflineModeReportPresenter {
 
 extension ClearentOfflineModeReportPresenter : ClearentOfflineModeReportViewProtocol {
     
-    func saveErrorLog() {
-        
-    }
+    func saveErrorLog() {}
     
     func clearAndProceed() {
         let offlineManager = ClearentWrapper.shared.retrieveOfflineManager()
-        let allTransactions = offlineManager?.retriveAll()
+        let allTransactions = offlineManager?.retrieveAll()
         allTransactions?.forEach({ tr in
             if tr.errorStatus != nil {
                 _ = offlineManager?.storage.deleteTransactionWith(id: tr.transactionID)
