@@ -19,6 +19,7 @@ public class ClearentIconAndLabel: ClearentMarginableView {
 
     public override var margins: [BottomMargin] {
         [
+            RelativeBottomMargin(constant: 20, relatedViewType: ClearentSignatureView.self),
             RelativeBottomMargin(constant: 24, relatedViewType: ClearentPrimaryButton.self),
             RelativeBottomMargin(constant: 20, relatedViewType: ClearentAnimationWithSubtitle.self),
             RelativeBottomMargin(constant: 20, relatedViewType: ClearentIcon.self),
