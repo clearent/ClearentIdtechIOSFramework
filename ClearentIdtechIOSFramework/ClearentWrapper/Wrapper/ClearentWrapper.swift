@@ -46,6 +46,11 @@ public final class ClearentWrapper : NSObject {
     
     var tipEnabled: Bool { transactionRepository?.tipEnabled ?? false }
     var isNewPaymentProcess = true
+    var isInternetOn: Bool = false {
+        didSet {
+            readerRepository?.isInternetOn = isInternetOn
+        }
+    }
     
     // MARK: - Private properties
     
@@ -54,11 +59,6 @@ public final class ClearentWrapper : NSObject {
     private let monitor = NWPathMonitor()
     private var readerRepository: ReaderRepositoryProtocol?
     private var transactionRepository: TransactionRepositoryProtocol?
-    private var isInternetOn: Bool = false {
-        didSet {
-            readerRepository?.isInternetOn = isInternetOn
-        }
-    }
     
     // MARK: - Init
     
@@ -104,7 +104,7 @@ public final class ClearentWrapper : NSObject {
      * Method that should be called to disable offline mode.
      */
     public func disableOfflineMode() {
-        transactionRepository?.offlineManager = nil
+        //transactionRepository?.offlineManager = nil
         clearentVP3300.setOfflineMode(false)
         ClearentWrapper.configuration.enableOfflineMode = false
     }

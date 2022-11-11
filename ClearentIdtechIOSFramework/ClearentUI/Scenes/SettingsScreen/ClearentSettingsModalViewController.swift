@@ -37,6 +37,11 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         presenter?.updateOfflineStatus()
+        if ClearentWrapper.shared.isInternetOn {
+            offlineStatusView.enableButton()
+        } else {
+            offlineStatusView.disableButton()
+        }
     }
     
     func setupTitle() {
