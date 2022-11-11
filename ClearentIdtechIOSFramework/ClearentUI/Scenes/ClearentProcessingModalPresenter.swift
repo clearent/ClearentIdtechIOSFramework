@@ -84,7 +84,7 @@ class ClearentProcessingModalPresenter {
 extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     
     func offlineTransactionsWarningText() -> String {
-        return String(format: ClearentConstants.Localized.OfflineMode.offlineModeEnabled, ClearentUIManager.shared.allUnproccesedOfflineTransactionsCount())
+        return String(format: ClearentConstants.Localized.OfflineMode.offlineModeEnabled, String(ClearentUIManager.shared.allUnprocessedOfflineTransactionsCount()))
     }
     
     func handleOfflineModeCancelOption() {

@@ -35,7 +35,7 @@ class ClearentProcessingModalViewController: ClearentBaseViewController {
 
         positionViewOnTop(flag: showOnTop)
         presenter?.startFlow()
-        stackView.showLoadingView()
+        //stackView.showLoadingView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -82,8 +82,8 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             
         if shouldDisplayOfflineModeLabel() {
             guard let offlineWarningText = presenter?.offlineTransactionsWarningText() else { return }
-            let x = ClearentIconAndLabel(icon: UIImage(named: ClearentConstants.IconName.smallWarning, in: ClearentConstants.bundle, compatibleWith: nil), text: offlineWarningText)
-            stackView.insertArrangedSubview(x, at: 1)
+            let iconAndLabel = ClearentIconAndLabel(icon: UIImage(named: ClearentConstants.IconName.smallWarning, in: ClearentConstants.bundle, compatibleWith: nil), text: offlineWarningText)
+            stackView.insertArrangedSubview(iconAndLabel, at: 1)
             stackView.layoutSubviews()
         }
     }
@@ -218,7 +218,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     
     private func manualEntryFormView() -> ClearentManualEntryFormView {
         let dataSource = ClearentPaymentDataSource(with: [ClearentPaymentBaseSection(), ClearentPaymentAdditionalSection()])
-        let offlineModeStatusMessage = shouldDisplayOfflineModeLabel() ? String(format: ClearentConstants.Localized.OfflineMode.offlineModeEnabled, "xx") : nil
+        let offlineModeStatusMessage = shouldDisplayOfflineModeLabel() ? presenter?.offlineTransactionsWarningText() : nil
         let manualEntryFormView = ClearentManualEntryFormView(with: dataSource, offlineModeStatusMessage: offlineModeStatusMessage)
         manualEntryFormView.delegate = self
         dataSource.delegate = manualEntryFormView
