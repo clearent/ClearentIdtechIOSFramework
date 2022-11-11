@@ -114,7 +114,7 @@ class OfflineModeManager {
     }
     
     func reportContainsErrors() -> Bool {
-        let failedTransaction = retriveAll().first(where: { $0.errorStatus != nil && $0.errorStatus?.error != .none })
+        let failedTransaction = retriveAll().first(where: { $0.errorStatus != nil && $0.errorStatus?.error.type != ClearentErrorType.none })
         return failedTransaction != nil
     }
 }

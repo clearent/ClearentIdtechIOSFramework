@@ -57,6 +57,7 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         enableOfflineMode.isOn = ClearentWrapper.configuration.enableOfflineMode
         enableOfflineMode.valueChangedAction = { isOn in
             self.enablePromptMode.isUserInteractionEnabled = isOn
+            self.enablePromptMode.alpha = isOn ? 1.0 : 0.5
             if isOn {
                 do {
                     try ClearentWrapper.shared.enableOfflineMode()

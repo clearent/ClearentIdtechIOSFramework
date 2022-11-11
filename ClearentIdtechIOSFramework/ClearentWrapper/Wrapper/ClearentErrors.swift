@@ -52,9 +52,9 @@ public typealias CompletionResult = Result<String?, ClearentError>
     /// Signature image not found on user defaults for offline transaction
     case missingSignatureImage
     
+    case none
+    
     var isMissingKeyError: Bool {
         return [.apiKeyNotProvided, .baseURLNotProvided, .publicKeyNotProvided].contains(self)
     }
-    
-    case none
 }
