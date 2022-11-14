@@ -192,15 +192,16 @@
 // MARK: - Store & Forward
 // Texts that are displayed for store & forward feature
 
-"xsdk_offline_mode_enable_title" = "Enable offline mode?";
+"xsdk_offline_mode_enable_title" = "Work offline";
 "xsdk_offline_mode_confirm_option" = "Yes";
 "xsdk_offline_mode_cancel_option" = "No";
 "xsdk_offline_mode_confirmation_message" = "Are you sure?";
 "xsdk_offline_mode_confirmation_proceed" = "Yes";
 "xsdk_offline_mode_confirmation_cancel" = "No";
-"xsdk_offline_mode_warning_message_title" = "Warning - Offline Mode Enabled ";
-"xsdk_offline_mode_warning_message_description" = "Offline transactions may decline once online mode is enabled and processing resumes.";
-"xsdk_offline_mode_enabled" = "Offline Mode Enabled";
+"xsdk_offline_mode_warning_message_title" = "Offline Mode Enabled";
+"xsdk_offline_mode_warning_message_description" = "Offline transactions may be declined once online mode is enabled and processing resumes.";
+"xsdk_offline_mode_warning_confirmation_description" = "\n\nAre you sure you want to use the application in offline mode?";
+"xsdk_offline_mode_enabled" = "Offline Mode (%@)";
 "xsdk_offline_mode_warning_message_confirmation" = "OK";
 "xsdk_offline_mode_encryption_message" = "Please try again using an encrypted reader";
 

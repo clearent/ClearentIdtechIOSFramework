@@ -38,6 +38,7 @@ protocol ProcessingModalProtocol {
     func sendManualEntryTransaction(with dataSource: ClearentPaymentDataSource)
     func handleOfflineModeCancelOption()
     func handleOfflineModeConfirmationOption()
+    func offlineTransactionsWarningText() -> String
 }
 
 class ClearentProcessingModalPresenter {
@@ -81,6 +82,11 @@ class ClearentProcessingModalPresenter {
 }
 
 extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
+    
+    func offlineTransactionsWarningText() -> String {
+        return String(format: ClearentConstants.Localized.OfflineMode.offlineModeEnabled, String(ClearentUIManager.shared.allUnprocessedOfflineTransactionsCount()))
+    }
+    
     func handleOfflineModeCancelOption() {
         ClearentWrapper.shared.isNewPaymentProcess = false
         restartProcess(newPair: false)
@@ -161,7 +167,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                     modalProcessingView?.dismissViewController(result: .success(editableReader?.customReaderName))
                 }
             }
-        case .cancel:
+        case .cancel, .denyOfflineMode:
             ClearentWrapper.shared.isNewPaymentProcess = true
             isOfflineModeConfirmed = false
             ClearentUIManager.shared.offlineModeWarningDisplayed = false
@@ -185,8 +191,6 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             startManualEntryTransaction()
         case .confirmOfflineMode:
             modalProcessingView?.displayOfflineModeConfirmationMessage(for: .confirmOfflineMode)
-        case .denyOfflineMode:
-            modalProcessingView?.displayOfflineModeConfirmationMessage(for: .denyOfflineMode)
         case .confirmOfflineModeWarningMessage:
             isOfflineModeConfirmed = true
             ClearentUIManager.shared.offlineModeWarningDisplayed = true

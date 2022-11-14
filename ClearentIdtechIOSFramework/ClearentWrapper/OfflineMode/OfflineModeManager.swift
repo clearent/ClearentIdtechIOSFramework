@@ -93,6 +93,14 @@ class OfflineModeManager {
     func clearStorage() {
         storage.deleteAllData()
     }
+    
+    func unproccesedTransactionsCount() -> Int {
+        let unprocessedOfflineTransactions = retrieveAll().filter({ tr in
+            return tr.errorStatus == nil
+        })
+        
+        return unprocessedOfflineTransactions.count
+    }
 
     // In case an error was received during the offline transactions upload, update the transaction with the error
     // Otherwise, mark the transaction with error .none so we now it was processed succesfully

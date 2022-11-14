@@ -102,7 +102,8 @@ class FlowDataProvider : NSObject {
     }
     
     func displayOfflineModeWarningMessage() {
-        let items = [FlowDataItem(type: .title, object: ClearentConstants.Localized.OfflineMode.offlineModeWarningMessageTitle),
+        let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
+                     FlowDataItem(type: .title, object: ClearentConstants.Localized.OfflineMode.offlineModeWarningMessageTitle),
                      FlowDataItem(type: .description, object: ClearentConstants.Localized.OfflineMode.offlineModeWarningMessageDescription),
                      FlowDataItem(type: .userAction, object: FlowButtonType.confirmOfflineModeWarningMessage)]
         let feedback = FlowDataFactory.component(with: .payment,
@@ -391,7 +392,8 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                 } else if sdkWrapper.isNewPaymentProcess {
                     items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
                              FlowDataItem(type: .title, object: ClearentConstants.Localized.OfflineMode.enableOfflineMode),
-                             FlowDataItem(type: .description, object: action.description),
+                             FlowDataItem(type: .description, object: ClearentConstants.Localized.OfflineMode.offlineModeWarningMessageDescription),
+                             FlowDataItem(type: .description, object: ClearentConstants.Localized.OfflineMode.offlineModeWarningConfirmationDescription),
                              FlowDataItem(type: .userAction, object: FlowButtonType.confirmOfflineMode),
                              FlowDataItem(type: .userAction, object: FlowButtonType.denyOfflineMode)]
                 } else {

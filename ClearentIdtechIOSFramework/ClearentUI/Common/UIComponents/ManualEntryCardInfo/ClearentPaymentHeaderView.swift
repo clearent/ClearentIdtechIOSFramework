@@ -25,6 +25,7 @@ class ClearentPaymentHeaderView: ClearentXibView {
     // MARK: - Public
     
     public func addOfflineModeStatus(_ value: String) {
-        stackView.addArrangedSubview(ClearentSubtitleLabel(text: value))
+        let offlineModeWarning = ClearentIconAndLabel(icon: UIImage(named: ClearentConstants.IconName.smallWarning, in: ClearentConstants.bundle, compatibleWith: nil), text: value)
+        stackView.addArrangedSubview(offlineModeWarning)
     }
 }

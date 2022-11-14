@@ -12,7 +12,6 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
     
     @IBOutlet weak var stackView: UIStackView!
     @IBOutlet weak var readerNameLabel: UILabel!
-    @IBOutlet weak var dropDownImageView: UIImageView!
     @IBOutlet weak var readerConnectivityStatusView: ClearentReaderConnectivityStatusView!
     @IBOutlet weak var readerBatteryStatusView: ClearentReaderConnectivityStatusView!
     @IBOutlet weak var descriptionLabel: UILabel!
@@ -25,6 +24,7 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
         [
             RelativeBottomMargin(constant: 16, relatedViewType: ClearentReadersTableView.self),
             RelativeBottomMargin(constant: 30, relatedViewType: ClearentIcon.self),
+            RelativeBottomMargin(constant: 10, relatedViewType: ClearentIconAndLabel.self),
             RelativeBottomMargin(constant: 30, relatedViewType: ClearentAnimationWithSubtitle.self),
             RelativeBottomMargin(constant: 40, relatedViewType: ClearentLoadingView.self),
             RelativeBottomMargin(constant: 24, relatedViewType: ClearentSubtitleLabel.self),
@@ -55,11 +55,6 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
             descriptionLabel.text = description
         }
         descriptionLabel.isHidden = description == nil
-        
-        if let dropDownIconName = dropDownIconName {
-            dropDownImageView.image = UIImage(named: dropDownIconName, in: ClearentConstants.bundle, compatibleWith: nil)
-        }
-        dropDownImageView.isHidden = dropDownIconName == nil
 
         setupConnectivityComponent(signalStatus: signalStatus)
         setupBatteryComponent(batteryStatus: batteryStatus)
@@ -82,14 +77,8 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
         verticalSeparator.isHidden = readerBatteryStatusView.isHidden
     }
     
-    private func updateDropDownIcon() {
-        let iconName = state == .collapsed ? ClearentConstants.IconName.collapsed : ClearentConstants.IconName.expanded
-        dropDownImageView.image = UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil)
-    }
-    
     @IBAction func didTapOnReaderStatusHeaderView(_ sender: Any) {
         state = state == .collapsed ? .expanded : .collapsed
-        updateDropDownIcon()
         
         action?()
     }
