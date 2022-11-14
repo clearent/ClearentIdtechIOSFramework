@@ -220,9 +220,9 @@
 "xsdk_settings_offline_switch_enable_prompt" = "Only prompt if no internet";
 "xsdk_settings_offline_pending_transactions" = "You have %i offline transactions";
 "xsdk_settings_offline_one_pending_transaction" = "You have 1 offline transaction";
-"xsdk_settings_offline_mode_upload_errors" = "Upload completed with errors";
-"xsdk_settings_offline_mode_upload_success" = "Upload completed successfully";
-"xsdk_settings_offline_mode_btn_process" = "Process";
-"xsdk_settings_offline_mode_btn_report" = "Report";
-"xsdk_settings_offline_mode_btn_done" = "OK";
+"xsdk_settings_offline_upload_errors" = "Upload completed with errors";
+"xsdk_settings_offline_upload_success" = "Upload completed successfully";
+"xsdk_settings_offline_btn_process" = "Process";
+"xsdk_settings_offline_btn_report" = "Report";
+"xsdk_settings_offline_btn_done" = "OK";
 
