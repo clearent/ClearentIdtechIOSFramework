@@ -27,11 +27,8 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
     private weak var settingsPresenterView: ClearentSettingsPresenterView?
     
     var offlineStatusDescription: String?
-    
     var offlineStatusDescriptionColor: UIColor?
-
     var offlineStatusButtonTitle: String?
-    
     var offlineStatusButtonAction: (() -> Void)?
 
     // MARK: Init
@@ -74,13 +71,13 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
         offlineStatusButtonTitle = ClearentConstants.Localized.Settings.settingsOfflineButtonProcess
         offlineStatusDescriptionColor = ClearentUIBrandConfigurator.shared.colorPalette.settingOfflineStatusLabel
         offlineStatusButtonAction = { [weak self] in
-            if !ClearentWrapper.shared.isInternetOn {
-                self?.settingsPresenterView?.displayNoInternetAlert()
-            } else {
+            if ClearentWrapper.shared.isInternetOn {
                 self?.settingsPresenterView?.updateOfflineStatusView(inProgress: true)
                 ClearentWrapper.shared.processOfflineTransactions() {
                     self?.updateOfflineStatus()
                 }
+            } else {
+                self?.settingsPresenterView?.displayNoInternetAlert()
             }
         }
     }

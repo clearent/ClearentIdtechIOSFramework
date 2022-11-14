@@ -100,7 +100,7 @@ public final class ClearentUIManager: NSObject {
     }
     
     @objc public func allUnprocessedOfflineTransactionsCount() -> Int {
-        let offlineManager = clearentWrapper.retriveOfflineManager()
+        let offlineManager = clearentWrapper.retrieveOfflineManager()
         return offlineManager?.unproccesedTransactionsCount() ?? 0
     }
     

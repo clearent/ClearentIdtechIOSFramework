@@ -30,7 +30,8 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         super.viewDidLoad()
         setupTitle()
         setupOfflineSectionSubtitle()
-        setupSwitches()
+        setupEnableOfflineModeSwitch()
+        setupEnablePromptModeSwitch()
         setupDoneButton()
     }
     
@@ -39,18 +40,20 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         presenter?.updateOfflineStatus()
     }
     
-    func setupTitle() {
+    // MARK: - Private
+    
+    private func setupTitle() {
         titleLabel.title = ClearentConstants.Localized.Settings.settingsOfflineModeTitle
         titleLabel.font = ClearentUIBrandConfigurator.shared.fonts.settingsScreenTitle
     }
     
-    func setupOfflineSectionSubtitle() {
+    private func setupOfflineSectionSubtitle() {
         offlineSectionSubtitle.text = ClearentConstants.Localized.Settings.settingsOfflineModeSubtitle
         offlineSectionSubtitle.font = ClearentUIBrandConfigurator.shared.fonts.settingsScreenOfflineModeSubtitle
         offlineSectionSubtitle.textColor = ClearentUIBrandConfigurator.shared.colorPalette.subtitleLabelColor
     }
     
-    func setupSwitches() {
+    private func setupEnableOfflineModeSwitch() {
         enableOfflineMode.titleText = ClearentConstants.Localized.Settings.settingsOfflineSwitchEnabled
         enableOfflineMode.titleTextColor = ClearentUIBrandConfigurator.shared.colorPalette.titleLabelColor
         enableOfflineMode.descriptionText = nil
@@ -68,7 +71,9 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
                 ClearentWrapper.shared.disableOfflineMode()
             }
         }
-        
+    }
+    
+    private func setupEnablePromptModeSwitch() {
         enablePromptMode.titleText = ClearentConstants.Localized.Settings.settingsOfflineSwitchEnablePrompt
         enablePromptMode.titleTextColor = ClearentUIBrandConfigurator.shared.colorPalette.titleLabelColor
         enablePromptMode.descriptionText = nil
@@ -82,14 +87,14 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         }
     }
     
-    func setupDoneButton() {
+    private func setupDoneButton() {
         doneButton.title = ClearentConstants.Localized.Settings.settingsOfflineButtonDone
         doneButton.action = { [weak self] in
             self?.dismiss()
         }
     }
 
-    func dismiss() {
+    private func dismiss() {
         dismiss(animated: true, completion: nil)
         dismissCompletion?(.success(nil))
     }
