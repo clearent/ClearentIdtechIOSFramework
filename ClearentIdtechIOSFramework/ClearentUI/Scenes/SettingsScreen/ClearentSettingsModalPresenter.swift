@@ -10,6 +10,7 @@ protocol ClearentSettingsPresenterView: AnyObject {
     func removeOfflineStatusView()
     func updateOfflineStatusView(inProgress: Bool)
     func presentReportScreen()
+    func displayNoInternetAlert()
 }
 
 protocol ClearentSettingsPresenterProtocol {
@@ -45,8 +46,8 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
             return
         }
         
-        if offlineManager.containsReport() {
-            if offlineManager.reportContainsErrors() {
+        if offlineManager.containsUploadReport() {
+            if offlineManager.uploadReportContainsErrors() {
                 setupUploadFail()
             } else {
                 setupUploadSuccessfully()
@@ -73,9 +74,13 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
         offlineStatusButtonTitle = "xsdk_offline_mode_btn_process".localized
         offlineStatusDescriptionColor = ClearentUIBrandConfigurator.shared.colorPalette.settingOfflineStatusLabel
         offlineStatusButtonAction = { [weak self] in
-            self?.settingsPresenterView?.updateOfflineStatusView(inProgress: true)
-            ClearentWrapper.shared.processOfflineTransactions() {
-                self?.updateOfflineStatus()
+            if !ClearentWrapper.shared.isInternetOn {
+                self?.settingsPresenterView?.displayNoInternetAlert()
+            } else {
+                self?.settingsPresenterView?.updateOfflineStatusView(inProgress: true)
+                ClearentWrapper.shared.processOfflineTransactions() {
+                    self?.updateOfflineStatus()
+                }
             }
         }
     }

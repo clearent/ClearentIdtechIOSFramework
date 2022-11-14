@@ -180,6 +180,7 @@
 
 "xsdk_internet_error_title" = "Check your connection";
 "xsdk_internet_no_connection" = "NO INTERNET";
+"xsdk_internet_no_connection_btn_ok" = "OK";
 
 // MARK: - Bluetooth
 // Texts that are displayed in case of no bluetooth connection

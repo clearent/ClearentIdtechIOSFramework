@@ -116,11 +116,11 @@ class OfflineModeManager {
         }
     }
     
-    func containsReport() -> Bool {
+    func containsUploadReport() -> Bool {
         retrieveAll().first(where: { $0.errorStatus != nil }) != nil
     }
     
-    func reportContainsErrors() -> Bool {
+    func uploadReportContainsErrors() -> Bool {
         retrieveAll().first(where: { $0.errorStatus != nil && $0.errorStatus?.error.type != ClearentErrorType.none }) != nil
     }
 }

@@ -117,6 +117,7 @@ import UIKit
         enum Internet {
             public static let noConnection = "xsdk_internet_no_connection".localized
             public static let error = "xsdk_internet_error_title".localized
+            public static let noConnectionDoneButton = "xsdk_internet_no_connection_btn_ok".localized
         }
         
         enum Bluetooth {

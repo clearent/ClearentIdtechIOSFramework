@@ -53,14 +53,4 @@ class ClearentLabelWithButton: ClearentMarginableView {
         button.cornerRadius = button.bounds.height/2
         button.action = buttonAction
     }
-    
-    func enableButton() {
-        button.setEnabledButton()
-        button.isEnabled = true
-    }
-    
-    func disableButton() {
-        button.setDisabledButton()
-        button.isEnabled = false
-    }
 }

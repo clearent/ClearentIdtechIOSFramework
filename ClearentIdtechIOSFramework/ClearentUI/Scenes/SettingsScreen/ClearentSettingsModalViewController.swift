@@ -37,11 +37,6 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         presenter?.updateOfflineStatus()
-        if ClearentWrapper.shared.isInternetOn {
-            offlineStatusView.enableButton()
-        } else {
-            offlineStatusView.disableButton()
-        }
     }
     
     func setupTitle() {
@@ -122,5 +117,11 @@ extension ClearentSettingsModalViewController: ClearentSettingsPresenterView {
         let vc = ClearentOfflineModeReportViewController(nibName: String(describing: ClearentOfflineModeReportViewController.self), bundle: ClearentConstants.bundle)
         vc.reportPresenter = ClearentOfflineModeReportPresenter()
         navigationController?.pushViewController(vc, animated: true)
+    }
+    
+    func displayNoInternetAlert() {
+        let alert = UIAlertController(title: ClearentConstants.Localized.Internet.error, message: ClearentConstants.Localized.Internet.noConnection, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: ClearentConstants.Localized.Internet.noConnectionDoneButton, style: .cancel))
+        present(alert, animated: true, completion: nil)
     }
 }
