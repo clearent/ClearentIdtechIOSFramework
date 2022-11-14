@@ -40,18 +40,18 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     }
     
     func setupTitle() {
-        titleLabel.title = "xsdk_settings_title".localized
+        titleLabel.title = ClearentConstants.Localized.Settings.settingsOfflineModeTitle
         titleLabel.font = ClearentUIBrandConfigurator.shared.fonts.settingsScreenTitle
     }
     
     func setupOfflineSectionSubtitle() {
-        offlineSectionSubtitle.text = "xsdk_offline_mode_subtitle".localized
+        offlineSectionSubtitle.text = ClearentConstants.Localized.Settings.settingsOfflineModeSubtitle
         offlineSectionSubtitle.font = ClearentUIBrandConfigurator.shared.fonts.settingsScreenOfflineModeSubtitle
         offlineSectionSubtitle.textColor = ClearentUIBrandConfigurator.shared.colorPalette.subtitleLabelColor
     }
     
     func setupSwitches() {
-        enableOfflineMode.titleText = "xsdk_offline_mode_switch_enabled".localized
+        enableOfflineMode.titleText = ClearentConstants.Localized.Settings.settingsOfflineSwitchEnabled
         enableOfflineMode.titleTextColor = ClearentUIBrandConfigurator.shared.colorPalette.titleLabelColor
         enableOfflineMode.descriptionText = nil
         enableOfflineMode.isOn = ClearentWrapper.configuration.enableOfflineMode
@@ -69,7 +69,7 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
             }
         }
         
-        enablePromptMode.titleText = "xsdk_offline_mode_switch_enable_prompt".localized
+        enablePromptMode.titleText = ClearentConstants.Localized.Settings.settingsOfflineSwitchEnablePrompt
         enablePromptMode.titleTextColor = ClearentUIBrandConfigurator.shared.colorPalette.titleLabelColor
         enablePromptMode.descriptionText = nil
         enablePromptMode.isOn = ClearentUIManager.configuration.offlineModeState == .prompted
@@ -83,7 +83,7 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     }
     
     func setupDoneButton() {
-        doneButton.title = "xsdk_offline_mode_btn_done".localized
+        doneButton.title = ClearentConstants.Localized.Settings.settingsOfflineButtonDone
         doneButton.action = { [weak self] in
             self?.dismiss()
         }

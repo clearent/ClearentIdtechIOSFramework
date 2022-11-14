@@ -67,11 +67,11 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
     
     private func setupPendingTransactions(counter: Int) {
         if counter > 1 {
-            offlineStatusDescription = String(format: "xsdk_offline_mode_transactions".localized, counter)
+            offlineStatusDescription = String(format: ClearentConstants.Localized.Settings.settingsOfflinePendingTransactions, counter)
         } else {
-            offlineStatusDescription = "xsdk_offline_mode_one_transaction".localized
+            offlineStatusDescription = ClearentConstants.Localized.Settings.settingsOfflineOnePendingTransactions
         }
-        offlineStatusButtonTitle = "xsdk_offline_mode_btn_process".localized
+        offlineStatusButtonTitle = ClearentConstants.Localized.Settings.settingsOfflineButtonProcess
         offlineStatusDescriptionColor = ClearentUIBrandConfigurator.shared.colorPalette.settingOfflineStatusLabel
         offlineStatusButtonAction = { [weak self] in
             if !ClearentWrapper.shared.isInternetOn {
@@ -86,8 +86,8 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
     }
     
     private func setupUploadSuccessfully() {
-        offlineStatusDescription = "xsdk_offline_mode_upload_success".localized
-        offlineStatusButtonTitle = "xsdk_offline_mode_btn_report".localized
+        offlineStatusDescription = ClearentConstants.Localized.Settings.settingsOfflineUploadSuccess
+        offlineStatusButtonTitle = ClearentConstants.Localized.Settings.settingsOfflineButtonReport
         offlineStatusDescriptionColor = ClearentUIBrandConfigurator.shared.colorPalette.settingsOfflineStatusLabelSuccess
         offlineStatusButtonAction = { [weak self] in
             self?.settingsPresenterView?.presentReportScreen()
@@ -95,8 +95,8 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
     }
     
     private func setupUploadFail() {
-        offlineStatusDescription = "xsdk_offline_mode_upload_errors".localized
-        offlineStatusButtonTitle = "xsdk_offline_mode_btn_report".localized
+        offlineStatusDescription = ClearentConstants.Localized.Settings.settingsOfflineUploadErrors
+        offlineStatusButtonTitle = ClearentConstants.Localized.Settings.settingsOfflineButtonReport
         offlineStatusDescriptionColor = ClearentUIBrandConfigurator.shared.colorPalette.settingsOfflineStatusLabelFail
         offlineStatusButtonAction = { [weak self] in
             self?.settingsPresenterView?.presentReportScreen()

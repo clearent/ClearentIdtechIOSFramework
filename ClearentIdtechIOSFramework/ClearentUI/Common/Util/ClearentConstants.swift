@@ -286,5 +286,19 @@ import UIKit
             public static let offlineModeWarningMessageConfirm = "xsdk_offline_mode_warning_message_confirmation".localized
             public static let offlineModeEncryptionWarningMessage = "xsdk_offline_mode_encryption_message".localized
         }
+        
+        enum Settings {
+            public static let settingsOfflineModeTitle = "xsdk_settings_title".localized;
+            public static let settingsOfflineModeSubtitle = "xsdk_settings_offline_subtitle".localized;
+            public static let settingsOfflineSwitchEnabled = "xsdk_settings_offline_switch_enabled".localized
+            public static let settingsOfflineSwitchEnablePrompt = "xsdk_settings_offline_switch_enable_prompt".localized
+            public static let settingsOfflinePendingTransactions = "xsdk_settings_offline_pending_transactions".localized
+            public static let settingsOfflineOnePendingTransactions = "xsdk_settings_offline_one_pending_transaction".localized
+            public static let settingsOfflineUploadErrors = "xsdk_settings_offline_mode_upload_errors".localized
+            public static let settingsOfflineUploadSuccess = "xsdk_settings_offline_mode_upload_success".localized
+            public static let settingsOfflineButtonProcess = "xsdk_settings_offline_mode_btn_process".localized
+            public static let settingsOfflineButtonReport = "xsdk_settings_offline_mode_btn_report".localized
+            public static let settingsOfflineButtonDone = "xsdk_settings_offline_mode_btn_done".localized
+        }
     }
 }
