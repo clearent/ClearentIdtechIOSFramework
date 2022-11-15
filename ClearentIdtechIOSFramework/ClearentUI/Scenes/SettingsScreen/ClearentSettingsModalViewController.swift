@@ -58,9 +58,8 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         enableOfflineMode.titleTextColor = ClearentUIBrandConfigurator.shared.colorPalette.titleLabelColor
         enableOfflineMode.descriptionText = nil
         enableOfflineMode.isOn = ClearentWrapper.configuration.enableOfflineMode
-        enableOfflineMode.valueChangedAction = { isOn in
-            self.enablePromptMode.isUserInteractionEnabled = isOn
-            self.enablePromptMode.alpha = isOn ? 1.0 : 0.5
+        enableOfflineMode.valueChangedAction = { [weak self] isOn in
+            self?.updatePromptModeState(isUserInteractionEnabled: isOn)
             if isOn {
                 do {
                     try ClearentWrapper.shared.enableOfflineMode()
@@ -73,11 +72,17 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         }
     }
     
+    private func updatePromptModeState(isUserInteractionEnabled: Bool) {
+        enablePromptMode.isUserInteractionEnabled = isUserInteractionEnabled
+        enablePromptMode.alpha = isUserInteractionEnabled ? 1.0 : 0.5
+    }
+    
     private func setupEnablePromptModeSwitch() {
         enablePromptMode.titleText = ClearentConstants.Localized.Settings.settingsOfflineSwitchEnablePrompt
         enablePromptMode.titleTextColor = ClearentUIBrandConfigurator.shared.colorPalette.titleLabelColor
         enablePromptMode.descriptionText = nil
         enablePromptMode.isOn = ClearentUIManager.configuration.offlineModeState == .prompted
+        updatePromptModeState(isUserInteractionEnabled: enableOfflineMode.isOn)
         enablePromptMode.valueChangedAction = { isOn in
             if isOn {
                 ClearentUIManager.configuration.offlineModeState = .prompted
