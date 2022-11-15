@@ -67,7 +67,7 @@ class ClearentOfflineModeReportViewController: UIViewController {
         clearReportButton.buttonStyle = .filled
         clearReportButton.action = { [weak self] in
             self?.reportPresenter.clearAndProceed()
-            self?.tableView.reloadData()
+            self?.navigationController?.popViewController(animated: true)
         }
     }
     

@@ -32,7 +32,7 @@ class ClearentProcessingModalViewController: ClearentBaseViewController {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
-
+        stackView.showLoadingView()
         positionViewOnTop(flag: showOnTop)
         presenter?.startFlow()
     }

@@ -17,7 +17,9 @@ class ClearentLabelSwitch: ClearentInfoWithIcon {
         [
             RelativeBottomMargin(constant: 8, relatedViewType: ClearentLabelWithIcon.self),
             RelativeBottomMargin(constant: 24, relatedViewType: ClearentInfoWithIcon.self),
-            RelativeBottomMargin(constant: 26, relatedViewType: ClearentLabelSwitch.self)
+            RelativeBottomMargin(constant: 26, relatedViewType: ClearentLabelSwitch.self),
+            RelativeBottomMargin(constant: 14, relatedViewType: ClearentLabelWithButton.self),
+            RelativeBottomMargin(constant: 24, relatedViewType: ClearentPrimaryButton.self)
         ]
     }
 

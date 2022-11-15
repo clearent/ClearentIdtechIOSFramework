@@ -85,5 +85,11 @@ class ClearentColorsDefaultPalette: ClearentUIColors {
     
     var manualPaymentErrorMessageColor: UIColor { UIColor(hexString: "C2210F") }
     
-    var manualPaymentTextFieldPlaceholder: UIColor { UIColor(hexString: "#6A6D7D")}
+    var manualPaymentTextFieldPlaceholder: UIColor { UIColor(hexString: "#6A6D7D") }
+    
+    var settingOfflineStatusLabel: UIColor { UIColor(hexString: "#FA8A07") }
+    
+    var settingsOfflineStatusLabelFail: UIColor { UIColor(hexString: "#C2210F") }
+    
+    var settingsOfflineStatusLabelSuccess: UIColor { UIColor(hexString: "#2FAC10") }
 }

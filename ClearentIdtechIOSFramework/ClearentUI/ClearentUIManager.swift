@@ -60,7 +60,7 @@ public final class ClearentUIManager: NSObject {
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
     @objc public func paymentViewController(amount: Double, completion: ((ClearentError?) -> Void)?) -> UINavigationController {
-        viewController(processType: .payment, amount: amount, dismissCompletion: { [weak self] result in
+        navigationController(processType: .payment, amount: amount, dismissCompletion: { [weak self] result in
             let completionResult = self?.resultFor(completionResult: result)
             completion?(completionResult)
         })
@@ -71,7 +71,7 @@ public final class ClearentUIManager: NSObject {
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
     @objc public func pairingViewController(completion: ((ClearentError?) -> Void)?) -> UINavigationController {
-        viewController(processType: .pairing(), dismissCompletion: { [weak self] result in
+        navigationController(processType: .pairing(), dismissCompletion: { [weak self] result in
             let completionResult = self?.resultFor(completionResult: result)
             completion?(completionResult)
         })
@@ -82,17 +82,25 @@ public final class ClearentUIManager: NSObject {
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
     @objc public func readersViewController(completion: ((ClearentError?) -> Void)?) -> UINavigationController {
-        viewController(processType: .showReaders, dismissCompletion: {[weak self] result in
+        navigationController(processType: .showReaders, dismissCompletion: {[weak self] result in
             let completionResult = self?.resultFor(completionResult: result)
             completion?(completionResult)
         })
     }
     
     /**
-     * Method that returns the number of unproccesed offline transactions
+     * Method returns a UINavigationController that will display a list containing current card reader informations and recently paired readers
+     * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
+    @objc public func settingsViewController(completion: ((ClearentError?) -> Void)?) -> UINavigationController {
+        navigationController(processType: .showSettings, dismissCompletion: { [weak self] result in
+            let completionResult = self?.resultFor(completionResult: result)
+            completion?(completionResult)
+        })
+    }
+    
     @objc public func allUnprocessedOfflineTransactionsCount() -> Int {
-        let offlineManager = clearentWrapper.retriveOfflineManager()
+        let offlineManager = clearentWrapper.retrieveOfflineManager()
         return offlineManager?.unproccesedTransactionsCount() ?? 0
     }
     
@@ -100,23 +108,43 @@ public final class ClearentUIManager: NSObject {
      * Method that returns a bool representing if we should display the offline mode warning
      */
     @objc public func shouldDisplayOfflineModeWarning() -> Bool {
-        return offlineModeWarningDisplayed
+        return ClearentWrapper.configuration.enableOfflineMode && ClearentUIManager.configuration.offlineModeState == .on
     }
 
-    internal func viewController(processType: ProcessType, amount: Double? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UINavigationController {
-        let viewController = ClearentProcessingModalViewController(showOnTop: processType == .showReaders || processType == .renameReader)
-        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, amount: amount, processType: processType)
-        presenter.editableReader = editableReader
-        viewController.presenter = presenter
-        viewController.dismissCompletion = dismissCompletion
+    func navigationController(processType: ProcessType, amount: Double? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UINavigationController {
+        var viewController: UIViewController?
+        if processType == .showSettings {
+            viewController = settingsViewController(dismissCompletion: dismissCompletion)
+        } else {
+            viewController = processingModalViewController(processType: processType, amount: amount, editableReader: editableReader, dismissCompletion: dismissCompletion)
+        }
+        
+        guard let viewController = viewController else {
+            return UINavigationController()
+        }
 
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.isNavigationBarHidden = true
         navigationController.modalPresentationStyle = .overFullScreen
         return navigationController
     }
+
+    private func processingModalViewController(processType: ProcessType, amount: Double? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UIViewController {
+        let viewController = ClearentProcessingModalViewController(showOnTop: processType == .showReaders || processType == .renameReader)
+        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, amount: amount, processType: processType)
+        presenter.editableReader = editableReader
+        viewController.presenter = presenter
+        viewController.dismissCompletion = dismissCompletion
+        return viewController
+    }
     
-    // MARK: - Private
+    private func settingsViewController(dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UIViewController {
+        let viewController = ClearentSettingsModalViewController()
+        let presenter = ClearentSettingsPresenter(settingsPresenterView: viewController)
+        viewController.presenter = presenter
+        viewController.dismissCompletion = dismissCompletion
+        return viewController
+    }
     
     private func resultFor(completionResult: CompletionResult) -> ClearentError? {
         switch completionResult {
