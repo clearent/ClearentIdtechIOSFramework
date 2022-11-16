@@ -394,7 +394,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                              FlowDataItem(type: .title, object: ClearentConstants.Localized.OfflineMode.enableOfflineMode),
                              FlowDataItem(type: .description, object: ClearentConstants.Localized.OfflineMode.offlineModeWarningMessageDescription),
                              FlowDataItem(type: .description, object: ClearentConstants.Localized.OfflineMode.offlineModeWarningConfirmationDescription),
-                             FlowDataItem(type: .userAction, object: FlowButtonType.confirmOfflineMode),
+                             FlowDataItem(type: .userAction, object: FlowButtonType.acceptOfflineMode),
                              FlowDataItem(type: .userAction, object: FlowButtonType.denyOfflineMode)]
                 } else {
                     items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
