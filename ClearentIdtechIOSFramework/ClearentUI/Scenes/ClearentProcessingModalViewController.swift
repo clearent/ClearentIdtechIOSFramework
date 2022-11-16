@@ -133,7 +133,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     
     private func shouldDisplayOfflineModeLabel() -> Bool {
         if ClearentWrapper.configuration.enableOfflineMode {
-            let offlineModeConfirmedDuringPayment = .payment == ClearentWrapper.shared.flowType?.processType && presenter?.isOfflineModeConfirmed == true
+            let offlineModeConfirmedDuringPayment = .payment == ClearentWrapper.shared.flowType?.processType && ClearentUIManager.shared.isOfflineModeConfirmed == true
             let offlineModeAlwaysEnabled = [.pairing(), .showReaders].contains(ClearentWrapper.shared.flowType?.processType) && ClearentWrapper.configuration.enableOfflineMode && ClearentUIManager.configuration.offlineModeState == .on
             
             return offlineModeAlwaysEnabled || offlineModeConfirmedDuringPayment
