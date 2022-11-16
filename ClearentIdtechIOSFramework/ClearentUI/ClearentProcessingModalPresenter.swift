@@ -314,7 +314,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             sdkFeedbackProvider.displayOfflineModeWarningMessage()
         } else {
             if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
-                let saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals)
+                let saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals, serviceFeeAmount: "1.49")
                 startTransaction(saleEntity: saleEntity, isManualTransaction: false)
             }
         }

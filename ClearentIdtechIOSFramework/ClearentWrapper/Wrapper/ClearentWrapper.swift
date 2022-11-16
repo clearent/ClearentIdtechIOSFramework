@@ -89,6 +89,14 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
+    
+    public func amountToAddAsAserviceFee(amount:Double) -> Double {
+       return 888
+    }
+    
+    // how tot do a BIN lookup ?
+    
+
     /**
      * Method that should be called to enable offline mode.
      */
