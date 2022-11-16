@@ -92,4 +92,8 @@ class ClearentColorsDefaultPalette: ClearentUIColors {
     var settingsOfflineStatusLabelFail: UIColor { UIColor(hexString: "#C2210F") }
     
     var settingsOfflineStatusLabelSuccess: UIColor { UIColor(hexString: "#2FAC10") }
+    
+    var settingsReadersPlaceholderColor: UIColor { UIColor(hexString: "#6A6D7D") }
+    
+    var settingsReadersDescriptionColor: UIColor { UIColor(hexString: "#272431") }
 }
