@@ -24,7 +24,7 @@ public final class ClearentUIManager: NSObject {
         }
     }
     
-    var offlineModeWarningDisplayed = false
+    var isOfflineModeConfirmed = false
 
     // MARK: Init
     
