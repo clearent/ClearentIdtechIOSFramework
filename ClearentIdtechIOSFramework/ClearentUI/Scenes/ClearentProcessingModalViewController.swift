@@ -124,7 +124,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         let offlineModeAlert = UIAlertController(title: ClearentConstants.Localized.OfflineMode.offlineModeConfirmationMessage, message: nil, preferredStyle: .alert)
         offlineModeAlert.addAction(UIAlertAction(title: ClearentConstants.Localized.OfflineMode.offlineModeConfirmationMessageCancel, style: .default, handler: { _ in }))
         offlineModeAlert.addAction(UIAlertAction(title: ClearentConstants.Localized.OfflineMode.offlineModeConfirmationMessageConfirm, style: .default, handler: { [weak self] _ in
-            flowType == .confirmOfflineMode ? self?.presenter?.handleOfflineModeConfirmationOption() : self?.presenter?.handleOfflineModeCancelOption()
+            flowType == .acceptOfflineMode ? self?.presenter?.handleOfflineModeConfirmationOption() : self?.presenter?.handleOfflineModeCancelOption()
         }))
         present(offlineModeAlert, animated: true, completion: nil)
     }
