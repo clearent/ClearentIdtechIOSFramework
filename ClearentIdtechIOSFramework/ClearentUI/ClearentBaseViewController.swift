@@ -9,6 +9,8 @@ import UIKit
 
 /// A custom view controller that has a semi-transparent background
 open class ClearentBaseViewController: UIViewController {
+    let backgroundView = UIView()
+    
     override open func viewDidLoad() {
         super.viewDidLoad()
         createSemiTransparentBackground()
@@ -17,7 +19,6 @@ open class ClearentBaseViewController: UIViewController {
     private func createSemiTransparentBackground() {
         view.backgroundColor = .clear
         view.isOpaque = false
-        let backgroundView = UIView()
         backgroundView.backgroundColor = ClearentConstants.Color.backgroundPrimary02
         backgroundView.alpha = 0.8
         view.addSubview(backgroundView)
@@ -29,5 +30,11 @@ open class ClearentBaseViewController: UIViewController {
             backgroundView.topAnchor.constraint(equalTo: view.topAnchor),
             backgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: view.frame.height)
         ])
+    }
+    
+    func removeSemiTransparentBackground() {
+        view.backgroundColor = .white
+        view.isOpaque = true
+        backgroundView.removeFromSuperview()
     }
 }

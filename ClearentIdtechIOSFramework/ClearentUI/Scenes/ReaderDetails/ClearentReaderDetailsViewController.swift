@@ -24,17 +24,15 @@ class ClearentReaderDetailsViewController: UIViewController {
     @IBOutlet var serialNumberView: ClearentInfoWithIcon!
     @IBOutlet var versionNumberView: ClearentInfoWithIcon!
     @IBOutlet var removeReaderButton: ClearentPrimaryButton!
-    @IBOutlet var navigationBar: UINavigationBar!
-    @IBOutlet var customNavigationItem: UINavigationItem!
 
     public override func viewDidLoad() {
         super.viewDidLoad()
-        setupNavigationBar()
         setupSwitches()
         updateReaderInfo()
         setupReaderName()
         setupCustomReaderName()
         setupButton()
+        addNavigationBarWithBackItem(barTitle: ClearentConstants.Localized.ReaderDetails.navigationItem)
     }
 
     override public func viewWillAppear(_ animated: Bool) {
@@ -43,18 +41,6 @@ class ClearentReaderDetailsViewController: UIViewController {
     }
 
     // MARK: - Private
-
-    private func setupNavigationBar() {
-        let image = UIImage(named: ClearentConstants.IconName.navigationArrow, in: ClearentConstants.bundle, compatibleWith: nil)
-        customNavigationItem.leftBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(didPressBackButton))
-        navigationBar.isTranslucent = true
-        navigationBar.barTintColor = view.backgroundColor
-        navigationBar.shadowImage = UIImage()
-        navigationBar.tintColor = ClearentUIBrandConfigurator.shared.colorPalette.navigationBarTintColor
-        navigationBar.titleTextAttributes = [.font: ClearentUIBrandConfigurator.shared.fonts.screenTitleFont,
-                                             .foregroundColor: ClearentUIBrandConfigurator.shared.colorPalette.screenTitleColor]
-        customNavigationItem.title = ClearentConstants.Localized.ReaderDetails.navigationItem
-    }
 
     private func setupSwitches() {
         connectedView.titleText = ClearentConstants.Localized.ReaderDetails.connected
@@ -199,9 +185,5 @@ class ClearentReaderDetailsViewController: UIViewController {
         alert.addAction(UIAlertAction(title: ClearentConstants.Localized.ReaderDetails.cancel, style: .cancel) { _ in })
 
         present(alert, animated: true, completion: nil)
-    }
-
-    @objc func didPressBackButton() {
-        detailsPresenter.handleBackAction()
     }
 }

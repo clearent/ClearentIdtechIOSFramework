@@ -87,6 +87,18 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         }
     }
     
+    func startPairNewReaderFlow() {
+        let viewController = ClearentProcessingModalViewController(showOnTop: false)
+        viewController.dismissCompletion = { [weak self] _ in
+            self?.presenter?.sdkFeedbackProvider.didFindRecentlyUsedReaders(readers: ClearentWrapper.shared.previouslyPairedReaders)
+        }
+        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, amount: nil, processType: .pairing(withReader: nil))
+        viewController.presenter = presenter
+        viewController.modalPresentationStyle = .overFullScreen
+        navigationController?.present(viewController, animated: true)
+        presenter.startPairingFlow()
+    }
+    
     func addLoadingViewToCurrentContent() {
         stackView.insertArrangedSubview(ClearentLoadingView(), at: 1)
     }

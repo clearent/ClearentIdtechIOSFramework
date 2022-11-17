@@ -137,6 +137,7 @@
 		01754CB128F7F90C009B2ED9 /* OfflineModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01754CAE28F7F90C009B2ED9 /* OfflineModeManager.swift */; };
 		01754CB228F7F90C009B2ED9 /* OfflineModeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01754CAF28F7F90C009B2ED9 /* OfflineModeModels.swift */; };
 		01754CB328F7F90C009B2ED9 /* OfflineModeKeychainStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01754CB028F7F90C009B2ED9 /* OfflineModeKeychainStorage.swift */; };
+		01C3E419292664490011676B /* UIViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C3E418292664490011676B /* UIViewControllerExtension.swift */; };
 		01DC91AA28BE129B009FAE64 /* ArrayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DC91A928BE129B009FAE64 /* ArrayExtension.swift */; };
 		01E22E0028B77D9F004C4ADF /* SVGView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E22DFD28B77D9E004C4ADF /* SVGView.swift */; };
 		01E22E0228B77D9F004C4ADF /* SVGLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E22DFF28B77D9F004C4ADF /* SVGLoader.swift */; };
@@ -367,6 +368,7 @@
 		01754CAE28F7F90C009B2ED9 /* OfflineModeManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OfflineModeManager.swift; sourceTree = "<group>"; };
 		01754CAF28F7F90C009B2ED9 /* OfflineModeModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OfflineModeModels.swift; sourceTree = "<group>"; };
 		01754CB028F7F90C009B2ED9 /* OfflineModeKeychainStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OfflineModeKeychainStorage.swift; sourceTree = "<group>"; };
+		01C3E418292664490011676B /* UIViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerExtension.swift; sourceTree = "<group>"; };
 		01DC91A928BE129B009FAE64 /* ArrayExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtension.swift; sourceTree = "<group>"; };
 		01E22DFD28B77D9E004C4ADF /* SVGView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SVGView.swift; sourceTree = "<group>"; };
 		01E22DFF28B77D9F004C4ADF /* SVGLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SVGLoader.swift; sourceTree = "<group>"; };
@@ -631,6 +633,7 @@
 				01442C9C28B3D835006DD15C /* UIFontExtension.swift */,
 				01E22E0728B7BAE3004C4ADF /* UIViewExtension.swift */,
 				01DC91A928BE129B009FAE64 /* ArrayExtension.swift */,
+				01C3E418292664490011676B /* UIViewControllerExtension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1322,6 +1325,7 @@
 				01442D3F28B3D836006DD15C /* ClearentManualPaymentModel.swift in Sources */,
 				01442CFB28B3D836006DD15C /* ClearentColorExtension.swift in Sources */,
 				E78E2E84224E847900943B14 /* ClearentUtils.m in Sources */,
+				01C3E419292664490011676B /* UIViewControllerExtension.swift in Sources */,
 				01442D1828B3D836006DD15C /* ClearentDrawingPanel.swift in Sources */,
 				01442D3128B3D836006DD15C /* ClearentPaymentTextField.swift in Sources */,
 				CCA86E4E28CF5DB300FF83FB /* ClearentWrapperProtocol.swift in Sources */,

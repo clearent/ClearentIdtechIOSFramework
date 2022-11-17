@@ -94,12 +94,7 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
 
     func handleBackAction() {
         ClearentWrapper.shared.flowType?.processType = .showReaders // reset the flow back to readers list
-        if ClearentWrapperDefaults.pairedReaderInfo != nil || !ClearentWrapper.shared.previouslyPairedReaders.isEmpty {
-            flowDataProvider.didFindRecentlyUsedReaders(readers: ClearentWrapper.shared.previouslyPairedReaders)
-            navigationController?.popViewController(animated: true)
-        } else {
-            ClearentWrapper.configuration.readerInfoReceived?(nil)
-            delegate?.shutDown(userAction: .done)
-        }
+        flowDataProvider.didFindRecentlyUsedReaders(readers: ClearentWrapper.shared.previouslyPairedReaders)
+        navigationController?.popViewController(animated: true)
     }
 }

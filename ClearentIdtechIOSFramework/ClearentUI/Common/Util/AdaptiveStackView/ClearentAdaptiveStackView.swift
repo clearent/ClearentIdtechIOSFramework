@@ -21,7 +21,7 @@ public class ClearentAdaptiveStackView: UIStackView {
         removeFromSuperview()
         view.addSubview(self)
         alpha = 0
-        topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: margin).isActive = onTop
+        topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: margin * 2).isActive = onTop
         heightAnchor.constraint(lessThanOrEqualToConstant: view.frame.height / 1.3).isActive = onTop
         
         bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -margin).isActive = !onTop
