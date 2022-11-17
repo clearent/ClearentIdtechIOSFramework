@@ -18,8 +18,26 @@ struct PayloadSettings: Codable {
     }
 }
 
+internal enum ServiceFeeProgrammType: String {
+    case surcharge = "SURCHARGE"
+    case non_cash_adjustments = "NON_CASH_ADJUSTMENT"
+    case empower_lite = "EMPOWER_LITE"
+    case service_fee = "SERVICE_FEE"
+    case convinience_fee = "CONVENIENCE_FEE"
+}
+
+internal enum ServiceFeeType: String {
+    case percentage = "PERCENTAGE"
+    case flatfee = "FLATFEE"
+}
+
+internal enum ServiceFeeState: String {
+    case enabled = "ENABLED"
+    case disabled = "DISABLED"
+}
+
 struct TerminalSettings: Codable {
-    let enableTip: Bool
+    let tipEnabled: Bool
     let serviceFeeState : String?
     let serviceFee : String?
     let serviceFeeType : String?

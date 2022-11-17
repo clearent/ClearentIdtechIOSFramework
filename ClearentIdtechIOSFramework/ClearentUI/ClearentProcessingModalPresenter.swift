@@ -228,6 +228,12 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         
         let shipToZipCode = dataSource.valueForType(.shippingZipCode)?.replacingOccurrences(of: ClearentPaymentItemType.shippingZipCode.separator, with: "")
         let shippingInfo = ClientInformation(zip: shipToZipCode)
+        
+        var calculatedServiceFee : String? = nil
+        if let currentAmount = amountWithoutTip, let currentTip = tip, let serviceFee = ClearentWrapper.shared.serviceFeeAmount(amount: currentAmount + currentTip) {
+            calculatedServiceFee = serviceFee.stringFormattedWithTwoDecimals
+        }
+        
         let saleEntity = SaleEntity(amount: amount,
                                     tipAmount: tip?.stringFormattedWithTwoDecimals,
                                     billing: billingInfo,
@@ -237,7 +243,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                                     customerID: dataSource.valueForType(.customerId),
                                     invoice: dataSource.valueForType(.invoiceNo),
                                     orderID: dataSource.valueForType(.orderNo),
-                                    expirationDateMMYY: date)
+                                    expirationDateMMYY: date,
+                                    serviceFeeAmount: calculatedServiceFee)
 
         startTransaction(saleEntity: saleEntity, isManualTransaction: true)
     }
@@ -314,7 +321,14 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             sdkFeedbackProvider.displayOfflineModeWarningMessage()
         } else {
             if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
-                let saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals, serviceFeeAmount: "1.49")
+                let saleEntity: SaleEntity
+                
+                if let currentAmount = amountWithoutTip, let currentTip = tip, let calculatedServiceFee = ClearentWrapper.shared.serviceFeeAmount(amount: currentAmount + currentTip) {
+                    saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals, serviceFeeAmount: calculatedServiceFee.stringFormattedWithTwoDecimals)
+                } else {
+                    saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals)
+                }
+               
                 startTransaction(saleEntity: saleEntity, isManualTransaction: false)
             }
         }
