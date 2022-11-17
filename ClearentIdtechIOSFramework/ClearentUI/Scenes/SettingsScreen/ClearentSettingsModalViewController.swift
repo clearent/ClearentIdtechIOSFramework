@@ -53,11 +53,11 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     private func setupReaderListSelection() {
         if let readerName = ClearentWrapperDefaults.lastPairedReaderInfo?.customReaderName ?? ClearentWrapperDefaults.lastPairedReaderInfo?.readerName {
             readersListView.descriptionText = readerName
-            readersListView.descriptionFont = ClearentUIBrandConfigurator.shared.fonts.settingsScreenReadersDescriptionLabel
+            readersListView.descriptionFont = ClearentUIBrandConfigurator.shared.fonts.settingsReadersDescriptionLabel
             readersListView.descriptionTextColor = ClearentUIBrandConfigurator.shared.colorPalette.settingsReadersDescriptionColor
         } else {
             readersListView.descriptionText = ClearentConstants.Localized.Settings.settingsReadersPlaceholder
-            readersListView.descriptionFont = ClearentUIBrandConfigurator.shared.fonts.settingsScreenReadersPlaceholderLabel
+            readersListView.descriptionFont = ClearentUIBrandConfigurator.shared.fonts.settingsReadersPlaceholderLabel
             readersListView.descriptionTextColor = ClearentUIBrandConfigurator.shared.colorPalette.settingsReadersPlaceholderColor
         }
     }
@@ -69,7 +69,7 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     
     private func setupOfflineSectionSubtitle() {
         offlineSectionSubtitle.text = ClearentConstants.Localized.Settings.settingsOfflineModeSubtitle
-        offlineSectionSubtitle.font = ClearentUIBrandConfigurator.shared.fonts.settingsScreenOfflineModeSubtitle
+        offlineSectionSubtitle.font = ClearentUIBrandConfigurator.shared.fonts.settingsOfflineModeSubtitle
         offlineSectionSubtitle.textColor = ClearentUIBrandConfigurator.shared.colorPalette.subtitleLabelColor
     }
     

@@ -53,18 +53,6 @@ public final class ClearentUIManager: NSObject {
     
     // MARK: Public
     
-    @objc public func allUnprocessedOfflineTransactionsCount() -> Int {
-        let offlineManager = clearentWrapper.retrieveOfflineManager()
-        return offlineManager?.unproccesedTransactionsCount() ?? 0
-    }
-    
-    /**
-     * Method that returns a bool representing if we should display the offline mode warning
-     */
-    @objc public func shouldDisplayOfflineModeWarning() -> Bool {
-        return ClearentWrapper.configuration.enableOfflineMode && ClearentUIManager.configuration.offlineModeState == .on
-    }
-    
     /**
      * Method that returns a UINavigationController that can handle the entire payment process.
      * @param amount, the amount to be charged in a transaction
@@ -97,6 +85,18 @@ public final class ClearentUIManager: NSObject {
             let completionResult = self?.resultFor(completionResult: result)
             completion?(completionResult)
         })
+    }
+    
+    @objc public func allUnprocessedOfflineTransactionsCount() -> Int {
+        let offlineManager = clearentWrapper.retrieveOfflineManager()
+        return offlineManager?.unproccesedTransactionsCount() ?? 0
+    }
+    
+    /**
+     * Method that returns a bool representing if we should display the offline mode warning
+     */
+    @objc public func shouldDisplayOfflineModeWarning() -> Bool {
+        return ClearentWrapper.configuration.enableOfflineMode && ClearentUIManager.configuration.offlineModeState == .on
     }
 
     func navigationController(processType: ProcessType, amount: Double? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UINavigationController {

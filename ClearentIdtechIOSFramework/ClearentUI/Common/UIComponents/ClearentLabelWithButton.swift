@@ -49,7 +49,7 @@ class ClearentLabelWithButton: ClearentMarginableView {
     }
     
     override func configure() {
-        descriptionFont = ClearentUIBrandConfigurator.shared.fonts.settingsScreenOfflineModeProcessLabel
+        descriptionFont = ClearentUIBrandConfigurator.shared.fonts.settingsOfflineModeProcessLabel
         button.cornerRadius = button.bounds.height/2
         button.action = buttonAction
     }

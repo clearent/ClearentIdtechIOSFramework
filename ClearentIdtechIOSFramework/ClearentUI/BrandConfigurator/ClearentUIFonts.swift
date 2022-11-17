@@ -84,13 +84,13 @@ public protocol ClearentUIFonts {
     
     var settingsScreenTitle: UIFont { get }
     
-    var settingsScreenOfflineModeSubtitle: UIFont { get }
+    var settingsOfflineModeSubtitle: UIFont { get }
     
-    var settingsScreenOfflineModeProcessLabel: UIFont { get }
+    var settingsOfflineModeProcessLabel: UIFont { get }
     
-    var settingsScreenReadersPlaceholderLabel: UIFont { get }
+    var settingsReadersPlaceholderLabel: UIFont { get }
     
-    var settingsScreenReadersDescriptionLabel: UIFont { get }
+    var settingsReadersDescriptionLabel: UIFont { get }
 
     // MARK: - OfflineResultItem
     
