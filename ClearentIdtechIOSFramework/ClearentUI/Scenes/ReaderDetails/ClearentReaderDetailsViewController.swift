@@ -186,4 +186,8 @@ class ClearentReaderDetailsViewController: UIViewController {
 
         present(alert, animated: true, completion: nil)
     }
+    
+    override func didPressBackButton() {
+        detailsPresenter.handleBackAction()
+    }
 }
