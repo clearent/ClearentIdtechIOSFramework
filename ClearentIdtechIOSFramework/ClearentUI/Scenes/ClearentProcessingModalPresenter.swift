@@ -396,6 +396,11 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     private func startTransaction(saleEntity: SaleEntity, isManualTransaction: Bool) {
         modalProcessingView?.showLoadingView()
         
+        if ClearentUIManager.configuration.offlineModeState == .prompted, ClearentWrapper.shared.isInternetOn {
+            ClearentWrapper.shared.processTransactionOnline = true
+        } else {
+            ClearentWrapper.shared.processTransactionOnline = false
+        }
         sdkWrapper.startTransaction(with: saleEntity, isManualTransaction: isManualTransaction) { [weak self] error in
             if let error = error {
                 self?.modalProcessingView?.dismissViewController(result: .failure(error))
