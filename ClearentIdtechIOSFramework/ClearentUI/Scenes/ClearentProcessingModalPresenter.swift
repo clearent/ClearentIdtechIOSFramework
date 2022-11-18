@@ -334,9 +334,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                 }
                 
                 let calculatedServiceFee = ClearentWrapper.shared.serviceFeeAmount(amount: totalAmountWithoutServiceFee)
-                saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals, serviceFeeAmount: calculatedServiceFee!.stringFormattedWithTwoDecimals)
+                saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals, serviceFeeAmount: calculatedServiceFee?.stringFormattedWithTwoDecimals)
  
-               
                 startTransaction(saleEntity: saleEntity, isManualTransaction: false)
             }
         }
