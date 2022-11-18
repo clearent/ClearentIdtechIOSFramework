@@ -15,9 +15,6 @@ import CryptoKit
     
     /// Enables or disables the use of enhanced messages
     var enableEnhancedMessaging: Bool
-    
-    /// Enables or disables the use of the store & forward feature
-    public var enableOfflineMode: Bool = false
 
     /// The key used to encrypt the offline transactions
     var offlineModeEncryptionKey: SymmetricKey?

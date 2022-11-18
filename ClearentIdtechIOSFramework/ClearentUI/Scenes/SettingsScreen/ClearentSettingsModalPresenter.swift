@@ -75,11 +75,7 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
     }
     
     func updatePromptMode(isEnabled: Bool) {
-        if isEnabled {
-            ClearentUIManager.configuration.offlineModeState = .prompted
-        } else {
-            ClearentUIManager.configuration.offlineModeState = .on
-        }
+        ClearentWrapperDefaults.enableOfflinePromptMode = isEnabled
     }
 
     // MARK: - Private

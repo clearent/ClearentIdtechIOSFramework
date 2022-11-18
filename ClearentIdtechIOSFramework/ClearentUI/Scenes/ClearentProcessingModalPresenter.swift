@@ -331,7 +331,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     private func shouldDisplayOfflineModeWarningMessage() -> Bool {
-        if ClearentWrapper.configuration.enableOfflineMode, ClearentUIManager.configuration.offlineModeState == .on, !ClearentUIManager.shared.isOfflineModeConfirmed {
+        if ClearentWrapperDefaults.enableOfflineMode, !ClearentWrapperDefaults.enableOfflinePromptMode, !ClearentUIManager.shared.isOfflineModeConfirmed {
             return true
         }
         return false
