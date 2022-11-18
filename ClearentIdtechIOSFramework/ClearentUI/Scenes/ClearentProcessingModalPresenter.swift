@@ -227,10 +227,14 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         let shipToZipCode = dataSource.valueForType(.shippingZipCode)?.replacingOccurrences(of: ClearentPaymentItemType.shippingZipCode.separator, with: "")
         let shippingInfo = ClientInformation(zip: shipToZipCode)
         
-        var calculatedServiceFee : String? = nil
-        if let currentAmount = amountWithoutTip, let currentTip = tip, let serviceFee = ClearentWrapper.shared.serviceFeeAmount(amount: currentAmount + currentTip) {
-            calculatedServiceFee = serviceFee.stringFormattedWithTwoDecimals
+        
+        var totalAmountWithoutServiceFee = 0.0
+        if let amountWithoutTip = amountWithoutTip {
+            totalAmountWithoutServiceFee = totalAmountWithoutServiceFee + amountWithoutTip
+            if let tip = tip {totalAmountWithoutServiceFee = totalAmountWithoutServiceFee + tip}
         }
+        
+        let calculatedServiceFee = ClearentWrapper.shared.serviceFeeAmount(amount: totalAmountWithoutServiceFee)
         
         let saleEntity = SaleEntity(amount: amount,
                                     tipAmount: tip?.stringFormattedWithTwoDecimals,
@@ -242,7 +246,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                                     invoice: dataSource.valueForType(.invoiceNo),
                                     orderID: dataSource.valueForType(.orderNo),
                                     expirationDateMMYY: date,
-                                    serviceFeeAmount: calculatedServiceFee)
+                                    serviceFeeAmount: calculatedServiceFee?.stringFormattedWithTwoDecimals)
 
         startTransaction(saleEntity: saleEntity, isManualTransaction: true)
     }
@@ -322,12 +326,16 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         } else {
             if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
                 let saleEntity: SaleEntity
-                
-                if let currentAmount = amountWithoutTip, let currentTip = tip, let calculatedServiceFee = ClearentWrapper.shared.serviceFeeAmount(amount: currentAmount + currentTip) {
-                    saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals, serviceFeeAmount: calculatedServiceFee.stringFormattedWithTwoDecimals)
-                } else {
-                    saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals)
+
+                var totalAmountWithoutServiceFee = 0.0
+                if let amountWithoutTip = amountWithoutTip {
+                    totalAmountWithoutServiceFee = totalAmountWithoutServiceFee + amountWithoutTip
+                    if let tip = tip {totalAmountWithoutServiceFee = totalAmountWithoutServiceFee + tip}
                 }
+                
+                let calculatedServiceFee = ClearentWrapper.shared.serviceFeeAmount(amount: totalAmountWithoutServiceFee)
+                saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals, serviceFeeAmount: calculatedServiceFee!.stringFormattedWithTwoDecimals)
+ 
                
                 startTransaction(saleEntity: saleEntity, isManualTransaction: false)
             }

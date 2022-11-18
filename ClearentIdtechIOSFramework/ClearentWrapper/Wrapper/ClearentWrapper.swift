@@ -323,7 +323,8 @@ public final class ClearentWrapper : NSObject {
     }
     
     /**
-     * Method that returns the value of the service  fee calculated based on the current terminal settings
+     * Method that returns the vamount of service fee calculated based on the current terminal settings
+     * @param amount, the amount that service  will be applied to
      * If there are no terminal settings fetched or the service fee is disabled it will return nil
      */
     func serviceFeeAmount(amount: Double) -> Double? {
