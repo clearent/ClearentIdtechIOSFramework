@@ -13,7 +13,11 @@ import CryptoKit
     public var signatureEnabled: Bool = true
     
     /// The state of the offline mode feature
-    public var offlineModeState: OfflineModeState = .prompted
+    public var offlineModeState: OfflineModeState = .prompted {
+        didSet {
+            ClearentWrapperDefaults.enableOfflinePromptMode = offlineModeState == .prompted
+        }
+    }
     
     // MARK: - Init
     

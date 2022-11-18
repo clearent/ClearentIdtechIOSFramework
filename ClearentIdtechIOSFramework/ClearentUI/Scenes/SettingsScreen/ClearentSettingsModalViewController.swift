@@ -77,18 +77,10 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         enableOfflineMode.titleText = ClearentConstants.Localized.Settings.settingsOfflineSwitchEnabled
         enableOfflineMode.titleTextColor = ClearentUIBrandConfigurator.shared.colorPalette.titleLabelColor
         enableOfflineMode.descriptionText = nil
-        enableOfflineMode.isOn = ClearentWrapper.configuration.enableOfflineMode
+        enableOfflineMode.isOn = ClearentWrapperDefaults.enableOfflineMode
         enableOfflineMode.valueChangedAction = { [weak self] isOn in
             self?.updatePromptModeState(isUserInteractionEnabled: isOn)
-            if isOn {
-                do {
-                    try ClearentWrapper.shared.enableOfflineMode()
-                } catch {
-                    print("Error: \(error)")
-                }
-            } else {
-                ClearentWrapper.shared.disableOfflineMode()
-            }
+            self?.presenter?.updateOfflineMode(isEnabled: isOn)
         }
     }
     
@@ -101,14 +93,10 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         enablePromptMode.titleText = ClearentConstants.Localized.Settings.settingsOfflineSwitchEnablePrompt
         enablePromptMode.titleTextColor = ClearentUIBrandConfigurator.shared.colorPalette.titleLabelColor
         enablePromptMode.descriptionText = nil
-        enablePromptMode.isOn = ClearentUIManager.configuration.offlineModeState == .prompted
+        enablePromptMode.isOn = ClearentWrapperDefaults.enableOfflinePromptMode
         updatePromptModeState(isUserInteractionEnabled: enableOfflineMode.isOn)
-        enablePromptMode.valueChangedAction = { isOn in
-            if isOn {
-                ClearentUIManager.configuration.offlineModeState = .prompted
-            } else {
-                ClearentUIManager.configuration.offlineModeState = .on
-            }
+        enablePromptMode.valueChangedAction = { [weak self] isOn in
+            self?.presenter?.updatePromptMode(isEnabled: isOn)
         }
     }
     

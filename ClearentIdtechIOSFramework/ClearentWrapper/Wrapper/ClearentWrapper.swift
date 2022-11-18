@@ -66,7 +66,6 @@ public final class ClearentWrapper : NSObject {
         super.init()
         
         createLogFile()
-        startConnectionListener()
     }
     
     // MARK: - Public
@@ -91,6 +90,7 @@ public final class ClearentWrapper : NSObject {
         if let offlineModeEncryptionKey = ClearentWrapper.configuration.offlineModeEncryptionKey {
             transactionRepository?.offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: ClearentConstants.KeychainService.serviceName, account: ClearentConstants.KeychainService.account, encryptionKey: offlineModeEncryptionKey))
         }
+        startConnectionListener()
     }
     
     /**
@@ -100,6 +100,7 @@ public final class ClearentWrapper : NSObject {
         guard transactionRepository?.offlineManager != nil else { throw ClearentErrorType.offlineModeEncryptionKeyNotProvided }
         clearentVP3300.setOfflineMode(true)
         ClearentWrapper.configuration.enableOfflineMode = true
+        ClearentWrapperDefaults.enableOfflineMode = true
     }
     
     /**
@@ -108,8 +109,8 @@ public final class ClearentWrapper : NSObject {
     public func disableOfflineMode() {
         clearentVP3300.setOfflineMode(false)
         ClearentWrapper.configuration.enableOfflineMode = false
+        ClearentWrapperDefaults.enableOfflineMode = false
     }
-    
     
     /**
      * Method retrieves all saved offline transactions if the encryption key provided is valid and can decrypt them.

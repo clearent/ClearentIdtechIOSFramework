@@ -70,7 +70,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
      */
     func updateContent(with feedback: FlowFeedback) {
         stackView.removeAllArrangedSubviews()
-        stackView.isUserInteractionEnabled = true
+        view.isUserInteractionEnabled = true
         ClearentWrapper.shared.flowType = (feedback.flow, feedback.type)
         
         feedback.items.forEach {
@@ -251,11 +251,6 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         
         let statusHeaderView = ClearentReaderStatusHeaderView()
         statusHeaderView.setup(readerName: name, dropDownIconName: iconName, description: description, signalStatus: signalStatus, batteryStatus: batteryStatus)
-        statusHeaderView.action = { [weak self] in
-            if self?.showOnTop == true {
-                self?.presenter?.handleUserAction(userAction: .cancel)
-            }
-        }
         return statusHeaderView
     }
 
@@ -327,7 +322,7 @@ extension ClearentProcessingModalViewController: ClearentReadersTableViewDelegat
 
     func didSelectReader(_ reader: ReaderInfo) {
         presenter?.connectTo(reader: reader)
-        stackView.isUserInteractionEnabled = false
+        view.isUserInteractionEnabled = false
     }
 }
 

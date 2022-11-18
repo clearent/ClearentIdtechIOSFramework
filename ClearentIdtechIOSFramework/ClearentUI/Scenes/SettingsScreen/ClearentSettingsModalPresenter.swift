@@ -19,6 +19,8 @@ protocol ClearentSettingsPresenterProtocol {
     var offlineStatusButtonTitle: String? { get set }
     var offlineStatusButtonAction: (() -> Void)? { get set }
     func updateOfflineStatus()
+    func updateOfflineMode(isEnabled: Bool)
+    func updatePromptMode(isEnabled: Bool)
 }
 
 class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
@@ -58,6 +60,26 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
             }
         }
         settingsPresenterView?.updateOfflineStatusView(inProgress: false)
+    }
+    
+    func updateOfflineMode(isEnabled: Bool) {
+        if isEnabled {
+            do {
+                try ClearentWrapper.shared.enableOfflineMode()
+            } catch {
+                print("Error: \(error)")
+            }
+        } else {
+            ClearentWrapper.shared.disableOfflineMode()
+        }
+    }
+    
+    func updatePromptMode(isEnabled: Bool) {
+        if isEnabled {
+            ClearentUIManager.configuration.offlineModeState = .prompted
+        } else {
+            ClearentUIManager.configuration.offlineModeState = .on
+        }
     }
 
     // MARK: - Private
