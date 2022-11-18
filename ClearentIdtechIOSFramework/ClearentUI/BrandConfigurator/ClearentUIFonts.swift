@@ -80,13 +80,17 @@ public protocol ClearentUIFonts {
     
     var textfieldPlaceholder: UIFont { get }
     
-    // MARK: - ClearentSettingsModalViewController Screen
+    // MARK: - ClearentSettingsModalViewController
     
     var settingsScreenTitle: UIFont { get }
     
-    var settingsScreenOfflineModeSubtitle: UIFont { get }
+    var settingsOfflineModeSubtitle: UIFont { get }
     
-    var settingsScreenOfflineModeProcessLabel: UIFont { get }
+    var settingsOfflineModeProcessLabel: UIFont { get }
+    
+    var settingsReadersPlaceholderLabel: UIFont { get }
+    
+    var settingsReadersDescriptionLabel: UIFont { get }
 
     // MARK: - OfflineResultItem
     

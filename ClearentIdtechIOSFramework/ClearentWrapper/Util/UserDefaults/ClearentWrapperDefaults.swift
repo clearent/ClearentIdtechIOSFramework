@@ -11,6 +11,8 @@ import Foundation
 private struct DefaultKeys {
     static let recentlyPairedReadersKey = "\(UserDefaultsPersistence.clearentSdkPrefix)_recently+paired_readers_key"
     static let skipOnboarding = "\(UserDefaultsPersistence.clearentSdkPrefix)_skip_onboarding_key"
+    static let enableOfflineMode = "\(UserDefaultsPersistence.clearentSdkPrefix)_enable_offline_mode"
+    static let enableOfflinePromptMode = "\(UserDefaultsPersistence.clearentSdkPrefix)_enable_offline_prompt_mode"
 }
 
 public class ClearentWrapperDefaults: UserDefaultsPersistence {
@@ -45,6 +47,23 @@ public class ClearentWrapperDefaults: UserDefaultsPersistence {
         }
     }
     
+    static var enableOfflineMode: Bool {
+        get {
+            return UserDefaults.standard.bool(forKey: DefaultKeys.enableOfflineMode)
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: DefaultKeys.enableOfflineMode)
+        }
+    }
+    
+    static var enableOfflinePromptMode: Bool {
+        get {
+            return UserDefaults.standard.bool(forKey: DefaultKeys.enableOfflinePromptMode)
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: DefaultKeys.enableOfflinePromptMode)
+        }
+    }
 }
 
 extension ClearentWrapperDefaults {

@@ -16,6 +16,7 @@ protocol ClearentProcessingModalView: AnyObject {
     func positionViewOnTop(flag: Bool)
     func updateUserActionButtonState(enabled: Bool)
     func displayOfflineModeConfirmationMessage(for flowType: FlowButtonType)
+    func startPairNewReaderFlow()
 }
 
 protocol ProcessingModalProtocol {
@@ -174,8 +175,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         case .pairInFlow:
             restartProcess(newPair: true)
         case .pairNewReader:
-            modalProcessingView?.positionViewOnTop(flag: false)
-            startPairingFlow()
+            modalProcessingView?.startPairNewReaderFlow()
         case .settings:
             let url = URL(string: UIApplication.openSettingsURLString + Bundle.main.bundleIdentifier!)!
             UIApplication.shared.open(url)
@@ -331,7 +331,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     private func shouldDisplayOfflineModeWarningMessage() -> Bool {
-        if ClearentWrapper.configuration.enableOfflineMode, ClearentUIManager.configuration.offlineModeState == .on, !ClearentUIManager.shared.isOfflineModeConfirmed {
+        if ClearentWrapperDefaults.enableOfflineMode, !ClearentWrapperDefaults.enableOfflinePromptMode, !ClearentUIManager.shared.isOfflineModeConfirmed {
             return true
         }
         return false

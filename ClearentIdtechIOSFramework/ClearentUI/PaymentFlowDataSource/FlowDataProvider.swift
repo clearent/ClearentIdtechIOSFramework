@@ -63,12 +63,10 @@ class FlowDataProvider : NSObject {
     var connectionErrorDisplayed = false
     
     private var shouldAskForOfflineModePermission: Bool {
-        switch ClearentUIManager.configuration.offlineModeState {
-        case .on:
-            return false
-        case .prompted:
+        if ClearentWrapperDefaults.enableOfflinePromptMode {
             return sdkWrapper.isNewPaymentProcess ? true : false
         }
+        return false
     }
     
     static var useCardReaderPaymentMethod: Bool {
@@ -379,14 +377,14 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         case .noInternet:
             type = .warning
             
-            if !ClearentWrapper.configuration.enableOfflineMode {
+            if !ClearentWrapperDefaults.enableOfflineMode {
                 items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
                          FlowDataItem(type: .title, object: ClearentConstants.Localized.Internet.error),
                          FlowDataItem(type: .description, object: action.description),
                          FlowDataItem(type: .userAction, object: FlowButtonType.retry),
                          FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
             } else {
-                if ClearentUIManager.configuration.offlineModeState == .on && !ClearentUIManager.shared.isOfflineModeConfirmed {
+                if !ClearentWrapperDefaults.enableOfflinePromptMode && !ClearentUIManager.shared.isOfflineModeConfirmed {
                     displayOfflineModeWarningMessage()
                     return
                 } else if sdkWrapper.isNewPaymentProcess {

@@ -9,6 +9,7 @@
 public class ClearentSettingsModalViewController: ClearentBaseViewController {
     
     @IBOutlet var titleLabel: ClearentTitleLabel!
+    @IBOutlet var readersListView: ClearentInfoWithIcon!
     @IBOutlet var offlineSectionSubtitle: UILabel!
     @IBOutlet var enableOfflineMode: ClearentLabelSwitch!
     @IBOutlet var enablePromptMode: ClearentLabelSwitch!
@@ -29,6 +30,12 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         setupTitle()
+        
+        // Readers section
+        readersListView.iconName = ClearentConstants.IconName.rightArrow
+        readersListView.titleText = ""
+        
+        // Offline section
         setupOfflineSectionSubtitle()
         setupEnableOfflineModeSwitch()
         setupEnablePromptModeSwitch()
@@ -38,9 +45,22 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         presenter?.updateOfflineStatus()
+        setupReaderListSelection()
     }
     
     // MARK: - Private
+    
+    private func setupReaderListSelection() {
+        if let readerName = ClearentWrapperDefaults.lastPairedReaderInfo?.customReaderName ?? ClearentWrapperDefaults.lastPairedReaderInfo?.readerName {
+            readersListView.descriptionText = readerName
+            readersListView.descriptionFont = ClearentUIBrandConfigurator.shared.fonts.settingsReadersDescriptionLabel
+            readersListView.descriptionTextColor = ClearentUIBrandConfigurator.shared.colorPalette.settingsReadersDescriptionColor
+        } else {
+            readersListView.descriptionText = ClearentConstants.Localized.Settings.settingsReadersPlaceholder
+            readersListView.descriptionFont = ClearentUIBrandConfigurator.shared.fonts.settingsReadersPlaceholderLabel
+            readersListView.descriptionTextColor = ClearentUIBrandConfigurator.shared.colorPalette.settingsReadersPlaceholderColor
+        }
+    }
     
     private func setupTitle() {
         titleLabel.title = ClearentConstants.Localized.Settings.settingsOfflineModeTitle
@@ -49,7 +69,7 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     
     private func setupOfflineSectionSubtitle() {
         offlineSectionSubtitle.text = ClearentConstants.Localized.Settings.settingsOfflineModeSubtitle
-        offlineSectionSubtitle.font = ClearentUIBrandConfigurator.shared.fonts.settingsScreenOfflineModeSubtitle
+        offlineSectionSubtitle.font = ClearentUIBrandConfigurator.shared.fonts.settingsOfflineModeSubtitle
         offlineSectionSubtitle.textColor = ClearentUIBrandConfigurator.shared.colorPalette.subtitleLabelColor
     }
     
@@ -57,18 +77,10 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         enableOfflineMode.titleText = ClearentConstants.Localized.Settings.settingsOfflineSwitchEnabled
         enableOfflineMode.titleTextColor = ClearentUIBrandConfigurator.shared.colorPalette.titleLabelColor
         enableOfflineMode.descriptionText = nil
-        enableOfflineMode.isOn = ClearentWrapper.configuration.enableOfflineMode
+        enableOfflineMode.isOn = ClearentWrapperDefaults.enableOfflineMode
         enableOfflineMode.valueChangedAction = { [weak self] isOn in
             self?.updatePromptModeState(isUserInteractionEnabled: isOn)
-            if isOn {
-                do {
-                    try ClearentWrapper.shared.enableOfflineMode()
-                } catch {
-                    print("Error: \(error)")
-                }
-            } else {
-                ClearentWrapper.shared.disableOfflineMode()
-            }
+            self?.presenter?.updateOfflineMode(isEnabled: isOn)
         }
     }
     
@@ -81,14 +93,10 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         enablePromptMode.titleText = ClearentConstants.Localized.Settings.settingsOfflineSwitchEnablePrompt
         enablePromptMode.titleTextColor = ClearentUIBrandConfigurator.shared.colorPalette.titleLabelColor
         enablePromptMode.descriptionText = nil
-        enablePromptMode.isOn = ClearentUIManager.configuration.offlineModeState == .prompted
+        enablePromptMode.isOn = ClearentWrapperDefaults.enableOfflinePromptMode
         updatePromptModeState(isUserInteractionEnabled: enableOfflineMode.isOn)
-        enablePromptMode.valueChangedAction = { isOn in
-            if isOn {
-                ClearentUIManager.configuration.offlineModeState = .prompted
-            } else {
-                ClearentUIManager.configuration.offlineModeState = .on
-            }
+        enablePromptMode.valueChangedAction = { [weak self] isOn in
+            self?.presenter?.updatePromptMode(isEnabled: isOn)
         }
     }
     
@@ -102,6 +110,17 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     private func dismiss() {
         dismiss(animated: true, completion: nil)
         dismissCompletion?(.success(nil))
+    }
+
+    @IBAction func readersSectionWasPressed(_: Any) {
+        let viewController = ClearentProcessingModalViewController(showOnTop: true)
+        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, amount: nil, processType: .showReaders)
+        viewController.presenter = presenter
+        viewController.removeSemiTransparentBackground()
+
+        navigationController?.pushViewController(viewController, animated: true)
+        viewController.addNavigationBarWithBackItem(barTitle: ClearentConstants.Localized.Settings.settingsReadersPlaceholder)
+        viewController.navigationItem.title = ClearentConstants.Localized.Settings.settingsReadersPlaceholder
     }
 }
 
