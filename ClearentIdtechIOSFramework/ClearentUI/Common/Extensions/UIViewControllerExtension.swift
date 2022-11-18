@@ -21,7 +21,8 @@ extension UIViewController {
     private func createNavigationBar() -> UINavigationBar {
         let window = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }.flatMap { $0.windows }.first { $0.isKeyWindow }
         let topPadding = window?.safeAreaInsets.top ?? 0
-        let navigationBar = UINavigationBar(frame: CGRect(x: 0, y: topPadding, width: view.frame.size.width, height: 44))
+        let barWidth = window?.frame.size.width ?? view.frame.size.width
+        let navigationBar = UINavigationBar(frame: CGRect(x: 0, y: topPadding, width: barWidth, height: 44))
         navigationBar.barTintColor = view.backgroundColor
         navigationBar.shadowImage = UIImage()
         navigationBar.isTranslucent = true
