@@ -36,7 +36,7 @@ internal enum ServiceFeeState: String {
     case disabled = "DISABLED"
 }
 
-struct TerminalSettings: Codable {
+struct TerminalSettings: CodableProtocol {
     let tipEnabled: Bool
     let serviceFeeState : String?
     let serviceFee : String?
@@ -44,7 +44,7 @@ struct TerminalSettings: Codable {
     let serviceFeeProgram : String?
     
     enum CodingKeys: String, CodingKey {
-        case enableTip = "enable-tip"
+        case tipEnabled = "enable-tip"
         case serviceFeeState = "service-fee-state"
         case serviceFee = "service-fee"
         case serviceFeeType = "service-fee-type"
