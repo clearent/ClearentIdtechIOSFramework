@@ -16,8 +16,7 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
     @IBOutlet weak var readerBatteryStatusView: ClearentReaderConnectivityStatusView!
     @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var verticalSeparator: UIView!
-    
-    public var state: ReaderStatusHeaderViewState = .collapsed
+
     public var action: (() -> Void)?
     
     public override var margins: [BottomMargin] {
@@ -78,8 +77,6 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
     }
     
     @IBAction func didTapOnReaderStatusHeaderView(_ sender: Any) {
-        state = state == .collapsed ? .expanded : .collapsed
-        
         action?()
     }
 }

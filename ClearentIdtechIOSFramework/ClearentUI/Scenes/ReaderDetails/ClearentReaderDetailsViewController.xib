@@ -14,9 +14,7 @@
                 <outlet property="autojoinView" destination="Xrv-n7-BFt" id="Hzv-Ff-37e"/>
                 <outlet property="batteryStatusView" destination="hii-ez-GMs" id="Hyf-wB-4NI"/>
                 <outlet property="connectedView" destination="mMf-Rb-yxr" id="o91-XM-9bA"/>
-                <outlet property="customNavigationItem" destination="B8m-5H-x4X" id="w5J-nt-NOs"/>
                 <outlet property="customReaderName" destination="dwA-ol-9Ru" id="sM0-nn-vUr"/>
-                <outlet property="navigationBar" destination="xbO-d2-hVQ" id="AAc-b9-hfE"/>
                 <outlet property="readerName" destination="o6o-lI-X3o" id="Zw8-EU-AUv"/>
                 <outlet property="removeReaderButton" destination="RMX-cF-dCe" id="aJ4-BJ-dP1"/>
                 <outlet property="serialNumberView" destination="gEZ-PY-iki" id="80s-ji-mZE"/>
@@ -31,13 +29,6 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <navigationBar contentMode="scaleToFill" translucent="NO" backIndicatorImage="left-arrow" translatesAutoresizingMaskIntoConstraints="NO" id="xbO-d2-hVQ">
-                    <rect key="frame" x="8" y="68" width="398" height="44"/>
-                    <color key="barTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    <items>
-                        <navigationItem title="Details" id="B8m-5H-x4X"/>
-                    </items>
-                </navigationBar>
                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="irp-yA-dbn">
                     <rect key="frame" x="16" y="146" width="382" height="646"/>
                     <subviews>
@@ -98,12 +89,9 @@
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="xbO-d2-hVQ" secondAttribute="trailing" constant="8" id="EPj-JY-HrU"/>
-                <constraint firstItem="xbO-d2-hVQ" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="24" id="aku-r0-vev"/>
+                <constraint firstItem="irp-yA-dbn" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="78" id="aIc-zC-Ltd"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="irp-yA-dbn" secondAttribute="trailing" constant="16" id="dGS-Jb-b9j"/>
-                <constraint firstItem="xbO-d2-hVQ" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="8" id="e1M-d3-8Xn"/>
                 <constraint firstItem="RMX-cF-dCe" firstAttribute="centerX" secondItem="vUN-kp-3ea" secondAttribute="centerX" id="npI-X5-W3q"/>
-                <constraint firstItem="irp-yA-dbn" firstAttribute="top" secondItem="xbO-d2-hVQ" secondAttribute="bottom" constant="34" id="q6P-k0-TzR"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="RMX-cF-dCe" secondAttribute="bottom" constant="16" id="rJJ-Ly-8hC"/>
                 <constraint firstItem="irp-yA-dbn" firstAttribute="bottom" secondItem="RMX-cF-dCe" secondAttribute="top" constant="-14" id="vzn-qb-4St"/>
                 <constraint firstItem="irp-yA-dbn" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="xzM-Sg-RlQ"/>
@@ -120,7 +108,6 @@
         </designable>
     </designables>
     <resources>
-        <image name="left-arrow" width="8" height="12"/>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

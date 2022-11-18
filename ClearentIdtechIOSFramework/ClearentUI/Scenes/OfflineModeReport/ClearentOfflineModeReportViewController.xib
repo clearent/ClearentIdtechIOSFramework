@@ -12,9 +12,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ClearentOfflineModeReportViewController" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
             <connections>
                 <outlet property="clearReportButton" destination="YlX-bl-Bx8" id="mTS-9G-7mR"/>
-                <outlet property="customNavigationItem" destination="qPm-tv-lJg" id="4kB-Fy-cEE"/>
                 <outlet property="infoLabel" destination="9y7-1M-MZ5" id="aCf-9H-Lj6"/>
-                <outlet property="navigationBar" destination="3EL-KL-5WB" id="NOQ-TM-S3o"/>
                 <outlet property="saveErrorLogButton" destination="AKJ-4y-hfw" id="S61-8E-3HP"/>
                 <outlet property="tableView" destination="fjx-5y-SnE" id="VcT-jb-KpK"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
@@ -25,13 +23,12 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <navigationBar contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3EL-KL-5WB">
-                    <rect key="frame" x="0.0" y="44" width="414" height="44"/>
-                    <color key="barTintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                    <items>
-                        <navigationItem title="Offline results" id="qPm-tv-lJg"/>
-                    </items>
-                </navigationBar>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Upload complete. Please review offline results before proceeding." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9y7-1M-MZ5">
+                    <rect key="frame" x="20" y="118" width="374" height="41"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <nil key="textColor"/>
+                    <nil key="highlightedColor"/>
+                </label>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YlX-bl-Bx8" customClass="ClearentPrimaryButton" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
                     <rect key="frame" x="79" y="797" width="256" height="40"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -40,12 +37,6 @@
                         <constraint firstAttribute="height" constant="40" id="m6m-j8-Er0"/>
                     </constraints>
                 </view>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Upload complete. Please review offline results before proceeding." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9y7-1M-MZ5">
-                    <rect key="frame" x="20" y="118" width="374" height="41"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                    <nil key="textColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AKJ-4y-hfw" customClass="ClearentPrimaryButton" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
                     <rect key="frame" x="79" y="747" width="256" height="40"/>
                     <color key="backgroundColor" systemColor="systemBackgroundColor"/>
@@ -71,14 +62,11 @@
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="fjx-5y-SnE" secondAttribute="trailing" constant="20" id="HEO-pA-y8z"/>
                 <constraint firstItem="YlX-bl-Bx8" firstAttribute="top" secondItem="AKJ-4y-hfw" secondAttribute="bottom" constant="10" id="HMg-br-ETT"/>
                 <constraint firstItem="fjx-5y-SnE" firstAttribute="top" secondItem="9y7-1M-MZ5" secondAttribute="bottom" constant="20" id="Isy-DF-uie"/>
-                <constraint firstItem="9y7-1M-MZ5" firstAttribute="top" secondItem="3EL-KL-5WB" secondAttribute="bottom" constant="30" id="KLz-dY-hQy"/>
                 <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="9y7-1M-MZ5" secondAttribute="trailing" constant="20" id="P5x-dV-L1u"/>
-                <constraint firstItem="3EL-KL-5WB" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="VKB-qT-hS2"/>
-                <constraint firstItem="3EL-KL-5WB" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="VTM-MC-Mud"/>
+                <constraint firstItem="9y7-1M-MZ5" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" constant="74" id="VKg-r0-Gn2"/>
                 <constraint firstItem="YlX-bl-Bx8" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="YhD-CV-wsn"/>
                 <constraint firstItem="fjx-5y-SnE" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="20" id="dTN-vB-HgP"/>
                 <constraint firstItem="9y7-1M-MZ5" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="20" id="ouq-B6-gKS"/>
-                <constraint firstItem="YlX-bl-Bx8" firstAttribute="centerX" secondItem="3EL-KL-5WB" secondAttribute="centerX" id="tAW-FB-yfp"/>
             </constraints>
             <point key="canvasLocation" x="131.8840579710145" y="131.91964285714286"/>
         </view>

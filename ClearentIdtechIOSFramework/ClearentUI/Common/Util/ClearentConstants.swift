@@ -289,6 +289,7 @@ import UIKit
         
         enum Settings {
             public static let settingsOfflineModeTitle = "xsdk_settings_title".localized;
+            public static let settingsReadersPlaceholder = "xsdk_settings_readers_placeholder".localized
             public static let settingsOfflineModeSubtitle = "xsdk_settings_offline_subtitle".localized;
             public static let settingsOfflineSwitchEnabled = "xsdk_settings_offline_switch_enabled".localized
             public static let settingsOfflineSwitchEnablePrompt = "xsdk_settings_offline_switch_enable_prompt".localized

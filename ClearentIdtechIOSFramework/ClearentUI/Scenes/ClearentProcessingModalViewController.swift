@@ -70,7 +70,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
      */
     func updateContent(with feedback: FlowFeedback) {
         stackView.removeAllArrangedSubviews()
-        stackView.isUserInteractionEnabled = true
+        view.isUserInteractionEnabled = true
         ClearentWrapper.shared.flowType = (feedback.flow, feedback.type)
         
         feedback.items.forEach {
@@ -85,6 +85,18 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             stackView.insertArrangedSubview(iconAndLabel, at: 1)
             stackView.layoutSubviews()
         }
+    }
+    
+    func startPairNewReaderFlow() {
+        let viewController = ClearentProcessingModalViewController(showOnTop: false)
+        viewController.dismissCompletion = { [weak self] _ in
+            self?.presenter?.sdkFeedbackProvider.didFindRecentlyUsedReaders(readers: ClearentWrapper.shared.previouslyPairedReaders)
+        }
+        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, amount: nil, processType: .pairing(withReader: nil))
+        viewController.presenter = presenter
+        viewController.modalPresentationStyle = .overFullScreen
+        navigationController?.present(viewController, animated: true)
+        presenter.startPairingFlow()
     }
     
     func addLoadingViewToCurrentContent() {
@@ -124,7 +136,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         let offlineModeAlert = UIAlertController(title: ClearentConstants.Localized.OfflineMode.offlineModeConfirmationMessage, message: nil, preferredStyle: .alert)
         offlineModeAlert.addAction(UIAlertAction(title: ClearentConstants.Localized.OfflineMode.offlineModeConfirmationMessageCancel, style: .default, handler: { _ in }))
         offlineModeAlert.addAction(UIAlertAction(title: ClearentConstants.Localized.OfflineMode.offlineModeConfirmationMessageConfirm, style: .default, handler: { [weak self] _ in
-            flowType == .confirmOfflineMode ? self?.presenter?.handleOfflineModeConfirmationOption() : self?.presenter?.handleOfflineModeCancelOption()
+            flowType == .acceptOfflineMode ? self?.presenter?.handleOfflineModeConfirmationOption() : self?.presenter?.handleOfflineModeCancelOption()
         }))
         present(offlineModeAlert, animated: true, completion: nil)
     }
@@ -132,9 +144,9 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     // MARK: - Private
     
     private func shouldDisplayOfflineModeLabel() -> Bool {
-        if ClearentWrapper.configuration.enableOfflineMode {
-            let offlineModeConfirmedDuringPayment = .payment == ClearentWrapper.shared.flowType?.processType && presenter?.isOfflineModeConfirmed == true
-            let offlineModeAlwaysEnabled = [.pairing(), .showReaders].contains(ClearentWrapper.shared.flowType?.processType) && ClearentWrapper.configuration.enableOfflineMode && ClearentUIManager.configuration.offlineModeState == .on
+        if ClearentWrapperDefaults.enableOfflineMode {
+            let offlineModeConfirmedDuringPayment = .payment == ClearentWrapper.shared.flowType?.processType && ClearentUIManager.shared.isOfflineModeConfirmed == true
+            let offlineModeAlwaysEnabled = [.pairing(), .showReaders].contains(ClearentWrapper.shared.flowType?.processType) && ClearentWrapperDefaults.enableOfflineMode && !ClearentWrapperDefaults.enableOfflinePromptMode
             
             return offlineModeAlwaysEnabled || offlineModeConfirmedDuringPayment
         }
@@ -239,11 +251,6 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         
         let statusHeaderView = ClearentReaderStatusHeaderView()
         statusHeaderView.setup(readerName: name, dropDownIconName: iconName, description: description, signalStatus: signalStatus, batteryStatus: batteryStatus)
-        statusHeaderView.action = { [weak self] in
-            if self?.showOnTop == true {
-                self?.presenter?.handleUserAction(userAction: .cancel)
-            }
-        }
         return statusHeaderView
     }
 
@@ -315,7 +322,7 @@ extension ClearentProcessingModalViewController: ClearentReadersTableViewDelegat
 
     func didSelectReader(_ reader: ReaderInfo) {
         presenter?.connectTo(reader: reader)
-        stackView.isUserInteractionEnabled = false
+        view.isUserInteractionEnabled = false
     }
 }
 

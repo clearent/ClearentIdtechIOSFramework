@@ -152,4 +152,10 @@ public protocol ClearentUIColors {
     // The color of the label displayed in Settings screen when the upload of the offline transactions completed successfully
     var settingsOfflineStatusLabelSuccess: UIColor { get }
     
+    // The color of the readers placeholder displayed in Settings screen when there is no reader connected
+    var settingsReadersPlaceholderColor: UIColor { get }
+    
+    // The color of the readers label displayed in Settings screen when there is a reader connected
+    var settingsReadersDescriptionColor: UIColor { get }
+    
 }

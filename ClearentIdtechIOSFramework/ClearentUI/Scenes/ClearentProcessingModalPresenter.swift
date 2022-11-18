@@ -16,6 +16,7 @@ protocol ClearentProcessingModalView: AnyObject {
     func positionViewOnTop(flag: Bool)
     func updateUserActionButtonState(enabled: Bool)
     func displayOfflineModeConfirmationMessage(for flowType: FlowButtonType)
+    func startPairNewReaderFlow()
 }
 
 protocol ProcessingModalProtocol {
@@ -24,7 +25,6 @@ protocol ProcessingModalProtocol {
     var tip: Double? { get set }
     var sdkFeedbackProvider: FlowDataProvider { get set }
     var selectedReaderFromReadersList: ReaderItem? { get set }
-    var isOfflineModeConfirmed: Bool { get set }
     
     func handleUserAction(userAction: FlowButtonType)
     func restartProcess(newPair: Bool)
@@ -61,7 +61,6 @@ class ClearentProcessingModalPresenter {
     var sdkFeedbackProvider: FlowDataProvider
     var editableReader: ReaderInfo?
     var shouldStartTransactionAfterRenameReader = false
-    var isOfflineModeConfirmed = false
 
     // MARK: Init
 
@@ -167,18 +166,16 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                     modalProcessingView?.dismissViewController(result: .success(editableReader?.customReaderName))
                 }
             }
-        case .cancel, .denyOfflineMode:
+        case .cancel:
             ClearentWrapper.shared.isNewPaymentProcess = true
-            isOfflineModeConfirmed = false
-            ClearentUIManager.shared.offlineModeWarningDisplayed = false
+            ClearentUIManager.shared.isOfflineModeConfirmed = false
             modalProcessingView?.dismissViewController(result: .failure(.init(type: .cancelledByUser)))
         case .retry, .pair:
             restartProcess(newPair: false)
         case .pairInFlow:
             restartProcess(newPair: true)
         case .pairNewReader:
-            modalProcessingView?.positionViewOnTop(flag: false)
-            startPairingFlow()
+            modalProcessingView?.startPairNewReaderFlow()
         case .settings:
             let url = URL(string: UIApplication.openSettingsURLString + Bundle.main.bundleIdentifier!)!
             UIApplication.shared.open(url)
@@ -189,11 +186,12 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             useCardReaderPaymentMethod ? startCardReaderTransaction() : startManualEntryTransaction()
         case .manuallyEnterCardInfo:
             startManualEntryTransaction()
-        case .confirmOfflineMode:
-            modalProcessingView?.displayOfflineModeConfirmationMessage(for: .confirmOfflineMode)
+        case .acceptOfflineMode:
+            modalProcessingView?.displayOfflineModeConfirmationMessage(for: .acceptOfflineMode)
+        case .denyOfflineMode:
+            modalProcessingView?.displayOfflineModeConfirmationMessage(for: .denyOfflineMode)
         case .confirmOfflineModeWarningMessage:
-            isOfflineModeConfirmed = true
-            ClearentUIManager.shared.offlineModeWarningDisplayed = true
+            ClearentUIManager.shared.isOfflineModeConfirmed = true
             sdkFeedbackProvider.delegate = self
             modalProcessingView?.showLoadingView()
             
@@ -333,7 +331,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     private func shouldDisplayOfflineModeWarningMessage() -> Bool {
-        if ClearentWrapper.configuration.enableOfflineMode, ClearentUIManager.configuration.offlineModeState == .on, !isOfflineModeConfirmed {
+        if ClearentWrapperDefaults.enableOfflineMode, !ClearentWrapperDefaults.enableOfflinePromptMode, !ClearentUIManager.shared.isOfflineModeConfirmed {
             return true
         }
         return false
@@ -396,7 +394,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     private func startTransaction(saleEntity: SaleEntity, isManualTransaction: Bool) {
         modalProcessingView?.showLoadingView()
         
-        if ClearentUIManager.configuration.offlineModeState == .prompted, ClearentWrapper.shared.isInternetOn {
+        if ClearentWrapperDefaults.enableOfflinePromptMode, ClearentWrapper.shared.isInternetOn {
             ClearentWrapper.shared.processTransactionOnline = true
         } else {
             ClearentWrapper.shared.processTransactionOnline = false

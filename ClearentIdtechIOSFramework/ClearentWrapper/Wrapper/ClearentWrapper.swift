@@ -73,7 +73,6 @@ public final class ClearentWrapper : NSObject {
         super.init()
         
         createLogFile()
-        startConnectionListener()
     }
     
     // MARK: - Public
@@ -98,6 +97,8 @@ public final class ClearentWrapper : NSObject {
         if let offlineModeEncryptionKey = ClearentWrapper.configuration.offlineModeEncryptionKey {
             transactionRepository?.offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: ClearentConstants.KeychainService.serviceName, account: ClearentConstants.KeychainService.account, encryptionKey: offlineModeEncryptionKey))
         }
+        startConnectionListener()
+        setupOfflineMode()
     }
     
     /**
@@ -106,7 +107,7 @@ public final class ClearentWrapper : NSObject {
     public func enableOfflineMode() throws {
         guard transactionRepository?.offlineManager != nil else { throw ClearentErrorType.offlineModeEncryptionKeyNotProvided }
         clearentVP3300.setOfflineMode(true)
-        ClearentWrapper.configuration.enableOfflineMode = true
+        ClearentWrapperDefaults.enableOfflineMode = true
     }
     
     /**
@@ -114,9 +115,8 @@ public final class ClearentWrapper : NSObject {
      */
     public func disableOfflineMode() {
         clearentVP3300.setOfflineMode(false)
-        ClearentWrapper.configuration.enableOfflineMode = false
+        ClearentWrapperDefaults.enableOfflineMode = false
     }
-    
     
     /**
      * Method retrieves all saved offline transactions if the encryption key provided is valid and can decrypt them.
@@ -195,7 +195,7 @@ public final class ClearentWrapper : NSObject {
         
         self.saleEntity = saleEntity
         
-        if ClearentWrapper.configuration.enableOfflineMode {
+        if ClearentWrapperDefaults.enableOfflineMode {
             if isManualTransaction {
                 transactionRepository?.saveOfflineTransaction(paymentData: PaymentData(saleEntity: saleEntity))
             } else {
@@ -236,11 +236,6 @@ public final class ClearentWrapper : NSObject {
     }
     
     /**
-     * Method that resends the last client signature image to the payment gateway for storage.
-     * @param completion, the closure that will be called after a send signature response is received. This is dispatched onto the main queue
-     */
-    
-    /**
      * Method that sends a jpeg with client signature to the payment gateway for storage.
      * @param image, UIImage to be uploaded
      * @param completion, the closure that will be called after a send signature response is received. This is dispatched onto the main queue
@@ -253,7 +248,7 @@ public final class ClearentWrapper : NSObject {
                     completion(response, error)
                 }
             }
-        } else if ClearentWrapper.configuration.enableOfflineMode {
+        } else if ClearentWrapperDefaults.enableOfflineMode {
             transactionRepository?.saveSignatureImageForTransaction(image: image)
         } else if checkForConnectivityWarning(for: .payment) {
             completion(nil, .init(type: .connectivityError))
@@ -341,6 +336,10 @@ public final class ClearentWrapper : NSObject {
     
     // MARK: - Internal
     
+    /**
+     * Method that resends the last client signature image to the payment gateway for storage.
+     * @param completion, the closure that will be called after a send signature response is received. This is dispatched onto the main queue
+     */
     func resendSignature(completion: @escaping (SignatureResponse?, ClearentError?) -> Void) {
         if checkForConnectivityWarning(for: .payment) {
             completion(nil, .init(type: .connectivityError))
@@ -367,6 +366,18 @@ public final class ClearentWrapper : NSObject {
     }
     
     // MARK: - Private
+    
+    private func setupOfflineMode() {
+        if ClearentWrapperDefaults.enableOfflineMode {
+            do {
+                try enableOfflineMode()
+            } catch {
+                print("Error: \(error)")
+            }
+        } else {
+            disableOfflineMode()
+        }
+    }
     
     private func getBluetoothConnectivityStatus() -> UserAction? {
         let isBluetoothPermissionGranted = readerRepository?.isBluetoothPermissionGranted ?? false
