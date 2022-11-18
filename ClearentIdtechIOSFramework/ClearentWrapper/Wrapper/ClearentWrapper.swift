@@ -46,6 +46,11 @@ public final class ClearentWrapper : NSObject {
     
     var tipEnabled: Bool { transactionRepository?.tipEnabled ?? false }
     var isNewPaymentProcess = true
+    var isInternetOn: Bool = false {
+        didSet {
+            readerRepository?.isInternetOn = isInternetOn
+        }
+    }
     
     // MARK: - Private properties
     
@@ -54,11 +59,6 @@ public final class ClearentWrapper : NSObject {
     private let monitor = NWPathMonitor()
     private var readerRepository: ReaderRepositoryProtocol?
     private var transactionRepository: TransactionRepositoryProtocol?
-    private var isInternetOn: Bool = false {
-        didSet {
-            readerRepository?.isInternetOn = isInternetOn
-        }
-    }
     
     // MARK: - Init
     
@@ -87,6 +87,10 @@ public final class ClearentWrapper : NSObject {
         if config.enableEnhancedMessaging {
             readEnhancedMessages()
         }
+        
+        if let offlineModeEncryptionKey = ClearentWrapper.configuration.offlineModeEncryptionKey {
+            transactionRepository?.offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: ClearentConstants.KeychainService.serviceName, account: ClearentConstants.KeychainService.account, encryptionKey: offlineModeEncryptionKey))
+        }
     }
     
     
@@ -101,9 +105,7 @@ public final class ClearentWrapper : NSObject {
      * Method that should be called to enable offline mode.
      */
     public func enableOfflineMode() throws {
-        guard let offlineModeEncryptionKey = ClearentWrapper.configuration.offlineModeEncryptionKey else { throw ClearentErrorType.offlineModeEncryptionKeyNotProvided }
-        
-        transactionRepository?.offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: ClearentConstants.KeychainService.serviceName, account: ClearentConstants.KeychainService.account, encryptionKey: offlineModeEncryptionKey))
+        guard transactionRepository?.offlineManager != nil else { throw ClearentErrorType.offlineModeEncryptionKeyNotProvided }
         clearentVP3300.setOfflineMode(true)
         ClearentWrapper.configuration.enableOfflineMode = true
     }
@@ -112,7 +114,6 @@ public final class ClearentWrapper : NSObject {
      * Method that should be called to disable offline mode.
      */
     public func disableOfflineMode() {
-        transactionRepository?.offlineManager = nil
         clearentVP3300.setOfflineMode(false)
         ClearentWrapper.configuration.enableOfflineMode = false
     }
@@ -340,15 +341,6 @@ public final class ClearentWrapper : NSObject {
             }
         }
     }
-    
-    /**
-     * Method return the Offlinemanager instance
-     */
-    
-    func retriveOfflineManager() -> OfflineModeManager? {
-        return transactionRepository?.offlineManager
-    }
-
     
     // MARK: - Internal
     

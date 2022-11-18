@@ -58,7 +58,7 @@ public protocol ClearentUIColors {
     
     // MARK: - ClearentTitleLabel
     
-    // The label's text color (also used in ClearentReaderDetailsScreen)
+    // The label's text color (also used in ClearentReaderDetailsScreen and ClearentSettingsModalViewController)
     var titleLabelColor: UIColor { get }
     
     // MARK: - ClearentSubtitleLabel
@@ -140,4 +140,16 @@ public protocol ClearentUIColors {
     
     // The payment textfield placeholder's color
     var manualPaymentTextFieldPlaceholder: UIColor { get }
+    
+    // MARK: - ClearentSettingsModalViewController
+
+    // The color of the label displayed in Settings screen when there are pending offline transactions
+    var settingOfflineStatusLabel: UIColor { get }
+    
+    // The color of the label displayed in Settings screen when the upload of the offline transactions completed with errors
+    var settingsOfflineStatusLabelFail: UIColor { get }
+    
+    // The color of the label displayed in Settings screen when the upload of the offline transactions completed successfully
+    var settingsOfflineStatusLabelSuccess: UIColor { get }
+    
 }

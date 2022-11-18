@@ -21,14 +21,16 @@ public enum FlowFeedbackType {
 }
 
 public enum ProcessType: Equatable {
-    case pairing(withReader: ReaderInfo? = nil), payment, showReaders, renameReader
+    case pairing(withReader: ReaderInfo? = nil), payment, showReaders, renameReader, showSettings
     
     public static func == (lhs: ProcessType, rhs: ProcessType) -> Bool {
         switch (lhs, rhs) {
-        case (.pairing, .pairing): return true
-        case (.payment, .payment): return true
-        case (.showReaders, .showReaders): return true
-        case (.renameReader, .renameReader): return true
+        case (.pairing, .pairing),
+            (.payment, .payment),
+            (.showReaders, .showReaders),
+            (.renameReader, .renameReader),
+            (.showSettings, .showSettings):
+            return true
         default: return false
         }
     }
@@ -68,7 +70,7 @@ enum FlowGraphicType {
 }
 
 public enum FlowButtonType {
-    case cancel, retry, pair, done, skipSignature, pairNewReader, settings, pairInFlow, addReaderName, renameReaderLater, transactionWithTip, transactionWithoutTip, manuallyEnterCardInfo, confirmOfflineMode, denyOfflineMode, confirmOfflineModeWarningMessage
+    case cancel, retry, pair, done, skipSignature, pairNewReader, settings, pairInFlow, addReaderName, renameReaderLater, transactionWithTip, transactionWithoutTip, manuallyEnterCardInfo, acceptOfflineMode, denyOfflineMode, confirmOfflineModeWarningMessage
 
     var title: String {
         switch self {
@@ -96,7 +98,7 @@ public enum FlowButtonType {
             return ClearentConstants.Localized.Tips.withoutTip
         case .manuallyEnterCardInfo:
             return ClearentConstants.Localized.Error.manualEntry
-        case .confirmOfflineMode:
+        case .acceptOfflineMode:
             return ClearentConstants.Localized.OfflineMode.offlineModeConfirmOption
         case .denyOfflineMode:
             return ClearentConstants.Localized.OfflineMode.offlineModeCancelOption

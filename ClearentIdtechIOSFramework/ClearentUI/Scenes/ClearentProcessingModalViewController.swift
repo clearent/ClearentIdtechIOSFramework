@@ -32,7 +32,7 @@ class ClearentProcessingModalViewController: ClearentBaseViewController {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
-
+        stackView.showLoadingView()
         positionViewOnTop(flag: showOnTop)
         presenter?.startFlow()
     }
@@ -124,7 +124,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         let offlineModeAlert = UIAlertController(title: ClearentConstants.Localized.OfflineMode.offlineModeConfirmationMessage, message: nil, preferredStyle: .alert)
         offlineModeAlert.addAction(UIAlertAction(title: ClearentConstants.Localized.OfflineMode.offlineModeConfirmationMessageCancel, style: .default, handler: { _ in }))
         offlineModeAlert.addAction(UIAlertAction(title: ClearentConstants.Localized.OfflineMode.offlineModeConfirmationMessageConfirm, style: .default, handler: { [weak self] _ in
-            flowType == .confirmOfflineMode ? self?.presenter?.handleOfflineModeConfirmationOption() : self?.presenter?.handleOfflineModeCancelOption()
+            flowType == .acceptOfflineMode ? self?.presenter?.handleOfflineModeConfirmationOption() : self?.presenter?.handleOfflineModeCancelOption()
         }))
         present(offlineModeAlert, animated: true, completion: nil)
     }
@@ -133,7 +133,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     
     private func shouldDisplayOfflineModeLabel() -> Bool {
         if ClearentWrapper.configuration.enableOfflineMode {
-            let offlineModeConfirmedDuringPayment = .payment == ClearentWrapper.shared.flowType?.processType && presenter?.isOfflineModeConfirmed == true
+            let offlineModeConfirmedDuringPayment = .payment == ClearentWrapper.shared.flowType?.processType && ClearentUIManager.shared.isOfflineModeConfirmed == true
             let offlineModeAlwaysEnabled = [.pairing(), .showReaders].contains(ClearentWrapper.shared.flowType?.processType) && ClearentWrapper.configuration.enableOfflineMode && ClearentUIManager.configuration.offlineModeState == .on
             
             return offlineModeAlwaysEnabled || offlineModeConfirmedDuringPayment

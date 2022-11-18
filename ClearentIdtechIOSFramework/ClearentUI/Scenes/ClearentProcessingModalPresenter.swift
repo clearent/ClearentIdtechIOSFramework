@@ -24,7 +24,6 @@ protocol ProcessingModalProtocol {
     var tip: Double? { get set }
     var sdkFeedbackProvider: FlowDataProvider { get set }
     var selectedReaderFromReadersList: ReaderItem? { get set }
-    var isOfflineModeConfirmed: Bool { get set }
     
     func handleUserAction(userAction: FlowButtonType)
     func restartProcess(newPair: Bool)
@@ -61,7 +60,6 @@ class ClearentProcessingModalPresenter {
     var sdkFeedbackProvider: FlowDataProvider
     var editableReader: ReaderInfo?
     var shouldStartTransactionAfterRenameReader = false
-    var isOfflineModeConfirmed = false
 
     // MARK: Init
 
@@ -167,10 +165,9 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                     modalProcessingView?.dismissViewController(result: .success(editableReader?.customReaderName))
                 }
             }
-        case .cancel, .denyOfflineMode:
+        case .cancel:
             ClearentWrapper.shared.isNewPaymentProcess = true
-            isOfflineModeConfirmed = false
-            ClearentUIManager.shared.offlineModeWarningDisplayed = false
+            ClearentUIManager.shared.isOfflineModeConfirmed = false
             modalProcessingView?.dismissViewController(result: .failure(.init(type: .cancelledByUser)))
         case .retry, .pair:
             restartProcess(newPair: false)
@@ -189,11 +186,12 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             useCardReaderPaymentMethod ? startCardReaderTransaction() : startManualEntryTransaction()
         case .manuallyEnterCardInfo:
             startManualEntryTransaction()
-        case .confirmOfflineMode:
-            modalProcessingView?.displayOfflineModeConfirmationMessage(for: .confirmOfflineMode)
+        case .acceptOfflineMode:
+            modalProcessingView?.displayOfflineModeConfirmationMessage(for: .acceptOfflineMode)
+        case .denyOfflineMode:
+            modalProcessingView?.displayOfflineModeConfirmationMessage(for: .denyOfflineMode)
         case .confirmOfflineModeWarningMessage:
-            isOfflineModeConfirmed = true
-            ClearentUIManager.shared.offlineModeWarningDisplayed = true
+            ClearentUIManager.shared.isOfflineModeConfirmed = true
             sdkFeedbackProvider.delegate = self
             modalProcessingView?.showLoadingView()
             
@@ -287,6 +285,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             showReadersList()
         case .renameReader:
             showRenameReader()
+        case .showSettings:
+            break;
         }
     }
     
@@ -345,7 +345,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     private func shouldDisplayOfflineModeWarningMessage() -> Bool {
-        if ClearentWrapper.configuration.enableOfflineMode, ClearentUIManager.configuration.offlineModeState == .on, !isOfflineModeConfirmed {
+        if ClearentWrapper.configuration.enableOfflineMode, ClearentUIManager.configuration.offlineModeState == .on, !ClearentUIManager.shared.isOfflineModeConfirmed {
             return true
         }
         return false
