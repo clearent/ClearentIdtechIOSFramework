@@ -28,6 +28,7 @@ public struct ReaderInfo: Codable {
     public var uuid: UUID?
     public var serialNumber: String?
     public var version: String?
+    public var encrypted: Bool?
 }
 
 extension ReaderInfo: Equatable {

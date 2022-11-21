@@ -436,10 +436,17 @@ extension ClearentWrapper: Clearent_Public_IDTech_VP3300_Delegate {
         }
     }
     
-    public func successOfflineTransactionToken(_ clearentTransactionTokenRequestData: Data?) {
+    public func successOfflineTransactionToken(_ clearentTransactionTokenRequestData: Data?, isTransactionEncrypted isEncrypted: Bool) {
         guard let cardToken = clearentTransactionTokenRequestData else { return }
-        let paymentData = PaymentData(saleEntity: saleEntity, cardToken: cardToken)
         
+        ClearentWrapperDefaults.pairedReaderInfo?.encrypted = isEncrypted
+        if (!isEncrypted) {
+            self.delegate?.showEncryptionWarning()
+            disableOfflineMode()
+            return
+        }
+        
+        let paymentData = PaymentData(saleEntity: saleEntity, cardToken: cardToken)
         transactionRepository?.saveOfflineTransaction(paymentData: paymentData)
     }
     
