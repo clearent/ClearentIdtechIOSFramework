@@ -357,14 +357,22 @@ public final class ClearentWrapper : NSObject {
      * @param completion, the closure that will be called after a send signature response is received. This is dispatched onto the main queue
      */
     func resendSignature(completion: @escaping (SignatureResponse?, ClearentError?) -> Void) {
-        if checkForConnectivityWarning(for: .payment) {
+        if processTransactionOnline {
+            transactionRepository?.resendSignature() { (response, error) in
+                DispatchQueue.main.async {
+                    completion(response, error)
+                }
+            }
+        } else if ClearentWrapperDefaults.enableOfflineMode {
+            transactionRepository?.resaveSignatureImageForTransaction()
+        } else if checkForConnectivityWarning(for: .payment) {
             completion(nil, .init(type: .connectivityError))
             return
-        }
-        
-        transactionRepository?.resendSignature() { (response, error) in
-            DispatchQueue.main.async {
-                completion(response, error)
+        } else {
+            transactionRepository?.resendSignature() { (response, error) in
+                DispatchQueue.main.async {
+                    completion(response, error)
+                }
             }
         }
     }

@@ -52,7 +52,7 @@ class ClearentProcessingModalPresenter {
     // defines the process type set when the SDK UI starts
     private var processType: ProcessType
     private var useCardReaderPaymentMethod: Bool {
-        ClearentWrapper.shared.cardReaderPaymentIsPreffered && ClearentWrapper.shared.useManualPaymentAsFallback == nil
+        sdkWrapper.cardReaderPaymentIsPreffered && sdkWrapper.useManualPaymentAsFallback == nil
     }
     
     var amountWithoutTip: Double?
@@ -87,12 +87,12 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     func handleOfflineModeCancelOption() {
-        ClearentWrapper.shared.isNewPaymentProcess = false
+        sdkWrapper.isNewPaymentProcess = false
         restartProcess(newPair: false)
     }
     
     func handleOfflineModeConfirmationOption() {
-        ClearentWrapper.shared.isNewPaymentProcess = false
+        sdkWrapper.isNewPaymentProcess = false
         
         if let isReaderEncrypted = sdkWrapper.isReaderEncrypted(), useCardReaderPaymentMethod {
             if !isReaderEncrypted {
@@ -110,7 +110,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     func restartProcess(newPair: Bool) {
-        guard let processType = ClearentWrapper.shared.flowType?.processType, let flowFeedbackType = ClearentWrapper.shared.flowType?.flowFeedbackType else { return }
+        guard let processType = sdkWrapper.flowType?.processType, let flowFeedbackType = sdkWrapper.flowType?.flowFeedbackType else { return }
         sdkFeedbackProvider.delegate = self
         modalProcessingView?.showLoadingView()
         startProcess(isRestart: true, processType: processType, flowFeedbackType: flowFeedbackType, newPair: newPair)
@@ -151,10 +151,10 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     func handleUserAction(userAction: FlowButtonType) {
         switch userAction {
         case .done, .renameReaderLater, .skipSignature:
-            if ClearentWrapper.shared.flowType?.flowFeedbackType == .pairingDoneInfo {
+            if sdkWrapper.flowType?.flowFeedbackType == .pairingDoneInfo {
                 showReaderNameOption()
             } else {
-                if ClearentWrapper.shared.flowType?.flowFeedbackType == .renameReaderDone {
+                if sdkWrapper.flowType?.flowFeedbackType == .renameReaderDone {
                     updateReaderName()
                 }
 
@@ -168,7 +168,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             }
             ClearentUIManager.shared.isOfflineModeConfirmed = false
         case .cancel:
-            ClearentWrapper.shared.isNewPaymentProcess = true
+            sdkWrapper.isNewPaymentProcess = true
             ClearentUIManager.shared.isOfflineModeConfirmed = false
             modalProcessingView?.dismissViewController(result: .failure(.init(type: .cancelledByUser)))
         case .retry, .pair:
@@ -251,7 +251,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     func resendSignature() {
         modalProcessingView?.showLoadingView()
         
-        ClearentWrapper.shared.resendSignature { [weak self] (response, error) in
+        sdkWrapper.resendSignature { [weak self] (response, error) in
             guard let strongSelf = self else { return }
             strongSelf.sdkFeedbackProvider.didFinishedSignatureUploadWith(response: response, error: error)
         }
@@ -260,7 +260,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     // MARK: Private
     
     private func startProcess(isRestart: Bool, processType: ProcessType, flowFeedbackType: FlowFeedbackType? = nil, newPair: Bool = false) {
-        ClearentWrapper.shared.flowType = (processType, flowFeedbackType)
+        sdkWrapper.flowType = (processType, flowFeedbackType)
         
         switch processType {
         case let .pairing(withReader: readerInfo):
@@ -308,7 +308,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                 self?.modalProcessingView?.dismissViewController(result: .failure(error))
             }
             guard let strongSelf = self else { return }            
-            let showTipsScreen = ClearentWrapper.shared.tipEnabled && strongSelf.tipsScreenWasNotShown
+            let showTipsScreen = strongSelf.sdkWrapper.tipEnabled && strongSelf.tipsScreenWasNotShown
 
             if showTipsScreen {
                 strongSelf.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: strongSelf.amountWithoutTip ?? 0)
@@ -409,7 +409,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     private func startTransaction(saleEntity: SaleEntity, isManualTransaction: Bool) {
         modalProcessingView?.showLoadingView()
         
-        ClearentWrapper.shared.processTransactionOnline = (ClearentWrapperDefaults.enableOfflineMode &&  ClearentWrapperDefaults.enableOfflinePromptMode && ClearentWrapper.shared.isInternetOn) || (!ClearentWrapperDefaults.enableOfflineMode && ClearentWrapper.shared.isInternetOn)
+        sdkWrapper.processTransactionOnline = (ClearentWrapperDefaults.enableOfflineMode &&  ClearentWrapperDefaults.enableOfflinePromptMode && sdkWrapper.isInternetOn) || (!ClearentWrapperDefaults.enableOfflineMode && sdkWrapper.isInternetOn)
         
         sdkWrapper.startTransaction(with: saleEntity, isManualTransaction: isManualTransaction) { [weak self] error in
             if let error = error {
@@ -423,7 +423,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
     
     func didFinishSignature() {
         successfulDissmissViewWithDelay()
-        ClearentWrapper.shared.isNewPaymentProcess = true
+        sdkWrapper.isNewPaymentProcess = true
         ClearentUIManager.shared.isOfflineModeConfirmed = false
     }
     
@@ -434,7 +434,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
             }
         } else {
             successfulDissmissViewWithDelay()
-            ClearentWrapper.shared.isNewPaymentProcess = true
+            sdkWrapper.isNewPaymentProcess = true
             ClearentUIManager.shared.isOfflineModeConfirmed = false
         }
     }
