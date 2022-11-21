@@ -166,6 +166,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                     modalProcessingView?.dismissViewController(result: .success(editableReader?.customReaderName))
                 }
             }
+            ClearentUIManager.shared.isOfflineModeConfirmed = false
         case .cancel:
             ClearentWrapper.shared.isNewPaymentProcess = true
             ClearentUIManager.shared.isOfflineModeConfirmed = false
@@ -408,6 +409,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     private func startTransaction(saleEntity: SaleEntity, isManualTransaction: Bool) {
         modalProcessingView?.showLoadingView()
         
+        ClearentWrapper.shared.processTransactionOnline = (ClearentWrapperDefaults.enableOfflineMode &&  ClearentWrapperDefaults.enableOfflinePromptMode && ClearentWrapper.shared.isInternetOn) || (!ClearentWrapperDefaults.enableOfflineMode && ClearentWrapper.shared.isInternetOn)
+        
         sdkWrapper.startTransaction(with: saleEntity, isManualTransaction: isManualTransaction) { [weak self] error in
             if let error = error {
                 self?.modalProcessingView?.dismissViewController(result: .failure(error))
@@ -420,6 +423,8 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
     
     func didFinishSignature() {
         successfulDissmissViewWithDelay()
+        ClearentWrapper.shared.isNewPaymentProcess = true
+        ClearentUIManager.shared.isOfflineModeConfirmed = false
     }
     
     func didFinishTransaction() {
@@ -429,6 +434,8 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
             }
         } else {
             successfulDissmissViewWithDelay()
+            ClearentWrapper.shared.isNewPaymentProcess = true
+            ClearentUIManager.shared.isOfflineModeConfirmed = false
         }
     }
     

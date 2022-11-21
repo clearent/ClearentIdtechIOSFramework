@@ -52,6 +52,13 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
+    /// Force the transaction to be processed online in case the internet connection is enabled and the state of the offline mode is set to prompted.
+    var processTransactionOnline = false {
+        didSet {
+            clearentVP3300.setOfflineMode(!processTransactionOnline)
+        }
+    }
+    
     // MARK: - Private properties
     
     private var clearentVP3300: Clearent_VP3300!
@@ -115,7 +122,7 @@ public final class ClearentWrapper : NSObject {
      * Method retrieves all saved offline transactions if the encryption key provided is valid and can decrypt them.
      */
     public func retrieveAllOfflineTransactions() -> [OfflineTransaction]? {
-        return transactionRepository?.fetchOfflineTransactions()
+        transactionRepository?.fetchOfflineTransactions()
     }
     
     /**
@@ -235,7 +242,13 @@ public final class ClearentWrapper : NSObject {
      */
     
     public func sendSignatureWithImage(image: UIImage, completion: @escaping (SignatureResponse?, ClearentError?) -> Void) {
-        if ClearentWrapperDefaults.enableOfflineMode {
+        if processTransactionOnline {
+            transactionRepository?.sendSignatureRequest(image: image) { (response, error) in
+                DispatchQueue.main.async {
+                    completion(response, error)
+                }
+            }
+        } else if ClearentWrapperDefaults.enableOfflineMode {
             transactionRepository?.saveSignatureImageForTransaction(image: image)
         } else if checkForConnectivityWarning(for: .payment) {
             completion(nil, .init(type: .connectivityError))
