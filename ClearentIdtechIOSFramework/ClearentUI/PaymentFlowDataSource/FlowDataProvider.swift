@@ -387,7 +387,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                 if !ClearentWrapperDefaults.enableOfflinePromptMode && !ClearentUIManager.shared.isOfflineModeConfirmed {
                     displayOfflineModeWarningMessage()
                     return
-                } else if sdkWrapper.isNewPaymentProcess {
+                } else if sdkWrapper.isNewPaymentProcess && !ClearentUIManager.shared.isOfflineModeConfirmed {
                     items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
                              FlowDataItem(type: .title, object: ClearentConstants.Localized.OfflineMode.enableOfflineMode),
                              FlowDataItem(type: .description, object: ClearentConstants.Localized.OfflineMode.offlineModeWarningMessageDescription),
