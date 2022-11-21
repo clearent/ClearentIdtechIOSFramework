@@ -310,6 +310,22 @@ public final class ClearentWrapper : NSObject {
     }
     
     /**
+     * Method that returns the amount of service fee calculated based on the current terminal settings
+     * @param amount, the amount that service  will be applied to
+     * If there are no terminal settings fetched or the service fee is disabled it will return nil
+     */
+    func serviceFeeAmount(amount: Double) -> Double? {
+        return transactionRepository?.serviceFeeForAmount(amount: amount)
+    }
+    
+    /**
+     * Method that returns the service fee program type if available
+     */
+    func serviceFeeProgramName() -> String? {
+        return transactionRepository?.serviceFeeProgramType()
+    }
+    
+    /**
      * Method that uploads all the transactions that were made in offline mode
      * @param completion, the closure that is called after all the offline transactions are processed. This is dispatched onto the main queue.
      */
