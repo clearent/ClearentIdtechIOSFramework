@@ -18,12 +18,12 @@ struct PayloadSettings: Codable {
     }
 }
 
-internal enum ServiceFeeProgrammType: String {
+internal enum ServiceFeeProgramType: String {
     case surcharge = "SURCHARGE"
     case non_cash_adjustments = "NON_CASH_ADJUSTMENT"
     case empower_lite = "EMPOWER_LITE"
     case service_fee = "SERVICE_FEE"
-    case convinience_fee = "CONVENIENCE_FEE"
+    case convenience_fee = "CONVENIENCE_FEE"
 }
 
 internal enum ServiceFeeType: String {

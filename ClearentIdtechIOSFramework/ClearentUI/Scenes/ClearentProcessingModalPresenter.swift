@@ -227,12 +227,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         let shipToZipCode = dataSource.valueForType(.shippingZipCode)?.replacingOccurrences(of: ClearentPaymentItemType.shippingZipCode.separator, with: "")
         let shippingInfo = ClientInformation(zip: shipToZipCode)
         
-        
-        var totalAmountWithoutServiceFee = 0.0
-        if let amountWithoutTip = amountWithoutTip {
-            totalAmountWithoutServiceFee = totalAmountWithoutServiceFee + amountWithoutTip
-            if let tip = tip {totalAmountWithoutServiceFee = totalAmountWithoutServiceFee + tip}
-        }
+        var totalAmountWithoutServiceFee = amountWithoutTip ?? 0.0
+        totalAmountWithoutServiceFee += tip ?? 0.0
         
         let calculatedServiceFee = ClearentWrapper.shared.serviceFeeAmount(amount: totalAmountWithoutServiceFee)
         
@@ -327,11 +323,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
                 let saleEntity: SaleEntity
 
-                var totalAmountWithoutServiceFee = 0.0
-                if let amountWithoutTip = amountWithoutTip {
-                    totalAmountWithoutServiceFee = totalAmountWithoutServiceFee + amountWithoutTip
-                    if let tip = tip {totalAmountWithoutServiceFee = totalAmountWithoutServiceFee + tip}
-                }
+                var totalAmountWithoutServiceFee = amountWithoutTip ?? 0.0
+                totalAmountWithoutServiceFee += tip ?? 0.0
                 
                 let calculatedServiceFee = ClearentWrapper.shared.serviceFeeAmount(amount: totalAmountWithoutServiceFee)
                 saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals, serviceFeeAmount: calculatedServiceFee?.stringFormattedWithTwoDecimals)
