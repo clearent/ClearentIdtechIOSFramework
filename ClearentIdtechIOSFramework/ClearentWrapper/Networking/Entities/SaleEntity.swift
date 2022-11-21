@@ -27,7 +27,7 @@ public class SaleEntity: CodableProtocol {
         self.invoice = invoice
         self.orderID = orderID
         self.expirationDateMMYY = expirationDateMMYY
-        self.serviceFeeAmount = serviceFeeAmount
+        self.serviceFeeAmount = serviceFeeAmount?.setTwoDecimals()
     }
 
     enum CodingKeys: String, CodingKey {
