@@ -69,7 +69,8 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
      * Returns the display name for the current service fee program type as String
      */
     func serviceFeeProgramType() -> String? {
-        <#code#>
+        let terminalSettings = ClearentWrapperDefaults.terminalSettings
+        return terminalSettings?.serviceFeeType
     }
     
     
