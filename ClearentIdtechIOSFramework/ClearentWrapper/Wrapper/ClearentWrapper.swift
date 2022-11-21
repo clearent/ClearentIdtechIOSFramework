@@ -122,7 +122,7 @@ public final class ClearentWrapper : NSObject {
      * Method retrieves all saved offline transactions if the encryption key provided is valid and can decrypt them.
      */
     public func retrieveAllOfflineTransactions() -> [OfflineTransaction]? {
-        return transactionRepository?.fetchOfflineTransactions()
+        transactionRepository?.fetchOfflineTransactions()
     }
     
     /**

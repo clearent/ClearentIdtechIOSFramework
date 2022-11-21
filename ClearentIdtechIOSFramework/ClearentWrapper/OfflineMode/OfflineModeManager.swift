@@ -56,7 +56,6 @@ class OfflineModeManager {
     }
     
     func validateOfflineTransaction(transaction: OfflineTransaction) -> TransactionStoreStatus {
-        
         let saleEntity = transaction.paymentData.saleEntity
         
         guard Float(saleEntity.amount) != nil else { return .validationError}
