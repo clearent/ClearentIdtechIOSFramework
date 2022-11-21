@@ -195,7 +195,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             sdkFeedbackProvider.delegate = self
             modalProcessingView?.showLoadingView()
             
-            // check if the reader is encrypted and show the proper warning message
+            // Check if the card reader is encrypted and show the proper warning message
             if let isReaderEncrypted = sdkWrapper.isReaderEncrypted(), useCardReaderPaymentMethod {
                if !isReaderEncrypted {
                    sdkFeedbackProvider.showEncryptionWarning()
