@@ -23,10 +23,10 @@ protocol TransactionRepositoryProtocol {
     func saveSignatureImageForTransaction(image: UIImage)
     func fetchOfflineTransactions() -> [OfflineTransaction]?
     func serviceFeeForAmount(amount: Double) -> Double?
+    func serviceFeeProgramType() -> String?
 }
 
 class TransactionRepository: NSObject, TransactionRepositoryProtocol {
-
     var delegate: ClearentWrapperProtocol?
     var tipEnabled = false
     var offlineManager: OfflineModeManager?
@@ -64,6 +64,14 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         
         return nil
     }
+    
+    /**
+     * Returns the display name for the current service fee program type as String
+     */
+    func serviceFeeProgramType() -> String? {
+        <#code#>
+    }
+    
     
     func calculateFeeFor(amount: Double, feeType: ServiceFeeType?, value: String) -> Double? {
         guard let feeValue = Double(value), let feeType = feeType else { return nil }
