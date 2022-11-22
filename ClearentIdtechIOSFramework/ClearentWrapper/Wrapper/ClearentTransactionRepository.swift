@@ -8,7 +8,6 @@
 
 protocol TransactionRepositoryProtocol {
     var delegate: ClearentWrapperProtocol? { get set }
-    var tipEnabled: Bool { get set }
     var offlineManager: OfflineModeManager? { get set }
     
     func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
@@ -21,12 +20,14 @@ protocol TransactionRepositoryProtocol {
     func manualEntryTransaction(saleEntity: SaleEntity)
     func saveOfflineTransaction(paymentData: PaymentData)
     func saveSignatureImageForTransaction(image: UIImage)
+    func resaveSignatureImageForTransaction()
     func fetchOfflineTransactions() -> [OfflineTransaction]?
+    func serviceFeeForAmount(amount: Double) -> Double?
+    func serviceFeeProgramType() -> String?
 }
 
 class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     var delegate: ClearentWrapperProtocol?
-    var tipEnabled = false
     var offlineManager: OfflineModeManager?
     private var lastTransactionID: String?
     private var signatureImage: UIImage?
@@ -42,6 +43,42 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         super.init()
         self.clearentManualEntry = clearentManualEntry
         self.clearentVP3300 = clearentVP3300
+    }
+    
+    /**
+     * Calculates the amount of the service fee based on the current terminal settings
+     * If there are no terminal settings fetched or the service fee is disabled it will return nil
+     */
+    func serviceFeeForAmount(amount: Double) -> Double? {
+        // Terminal settings are cached and if we have cached values we will use it
+        let terminalSettings = ClearentWrapperDefaults.terminalSettings
+        if (terminalSettings?.serviceFeeState) != nil && terminalSettings?.serviceFeeState ==  ServiceFeeState.enabled.rawValue {
+            guard let feeType = terminalSettings?.serviceFeeType, let feeValue = terminalSettings?.serviceFee else { return nil }
+            return calculateFeeFor(amount: amount, feeType: ServiceFeeType(rawValue: feeType), value: feeValue)
+        }
+        
+        return nil
+    }
+    
+    /**
+     * Returns the display name for the current service fee program type as String
+     */
+    func serviceFeeProgramType() -> String? {
+        let terminalSettings = ClearentWrapperDefaults.terminalSettings
+        return terminalSettings?.serviceFeeType
+    }
+    
+    
+    func calculateFeeFor(amount: Double, feeType: ServiceFeeType?, value: String) -> Double? {
+        guard let feeValue = Double(value), let feeType = feeType else { return nil }
+        
+        if (feeType == .percentage) {
+            return amount * feeValue / 100
+        } else if (feeType == .flatfee) {
+            return feeValue
+        }
+        
+        return nil
     }
     
     // MARK: - Internal
@@ -107,7 +144,6 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         }
     }
     
-    
     func resendSignature(completion: @escaping (SignatureResponse?, ClearentError?) -> Void) {
         guard let signatureImage = signatureImage else { return }
 
@@ -152,7 +188,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
                     }
                     
                     let decodedResponse = try JSONDecoder().decode(MerchantSettingsEntity.self, from: data)
-                    strongSelf.tipEnabled = decodedResponse.payload.terminalSettings.enableTip
+                    ClearentWrapperDefaults.terminalSettings = decodedResponse.payload.terminalSettings
                 } catch let jsonDecodingError {
                     print(jsonDecodingError)
                 }
@@ -244,11 +280,19 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
      *  @param the actual image containing the signature
      */
     func saveSignatureImageForTransaction(image: UIImage) {
+        signatureImage = image
+        
         guard let transactionID = offlineTransaction?.transactionID,
-             let status = offlineManager?.saveSignatureForTransaction(transactionID: transactionID, image: image) else {
+              let status = offlineManager?.saveSignatureForTransaction(transactionID: transactionID, image: image) else {
             return
         }
         delegate?.didAcceptOfflineSignature(status: status, transactionID: transactionID)
+    }
+    
+    func resaveSignatureImageForTransaction() {
+        guard let signatureImage = signatureImage else { return }
+        
+        saveSignatureImageForTransaction(image: signatureImage)
     }
     
     // MARK: - Private

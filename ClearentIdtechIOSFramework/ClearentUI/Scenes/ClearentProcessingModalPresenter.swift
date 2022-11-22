@@ -52,7 +52,7 @@ class ClearentProcessingModalPresenter {
     // defines the process type set when the SDK UI starts
     private var processType: ProcessType
     private var useCardReaderPaymentMethod: Bool {
-        ClearentWrapper.shared.cardReaderPaymentIsPreffered && ClearentWrapper.shared.useManualPaymentAsFallback == nil
+        sdkWrapper.cardReaderPaymentIsPreffered && sdkWrapper.useManualPaymentAsFallback == nil
     }
     
     var amountWithoutTip: Double?
@@ -87,12 +87,12 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     func handleOfflineModeCancelOption() {
-        ClearentWrapper.shared.isNewPaymentProcess = false
+        sdkWrapper.isNewPaymentProcess = false
         restartProcess(newPair: false)
     }
     
     func handleOfflineModeConfirmationOption() {
-        ClearentWrapper.shared.isNewPaymentProcess = false
+        sdkWrapper.isNewPaymentProcess = false
         
         if let isReaderEncrypted = sdkWrapper.isReaderEncrypted(), useCardReaderPaymentMethod {
             if !isReaderEncrypted {
@@ -110,7 +110,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     func restartProcess(newPair: Bool) {
-        guard let processType = ClearentWrapper.shared.flowType?.processType, let flowFeedbackType = ClearentWrapper.shared.flowType?.flowFeedbackType else { return }
+        guard let processType = sdkWrapper.flowType?.processType, let flowFeedbackType = sdkWrapper.flowType?.flowFeedbackType else { return }
         sdkFeedbackProvider.delegate = self
         modalProcessingView?.showLoadingView()
         startProcess(isRestart: true, processType: processType, flowFeedbackType: flowFeedbackType, newPair: newPair)
@@ -151,23 +151,24 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     func handleUserAction(userAction: FlowButtonType) {
         switch userAction {
         case .done, .renameReaderLater, .skipSignature:
-            if ClearentWrapper.shared.flowType?.flowFeedbackType == .pairingDoneInfo {
+            if sdkWrapper.flowType?.flowFeedbackType == .pairingDoneInfo {
                 showReaderNameOption()
             } else {
-                if ClearentWrapper.shared.flowType?.flowFeedbackType == .renameReaderDone {
+                if sdkWrapper.flowType?.flowFeedbackType == .renameReaderDone {
                     updateReaderName()
                 }
 
                 if shouldStartTransactionAfterRenameReader {
                     shouldStartTransactionAfterRenameReader = false
-                    startTipFlow()
+                    startTransactionFlow()
                     modalProcessingView?.positionViewOnTop(flag: false)
                 } else {
                     modalProcessingView?.dismissViewController(result: .success(editableReader?.customReaderName))
                 }
             }
+            ClearentUIManager.shared.isOfflineModeConfirmed = false
         case .cancel:
-            ClearentWrapper.shared.isNewPaymentProcess = true
+            sdkWrapper.isNewPaymentProcess = true
             ClearentUIManager.shared.isOfflineModeConfirmed = false
             modalProcessingView?.dismissViewController(result: .failure(.init(type: .cancelledByUser)))
         case .retry, .pair:
@@ -200,10 +201,10 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                if !isReaderEncrypted {
                    sdkFeedbackProvider.showEncryptionWarning()
                } else {
-                   startCardReaderTransaction()
+                   startTipFlow()
                }
             } else {
-                useCardReaderPaymentMethod ? startCardReaderTransaction() : startManualEntryTransaction()
+                startTipFlow()
             }
         }
     }
@@ -234,6 +235,11 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         
         let shipToZipCode = dataSource.valueForType(.shippingZipCode)?.replacingOccurrences(of: ClearentPaymentItemType.shippingZipCode.separator, with: "")
         let shippingInfo = ClientInformation(zip: shipToZipCode)
+        
+        var totalAmountWithoutServiceFee = amountWithoutTip ?? 0.0
+        totalAmountWithoutServiceFee += tip ?? 0.0
+        let calculatedServiceFee = ClearentWrapper.shared.serviceFeeAmount(amount: totalAmountWithoutServiceFee)
+        
         let saleEntity = SaleEntity(amount: amount,
                                     tipAmount: tip?.stringFormattedWithTwoDecimals,
                                     billing: billingInfo,
@@ -243,7 +249,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                                     customerID: dataSource.valueForType(.customerId),
                                     invoice: dataSource.valueForType(.invoiceNo),
                                     orderID: dataSource.valueForType(.orderNo),
-                                    expirationDateMMYY: date)
+                                    expirationDateMMYY: date,
+                                    serviceFeeAmount: calculatedServiceFee?.stringFormattedWithTwoDecimals)
 
         startTransaction(saleEntity: saleEntity, isManualTransaction: true)
     }
@@ -251,7 +258,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     func resendSignature() {
         modalProcessingView?.showLoadingView()
         
-        ClearentWrapper.shared.resendSignature { [weak self] (response, error) in
+        sdkWrapper.resendSignature { [weak self] (response, error) in
             guard let strongSelf = self else { return }
             strongSelf.sdkFeedbackProvider.didFinishedSignatureUploadWith(response: response, error: error)
         }
@@ -260,7 +267,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     // MARK: Private
     
     private func startProcess(isRestart: Bool, processType: ProcessType, flowFeedbackType: FlowFeedbackType? = nil, newPair: Bool = false) {
-        ClearentWrapper.shared.flowType = (processType, flowFeedbackType)
+        sdkWrapper.flowType = (processType, flowFeedbackType)
         
         switch processType {
         case let .pairing(withReader: readerInfo):
@@ -298,51 +305,60 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             shouldStartTransactionAfterRenameReader = ClearentWrapperDefaults.pairedReaderInfo == nil
             sdkWrapper.startPairing(reconnectIfPossible: true)
         } else {
-            startTipFlow()
+            if shouldDisplayOfflineModeWarningMessage() {
+                sdkFeedbackProvider.displayOfflineModeWarningMessage()
+            } else if shouldDisplayOfflineModeQuestion() {
+                sdkFeedbackProvider.displayOfflineModeQuestion()
+            } else {
+                startTipFlow()
+            }
         }
     }
     
     private func startTipFlow() {
+        ClearentWrapper.shared.processTransactionOnline = (ClearentWrapperDefaults.enableOfflineMode && ClearentWrapperDefaults.enableOfflinePromptMode && ClearentWrapper.shared.isInternetOn) ||
+                                                    !ClearentWrapperDefaults.enableOfflineMode ||
+                                                    !ClearentUIManager.shared.isOfflineModeConfirmed
         sdkWrapper.fetchTipSetting { [weak self] error in
             if let error = error, error.type.isMissingKeyError {
                 self?.modalProcessingView?.dismissViewController(result: .failure(error))
             }
             guard let strongSelf = self else { return }            
-            let showTipsScreen = ClearentWrapper.shared.tipEnabled && strongSelf.tipsScreenWasNotShown
+            let showTipsScreen = strongSelf.sdkWrapper.tipEnabled && strongSelf.tipsScreenWasNotShown
 
             if showTipsScreen {
                 strongSelf.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: strongSelf.amountWithoutTip ?? 0)
                 strongSelf.tipsScreenWasNotShown = false
+            } else {
+                strongSelf.useCardReaderPaymentMethod ? strongSelf.startCardReaderTransaction() : strongSelf.startManualEntryTransaction()
             }
         }
     }
 
     private func startCardReaderTransaction() {
-        if shouldDisplayOfflineModeWarningMessage() {
-            sdkFeedbackProvider.displayOfflineModeWarningMessage()
-        } else {
-            if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
-                let saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals)
-                startTransaction(saleEntity: saleEntity, isManualTransaction: false)
-            }
+        if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
+            var totalAmountWithoutServiceFee = amountWithoutTip ?? 0.0
+            totalAmountWithoutServiceFee += tip ?? 0.0
+            let calculatedServiceFee = ClearentWrapper.shared.serviceFeeAmount(amount: totalAmountWithoutServiceFee)
+            
+            let saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals, serviceFeeAmount: calculatedServiceFee?.stringFormattedWithTwoDecimals)
+            
+            startTransaction(saleEntity: saleEntity, isManualTransaction: false)
         }
     }
     
     private func startManualEntryTransaction() {
-        if shouldDisplayOfflineModeWarningMessage() {
-            sdkFeedbackProvider.displayOfflineModeWarningMessage()
-        } else {
-            let items = [FlowDataItem(type: .manualEntry, object: nil)]
-            let feedback = FlowFeedback(flow: .payment, type: FlowFeedbackType.info, items: items)
-            modalProcessingView?.updateContent(with: feedback)
-        }
+        let items = [FlowDataItem(type: .manualEntry, object: nil)]
+        let feedback = FlowFeedback(flow: .payment, type: FlowFeedbackType.info, items: items)
+        modalProcessingView?.updateContent(with: feedback)
     }
     
     private func shouldDisplayOfflineModeWarningMessage() -> Bool {
-        if ClearentWrapperDefaults.enableOfflineMode, !ClearentWrapperDefaults.enableOfflinePromptMode, !ClearentUIManager.shared.isOfflineModeConfirmed {
-            return true
-        }
-        return false
+        return ClearentWrapperDefaults.enableOfflineMode && !ClearentWrapperDefaults.enableOfflinePromptMode && !ClearentUIManager.shared.isOfflineModeConfirmed
+    }
+    
+    private func shouldDisplayOfflineModeQuestion() -> Bool {
+        return sdkWrapper.isNewPaymentProcess && ClearentWrapperDefaults.enableOfflineMode &&  ClearentWrapperDefaults.enableOfflinePromptMode && !ClearentUIManager.shared.isOfflineModeConfirmed && !sdkWrapper.isInternetOn
     }
     
     private func showReadersList() {
@@ -401,7 +417,6 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 
     private func startTransaction(saleEntity: SaleEntity, isManualTransaction: Bool) {
         modalProcessingView?.showLoadingView()
-        
         sdkWrapper.startTransaction(with: saleEntity, isManualTransaction: isManualTransaction) { [weak self] error in
             if let error = error {
                 self?.modalProcessingView?.dismissViewController(result: .failure(error))
@@ -414,6 +429,8 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
     
     func didFinishSignature() {
         successfulDissmissViewWithDelay()
+        sdkWrapper.isNewPaymentProcess = true
+        ClearentUIManager.shared.isOfflineModeConfirmed = false
     }
     
     func didFinishTransaction() {
@@ -423,6 +440,8 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
             }
         } else {
             successfulDissmissViewWithDelay()
+            sdkWrapper.isNewPaymentProcess = true
+            ClearentUIManager.shared.isOfflineModeConfirmed = false
         }
     }
     

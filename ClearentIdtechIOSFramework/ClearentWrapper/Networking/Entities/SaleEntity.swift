@@ -12,8 +12,9 @@ public class SaleEntity: CodableProtocol {
     let billing, shipping: ClientInformation?
     let card, csc, customerID, invoice, orderID: String?
     let expirationDateMMYY: String?
+    let serviceFeeAmount: String?
 
-    public init(amount: String, tipAmount: String? = nil, softwareType: String? = nil, softwareTypeVersion: String? = nil, billing: ClientInformation? = nil, shipping: ClientInformation? = nil, card: String? = nil, csc: String? = nil, customerID: String? = nil, invoice: String? = nil, orderID: String? = nil, expirationDateMMYY: String? = nil) {
+    public init(amount: String, tipAmount: String? = nil, softwareType: String? = nil, softwareTypeVersion: String? = nil, billing: ClientInformation? = nil, shipping: ClientInformation? = nil, card: String? = nil, csc: String? = nil, customerID: String? = nil, invoice: String? = nil, orderID: String? = nil, expirationDateMMYY: String? = nil, serviceFeeAmount: String? = nil) {
         self.amount = amount
         self.tipAmount = tipAmount
         self.softwareType = softwareType
@@ -26,6 +27,7 @@ public class SaleEntity: CodableProtocol {
         self.invoice = invoice
         self.orderID = orderID
         self.expirationDateMMYY = expirationDateMMYY
+        self.serviceFeeAmount = serviceFeeAmount?.setTwoDecimals()
     }
 
     enum CodingKeys: String, CodingKey {
@@ -36,6 +38,7 @@ public class SaleEntity: CodableProtocol {
         case softwareType = "software-type"
         case softwareTypeVersion = "software-type-version"
         case expirationDateMMYY = "exp-date"
+        case serviceFeeAmount = "service-fee"
     }
 }
 

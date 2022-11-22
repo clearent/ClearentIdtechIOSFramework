@@ -55,11 +55,11 @@ class ClearentOfflineModeReportPresenter {
         })
         
         let result = [ReportItem(itemName: ClearentConstants.Localized.OfflineReport.approvedCount, itemValue: String(approvedCount), isAmount: false),
-                      ReportItem(itemName: ClearentConstants.Localized.OfflineReport.approvedAmount, itemValue: String(approvedAmount), isAmount: true),
+                      ReportItem(itemName: ClearentConstants.Localized.OfflineReport.approvedAmount, itemValue: approvedAmount.stringFormattedWithTwoDecimals?.setTwoDecimals() ?? "-", isAmount: true),
                       ReportItem(itemName: ClearentConstants.Localized.OfflineReport.declinedCount, itemValue: String(declinedCount), isAmount: false),
-                      ReportItem(itemName: ClearentConstants.Localized.OfflineReport.declinedAmount, itemValue: String(declinedAmount), isAmount: true),
+                      ReportItem(itemName: ClearentConstants.Localized.OfflineReport.declinedAmount, itemValue: declinedAmount.stringFormattedWithTwoDecimals?.setTwoDecimals() ?? "-", isAmount: true),
                       ReportItem(itemName: ClearentConstants.Localized.OfflineReport.errorCount, itemValue: String(errorCount), isAmount: false),
-                      ReportItem(itemName: ClearentConstants.Localized.OfflineReport.errorAmount, itemValue: String(errorAmount), isAmount: true),
+                      ReportItem(itemName: ClearentConstants.Localized.OfflineReport.errorAmount, itemValue: errorAmount.stringFormattedWithTwoDecimals?.setTwoDecimals() ?? "-", isAmount: true),
         ]
         
         dataSource = result

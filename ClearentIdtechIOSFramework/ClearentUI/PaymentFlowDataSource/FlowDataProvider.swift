@@ -111,6 +111,22 @@ class FlowDataProvider : NSObject {
         
         delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
+    
+    func displayOfflineModeQuestion() {
+        let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
+                 FlowDataItem(type: .title, object: ClearentConstants.Localized.OfflineMode.enableOfflineMode),
+                 FlowDataItem(type: .description, object: ClearentConstants.Localized.OfflineMode.offlineModeWarningMessageDescription),
+                 FlowDataItem(type: .description, object: ClearentConstants.Localized.OfflineMode.offlineModeWarningConfirmationDescription),
+                 FlowDataItem(type: .userAction, object: FlowButtonType.acceptOfflineMode),
+                 FlowDataItem(type: .userAction, object: FlowButtonType.denyOfflineMode)]
+        
+        let feedback = FlowDataFactory.component(with: .payment,
+                                                 type: .info,
+                                                 readerInfo: fetchReaderInfo(),
+                                                 payload: items)
+        
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
+    }
 }
 
 extension FlowDataProvider : ClearentWrapperProtocol {
@@ -387,13 +403,9 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                 if !ClearentWrapperDefaults.enableOfflinePromptMode && !ClearentUIManager.shared.isOfflineModeConfirmed {
                     displayOfflineModeWarningMessage()
                     return
-                } else if sdkWrapper.isNewPaymentProcess {
-                    items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
-                             FlowDataItem(type: .title, object: ClearentConstants.Localized.OfflineMode.enableOfflineMode),
-                             FlowDataItem(type: .description, object: ClearentConstants.Localized.OfflineMode.offlineModeWarningMessageDescription),
-                             FlowDataItem(type: .description, object: ClearentConstants.Localized.OfflineMode.offlineModeWarningConfirmationDescription),
-                             FlowDataItem(type: .userAction, object: FlowButtonType.acceptOfflineMode),
-                             FlowDataItem(type: .userAction, object: FlowButtonType.denyOfflineMode)]
+                } else if sdkWrapper.isNewPaymentProcess && !ClearentUIManager.shared.isOfflineModeConfirmed {
+                    displayOfflineModeQuestion()
+                    return
                 } else if !ClearentUIManager.shared.isOfflineModeConfirmed {
                     items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
                              FlowDataItem(type: .title, object: ClearentConstants.Localized.Internet.error),

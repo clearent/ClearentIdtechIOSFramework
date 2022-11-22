@@ -44,11 +44,18 @@ public final class ClearentWrapper : NSObject {
     /// Stores the enhanced messages read from the messages bundle
     var enhancedMessagesDict: [String:String]?
     
-    var tipEnabled: Bool { transactionRepository?.tipEnabled ?? false }
+    var tipEnabled: Bool { ClearentWrapperDefaults.terminalSettings?.tipEnabled ?? false }
     var isNewPaymentProcess = true
     var isInternetOn: Bool = false {
         didSet {
             readerRepository?.isInternetOn = isInternetOn
+        }
+    }
+    
+    /// Force the transaction to be processed online in case the internet connection is enabled and the state of the offline mode is set to prompted.
+    var processTransactionOnline = true {
+        didSet {
+            clearentVP3300.setOfflineMode(!processTransactionOnline)
         }
     }
     
@@ -115,7 +122,7 @@ public final class ClearentWrapper : NSObject {
      * Method retrieves all saved offline transactions if the encryption key provided is valid and can decrypt them.
      */
     public func retrieveAllOfflineTransactions() -> [OfflineTransaction]? {
-        return transactionRepository?.fetchOfflineTransactions()
+        transactionRepository?.fetchOfflineTransactions()
     }
     
     /**
@@ -190,7 +197,11 @@ public final class ClearentWrapper : NSObject {
         
         if ClearentWrapperDefaults.enableOfflineMode {
             if isManualTransaction {
-                transactionRepository?.saveOfflineTransaction(paymentData: PaymentData(saleEntity: saleEntity))
+                if processTransactionOnline {
+                    transactionRepository?.manualEntryTransaction(saleEntity: saleEntity)
+                } else {
+                    transactionRepository?.saveOfflineTransaction(paymentData: PaymentData(saleEntity: saleEntity))
+                }
             } else {
                 if let userAction = getBluetoothConnectivityStatus() {
                     self.delegate?.userActionNeeded(action: userAction)
@@ -235,7 +246,13 @@ public final class ClearentWrapper : NSObject {
      */
     
     public func sendSignatureWithImage(image: UIImage, completion: @escaping (SignatureResponse?, ClearentError?) -> Void) {
-        if ClearentWrapperDefaults.enableOfflineMode {
+        if processTransactionOnline {
+            transactionRepository?.sendSignatureRequest(image: image) { (response, error) in
+                DispatchQueue.main.async {
+                    completion(response, error)
+                }
+            }
+        } else if ClearentWrapperDefaults.enableOfflineMode {
             transactionRepository?.saveSignatureImageForTransaction(image: image)
         } else if checkForConnectivityWarning(for: .payment) {
             completion(nil, .init(type: .connectivityError))
@@ -292,12 +309,16 @@ public final class ClearentWrapper : NSObject {
             return
         }
         
-        if checkForConnectivityWarning(for: .payment) { return }
-        
-        transactionRepository?.fetchTipSetting() {
-            DispatchQueue.main.async {
-                completion(nil)
+        if processTransactionOnline, checkForConnectivityWarning(for: .payment) { return }
+    
+        if isInternetOn {
+            transactionRepository?.fetchTipSetting() {
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
             }
+        } else {
+            completion(nil)
         }
     }
     
@@ -307,6 +328,22 @@ public final class ClearentWrapper : NSObject {
     
     func retrieveOfflineManager() -> OfflineModeManager? {
         transactionRepository?.offlineManager
+    }
+    
+    /**
+     * Method that returns the amount of service fee calculated based on the current terminal settings
+     * @param amount, the amount that service  will be applied to
+     * If there are no terminal settings fetched or the service fee is disabled it will return nil
+     */
+    func serviceFeeAmount(amount: Double) -> Double? {
+        return transactionRepository?.serviceFeeForAmount(amount: amount)
+    }
+    
+    /**
+     * Method that returns the service fee program type if available
+     */
+    func serviceFeeProgramName() -> String? {
+        return transactionRepository?.serviceFeeProgramType()
     }
     
     /**
@@ -328,14 +365,22 @@ public final class ClearentWrapper : NSObject {
      * @param completion, the closure that will be called after a send signature response is received. This is dispatched onto the main queue
      */
     func resendSignature(completion: @escaping (SignatureResponse?, ClearentError?) -> Void) {
-        if checkForConnectivityWarning(for: .payment) {
+        if processTransactionOnline {
+            transactionRepository?.resendSignature() { (response, error) in
+                DispatchQueue.main.async {
+                    completion(response, error)
+                }
+            }
+        } else if ClearentWrapperDefaults.enableOfflineMode {
+            transactionRepository?.resaveSignatureImageForTransaction()
+        } else if checkForConnectivityWarning(for: .payment) {
             completion(nil, .init(type: .connectivityError))
             return
-        }
-        
-        transactionRepository?.resendSignature() { (response, error) in
-            DispatchQueue.main.async {
-                completion(response, error)
+        } else {
+            transactionRepository?.resendSignature() { (response, error) in
+                DispatchQueue.main.async {
+                    completion(response, error)
+                }
             }
         }
     }
