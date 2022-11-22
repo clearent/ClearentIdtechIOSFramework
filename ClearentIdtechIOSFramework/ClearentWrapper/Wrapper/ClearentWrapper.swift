@@ -53,7 +53,7 @@ public final class ClearentWrapper : NSObject {
     }
     
     /// Force the transaction to be processed online in case the internet connection is enabled and the state of the offline mode is set to prompted.
-    var processTransactionOnline = false {
+    var processTransactionOnline = true {
         didSet {
             clearentVP3300.setOfflineMode(!processTransactionOnline)
         }
@@ -197,7 +197,11 @@ public final class ClearentWrapper : NSObject {
         
         if ClearentWrapperDefaults.enableOfflineMode {
             if isManualTransaction {
-                transactionRepository?.saveOfflineTransaction(paymentData: PaymentData(saleEntity: saleEntity))
+                if processTransactionOnline {
+                    transactionRepository?.manualEntryTransaction(saleEntity: saleEntity)
+                } else {
+                    transactionRepository?.saveOfflineTransaction(paymentData: PaymentData(saleEntity: saleEntity))
+                }
             } else {
                 if let userAction = getBluetoothConnectivityStatus() {
                     self.delegate?.userActionNeeded(action: userAction)

@@ -407,7 +407,6 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 
     private func startTransaction(saleEntity: SaleEntity, isManualTransaction: Bool) {
         modalProcessingView?.showLoadingView()
-
         sdkWrapper.startTransaction(with: saleEntity, isManualTransaction: isManualTransaction) { [weak self] error in
             if let error = error {
                 self?.modalProcessingView?.dismissViewController(result: .failure(error))
