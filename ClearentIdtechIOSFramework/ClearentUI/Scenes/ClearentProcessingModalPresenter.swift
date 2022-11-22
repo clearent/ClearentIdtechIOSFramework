@@ -160,7 +160,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 
                 if shouldStartTransactionAfterRenameReader {
                     shouldStartTransactionAfterRenameReader = false
-                    startTipFlow()
+                    startTransactionFlow()
                     modalProcessingView?.positionViewOnTop(flag: false)
                 } else {
                     modalProcessingView?.dismissViewController(result: .success(editableReader?.customReaderName))
@@ -195,9 +195,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             ClearentUIManager.shared.isOfflineModeConfirmed = true
             sdkFeedbackProvider.delegate = self
             modalProcessingView?.showLoadingView()
-            
-            useCardReaderPaymentMethod ? startCardReaderTransaction() : startManualEntryTransaction()
-            
+            startTipFlow()
         }
     }
     
@@ -297,11 +295,20 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             shouldStartTransactionAfterRenameReader = ClearentWrapperDefaults.pairedReaderInfo == nil
             sdkWrapper.startPairing(reconnectIfPossible: true)
         } else {
-            startTipFlow()
+            if shouldDisplayOfflineModeWarningMessage() {
+                sdkFeedbackProvider.displayOfflineModeWarningMessage()
+            } else if shouldDisplayOfflineModeQuestion() {
+                sdkFeedbackProvider.displayOfflineModeQuestion()
+            } else {
+                startTipFlow()
+            }
         }
     }
     
     private func startTipFlow() {
+        ClearentWrapper.shared.processTransactionOnline = (ClearentWrapperDefaults.enableOfflineMode && ClearentWrapperDefaults.enableOfflinePromptMode && ClearentWrapper.shared.isInternetOn) ||
+                                                    !ClearentWrapperDefaults.enableOfflineMode ||
+                                                    !ClearentUIManager.shared.isOfflineModeConfirmed
         sdkWrapper.fetchTipSetting { [weak self] error in
             if let error = error, error.type.isMissingKeyError {
                 self?.modalProcessingView?.dismissViewController(result: .failure(error))
@@ -312,43 +319,36 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             if showTipsScreen {
                 strongSelf.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: strongSelf.amountWithoutTip ?? 0)
                 strongSelf.tipsScreenWasNotShown = false
+            } else {
+                strongSelf.useCardReaderPaymentMethod ? strongSelf.startCardReaderTransaction() : strongSelf.startManualEntryTransaction()
             }
         }
     }
 
     private func startCardReaderTransaction() {
-        if shouldDisplayOfflineModeWarningMessage() {
-            sdkFeedbackProvider.displayOfflineModeWarningMessage()
-        } else {
-            if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
-                let saleEntity: SaleEntity
-
-                var totalAmountWithoutServiceFee = amountWithoutTip ?? 0.0
-                totalAmountWithoutServiceFee += tip ?? 0.0
-                let calculatedServiceFee = ClearentWrapper.shared.serviceFeeAmount(amount: totalAmountWithoutServiceFee)
-                
-                saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals, serviceFeeAmount: calculatedServiceFee?.stringFormattedWithTwoDecimals)
-                
-                startTransaction(saleEntity: saleEntity, isManualTransaction: false)
-            }
+        if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
+            var totalAmountWithoutServiceFee = amountWithoutTip ?? 0.0
+            totalAmountWithoutServiceFee += tip ?? 0.0
+            let calculatedServiceFee = ClearentWrapper.shared.serviceFeeAmount(amount: totalAmountWithoutServiceFee)
+            
+            let saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals, serviceFeeAmount: calculatedServiceFee?.stringFormattedWithTwoDecimals)
+            
+            startTransaction(saleEntity: saleEntity, isManualTransaction: false)
         }
     }
     
     private func startManualEntryTransaction() {
-        if shouldDisplayOfflineModeWarningMessage() {
-            sdkFeedbackProvider.displayOfflineModeWarningMessage()
-        } else {
-            let items = [FlowDataItem(type: .manualEntry, object: nil)]
-            let feedback = FlowFeedback(flow: .payment, type: FlowFeedbackType.info, items: items)
-            modalProcessingView?.updateContent(with: feedback)
-        }
+        let items = [FlowDataItem(type: .manualEntry, object: nil)]
+        let feedback = FlowFeedback(flow: .payment, type: FlowFeedbackType.info, items: items)
+        modalProcessingView?.updateContent(with: feedback)
     }
     
     private func shouldDisplayOfflineModeWarningMessage() -> Bool {
-        if ClearentWrapperDefaults.enableOfflineMode, !ClearentWrapperDefaults.enableOfflinePromptMode, !ClearentUIManager.shared.isOfflineModeConfirmed {
-            return true
-        }
-        return false
+        return ClearentWrapperDefaults.enableOfflineMode && !ClearentWrapperDefaults.enableOfflinePromptMode && !ClearentUIManager.shared.isOfflineModeConfirmed
+    }
+    
+    private func shouldDisplayOfflineModeQuestion() -> Bool {
+        return sdkWrapper.isNewPaymentProcess && ClearentWrapperDefaults.enableOfflineMode &&  ClearentWrapperDefaults.enableOfflinePromptMode && !ClearentUIManager.shared.isOfflineModeConfirmed && !sdkWrapper.isInternetOn
     }
     
     private func showReadersList() {
@@ -407,9 +407,6 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 
     private func startTransaction(saleEntity: SaleEntity, isManualTransaction: Bool) {
         modalProcessingView?.showLoadingView()
-        
-        sdkWrapper.processTransactionOnline = (ClearentWrapperDefaults.enableOfflineMode &&  ClearentWrapperDefaults.enableOfflinePromptMode && sdkWrapper.isInternetOn) || !ClearentWrapperDefaults.enableOfflineMode
-        
         sdkWrapper.startTransaction(with: saleEntity, isManualTransaction: isManualTransaction) { [weak self] error in
             if let error = error {
                 self?.modalProcessingView?.dismissViewController(result: .failure(error))

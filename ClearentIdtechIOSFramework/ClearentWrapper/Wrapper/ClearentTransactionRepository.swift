@@ -8,7 +8,6 @@
 
 protocol TransactionRepositoryProtocol {
     var delegate: ClearentWrapperProtocol? { get set }
-    var tipEnabled: Bool { get set }
     var offlineManager: OfflineModeManager? { get set }
     
     func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
@@ -29,7 +28,6 @@ protocol TransactionRepositoryProtocol {
 
 class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     var delegate: ClearentWrapperProtocol?
-    var tipEnabled = false
     var offlineManager: OfflineModeManager?
     private var lastTransactionID: String?
     private var signatureImage: UIImage?
@@ -45,10 +43,6 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         super.init()
         self.clearentManualEntry = clearentManualEntry
         self.clearentVP3300 = clearentVP3300
-        
-        if let ts = ClearentWrapperDefaults.terminalSettings {
-            tipEnabled = ts.tipEnabled
-        }
     }
     
     /**
@@ -194,7 +188,6 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
                     }
                     
                     let decodedResponse = try JSONDecoder().decode(MerchantSettingsEntity.self, from: data)
-                    strongSelf.tipEnabled = decodedResponse.payload.terminalSettings.tipEnabled
                     ClearentWrapperDefaults.terminalSettings = decodedResponse.payload.terminalSettings
                 } catch let jsonDecodingError {
                     print(jsonDecodingError)
