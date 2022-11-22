@@ -305,8 +305,9 @@ public final class ClearentWrapper : NSObject {
             return
         }
         
-        if processTransactionOnline || isInternetOn {
-            if checkForConnectivityWarning(for: .payment) { return }
+        if processTransactionOnline, checkForConnectivityWarning(for: .payment) { return }
+    
+        if isInternetOn {
             transactionRepository?.fetchTipSetting() {
                 DispatchQueue.main.async {
                     completion(nil)

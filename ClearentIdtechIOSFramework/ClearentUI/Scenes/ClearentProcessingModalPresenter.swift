@@ -160,7 +160,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 
                 if shouldStartTransactionAfterRenameReader {
                     shouldStartTransactionAfterRenameReader = false
-                    startTipFlow()
+                    startTransactionFlow()
                     modalProcessingView?.positionViewOnTop(flag: false)
                 } else {
                     modalProcessingView?.dismissViewController(result: .success(editableReader?.customReaderName))
@@ -327,13 +327,11 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 
     private func startCardReaderTransaction() {
         if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
-            let saleEntity: SaleEntity
-
             var totalAmountWithoutServiceFee = amountWithoutTip ?? 0.0
             totalAmountWithoutServiceFee += tip ?? 0.0
             let calculatedServiceFee = ClearentWrapper.shared.serviceFeeAmount(amount: totalAmountWithoutServiceFee)
             
-            saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals, serviceFeeAmount: calculatedServiceFee?.stringFormattedWithTwoDecimals)
+            let saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals, serviceFeeAmount: calculatedServiceFee?.stringFormattedWithTwoDecimals)
             
             startTransaction(saleEntity: saleEntity, isManualTransaction: false)
         }
