@@ -408,7 +408,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     private func startTransaction(saleEntity: SaleEntity, isManualTransaction: Bool) {
         modalProcessingView?.showLoadingView()
         
-        sdkWrapper.processTransactionOnline = (ClearentWrapperDefaults.enableOfflineMode &&  ClearentWrapperDefaults.enableOfflinePromptMode && sdkWrapper.isInternetOn) || (!ClearentWrapperDefaults.enableOfflineMode && sdkWrapper.isInternetOn)
+        sdkWrapper.processTransactionOnline = (ClearentWrapperDefaults.enableOfflineMode &&  ClearentWrapperDefaults.enableOfflinePromptMode && sdkWrapper.isInternetOn) || !ClearentWrapperDefaults.enableOfflineMode
         
         sdkWrapper.startTransaction(with: saleEntity, isManualTransaction: isManualTransaction) { [weak self] error in
             if let error = error {
