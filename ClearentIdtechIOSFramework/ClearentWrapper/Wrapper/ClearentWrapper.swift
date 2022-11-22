@@ -52,6 +52,13 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
+    /// Force the transaction to be processed online in case the internet connection is enabled and the state of the offline mode is set to prompted.
+    var processTransactionOnline = false {
+        didSet {
+            clearentVP3300.setOfflineMode(!processTransactionOnline)
+        }
+    }
+    
     // MARK: - Private properties
     
     private var clearentVP3300: Clearent_VP3300!
@@ -66,7 +73,6 @@ public final class ClearentWrapper : NSObject {
         super.init()
         
         createLogFile()
-        startConnectionListener()
     }
     
     // MARK: - Public
@@ -91,6 +97,8 @@ public final class ClearentWrapper : NSObject {
         if let offlineModeEncryptionKey = ClearentWrapper.configuration.offlineModeEncryptionKey {
             transactionRepository?.offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: ClearentConstants.KeychainService.serviceName, account: ClearentConstants.KeychainService.account, encryptionKey: offlineModeEncryptionKey))
         }
+        startConnectionListener()
+        setupOfflineMode()
     }
     
     /**
@@ -99,7 +107,7 @@ public final class ClearentWrapper : NSObject {
     public func enableOfflineMode() throws {
         guard transactionRepository?.offlineManager != nil else { throw ClearentErrorType.offlineModeEncryptionKeyNotProvided }
         clearentVP3300.setOfflineMode(true)
-        ClearentWrapper.configuration.enableOfflineMode = true
+        ClearentWrapperDefaults.enableOfflineMode = true
     }
     
     /**
@@ -107,15 +115,14 @@ public final class ClearentWrapper : NSObject {
      */
     public func disableOfflineMode() {
         clearentVP3300.setOfflineMode(false)
-        ClearentWrapper.configuration.enableOfflineMode = false
+        ClearentWrapperDefaults.enableOfflineMode = false
     }
-    
     
     /**
      * Method retrieves all saved offline transactions if the encryption key provided is valid and can decrypt them.
      */
     public func retrieveAllOfflineTransactions() -> [OfflineTransaction]? {
-        return transactionRepository?.fetchOfflineTransactions()
+        transactionRepository?.fetchOfflineTransactions()
     }
     
     /**
@@ -188,7 +195,7 @@ public final class ClearentWrapper : NSObject {
         
         self.saleEntity = saleEntity
         
-        if ClearentWrapper.configuration.enableOfflineMode {
+        if ClearentWrapperDefaults.enableOfflineMode {
             if isManualTransaction {
                 transactionRepository?.saveOfflineTransaction(paymentData: PaymentData(saleEntity: saleEntity))
             } else {
@@ -229,18 +236,19 @@ public final class ClearentWrapper : NSObject {
     }
     
     /**
-     * Method that resends the last client signature image to the payment gateway for storage.
-     * @param completion, the closure that will be called after a send signature response is received. This is dispatched onto the main queue
-     */
-    
-    /**
      * Method that sends a jpeg with client signature to the payment gateway for storage.
      * @param image, UIImage to be uploaded
      * @param completion, the closure that will be called after a send signature response is received. This is dispatched onto the main queue
      */
     
     public func sendSignatureWithImage(image: UIImage, completion: @escaping (SignatureResponse?, ClearentError?) -> Void) {
-        if ClearentWrapper.configuration.enableOfflineMode {
+        if processTransactionOnline {
+            transactionRepository?.sendSignatureRequest(image: image) { (response, error) in
+                DispatchQueue.main.async {
+                    completion(response, error)
+                }
+            }
+        } else if ClearentWrapperDefaults.enableOfflineMode {
             transactionRepository?.saveSignatureImageForTransaction(image: image)
         } else if checkForConnectivityWarning(for: .payment) {
             completion(nil, .init(type: .connectivityError))
@@ -344,15 +352,27 @@ public final class ClearentWrapper : NSObject {
     
     // MARK: - Internal
     
+    /**
+     * Method that resends the last client signature image to the payment gateway for storage.
+     * @param completion, the closure that will be called after a send signature response is received. This is dispatched onto the main queue
+     */
     func resendSignature(completion: @escaping (SignatureResponse?, ClearentError?) -> Void) {
-        if checkForConnectivityWarning(for: .payment) {
+        if processTransactionOnline {
+            transactionRepository?.resendSignature() { (response, error) in
+                DispatchQueue.main.async {
+                    completion(response, error)
+                }
+            }
+        } else if ClearentWrapperDefaults.enableOfflineMode {
+            transactionRepository?.resaveSignatureImageForTransaction()
+        } else if checkForConnectivityWarning(for: .payment) {
             completion(nil, .init(type: .connectivityError))
             return
-        }
-        
-        transactionRepository?.resendSignature() { (response, error) in
-            DispatchQueue.main.async {
-                completion(response, error)
+        } else {
+            transactionRepository?.resendSignature() { (response, error) in
+                DispatchQueue.main.async {
+                    completion(response, error)
+                }
             }
         }
     }
@@ -370,6 +390,18 @@ public final class ClearentWrapper : NSObject {
     }
     
     // MARK: - Private
+    
+    private func setupOfflineMode() {
+        if ClearentWrapperDefaults.enableOfflineMode {
+            do {
+                try enableOfflineMode()
+            } catch {
+                print("Error: \(error)")
+            }
+        } else {
+            disableOfflineMode()
+        }
+    }
     
     private func getBluetoothConnectivityStatus() -> UserAction? {
         let isBluetoothPermissionGranted = readerRepository?.isBluetoothPermissionGranted ?? false

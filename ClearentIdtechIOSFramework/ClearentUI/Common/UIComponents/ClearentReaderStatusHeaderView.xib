@@ -27,7 +27,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Mxb-gX-Hn6">
-                    <rect key="frame" x="155.5" y="0.0" width="41.5" height="20"/>
+                    <rect key="frame" x="0.0" y="0.0" width="352" height="20"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <constraints>
                         <constraint firstAttribute="height" constant="20" id="Ygf-U4-Z2A"/>
@@ -73,8 +73,9 @@
             <gestureRecognizers/>
             <constraints>
                 <constraint firstItem="QCv-p8-D5F" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="vUN-kp-3ea" secondAttribute="leading" id="1sx-Kb-f2w"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="Mxb-gX-Hn6" secondAttribute="trailing" id="6DY-Wu-LvZ"/>
                 <constraint firstItem="QCv-p8-D5F" firstAttribute="centerX" secondItem="Mxb-gX-Hn6" secondAttribute="centerX" id="BGG-pc-P6y"/>
-                <constraint firstItem="Mxb-gX-Hn6" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="iN0-l3-epB" secondAttribute="leading" id="IKE-0A-ysA"/>
+                <constraint firstItem="Mxb-gX-Hn6" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="IKE-0A-ysA"/>
                 <constraint firstItem="Mxb-gX-Hn6" firstAttribute="centerX" secondItem="vUN-kp-3ea" secondAttribute="centerX" id="SQe-4Z-79J"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="QCv-p8-D5F" secondAttribute="bottom" id="aUt-13-icG"/>
                 <constraint firstAttribute="top" secondItem="Mxb-gX-Hn6" secondAttribute="top" id="ghl-oU-bUS"/>

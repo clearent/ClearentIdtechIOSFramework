@@ -62,9 +62,13 @@ class ClearentDefaultFonts: ClearentUIFonts {
     
     var settingsScreenTitle: UIFont { proTextLarge }
     
-    var settingsScreenOfflineModeSubtitle: UIFont { proTextSmall }
+    var settingsOfflineModeSubtitle: UIFont { proTextSmall }
     
-    var settingsScreenOfflineModeProcessLabel: UIFont { proTextSmall }
+    var settingsOfflineModeProcessLabel: UIFont { proTextSmall }
 
     var offlineResultItemLabelFont: UIFont { proTextNormal }
+    
+    var settingsReadersPlaceholderLabel: UIFont { proTextSmall }
+    
+    var settingsReadersDescriptionLabel: UIFont { proTextNormal }
 }

@@ -21,6 +21,7 @@ protocol TransactionRepositoryProtocol {
     func manualEntryTransaction(saleEntity: SaleEntity)
     func saveOfflineTransaction(paymentData: PaymentData)
     func saveSignatureImageForTransaction(image: UIImage)
+    func resaveSignatureImageForTransaction()
     func fetchOfflineTransactions() -> [OfflineTransaction]?
     func serviceFeeForAmount(amount: Double) -> Double?
     func serviceFeeProgramType() -> String?
@@ -148,7 +149,6 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
             }
         }
     }
-    
     
     func resendSignature(completion: @escaping (SignatureResponse?, ClearentError?) -> Void) {
         guard let signatureImage = signatureImage else { return }
@@ -287,11 +287,19 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
      *  @param the actual image containing the signature
      */
     func saveSignatureImageForTransaction(image: UIImage) {
+        signatureImage = image
+        
         guard let transactionID = offlineTransaction?.transactionID,
-             let status = offlineManager?.saveSignatureForTransaction(transactionID: transactionID, image: image) else {
+              let status = offlineManager?.saveSignatureForTransaction(transactionID: transactionID, image: image) else {
             return
         }
         delegate?.didAcceptOfflineSignature(status: status, transactionID: transactionID)
+    }
+    
+    func resaveSignatureImageForTransaction() {
+        guard let signatureImage = signatureImage else { return }
+        
+        saveSignatureImageForTransaction(image: signatureImage)
     }
     
     // MARK: - Private

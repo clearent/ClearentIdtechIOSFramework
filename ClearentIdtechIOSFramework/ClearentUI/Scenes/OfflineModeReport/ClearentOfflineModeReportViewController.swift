@@ -10,8 +10,6 @@ import UIKit
 
 class ClearentOfflineModeReportViewController: UIViewController {
     
-    @IBOutlet weak var navigationBar: UINavigationBar!
-    @IBOutlet weak var customNavigationItem: UINavigationItem!
     @IBOutlet weak var clearReportButton: ClearentPrimaryButton!
     @IBOutlet weak var saveErrorLogButton: ClearentPrimaryButton!
     @IBOutlet weak var infoLabel: UILabel!
@@ -23,7 +21,7 @@ class ClearentOfflineModeReportViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupNavigationBar()
+        addNavigationBarWithBackItem(barTitle: ClearentConstants.Localized.OfflineReport.navigationItem)
         setupInfoLabel()
         setupButtons()
         tableView.dataSource = self
@@ -37,18 +35,6 @@ class ClearentOfflineModeReportViewController: UIViewController {
     
     
     // MARK: - Private
-
-    private func setupNavigationBar() {
-        let image = UIImage(named: ClearentConstants.IconName.navigationArrow, in: ClearentConstants.bundle, compatibleWith: nil)
-        customNavigationItem.leftBarButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(didPressBackButton))
-        navigationBar.isTranslucent = true
-        navigationBar.barTintColor = view.backgroundColor
-        navigationBar.shadowImage = UIImage()
-        navigationBar.tintColor = ClearentUIBrandConfigurator.shared.colorPalette.navigationBarTintColor
-        navigationBar.titleTextAttributes = [.font: ClearentUIBrandConfigurator.shared.fonts.screenTitleFont,
-                                             .foregroundColor: ClearentUIBrandConfigurator.shared.colorPalette.screenTitleColor]
-        customNavigationItem.title = ClearentConstants.Localized.OfflineReport.navigationItem
-    }
     
     private func setupInfoLabel() {
         self.infoLabel.text = ClearentConstants.Localized.OfflineReport.infoLabeltext
@@ -69,10 +55,6 @@ class ClearentOfflineModeReportViewController: UIViewController {
             self?.reportPresenter.clearAndProceed()
             self?.navigationController?.popViewController(animated: true)
         }
-    }
-    
-    @objc func didPressBackButton() {
-        navigationController?.popViewController(animated: true)
     }
 }
 

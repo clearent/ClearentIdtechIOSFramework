@@ -11,10 +11,7 @@ import CryptoKit
 @objc public class ClearentUIManagerConfiguration: ClearentWrapperConfiguration {
     public var tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages
     public var signatureEnabled: Bool = true
-    
-    /// The state of the offline mode feature
-    public var offlineModeState: OfflineModeState = .prompted
-    
+
     // MARK: - Init
     
     @objc public init(baseURL: String, apiKey: String, publicKey: String, enableEnhancedMessaging: Bool = false, tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages, signatureEnabled: Bool = true) {

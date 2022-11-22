@@ -36,10 +36,6 @@ public enum ProcessType: Equatable {
     }
 }
 
-public enum ReaderStatusHeaderViewState {
-    case collapsed, expanded
-}
-
 enum FlowGraphicType {
     case animatedCardInteraction, staticCardInteraction, press_button, transaction_completed, loading, error, warning, smallWarning, pairedReader, pairingSuccessful
     

@@ -65,8 +65,8 @@ class ClearentInfoWithIcon: ClearentMarginableView {
     var iconName: String? {
         didSet {
             guard let iconName = iconName else { return }
-            button.setBackgroundImage(UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil), for: .normal)
-            button.setTitle(nil, for: .normal)
+            button.setImage(UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil), for: .normal)
+            button.setTitle("", for: .normal)
         }
     }
 
