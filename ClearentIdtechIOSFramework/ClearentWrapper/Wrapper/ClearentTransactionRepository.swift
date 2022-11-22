@@ -23,6 +23,8 @@ protocol TransactionRepositoryProtocol {
     func saveSignatureImageForTransaction(image: UIImage)
     func resaveSignatureImageForTransaction()
     func fetchOfflineTransactions() -> [OfflineTransaction]?
+    func serviceFeeForAmount(amount: Double) -> Double?
+    func serviceFeeProgramType() -> String?
 }
 
 class TransactionRepository: NSObject, TransactionRepositoryProtocol {
@@ -43,6 +45,46 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         super.init()
         self.clearentManualEntry = clearentManualEntry
         self.clearentVP3300 = clearentVP3300
+        
+        if let ts = ClearentWrapperDefaults.terminalSettings {
+            tipEnabled = ts.tipEnabled
+        }
+    }
+    
+    /**
+     * Calculates the amount of the service fee based on the current terminal settings
+     * If there are no terminal settings fetched or the service fee is disabled it will return nil
+     */
+    func serviceFeeForAmount(amount: Double) -> Double? {
+        // Terminal settings are cached and if we have cached values we will use it
+        let terminalSettings = ClearentWrapperDefaults.terminalSettings
+        if (terminalSettings?.serviceFeeState) != nil && terminalSettings?.serviceFeeState ==  ServiceFeeState.enabled.rawValue {
+            guard let feeType = terminalSettings?.serviceFeeType, let feeValue = terminalSettings?.serviceFee else { return nil }
+            return calculateFeeFor(amount: amount, feeType: ServiceFeeType(rawValue: feeType), value: feeValue)
+        }
+        
+        return nil
+    }
+    
+    /**
+     * Returns the display name for the current service fee program type as String
+     */
+    func serviceFeeProgramType() -> String? {
+        let terminalSettings = ClearentWrapperDefaults.terminalSettings
+        return terminalSettings?.serviceFeeType
+    }
+    
+    
+    func calculateFeeFor(amount: Double, feeType: ServiceFeeType?, value: String) -> Double? {
+        guard let feeValue = Double(value), let feeType = feeType else { return nil }
+        
+        if (feeType == .percentage) {
+            return amount * feeValue / 100
+        } else if (feeType == .flatfee) {
+            return feeValue
+        }
+        
+        return nil
     }
     
     // MARK: - Internal
@@ -152,7 +194,8 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
                     }
                     
                     let decodedResponse = try JSONDecoder().decode(MerchantSettingsEntity.self, from: data)
-                    strongSelf.tipEnabled = decodedResponse.payload.terminalSettings.enableTip
+                    strongSelf.tipEnabled = decodedResponse.payload.terminalSettings.tipEnabled
+                    ClearentWrapperDefaults.terminalSettings = decodedResponse.payload.terminalSettings
                 } catch let jsonDecodingError {
                     print(jsonDecodingError)
                 }

@@ -9,6 +9,7 @@
 import Foundation
 
 private struct DefaultKeys {
+    static let terminalSettings = "\(UserDefaultsPersistence.clearentSdkPrefix)_terminal_settings"
     static let recentlyPairedReadersKey = "\(UserDefaultsPersistence.clearentSdkPrefix)_recently+paired_readers_key"
     static let skipOnboarding = "\(UserDefaultsPersistence.clearentSdkPrefix)_skip_onboarding_key"
     static let enableOfflineMode = "\(UserDefaultsPersistence.clearentSdkPrefix)_enable_offline_mode"
@@ -17,6 +18,25 @@ private struct DefaultKeys {
 
 public class ClearentWrapperDefaults: UserDefaultsPersistence {
     static var lastPairedReaderInfo: ReaderInfo?
+    
+    
+    static internal(set) var terminalSettings: TerminalSettings? {
+        get {
+            if let savedReaderData = retrieveValue(forKey: DefaultKeys.terminalSettings) as? Data {
+                let decoder = JSONDecoder()
+                let terminalSettings = try? decoder.decode(TerminalSettings.self, from: savedReaderData)
+                return terminalSettings
+            }
+            
+            return nil
+        }
+        set {
+            let encoder = JSONEncoder()
+            if let encoded = try? encoder.encode(newValue) {
+                save(encoded, forKey:  DefaultKeys.terminalSettings)
+            }
+        }
+    }
     
     static internal(set) var recentlyPairedReaders: [ReaderInfo]? {
            
