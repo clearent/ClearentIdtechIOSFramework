@@ -1789,8 +1789,8 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     [self deviceMessage:CLEARENT_TRANSLATING_CARD_TO_TOKEN];
     
     // If we are in offline mode call the delegate and stop
-    if (self.offlineMode && [self.publicDelegate respondsToSelector:@selector(successOfflineTransactionToken:)]) {
-        [self.publicDelegate successOfflineTransactionToken:postData];
+    if (self.offlineMode && [self.publicDelegate respondsToSelector:@selector(successOfflineTransactionToken: isTransactionEncrypted:)]) {
+        [self.publicDelegate successOfflineTransactionToken:postData isTransactionEncrypted:clearentTransactionTokenRequest.encrypted];
         
         processingCurrentRequest = NO;
         return;

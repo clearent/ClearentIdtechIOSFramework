@@ -141,12 +141,7 @@ class ReaderRepository: ReaderRepositoryProtocol {
     }
     
     func isReaderEncrypted() -> Bool? {
-        var response: NSData? = NSData()
-        _ = clearentVP3300.device_sendIDGCommand(0xC7, subCommand: 0x37, data: nil, response: &response)
-        
-        guard let response = response else { return nil }
-        
-        return response.int == 3
+        return ClearentWrapperDefaults.pairedReaderInfo?.encrypted
     }
     
     func deviceConnected() {
@@ -215,7 +210,7 @@ class ReaderRepository: ReaderRepositoryProtocol {
         let uuid: UUID? = UUID(uuidString: clearentDevice.deviceId)
         let customReader = readerFromRecentlyPaired(uuid: uuid)
             
-        return ReaderInfo(readerName: clearentDevice.friendlyName, customReaderName: customReader?.customReaderName, batterylevel: nil, signalLevel: nil, isConnected: clearentDevice.connected, autojoin: customReader?.autojoin ?? false, uuid: uuid, serialNumber: nil, version: nil)
+        return ReaderInfo(readerName: clearentDevice.friendlyName, customReaderName: customReader?.customReaderName, batterylevel: nil, signalLevel: nil, isConnected: clearentDevice.connected, autojoin: customReader?.autojoin ?? false, uuid: uuid, serialNumber: nil, version: nil, encrypted: nil)
     }
     
     func invalidateConnectionTimer() {

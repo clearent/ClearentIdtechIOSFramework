@@ -195,7 +195,17 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             ClearentUIManager.shared.isOfflineModeConfirmed = true
             sdkFeedbackProvider.delegate = self
             modalProcessingView?.showLoadingView()
-            startTipFlow()
+            
+            // Check if the card reader is encrypted and show the proper warning message
+            if let isReaderEncrypted = sdkWrapper.isReaderEncrypted(), useCardReaderPaymentMethod {
+               if !isReaderEncrypted {
+                   sdkFeedbackProvider.showEncryptionWarning()
+               } else {
+                   startTipFlow()
+               }
+            } else {
+                startTipFlow()
+            }
         }
     }
     
