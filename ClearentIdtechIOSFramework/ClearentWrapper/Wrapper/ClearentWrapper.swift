@@ -44,7 +44,7 @@ public final class ClearentWrapper : NSObject {
     /// Stores the enhanced messages read from the messages bundle
     var enhancedMessagesDict: [String:String]?
     
-    var tipEnabled: Bool { transactionRepository?.tipEnabled ?? false }
+    var tipEnabled: Bool { ClearentWrapperDefaults.terminalSettings?.tipEnabled ?? false }
     var isNewPaymentProcess = true
     var isInternetOn: Bool = false {
         didSet {
@@ -305,12 +305,15 @@ public final class ClearentWrapper : NSObject {
             return
         }
         
-        if checkForConnectivityWarning(for: .payment) { return }
-        
-        transactionRepository?.fetchTipSetting() {
-            DispatchQueue.main.async {
-                completion(nil)
+        if processTransactionOnline || isInternetOn {
+            if checkForConnectivityWarning(for: .payment) { return }
+            transactionRepository?.fetchTipSetting() {
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
             }
+        } else {
+            completion(nil)
         }
     }
     
