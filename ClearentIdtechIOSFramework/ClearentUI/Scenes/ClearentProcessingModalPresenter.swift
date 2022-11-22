@@ -195,17 +195,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             ClearentUIManager.shared.isOfflineModeConfirmed = true
             sdkFeedbackProvider.delegate = self
             modalProcessingView?.showLoadingView()
-            
-            // Check if the card reader is encrypted and show the proper warning message
-            if let isReaderEncrypted = sdkWrapper.isReaderEncrypted(), useCardReaderPaymentMethod {
-               if !isReaderEncrypted {
-                   sdkFeedbackProvider.showEncryptionWarning()
-               } else {
-                   startTipFlow()
-               }
-            } else {
-                startTipFlow()
-            }
+            startTipFlow()
         }
     }
     
@@ -336,6 +326,11 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
 
     private func startCardReaderTransaction() {
+        // Check if the card reader is encrypted and show the proper warning message
+        if let isReaderEncrypted = sdkWrapper.isReaderEncrypted(), !isReaderEncrypted {
+            sdkFeedbackProvider.showEncryptionWarning()
+            return
+        }
         if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
             var totalAmountWithoutServiceFee = amountWithoutTip ?? 0.0
             totalAmountWithoutServiceFee += tip ?? 0.0
