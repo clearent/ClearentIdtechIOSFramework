@@ -93,16 +93,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     
     func handleOfflineModeConfirmationOption() {
         sdkWrapper.isNewPaymentProcess = false
-        
-        if let isReaderEncrypted = sdkWrapper.isReaderEncrypted(), useCardReaderPaymentMethod {
-            if !isReaderEncrypted {
-                sdkFeedbackProvider.showEncryptionWarning()
-            } else {
-                sdkFeedbackProvider.displayOfflineModeWarningMessage()
-            }
-        } else {
-            sdkFeedbackProvider.displayOfflineModeWarningMessage()
-        }
+        sdkFeedbackProvider.displayOfflineModeWarningMessage()
     }
     
     func enableDoneButtonForInput(enabled: Bool) {
@@ -327,7 +318,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 
     private func startCardReaderTransaction() {
         // Check if the card reader is encrypted and show the proper warning message
-        if let isReaderEncrypted = sdkWrapper.isReaderEncrypted(), !isReaderEncrypted {
+        if let isReaderEncrypted = sdkWrapper.isReaderEncrypted(), !isReaderEncrypted, !sdkWrapper.processTransactionOnline {
+            sdkWrapper.disableOfflineMode()
             sdkFeedbackProvider.showEncryptionWarning()
             return
         }
