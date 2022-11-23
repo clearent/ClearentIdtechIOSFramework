@@ -32,6 +32,7 @@ class ClearentProcessingModalViewController: ClearentBaseViewController {
 
     public override func viewDidLoad() {
         super.viewDidLoad()
+        
         stackView.showLoadingView()
         positionViewOnTop(flag: showOnTop)
         presenter?.startFlow()
@@ -100,7 +101,8 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     }
     
     func addLoadingViewToCurrentContent() {
-        stackView.insertArrangedSubview(ClearentLoadingView(), at: 1)
+        let index = (ClearentWrapperDefaults.enableOfflineMode && !ClearentWrapperDefaults.enableOfflinePromptMode) ? 2 : 1
+        stackView.insertArrangedSubview(ClearentLoadingView(), at: index)
     }
     
     func showLoadingView() {
