@@ -36,7 +36,7 @@ class ClearentRoundedCornersStackView: ClearentAdaptiveStackView {
     }
     
     func findButtonInStack(with type: FlowButtonType) -> ClearentPrimaryButton? {
-        return subviews.first { ($0 as? ClearentPrimaryButton)?.type == type } as? ClearentPrimaryButton
+        subviews.first { ($0 as? ClearentPrimaryButton)?.type == type } as? ClearentPrimaryButton
     }
     
     // MARK: - Private
