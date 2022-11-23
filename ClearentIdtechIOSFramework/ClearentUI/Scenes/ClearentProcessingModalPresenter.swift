@@ -93,7 +93,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     
     func handleOfflineModeConfirmationOption() {
         sdkWrapper.isNewPaymentProcess = false
-        sdkFeedbackProvider.displayOfflineModeWarningMessage()
+        sdkFeedbackProvider.displayOfflineModeWarning()
     }
     
     func enableDoneButtonForInput(enabled: Bool) {
@@ -286,8 +286,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             shouldStartTransactionAfterRenameReader = ClearentWrapperDefaults.pairedReaderInfo == nil
             sdkWrapper.startPairing(reconnectIfPossible: true)
         } else {
-            if shouldDisplayOfflineModeWarningMessage() {
-                sdkFeedbackProvider.displayOfflineModeWarningMessage()
+            if shouldDisplayOfflineModeWarning() {
+                sdkFeedbackProvider.displayOfflineModeWarning()
             } else if shouldDisplayOfflineModeQuestion() {
                 sdkFeedbackProvider.displayOfflineModeQuestion()
             } else {
@@ -340,7 +340,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         modalProcessingView?.updateContent(with: feedback)
     }
     
-    private func shouldDisplayOfflineModeWarningMessage() -> Bool {
+    private func shouldDisplayOfflineModeWarning() -> Bool {
         ClearentWrapperDefaults.enableOfflineMode && !ClearentWrapperDefaults.enableOfflinePromptMode && !ClearentUIManager.shared.isOfflineModeConfirmed
     }
     

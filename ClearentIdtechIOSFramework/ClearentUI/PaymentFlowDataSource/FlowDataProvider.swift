@@ -99,7 +99,7 @@ class FlowDataProvider : NSObject {
         delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
-    func displayOfflineModeWarningMessage() {
+    func displayOfflineModeWarning() {
         let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
                      FlowDataItem(type: .title, object: ClearentConstants.Localized.OfflineMode.offlineModeWarningMessageTitle),
                      FlowDataItem(type: .description, object: ClearentConstants.Localized.OfflineMode.offlineModeWarningMessageDescription),
@@ -401,7 +401,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                          FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
             } else {
                 if !ClearentWrapperDefaults.enableOfflinePromptMode && !ClearentUIManager.shared.isOfflineModeConfirmed {
-                    displayOfflineModeWarningMessage()
+                    displayOfflineModeWarning()
                     return
                 } else if sdkWrapper.isNewPaymentProcess && !ClearentUIManager.shared.isOfflineModeConfirmed {
                     displayOfflineModeQuestion()

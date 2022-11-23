@@ -101,7 +101,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     }
     
     func addLoadingViewToCurrentContent() {
-        let index = (ClearentWrapperDefaults.enableOfflineMode && !ClearentWrapperDefaults.enableOfflinePromptMode) ? 2 : 1
+        let index = ClearentUIManager.shared.shouldDisplayOfflineModeLabel() ? 2 : 1
         stackView.insertArrangedSubview(ClearentLoadingView(), at: index)
     }
     
