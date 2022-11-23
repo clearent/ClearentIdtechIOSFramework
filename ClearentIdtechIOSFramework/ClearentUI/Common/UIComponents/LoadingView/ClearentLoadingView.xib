@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="19529" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="19519"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -20,7 +20,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="f0S-In-wj7" userLabel="Container">
-                    <rect key="frame" x="87.5" y="0.0" width="34" height="34"/>
+                    <rect key="frame" x="87.5" y="5" width="34" height="29"/>
                     <constraints>
                         <constraint firstAttribute="width" priority="999" constant="34" id="a8A-oN-OEQ"/>
                         <constraint firstAttribute="height" priority="999" constant="34" id="hbu-y1-pkV"/>
@@ -29,7 +29,7 @@
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <constraints>
-                <constraint firstItem="f0S-In-wj7" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="2Ds-Oc-Zpz"/>
+                <constraint firstItem="f0S-In-wj7" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" constant="5" id="2Ds-Oc-Zpz"/>
                 <constraint firstItem="f0S-In-wj7" firstAttribute="centerX" secondItem="vUN-kp-3ea" secondAttribute="centerX" id="OuJ-eK-wAG"/>
                 <constraint firstAttribute="bottom" secondItem="f0S-In-wj7" secondAttribute="bottom" id="r7d-Ir-xac"/>
             </constraints>

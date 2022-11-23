@@ -118,7 +118,7 @@ class ReaderRepository: ReaderRepositoryProtocol {
     }
     
     func isReaderConnected() -> Bool {
-        return ClearentWrapperDefaults.pairedReaderInfo != nil && ClearentWrapperDefaults.pairedReaderInfo?.isConnected == true
+        ClearentWrapperDefaults.pairedReaderInfo != nil && ClearentWrapperDefaults.pairedReaderInfo?.isConnected == true
     }
     
     func disconnectFromReader() {
@@ -141,7 +141,7 @@ class ReaderRepository: ReaderRepositoryProtocol {
     }
     
     func isReaderEncrypted() -> Bool? {
-        return ClearentWrapperDefaults.pairedReaderInfo?.encrypted
+        ClearentWrapperDefaults.pairedReaderInfo?.encrypted
     }
     
     func deviceConnected() {
@@ -201,7 +201,7 @@ class ReaderRepository: ReaderRepositoryProtocol {
     }
     
     func readerFromRecentlyPaired(uuid: UUID?) -> ReaderInfo? {
-       return ClearentWrapperDefaults.recentlyPairedReaders?.first {
+        ClearentWrapperDefaults.recentlyPairedReaders?.first {
             $0.uuid == uuid
         }
     }

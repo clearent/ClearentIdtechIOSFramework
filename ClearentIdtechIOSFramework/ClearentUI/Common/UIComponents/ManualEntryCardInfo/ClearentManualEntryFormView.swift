@@ -107,7 +107,6 @@ extension ClearentManualEntryFormView: ClearentPaymentSectionHeaderViewProtocol 
     }
 }
 
-
 extension ClearentManualEntryFormView: ClearentPaymentDataSourceProtocol {
     func didFinishCompletePaymentField(item: ClearentPaymentItem?, value: String?) {
         if dataSource?.isAllDataValid() ?? false{
