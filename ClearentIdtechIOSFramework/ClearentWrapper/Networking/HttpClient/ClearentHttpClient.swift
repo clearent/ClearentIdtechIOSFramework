@@ -96,8 +96,7 @@ class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
     // MARK - Private
     
     private func transactionMethod(type: String, saleEntity: SaleEntity) -> HttpClient.HTTPMethod {
-        let method = HttpClient.HTTPMethod.POST(transactionBody(type: type, saleEntity: saleEntity))
-        return method
+        HttpClient.HTTPMethod.POST(transactionBody(type: type, saleEntity: saleEntity))
     }
     
     private func transactionBody(type:String, saleEntity: SaleEntity) -> HttpClient.HTTPBody {

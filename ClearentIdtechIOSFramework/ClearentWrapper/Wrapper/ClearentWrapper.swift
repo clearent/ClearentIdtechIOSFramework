@@ -336,14 +336,14 @@ public final class ClearentWrapper : NSObject {
      * If there are no terminal settings fetched or the service fee is disabled it will return nil
      */
     func serviceFeeAmount(amount: Double) -> Double? {
-        return transactionRepository?.serviceFeeForAmount(amount: amount)
+        transactionRepository?.serviceFeeForAmount(amount: amount)
     }
     
     /**
      * Method that returns the service fee program type if available
      */
     func serviceFeeProgramName() -> String? {
-        return transactionRepository?.serviceFeeProgramType()
+        transactionRepository?.serviceFeeProgramType()
     }
     
     /**
