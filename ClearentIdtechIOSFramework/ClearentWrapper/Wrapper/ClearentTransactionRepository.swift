@@ -64,8 +64,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
      * Returns the display name for the current service fee program type as String
      */
     func serviceFeeProgramType() -> String? {
-        let terminalSettings = ClearentWrapperDefaults.terminalSettings
-        return terminalSettings?.serviceFeeType
+        ClearentWrapperDefaults.terminalSettings?.serviceFeeType
     }
     
     
@@ -177,9 +176,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     }
     
     func fetchTipSetting(completion: @escaping () -> Void) {
-        httpClient.merchantSettings() { [weak self] data, error in
-            guard let strongSelf = self else { return }
-            
+        httpClient.merchantSettings() { data, error in
             DispatchQueue.main.async {
                 do {
                     guard let data = data else {
@@ -271,7 +268,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
      * Retrieve all stored offline transactions
      */
     func fetchOfflineTransactions() -> [OfflineTransaction]? {
-        return offlineManager?.retrieveAll()
+        offlineManager?.retrieveAll()
     }
     
     /**

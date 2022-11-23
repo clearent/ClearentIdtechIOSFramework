@@ -349,11 +349,11 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     private func shouldDisplayOfflineModeWarningMessage() -> Bool {
-        return ClearentWrapperDefaults.enableOfflineMode && !ClearentWrapperDefaults.enableOfflinePromptMode && !ClearentUIManager.shared.isOfflineModeConfirmed
+        ClearentWrapperDefaults.enableOfflineMode && !ClearentWrapperDefaults.enableOfflinePromptMode && !ClearentUIManager.shared.isOfflineModeConfirmed
     }
     
     private func shouldDisplayOfflineModeQuestion() -> Bool {
-        return sdkWrapper.isNewPaymentProcess && ClearentWrapperDefaults.enableOfflineMode &&  ClearentWrapperDefaults.enableOfflinePromptMode && !ClearentUIManager.shared.isOfflineModeConfirmed && !sdkWrapper.isInternetOn
+        sdkWrapper.isNewPaymentProcess && ClearentWrapperDefaults.enableOfflineMode &&  ClearentWrapperDefaults.enableOfflinePromptMode && !ClearentUIManager.shared.isOfflineModeConfirmed && !sdkWrapper.isInternetOn
     }
     
     private func showReadersList() {
