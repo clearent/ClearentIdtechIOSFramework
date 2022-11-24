@@ -38,8 +38,9 @@ class ClearentIcon: UIView, ClearentMarginable {
         configure()
     }
     
-    var iconName: String = "" {
+    var iconName: String? {
         didSet {
+            guard let iconName = iconName else { return }
             imageView.image = UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil)
         }
     }
