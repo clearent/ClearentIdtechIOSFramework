@@ -17,8 +17,8 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     @IBOutlet var offlineStatusView: ClearentLabelWithButton!
     @IBOutlet var doneButton: ClearentPrimaryButton!
     
-    // Enable offline mode question prompt
-    @IBOutlet var offlineModeQuestionStackView: UIStackView!
+    // Offline mode question prompt
+    @IBOutlet var offlineQuestionStackView: UIStackView!
     @IBOutlet var offlineQuestionIcon: ClearentIcon!
     @IBOutlet var offlineQuestionTitle: ClearentTitleLabel!
     @IBOutlet var offlineQuestionFirstSubtitle: ClearentSubtitleLabel!
@@ -52,7 +52,7 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         setupDoneButton()
         setupOfflineModeQuestion()
         
-        offlineModeQuestionStackView.isHidden = true
+        offlineQuestionStackView.isHidden = true
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -122,7 +122,7 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     }
     
     private func showOfflineModeQuestionIfNeeded(shouldShow: Bool) {
-        offlineModeQuestionStackView.isHidden = !shouldShow
+        offlineQuestionStackView.isHidden = !shouldShow
         settingsStackView.isHidden = shouldShow
     }
     

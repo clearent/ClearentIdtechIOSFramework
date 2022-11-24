@@ -8,8 +8,9 @@
 
 class ClearentIcon: UIView, ClearentMarginable {
     public var viewType: UIView.Type { type(of: self) }
-    var bottomConstraint: NSLayoutConstraint?
-    let imageView = UIImageView(image: UIImage())
+    
+    private var bottomConstraint: NSLayoutConstraint?
+    private let imageView = UIImageView()
     
     var margins: [BottomMargin] {
         [

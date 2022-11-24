@@ -14,12 +14,12 @@
                 <outlet property="doneButton" destination="qvS-xB-3xk" id="7hL-Rp-Kbw"/>
                 <outlet property="enableOfflineMode" destination="YvF-Jp-B5R" id="oBh-5X-T3u"/>
                 <outlet property="enablePromptMode" destination="SF4-Ln-73M" id="0fC-g6-3sk"/>
-                <outlet property="offlineModeQuestionStackView" destination="38U-3i-vMp" id="jd3-N3-hZS"/>
                 <outlet property="offlineQuestionCancelBtn" destination="RF7-Mm-SVi" id="40V-zj-Ozk"/>
                 <outlet property="offlineQuestionConfirmBtn" destination="uOQ-9Z-iPW" id="Pxo-W7-nfV"/>
                 <outlet property="offlineQuestionFirstSubtitle" destination="bHp-S0-UJa" id="0XJ-iv-3XR"/>
                 <outlet property="offlineQuestionIcon" destination="tEK-ZZ-CkC" id="cSc-xG-MdQ"/>
                 <outlet property="offlineQuestionSecondSubtitle" destination="Jb2-pj-Cii" id="upV-lz-SjE"/>
+                <outlet property="offlineQuestionStackView" destination="38U-3i-vMp" id="jd3-N3-hZS"/>
                 <outlet property="offlineQuestionTitle" destination="83H-cK-isG" id="Xa4-lC-1j7"/>
                 <outlet property="offlineSectionSubtitle" destination="b9m-5T-Mp4" id="y7F-SU-ujf"/>
                 <outlet property="offlineStatusView" destination="sF1-XE-yMJ" id="nnr-6z-BU2"/>
