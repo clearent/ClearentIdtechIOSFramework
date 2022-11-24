@@ -75,8 +75,10 @@ class ClearentOfflineModeReportPresenter {
 extension ClearentOfflineModeReportPresenter : ClearentOfflineModeReportViewProtocol {
     
     func saveErrorLog() {
+        let offlineManager = ClearentWrapper.shared.retrieveOfflineManager()
+        let allTransactions = offlineManager?.retrieveAll()
         let generator = ClearentOfflineResultPDFGenerator()
-        let urlResult = generator.generateReport(transactions: [])
+        let urlResult = generator.generateReport(transactions: allTransactions!)
         self.offlineResultView?.showShareMenu(with: urlResult)
     }
     
