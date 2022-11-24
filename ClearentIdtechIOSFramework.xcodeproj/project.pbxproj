@@ -182,6 +182,7 @@
 		4BE4F5322816B39A00357F8F /* IDTech.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BE4F5312816B39A00357F8F /* IDTech.xcframework */; };
 		CC5E5A3628B659D400F5C291 /* ReaderInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5E5A3428B659D400F5C291 /* ReaderInfo.swift */; };
 		CC971BCA28EC50400051BC82 /* KeychainHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC971BC928EC50400051BC82 /* KeychainHelper.swift */; };
+		CCA3FFC7292F82290087FAE5 /* ClearentOfflineResultPDFGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA3FFC6292F82290087FAE5 /* ClearentOfflineResultPDFGenerator.swift */; };
 		CCA86E4B28CF5DB300FF83FB /* ClearentWrapperEnums.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA86E4528CF5DB300FF83FB /* ClearentWrapperEnums.swift */; };
 		CCA86E4D28CF5DB300FF83FB /* ClearentWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA86E4728CF5DB300FF83FB /* ClearentWrapper.swift */; };
 		CCA86E4E28CF5DB300FF83FB /* ClearentWrapperProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA86E4828CF5DB300FF83FB /* ClearentWrapperProtocol.swift */; };
@@ -413,6 +414,7 @@
 		4BE4F5312816B39A00357F8F /* IDTech.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = IDTech.xcframework; sourceTree = "<group>"; };
 		CC5E5A3428B659D400F5C291 /* ReaderInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderInfo.swift; sourceTree = "<group>"; };
 		CC971BC928EC50400051BC82 /* KeychainHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KeychainHelper.swift; sourceTree = "<group>"; };
+		CCA3FFC6292F82290087FAE5 /* ClearentOfflineResultPDFGenerator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentOfflineResultPDFGenerator.swift; sourceTree = "<group>"; };
 		CCA86E4528CF5DB300FF83FB /* ClearentWrapperEnums.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentWrapperEnums.swift; sourceTree = "<group>"; };
 		CCA86E4728CF5DB300FF83FB /* ClearentWrapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentWrapper.swift; sourceTree = "<group>"; };
 		CCA86E4828CF5DB300FF83FB /* ClearentWrapperProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentWrapperProtocol.swift; sourceTree = "<group>"; };
@@ -532,6 +534,7 @@
 				01084607292295E700BFE00D /* ClearentOfflineModeReportViewController.swift */,
 				01084608292295E700BFE00D /* ClearentOfflineResultTableViewCell.xib */,
 				01084609292295E700BFE00D /* ClearentOfflineModeReportViewController.xib */,
+				CCA3FFC6292F82290087FAE5 /* ClearentOfflineResultPDFGenerator.swift */,
 			);
 			path = OfflineModeReport;
 			sourceTree = "<group>";
@@ -1348,6 +1351,7 @@
 				01442D2028B3D836006DD15C /* ClearentSignatureView.swift in Sources */,
 				01442D0A28B3D836006DD15C /* ProgressShapeLayer.swift in Sources */,
 				E7CA494220E171960090CFFC /* ClearentConfiguration.m in Sources */,
+				CCA3FFC7292F82290087FAE5 /* ClearentOfflineResultPDFGenerator.swift in Sources */,
 				E79BC82520B366300030FD8C /* Clearent_VP3300.m in Sources */,
 				01E22E0228B77D9F004C4ADF /* SVGLoader.swift in Sources */,
 				01442D4728B3D836006DD15C /* ClearentDefaultFonts.swift in Sources */,

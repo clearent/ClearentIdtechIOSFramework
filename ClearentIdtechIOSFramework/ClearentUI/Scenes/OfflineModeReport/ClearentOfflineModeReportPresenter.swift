@@ -14,6 +14,10 @@ struct ReportItem {
     let isAmount: Bool
 }
 
+protocol ClearentOfflineViewProtocol {
+    func showShareMenu(with fileURL: URL)
+}
+
 protocol ClearentOfflineModeReportViewProtocol {
     func clearAndProceed()
     func saveErrorLog()
@@ -23,8 +27,10 @@ protocol ClearentOfflineModeReportViewProtocol {
 
 class ClearentOfflineModeReportPresenter {
     private var dataSource: [ReportItem] = []
+    private var offlineResultView: ClearentOfflineViewProtocol?
     
-    init() {
+    init(view: ClearentOfflineViewProtocol) {
+        offlineResultView = view
         updateDataSource()
     }
     
@@ -68,7 +74,11 @@ class ClearentOfflineModeReportPresenter {
 
 extension ClearentOfflineModeReportPresenter : ClearentOfflineModeReportViewProtocol {
     
-    func saveErrorLog() {}
+    func saveErrorLog() {
+        let generator = ClearentOfflineResultPDFGenerator()
+        let urlResult = generator.generateReport(transactions: [])
+        self.offlineResultView?.showShareMenu(with: urlResult)
+    }
     
     func clearAndProceed() {
         let offlineManager = ClearentWrapper.shared.retrieveOfflineManager()

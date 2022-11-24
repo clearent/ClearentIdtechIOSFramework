@@ -144,7 +144,7 @@ extension ClearentSettingsModalViewController: ClearentSettingsPresenterView {
     
     func presentReportScreen() {
         let vc = ClearentOfflineModeReportViewController(nibName: String(describing: ClearentOfflineModeReportViewController.self), bundle: ClearentConstants.bundle)
-        vc.reportPresenter = ClearentOfflineModeReportPresenter()
+        vc.reportPresenter = ClearentOfflineModeReportPresenter(view: vc)
         navigationController?.pushViewController(vc, animated: true)
     }
     

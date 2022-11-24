@@ -58,6 +58,13 @@ class ClearentOfflineModeReportViewController: UIViewController {
     }
 }
 
+extension ClearentOfflineModeReportViewController: ClearentOfflineViewProtocol {
+    func showShareMenu(with fileURL: URL) {
+       let activityViewController = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
+       present(activityViewController, animated: true, completion: nil)
+   }
+}
+
 extension ClearentOfflineModeReportViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
