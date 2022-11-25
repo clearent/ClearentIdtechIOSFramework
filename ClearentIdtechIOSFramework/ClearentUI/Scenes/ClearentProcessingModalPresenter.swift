@@ -24,6 +24,7 @@ protocol ProcessingModalProtocol {
     var tip: Double? { get set }
     var sdkFeedbackProvider: FlowDataProvider { get set }
     var selectedReaderFromReadersList: ReaderItem? { get set }
+    var useCardReaderPaymentMethod: Bool { get }
     
     func handleUserAction(userAction: FlowButtonType)
     func restartProcess(newPair: Bool)
@@ -48,9 +49,11 @@ class ClearentProcessingModalPresenter {
     private var temporaryReaderName: String?
     private let sdkWrapper = ClearentWrapper.shared
     private var tipsScreenWasNotShown = true
+    
     // defines the process type set when the SDK UI starts
     private var processType: ProcessType
-    private var useCardReaderPaymentMethod: Bool {
+    
+    var useCardReaderPaymentMethod: Bool {
         sdkWrapper.cardReaderPaymentIsPreffered && sdkWrapper.useManualPaymentAsFallback == nil
     }
     
