@@ -9,12 +9,22 @@
 public class ClearentSettingsModalViewController: ClearentBaseViewController {
     
     @IBOutlet var titleLabel: ClearentTitleLabel!
+    @IBOutlet var settingsStackView: UIStackView!
     @IBOutlet var readersListView: ClearentInfoWithIcon!
     @IBOutlet var offlineSectionSubtitle: UILabel!
     @IBOutlet var enableOfflineMode: ClearentLabelSwitch!
     @IBOutlet var enablePromptMode: ClearentLabelSwitch!
     @IBOutlet var offlineStatusView: ClearentLabelWithButton!
     @IBOutlet var doneButton: ClearentPrimaryButton!
+    
+    // Offline mode question prompt
+    @IBOutlet var offlineQuestionStackView: UIStackView!
+    @IBOutlet var offlineQuestionIcon: ClearentIcon!
+    @IBOutlet var offlineQuestionTitle: ClearentTitleLabel!
+    @IBOutlet var offlineQuestionFirstSubtitle: ClearentSubtitleLabel!
+    @IBOutlet var offlineQuestionSecondSubtitle: ClearentSubtitleLabel!
+    @IBOutlet var offlineQuestionConfirmBtn: ClearentPrimaryButton!
+    @IBOutlet var offlineQuestionCancelBtn: ClearentPrimaryButton!
     
     var presenter: ClearentSettingsPresenterProtocol?
     var dismissCompletion: ((CompletionResult) -> Void)?
@@ -40,6 +50,9 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         setupEnableOfflineModeSwitch()
         setupEnablePromptModeSwitch()
         setupDoneButton()
+        setupOfflineModeQuestion()
+        
+        offlineQuestionStackView.isHidden = true
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -60,6 +73,7 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
             readersListView.descriptionFont = ClearentUIBrandConfigurator.shared.fonts.settingsReadersPlaceholderLabel
             readersListView.descriptionTextColor = ClearentUIBrandConfigurator.shared.colorPalette.settingsReadersPlaceholderColor
         }
+        readersListView.button.isUserInteractionEnabled = false
     }
     
     private func setupTitle() {
@@ -79,9 +93,45 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         enableOfflineMode.descriptionText = nil
         enableOfflineMode.isOn = ClearentWrapperDefaults.enableOfflineMode
         enableOfflineMode.valueChangedAction = { [weak self] isOn in
-            self?.updatePromptModeState(isUserInteractionEnabled: isOn)
-            self?.presenter?.updateOfflineMode(isEnabled: isOn)
+            if isOn {
+                self?.showOfflineModeQuestionIfNeeded(shouldShow: true)
+            } else {
+                self?.updatePromptModeState(isUserInteractionEnabled: false)
+                self?.presenter?.updateOfflineMode(isEnabled: false)
+            }
         }
+    }
+    
+    private func setupOfflineModeQuestion() {
+        offlineQuestionIcon.iconName = ClearentConstants.IconName.warning
+        offlineQuestionTitle.title = ClearentConstants.Localized.OfflineMode.enableOfflineMode
+        offlineQuestionFirstSubtitle.title = ClearentConstants.Localized.OfflineMode.offlineModeWarningMessageDescription
+        offlineQuestionSecondSubtitle.title = ClearentConstants.Localized.OfflineMode.offlineModeWarningConfirmationDescription
+        offlineQuestionConfirmBtn.title = ClearentConstants.Localized.OfflineMode.offlineModeConfirmOption
+        offlineQuestionConfirmBtn.action = { [weak self] in
+            self?.showOfflineModeQuestionIfNeeded(shouldShow: false)
+            self?.updatePromptModeState(isUserInteractionEnabled: true)
+            self?.presenter?.updateOfflineMode(isEnabled: true)
+        }
+        offlineQuestionCancelBtn.title = ClearentConstants.Localized.OfflineMode.offlineModeCancelOption
+        offlineQuestionCancelBtn.buttonStyle = .bordered
+        offlineQuestionCancelBtn.action = { [weak self] in
+            self?.enableOfflineMode.isOn = false
+            self?.showOfflineModeQuestionIfNeeded(shouldShow: false)
+        }
+    }
+    
+    private func showOfflineModeQuestionIfNeeded(shouldShow: Bool) {
+        offlineQuestionStackView.isHidden = !shouldShow
+        settingsStackView.isHidden = shouldShow
+    }
+    
+    private func settingsViewController(dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UIViewController {
+        let viewController = ClearentSettingsModalViewController()
+        let presenter = ClearentSettingsPresenter(settingsPresenterView: viewController)
+        viewController.presenter = presenter
+        viewController.dismissCompletion = dismissCompletion
+        return viewController
     }
     
     private func updatePromptModeState(isUserInteractionEnabled: Bool) {
@@ -112,7 +162,7 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         dismissCompletion?(.success(nil))
     }
 
-    @IBAction func readersSectionWasPressed(_: Any) {
+    @IBAction private func readersSectionWasPressed(_: Any) {
         let viewController = ClearentProcessingModalViewController(showOnTop: true)
         let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, amount: nil, processType: .showReaders)
         viewController.presenter = presenter
@@ -149,7 +199,7 @@ extension ClearentSettingsModalViewController: ClearentSettingsPresenterView {
     }
     
     func displayNoInternetAlert() {
-        let alert = UIAlertController(title: ClearentConstants.Localized.Internet.noConnection, message: ClearentConstants.Localized.Internet.error, preferredStyle: .alert)
+        let alert = UIAlertController(title: ClearentConstants.Localized.Internet.error, message: ClearentConstants.Localized.Settings.settingsOfflineButtonProcessNoInternet, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: ClearentConstants.Localized.Internet.noConnectionDoneButton, style: .cancel))
         present(alert, animated: true, completion: nil)
     }

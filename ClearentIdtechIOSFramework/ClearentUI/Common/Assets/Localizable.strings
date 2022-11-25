@@ -226,4 +226,5 @@
 "xsdk_settings_offline_btn_process" = "Process";
 "xsdk_settings_offline_btn_report" = "Report";
 "xsdk_settings_offline_btn_done" = "OK";
+"xsdk_settings_offline_btn_process_no_internet" = "The transactions cannot be processed until the internet connection is restored";
 

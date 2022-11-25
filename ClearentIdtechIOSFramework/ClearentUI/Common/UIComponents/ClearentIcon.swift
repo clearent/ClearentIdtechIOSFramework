@@ -8,7 +8,9 @@
 
 class ClearentIcon: UIView, ClearentMarginable {
     public var viewType: UIView.Type { type(of: self) }
-    var bottomConstraint: NSLayoutConstraint?
+    
+    private var bottomConstraint: NSLayoutConstraint?
+    private let imageView = UIImageView()
     
     var margins: [BottomMargin] {
         [
@@ -31,10 +33,25 @@ class ClearentIcon: UIView, ClearentMarginable {
         bottomConstraint?.constant = -margin.constant
     }
     
+    public override func awakeFromNib() {
+        super.awakeFromNib()
+        configure()
+    }
+    
+    var iconName: String? {
+        didSet {
+            guard let iconName = iconName else { return }
+            imageView.image = UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil)
+        }
+    }
+    
     convenience init(iconName: String) {
         self.init()
-        let image = UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil)
-        let imageView = UIImageView(image: image)
+        configure()
+        imageView.image = UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil)
+    }
+    
+    private func configure() {
         addSubview(imageView)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit

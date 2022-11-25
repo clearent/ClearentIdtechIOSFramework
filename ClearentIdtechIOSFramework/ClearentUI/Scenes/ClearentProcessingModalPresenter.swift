@@ -15,7 +15,6 @@ protocol ClearentProcessingModalView: AnyObject {
     func dismissViewController(result: CompletionResult)
     func positionViewOnTop(flag: Bool)
     func updateUserActionButtonState(enabled: Bool)
-    func displayOfflineModeConfirmationMessage(for flowType: FlowButtonType)
     func startPairNewReaderFlow()
 }
 
@@ -179,9 +178,9 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         case .manuallyEnterCardInfo:
             startManualEntryTransaction()
         case .acceptOfflineMode:
-            modalProcessingView?.displayOfflineModeConfirmationMessage(for: .acceptOfflineMode)
+            handleOfflineModeConfirmationOption()
         case .denyOfflineMode:
-            modalProcessingView?.displayOfflineModeConfirmationMessage(for: .denyOfflineMode)
+            handleOfflineModeCancelOption()
         case .confirmOfflineModeWarningMessage:
             ClearentUIManager.shared.isOfflineModeConfirmed = true
             sdkFeedbackProvider.delegate = self

@@ -300,6 +300,7 @@ import UIKit
             public static let settingsOfflineButtonProcess = "xsdk_settings_offline_btn_process".localized
             public static let settingsOfflineButtonReport = "xsdk_settings_offline_btn_report".localized
             public static let settingsOfflineButtonDone = "xsdk_settings_offline_btn_done".localized
+            public static let settingsOfflineButtonProcessNoInternet = "xsdk_settings_offline_btn_process_no_internet".localized
         }
     }
 }
