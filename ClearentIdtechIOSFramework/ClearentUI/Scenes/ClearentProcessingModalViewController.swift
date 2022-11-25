@@ -80,12 +80,10 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             }
         }
             
-        if let presenter = presenter, presenter.useCardReaderPaymentMethod {
-            if shouldDisplayOfflineModeLabel() {
-                let iconAndLabel = ClearentIconAndLabel(icon: UIImage(named: ClearentConstants.IconName.smallWarning, in: ClearentConstants.bundle, compatibleWith: nil), text: presenter.offlineTransactionsWarningText())
-                stackView.insertArrangedSubview(iconAndLabel, at: 1)
-                stackView.layoutSubviews()
-            }
+        if let presenter = presenter, presenter.useCardReaderPaymentMethod, shouldDisplayOfflineModeLabel() {
+            let iconAndLabel = ClearentIconAndLabel(icon: UIImage(named: ClearentConstants.IconName.smallWarning, in: ClearentConstants.bundle, compatibleWith: nil), text: presenter.offlineTransactionsWarningText())
+            stackView.insertArrangedSubview(iconAndLabel, at: 1)
+            stackView.layoutSubviews()
         }
         
     }
