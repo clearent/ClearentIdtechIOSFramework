@@ -114,6 +114,8 @@
 		01442D4A28B3D836006DD15C /* ClearentUIBrandConfigurator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442CE928B3D835006DD15C /* ClearentUIBrandConfigurator.swift */; };
 		01442D4B28B3D836006DD15C /* ClearentProcessingModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442CEA28B3D835006DD15C /* ClearentProcessingModalViewController.swift */; };
 		01442D4C28B3D836006DD15C /* ClearentProcessingModalPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442CEB28B3D835006DD15C /* ClearentProcessingModalPresenter.swift */; };
+		01BFBC472934BA9400B694F6 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BFBC452934BA9400B694F6 /* UIImageExtension.swift */; };
+		01BFBC482934BA9400B694F6 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BFBC462934BA9400B694F6 /* DateExtension.swift */; };
 		01DC91AA28BE129B009FAE64 /* ArrayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DC91A928BE129B009FAE64 /* ArrayExtension.swift */; };
 		01E22E0028B77D9F004C4ADF /* SVGView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E22DFD28B77D9E004C4ADF /* SVGView.swift */; };
 		01E22E0228B77D9F004C4ADF /* SVGLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E22DFF28B77D9F004C4ADF /* SVGLoader.swift */; };
@@ -321,6 +323,8 @@
 		01442CE928B3D835006DD15C /* ClearentUIBrandConfigurator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentUIBrandConfigurator.swift; sourceTree = "<group>"; };
 		01442CEA28B3D835006DD15C /* ClearentProcessingModalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentProcessingModalViewController.swift; sourceTree = "<group>"; };
 		01442CEB28B3D835006DD15C /* ClearentProcessingModalPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentProcessingModalPresenter.swift; sourceTree = "<group>"; };
+		01BFBC452934BA9400B694F6 /* UIImageExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
+		01BFBC462934BA9400B694F6 /* DateExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		01DC91A928BE129B009FAE64 /* ArrayExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtension.swift; sourceTree = "<group>"; };
 		01E22DFD28B77D9E004C4ADF /* SVGView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SVGView.swift; sourceTree = "<group>"; };
 		01E22DFF28B77D9F004C4ADF /* SVGLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SVGLoader.swift; sourceTree = "<group>"; };
@@ -701,6 +705,15 @@
 			path = BrandConfigurator;
 			sourceTree = "<group>";
 		};
+		01BFBC442934BA9400B694F6 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				01BFBC452934BA9400B694F6 /* UIImageExtension.swift */,
+				01BFBC462934BA9400B694F6 /* DateExtension.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		01E22DFA28B77C65004C4ADF /* Animations */ = {
 			isa = PBXGroup;
 			children = (
@@ -721,6 +734,7 @@
 		CCD1B7F028E6DD9900D9D067 /* ClearentWrapper */ = {
 			isa = PBXGroup;
 			children = (
+				01BFBC442934BA9400B694F6 /* Extensions */,
 				CCD1B7F128E6DD9900D9D067 /* ReaderInfo.swift */,
 				CCD1B7F228E6DD9900D9D067 /* UserDefaults */,
 				CCD1B7F528E6DD9900D9D067 /* HttpClient */,
@@ -1267,11 +1281,13 @@
 				01442D2128B3D836006DD15C /* ClearentBaseViewController.swift in Sources */,
 				01442D0628B3D836006DD15C /* StringExtension.swift in Sources */,
 				01442D2F28B3D836006DD15C /* ClearentPaymentFieldCell.swift in Sources */,
+				01BFBC472934BA9400B694F6 /* UIImageExtension.swift in Sources */,
 				01442D4828B3D836006DD15C /* ClearentUIColors.swift in Sources */,
 				01442D4928B3D836006DD15C /* ClearentUIFonts.swift in Sources */,
 				E7B89E3121F6A6A400078C73 /* ClearentManualEntry.m in Sources */,
 				01442CFD28B3D836006DD15C /* ClearentMoneyFormatter.swift in Sources */,
 				01442D2C28B3D836006DD15C /* ClearentReadersTableView.swift in Sources */,
+				01BFBC482934BA9400B694F6 /* DateExtension.swift in Sources */,
 				E7CA497520E579190090CFFC /* ClearentConfigFetcher.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

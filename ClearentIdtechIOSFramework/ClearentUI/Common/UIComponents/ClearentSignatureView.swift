@@ -37,7 +37,7 @@ class ClearentSignatureView: ClearentMarginableView {
     }
     
     @IBAction func doneButtonWasTapped(_: Any) {
-        doneAction?(drawingPanel.bufferImage ?? UIImage())
+        doneAction?(drawingPanel.resultedImage)
     }
     
     override func configure() {

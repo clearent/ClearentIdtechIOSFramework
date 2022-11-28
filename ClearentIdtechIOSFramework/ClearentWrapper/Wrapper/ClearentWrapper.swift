@@ -262,7 +262,8 @@ public final class ClearentWrapper : NSObject {
         if let id = lastTransactionID {
             if let tid = Int(id) {
                  signatureImage = image
-                 let base64Image =  image.jpegData(compressionQuality: 1)?.base64EncodedString() ?? ""
+                 guard let dataImage = image.resize()?.jpegData(compressionQuality: 0) else { return }
+                 let base64Image = dataImage.base64EncodedString()
                  httpClient.sendSignature(base64Image: base64Image, transactionID: tid) { data, error in
                      guard let responseData = data else { return }
                      

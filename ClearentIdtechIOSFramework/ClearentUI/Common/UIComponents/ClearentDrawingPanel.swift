@@ -7,12 +7,19 @@
 //
 
 class ClearentDrawingPanel: UIView {
-    var bufferImage: UIImage?
+    private var bufferImage: UIImage?
     private var drawingLayer: CAShapeLayer?
     private var currentPath: UIBezierPath?
     private var temporaryPath: UIBezierPath?
     private var points = [CGPoint]()
     private let lineWidth: CGFloat = 2.0
+    
+    var resultedImage: UIImage {
+        if bufferImage == nil {
+            saveBufferImage()
+        }
+        return bufferImage ?? UIImage()
+    }
 
     // MARK: Init
 
