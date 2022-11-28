@@ -152,11 +152,11 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     func sendSignatureRequest(image: UIImage, completion: @escaping (SignatureResponse?, ClearentError?) -> Void) {
         if let id = lastTransactionID, let tid = Int(id) {
             signatureImage = image
-            guard let base64Image = image.jpegData(compressionQuality: 1)?.base64EncodedString() else {
+            guard let dataImage = image.resize()?.jpegData(compressionQuality: 0) else {
                 completion(nil, .init(type: .missingSignatureImage))
                 return
             }
-            
+            let base64Image = dataImage.base64EncodedString()
             httpClient.sendSignature(base64Image: base64Image, transactionID: tid) { [weak self] data, error in
                 guard let strongSelf = self else { return }
                 guard let responseData = data else { return }
