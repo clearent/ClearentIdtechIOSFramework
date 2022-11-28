@@ -60,10 +60,10 @@ class ClearentHttpClient {
     }
     
     public func sendSignature(base64Image: String, transactionID: Int, completion: @escaping (Data?, Error?) -> Void) {
-        let created = DateFormatter().string(from: Date())
+        let created = Date().dateAndTimeToString()
         let signatureURL = URL(string: baseURL + ClearentEndpoints.signature)
         let headers = headers(jwt: nil, apiKey: self.apiKey)
-        let _ = HttpClient.makeRawRequest(to: signatureURL!, method: signatureHTTPMethod(base64Image: baseURL, created: created, transactionID: transactionID), headers: headers) { data, error in
+        let _ = HttpClient.makeRawRequest(to: signatureURL!, method: signatureHTTPMethod(base64Image: base64Image, created: created, transactionID: transactionID), headers: headers) { data, error in
             completion(data, error)
         }
     }
