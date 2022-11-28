@@ -45,10 +45,10 @@ class OfflineModeManager {
         return .genericError
     }
 
-    func retrieveSignatureForTransaction(transactionID: String) -> UIImage! {
+    func retrieveSignatureForTransaction(transactionID: String) -> UIImage? {
         if let imageData = UserDefaults.standard.value(forKey: transactionID) as? Data {
-            if let sigantureImage = UIImage(data: imageData) {
-                return sigantureImage
+            if let signatureImage = UIImage(data: imageData) {
+                return signatureImage
             }
         }
 
