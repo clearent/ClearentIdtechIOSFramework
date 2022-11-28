@@ -12,52 +12,47 @@ import Foundation
 class ClearentOfflineResultPDFGenerator {
     
     func generateReport(transactions: [OfflineTransaction]) -> URL {
-        let width = 1024.0
-        let height = 780.0
-    
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let outputFileURL = documentsDirectory.appendingPathComponent("file.pdf")
 
-        let pdfRenderer = UIGraphicsPDFRenderer(bounds: CGRect(x: 0, y: 0, width: width, height: height))
+        let pdfRenderer = UIGraphicsPDFRenderer(bounds: CGRect(x: 0, y: 0, width: 565, height: 600))
 
-      
-
-            let pageSize = CGSize(width: 595.2, height: 841.8)
-            let pageMargins = UIEdgeInsets(top: 72, left: 72, bottom: 72, right: 72)
-            let printableRect = CGRect(x: pageMargins.left, y: pageMargins.top, width: pageSize.width - pageMargins.left - pageMargins.right, height: pageSize.height - pageMargins.top - pageMargins.bottom)
-            let paperRect = CGRect(x: 0, y: 0, width: pageSize.width, height: pageSize.height)
-            
-            let renderer = UIPrintPageRenderer()
-            renderer.setValue(NSValue(cgRect: paperRect), forKey: "paperRect")
-            renderer.setValue(NSValue(cgRect: printableRect), forKey: "printableRect")
-            
-            let allData = NSMutableAttributedString()
-            transactions.forEach { tr in
-                let str = createTransactionString(for: transactionDictionary(for: tr))
-                allData.append(str)
-            }
+        let pageSize = CGSize(width: 595.2, height: 841.8)
+        let pageMargins = UIEdgeInsets(top: 72, left: 72, bottom: 72, right: 72)
+        let printableRect = CGRect(x: pageMargins.left, y: pageMargins.top, width: pageSize.width - pageMargins.left - pageMargins.right, height: pageSize.height - pageMargins.top - pageMargins.bottom)
+        let paperRect = CGRect(x: 0, y: 0, width: pageSize.width, height: pageSize.height)
         
-            let printFormatter = UISimpleTextPrintFormatter(attributedText: allData)
-            renderer.addPrintFormatter(printFormatter, startingAtPageAt: 0)
-            
-            let pdfData = NSMutableData()
+        let renderer = UIPrintPageRenderer()
+        renderer.setValue(NSValue(cgRect: paperRect), forKey: "paperRect")
+        renderer.setValue(NSValue(cgRect: printableRect), forKey: "printableRect")
+        
+        let allData = NSMutableAttributedString()
+        transactions.forEach { tr in
+            let str = createTransactionString(for: transactionDictionary(for: tr))
+            allData.append(str)
+        }
+    
+        let printFormatter = UISimpleTextPrintFormatter(attributedText: allData)
+        renderer.addPrintFormatter(printFormatter, startingAtPageAt: 0)
+        
+        let pdfData = NSMutableData()
 
-            UIGraphicsBeginPDFContextToData(pdfData, paperRect, nil)
-            renderer.prepare(forDrawingPages: NSMakeRange(0, renderer.numberOfPages))
-            
-            let bounds = UIGraphicsGetPDFContextBounds()
-            for i in 0  ..< renderer.numberOfPages {
-                UIGraphicsBeginPDFPage()
-                renderer.drawPage(at: i, in: bounds)
-            }
+        UIGraphicsBeginPDFContextToData(pdfData, paperRect, nil)
+        renderer.prepare(forDrawingPages: NSMakeRange(0, renderer.numberOfPages))
+        
+        let bounds = UIGraphicsGetPDFContextBounds()
+        for i in 0  ..< renderer.numberOfPages {
+            UIGraphicsBeginPDFPage()
+            renderer.drawPage(at: i, in: bounds)
+        }
 
-            UIGraphicsEndPDFContext()
-            
-            do {
-                try pdfData.write(to: outputFileURL)
-            } catch {
-                print(error.localizedDescription)
-            }
+        UIGraphicsEndPDFContext()
+        
+        do {
+            try pdfData.write(to: outputFileURL)
+        } catch {
+            print(error.localizedDescription)
+        }
         
         return outputFileURL
     }
