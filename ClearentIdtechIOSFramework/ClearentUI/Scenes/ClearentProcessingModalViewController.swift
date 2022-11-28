@@ -80,12 +80,12 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             }
         }
             
-        if shouldDisplayOfflineModeLabel() {
-            guard let offlineWarningText = presenter?.offlineTransactionsWarningText() else { return }
-            let iconAndLabel = ClearentIconAndLabel(icon: UIImage(named: ClearentConstants.IconName.smallWarning, in: ClearentConstants.bundle, compatibleWith: nil), text: offlineWarningText)
+        if let presenter = presenter, presenter.useCardReaderPaymentMethod, shouldDisplayOfflineModeLabel() {
+            let iconAndLabel = ClearentIconAndLabel(icon: UIImage(named: ClearentConstants.IconName.smallWarning, in: ClearentConstants.bundle, compatibleWith: nil), text: presenter.offlineTransactionsWarningText())
             stackView.insertArrangedSubview(iconAndLabel, at: 1)
             stackView.layoutSubviews()
         }
+        
     }
     
     func startPairNewReaderFlow() {
@@ -132,15 +132,6 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         } else {
             button?.setDisabledButton()
         }
-    }
-    
-    func displayOfflineModeConfirmationMessage(for flowType: FlowButtonType) {
-        let offlineModeAlert = UIAlertController(title: ClearentConstants.Localized.OfflineMode.offlineModeConfirmationMessage, message: nil, preferredStyle: .alert)
-        offlineModeAlert.addAction(UIAlertAction(title: ClearentConstants.Localized.OfflineMode.offlineModeConfirmationMessageCancel, style: .default, handler: { _ in }))
-        offlineModeAlert.addAction(UIAlertAction(title: ClearentConstants.Localized.OfflineMode.offlineModeConfirmationMessageConfirm, style: .default, handler: { [weak self] _ in
-            flowType == .acceptOfflineMode ? self?.presenter?.handleOfflineModeConfirmationOption() : self?.presenter?.handleOfflineModeCancelOption()
-        }))
-        present(offlineModeAlert, animated: true, completion: nil)
     }
 
     // MARK: - Private

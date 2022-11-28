@@ -15,7 +15,6 @@ protocol ClearentProcessingModalView: AnyObject {
     func dismissViewController(result: CompletionResult)
     func positionViewOnTop(flag: Bool)
     func updateUserActionButtonState(enabled: Bool)
-    func displayOfflineModeConfirmationMessage(for flowType: FlowButtonType)
     func startPairNewReaderFlow()
 }
 
@@ -25,6 +24,7 @@ protocol ProcessingModalProtocol {
     var tip: Double? { get set }
     var sdkFeedbackProvider: FlowDataProvider { get set }
     var selectedReaderFromReadersList: ReaderItem? { get set }
+    var useCardReaderPaymentMethod: Bool { get }
     
     func handleUserAction(userAction: FlowButtonType)
     func restartProcess(newPair: Bool)
@@ -49,9 +49,11 @@ class ClearentProcessingModalPresenter {
     private var temporaryReaderName: String?
     private let sdkWrapper = ClearentWrapper.shared
     private var tipsScreenWasNotShown = true
+    
     // defines the process type set when the SDK UI starts
     private var processType: ProcessType
-    private var useCardReaderPaymentMethod: Bool {
+    
+    var useCardReaderPaymentMethod: Bool {
         sdkWrapper.cardReaderPaymentIsPreffered && sdkWrapper.useManualPaymentAsFallback == nil
     }
     
@@ -179,9 +181,9 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         case .manuallyEnterCardInfo:
             startManualEntryTransaction()
         case .acceptOfflineMode:
-            modalProcessingView?.displayOfflineModeConfirmationMessage(for: .acceptOfflineMode)
+            handleOfflineModeConfirmationOption()
         case .denyOfflineMode:
-            modalProcessingView?.displayOfflineModeConfirmationMessage(for: .denyOfflineMode)
+            handleOfflineModeCancelOption()
         case .confirmOfflineModeWarningMessage:
             ClearentUIManager.shared.isOfflineModeConfirmed = true
             sdkFeedbackProvider.delegate = self
