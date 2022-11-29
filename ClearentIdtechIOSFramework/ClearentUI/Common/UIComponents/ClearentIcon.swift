@@ -17,6 +17,7 @@ class ClearentIcon: UIView, ClearentMarginable {
             RelativeBottomMargin(constant: 24, relatedViewType: ClearentIcon.self),
             RelativeBottomMargin(constant: 26, relatedViewType: ClearentTitleLabel.self),
             RelativeBottomMargin(constant: 48, relatedViewType: ClearentSubtitleLabel.self),
+            RelativeBottomMargin(constant: 40, relatedViewType: ClearentPrimaryButton.self),
             BottomMargin(constant: 40)
         ]
     }
