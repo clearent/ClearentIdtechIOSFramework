@@ -31,6 +31,7 @@ public struct OfflineTransaction: CodableProtocol  {
     var transactionID: String
     var paymentData: PaymentData
     var errorStatus: ErrorStatus?
+    var transactionResponse: TransactionResponse?
     
     init(transactionID: String = UUID().uuidString, createdDate: Date? = nil, errorStatus: ErrorStatus? = nil, paymentData: PaymentData) {
         self.createdDate = Date()
@@ -40,7 +41,7 @@ public struct OfflineTransaction: CodableProtocol  {
     }
         
     enum CodingKeys: String, CodingKey {
-        case transactionID, paymentData, createdDate, errorStatus
+        case transactionID, paymentData, createdDate, errorStatus, transactionResponse
     }
     
     func transactionType() -> OfflineTransactionType {

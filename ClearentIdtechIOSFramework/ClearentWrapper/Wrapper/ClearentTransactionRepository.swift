@@ -216,15 +216,15 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
                     card.csc = saleEntity.csc
                     
                     strongSelf.clearentManualEntry?.createOfflineTransactionToken(card) { [weak self] token in
-                        self?.sendOfflineTransaction(offlineTransaction: transaction, token: token) { error in
-                            _ = self?.offlineManager?.updateOfflineTransaction(with: error, transaction: transaction)
+                        self?.sendOfflineTransaction(offlineTransaction: transaction, token: token) { error, response  in
+                            _ = self?.offlineManager?.updateOfflineTransaction(with: error, transaction: transaction, transactionResponse: response)
                             operation.state = .finished
                         }
                     }
                 } else {
                     strongSelf.clearentVP3300?.fetchTransactionToken(transaction.paymentData.cardToken) { [weak self] token in
-                        self?.sendOfflineTransaction(offlineTransaction: transaction, token: token) { error in
-                            _ = self?.offlineManager?.updateOfflineTransaction(with: error, transaction: transaction)
+                        self?.sendOfflineTransaction(offlineTransaction: transaction, token: token) { error, response  in
+                            _ = self?.offlineManager?.updateOfflineTransaction(with: error, transaction: transaction, transactionResponse: response)
                             operation.state = .finished
                         }
                     }
@@ -297,9 +297,9 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     
     // MARK: - Private
     
-    private func sendOfflineTransaction(offlineTransaction: OfflineTransaction, token: ClearentTransactionToken?, completion: @escaping ((ClearentError?) -> Void)) {
+    private func sendOfflineTransaction(offlineTransaction: OfflineTransaction, token: ClearentTransactionToken?, completion: @escaping ((ClearentError?, TransactionResponse?) -> Void)) {
         guard let token = token else {
-            completion(.init(type: .missingToken))
+            completion(.init(type: .missingToken), nil)
             return
         }
 
@@ -310,14 +310,14 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         
         saleTransaction(jwt: token.jwt, saleEntity: saleEntity) { [weak self] (response, error) in
             if error != nil {
-                completion(error)
+                completion(error, response)
             } else  {
                 guard let image = self?.offlineManager?.retrieveSignatureForTransaction(transactionID: offlineTransaction.transactionID) else {
-                    completion(nil)
+                    completion(nil, nil)
                     return
                 }
                 self?.sendSignatureRequest(image: image) { (_, error) in
-                    completion(error)
+                    completion(error, nil)
                 }
             }
         }

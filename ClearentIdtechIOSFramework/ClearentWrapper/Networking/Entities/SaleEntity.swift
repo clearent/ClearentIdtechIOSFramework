@@ -13,8 +13,9 @@ public class SaleEntity: CodableProtocol {
     let card, csc, customerID, invoice, orderID: String?
     let expirationDateMMYY: String?
     let serviceFeeAmount: String?
+    let externelRefID: String?
 
-    public init(amount: String, tipAmount: String? = nil, softwareType: String? = nil, softwareTypeVersion: String? = nil, billing: ClientInformation? = nil, shipping: ClientInformation? = nil, card: String? = nil, csc: String? = nil, customerID: String? = nil, invoice: String? = nil, orderID: String? = nil, expirationDateMMYY: String? = nil, serviceFeeAmount: String? = nil) {
+    public init(amount: String, tipAmount: String? = nil, softwareType: String? = nil, softwareTypeVersion: String? = nil, billing: ClientInformation? = nil, shipping: ClientInformation? = nil, card: String? = nil, csc: String? = nil, customerID: String? = nil, invoice: String? = nil, orderID: String? = nil, expirationDateMMYY: String? = nil, serviceFeeAmount: String? = nil, externelRefID: String? = nil) {
         self.amount = amount
         self.tipAmount = tipAmount
         self.softwareType = softwareType
@@ -28,10 +29,11 @@ public class SaleEntity: CodableProtocol {
         self.orderID = orderID
         self.expirationDateMMYY = expirationDateMMYY
         self.serviceFeeAmount = serviceFeeAmount?.setTwoDecimals()
+        self.externelRefID = externelRefID
     }
 
     enum CodingKeys: String, CodingKey {
-        case shipping, amount, billing, card, csc, invoice
+        case shipping, amount, billing, card, csc, invoice, externelRefID
         case customerID = "customer-id"
         case orderID = "order-id"
         case tipAmount = "tip-amount"

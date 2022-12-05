@@ -562,7 +562,6 @@
 			isa = PBXGroup;
 			children = (
 				014AA0FF2917C52C001918F5 /* Scenes */,
-				CCBAD4F92922815300BEDCA9 /* ClearentUIManager.swift */,
 				016BFEA12906E99E006F26B6 /* ClearentUIManagerConfiguration.swift */,
 				01442C7E28B3D835006DD15C /* PaymentFlowDataSource */,
 				01442C8828B3D835006DD15C /* Common */,
@@ -663,6 +662,7 @@
 				01442CAE28B3D835006DD15C /* ClearentTextField.swift */,
 				01442CAF28B3D835006DD15C /* ClearentSubtitleLabel.swift */,
 				01442CB028B3D835006DD15C /* ClearentPairingReaderItem.xib */,
+				CCBAD4F92922815300BEDCA9 /* ClearentUIManager.swift */,
 				01442CB128B3D835006DD15C /* ClearentDrawingPanel.swift */,
 				01442CB228B3D835006DD15C /* ClearentTitleLabel.swift */,
 				01442CB428B3D835006DD15C /* ClearentReaderConnectivityStatusView.swift */,
