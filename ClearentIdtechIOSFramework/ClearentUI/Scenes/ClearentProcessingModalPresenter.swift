@@ -325,6 +325,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             sdkFeedbackProvider.showEncryptionWarning()
             return
         }
+        
         if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
             var totalAmountWithoutServiceFee = amountWithoutTip ?? 0.0
             totalAmountWithoutServiceFee += tip ?? 0.0

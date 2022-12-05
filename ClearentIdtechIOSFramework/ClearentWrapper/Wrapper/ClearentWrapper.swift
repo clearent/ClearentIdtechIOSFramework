@@ -62,6 +62,7 @@ public final class ClearentWrapper : NSObject {
     // MARK: - Private properties
     
     private var clearentVP3300: Clearent_VP3300!
+    private var VP3300Config: ClearentVP3300Config?
     private var saleEntity = SaleEntity(amount: "")
     private let monitor = NWPathMonitor()
     private var readerRepository: ReaderRepositoryProtocol?
@@ -83,16 +84,22 @@ public final class ClearentWrapper : NSObject {
     public func initialize(with config: ClearentWrapperConfiguration) {
         ClearentWrapper.configuration = config
         
-        let VP3300Config = ClearentVP3300Config(noContactlessNoConfiguration: ClearentWrapper.configuration.baseURL, publicKey: ClearentWrapper.configuration.publicKey)
-        clearentVP3300 = Clearent_VP3300(connectionHandling: self, clearentVP3300Configuration: VP3300Config)
-        readerRepository = ReaderRepository(clearentVP3300: clearentVP3300)
-        
         let manualEntry = ClearentManualEntry(self, clearentBaseUrl: config.baseURL, publicKey: config.publicKey)
-        transactionRepository = TransactionRepository(baseURL: config.baseURL, apiKey: config.apiKey, clearentVP3300: clearentVP3300, clearentManualEntry: manualEntry)
         
-        if config.enableEnhancedMessaging {
-            readEnhancedMessages()
+        if VP3300Config != nil {
+            VP3300Config?.publicKey = config.publicKey
+            clearentVP3300.setPublicKey(config.publicKey)
+        } else {
+            VP3300Config = ClearentVP3300Config(noContactlessNoConfiguration: ClearentWrapper.configuration.baseURL, publicKey: ClearentWrapper.configuration.publicKey)
+            clearentVP3300 = Clearent_VP3300(connectionHandling: self, clearentVP3300Configuration: VP3300Config)
+            
+            readerRepository = ReaderRepository(clearentVP3300: clearentVP3300)
+            
+            if config.enableEnhancedMessaging {
+                readEnhancedMessages()
+            }
         }
+        transactionRepository = TransactionRepository(baseURL: config.baseURL, apiKey: config.apiKey, clearentVP3300: clearentVP3300, clearentManualEntry: manualEntry)
         
         if let offlineModeEncryptionKey = ClearentWrapper.configuration.offlineModeEncryptionKey {
             transactionRepository?.offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: ClearentConstants.KeychainService.serviceName, account: ClearentConstants.KeychainService.account, encryptionKey: offlineModeEncryptionKey))
