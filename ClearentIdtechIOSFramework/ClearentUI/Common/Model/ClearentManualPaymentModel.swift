@@ -104,7 +104,7 @@ class CardNoItem: ClearentPaymentItem {
 
     var isValid: Bool = true
 
-    var enteredValue: String = ""
+    var enteredValue: String = "4111111111111111"
 
     var hiddenValue: String?
 }
@@ -128,7 +128,7 @@ class DateItem: ClearentPaymentItem {
 
     var isValid: Bool = true
 
-    var enteredValue: String = ""
+    var enteredValue: String = "11/22"
 
     var hiddenValue: String?
 }
@@ -150,7 +150,7 @@ class SecurityCodeItem: ClearentPaymentItem {
 
     var isValid: Bool = true
 
-    var enteredValue: String = ""
+    var enteredValue: String = "999"
 
     var hiddenValue: String?
 }

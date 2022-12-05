@@ -6,7 +6,7 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
-struct MerchantSettingsEntity: Codable {
+struct TerminalSettingsEntity: Codable {
     var payload: PayloadSettings
 }
 
@@ -18,30 +18,24 @@ struct PayloadSettings: Codable {
     }
 }
 
-internal enum ServiceFeeProgramType: String {
-    case surcharge = "SURCHARGE"
-    case non_cash_adjustments = "NON_CASH_ADJUSTMENT"
-    case empower_lite = "EMPOWER_LITE"
-    case service_fee = "SERVICE_FEE"
-    case convenience_fee = "CONVENIENCE_FEE"
+internal enum ServiceFeeProgramType: String, Codable {
+    case SURCHARGE, NON_CASH_ADJUSTMENT, EMPOWER_LITE, SERVICE_FEE, CONVENIENCE_FEE
 }
 
-internal enum ServiceFeeType: String {
-    case percentage = "PERCENTAGE"
-    case flatfee = "FLATFEE"
+internal enum ServiceFeeType: String, Codable {
+    case PERCENTAGE, FLATFEE
 }
 
-internal enum ServiceFeeState: String {
-    case enabled = "ENABLED"
-    case disabled = "DISABLED"
+internal enum ServiceFeeState: String, Codable {
+    case ENABLED, DISABLED
 }
 
 struct TerminalSettings: CodableProtocol {
     let tipEnabled: Bool
-    let serviceFeeState : String?
+    let serviceFeeState : ServiceFeeState?
     let serviceFee : String?
-    let serviceFeeType : String?
-    let serviceFeeProgram : String?
+    let serviceFeeType : ServiceFeeType?
+    let serviceFeeProgram : ServiceFeeProgramType?
     
     enum CodingKeys: String, CodingKey {
         case tipEnabled = "enable-tip"

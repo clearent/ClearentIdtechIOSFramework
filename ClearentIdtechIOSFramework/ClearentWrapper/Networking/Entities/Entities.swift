@@ -52,7 +52,7 @@ public struct ResponseError: Codable {
 public struct Transaction: Codable {
     var message: String
     var result: String
-    var surchargeApplied: Bool
+    var surchargeApplied: Bool?
     
     enum CodingKeys: String, CodingKey {
         case message = "display-message"

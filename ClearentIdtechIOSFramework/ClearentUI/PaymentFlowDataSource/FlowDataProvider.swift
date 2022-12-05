@@ -99,6 +99,14 @@ class FlowDataProvider : NSObject {
         delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
+    func showServiceFeeScreen(for serviceFeeType: ServiceFeeProgramType) {
+        let items = [FlowDataItem(type: .serviceFee, object: serviceFeeType),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.transactionWithServiceFee),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+        let feedback = FlowFeedback(flow: .payment, type: FlowFeedbackType.info, items: items)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
+    }
+    
     func displayOfflineModeWarning() {
         let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
                      FlowDataItem(type: .title, object: ClearentConstants.Localized.OfflineMode.offlineModeWarningMessageTitle),
