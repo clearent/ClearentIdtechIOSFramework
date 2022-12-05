@@ -52,6 +52,21 @@
 "xsdk_tips_user_action_transaction_with_tip" = "Charge %@";
 "xsdk_tips_user_action_transaction_without_tip" = "Maybe next time";
 
+// MARK: - Payment Flow - Service Fee
+// Texts that are displayed on the service fee screen (part of the payment flow)
+"xsdk_service_fee_type_surcharge" = "Surcharge";
+"xsdk_service_fee_type_nca" = "Non Cash Adjustment";
+"xsdk_service_fee_type_service_lite" = "Service Fee Lite";
+"xsdk_service_fee_type_service" = "Service Fee";
+"xsdk_service_fee_type_convenience" = "Convenience fee";
+"xsdk_service_fee_base_price" = "Base price";
+"xsdk_service_fee_base_price_cash" = "Cash price";
+"xsdk_service_fee_base_price_cash_debit_card" = "Cash or debit card";
+"xsdk_service_fee_adjusted_price_card" = "Card payment price";
+"xsdk_service_fee_adjusted_price_credit_card" = "Credit card price";
+"xsdk_service_fee_adjusted_price_total" = "Total including convenience fee";
+"xsdk_service_fee_description" = "To avoid this fee, cancel the transaction and try other payment terms like face to face payment";
+
 // MARK: - Payment Flow - Signature
 // Texts that are displayed on the signature screen (part of the payment flow)
 

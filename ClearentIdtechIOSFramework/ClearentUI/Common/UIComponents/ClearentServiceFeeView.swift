@@ -17,12 +17,7 @@ class ClearentServiceFeeView: ClearentMarginableView {
     
     convenience init(serviceFeeType: ServiceFeeProgramType, amountWithTip: String, amountWithTipAndServiceFee: String) {
         self.init()
-        titleLabel.title = serviceFeeType.title
-        basePriceTitle.title = serviceFeeType.basePriceTitle
-        basePriceAmount.title = amountWithTip
-        adjustedPriceTitle.title = serviceFeeType.adjustedPriceTitle
-        adjustedPriceAmount.title = amountWithTipAndServiceFee
-        descriptionLabel.title = serviceFeeType.description
+        setupTitles(for: serviceFeeType, amountWithTip: amountWithTip, amountWithTipAndServiceFee: amountWithTipAndServiceFee)
         if serviceFeeType.description == nil {
             descriptionLabel.isHidden = true
         }
@@ -33,52 +28,15 @@ class ClearentServiceFeeView: ClearentMarginableView {
         basePriceAmount.font = ClearentUIBrandConfigurator.shared.fonts.screenTitleFont
         adjustedPriceAmount.font = ClearentUIBrandConfigurator.shared.fonts.screenTitleFont
     }
+    
+    private func setupTitles(for serviceFeeType: ServiceFeeProgramType, amountWithTip: String, amountWithTipAndServiceFee: String) {
+        titleLabel.title = serviceFeeType.title
+        basePriceTitle.title = serviceFeeType.basePriceTitle
+        basePriceAmount.title = amountWithTip
+        adjustedPriceTitle.title = serviceFeeType.adjustedPriceTitle
+        adjustedPriceAmount.title = amountWithTipAndServiceFee
+        descriptionLabel.title = serviceFeeType.description
+    }
 }
 
-extension ServiceFeeProgramType {
-    var title: String {
-        switch self {
-        case .SURCHARGE:
-            return "Surcharge"
-        case .NON_CASH_ADJUSTMENT:
-            return "Non Cash Adjustment"
-        case .EMPOWER_LITE:
-            return "ServiceFee Lite"
-        case .SERVICE_FEE:
-            return "Service fee"
-        case .CONVENIENCE_FEE:
-            return "Convenience fee"
-        }
-    }
-    
-    var basePriceTitle: String {
-        switch self {
-        case .NON_CASH_ADJUSTMENT, .SERVICE_FEE:
-            return "Cash price"
-        case .SURCHARGE, .EMPOWER_LITE:
-            return "Cash or debit card"
-        case .CONVENIENCE_FEE:
-            return "Base price"
-        }
-    }
-    
-    var adjustedPriceTitle: String {
-        switch self {
-        case .NON_CASH_ADJUSTMENT, .SERVICE_FEE:
-            return "Card payment price"
-        case .SURCHARGE, .EMPOWER_LITE:
-            return "Credit card price"
-        case .CONVENIENCE_FEE:
-            return "Total including convenience fee"
-        }
-    }
-    
-    var description: String? {
-        switch self {
-        case .CONVENIENCE_FEE:
-            return "To avoid this fee, cancel the transaction and try other payment terms like face to face payment."
-        default:
-            return nil
-        }
-    }
-}
+
