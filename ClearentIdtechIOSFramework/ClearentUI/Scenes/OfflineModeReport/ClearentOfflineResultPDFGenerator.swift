@@ -27,6 +27,9 @@ class ClearentOfflineResultPDFGenerator {
         renderer.setValue(NSValue(cgRect: printableRect), forKey: "printableRect")
         
         let allData = NSMutableAttributedString()
+        
+        //allData.append(createHeaderString(merchantName: "Ovidiu's Beach Bar", terminalID: "12456798", date: "2022-17-11", time: "10:07:20"))
+        
         transactions.forEach { tr in
             let str = createTransactionString(for: transactionDictionary(for: tr))
             allData.append(str)
@@ -57,6 +60,21 @@ class ClearentOfflineResultPDFGenerator {
         return outputFileURL
     }
     
+    func createHeaderString(merchantName: String, terminalID: String, date: String, time: String) -> NSMutableAttributedString {
+        
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.tabStops = [
+            NSTextTab(textAlignment: .left, location: 0, options: [:]),
+            NSTextTab(textAlignment: .right, location: 800, options: [:]),
+        ]
+
+        var str = ClearentConstants.Localized.OfflineMode.offlineModeMechantID + merchantName + "\t" + ClearentConstants.Localized.OfflineMode.offlineModeReportDate + date + "\n"
+        str = str + ClearentConstants.Localized.OfflineMode.offlineModeTerminalID + terminalID + "\t" + ClearentConstants.Localized.OfflineMode.offlineModeReportTime + time + "\n"
+        let text = NSMutableAttributedString(string: str, attributes: [.paragraphStyle : paragraph])
+        
+        return text
+    }
+        
     func createTransactionString(for transaction: [String: String]) -> NSMutableAttributedString {
         let transactionString = NSMutableAttributedString()
         
