@@ -29,6 +29,7 @@ class ClearentServiceFeeView: ClearentMarginableView {
         adjustedPriceAmount.font = ClearentUIBrandConfigurator.shared.fonts.screenTitleFont
     }
     
+    // MARK: - Private
     private func setupTitles(for serviceFeeType: ServiceFeeProgramType, amountWithTip: String, amountWithTipAndServiceFee: String) {
         titleLabel.title = serviceFeeType.title
         basePriceTitle.title = serviceFeeType.basePriceTitle
