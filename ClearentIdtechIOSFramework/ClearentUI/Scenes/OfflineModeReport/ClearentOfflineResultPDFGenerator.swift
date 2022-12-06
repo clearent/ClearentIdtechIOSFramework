@@ -28,7 +28,7 @@ class ClearentOfflineResultPDFGenerator {
         
         let allData = NSMutableAttributedString()
         
-        //allData.append(createHeaderString(merchantName: "Ovidiu's Beach Bar", terminalID: "12456798", date: "2022-17-11", time: "10:07:20"))
+        allData.append(createHeaderString(merchantName: "Ovidiu's Beach Bar", terminalID: "12456798", date: "2022-17-11", time: "10:07:20"))
         
         transactions.forEach { tr in
             let str = createTransactionString(for: transactionDictionary(for: tr))
@@ -61,15 +61,14 @@ class ClearentOfflineResultPDFGenerator {
     }
     
     func createHeaderString(merchantName: String, terminalID: String, date: String, time: String) -> NSMutableAttributedString {
-        
         let paragraph = NSMutableParagraphStyle()
         paragraph.tabStops = [
             NSTextTab(textAlignment: .left, location: 0, options: [:]),
-            NSTextTab(textAlignment: .right, location: 800, options: [:]),
+            NSTextTab(textAlignment: .right, location: 400, options: [:]),
         ]
 
         var str = ClearentConstants.Localized.OfflineMode.offlineModeMechantID + merchantName + "\t" + ClearentConstants.Localized.OfflineMode.offlineModeReportDate + date + "\n"
-        str = str + ClearentConstants.Localized.OfflineMode.offlineModeTerminalID + terminalID + "\t" + ClearentConstants.Localized.OfflineMode.offlineModeReportTime + time + "\n"
+        str = str + ClearentConstants.Localized.OfflineMode.offlineModeTerminalID + terminalID + "\t" + ClearentConstants.Localized.OfflineMode.offlineModeReportTime + time + "\n\n\n"
         let text = NSMutableAttributedString(string: str, attributes: [.paragraphStyle : paragraph])
         
         return text
@@ -90,11 +89,11 @@ class ClearentOfflineResultPDFGenerator {
     }
     
     func transactionDictionary(for transaction: OfflineTransaction) -> [String:String] {
-        return [ClearentConstants.Localized.OfflineMode.offlineModeMechantID:"1312123131",
-                ClearentConstants.Localized.OfflineMode.offlineModeTerminalID:"1312123131",
-                ClearentConstants.Localized.OfflineMode.offlineModeReportDate:"1312123131",
-                ClearentConstants.Localized.OfflineMode.offlineModeReportTime:"1312123131",
-                ClearentConstants.Localized.OfflineMode.offlineModeReportOfflineDate:"1312123131",
+        
+        
+        
+        
+        return [ClearentConstants.Localized.OfflineMode.offlineModeReportOfflineDate:"1312123131",
                 ClearentConstants.Localized.OfflineMode.offlineModeReportOfflineTime:"1312123131",
                 ClearentConstants.Localized.OfflineMode.offlineModeReportTransactionID:"1312123131",
                 ClearentConstants.Localized.OfflineMode.offlineModeReportExternalRefID:"1312123131",
