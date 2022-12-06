@@ -202,7 +202,6 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         case .signature:
             return signatureView()
         case .manualEntry:
-            ClearentWrapper.shared.useManualPaymentAsFallback = true
             return manualEntryFormView()
         case .error:
             guard let detailedErrorMessage = object as? String else { return nil }

@@ -34,7 +34,7 @@ public class FlowFeedback {
 
 class FlowDataFactory {
     class func component(with flow: ProcessType, type: FlowFeedbackType, readerInfo: ReaderInfo?, payload: [FlowDataItem]) -> FlowFeedback {
-        let isNotManualPayment = FlowDataProvider.useCardReaderPaymentMethod || ClearentWrapper.shared.flowType?.processType != .payment
+        let isNotManualPayment = ClearentWrapper.shared.useCardReaderPaymentMethod || ClearentWrapper.shared.flowType?.processType != .payment
         
         if (readerInfo != nil || !ClearentWrapper.shared.previouslyPairedReaders.isEmpty) && isNotManualPayment {
             var allItems = [FlowDataItem(type: .readerInfo, object: readerInfo)]
@@ -68,11 +68,7 @@ class FlowDataProvider : NSObject {
         }
         return false
     }
-    
-    static var useCardReaderPaymentMethod: Bool {
-        ClearentWrapper.shared.cardReaderPaymentIsPreffered && ClearentWrapper.shared.useManualPaymentAsFallback == nil
-    }
-    
+
     // MARK: - Init
     
     public override init() {
@@ -423,7 +419,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                 }
             }
         case .noBluetooth:
-            guard FlowDataProvider.useCardReaderPaymentMethod else { return }
+            guard ClearentWrapper.shared.useCardReaderPaymentMethod else { return }
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
                      FlowDataItem(type: .title, object: ClearentConstants.Localized.Bluetooth.error),

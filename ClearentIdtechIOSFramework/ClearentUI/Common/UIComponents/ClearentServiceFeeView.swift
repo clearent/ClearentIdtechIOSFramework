@@ -38,5 +38,3 @@ class ClearentServiceFeeView: ClearentMarginableView {
         descriptionLabel.title = serviceFeeType.description
     }
 }
-
-

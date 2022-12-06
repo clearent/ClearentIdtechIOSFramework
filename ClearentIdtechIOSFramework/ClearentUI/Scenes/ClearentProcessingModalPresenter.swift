@@ -55,9 +55,7 @@ class ClearentProcessingModalPresenter {
     // defines the process type set when the SDK UI starts
     private var processType: ProcessType
     
-    var useCardReaderPaymentMethod: Bool {
-        sdkWrapper.cardReaderPaymentIsPreffered && sdkWrapper.useManualPaymentAsFallback == nil
-    }
+    var useCardReaderPaymentMethod: Bool { ClearentWrapper.shared.useCardReaderPaymentMethod }
     
     var amountWithoutTip: Double?
     var tip: Double?
@@ -195,9 +193,10 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             modalProcessingView?.positionViewOnTop(flag: true)
             showRenameReader()
         case .transactionWithTip, .transactionWithoutTip, .transactionWithServiceFee:
-            startTransactionFlow()
+            handlePaymentWithAdditionalFees()
         case .manuallyEnterCardInfo:
-            startManualEntryTransaction()
+            ClearentWrapper.shared.useManualPaymentAsFallback = true
+            handlePaymentWithAdditionalFees()
         case .acceptOfflineMode:
             handleOfflineModeConfirmationOption()
         case .denyOfflineMode:
@@ -317,22 +316,25 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                                                     !ClearentWrapperDefaults.enableOfflineMode ||
                                                     !ClearentUIManager.shared.isOfflineModeConfirmed
         sdkWrapper.fetchTerminalSetting { [weak self] error in
-            guard let strongSelf = self else { return }
             if let error = error, error.type.isMissingKeyError {
-                strongSelf.modalProcessingView?.dismissViewController(result: .failure(error))
+                self?.modalProcessingView?.dismissViewController(result: .failure(error))
             }
-            let showTipsScreen = strongSelf.sdkWrapper.tipEnabled && strongSelf.tipsScreenWasNotShown
-            let showServiceFeeScreen = strongSelf.sdkWrapper.serviceFeeEnabled && strongSelf.serviceFeeScreenWasNotShown
+            self?.handlePaymentWithAdditionalFees()
+        }
+    }
+    
+    private func handlePaymentWithAdditionalFees() {
+        let showTipsScreen = sdkWrapper.tipEnabled && tipsScreenWasNotShown
+        let showServiceFeeScreen = sdkWrapper.serviceFeeEnabled && serviceFeeScreenWasNotShown
 
-            if showTipsScreen {
-                strongSelf.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: strongSelf.amountWithoutTip ?? 0)
-                strongSelf.tipsScreenWasNotShown = false
-            } else if showServiceFeeScreen, let serviceFeeProgram = ClearentWrapperDefaults.terminalSettings?.serviceFeeProgram {
-                strongSelf.sdkFeedbackProvider.showServiceFeeScreen(for: serviceFeeProgram)
-                strongSelf.serviceFeeScreenWasNotShown = false
-            } else {
-                strongSelf.useCardReaderPaymentMethod ? strongSelf.startCardReaderTransaction() : strongSelf.startManualEntryTransaction()
-            }
+        if showTipsScreen {
+            sdkFeedbackProvider.startTipTransaction(amountWithoutTip: amountWithoutTip ?? 0)
+            tipsScreenWasNotShown = false
+        } else if showServiceFeeScreen, let serviceFeeProgram = ClearentWrapperDefaults.terminalSettings?.serviceFeeProgram {
+            sdkFeedbackProvider.showServiceFeeScreen(for: serviceFeeProgram)
+            serviceFeeScreenWasNotShown = false
+        } else {
+            useCardReaderPaymentMethod ? startCardReaderTransaction() : startManualEntryTransaction()
         }
     }
 

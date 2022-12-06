@@ -47,7 +47,13 @@ public final class ClearentWrapper : NSObject {
     var tipEnabled: Bool { ClearentWrapperDefaults.terminalSettings?.tipEnabled ?? false }
     var serviceFeeEnabled: Bool {
         guard let serviceFeeState = ClearentWrapperDefaults.terminalSettings?.serviceFeeState, serviceFeeState ==  ServiceFeeState.ENABLED else { return false }
+        if ClearentWrapperDefaults.terminalSettings?.serviceFeeProgram == .CONVENIENCE_FEE {
+            return !useCardReaderPaymentMethod
+        }
         return true
+    }
+    var useCardReaderPaymentMethod: Bool {
+        cardReaderPaymentIsPreffered && useManualPaymentAsFallback == nil
     }
     
     var isNewPaymentProcess = true
@@ -425,7 +431,7 @@ public final class ClearentWrapper : NSObject {
     
     private func getConnectivityStatus(for processType: ProcessType) -> UserAction? {
         if processType == .payment {
-            if cardReaderPaymentIsPreffered && useManualPaymentAsFallback == nil {
+            if useCardReaderPaymentMethod {
                 return isInternetOn ? getBluetoothConnectivityStatus() : .noInternet
             } else {
                 return isInternetOn ? nil : .noInternet
