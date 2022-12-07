@@ -16,6 +16,7 @@
                 <outlet property="basePriceAmount" destination="4ku-EV-Lr8" id="kUG-xw-k0e"/>
                 <outlet property="basePriceTitle" destination="efA-op-Ebn" id="9hr-YE-eWF"/>
                 <outlet property="descriptionLabel" destination="hey-8C-iP9" id="jss-3w-zQ2"/>
+                <outlet property="stackView" destination="iqP-8v-cyf" id="iPy-RU-k08"/>
                 <outlet property="titleLabel" destination="b6N-sQ-4eI" id="TDG-Nw-I68"/>
             </connections>
         </placeholder>
