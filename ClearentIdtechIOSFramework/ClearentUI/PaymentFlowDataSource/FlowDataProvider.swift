@@ -49,7 +49,7 @@ class FlowDataFactory {
 
 protocol FlowDataProtocol : AnyObject {
     func didFinishSignature()
-    func didFinishTransaction()
+    func didFinishTransaction(response: Transaction?)
     func deviceDidDisconnect()
     func didFinishedPairing()
     func didReceiveFlowFeedback(feedback: FlowFeedback)
@@ -279,7 +279,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  readerInfo: fetchReaderInfo(),
                                                  payload: items)
             delegate?.didReceiveFlowFeedback(feedback: feedback)
-            delegate?.didFinishTransaction()
+            delegate?.didFinishTransaction(response: response?.payload.transaction)
         }
     }
     
@@ -295,7 +295,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  readerInfo: fetchReaderInfo(),
                                                  payload: items)
             delegate?.didReceiveFlowFeedback(feedback: feedback)
-            delegate?.didFinishTransaction()
+            delegate?.didFinishTransaction(response: nil)
         } else {
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
                      FlowDataItem(type: .title, object: ClearentConstants.Localized.Error.generalErrorTitle),

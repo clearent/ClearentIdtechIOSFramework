@@ -260,6 +260,7 @@ import UIKit
         
         enum FlowDataProvider {
             public static let transactionCompleted = "xsdk_payment_transaction_completed_description".localized
+            public static let transactionCompletedSurchargeAvoided = "xsdk_payment_transaction_completed_avoided_surcharge".localized
             public static let transactionAccepted = "xsdk_payment_transaction_accepted_description".localized
             public static let transactionNotAccepted = "xsdk_payment_transaction_not_accepted_description".localized
         }

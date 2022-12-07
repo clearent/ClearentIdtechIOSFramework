@@ -428,6 +428,41 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             }
         }
     }
+    
+    private func displaySurchargeAvoidedIfNeeded(response: Transaction?) {
+        guard let surchargeApplied = response?.surchargeApplied, !surchargeApplied, let amountWithTip = amountWithTip, let serviceFeeAmount = serviceFeeAmount else {
+            completeTransaction()
+            return
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            let description = String(format: ClearentConstants.Localized.FlowDataProvider.transactionCompletedSurchargeAvoided,
+                                     ClearentMoneyFormatter.formattedWithSymbol(from: serviceFeeAmount),
+                                     ClearentMoneyFormatter.formattedWithSymbol(from: amountWithTip))
+            let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.transaction_completed),
+                         FlowDataItem(type: .title, object: description)]
+            
+            let feedback = FlowDataFactory.component(with: .payment,
+                                                     type: .info,
+                                                     readerInfo: ClearentWrapperDefaults.lastPairedReaderInfo,
+                                                     payload: items)
+            self?.modalProcessingView?.updateContent(with: feedback)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+                self?.completeTransaction()
+            }
+        }
+    }
+
+    private func completeTransaction() {
+        if ClearentUIManager.configuration.signatureEnabled {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                self.showSignatureScreen()
+            }
+        } else {
+            successfulDissmissViewWithDelay()
+            sdkWrapper.isNewPaymentProcess = true
+            ClearentUIManager.shared.isOfflineModeConfirmed = false
+        }
+    }
 }
 
 extension ClearentProcessingModalPresenter: FlowDataProtocol {
@@ -438,16 +473,8 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
         ClearentUIManager.shared.isOfflineModeConfirmed = false
     }
     
-    func didFinishTransaction() {
-        if ClearentUIManager.configuration.signatureEnabled {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                self.showSignatureScreen()
-            }
-        } else {
-            successfulDissmissViewWithDelay()
-            sdkWrapper.isNewPaymentProcess = true
-            ClearentUIManager.shared.isOfflineModeConfirmed = false
-        }
+    func didFinishTransaction(response: Transaction?) {
+        displaySurchargeAvoidedIfNeeded(response: response)
     }
     
     func deviceDidDisconnect() {}

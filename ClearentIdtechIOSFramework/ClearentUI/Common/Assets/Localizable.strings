@@ -34,6 +34,7 @@
 // MARK: - Payment Flow - General
 // Texts that are displayed during the payment flow
 "xsdk_payment_transaction_completed_description" = "Payment successful";
+"xsdk_payment_transaction_completed_avoided_surcharge" = "You used a debit card and avoided Surcharge of %@\n\n\nCard charged %@";
 "xsdk_payment_transaction_accepted_description" = "Offline transaction successfully accepted";
 "xsdk_payment_transaction_not_accepted_description" = "Offline transaction has not been accepted";
 
