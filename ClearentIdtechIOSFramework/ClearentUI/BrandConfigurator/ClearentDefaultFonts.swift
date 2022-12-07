@@ -71,4 +71,6 @@ class ClearentDefaultFonts: ClearentUIFonts {
     var settingsReadersPlaceholderLabel: UIFont { proTextSmall }
     
     var settingsReadersDescriptionLabel: UIFont { proTextNormal }
+    
+    var offlineReportFieldLabel: UIFont { proTextNormal }
 }

@@ -158,4 +158,12 @@ public protocol ClearentUIColors {
     // The color of the readers label displayed in Settings screen when there is a reader connected
     var settingsReadersDescriptionColor: UIColor { get }
     
+    // MARK: - Offline Mode Report
+    
+    // The color of the key value in the error log pdf report
+    var errorLogKeyLabelColor: UIColor { get }
+    
+    // The color of the value value in the error log pdf report
+    var errorLogValueLabelColor: UIColor { get }
+    
 }

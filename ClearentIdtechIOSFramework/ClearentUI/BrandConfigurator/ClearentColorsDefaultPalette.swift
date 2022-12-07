@@ -96,4 +96,8 @@ class ClearentColorsDefaultPalette: ClearentUIColors {
     var settingsReadersPlaceholderColor: UIColor { UIColor(hexString: "#6A6D7D") }
     
     var settingsReadersDescriptionColor: UIColor { UIColor(hexString: "#272431") }
+    
+    var errorLogKeyLabelColor: UIColor { UIColor(hexString: "#6A6D7D") }
+    
+    var errorLogValueLabelColor: UIColor { UIColor(hexString: "000000") }
 }
