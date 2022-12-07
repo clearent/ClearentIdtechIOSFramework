@@ -53,13 +53,11 @@ public struct Transaction: Codable {
     var message: String
     var result: String
     var surchargeApplied: Bool?
-    var empowerAmount: String?
 
     enum CodingKeys: String, CodingKey {
         case message = "display-message"
         case result = "result"
         case surchargeApplied = "surcharge-applied"
-        case empowerAmount = "service-fee"
     }
 }
 
