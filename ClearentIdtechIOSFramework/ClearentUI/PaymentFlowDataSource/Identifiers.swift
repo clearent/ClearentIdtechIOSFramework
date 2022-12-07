@@ -13,7 +13,7 @@ enum SignalLevel: Int {
 }
 
 enum FlowDataKeys {
-    case readerInfo, graphicType, title, description, userAction, devicesFound, recentlyPaired, hint, input, tips, signature, manualEntry, error
+    case readerInfo, graphicType, title, description, userAction, devicesFound, recentlyPaired, hint, input, tips, serviceFee, signature, manualEntry, error
 }
 
 public enum FlowFeedbackType {
@@ -66,7 +66,7 @@ enum FlowGraphicType {
 }
 
 public enum FlowButtonType {
-    case cancel, retry, pair, done, skipSignature, pairNewReader, settings, pairInFlow, addReaderName, renameReaderLater, transactionWithTip, transactionWithoutTip, manuallyEnterCardInfo, acceptOfflineMode, denyOfflineMode, confirmOfflineModeWarningMessage
+    case cancel, retry, pair, done, skipSignature, pairNewReader, settings, pairInFlow, addReaderName, renameReaderLater, transactionWithTip, transactionWithoutTip, manuallyEnterCardInfo, acceptOfflineMode, denyOfflineMode, confirmOfflineModeWarningMessage, transactionWithServiceFee
 
     var title: String {
         switch self {
@@ -92,6 +92,8 @@ public enum FlowButtonType {
             return transactionWithTipTitle()
         case .transactionWithoutTip:
             return ClearentConstants.Localized.Tips.withoutTip
+        case .transactionWithServiceFee:
+            return transactionWithServiceFeeTitle()
         case .manuallyEnterCardInfo:
             return ClearentConstants.Localized.Error.manualEntry
         case .acceptOfflineMode:
@@ -107,6 +109,11 @@ public enum FlowButtonType {
         guard let amount = amount else { return "" }
         let formattedText = ClearentMoneyFormatter.formattedWithSymbol(from: amount)
         return String(format: ClearentConstants.Localized.Tips.withTip, formattedText)
+    }
+    
+    func transactionWithServiceFeeTitle(for amount: String? = nil) -> String {
+        guard let amount = amount else { return "" }
+        return String(format: ClearentConstants.Localized.Tips.withTip, amount)
     }
 }
 

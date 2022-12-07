@@ -45,6 +45,17 @@ public final class ClearentWrapper : NSObject {
     var enhancedMessagesDict: [String:String]?
     
     var tipEnabled: Bool { ClearentWrapperDefaults.terminalSettings?.tipEnabled ?? false }
+    var serviceFeeEnabled: Bool {
+        guard let serviceFeeState = ClearentWrapperDefaults.terminalSettings?.serviceFeeState, serviceFeeState ==  ServiceFeeState.ENABLED else { return false }
+        if ClearentWrapperDefaults.terminalSettings?.serviceFeeProgram == .CONVENIENCE_FEE {
+            return !useCardReaderPaymentMethod
+        }
+        return true
+    }
+    var useCardReaderPaymentMethod: Bool {
+        cardReaderPaymentIsPreffered && useManualPaymentAsFallback == nil
+    }
+    
     var isNewPaymentProcess = true
     var isInternetOn: Bool = false {
         didSet {
@@ -310,7 +321,7 @@ public final class ClearentWrapper : NSObject {
      * Method that fetches the tip settings for the current mechant.
      * @param completion, the closure that will be called after receiving the data. This is dispatched onto the main queue
      */
-    public func fetchTipSetting(completion: @escaping (ClearentError?) -> Void) {
+    public func fetchTerminalSetting(completion: @escaping (ClearentError?) -> Void) {
         if let error = checkForMissingKeys() {
             completion(.init(type: error))
             return
@@ -319,7 +330,7 @@ public final class ClearentWrapper : NSObject {
         if processTransactionOnline, checkForConnectivityWarning(for: .payment) { return }
     
         if isInternetOn {
-            transactionRepository?.fetchTipSetting() {
+            transactionRepository?.fetchTerminalSetting() {
                 DispatchQueue.main.async {
                     completion(nil)
                 }
@@ -349,8 +360,8 @@ public final class ClearentWrapper : NSObject {
     /**
      * Method that returns the service fee program type if available
      */
-    func serviceFeeProgramName() -> String? {
-        transactionRepository?.serviceFeeProgramType()
+    func serviceFeeProgramType() -> ServiceFeeProgramType? {
+        ClearentWrapperDefaults.terminalSettings?.serviceFeeProgram
     }
     
     /**
@@ -427,7 +438,7 @@ public final class ClearentWrapper : NSObject {
     
     private func getConnectivityStatus(for processType: ProcessType) -> UserAction? {
         if processType == .payment {
-            if cardReaderPaymentIsPreffered && useManualPaymentAsFallback == nil {
+            if useCardReaderPaymentMethod {
                 return isInternetOn ? getBluetoothConnectivityStatus() : .noInternet
             } else {
                 return isInternetOn ? nil : .noInternet

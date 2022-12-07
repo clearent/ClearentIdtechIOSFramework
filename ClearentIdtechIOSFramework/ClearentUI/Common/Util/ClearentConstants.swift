@@ -260,6 +260,7 @@ import UIKit
         
         enum FlowDataProvider {
             public static let transactionCompleted = "xsdk_payment_transaction_completed_description".localized
+            public static let transactionCompletedSurchargeAvoided = "xsdk_payment_transaction_completed_avoided_surcharge".localized
             public static let transactionAccepted = "xsdk_payment_transaction_accepted_description".localized
             public static let transactionNotAccepted = "xsdk_payment_transaction_not_accepted_description".localized
         }
@@ -270,6 +271,21 @@ import UIKit
             public static let transactionTip = "xsdk_tips_user_transaction_tip_title".localized
             public static let withoutTip = "xsdk_tips_user_action_transaction_without_tip".localized
             public static let withTip = "xsdk_tips_user_action_transaction_with_tip".localized
+        }
+        
+        enum ServiceFee {
+            public static let typeSurcharge = "xsdk_service_fee_type_surcharge".localized
+            public static let typeNCA = "xsdk_service_fee_type_nca".localized
+            public static let typeServiceLite = "xsdk_service_fee_type_service_lite".localized
+            public static let typeService = "xsdk_service_fee_type_service".localized
+            public static let typeConvenience = "xsdk_service_fee_type_convenience".localized
+            public static let basePrice = "xsdk_service_fee_base_price".localized
+            public static let basePriceCash = "xsdk_service_fee_base_price_cash".localized
+            public static let basePriceCashDebitCard = "xsdk_service_fee_base_price_cash_debit_card".localized
+            public static let adjustedPriceCard = "xsdk_service_fee_adjusted_price_card".localized
+            public static let adjustedPriceCreditCard = "xsdk_service_fee_adjusted_price_credit_card".localized
+            public static let adjustedPriceTotal = "xsdk_service_fee_adjusted_price_total".localized
+            public static let description = "xsdk_service_fee_description".localized
         }
         
         enum OfflineMode {

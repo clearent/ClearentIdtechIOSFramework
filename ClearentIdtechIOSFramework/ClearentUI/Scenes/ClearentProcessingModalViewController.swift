@@ -202,11 +202,13 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         case .signature:
             return signatureView()
         case .manualEntry:
-            ClearentWrapper.shared.useManualPaymentAsFallback = true
             return manualEntryFormView()
         case .error:
             guard let detailedErrorMessage = object as? String else { return nil }
             return ClearentErrorDetailsView(detailerErrorMessage: detailedErrorMessage)
+        case .serviceFee:
+            guard let serviceFeeType = object as? ServiceFeeProgramType, let amountWithTip = presenter?.amountWithTip, let amountWithTipAndServiceFee = presenter?.amountWithTipAndServiceFee else { return nil }
+            return ClearentServiceFeeView(serviceFeeType: serviceFeeType, amountWithTip: amountWithTip, amountWithTipAndServiceFee: amountWithTipAndServiceFee)
         }
     }
     
@@ -282,6 +284,9 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         
         if userAction == .transactionWithTip {
             button.title = userAction.transactionWithTipTitle(for: presenter?.amountWithoutTip)
+        }
+        if userAction == .transactionWithServiceFee {
+            button.title = userAction.transactionWithServiceFeeTitle(for: presenter?.amountWithTipAndServiceFee)
         }
         button.action = { [weak self] in
             guard let strongSelf = self, let presenter = strongSelf.presenter else { return }

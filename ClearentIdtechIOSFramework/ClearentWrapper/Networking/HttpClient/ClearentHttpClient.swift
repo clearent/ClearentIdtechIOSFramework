@@ -29,7 +29,7 @@ protocol ClearentHttpClientProtocol {
     func refundTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (Data?, Error?) -> Void)
     func voidTransaction(transactionID: String, completion: @escaping (Data?, Error?) -> Void)
     func sendSignature(base64Image: String, transactionID: Int, completion: @escaping (Data?, Error?) -> Void)
-    func merchantSettings(completion: @escaping (Data?, Error?) -> Void)
+    func terminalSettings(completion: @escaping (Data?, Error?) -> Void)
 }
 
 class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
@@ -85,7 +85,7 @@ class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
         }
     }
     
-    func merchantSettings(completion: @escaping (Data?, Error?) -> Void) {
+    func terminalSettings(completion: @escaping (Data?, Error?) -> Void) {
         let settingsURL = URL(string: baseURL + ClearentEndpoints.settings)
         let headers = headers(jwt: nil, apiKey: self.apiKey)
         let _ = HttpClient.makeRawRequest(to: settingsURL!,  headers: headers) { data, error in
