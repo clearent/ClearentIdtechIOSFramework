@@ -26,7 +26,9 @@ class ClearentOfflineResultPDFGenerator {
         renderer.setValue(NSValue(cgRect: printableRect), forKey: "printableRect")
         
         let allData = NSMutableAttributedString()
-        allData.append(createHeaderString(merchantName: "Ovidiu's Beach Bar", terminalID: "12456798", date: "2022-17-11", time: "10:07:20"))
+        if let header =  getHeaderString(transactions: transactions) {
+            allData.append(header)
+        }
         
         transactions.forEach { tr in
             let str = createTransactionString(for: transactionDictionary(for: tr))
@@ -58,15 +60,29 @@ class ClearentOfflineResultPDFGenerator {
         return outputFileURL
     }
     
-    func createHeaderString(merchantName: String, terminalID: String, date: String, time: String) -> NSMutableAttributedString {
+    func getHeaderString(transactions: [OfflineTransaction]) -> NSMutableAttributedString? {
+        if (!transactions.isEmpty) {
+            let tr = transactions.first
+            if let merchantID = tr?.transactionResponse?.payload.transaction?.merchantID, let terminalID = tr?.transactionResponse?.payload.transaction?.terminalID {
+                return createHeaderString(merchantName: merchantID, terminalID: terminalID)
+            }
+            
+        }
+        return nil
+    }
+    
+    func createHeaderString(merchantName: String, terminalID: String) -> NSMutableAttributedString {
         let paragraph = NSMutableParagraphStyle()
         paragraph.tabStops = [
             NSTextTab(textAlignment: .left, location: 0, options: [:]),
             NSTextTab(textAlignment: .right, location: 400, options: [:]),
         ]
         
-        let line1 = ClearentConstants.Localized.OfflineMode.offlineModeMechantID + merchantName + "\t" + ClearentConstants.Localized.OfflineMode.offlineModeReportDate + Date().dateOnlyToString() + "\n"
-        let line2 = ClearentConstants.Localized.OfflineMode.offlineModeTerminalID + terminalID + "\t" + ClearentConstants.Localized.OfflineMode.offlineModeReportTime + Date().timeToString() + "\n\n\n"
+        let date = Date().dateOnlyToString()
+        let time = Date().timeToString()
+        
+        let line1 = ClearentConstants.Localized.OfflineMode.offlineModeMechantID + merchantName + "\t" + ClearentConstants.Localized.OfflineMode.offlineModeReportDate + date + "\n"
+        let line2 = ClearentConstants.Localized.OfflineMode.offlineModeTerminalID + terminalID + "\t" + ClearentConstants.Localized.OfflineMode.offlineModeReportTime + time + "\n\n\n"
         
         let text1 = NSMutableAttributedString(string: line1, attributes: [.paragraphStyle : paragraph])
         text1.addAttribute(.foregroundColor, value: ClearentUIBrandConfigurator.shared.colorPalette.errorLogKeyLabelColor, range: NSRange(location: 0, length: ClearentConstants.Localized.OfflineMode.offlineModeMechantID.count))
@@ -87,15 +103,14 @@ class ClearentOfflineResultPDFGenerator {
         
         let lastLocation2 = leftText2.count + ClearentConstants.Localized.OfflineMode.offlineModeReportTime.count
         text2.addAttribute(.foregroundColor, value: ClearentUIBrandConfigurator.shared.colorPalette.errorLogValueLabelColor, range: NSRange(location: lastLocation2, length: time.count))
-        
         text1.append(text2)
         
-        //        let paraStyle = NSMutableParagraphStyle()
-        //        let imageString = NSMutableAttributedString(string: "\n", attributes:  [.paragraphStyle : paraStyle])
-        //        let attachment = NSTextAttachment()
-        //        attachment.image = UIImage(named: "left-arrow")
-        //        imageString.append(NSAttributedString(attachment: attachment))
-        //        text1.append(imageString)
+//        let paraStyle = NSMutableParagraphStyle()
+//        let imageString = NSMutableAttributedString(string: "\n", attributes:  [.paragraphStyle : paraStyle])
+//        let attachment = NSTextAttachment()
+//        attachment.image = UIImage(named: "left-arrow")
+//        imageString.append(NSAttributedString(attachment: attachment))
+//        text1.append(imageString)
         
         return text1
     }

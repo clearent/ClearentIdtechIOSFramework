@@ -19,6 +19,7 @@ protocol ClearentOfflineViewProtocol {
 }
 
 protocol ClearentOfflineModeReportViewProtocol {
+    func reportHasErrors() -> Bool
     func clearAndProceed()
     func saveErrorLog()
     func itemCount() -> Int
@@ -101,5 +102,11 @@ extension ClearentOfflineModeReportPresenter : ClearentOfflineModeReportViewProt
     
     func itemForIndexPath(indexPath: IndexPath) -> ReportItem {
         return dataSource[indexPath.row]
+    }
+    
+    func reportHasErrors() -> Bool {
+        let offlineManager = ClearentWrapper.shared.retrieveOfflineManager()
+        let allTransactions = offlineManager?.reportAllErrors()
+        return !(allTransactions?.isEmpty ?? false)
     }
 }

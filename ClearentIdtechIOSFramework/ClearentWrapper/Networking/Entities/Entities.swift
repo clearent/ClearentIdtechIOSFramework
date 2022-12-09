@@ -69,6 +69,8 @@ public struct Transaction: Codable {
     var shipping : ClientInformation?
     var softwareVersion: String?
     var softwareType: String?
+    var merchantID: String?
+    var terminalID: String?
     
     enum CodingKeys: String, CodingKey {
         case message = "display-message"
@@ -90,6 +92,8 @@ public struct Transaction: Codable {
         case billing
         case shipping
         case id
+        case merchantID = "merchant-id"
+        case terminalID = "terminal-id"
     }
 }
 
