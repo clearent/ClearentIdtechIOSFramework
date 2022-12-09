@@ -46,11 +46,7 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
         }
         
         if offlineManager.containsUploadReport() {
-            if offlineManager.uploadReportContainsErrors() {
-                setupUploadFail()
-            } else {
-                setupUploadSuccessfully()
-            }
+            offlineManager.uploadReportContainsErrors() ? setupUploadFail() : setupUploadSuccessfully()
         } else {
             let pendingTransactions = offlineManager.retrieveAll().filter({ $0.errorStatus == nil }).count
             if pendingTransactions > 0 {

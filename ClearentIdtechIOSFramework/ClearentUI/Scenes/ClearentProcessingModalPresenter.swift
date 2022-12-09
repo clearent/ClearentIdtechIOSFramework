@@ -22,10 +22,11 @@ protocol ProcessingModalProtocol {
     var editableReader: ReaderInfo? { get set }
     var amountWithoutTip: Double? { get set }
     var tip: Double? { get set }
+    var amountWithTip: String? { get }
+    var amountWithTipAndServiceFee: String? { get }
     var sdkFeedbackProvider: FlowDataProvider { get set }
     var selectedReaderFromReadersList: ReaderItem? { get set }
     var useCardReaderPaymentMethod: Bool { get }
-    
     func handleUserAction(userAction: FlowButtonType)
     func restartProcess(newPair: Bool)
     func startFlow()
@@ -49,16 +50,26 @@ class ClearentProcessingModalPresenter {
     private var temporaryReaderName: String?
     private let sdkWrapper = ClearentWrapper.shared
     private var tipsScreenWasNotShown = true
+    private var serviceFeeScreenWasNotShown = true
     
     // defines the process type set when the SDK UI starts
     private var processType: ProcessType
     
-    var useCardReaderPaymentMethod: Bool {
-        sdkWrapper.cardReaderPaymentIsPreffered && sdkWrapper.useManualPaymentAsFallback == nil
-    }
+    var useCardReaderPaymentMethod: Bool { ClearentWrapper.shared.useCardReaderPaymentMethod }
     
     var amountWithoutTip: Double?
     var tip: Double?
+    var amountWithTip: String? {
+        guard let amountWithoutTip = amountWithoutTip else { return nil }
+        let amountWithTip = amountWithoutTip + (tip ?? 0)
+        return ClearentMoneyFormatter.formattedWithSymbol(from: amountWithTip)
+    }
+    var amountWithTipAndServiceFee: String? {
+        guard let amountWithoutTip = amountWithoutTip else { return nil }
+        let amountWithTipAndServiceFee = amountWithoutTip + (tip ?? 0) + (serviceFeeAmount ?? 0)
+        return ClearentMoneyFormatter.formattedWithSymbol(from: amountWithTipAndServiceFee)
+    }
+    
     var selectedReaderFromReadersList: ReaderItem?
     var sdkFeedbackProvider: FlowDataProvider
     var editableReader: ReaderInfo?
@@ -83,6 +94,11 @@ class ClearentProcessingModalPresenter {
 }
 
 extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
+    private var serviceFeeAmount: Double? {
+        guard let amountWithoutTip = amountWithoutTip else { return nil }
+        let totalAmountWithoutServiceFee = amountWithoutTip + (tip ?? 0.0)
+        return ClearentWrapper.shared.serviceFeeAmount(amount: totalAmountWithoutServiceFee)
+    }
     
     func offlineTransactionsWarningText() -> String {
         return String(format: ClearentConstants.Localized.OfflineMode.offlineModeEnabled, String(ClearentUIManager.shared.allUnprocessedOfflineTransactionsCount()))
@@ -176,10 +192,11 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         case .addReaderName:
             modalProcessingView?.positionViewOnTop(flag: true)
             showRenameReader()
-        case .transactionWithTip, .transactionWithoutTip:
-            useCardReaderPaymentMethod ? startCardReaderTransaction() : startManualEntryTransaction()
+        case .transactionWithTip, .transactionWithoutTip, .transactionWithServiceFee:
+            handlePaymentWithAdditionalFees()
         case .manuallyEnterCardInfo:
-            startManualEntryTransaction()
+            ClearentWrapper.shared.useManualPaymentAsFallback = true
+            handlePaymentWithAdditionalFees()
         case .acceptOfflineMode:
             handleOfflineModeConfirmationOption()
         case .denyOfflineMode:
@@ -188,7 +205,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             ClearentUIManager.shared.isOfflineModeConfirmed = true
             sdkFeedbackProvider.delegate = self
             modalProcessingView?.showLoadingView()
-            startTipFlow()
+            handleTerminalSettings()
         }
     }
     
@@ -219,10 +236,6 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         let shipToZipCode = dataSource.valueForType(.shippingZipCode)?.replacingOccurrences(of: ClearentPaymentItemType.shippingZipCode.separator, with: "")
         let shippingInfo = ClientInformation(zip: shipToZipCode)
         
-        var totalAmountWithoutServiceFee = amountWithoutTip ?? 0.0
-        totalAmountWithoutServiceFee += tip ?? 0.0
-        let calculatedServiceFee = ClearentWrapper.shared.serviceFeeAmount(amount: totalAmountWithoutServiceFee)
-        
         let saleEntity = SaleEntity(amount: amount,
                                     tipAmount: tip?.stringFormattedWithTwoDecimals,
                                     billing: billingInfo,
@@ -233,7 +246,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                                     invoice: dataSource.valueForType(.invoiceNo),
                                     orderID: dataSource.valueForType(.orderNo),
                                     expirationDateMMYY: date,
-                                    serviceFeeAmount: calculatedServiceFee?.stringFormattedWithTwoDecimals)
+                                    serviceFeeAmount: serviceFeeAmount?.stringFormattedWithTwoDecimals)
 
         startTransaction(saleEntity: saleEntity, isManualTransaction: true)
     }
@@ -293,28 +306,35 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             } else if shouldDisplayOfflineModeQuestion() {
                 sdkFeedbackProvider.displayOfflineModeQuestion()
             } else {
-                startTipFlow()
+                handleTerminalSettings()
             }
         }
     }
     
-    private func startTipFlow() {
+    private func handleTerminalSettings() {
         ClearentWrapper.shared.processTransactionOnline = (ClearentWrapperDefaults.enableOfflineMode && ClearentWrapperDefaults.enableOfflinePromptMode && ClearentWrapper.shared.isInternetOn) ||
                                                     !ClearentWrapperDefaults.enableOfflineMode ||
                                                     !ClearentUIManager.shared.isOfflineModeConfirmed
-        sdkWrapper.fetchTipSetting { [weak self] error in
+        sdkWrapper.fetchTerminalSetting { [weak self] error in
             if let error = error, error.type.isMissingKeyError {
                 self?.modalProcessingView?.dismissViewController(result: .failure(error))
             }
-            guard let strongSelf = self else { return }            
-            let showTipsScreen = strongSelf.sdkWrapper.tipEnabled && strongSelf.tipsScreenWasNotShown
+            self?.handlePaymentWithAdditionalFees()
+        }
+    }
+    
+    private func handlePaymentWithAdditionalFees() {
+        let showTipsScreen = sdkWrapper.tipEnabled && tipsScreenWasNotShown
+        let showServiceFeeScreen = sdkWrapper.serviceFeeEnabled && serviceFeeScreenWasNotShown
 
-            if showTipsScreen {
-                strongSelf.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: strongSelf.amountWithoutTip ?? 0)
-                strongSelf.tipsScreenWasNotShown = false
-            } else {
-                strongSelf.useCardReaderPaymentMethod ? strongSelf.startCardReaderTransaction() : strongSelf.startManualEntryTransaction()
-            }
+        if showTipsScreen {
+            sdkFeedbackProvider.startTipTransaction(amountWithoutTip: amountWithoutTip ?? 0)
+            tipsScreenWasNotShown = false
+        } else if showServiceFeeScreen, let serviceFeeProgram = ClearentWrapperDefaults.terminalSettings?.serviceFeeProgram {
+            sdkFeedbackProvider.showServiceFeeScreen(for: serviceFeeProgram)
+            serviceFeeScreenWasNotShown = false
+        } else {
+            useCardReaderPaymentMethod ? startCardReaderTransaction() : startManualEntryTransaction()
         }
     }
 
@@ -325,12 +345,9 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             sdkFeedbackProvider.showEncryptionWarning()
             return
         }
+        
         if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
-            var totalAmountWithoutServiceFee = amountWithoutTip ?? 0.0
-            totalAmountWithoutServiceFee += tip ?? 0.0
-            let calculatedServiceFee = ClearentWrapper.shared.serviceFeeAmount(amount: totalAmountWithoutServiceFee)
-            
-            let saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals, serviceFeeAmount: calculatedServiceFee?.stringFormattedWithTwoDecimals)
+            let saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals, serviceFeeAmount: serviceFeeAmount?.stringFormattedWithTwoDecimals)
             
             startTransaction(saleEntity: saleEntity, isManualTransaction: false)
         }
@@ -412,6 +429,41 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             }
         }
     }
+    
+    private func displaySurchargeAvoidedIfNeeded(response: Transaction?) {
+        guard let surchargeApplied = response?.surchargeApplied, !surchargeApplied, let amountWithTip = amountWithTip, let serviceFeeAmount = serviceFeeAmount else {
+            completeTransaction()
+            return
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            let description = String(format: ClearentConstants.Localized.FlowDataProvider.transactionCompletedSurchargeAvoided,
+                                     ClearentMoneyFormatter.formattedWithSymbol(from: serviceFeeAmount),
+                                     ClearentMoneyFormatter.formattedWithSymbol(from: amountWithTip))
+            let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.transaction_completed),
+                         FlowDataItem(type: .title, object: description)]
+            
+            let feedback = FlowDataFactory.component(with: .payment,
+                                                     type: .info,
+                                                     readerInfo: ClearentWrapperDefaults.lastPairedReaderInfo,
+                                                     payload: items)
+            self?.modalProcessingView?.updateContent(with: feedback)
+            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+                self?.completeTransaction()
+            }
+        }
+    }
+
+    private func completeTransaction() {
+        if ClearentUIManager.configuration.signatureEnabled {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                self.showSignatureScreen()
+            }
+        } else {
+            successfulDissmissViewWithDelay()
+            sdkWrapper.isNewPaymentProcess = true
+            ClearentUIManager.shared.isOfflineModeConfirmed = false
+        }
+    }
 }
 
 extension ClearentProcessingModalPresenter: FlowDataProtocol {
@@ -422,16 +474,8 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
         ClearentUIManager.shared.isOfflineModeConfirmed = false
     }
     
-    func didFinishTransaction() {
-        if ClearentUIManager.configuration.signatureEnabled {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                self.showSignatureScreen()
-            }
-        } else {
-            successfulDissmissViewWithDelay()
-            sdkWrapper.isNewPaymentProcess = true
-            ClearentUIManager.shared.isOfflineModeConfirmed = false
-        }
+    func didFinishTransaction(response: Transaction?) {
+        displaySurchargeAvoidedIfNeeded(response: response)
     }
     
     func deviceDidDisconnect() {}

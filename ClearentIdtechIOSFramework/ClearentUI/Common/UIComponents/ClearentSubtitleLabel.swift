@@ -19,6 +19,7 @@ public class ClearentSubtitleLabel: ClearentTitleLabel {
             RelativeBottomMargin(constant: 20, relatedViewType: ClearentListView.self),
             RelativeBottomMargin(constant: 20, relatedViewType: ClearentLoadingView.self),
             RelativeBottomMargin(constant: 16, relatedViewType: ClearentSignatureView.self),
+            RelativeBottomMargin(constant: 8, relatedViewType: ClearentTitleLabel.self),
             BottomMargin(constant: 80)
         ]
     }

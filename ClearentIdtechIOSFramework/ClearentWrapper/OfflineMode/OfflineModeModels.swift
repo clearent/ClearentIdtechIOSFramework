@@ -19,7 +19,7 @@ public enum OfflineTransactionType :String, Codable {
 */
 public struct ErrorStatus: Codable {
     var error: ClearentError
-    var updatedDate: Date
+    var updatedDate: String
 }
 
 /**
@@ -27,21 +27,23 @@ public struct ErrorStatus: Codable {
  * Can be encoded / decoded as json in order to be saved / retrieved / processed.
 */
 public struct OfflineTransaction: CodableProtocol  {
-    var createdDate: Date?
+    var createdDate: String?
     var transactionID: String
+    var sdkVersion: String?
     var paymentData: PaymentData
     var errorStatus: ErrorStatus?
     var transactionResponse: TransactionResponse?
     
-    init(transactionID: String = UUID().uuidString, createdDate: Date? = nil, errorStatus: ErrorStatus? = nil, paymentData: PaymentData) {
-        self.createdDate = Date()
+    init(transactionID: String = UUID().uuidString, createdDate: String? = nil, errorStatus: ErrorStatus? = nil, paymentData: PaymentData, sdkVersion: String? = nil ) {
+        self.createdDate = createdDate ?? Date().dateAndTimeToString()
         self.transactionID  = transactionID
         self.paymentData = paymentData
         self.errorStatus = errorStatus
+        self.sdkVersion = sdkVersion
     }
         
     enum CodingKeys: String, CodingKey {
-        case transactionID, paymentData, createdDate, errorStatus, transactionResponse
+        case transactionID, paymentData, createdDate, errorStatus, transactionResponse, sdkVersion
     }
     
     func transactionType() -> OfflineTransactionType {

@@ -14,7 +14,7 @@ class ClearentOfflineResultPDFGenerator {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let outputFileURL = documentsDirectory.appendingPathComponent("OfflineErrorsReport.pdf")
         
-        let pdfRenderer = UIGraphicsPDFRenderer(bounds: CGRect(x: 0, y: 0, width: 565, height: 600))
+        let pdfRenderer = UIGraphicsPDFRenderer(bounds: CGRect(x: 0, y: 0, width: 595, height: 841.8))
         
         let pageSize = CGSize(width: 595.2, height: 841.8)
         let pageMargins = UIEdgeInsets(top: 72, left: 72, bottom: 72, right: 72)
@@ -26,7 +26,6 @@ class ClearentOfflineResultPDFGenerator {
         renderer.setValue(NSValue(cgRect: printableRect), forKey: "printableRect")
         
         let allData = NSMutableAttributedString()
-        
         allData.append(createHeaderString(merchantName: "Ovidiu's Beach Bar", terminalID: "12456798", date: "2022-17-11", time: "10:07:20"))
         
         transactions.forEach { tr in
@@ -66,8 +65,8 @@ class ClearentOfflineResultPDFGenerator {
             NSTextTab(textAlignment: .right, location: 400, options: [:]),
         ]
         
-        let line1 = ClearentConstants.Localized.OfflineMode.offlineModeMechantID + merchantName + "\t" + ClearentConstants.Localized.OfflineMode.offlineModeReportDate + date + "\n"
-        let line2 = ClearentConstants.Localized.OfflineMode.offlineModeTerminalID + terminalID + "\t" + ClearentConstants.Localized.OfflineMode.offlineModeReportTime + time + "\n\n\n"
+        let line1 = ClearentConstants.Localized.OfflineMode.offlineModeMechantID + merchantName + "\t" + ClearentConstants.Localized.OfflineMode.offlineModeReportDate + Date().dateOnlyToString() + "\n"
+        let line2 = ClearentConstants.Localized.OfflineMode.offlineModeTerminalID + terminalID + "\t" + ClearentConstants.Localized.OfflineMode.offlineModeReportTime + Date().timeToString() + "\n\n\n"
         
         let text1 = NSMutableAttributedString(string: line1, attributes: [.paragraphStyle : paragraph])
         text1.addAttribute(.foregroundColor, value: ClearentUIBrandConfigurator.shared.colorPalette.errorLogKeyLabelColor, range: NSRange(location: 0, length: ClearentConstants.Localized.OfflineMode.offlineModeMechantID.count))
@@ -124,7 +123,6 @@ class ClearentOfflineResultPDFGenerator {
             transactionString.append(space)
         }
         
-        
         transactionString.append(NSMutableAttributedString(string: "\n\n"))
         return transactionString
     }
@@ -133,21 +131,18 @@ class ClearentOfflineResultPDFGenerator {
         
         var transactionData: [(String, String)] = []
         
-        transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportOfflineDate, "20.02.1998"))
-        transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportOfflineTime, "22:44"))
+        if let createdDate = transaction.createdDate?.toDateUseShortFormat() {
+            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportOfflineDate, createdDate.dateOnlyToString()))
+            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportOfflineTime, createdDate.timeToString()))
+        }
         
-        if let id = transaction.transactionResponse?.code {
-            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportOfflineDate,id))
+        if let id = transaction.transactionResponse?.payload.transaction?.id {
+            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportTransactionID,id))
         }
         
         // External ref ID, if this is not provided will be the offline transaction id
         transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportExternalRefID, transaction.transactionID))
-        
-        // we don't have the cardholder name
-        if let name = transaction.transactionResponse?.payload.transaction?.customerFirstName, let lastName = transaction.transactionResponse?.payload.transaction?.customerLastName {
-            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportCardHolderName,name + lastName))
-        }
-        
+                
         if let lastFour = transaction.transactionResponse?.payload.transaction?.lastFourDigits {
             transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportLastFourDigits, lastFour))
         }
@@ -156,23 +151,25 @@ class ClearentOfflineResultPDFGenerator {
             transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportExpirationDate, expDate))
         }
         
+        var totalAmount = 0.0
         if let amount = transaction.transactionResponse?.payload.transaction?.amount {
-            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportAmount, amount))
+            totalAmount = totalAmount + (transaction.transactionResponse?.payload.transaction?.amount?.double ?? 0.0)
+            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportAmount, "$ " + amount.setTwoDecimals()))
         }
         
-        if let tipAmount = transaction.transactionResponse?.payload.transaction?.amount {
-            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportAmount, tipAmount))
+        if let tipAmount = transaction.transactionResponse?.payload.transaction?.tipAmount {
+            totalAmount = totalAmount + (transaction.transactionResponse?.payload.transaction?.tipAmount?.double ?? 0.0)
+            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportTipAmount, "$ " + tipAmount.setTwoDecimals()))
         }
         
         if let empowerAmount = transaction.transactionResponse?.payload.transaction?.empowerAmount {
-            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportEmpowerAmount, empowerAmount))
+            totalAmount = totalAmount + (transaction.transactionResponse?.payload.transaction?.empowerAmount?.double ?? 0.0)
+            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportEmpowerAmount, "$ " + empowerAmount.setTwoDecimals()))
         }
         
-        if let empowerAmount = transaction.transactionResponse?.payload.transaction?.empowerAmount {
-            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportEmpowerAmount, empowerAmount))
+        if let totalAmount = totalAmount.stringFormattedWithTwoDecimals {
+            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportTotalAmount, "$ " + totalAmount))
         }
-        
-        transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportTotalAmount, "0"))
         
         if let customerID = transaction.transactionResponse?.payload.transaction?.customerID {
             transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportCustomerID, customerID))
@@ -187,30 +184,29 @@ class ClearentOfflineResultPDFGenerator {
         }
         
         if let billingAddress = transaction.transactionResponse?.payload.transaction?.billing {
-            let address = billingAddress.city + " " + billingAddress.street  + " " + billingAddress.lastName + " " + billingAddress.firstName
-            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportBillingAddress, address))
+        transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportBillingAddress, billingAddress.street!))
         }
         
         if let shippingAddress = transaction.transactionResponse?.payload.transaction?.shipping {
-            let address = shippingAddress.city + " " + shippingAddress.street  + " " + shippingAddress.lastName + " " + shippingAddress.firstName
-            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportShippingAddress, address))
+            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportShippingAddress, shippingAddress.street!))
+        }
+
+        if let softwareType = transaction.transactionResponse?.payload.transaction?.softwareType {
+            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportSoftwareType, softwareType))
+        }
+                
+        if let sdkVersion = transaction.sdkVersion {
+            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportSoftwareVersion, sdkVersion))
         }
         
-        if let shippingAddress = transaction.transactionResponse?.payload.transaction?.shipping {
-            let address = shippingAddress.city + " " + shippingAddress.street  + " " + shippingAddress.lastName + " " + shippingAddress.firstName
-            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportShippingAddress, address))
+        if let errorMessage = transaction.transactionResponse?.payload.transaction?.message, let code = transaction.transactionResponse?.payload.error?.code {
+            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportError, errorMessage + ", \(code)"))
         }
         
-        transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportSoftwareType, "Xplor SDK"))
-        transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportSoftwareVersion, "1.0"))
-        
-        
-        if let errorMessage = transaction.transactionResponse?.payload.transaction?.message {
-            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportError, errorMessage))
+        if let errorDate = transaction.errorStatus?.updatedDate.toDateUseShortFormat() {
+            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportErrorDate, errorDate.dateOnlyToString()))
+            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportErrorTime, errorDate.timeToString()))
         }
-        
-        transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportErrorDate, "20.02.1998"))
-        transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportErrorTime, "22:44"))
         
         return transactionData
     }

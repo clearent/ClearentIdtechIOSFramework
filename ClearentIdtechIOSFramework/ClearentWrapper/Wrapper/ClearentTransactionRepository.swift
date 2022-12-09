@@ -9,13 +9,12 @@
 protocol TransactionRepositoryProtocol {
     var delegate: ClearentWrapperProtocol? { get set }
     var offlineManager: OfflineModeManager? { get set }
-    
     func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
     func sendSignatureRequest(image: UIImage, completion: @escaping (SignatureResponse?, ClearentError?) -> Void)
     func resendSignature(completion: @escaping (SignatureResponse?, ClearentError?) -> Void)
     func refundTransaction(jwt: String, amount: String, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
     func voidTransaction(transactionID: String, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
-    func fetchTipSetting(completion: @escaping () -> Void)
+    func fetchTerminalSetting(completion: @escaping () -> Void)
     func processOfflineTransactions(completion: @escaping (() -> Void))
     func manualEntryTransaction(saleEntity: SaleEntity)
     func saveOfflineTransaction(paymentData: PaymentData)
@@ -23,7 +22,6 @@ protocol TransactionRepositoryProtocol {
     func resaveSignatureImageForTransaction()
     func fetchOfflineTransactions() -> [OfflineTransaction]?
     func serviceFeeForAmount(amount: Double) -> Double?
-    func serviceFeeProgramType() -> String?
 }
 
 class TransactionRepository: NSObject, TransactionRepositoryProtocol {
@@ -52,31 +50,12 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     func serviceFeeForAmount(amount: Double) -> Double? {
         // Terminal settings are cached and if we have cached values we will use it
         let terminalSettings = ClearentWrapperDefaults.terminalSettings
-        if (terminalSettings?.serviceFeeState) != nil && terminalSettings?.serviceFeeState ==  ServiceFeeState.enabled.rawValue {
-            guard let feeType = terminalSettings?.serviceFeeType, let feeValue = terminalSettings?.serviceFee else { return nil }
-            return calculateFeeFor(amount: amount, feeType: ServiceFeeType(rawValue: feeType), value: feeValue)
+        if let serviceFeeState = terminalSettings?.serviceFeeState, serviceFeeState ==  ServiceFeeState.ENABLED {
+            guard let feeType = terminalSettings?.serviceFeeType,
+                 let serviceFee = terminalSettings?.serviceFee,
+                 let serviceFeeValue = Double(serviceFee) else { return nil }
+            return calculateFeeFor(amount: amount, feeType: feeType, feeValue: serviceFeeValue)
         }
-        
-        return nil
-    }
-    
-    /**
-     * Returns the display name for the current service fee program type as String
-     */
-    func serviceFeeProgramType() -> String? {
-        ClearentWrapperDefaults.terminalSettings?.serviceFeeType
-    }
-    
-    
-    func calculateFeeFor(amount: Double, feeType: ServiceFeeType?, value: String) -> Double? {
-        guard let feeValue = Double(value), let feeType = feeType else { return nil }
-        
-        if (feeType == .percentage) {
-            return amount * feeValue / 100
-        } else if (feeType == .flatfee) {
-            return feeValue
-        }
-        
         return nil
     }
     
@@ -178,8 +157,8 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         }
     }
     
-    func fetchTipSetting(completion: @escaping () -> Void) {
-        httpClient.merchantSettings() { data, error in
+    func fetchTerminalSetting(completion: @escaping () -> Void) {
+        httpClient.terminalSettings() { data, error in
             DispatchQueue.main.async {
                 do {
                     guard let data = data else {
@@ -187,7 +166,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
                         return
                     }
                     
-                    let decodedResponse = try JSONDecoder().decode(MerchantSettingsEntity.self, from: data)
+                    let decodedResponse = try JSONDecoder().decode(TerminalSettingsEntity.self, from: data)
                     ClearentWrapperDefaults.terminalSettings = decodedResponse.payload.terminalSettings
                 } catch let jsonDecodingError {
                     print(jsonDecodingError)
@@ -261,7 +240,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
      *  @param transaction, represents an offline transaction
      */
     func saveOfflineTransaction(paymentData: PaymentData) {
-        let offlineTransaction = OfflineTransaction(paymentData: paymentData)
+        let offlineTransaction = OfflineTransaction(paymentData: paymentData, sdkVersion: ClearentWrapper.shared.currentSDKVersion())
         self.offlineTransaction = offlineTransaction
         guard let status = offlineManager?.saveOfflineTransaction(transaction: offlineTransaction) else { return  }
         delegate?.didAcceptOfflineTransaction(status: status)
@@ -297,16 +276,34 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     
     // MARK: - Private
     
+    private func calculateFeeFor(amount: Double, feeType: ServiceFeeType, feeValue: Double) -> Double {
+        switch feeType {
+        case .PERCENTAGE:
+            return amount * feeValue / 100
+        case .FLATFEE:
+            return feeValue
+        }
+    }
+    
     private func sendOfflineTransaction(offlineTransaction: OfflineTransaction, token: ClearentTransactionToken?, completion: @escaping ((ClearentError?, TransactionResponse?) -> Void)) {
+
         guard let token = token else {
             completion(.init(type: .missingToken), nil)
             return
         }
 
         // make sure we have two decimals otherwise the API will return an error
-        let saleEntity = offlineTransaction.paymentData.saleEntity
+        var saleEntity = offlineTransaction.paymentData.saleEntity
         saleEntity.amount = saleEntity.amount.setTwoDecimals()
         saleEntity.tipAmount = saleEntity.tipAmount?.setTwoDecimals()
+        
+        saleEntity.invoice = "MX-B8767687"
+        saleEntity.orderID = "ORDER XX009"
+        
+        saleEntity.billing = ClientInformation(firstName: "Ovidiu", lastName: "MIhai", company: "Xplor", zip: "4654564", street: "Blajului mo.171")
+        saleEntity.shipping = ClientInformation(firstName: "Ovidiu", lastName: "MIhai", company: "Xplor", zip: "4654564", street: "Blajului mo.171")
+        saleEntity.externelRefID = "MX|DY"
+        
         
         saleTransaction(jwt: token.jwt, saleEntity: saleEntity) { [weak self] (response, error) in
             if error != nil {

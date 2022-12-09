@@ -29,6 +29,8 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     var presenter: ClearentSettingsPresenterProtocol?
     var dismissCompletion: ((CompletionResult) -> Void)?
     
+    // MARK: - Init
+    
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: String(describing: ClearentSettingsModalViewController.self), bundle: ClearentConstants.bundle)
     }
@@ -36,6 +38,8 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    // MARK: - Lifecycle
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -92,11 +96,14 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         enableOfflineMode.titleTextColor = ClearentUIBrandConfigurator.shared.colorPalette.titleLabelColor
         enableOfflineMode.descriptionText = nil
         enableOfflineMode.isOn = ClearentWrapperDefaults.enableOfflineMode
+        
         enableOfflineMode.valueChangedAction = { [weak self] isOn in
             if isOn {
                 self?.showOfflineModeQuestionIfNeeded(shouldShow: true)
             } else {
+                self?.enablePromptMode.isOn = false
                 self?.updatePromptModeState(isUserInteractionEnabled: false)
+                self?.presenter?.updatePromptMode(isEnabled: false)
                 self?.presenter?.updateOfflineMode(isEnabled: false)
             }
         }
@@ -108,6 +115,7 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         offlineQuestionFirstSubtitle.title = ClearentConstants.Localized.OfflineMode.offlineModeWarningMessageDescription
         offlineQuestionSecondSubtitle.title = ClearentConstants.Localized.OfflineMode.offlineModeWarningConfirmationDescription
         offlineQuestionConfirmBtn.title = ClearentConstants.Localized.OfflineMode.offlineModeConfirmOption
+        
         offlineQuestionConfirmBtn.action = { [weak self] in
             self?.showOfflineModeQuestionIfNeeded(shouldShow: false)
             self?.updatePromptModeState(isUserInteractionEnabled: true)
@@ -145,6 +153,7 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         enablePromptMode.descriptionText = nil
         enablePromptMode.isOn = ClearentWrapperDefaults.enableOfflinePromptMode
         updatePromptModeState(isUserInteractionEnabled: enableOfflineMode.isOn)
+        
         enablePromptMode.valueChangedAction = { [weak self] isOn in
             self?.presenter?.updatePromptMode(isEnabled: isOn)
         }

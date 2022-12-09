@@ -34,7 +34,7 @@ public class FlowFeedback {
 
 class FlowDataFactory {
     class func component(with flow: ProcessType, type: FlowFeedbackType, readerInfo: ReaderInfo?, payload: [FlowDataItem]) -> FlowFeedback {
-        let isNotManualPayment = FlowDataProvider.useCardReaderPaymentMethod || ClearentWrapper.shared.flowType?.processType != .payment
+        let isNotManualPayment = ClearentWrapper.shared.useCardReaderPaymentMethod || ClearentWrapper.shared.flowType?.processType != .payment
         
         if (readerInfo != nil || !ClearentWrapper.shared.previouslyPairedReaders.isEmpty) && isNotManualPayment {
             var allItems = [FlowDataItem(type: .readerInfo, object: readerInfo)]
@@ -49,7 +49,7 @@ class FlowDataFactory {
 
 protocol FlowDataProtocol : AnyObject {
     func didFinishSignature()
-    func didFinishTransaction()
+    func didFinishTransaction(response: Transaction?)
     func deviceDidDisconnect()
     func didFinishedPairing()
     func didReceiveFlowFeedback(feedback: FlowFeedback)
@@ -68,11 +68,7 @@ class FlowDataProvider : NSObject {
         }
         return false
     }
-    
-    static var useCardReaderPaymentMethod: Bool {
-        ClearentWrapper.shared.cardReaderPaymentIsPreffered && ClearentWrapper.shared.useManualPaymentAsFallback == nil
-    }
-    
+
     // MARK: - Init
     
     public override init() {
@@ -96,6 +92,14 @@ class FlowDataProvider : NSObject {
         
         let feedback = FlowFeedback(flow: .payment, type: FlowFeedbackType.info, items: items)
 
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
+    }
+    
+    func showServiceFeeScreen(for serviceFeeType: ServiceFeeProgramType) {
+        let items = [FlowDataItem(type: .serviceFee, object: serviceFeeType),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.transactionWithServiceFee),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+        let feedback = FlowFeedback(flow: .payment, type: FlowFeedbackType.info, items: items)
         delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
@@ -275,7 +279,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  readerInfo: fetchReaderInfo(),
                                                  payload: items)
             delegate?.didReceiveFlowFeedback(feedback: feedback)
-            delegate?.didFinishTransaction()
+            delegate?.didFinishTransaction(response: response?.payload.transaction)
         }
     }
     
@@ -291,7 +295,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  readerInfo: fetchReaderInfo(),
                                                  payload: items)
             delegate?.didReceiveFlowFeedback(feedback: feedback)
-            delegate?.didFinishTransaction()
+            delegate?.didFinishTransaction(response: nil)
         } else {
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
                      FlowDataItem(type: .title, object: ClearentConstants.Localized.Error.generalErrorTitle),
@@ -415,7 +419,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                 }
             }
         case .noBluetooth:
-            guard FlowDataProvider.useCardReaderPaymentMethod else { return }
+            guard ClearentWrapper.shared.useCardReaderPaymentMethod else { return }
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
                      FlowDataItem(type: .title, object: ClearentConstants.Localized.Bluetooth.error),

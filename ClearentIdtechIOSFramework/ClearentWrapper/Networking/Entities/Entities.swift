@@ -50,9 +50,10 @@ public struct ResponseError: Codable {
 }
 
 public struct Transaction: Codable {
+    var id: String
     var message: String
     var result: String
-    //var surchargeApplied: String?
+    var surchargeApplied: Bool?
     var refID: String?
     var customerFirstName: String?
     var customerLastName: String?
@@ -64,13 +65,15 @@ public struct Transaction: Codable {
     var empowerAmount: String?
     var orderID: String?
     var invoice: String?
-    var billing: Address?
-    var shipping : Address?
+    var billing: ClientInformation?
+    var shipping : ClientInformation?
+    var softwareVersion: String?
+    var softwareType: String?
     
     enum CodingKeys: String, CodingKey {
         case message = "display-message"
         case result = "result"
-        //case surchargeApplied = "surcharge-applied"
+        case surchargeApplied = "surcharge-applied"
         case refID = "ref-id"
         case customerFirstName = "customer-first-name"
         case customerLastName = "customer-last-name"
@@ -82,30 +85,15 @@ public struct Transaction: Codable {
         case empowerAmount = "service-fee"
         case orderID = "order-id"
         case invoice = "invoice"
+        case softwareVersion = "software-version"
+        case softwareType = "software-type"
+        case billing
+        case shipping
+        case id
     }
 }
 
 struct TransactionStatus {
     static let approved = "APPROVED"
     static let declined = "DECLINED"
-}
-
-
-public struct Address: Codable {
-    var city: String
-    var company: String
-    var country: String
-    var firstName: String
-    var lastName: String
-    var phone: String
-    var state: String
-    var street: String
-    var street2: String
-    var zip: String
-    
-    enum CodingKeys: String, CodingKey {
-        case city, company, country, phone, state, street, street2, zip
-        case firstName = "first-name"
-        case lastName = "last-name"
-    }
 }

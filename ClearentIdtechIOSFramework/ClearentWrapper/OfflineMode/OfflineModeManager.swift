@@ -108,10 +108,10 @@ class OfflineModeManager {
         var transactionToBeUpdated = transaction
         transactionToBeUpdated.transactionResponse = transactionResponse
         if let error = error {
-            transactionToBeUpdated.errorStatus = ErrorStatus(error: error, updatedDate: Date())
+            transactionToBeUpdated.errorStatus = ErrorStatus(error: error, updatedDate: Date().dateAndTimeToString())
             return storage.updateTransaction(transaction: transactionToBeUpdated)
         } else {
-            transactionToBeUpdated.errorStatus = ErrorStatus(error: ClearentError.init(type: .none), updatedDate: Date())
+            transactionToBeUpdated.errorStatus = ErrorStatus(error: ClearentError.init(type: .none), updatedDate:Date().dateAndTimeToString())
             return storage.updateTransaction(transaction: transactionToBeUpdated)
         }
     }
@@ -122,6 +122,10 @@ class OfflineModeManager {
     
     func uploadReportContainsErrors() -> Bool {
         retrieveAll().first(where: { $0.errorStatus != nil && $0.errorStatus?.error.type != ClearentErrorType.none }) != nil
+    }
+    
+    func reportAllErrors() -> [OfflineTransaction]? {
+        return retrieveAll().filter({ $0.errorStatus != nil && $0.errorStatus?.error.type != ClearentErrorType.none})
     }
 }
 
