@@ -25,17 +25,7 @@ class ClearentOfflineResultPDFGenerator {
         renderer.setValue(NSValue(cgRect: paperRect), forKey: "paperRect")
         renderer.setValue(NSValue(cgRect: printableRect), forKey: "printableRect")
         
-        let allData = NSMutableAttributedString()
-        if let header =  getHeaderString(transactions: transactions) {
-            allData.append(header)
-        }
-        
-        transactions.forEach { tr in
-            let str = createTransactionString(for: transactionDictionary(for: tr))
-            allData.append(str)
-        }
-        
-        let printFormatter = UISimpleTextPrintFormatter(attributedText: allData)
+        let printFormatter = UISimpleTextPrintFormatter(attributedText: getContentString(transactions: transactions))
         renderer.addPrintFormatter(printFormatter, startingAtPageAt: 0)
         
         let pdfData = NSMutableData()
@@ -60,7 +50,43 @@ class ClearentOfflineResultPDFGenerator {
         return outputFileURL
     }
     
+    // Group the transactions in merchantiD/terminalID  key based and print a header for each of sublists
+    func getContentString(transactions: [OfflineTransaction]) -> NSMutableAttributedString {
+        
+        var uniqueMerchantAndTerminals = [String]()
+        transactions.forEach { tr in
+            if let merchantID = tr.transactionResponse?.payload.transaction?.merchantID, let terminalID = tr.transactionResponse?.payload.transaction?.terminalID {
+                if (!uniqueMerchantAndTerminals.contains(merchantID+terminalID)) {
+                    uniqueMerchantAndTerminals.append(merchantID+terminalID)
+                }
+            }
+        }
+        
+        let allData = NSMutableAttributedString()
+        uniqueMerchantAndTerminals.forEach { id in
+            
+            let trs = transactions.filter {
+                if let merchantID = $0.transactionResponse?.payload.transaction?.merchantID, let terminalID = $0.transactionResponse?.payload.transaction?.terminalID {
+                   return  merchantID + terminalID == id
+                }
+                
+                return false
+            }
+            
+            if let header =  getHeaderString(transactions: trs) {
+                allData.append(header)
+                trs.forEach { tr in
+                    let str = createTransactionString(for: transactionDictionary(for: tr))
+                    allData.append(str)
+                }
+            }
+        }
+        
+        return allData
+    }
+    
     func getHeaderString(transactions: [OfflineTransaction]) -> NSMutableAttributedString? {
+        
         if (!transactions.isEmpty) {
             let tr = transactions.first
             if let merchantID = tr?.transactionResponse?.payload.transaction?.merchantID, let terminalID = tr?.transactionResponse?.payload.transaction?.terminalID {
