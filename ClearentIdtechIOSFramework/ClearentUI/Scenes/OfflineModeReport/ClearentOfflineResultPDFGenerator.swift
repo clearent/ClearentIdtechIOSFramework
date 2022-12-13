@@ -24,14 +24,12 @@ class ClearentOfflineResultPDFGenerator {
             allData.append(str)
         }
         
-    
         let renderer = setupRendered()
         let printFormatter = UISimpleTextPrintFormatter(attributedText: allData)
         renderer.addPrintFormatter(printFormatter, startingAtPageAt: 0)
         
         let pdfData = NSMutableData()
         
-        UIGraphicsBeginPDFContextToData(pdfData, paperRect, nil)
         renderer.prepare(forDrawingPages: NSMakeRange(0, renderer.numberOfPages))
         
         let bounds = UIGraphicsGetPDFContextBounds()
