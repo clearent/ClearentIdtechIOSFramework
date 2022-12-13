@@ -155,8 +155,8 @@ class ClearentOfflineResultPDFGenerator {
             transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportTransactionID,id))
         }
         
-        // External ref ID, if this is not provided will be the offline transaction id
-        transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportExternalRefID, transaction.transactionID))
+        let extID = transaction.paymentData.saleEntity.externelRefID ?? transaction.transactionID
+        transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportExternalRefID, extID))
                 
         if let lastFour = transaction.transactionResponse?.payload.transaction?.lastFourDigits {
             transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportLastFourDigits, lastFour))

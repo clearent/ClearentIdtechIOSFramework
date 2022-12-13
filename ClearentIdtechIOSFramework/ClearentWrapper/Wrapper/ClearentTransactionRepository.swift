@@ -299,6 +299,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         
         saleEntity.invoice = "MX-B8767687"
         saleEntity.orderID = "ORDER XX009"
+        saleEntity.externelRefID = "CID 9099909"
         
         saleEntity.billing = ClientInformation(firstName: "Ovidiu", lastName: "MIhai", company: "Xplor", zip: "4654564", street: "Blajului mo.171")
         saleEntity.shipping = ClientInformation(firstName: "Ovidiu", lastName: "MIhai", company: "Xplor", zip: "4654564", street: "Blajului mo.171")

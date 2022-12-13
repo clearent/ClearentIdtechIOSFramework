@@ -50,7 +50,7 @@ public struct ResponseError: Codable {
 }
 
 public struct Transaction: Codable {
-    var id: String
+    var id: String?
     var message: String
     var result: String
     var surchargeApplied: Bool?
