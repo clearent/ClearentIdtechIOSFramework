@@ -54,11 +54,15 @@ class ClearentOfflineResultPDFGenerator {
     func getContentString(transactions: [OfflineTransaction]) -> NSMutableAttributedString {
         
         var uniqueMerchantAndTerminals = [String]()
+        var noIDTransactions = [OfflineTransaction]()
+        
         transactions.forEach { tr in
             if let merchantID = tr.transactionResponse?.payload.transaction?.merchantID, let terminalID = tr.transactionResponse?.payload.transaction?.terminalID {
                 if (!uniqueMerchantAndTerminals.contains(merchantID+terminalID)) {
                     uniqueMerchantAndTerminals.append(merchantID+terminalID)
                 }
+            } else {
+                noIDTransactions.append(tr)
             }
         }
         
@@ -80,6 +84,11 @@ class ClearentOfflineResultPDFGenerator {
                     allData.append(str)
                 }
             }
+        }
+        
+        noIDTransactions.forEach { tr in
+            let str = createTransactionString(for: transactionDictionary(for: tr))
+            allData.append(str)
         }
         
         return allData
