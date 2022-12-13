@@ -106,6 +106,15 @@ class ClearentOfflineResultPDFGenerator {
         return nil
     }
     
+    private func createSeparatorImage() -> NSMutableAttributedString  {
+        let paraStyle = NSMutableParagraphStyle()
+        let imageString = NSMutableAttributedString(string: "\n", attributes:  [.paragraphStyle : paraStyle])
+        let attachment = NSTextAttachment()
+        attachment.image = UIImage(named: ClearentConstants.IconName.separatorLine, in: ClearentConstants.bundle, compatibleWith: nil)
+        imageString.append(NSAttributedString(attachment: attachment))
+        return imageString
+    }
+
     func createHeaderString(merchantName: String, terminalID: String) -> NSMutableAttributedString {
         let paragraph = NSMutableParagraphStyle()
         paragraph.tabStops = [
@@ -140,18 +149,18 @@ class ClearentOfflineResultPDFGenerator {
         text2.addAttribute(.foregroundColor, value: ClearentUIBrandConfigurator.shared.colorPalette.errorLogValueLabelColor, range: NSRange(location: lastLocation2, length: time.count))
         text1.append(text2)
         
-//        let paraStyle = NSMutableParagraphStyle()
-//        let imageString = NSMutableAttributedString(string: "\n", attributes:  [.paragraphStyle : paraStyle])
-//        let attachment = NSTextAttachment()
-//        attachment.image = UIImage(named: "left-arrow")
-//        imageString.append(NSAttributedString(attachment: attachment))
-//        text1.append(imageString)
+        text1.append(createSeparatorImage())
         
         return text1
     }
     
     func createTransactionString(for transactionData: [(String, String)]) -> NSMutableAttributedString {
+        let emptyLine = NSMutableAttributedString(string: "\n")
         let transactionString = NSMutableAttributedString()
+        
+        transactionString.append(createSeparatorImage())
+        transactionString.append(emptyLine)
+        transactionString.append(emptyLine)
         
         let paragraph = NSMutableParagraphStyle()
         paragraph.tabStops = [
@@ -159,7 +168,7 @@ class ClearentOfflineResultPDFGenerator {
             NSTextTab(textAlignment: .left, location: 140, options: [:]),
         ]
         
-        for element  in transactionData {
+        for element in transactionData {
             let text = element.0 + "\t" + element.1
             let keyText = element.0 + "\t"
             
@@ -168,12 +177,9 @@ class ClearentOfflineResultPDFGenerator {
             value.addAttribute(.foregroundColor, value: ClearentUIBrandConfigurator.shared.colorPalette.errorLogValueLabelColor, range: NSRange(location: keyText.count, length: element.1.count))
             value.addAttribute(.font, value: ClearentUIBrandConfigurator.shared.fonts.offlineReportFieldLabel, range: NSRange(location: 0, length: text.count))
             transactionString.append(value)
-            
-            let space = NSMutableAttributedString(string: "\n")
-            transactionString.append(space)
+            transactionString.append(emptyLine)
         }
-        
-        transactionString.append(NSMutableAttributedString(string: "\n\n"))
+
         return transactionString
     }
     

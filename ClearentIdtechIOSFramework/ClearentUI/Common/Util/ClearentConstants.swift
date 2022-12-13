@@ -93,6 +93,9 @@ import UIKit
         static let expandMedium = "expandMedium"
         static let collapseMedium = "collapseMedium"
         static let deleteButton = "smallDeleteButton"
+        
+        // Offline transactions report
+        static let separatorLine = "report_line"
     }
     
     enum AnimationName {
