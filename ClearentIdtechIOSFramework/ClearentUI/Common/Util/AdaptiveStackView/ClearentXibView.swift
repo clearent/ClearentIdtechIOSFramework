@@ -25,7 +25,7 @@ open class ClearentXibView: UIView {
         loadViewFromNib()
     }
 
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
         loadViewFromNib()
     }

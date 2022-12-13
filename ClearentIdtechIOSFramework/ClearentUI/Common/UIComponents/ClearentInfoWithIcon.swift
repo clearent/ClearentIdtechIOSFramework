@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ClearentInfoWithIcon: ClearentMarginableView {
+public class ClearentInfoWithIcon: ClearentMarginableView {
     @IBOutlet var titleLabel: UILabel!
     @IBOutlet var descriptionLabel: UILabel!
     @IBOutlet var button: UIButton!
@@ -18,41 +18,41 @@ class ClearentInfoWithIcon: ClearentMarginableView {
     public var editButtonPressed: (() -> Void)?
     public var deleteButtonPressed: (() -> Void)?
 
-    override var margins: [BottomMargin] {
+    override public var margins: [BottomMargin] {
         [RelativeBottomMargin(constant: 24, relatedViewType: ClearentInfoWithIcon.self)]
     }
 
-    var titleTextColor: UIColor? {
+    public var titleTextColor: UIColor? {
         didSet {
             titleLabel.textColor = titleTextColor
         }
     }
 
-    var titleFont: UIFont? {
+    public var titleFont: UIFont? {
         didSet {
             titleLabel.font = titleFont
         }
     }
 
-    var titleText: String? {
+    public var titleText: String? {
         didSet {
             titleLabel.text = titleText
         }
     }
 
-    var descriptionTextColor: UIColor? {
+    public var descriptionTextColor: UIColor? {
         didSet {
             descriptionLabel.textColor = descriptionTextColor
         }
     }
 
-    var descriptionFont: UIFont? {
+    public var descriptionFont: UIFont? {
         didSet {
             descriptionLabel.font = descriptionFont
         }
     }
 
-    var descriptionText: String? {
+     public var descriptionText: String? {
         didSet {
             guard let descriptionText = descriptionText else {
                 descriptionLabel.removeFromSuperview()
@@ -62,7 +62,7 @@ class ClearentInfoWithIcon: ClearentMarginableView {
         }
     }
 
-    var iconName: String? {
+    public var iconName: String? {
         didSet {
             guard let iconName = iconName else { return }
             button.setBackgroundImage(UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil), for: .normal)
@@ -70,7 +70,7 @@ class ClearentInfoWithIcon: ClearentMarginableView {
         }
     }
 
-    var secondIconName: String? {
+    public var secondIconName: String? {
         didSet {
             guard let iconName = secondIconName else { return }
             secondaryButton.setBackgroundImage(UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil), for: .normal)
@@ -78,7 +78,7 @@ class ClearentInfoWithIcon: ClearentMarginableView {
         }
     }
 
-    override func configure() {
+    override public func configure() {
         titleFont = ClearentUIBrandConfigurator.shared.fonts.detailScreenItemTitleFont
         titleTextColor = ClearentConstants.Color.base02
         descriptionFont = ClearentUIBrandConfigurator.shared.fonts.detailScreenItemSubtitleFont
