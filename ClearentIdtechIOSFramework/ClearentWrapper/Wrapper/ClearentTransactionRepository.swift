@@ -293,18 +293,9 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         }
 
         // make sure we have two decimals otherwise the API will return an error
-        var saleEntity = offlineTransaction.paymentData.saleEntity
+        let saleEntity = offlineTransaction.paymentData.saleEntity
         saleEntity.amount = saleEntity.amount.setTwoDecimals()
         saleEntity.tipAmount = saleEntity.tipAmount?.setTwoDecimals()
-        
-        saleEntity.invoice = "MX-B8767687"
-        saleEntity.orderID = "ORDER XX009"
-        saleEntity.externelRefID = "CID 9099909"
-        
-        saleEntity.billing = ClientInformation(firstName: "Ovidiu", lastName: "MIhai", company: "Xplor", zip: "4654564", street: "Blajului mo.171")
-        saleEntity.shipping = ClientInformation(firstName: "Ovidiu", lastName: "MIhai", company: "Xplor", zip: "4654564", street: "Blajului mo.171")
-        saleEntity.externelRefID = "MX|DY"
-        
         
         saleTransaction(jwt: token.jwt, saleEntity: saleEntity) { [weak self] (response, error) in
             if error != nil {
