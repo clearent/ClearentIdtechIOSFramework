@@ -286,6 +286,7 @@ Objective-C example of the ClearenSDKUI  integration [Obj-C Example](https://git
     UIViewController *vc = [[ClearentUIManager shared] paymentViewControllerWithPaymentInfo:paymentInfo completion:^(ClearentError* error) {
         //do something that you want on dismiss
     }];
+    [self presentViewController:vc animated:YES completion:nil];
 }
 
 @end
