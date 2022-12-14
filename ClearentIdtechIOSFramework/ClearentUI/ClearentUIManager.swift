@@ -61,7 +61,7 @@ public final class ClearentUIManager: NSObject {
     
     /**
      * Method returns a UIController that can handle the entire payment process
-     * @param amount, the amount to be charged in a transaction
+     * @param paymentInfo, a PaymentInfo object that contains information related to payment (amount, customerID, invoice, etc)
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
     @objc public func paymentViewController(paymentInfo: PaymentInfo?, completion: ((ClearentResult) -> Void)?) -> UINavigationController {
