@@ -14,7 +14,7 @@ extension Date {
         return formatter.string(from: self)
     }
     
-    func timeToString(format: String = "HH:mm:ss 'UTC'") -> String {
+    func timeToString(format: String = "HH:mm:ss") -> String {
         let formatter = utcDateFormatter()
         formatter.dateStyle = .short
         formatter.dateFormat = format

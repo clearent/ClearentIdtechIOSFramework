@@ -124,7 +124,7 @@ class OfflineModeManager {
         retrieveAll().first(where: { $0.errorStatus != nil && $0.errorStatus?.error.type != ClearentErrorType.none }) != nil
     }
     
-    func reportAllErrors() -> [OfflineTransaction]? {
+    func transactionsWithErrors() -> [OfflineTransaction]? {
         return retrieveAll().filter({ $0.errorStatus != nil && $0.errorStatus?.error.type != ClearentErrorType.none})
     }
 }

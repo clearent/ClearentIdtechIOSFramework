@@ -77,7 +77,7 @@ extension ClearentOfflineModeReportPresenter : ClearentOfflineModeReportViewProt
     
     func saveErrorLog() {
         let offlineManager = ClearentWrapper.shared.retrieveOfflineManager()
-        let allTransactions = offlineManager?.reportAllErrors()
+        let allTransactions = offlineManager?.transactionsWithErrors()
         let generator = ClearentOfflineResultPDFGenerator()
         let urlResult = generator.generateReport(transactions: allTransactions!)
         
@@ -106,7 +106,7 @@ extension ClearentOfflineModeReportPresenter : ClearentOfflineModeReportViewProt
     
     func reportHasErrors() -> Bool {
         let offlineManager = ClearentWrapper.shared.retrieveOfflineManager()
-        let allTransactions = offlineManager?.reportAllErrors()
+        let allTransactions = offlineManager?.transactionsWithErrors()
         return !(allTransactions?.isEmpty ?? false)
     }
 }

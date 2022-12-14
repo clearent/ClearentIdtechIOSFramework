@@ -43,7 +43,7 @@ class ClearentOfflineModeReportViewController: UIViewController {
     }
     
     private func setupButtons() {
-        saveErrorLogButton.isEnabled = self.reportPresenter.reportHasErrors()
+        saveErrorLogButton.isEnabled = reportPresenter.reportHasErrors()
         saveErrorLogButton.title = ClearentConstants.Localized.OfflineReport.saveLogButtonTitle
         saveErrorLogButton.buttonStyle = .link
         saveErrorLogButton.action = { [weak self] in

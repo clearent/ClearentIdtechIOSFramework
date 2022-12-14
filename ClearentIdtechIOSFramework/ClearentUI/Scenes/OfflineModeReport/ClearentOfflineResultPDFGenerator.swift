@@ -50,7 +50,7 @@ class ClearentOfflineResultPDFGenerator {
         return outputFileURL
     }
     
-    // Group the transactions in merchantiD/terminalID  key based and print a header for each of sublists
+    // Group the transactions in merchantID/terminalID  key based and print a header for each of sublist
     func getContentString(transactions: [OfflineTransaction]) -> NSMutableAttributedString {
         
         var uniqueMerchantAndTerminals = [String]()
@@ -125,8 +125,8 @@ class ClearentOfflineResultPDFGenerator {
         let date = Date().dateOnlyToString()
         let time = Date().timeToString()
         
-        let line1 = ClearentConstants.Localized.OfflineMode.offlineModeMechantID + merchantName + "\t" + ClearentConstants.Localized.OfflineMode.offlineModeReportDate + date + "\n"
-        let line2 = ClearentConstants.Localized.OfflineMode.offlineModeTerminalID + terminalID + "\t" + ClearentConstants.Localized.OfflineMode.offlineModeReportTime + time + "\n\n\n"
+        let line1 = ClearentConstants.Localized.OfflineMode.offlineModeMechantID + merchantName + "\t" + ClearentConstants.Localized.OfflineMode.offlineModeReportDate + date + "UTC" + "\n"
+        let line2 = ClearentConstants.Localized.OfflineMode.offlineModeTerminalID + terminalID + "\t" + ClearentConstants.Localized.OfflineMode.offlineModeReportTime + time + "UTC" + "\n\n\n"
         
         let text1 = NSMutableAttributedString(string: line1, attributes: [.paragraphStyle : paragraph])
         text1.addAttribute(.foregroundColor, value: ClearentUIBrandConfigurator.shared.colorPalette.errorLogKeyLabelColor, range: NSRange(location: 0, length: ClearentConstants.Localized.OfflineMode.offlineModeMechantID.count))
@@ -187,9 +187,11 @@ class ClearentOfflineResultPDFGenerator {
         
         var transactionData: [(String, String)] = []
         
+        let transactionResponse = transaction.transactionResponse?.payload.transaction
+        
         if let createdDate = transaction.createdDate?.toDateUseShortFormat() {
-            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportOfflineDate, createdDate.dateOnlyToString()))
-            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportOfflineTime, createdDate.timeToString()))
+            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportOfflineDate, createdDate.dateOnlyToString() + "UTC"))
+            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportOfflineTime, createdDate.timeToString() + "UTC"))
         }
         
         if let id = transaction.transactionResponse?.payload.transaction?.id {
@@ -199,26 +201,26 @@ class ClearentOfflineResultPDFGenerator {
         let extID = transaction.paymentData.saleEntity.externelRefID ?? transaction.transactionID
         transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportExternalRefID, extID))
                 
-        if let lastFour = transaction.transactionResponse?.payload.transaction?.lastFourDigits {
+        if let lastFour = transactionResponse?.lastFourDigits {
             transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportLastFourDigits, lastFour))
         }
         
-        if let expDate = transaction.transactionResponse?.payload.transaction?.epirationDate {
+        if let expDate = transactionResponse?.epirationDate {
             transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportExpirationDate, expDate))
         }
         
         var totalAmount = 0.0
-        if let amount = transaction.transactionResponse?.payload.transaction?.amount {
+        if let amount = transactionResponse?.amount {
             totalAmount = totalAmount + (transaction.transactionResponse?.payload.transaction?.amount?.double ?? 0.0)
             transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportAmount, "$ " + amount.setTwoDecimals()))
         }
         
-        if let tipAmount = transaction.transactionResponse?.payload.transaction?.tipAmount {
+        if let tipAmount = transactionResponse?.tipAmount {
             totalAmount = totalAmount + (transaction.transactionResponse?.payload.transaction?.tipAmount?.double ?? 0.0)
             transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportTipAmount, "$ " + tipAmount.setTwoDecimals()))
         }
         
-        if let empowerAmount = transaction.transactionResponse?.payload.transaction?.empowerAmount {
+        if let empowerAmount = transactionResponse?.empowerAmount {
             totalAmount = totalAmount + (transaction.transactionResponse?.payload.transaction?.empowerAmount?.double ?? 0.0)
             transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportEmpowerAmount, "$ " + empowerAmount.setTwoDecimals()))
         }
@@ -227,27 +229,27 @@ class ClearentOfflineResultPDFGenerator {
             transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportTotalAmount, "$ " + totalAmount))
         }
         
-        if let customerID = transaction.transactionResponse?.payload.transaction?.customerID {
+        if let customerID = transactionResponse?.customerID {
             transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportCustomerID, customerID))
         }
         
-        if let orderID = transaction.transactionResponse?.payload.transaction?.orderID {
+        if let orderID = transactionResponse?.orderID {
             transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportOrderID, orderID))
         }
         
-        if let invoice = transaction.transactionResponse?.payload.transaction?.invoice {
+        if let invoice = transactionResponse?.invoice {
             transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportInvoice, invoice))
         }
         
-        if let billingAddress = transaction.transactionResponse?.payload.transaction?.billing {
+        if let billingAddress = transactionResponse?.billing {
         transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportBillingAddress, billingAddress.street!))
         }
         
-        if let shippingAddress = transaction.transactionResponse?.payload.transaction?.shipping {
+        if let shippingAddress = transactionResponse?.shipping {
             transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportShippingAddress, shippingAddress.street!))
         }
 
-        if let softwareType = transaction.transactionResponse?.payload.transaction?.softwareType {
+        if let softwareType = transactionResponse?.softwareType {
             transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportSoftwareType, softwareType))
         }
                 
@@ -255,13 +257,13 @@ class ClearentOfflineResultPDFGenerator {
             transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportSoftwareVersion, sdkVersion))
         }
         
-        if let errorMessage = transaction.transactionResponse?.payload.transaction?.message, let code = transaction.transactionResponse?.payload.error?.code {
+        if let errorMessage = transactionResponse?.message, let code = transaction.transactionResponse?.payload.error?.code {
             transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportError, errorMessage + ", \(code)"))
         }
         
         if let errorDate = transaction.errorStatus?.updatedDate.toDateUseShortFormat() {
-            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportErrorDate, errorDate.dateOnlyToString()))
-            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportErrorTime, errorDate.timeToString()))
+            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportErrorDate, errorDate.dateOnlyToString() + "UTC"))
+            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportErrorTime, errorDate.timeToString() + "UTC"))
         }
         
         return transactionData
