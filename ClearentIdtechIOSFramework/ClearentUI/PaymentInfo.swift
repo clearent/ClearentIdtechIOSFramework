@@ -14,7 +14,7 @@
     public var billing: ClientInformation?
     public var shipping: ClientInformation?
     
-    public init(amount: Double, customerID: String? = nil, invoice: String? = nil, orderID: String? = nil, billing: ClientInformation? = nil, shipping: ClientInformation? = nil) {
+    @objc public init(amount: Double, customerID: String? = nil, invoice: String? = nil, orderID: String? = nil, billing: ClientInformation? = nil, shipping: ClientInformation? = nil) {
         self.amount = amount
         self.customerID = customerID
         self.invoice = invoice

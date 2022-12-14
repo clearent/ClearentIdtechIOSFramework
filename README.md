@@ -102,7 +102,7 @@ self.navigationController?.present(pairingVC, animated: true, completion: {})
 
 **Starting a transaction**
 
-Every time you start a transaction you need to pass the amount as Double to the payment controller.
+Every time you start a transaction you need to pass an instance of PaymentInfo to the payment controller. This object should contain the amount and some optional parameters like customerID, invoice, orderID, etc.
 The SDK UI provides the option to enter the card details manually or by using the card reader, use the **cardReaderPaymentIsPreffered** to choose the desired method. If this method fails, the option to use manual payment can be displayed in UI as a fallback method.
 
 ```
@@ -110,7 +110,7 @@ The SDK UI provides the option to enter the card details manually or by using th
 ```
 
 ```
-let transactionVC = ClearentUIManager.shared.paymentViewController(amount: 20.0)
+let transactionVC = ClearentUIManager.shared.paymentViewController(paymentInfo: PaymentInfo(amount: 20.0))
 self.navigationController?.present(transactionVC, animated: true, completion: {})
 ```
 
@@ -226,7 +226,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func startTransactionAction(_ sender: Any) {
-        let transactionVC = ClearentUIManager.shared.paymentViewController(amount: 20.0)
+        let transactionVC = ClearentUIManager.shared.paymentViewController(paymentInfo: PaymentInfo(amount: 20.0))
         self.navigationController?.present(transactionVC, animated: true, completion: { })
     }
     
@@ -282,10 +282,10 @@ Objective-C example of the ClearenSDKUI  integration [Obj-C Example](https://git
 }
 
 - (IBAction)startTransaction:(id)sender {
-    UIViewController *vc = [[ClearentUIManager shared] paymentViewControllerWithAmount:20.0 completion:^(enum ClearentResult result) {
+    PaymentInfo *paymentInfo = [[PaymentInfo alloc] initWithAmount:20.00 customerID:nil invoice:nil orderID:nil billing:nil shipping:nil];
+    UIViewController *vc = [[ClearentUIManager shared] paymentViewControllerWithPaymentInfo:paymentInfo completion:^(ClearentError* error) {
         //do something that you want on dismiss
     }];
-    [self presentViewController:vc animated:YES completion:nil];
 }
 
 @end
