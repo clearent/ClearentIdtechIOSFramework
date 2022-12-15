@@ -17,6 +17,7 @@ class ClearentInfoWithIcon: ClearentMarginableView {
     @IBOutlet var separatorView: UIView!
     public var editButtonPressed: (() -> Void)?
     public var deleteButtonPressed: (() -> Void)?
+    public var containerWasPressed: (() -> Void)?
 
     override var margins: [BottomMargin] {
         [RelativeBottomMargin(constant: 24, relatedViewType: ClearentInfoWithIcon.self)]
@@ -65,7 +66,7 @@ class ClearentInfoWithIcon: ClearentMarginableView {
     var iconName: String? {
         didSet {
             guard let iconName = iconName else { return }
-            button.setBackgroundImage(UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil), for: .normal)
+            button.setImage(UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil), for: .normal)
             button.setTitle(nil, for: .normal)
         }
     }
@@ -92,5 +93,9 @@ class ClearentInfoWithIcon: ClearentMarginableView {
 
     @IBAction func secondaryButtonAction(_: Any) {
         deleteButtonPressed?()
+    }
+    
+    @IBAction func containerWasPressed(_: Any) {
+        containerWasPressed?()
     }
 }
