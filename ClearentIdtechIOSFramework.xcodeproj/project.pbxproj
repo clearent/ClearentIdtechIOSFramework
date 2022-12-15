@@ -116,6 +116,7 @@
 		01442D4C28B3D836006DD15C /* ClearentProcessingModalPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442CEB28B3D835006DD15C /* ClearentProcessingModalPresenter.swift */; };
 		01BFBC472934BA9400B694F6 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BFBC452934BA9400B694F6 /* UIImageExtension.swift */; };
 		01BFBC482934BA9400B694F6 /* DateExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BFBC462934BA9400B694F6 /* DateExtension.swift */; };
+		01D6D51A2949E6A80050F77B /* PaymentInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D6D5192949E6A80050F77B /* PaymentInfo.swift */; };
 		01DC91AA28BE129B009FAE64 /* ArrayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DC91A928BE129B009FAE64 /* ArrayExtension.swift */; };
 		01E22E0028B77D9F004C4ADF /* SVGView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E22DFD28B77D9E004C4ADF /* SVGView.swift */; };
 		01E22E0228B77D9F004C4ADF /* SVGLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E22DFF28B77D9F004C4ADF /* SVGLoader.swift */; };
@@ -325,6 +326,7 @@
 		01442CEB28B3D835006DD15C /* ClearentProcessingModalPresenter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentProcessingModalPresenter.swift; sourceTree = "<group>"; };
 		01BFBC452934BA9400B694F6 /* UIImageExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
 		01BFBC462934BA9400B694F6 /* DateExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
+		01D6D5192949E6A80050F77B /* PaymentInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentInfo.swift; sourceTree = "<group>"; };
 		01DC91A928BE129B009FAE64 /* ArrayExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtension.swift; sourceTree = "<group>"; };
 		01E22DFD28B77D9E004C4ADF /* SVGView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SVGView.swift; sourceTree = "<group>"; };
 		01E22DFF28B77D9F004C4ADF /* SVGLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SVGLoader.swift; sourceTree = "<group>"; };
@@ -492,6 +494,7 @@
 			isa = PBXGroup;
 			children = (
 				01442C7D28B3D835006DD15C /* ClearentUIManager.swift */,
+				01D6D5192949E6A80050F77B /* PaymentInfo.swift */,
 				01442C7E28B3D835006DD15C /* PaymentFlowDataSource */,
 				01442C8328B3D835006DD15C /* ReaderDetails */,
 				01442C8728B3D835006DD15C /* ClearentProcessingModalViewController.xib */,
@@ -539,7 +542,6 @@
 			isa = PBXGroup;
 			children = (
 				01E22E0328B77DAD004C4ADF /* Animation */,
-				01442C8B28B3D835006DD15C /* AdaptiveStackView */,
 				01442C9028B3D835006DD15C /* ClearentApplicationOrientation.swift */,
 				01442C9128B3D835006DD15C /* ClearentColorExtension.swift */,
 				01442C9328B3D835006DD15C /* ClearentMoneyFormatter.swift */,
@@ -579,6 +581,7 @@
 		01442C9E28B3D835006DD15C /* UIComponents */ = {
 			isa = PBXGroup;
 			children = (
+				01442C8B28B3D835006DD15C /* AdaptiveStackView */,
 				01442C9F28B3D835006DD15C /* ClearentPairingReaderItem.swift */,
 				01442CA028B3D835006DD15C /* LoadingView */,
 				01442CA528B3D835006DD15C /* ClearentInfoWithIcon.xib */,
@@ -1232,6 +1235,7 @@
 				CCD1B81128E6DD9900D9D067 /* SaleEntity.swift in Sources */,
 				01442D1528B3D836006DD15C /* ClearentTextField.swift in Sources */,
 				01442CFE28B3D836006DD15C /* ClearentConstants.swift in Sources */,
+				01D6D51A2949E6A80050F77B /* PaymentInfo.swift in Sources */,
 				01442D0728B3D836006DD15C /* ClearentPairingReaderItem.swift in Sources */,
 				4B32C09824335D5500CCF9B9 /* ClearentBluetoothDevice.m in Sources */,
 				01442D1D28B3D836006DD15C /* ClearentHintView.swift in Sources */,

@@ -19,7 +19,7 @@ protocol ClearentProcessingModalView: AnyObject {
 
 protocol ProcessingModalProtocol {
     var editableReader: ReaderInfo? { get set }
-    var amountWithoutTip: Double? { get set }
+    var paymentInfo: PaymentInfo? { get set }
     var tip: Double? { get set }
     var sdkFeedbackProvider: FlowDataProvider { get set }
     var selectedReaderFromReadersList: ReaderItem? { get set }
@@ -48,7 +48,7 @@ class ClearentProcessingModalPresenter {
         ClearentWrapper.shared.cardReaderPaymentIsPreffered && ClearentWrapper.shared.useManualPaymentAsFallback == nil
     }
     
-    var amountWithoutTip: Double?
+    var paymentInfo: PaymentInfo?
     var tip: Double?
     var selectedReaderFromReadersList: ReaderItem?
     var sdkFeedbackProvider: FlowDataProvider
@@ -57,9 +57,9 @@ class ClearentProcessingModalPresenter {
 
     // MARK: Init
 
-    init(modalProcessingView: ClearentProcessingModalView, amount: Double?, processType: ProcessType) {
+    init(modalProcessingView: ClearentProcessingModalView, paymentInfo: PaymentInfo?, processType: ProcessType) {
         self.modalProcessingView = modalProcessingView
-        amountWithoutTip = amount
+        self.paymentInfo = paymentInfo
         self.processType = processType
         sdkFeedbackProvider = FlowDataProvider()
         sdkFeedbackProvider.delegate = self
@@ -173,7 +173,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
 
     func sendManualEntryTransaction(with dataSource: ClearentPaymentDataSource) {
-        guard let amount = amountWithoutTip?.stringFormattedWithTwoDecimals,
+        guard let amount = paymentInfo?.amount.stringFormattedWithTwoDecimals,
               let cardNo = dataSource.valueForType(.creditCardNo)?.replacingOccurrences(of: ClearentPaymentItemType.creditCardNo.separator, with: ""),
               let date = dataSource.valueForType(.date)?.replacingOccurrences(of: ClearentPaymentItemType.date.separator, with: ""),
               let csc = dataSource.valueForType(.securityCode) else { return }
@@ -260,7 +260,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             let showTipsScreen = ClearentWrapper.shared.tipEnabled && strongSelf.tipsScreenWasNotShown
 
             if showTipsScreen {
-                strongSelf.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: strongSelf.amountWithoutTip ?? 0)
+                strongSelf.sdkFeedbackProvider.startTipTransaction(amountWithoutTip: strongSelf.paymentInfo?.amount ?? 0)
                 strongSelf.tipsScreenWasNotShown = false
             } else {
                 if strongSelf.useCardReaderPaymentMethod {
@@ -273,8 +273,14 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
 
     private func startCardReaderTransaction() {
-        if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
-            let saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals)
+        if let amountFormatted = paymentInfo?.amount.stringFormattedWithTwoDecimals {
+            let saleEntity = SaleEntity(amount: amountFormatted,
+                                        tipAmount: tip?.stringFormattedWithTwoDecimals,
+                                        billing: paymentInfo?.billing,
+                                        shipping: paymentInfo?.shipping,
+                                        customerID: paymentInfo?.customerID,
+                                        invoice: paymentInfo?.invoice,
+                                        orderID: paymentInfo?.orderID)
             startTransaction(saleEntity: saleEntity)
         }
     }
