@@ -216,13 +216,9 @@ class ViewController: UIViewController {
     }
     
     @IBAction func startTransactionAction(_ sender: Any) {
-<<<<<<< HEAD
-        let transactionVC = ClearentUIManager.shared.paymentViewController(amount: 20.0) { error in
+        let transactionVC = ClearentUIManager.shared.paymentViewController(paymentInfo: PaymentInfo(amount: 20.0)) { error in
             //do something that you want on dismiss
         }
-=======
-        let transactionVC = ClearentUIManager.shared.paymentViewController(paymentInfo: PaymentInfo(amount: 20.0))
->>>>>>> enhanced_sdk_3.1
         self.navigationController?.present(transactionVC, animated: true, completion: { })
     }
     
@@ -283,12 +279,8 @@ Objective-C example of the ClearenSDKUI  integration [Obj-C Example](https://git
 }
 
 - (IBAction)startTransaction:(id)sender {
-<<<<<<< HEAD
-    UIViewController *vc = [[ClearentUIManager shared] paymentViewControllerWithAmount:20.0 completion:^(ClearentError* error) {
-=======
     PaymentInfo *paymentInfo = [[PaymentInfo alloc] initWithAmount:20.00 customerID:nil invoice:nil orderID:nil billing:nil shipping:nil];
     UIViewController *vc = [[ClearentUIManager shared] paymentViewControllerWithPaymentInfo:paymentInfo completion:^(ClearentError* error) {
->>>>>>> enhanced_sdk_3.1
         //do something that you want on dismiss
     }];
     [self presentViewController:vc animated:YES completion:nil];
