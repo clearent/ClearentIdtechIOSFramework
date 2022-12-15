@@ -28,6 +28,7 @@ open class ClearentXibView: UIView {
     public override init(frame: CGRect) {
         super.init(frame: frame)
         loadViewFromNib()
+        configure()
     }
 
     public convenience init() {
