@@ -58,8 +58,8 @@ public final class ClearentUIManager: NSObject {
      * @param amount, the amount to be charged in a transaction
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
-    @objc public func paymentViewController(amount: Double, completion: ((ClearentError?) -> Void)?) -> UINavigationController {
-        navigationController(processType: .payment, amount: amount, dismissCompletion: { [weak self] result in
+    @objc public func paymentViewController(paymentInfo: PaymentInfo?, completion: ((ClearentError?) -> Void)?) -> UINavigationController {
+        navigationController(processType: .payment, paymentInfo: paymentInfo, dismissCompletion: { [weak self] result in
             let completionResult = self?.resultFor(completionResult: result)
             completion?(completionResult)
         })
@@ -99,12 +99,12 @@ public final class ClearentUIManager: NSObject {
         ClearentWrapperDefaults.enableOfflineMode && !ClearentWrapperDefaults.enableOfflinePromptMode
     }
 
-    func navigationController(processType: ProcessType, amount: Double? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UINavigationController {
+    func navigationController(processType: ProcessType, paymentInfo: PaymentInfo? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UINavigationController {
         var viewController: UIViewController?
         if processType == .showSettings {
             viewController = settingsViewController(dismissCompletion: dismissCompletion)
         } else {
-            viewController = processingModalViewController(processType: processType, amount: amount, editableReader: editableReader, dismissCompletion: dismissCompletion)
+            viewController = processingModalViewController(processType: processType, paymentInfo: paymentInfo, editableReader: editableReader, dismissCompletion: dismissCompletion)
         }
         
         guard let viewController = viewController else {
@@ -117,9 +117,9 @@ public final class ClearentUIManager: NSObject {
         return navigationController
     }
 
-    private func processingModalViewController(processType: ProcessType, amount: Double? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UIViewController {
+    private func processingModalViewController(processType: ProcessType, paymentInfo: PaymentInfo? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UIViewController {
         let viewController = ClearentProcessingModalViewController(showOnTop: processType == .showReaders || processType == .renameReader)
-        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, amount: amount, processType: processType)
+        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, paymentInfo: paymentInfo, processType: processType)
         presenter.editableReader = editableReader
         viewController.presenter = presenter
         viewController.dismissCompletion = dismissCompletion

@@ -141,6 +141,7 @@
 		01BFBC50293A0C0E00B694F6 /* ClearentServiceFeeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BFBC4F293A0C0E00B694F6 /* ClearentServiceFeeView.swift */; };
 		01BFBC52293A0C1900B694F6 /* ClearentServiceFeeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01BFBC51293A0C1900B694F6 /* ClearentServiceFeeView.xib */; };
 		01C3E419292664490011676B /* UIViewControllerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01C3E418292664490011676B /* UIViewControllerExtension.swift */; };
+		01D6D51A2949E6A80050F77B /* PaymentInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D6D5192949E6A80050F77B /* PaymentInfo.swift */; };
 		01DC91AA28BE129B009FAE64 /* ArrayExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01DC91A928BE129B009FAE64 /* ArrayExtension.swift */; };
 		01E22E0028B77D9F004C4ADF /* SVGView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E22DFD28B77D9E004C4ADF /* SVGView.swift */; };
 		01E22E0228B77D9F004C4ADF /* SVGLoader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01E22DFF28B77D9F004C4ADF /* SVGLoader.swift */; };
@@ -377,6 +378,7 @@
 		01BFBC4F293A0C0E00B694F6 /* ClearentServiceFeeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentServiceFeeView.swift; sourceTree = "<group>"; };
 		01BFBC51293A0C1900B694F6 /* ClearentServiceFeeView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentServiceFeeView.xib; sourceTree = "<group>"; };
 		01C3E418292664490011676B /* UIViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerExtension.swift; sourceTree = "<group>"; };
+		01D6D5192949E6A80050F77B /* PaymentInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentInfo.swift; sourceTree = "<group>"; };
 		01DC91A928BE129B009FAE64 /* ArrayExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArrayExtension.swift; sourceTree = "<group>"; };
 		01E22DFD28B77D9E004C4ADF /* SVGView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SVGView.swift; sourceTree = "<group>"; };
 		01E22DFF28B77D9F004C4ADF /* SVGLoader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SVGLoader.swift; sourceTree = "<group>"; };
@@ -567,6 +569,7 @@
 				014AA0FF2917C52C001918F5 /* Scenes */,
 				CCBAD4F92922815300BEDCA9 /* ClearentUIManager.swift */,
 				016BFEA12906E99E006F26B6 /* ClearentUIManagerConfiguration.swift */,
+				01D6D5192949E6A80050F77B /* PaymentInfo.swift */,
 				01442C7E28B3D835006DD15C /* PaymentFlowDataSource */,
 				01442C8828B3D835006DD15C /* Common */,
 				01442CE428B3D835006DD15C /* BrandConfigurator */,
@@ -611,7 +614,6 @@
 			isa = PBXGroup;
 			children = (
 				01E22E0328B77DAD004C4ADF /* Animation */,
-				01442C8B28B3D835006DD15C /* AdaptiveStackView */,
 				01442C9028B3D835006DD15C /* ClearentApplicationOrientation.swift */,
 				01442C9128B3D835006DD15C /* ClearentColorExtension.swift */,
 				01442C9328B3D835006DD15C /* ClearentMoneyFormatter.swift */,
@@ -653,6 +655,7 @@
 			isa = PBXGroup;
 			children = (
 				014AA108291907D3001918F5 /* ClearentLabelWithButton.xib */,
+				01442C8B28B3D835006DD15C /* AdaptiveStackView */,
 				01442C9F28B3D835006DD15C /* ClearentPairingReaderItem.swift */,
 				01442CA028B3D835006DD15C /* LoadingView */,
 				01442CA528B3D835006DD15C /* ClearentInfoWithIcon.xib */,
@@ -816,6 +819,12 @@
 				014AA0FD2917C417001918F5 /* ClearentProcessingModalViewController.xib */,
 				01442CEA28B3D835006DD15C /* ClearentProcessingModalViewController.swift */,
 				01442CEB28B3D835006DD15C /* ClearentProcessingModalPresenter.swift */,
+				01BFBC442934BA9400B694F6 /* Extensions */,
+				CCD1B7F128E6DD9900D9D067 /* ReaderInfo.swift */,
+				CCD1B7F228E6DD9900D9D067 /* UserDefaults */,
+				CCD1B7F528E6DD9900D9D067 /* HttpClient */,
+				CCD1B7F828E6DD9900D9D067 /* Wrapper */,
+				CCD1B7FF28E6DD9900D9D067 /* Entities */,
 			);
 			path = Scenes;
 			sourceTree = "<group>";
@@ -1384,6 +1393,7 @@
 				014AA0ED291531AA001918F5 /* ClearentSettingsModalViewController.swift in Sources */,
 				CCA86E4D28CF5DB300FF83FB /* ClearentWrapper.swift in Sources */,
 				01442CFE28B3D836006DD15C /* ClearentConstants.swift in Sources */,
+				01D6D51A2949E6A80050F77B /* PaymentInfo.swift in Sources */,
 				01442D0728B3D836006DD15C /* ClearentPairingReaderItem.swift in Sources */,
 				4B32C09824335D5500CCF9B9 /* ClearentBluetoothDevice.m in Sources */,
 				01442D1D28B3D836006DD15C /* ClearentHintView.swift in Sources */,
@@ -1446,12 +1456,14 @@
 				01BFBC50293A0C0E00B694F6 /* ClearentServiceFeeView.swift in Sources */,
 				01442D2128B3D836006DD15C /* ClearentBaseViewController.swift in Sources */,
 				01442D2F28B3D836006DD15C /* ClearentPaymentFieldCell.swift in Sources */,
+				01BFBC472934BA9400B694F6 /* UIImageExtension.swift in Sources */,
 				01442D4828B3D836006DD15C /* ClearentUIColors.swift in Sources */,
 				01442D4928B3D836006DD15C /* ClearentUIFonts.swift in Sources */,
 				01E388F329310344006E4A2C /* DateExtension.swift in Sources */,
 				E7B89E3121F6A6A400078C73 /* ClearentManualEntry.m in Sources */,
 				01442CFD28B3D836006DD15C /* ClearentMoneyFormatter.swift in Sources */,
 				01442D2C28B3D836006DD15C /* ClearentReadersTableView.swift in Sources */,
+				01BFBC482934BA9400B694F6 /* DateExtension.swift in Sources */,
 				E7CA497520E579190090CFFC /* ClearentConfigFetcher.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

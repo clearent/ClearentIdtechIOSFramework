@@ -306,6 +306,7 @@ public final class ClearentWrapper : NSObject {
      * @param transactionID, ID of the transaction to be voided
      * @param completion, the closure that will be called after void response is received. This is dispatched onto the main queue
      */
+
     public func voidTransaction(transactionID: String, completion: @escaping (TransactionResponse?, ClearentError?) -> Void) {
         if let error = checkForMissingKeys() {
             completion(nil, .init(type: error))
