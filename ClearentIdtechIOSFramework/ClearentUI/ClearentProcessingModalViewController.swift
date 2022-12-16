@@ -250,7 +250,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             button.buttonStyle = .bordered
         }
         if userAction == .transactionWithTip {
-            button.title = userAction.transactionWithTipTitle(for: presenter?.amountWithoutTip)
+            button.title = userAction.transactionWithTipTitle(for: presenter?.paymentInfo?.amount)
         }
         button.type = userAction
         button.action = { [weak self] in

@@ -61,11 +61,11 @@ public final class ClearentUIManager: NSObject {
     
     /**
      * Method returns a UIController that can handle the entire payment process
-     * @param amount, the amount to be charged in a transaction
+     * @param paymentInfo, a PaymentInfo object that contains information related to payment (amount, customerID, invoice, etc)
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
-    @objc public func paymentViewController(amount: Double, completion: ((ClearentResult) -> Void)?) -> UINavigationController {
-        viewController(processType: .payment, amount: amount, dismissCompletion: { [weak self] result in
+    @objc public func paymentViewController(paymentInfo: PaymentInfo?, completion: ((ClearentResult) -> Void)?) -> UINavigationController {
+        viewController(processType: .payment, paymentInfo: paymentInfo, dismissCompletion: { [weak self] result in
             guard let completionResult = self?.resultFor(completionResult: result) else { return }
             completion?(completionResult)
         })
@@ -93,9 +93,9 @@ public final class ClearentUIManager: NSObject {
         })
     }
 
-    internal func viewController(processType: ProcessType, amount: Double? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UINavigationController {
+    internal func viewController(processType: ProcessType, paymentInfo: PaymentInfo? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UINavigationController {
         let viewController = ClearentProcessingModalViewController(showOnTop: processType == .showReaders || processType == .renameReader)
-        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, amount: amount, processType: processType)
+        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, paymentInfo: paymentInfo, processType: processType)
         presenter.editableReader = editableReader
         viewController.presenter = presenter
         viewController.dismissCompletion = dismissCompletion
