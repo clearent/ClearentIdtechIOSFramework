@@ -11,11 +11,12 @@ import UIKit
 public class ClearentInfoWithIcon: ClearentMarginableView {
     @IBOutlet var titleLabel: UILabel!
     @IBOutlet var descriptionLabel: UILabel!
-    @IBOutlet var button: UIButton!
-    @IBOutlet var secondaryButton: UIButton!
-
+    @IBOutlet var primaryButton: UIButton!
+    @IBOutlet var deleteButton: UIButton!
+    @IBOutlet var warningLabel: UILabel!
     @IBOutlet var separatorView: UIView!
-    public var editButtonPressed: (() -> Void)?
+    
+    public var primaryButtonPressed: (() -> Void)?
     public var deleteButtonPressed: (() -> Void)?
     public var containerWasPressed: (() -> Void)?
 
@@ -62,33 +63,60 @@ public class ClearentInfoWithIcon: ClearentMarginableView {
             descriptionLabel.text = descriptionText
         }
     }
+    
+    public var warningTextColor: UIColor? {
+        didSet {
+            warningLabel.textColor = warningTextColor
+        }
+    }
+
+    public var warningFont: UIFont? {
+        didSet {
+            warningLabel.font = warningFont
+        }
+    }
+
+     public var warningText: String? {
+        didSet {
+            guard let warningText = warningText else { return }
+            warningLabel.text = warningText
+        }
+    }
 
     public var iconName: String? {
         didSet {
             guard let iconName = iconName else { return }
-            button.setImage(UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil), for: .normal)
-            button.setTitle(nil, for: .normal)
+            primaryButton.setImage(UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil), for: .normal)
+            primaryButton.setTitle(nil, for: .normal)
         }
     }
 
     public var secondIconName: String? {
         didSet {
             guard let iconName = secondIconName else { return }
-            secondaryButton.setBackgroundImage(UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil), for: .normal)
-            secondaryButton.setTitle(nil, for: .normal)
+            deleteButton.setBackgroundImage(UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil), for: .normal)
+            deleteButton.setTitle(nil, for: .normal)
         }
     }
-
+    
+    public var shouldHideWarning: Bool = true {
+        didSet {
+            warningLabel.isHidden = shouldHideWarning
+        }
+    }
+    
     override public func configure() {
         titleFont = ClearentUIBrandConfigurator.shared.fonts.detailScreenItemTitleFont
         titleTextColor = ClearentConstants.Color.base02
         descriptionFont = ClearentUIBrandConfigurator.shared.fonts.detailScreenItemSubtitleFont
         descriptionTextColor = ClearentConstants.Color.base01
+        warningTextColor = ClearentConstants.Color.warning
+        shouldHideWarning = true
         separatorView.backgroundColor = ClearentConstants.Color.backgroundSecondary02
     }
 
     @IBAction func buttonAction(_: Any) {
-        editButtonPressed?()
+        primaryButtonPressed?()
     }
 
     @IBAction func secondaryButtonAction(_: Any) {
