@@ -93,7 +93,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         viewController.dismissCompletion = { [weak self] _ in
             self?.presenter?.sdkFeedbackProvider.didFindRecentlyUsedReaders(readers: ClearentWrapper.shared.previouslyPairedReaders)
         }
-        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, amount: nil, processType: .pairing(withReader: nil))
+        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, paymentInfo: nil, processType: .pairing(withReader: nil))
         viewController.presenter = presenter
         viewController.modalPresentationStyle = .overFullScreen
         navigationController?.present(viewController, animated: true)
@@ -283,7 +283,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         }
         
         if userAction == .transactionWithTip {
-            button.title = userAction.transactionWithTipTitle(for: presenter?.amountWithoutTip)
+            button.title = userAction.transactionWithTipTitle(for: presenter?.paymentInfo?.amount)
         }
         if userAction == .transactionWithServiceFee {
             button.title = userAction.transactionWithServiceFeeTitle(for: presenter?.amountWithTipAndServiceFee)

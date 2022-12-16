@@ -20,7 +20,7 @@ protocol ClearentProcessingModalView: AnyObject {
 
 protocol ProcessingModalProtocol {
     var editableReader: ReaderInfo? { get set }
-    var amountWithoutTip: Double? { get set }
+    var paymentInfo: PaymentInfo? { get set }
     var tip: Double? { get set }
     var amountWithTip: String? { get }
     var amountWithTipAndServiceFee: String? { get }
@@ -57,15 +57,15 @@ class ClearentProcessingModalPresenter {
     
     var useCardReaderPaymentMethod: Bool { ClearentWrapper.shared.useCardReaderPaymentMethod }
     
-    var amountWithoutTip: Double?
+    var paymentInfo: PaymentInfo?
     var tip: Double?
     var amountWithTip: String? {
-        guard let amountWithoutTip = amountWithoutTip else { return nil }
+        guard let amountWithoutTip = paymentInfo?.amount else { return nil }
         let amountWithTip = amountWithoutTip + (tip ?? 0)
         return ClearentMoneyFormatter.formattedWithSymbol(from: amountWithTip)
     }
     var amountWithTipAndServiceFee: String? {
-        guard let amountWithoutTip = amountWithoutTip else { return nil }
+        guard let amountWithoutTip = paymentInfo?.amount else { return nil }
         let amountWithTipAndServiceFee = amountWithoutTip + (tip ?? 0) + (serviceFeeAmount ?? 0)
         return ClearentMoneyFormatter.formattedWithSymbol(from: amountWithTipAndServiceFee)
     }
@@ -77,9 +77,9 @@ class ClearentProcessingModalPresenter {
 
     // MARK: Init
 
-    init(modalProcessingView: ClearentProcessingModalView, amount: Double?, processType: ProcessType) {
+    init(modalProcessingView: ClearentProcessingModalView, paymentInfo: PaymentInfo?, processType: ProcessType) {
         self.modalProcessingView = modalProcessingView
-        amountWithoutTip = amount
+        self.paymentInfo = paymentInfo
         self.processType = processType
         sdkFeedbackProvider = FlowDataProvider()
         sdkFeedbackProvider.delegate = self
@@ -95,7 +95,7 @@ class ClearentProcessingModalPresenter {
 
 extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     private var serviceFeeAmount: Double? {
-        guard let amountWithoutTip = amountWithoutTip else { return nil }
+        guard let amountWithoutTip = paymentInfo?.amount else { return nil }
         let totalAmountWithoutServiceFee = amountWithoutTip + (tip ?? 0.0)
         return ClearentWrapper.shared.serviceFeeAmount(amount: totalAmountWithoutServiceFee)
     }
@@ -222,7 +222,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
 
     func sendManualEntryTransaction(with dataSource: ClearentPaymentDataSource) {
-        guard let amount = amountWithoutTip?.stringFormattedWithTwoDecimals,
+        guard let amount = paymentInfo?.amount.stringFormattedWithTwoDecimals,
               let cardNo = dataSource.valueForType(.creditCardNo)?.replacingOccurrences(of: ClearentPaymentItemType.creditCardNo.separator, with: ""),
               let date = dataSource.valueForType(.date)?.replacingOccurrences(of: ClearentPaymentItemType.date.separator, with: ""),
               let csc = dataSource.valueForType(.securityCode) else { return }
@@ -328,7 +328,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         let showServiceFeeScreen = sdkWrapper.serviceFeeEnabled && serviceFeeScreenWasNotShown
 
         if showTipsScreen {
-            sdkFeedbackProvider.startTipTransaction(amountWithoutTip: amountWithoutTip ?? 0)
+            sdkFeedbackProvider.startTipTransaction(amountWithoutTip: paymentInfo?.amount ?? 0)
             tipsScreenWasNotShown = false
         } else if showServiceFeeScreen, let serviceFeeProgram = ClearentWrapperDefaults.terminalSettings?.serviceFeeProgram {
             sdkFeedbackProvider.showServiceFeeScreen(for: serviceFeeProgram)
@@ -346,9 +346,14 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             return
         }
         
-        if let amountFormatted = amountWithoutTip?.stringFormattedWithTwoDecimals {
-            let saleEntity = SaleEntity(amount: amountFormatted, tipAmount: tip?.stringFormattedWithTwoDecimals, serviceFeeAmount: serviceFeeAmount?.stringFormattedWithTwoDecimals)
-            
+        if let amountFormatted = paymentInfo?.amount.stringFormattedWithTwoDecimals {
+            let saleEntity = SaleEntity(amount: amountFormatted,
+                                        tipAmount: tip?.stringFormattedWithTwoDecimals,
+                                        billing: paymentInfo?.billing,
+                                        shipping: paymentInfo?.shipping,
+                                        customerID: paymentInfo?.customerID,
+                                        invoice: paymentInfo?.invoice,
+                                        orderID: paymentInfo?.orderID)
             startTransaction(saleEntity: saleEntity, isManualTransaction: false)
         }
     }

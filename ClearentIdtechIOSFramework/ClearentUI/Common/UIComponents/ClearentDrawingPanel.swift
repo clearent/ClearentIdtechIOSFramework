@@ -13,7 +13,7 @@ class ClearentDrawingPanel: UIView {
     private var temporaryPath: UIBezierPath?
     private var points = [CGPoint]()
     private let lineWidth: CGFloat = 2.0
-
+    
     var resultedImage: UIImage {
         if bufferImage == nil {
             saveBufferImage()

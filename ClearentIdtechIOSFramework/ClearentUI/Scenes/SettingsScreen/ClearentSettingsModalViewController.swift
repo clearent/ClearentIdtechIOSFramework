@@ -48,6 +48,9 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         // Readers section
         readersListView.iconName = ClearentConstants.IconName.rightArrow
         readersListView.titleText = ""
+        readersListView.containerWasPressed = { [weak self] in
+            self?.displayReadersList()
+        }
         
         // Offline section
         setupOfflineSectionSubtitle()
@@ -171,9 +174,9 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         dismissCompletion?(.success(nil))
     }
 
-    @IBAction private func readersSectionWasPressed(_: Any) {
+    private func displayReadersList() {
         let viewController = ClearentProcessingModalViewController(showOnTop: true)
-        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, amount: nil, processType: .showReaders)
+        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, paymentInfo: nil, processType: .showReaders)
         viewController.presenter = presenter
         viewController.removeSemiTransparentBackground()
 
