@@ -11,7 +11,11 @@ import UIKit
 open class ClearentXibView: UIView {
     // MARK: - Lifecycle
 
-    public var nibName: String? {
+    open var bundle: Bundle? {
+        Bundle(for: type(of: self))
+    }
+    
+    open var nibName: String? {
         String(describing: type(of: self))
     }
 
@@ -44,7 +48,6 @@ open class ClearentXibView: UIView {
 
     private func loadViewFromNib() {
         guard let nibName = nibName else { return }
-        let bundle = Bundle(for: type(of: self))
         let nib = UINib(nibName: nibName, bundle: bundle)
         guard let view = nib.instantiate(withOwner: self, options: nil).first as? UIView else { return }
         view.frame = bounds

@@ -8,7 +8,7 @@
 
 import UIKit
 
-public class ClearentInfoWithIcon: ClearentMarginableView {
+open class ClearentInfoWithIcon: ClearentMarginableView {
     @IBOutlet var titleLabel: UILabel!
     @IBOutlet var descriptionLabel: UILabel!
     @IBOutlet var primaryButton: UIButton!
@@ -105,7 +105,7 @@ public class ClearentInfoWithIcon: ClearentMarginableView {
         }
     }
     
-    override public func configure() {
+    override open func configure() {
         titleFont = ClearentUIBrandConfigurator.shared.fonts.detailScreenItemTitleFont
         titleTextColor = ClearentConstants.Color.base02
         descriptionFont = ClearentUIBrandConfigurator.shared.fonts.detailScreenItemSubtitleFont
