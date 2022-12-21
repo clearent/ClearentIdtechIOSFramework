@@ -54,6 +54,7 @@ public final class ClearentUIManager: NSObject {
     // MARK: Public
     
     /**
+
      * Method that returns a UINavigationController that can handle the entire payment process.
      * @param amount, the amount to be charged in a transaction
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed

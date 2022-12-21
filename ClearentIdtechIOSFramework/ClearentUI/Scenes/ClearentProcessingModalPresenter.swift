@@ -56,7 +56,6 @@ class ClearentProcessingModalPresenter {
     private var processType: ProcessType
     
     var useCardReaderPaymentMethod: Bool { ClearentWrapper.shared.useCardReaderPaymentMethod }
-    
     var paymentInfo: PaymentInfo?
     var tip: Double?
     var amountWithTip: String? {
