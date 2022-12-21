@@ -8,6 +8,7 @@
 
 class ClearentServiceFeeView: ClearentMarginableView {
 
+    @IBOutlet weak var stackView: ClearentAdaptiveStackView!
     @IBOutlet weak var titleLabel: ClearentTitleLabel!
     @IBOutlet weak var basePriceTitle: ClearentSubtitleLabel!
     @IBOutlet weak var basePriceAmount: ClearentTitleLabel!
@@ -21,6 +22,7 @@ class ClearentServiceFeeView: ClearentMarginableView {
         if serviceFeeType.description == nil {
             descriptionLabel.isHidden = true
         }
+        stackView.setCustomSpacing(8, after: titleLabel)
     }
     
     override func configure() {

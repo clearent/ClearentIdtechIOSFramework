@@ -76,6 +76,7 @@
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <gestureRecognizers/>
             <constraints>
                 <constraint firstItem="9wu-cf-sMc" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="0Ds-w1-YhR"/>
                 <constraint firstAttribute="trailing" secondItem="9wu-cf-sMc" secondAttribute="trailing" id="5f1-u2-sdS"/>
@@ -89,8 +90,16 @@
                 <constraint firstItem="PoJ-Gi-HH0" firstAttribute="top" secondItem="9wu-cf-sMc" secondAttribute="bottom" constant="4" id="rxJ-12-MPd"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <connections>
+                <outletCollection property="gestureRecognizers" destination="cag-Ym-LIi" appends="YES" id="DTs-MT-dEG"/>
+            </connections>
             <point key="canvasLocation" x="342.75362318840581" y="-13.727678571428571"/>
         </view>
+        <tapGestureRecognizer id="cag-Ym-LIi">
+            <connections>
+                <action selector="containerWasPressed:" destination="-1" id="wMF-nf-o2g"/>
+            </connections>
+        </tapGestureRecognizer>
     </objects>
     <resources>
         <image name="smallEditButton" width="18" height="16"/>
