@@ -211,17 +211,17 @@ class ClearentOfflineResultPDFGenerator {
         
         var totalAmount = 0.0
         if let amount = transactionResponse?.amount {
-            totalAmount = totalAmount + (transaction.transactionResponse?.payload.transaction?.amount?.double ?? 0.0)
+            totalAmount = totalAmount + (transactionResponse?.amount?.double ?? 0.0)
             transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportAmount, "$ " + amount.setTwoDecimals()))
         }
         
         if let tipAmount = transactionResponse?.tipAmount {
-            totalAmount = totalAmount + (transaction.transactionResponse?.payload.transaction?.tipAmount?.double ?? 0.0)
+            totalAmount = totalAmount + (transactionResponse?.tipAmount?.double ?? 0.0)
             transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportTipAmount, "$ " + tipAmount.setTwoDecimals()))
         }
         
         if let empowerAmount = transactionResponse?.empowerAmount {
-            totalAmount = totalAmount + (transaction.transactionResponse?.payload.transaction?.empowerAmount?.double ?? 0.0)
+            totalAmount = totalAmount + (transactionResponse?.empowerAmount?.double ?? 0.0)
             transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportEmpowerAmount, "$ " + empowerAmount.setTwoDecimals()))
         }
         
