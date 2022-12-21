@@ -9,7 +9,7 @@ import Foundation
 
 private struct ClientInfo {
     static let softwareType = "Xplor iOS Mobile"
-    static let softwareTypeVersion = "1"
+    static let softwareTypeVersion = "1.0"
 }
 
 private struct ClearentEndpoints {
@@ -115,7 +115,7 @@ class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
     }
     
     private func voidHTTPMethod(transactionID:String) -> HttpClient.HTTPMethod {
-        let paramsDictionary = ["id":transactionID, "type":TransactionType.void.rawValue, "software-type": ClientInfo.softwareType, "software-type-version":ClientInfo.softwareTypeVersion]
+        let paramsDictionary = ["id":transactionID, "type":TransactionType.void.rawValue, "software-type": ClientInfo.softwareType, "software-type-version":ClearentWrapper.shared.currentSDKVersion() ?? "-"]
         let body = HttpClient.HTTPBody.parameters(paramsDictionary, HttpClient.ParameterEncoding.json)
         return HttpClient.HTTPMethod.POST(body)
     }

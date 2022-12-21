@@ -95,4 +95,6 @@ public protocol ClearentUIFonts {
     // MARK: - OfflineResultItem
     
     var offlineResultItemLabelFont: UIFont { get }
+    
+    var offlineReportFieldLabel: UIFont { get }
 }

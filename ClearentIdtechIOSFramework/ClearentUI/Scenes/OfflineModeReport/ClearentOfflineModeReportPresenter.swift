@@ -14,7 +14,12 @@ struct ReportItem {
     let isAmount: Bool
 }
 
+protocol ClearentOfflineViewProtocol {
+    func showShareMenu(with fileURL: URL)
+}
+
 protocol ClearentOfflineModeReportViewProtocol {
+    func reportHasErrors() -> Bool
     func clearAndProceed()
     func saveErrorLog()
     func itemCount() -> Int
@@ -23,8 +28,10 @@ protocol ClearentOfflineModeReportViewProtocol {
 
 class ClearentOfflineModeReportPresenter {
     private var dataSource: [ReportItem] = []
+    private var offlineResultView: ClearentOfflineViewProtocol?
     
-    init() {
+    init(view: ClearentOfflineViewProtocol) {
+        offlineResultView = view
         updateDataSource()
     }
     
@@ -68,7 +75,14 @@ class ClearentOfflineModeReportPresenter {
 
 extension ClearentOfflineModeReportPresenter : ClearentOfflineModeReportViewProtocol {
     
-    func saveErrorLog() {}
+    func saveErrorLog() {
+        let offlineManager = ClearentWrapper.shared.retrieveOfflineManager()
+        let allTransactions = offlineManager?.transactionsWithErrors()
+        let generator = ClearentOfflineResultPDFGenerator()
+        let urlResult = generator.generateReport(transactions: allTransactions!)
+        
+        self.offlineResultView?.showShareMenu(with: urlResult)
+    }
     
     func clearAndProceed() {
         let offlineManager = ClearentWrapper.shared.retrieveOfflineManager()
@@ -88,5 +102,11 @@ extension ClearentOfflineModeReportPresenter : ClearentOfflineModeReportViewProt
     
     func itemForIndexPath(indexPath: IndexPath) -> ReportItem {
         return dataSource[indexPath.row]
+    }
+    
+    func reportHasErrors() -> Bool {
+        let offlineManager = ClearentWrapper.shared.retrieveOfflineManager()
+        let allTransactions = offlineManager?.transactionsWithErrors()
+        return !(allTransactions?.isEmpty ?? false)
     }
 }

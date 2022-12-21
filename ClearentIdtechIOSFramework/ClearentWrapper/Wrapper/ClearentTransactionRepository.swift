@@ -195,15 +195,15 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
                     card.csc = saleEntity.csc
                     
                     strongSelf.clearentManualEntry?.createOfflineTransactionToken(card) { [weak self] token in
-                        self?.sendOfflineTransaction(offlineTransaction: transaction, token: token) { error in
-                            _ = self?.offlineManager?.updateOfflineTransaction(with: error, transaction: transaction)
+                        self?.sendOfflineTransaction(offlineTransaction: transaction, token: token) { error, response  in
+                            _ = self?.offlineManager?.updateOfflineTransaction(with: error, transaction: transaction, transactionResponse: response)
                             operation.state = .finished
                         }
                     }
                 } else {
                     strongSelf.clearentVP3300?.fetchTransactionToken(transaction.paymentData.cardToken) { [weak self] token in
-                        self?.sendOfflineTransaction(offlineTransaction: transaction, token: token) { error in
-                            _ = self?.offlineManager?.updateOfflineTransaction(with: error, transaction: transaction)
+                        self?.sendOfflineTransaction(offlineTransaction: transaction, token: token) { error, response  in
+                            _ = self?.offlineManager?.updateOfflineTransaction(with: error, transaction: transaction, transactionResponse: response)
                             operation.state = .finished
                         }
                     }
@@ -240,7 +240,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
      *  @param transaction, represents an offline transaction
      */
     func saveOfflineTransaction(paymentData: PaymentData) {
-        let offlineTransaction = OfflineTransaction(paymentData: paymentData)
+        let offlineTransaction = OfflineTransaction(paymentData: paymentData, sdkVersion: ClearentWrapper.shared.currentSDKVersion())
         self.offlineTransaction = offlineTransaction
         guard let status = offlineManager?.saveOfflineTransaction(transaction: offlineTransaction) else { return  }
         delegate?.didAcceptOfflineTransaction(status: status)
@@ -285,9 +285,10 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         }
     }
     
-    private func sendOfflineTransaction(offlineTransaction: OfflineTransaction, token: ClearentTransactionToken?, completion: @escaping ((ClearentError?) -> Void)) {
+    private func sendOfflineTransaction(offlineTransaction: OfflineTransaction, token: ClearentTransactionToken?, completion: @escaping ((ClearentError?, TransactionResponse?) -> Void)) {
+
         guard let token = token else {
-            completion(.init(type: .missingToken))
+            completion(.init(type: .missingToken), nil)
             return
         }
 
@@ -298,14 +299,14 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         
         saleTransaction(jwt: token.jwt, saleEntity: saleEntity) { [weak self] (response, error) in
             if error != nil {
-                completion(error)
+                completion(error, response)
             } else  {
                 guard let image = self?.offlineManager?.retrieveSignatureForTransaction(transactionID: offlineTransaction.transactionID) else {
-                    completion(nil)
+                    completion(nil, nil)
                     return
                 }
                 self?.sendSignatureRequest(image: image) { (_, error) in
-                    completion(error)
+                    completion(error, nil)
                 }
             }
         }

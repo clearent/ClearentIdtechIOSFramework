@@ -93,6 +93,9 @@ import UIKit
         static let expandMedium = "expandMedium"
         static let collapseMedium = "collapseMedium"
         static let deleteButton = "smallDeleteButton"
+        
+        // Offline transactions report
+        static let separatorLine = "report_line"
     }
     
     enum AnimationName {
@@ -301,6 +304,34 @@ import UIKit
             public static let offlineModeEnabled = "xsdk_offline_mode_enabled".localized
             public static let offlineModeWarningMessageConfirm = "xsdk_offline_mode_warning_message_confirmation".localized
             public static let offlineModeEncryptionWarningMessage = "xsdk_offline_mode_encryption_message".localized
+            
+            public static let offlineModeReportTitle = "xsdk_offline_mode_report_title".localized
+            public static let offlineModeMechantID = "xsdk_offline_mode_report_merchant_id".localized
+            public static let offlineModeTerminalID = "xsdk_offline_mode_report_terminal_id".localized
+            public static let offlineModeReportDate = "xsdk_offline_mode_report_report_date".localized
+            public static let offlineModeReportTime = "xsdk_offline_mode_report_report_time".localized
+            public static let offlineModeReportOfflineDate = "xsdk_offline_mode_report_offline_date".localized
+            public static let offlineModeReportOfflineTime = "xsdk_offline_mode_report_offline_time".localized
+            public static let offlineModeReportTransactionID = "xsdk_offline_mode_report_transaction_id".localized
+            public static let offlineModeReportExternalRefID = "xsdk_offline_mode_report_external_ref_id".localized
+            public static let offlineModeReportCardHolderName = "xsdk_offline_mode_report_cardholder_name".localized
+            public static let offlineModeReportCardType = "xsdk_offline_mode_report_card_type".localized
+            public static let offlineModeReportLastFourDigits = "xsdk_offline_mode_report_last_four_digits".localized
+            public static let offlineModeReportExpirationDate = "xsdk_offline_mode_report_expiration_date".localized
+            public static let offlineModeReportAmount = "xsdk_offline_mode_report_amount".localized
+            public static let offlineModeReportTipAmount = "xsdk_offline_mode_report_tip_amount".localized
+            public static let offlineModeReportEmpowerAmount = "xsdk_offline_mode_report_empower_amount".localized
+            public static let offlineModeReportTotalAmount = "xsdk_offline_mode_report_total_amount".localized
+            public static let offlineModeReportCustomerID = "xsdk_offline_mode_report_customer_id".localized
+            public static let offlineModeReportOrderID = "xsdk_offline_mode_report_order_id".localized
+            public static let offlineModeReportInvoice = "xsdk_offline_mode_report_invoice".localized
+            public static let offlineModeReportBillingAddress = "xsdk_offline_mode_report_billing_address".localized
+            public static let offlineModeReportShippingAddress = "xsdk_offline_mode_report_shipping_address".localized
+            public static let offlineModeReportSoftwareType = "xsdk_offline_mode_report_software_type".localized
+            public static let offlineModeReportSoftwareVersion = "xsdk_offline_mode_report_software_version".localized
+            public static let offlineModeReportError = "xsdk_offline_mode_report_error".localized
+            public static let offlineModeReportErrorDate = "xsdk_offline_mode_report_error_date".localized
+            public static let offlineModeReportErrorTime = "xsdk_offline_mode_report_error_time".localized
         }
         
         enum Settings {

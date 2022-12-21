@@ -9,12 +9,13 @@
 public class SaleEntity: CodableProtocol {
     var amount: String
     var tipAmount, softwareType, softwareTypeVersion: String?
-    let billing, shipping: ClientInformation?
-    let card, csc, customerID, invoice, orderID: String?
-    let expirationDateMMYY: String?
-    let serviceFeeAmount: String?
+    var billing, shipping: ClientInformation?
+    var card, csc, customerID, invoice, orderID: String?
+    var expirationDateMMYY: String?
+    var serviceFeeAmount: String?
+    var externelRefID: String?
 
-    public init(amount: String, tipAmount: String? = nil, softwareType: String? = nil, softwareTypeVersion: String? = nil, billing: ClientInformation? = nil, shipping: ClientInformation? = nil, card: String? = nil, csc: String? = nil, customerID: String? = nil, invoice: String? = nil, orderID: String? = nil, expirationDateMMYY: String? = nil, serviceFeeAmount: String? = nil) {
+    public init(amount: String, tipAmount: String? = nil, softwareType: String? = nil, softwareTypeVersion: String? = nil, billing: ClientInformation? = nil, shipping: ClientInformation? = nil, card: String? = nil, csc: String? = nil, customerID: String? = nil, invoice: String? = nil, orderID: String? = nil, expirationDateMMYY: String? = nil, serviceFeeAmount: String? = nil, externelRefID: String? = nil) {
         self.amount = amount
         self.tipAmount = tipAmount
         self.softwareType = softwareType
@@ -28,10 +29,11 @@ public class SaleEntity: CodableProtocol {
         self.orderID = orderID
         self.expirationDateMMYY = expirationDateMMYY
         self.serviceFeeAmount = serviceFeeAmount?.setTwoDecimals()
+        self.externelRefID = externelRefID
     }
 
     enum CodingKeys: String, CodingKey {
-        case shipping, amount, billing, card, csc, invoice
+        case shipping, amount, billing, card, csc, invoice, externelRefID
         case customerID = "customer-id"
         case orderID = "order-id"
         case tipAmount = "tip-amount"
@@ -43,9 +45,8 @@ public class SaleEntity: CodableProtocol {
 }
 
 // MARK: - ClientInformation
-
 @objc public class ClientInformation: NSObject, Codable {
-    let company, firstName, fromZip, lastName, zip: String?
+    let company, firstName, fromZip, lastName, zip, street, city, phone: String?
 
     enum CodingKeys: String, CodingKey {
         case firstName = "first-name"
@@ -53,9 +54,12 @@ public class SaleEntity: CodableProtocol {
         case company
         case fromZip = "from-zip"
         case zip
+        case street
+        case city
+        case phone
     }
 
-    init?(firstName: String? = nil, lastName: String? = nil, company: String? = nil, fromZip: String? = nil, zip: String? = nil) {
+    init?(firstName: String? = nil, lastName: String? = nil, company: String? = nil, fromZip: String? = nil, zip: String? = nil, street: String? = nil, city: String? = nil, phone: String? = nil) {
         if firstName == nil, lastName == nil, company == nil, fromZip == nil, zip == nil {
             return nil
         }
@@ -64,5 +68,8 @@ public class SaleEntity: CodableProtocol {
         self.fromZip = fromZip
         self.lastName = lastName
         self.zip = zip
+        self.street = street
+        self.city = city
+        self.phone = phone
     }
 }

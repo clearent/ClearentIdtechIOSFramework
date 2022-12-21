@@ -7,6 +7,20 @@
 //
 
 extension Date {
+    func dateOnlyToString(format: String = "yyyy-MM-dd") -> String {
+        let formatter = utcDateFormatter()
+        formatter.dateStyle = .short
+        formatter.dateFormat = format
+        return formatter.string(from: self)
+    }
+    
+    func timeToString(format: String = "HH:mm:ss") -> String {
+        let formatter = utcDateFormatter()
+        formatter.dateStyle = .short
+        formatter.dateFormat = format
+        return formatter.string(from: self)
+    }
+    
     func dateAndTimeToString(format: String = "yyyy-MM-dd HH:mm") -> String {
         let formatter = utcDateFormatter()
         formatter.dateStyle = .short

@@ -222,6 +222,36 @@
 "xsdk_offline_mode_warning_message_confirmation" = "OK";
 "xsdk_offline_mode_encryption_message" = "Please try again using an encrypted reader";
 
+// Offline mode report texts
+
+"xsdk_offline_mode_report_title" = "Offline Transactions Error Log";
+"xsdk_offline_mode_report_merchant_id" = "Merchant ID:";
+"xsdk_offline_mode_report_terminal_id" = "Terminal ID:";
+"xsdk_offline_mode_report_report_date" = "Report Date:";
+"xsdk_offline_mode_report_report_time" = "Report Time:";
+"xsdk_offline_mode_report_offline_date" = "Offline Date:";
+"xsdk_offline_mode_report_offline_time" = "Offline Time:";
+"xsdk_offline_mode_report_transaction_id" = "Transaction ID:";
+"xsdk_offline_mode_report_external_ref_id" = "External Ref ID:";
+"xsdk_offline_mode_report_cardholder_name" = "Cardholder Name:";
+"xsdk_offline_mode_report_card_type" = "Card Type:";
+"xsdk_offline_mode_report_last_four_digits" = "Last 4 digits:";
+"xsdk_offline_mode_report_expiration_date" = "Expiration Date:";
+"xsdk_offline_mode_report_amount" = "Amount:";
+"xsdk_offline_mode_report_tip_amount" = "Tip Amount:";
+"xsdk_offline_mode_report_empower_amount" = "Empower Amount:";
+"xsdk_offline_mode_report_total_amount" = "Total Amount:";
+"xsdk_offline_mode_report_customer_id" = "CustomerID:";
+"xsdk_offline_mode_report_order_id" = "Order ID:";
+"xsdk_offline_mode_report_invoice" = "Invoice:";
+"xsdk_offline_mode_report_billing_address" = "Billing Address:";
+"xsdk_offline_mode_report_shipping_address" = "Shipping Address:";
+"xsdk_offline_mode_report_software_type" = "Software Type:";
+"xsdk_offline_mode_report_software_version" = "Software version:";
+"xsdk_offline_mode_report_error" = "Error:";
+"xsdk_offline_mode_report_error_date" = "Error date:";
+"xsdk_offline_mode_report_error_time" = "Error time:";
+
 // MARK: API parse errors
 // Texts that are displayed in case of no bluetooth connection
 

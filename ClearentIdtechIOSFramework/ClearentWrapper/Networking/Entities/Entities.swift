@@ -50,14 +50,50 @@ public struct ResponseError: Codable {
 }
 
 public struct Transaction: Codable {
+    var id: String?
     var message: String
     var result: String
     var surchargeApplied: Bool?
-
+    var refID: String?
+    var customerFirstName: String?
+    var customerLastName: String?
+    var customerID: String?
+    var lastFourDigits: String?
+    var epirationDate: String?
+    var amount: String?
+    var tipAmount: String?
+    var empowerAmount: String?
+    var orderID: String?
+    var invoice: String?
+    var billing: ClientInformation?
+    var shipping : ClientInformation?
+    var softwareVersion: String?
+    var softwareType: String?
+    var merchantID: String?
+    var terminalID: String?
+    
     enum CodingKeys: String, CodingKey {
         case message = "display-message"
         case result = "result"
         case surchargeApplied = "surcharge-applied"
+        case refID = "ref-id"
+        case customerFirstName = "customer-first-name"
+        case customerLastName = "customer-last-name"
+        case customerID = "customer-id"
+        case lastFourDigits = "last-four"
+        case epirationDate = "exp-date"
+        case amount = "amount"
+        case tipAmount = "tip-amount"
+        case empowerAmount = "service-fee"
+        case orderID = "order-id"
+        case invoice = "invoice"
+        case softwareVersion = "software-version"
+        case softwareType = "software-type"
+        case billing
+        case shipping
+        case id
+        case merchantID = "merchant-id"
+        case terminalID = "terminal-id"
     }
 }
 

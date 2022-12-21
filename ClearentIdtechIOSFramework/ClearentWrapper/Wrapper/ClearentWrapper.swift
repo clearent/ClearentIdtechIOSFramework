@@ -484,6 +484,11 @@ public final class ClearentWrapper : NSObject {
         
         return nil
     }
+    
+    internal func currentSDKVersion() -> String? {
+        let bundle = Bundle(identifier: "com.clearent.quest.ClearentIdtechIOSFramework")! // Get a reference to the bundle from your framework (not the bundle of the app itself!)
+        return bundle.infoDictionary?[kCFBundleVersionKey as String] as? String //
+    }
 }
 
 extension ClearentWrapper: Clearent_Public_IDTech_VP3300_Delegate {
@@ -583,4 +588,5 @@ extension ClearentWrapper: Clearent_Public_IDTech_VP3300_Delegate {
     public func deviceDisconnected() {
         readerRepository?.deviceDisconnected()
     }
+    
 }

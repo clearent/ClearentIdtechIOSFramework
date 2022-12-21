@@ -43,6 +43,7 @@ class ClearentOfflineModeReportViewController: UIViewController {
     }
     
     private func setupButtons() {
+        saveErrorLogButton.isEnabled = reportPresenter.reportHasErrors()
         saveErrorLogButton.title = ClearentConstants.Localized.OfflineReport.saveLogButtonTitle
         saveErrorLogButton.buttonStyle = .link
         saveErrorLogButton.action = { [weak self] in
@@ -56,6 +57,13 @@ class ClearentOfflineModeReportViewController: UIViewController {
             self?.navigationController?.popViewController(animated: true)
         }
     }
+}
+
+extension ClearentOfflineModeReportViewController: ClearentOfflineViewProtocol {
+    func showShareMenu(with fileURL: URL) {
+       let activityViewController = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
+       present(activityViewController, animated: true, completion: nil)
+   }
 }
 
 extension ClearentOfflineModeReportViewController: UITableViewDataSource {
