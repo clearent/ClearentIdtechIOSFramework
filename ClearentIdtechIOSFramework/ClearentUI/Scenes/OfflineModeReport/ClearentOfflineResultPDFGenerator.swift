@@ -13,9 +13,7 @@ class ClearentOfflineResultPDFGenerator {
     func generateReport(transactions: [OfflineTransaction]) -> URL {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let outputFileURL = documentsDirectory.appendingPathComponent("OfflineErrorsReport.pdf")
-        
-        let pdfRenderer = UIGraphicsPDFRenderer(bounds: CGRect(x: 0, y: 0, width: 595, height: 841.8))
-        
+         
         let pageSize = CGSize(width: 595.2, height: 841.8)
         let pageMargins = UIEdgeInsets(top: 72, left: 72, bottom: 72, right: 72)
         let printableRect = CGRect(x: pageMargins.left, y: pageMargins.top, width: pageSize.width - pageMargins.left - pageMargins.right, height: pageSize.height - pageMargins.top - pageMargins.bottom)
