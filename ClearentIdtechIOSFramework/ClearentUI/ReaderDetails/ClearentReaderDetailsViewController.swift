@@ -123,12 +123,12 @@ class ClearentReaderDetailsViewController: UIViewController {
     private func setupReaderName() {
         readerName.titleText = ClearentConstants.Localized.ReaderDetails.readerName
         readerName.descriptionText = readerInfo.readerName
-        readerName.button.isHidden = true
+        readerName.primaryButton.isHidden = true
     }
 
     private func setupCustomReaderName() {
         customReaderName.titleText = ClearentConstants.Localized.ReaderDetails.customReaderName
-        customReaderName.editButtonPressed = { [weak self] in
+        customReaderName.primaryButtonPressed = { [weak self] in
             guard let strongSelf = self else { return }
             let modalVC = ClearentUIManager.shared.viewController(processType: .renameReader, editableReader: self?.detailsPresenter.currentReader) { result in
                 if case let.success(customName) = result {
@@ -146,9 +146,9 @@ class ClearentReaderDetailsViewController: UIViewController {
             }
             
             customReaderName.secondIconName = ClearentConstants.IconName.deleteButton
-            customReaderName.secondaryButton.isHidden = false
+            customReaderName.deleteButton.isHidden = false
         } else {
-            customReaderName.secondaryButton.isHidden = true
+            customReaderName.deleteButton.isHidden = true
         }
         
         if let friendlyreaderName = detailsPresenter.currentReader.customReaderName {
@@ -164,7 +164,7 @@ class ClearentReaderDetailsViewController: UIViewController {
         if let serialNumber = readerInfo.serialNumber, !serialNumber.isEmpty {
             serialNumberView.titleText = ClearentConstants.Localized.ReaderDetails.serialNumber
             serialNumberView.descriptionText = serialNumber
-            serialNumberView.button.isHidden = true
+            serialNumberView.primaryButton.isHidden = true
             serialNumberView.isHidden = false
         }
     }
@@ -174,7 +174,7 @@ class ClearentReaderDetailsViewController: UIViewController {
         if let versionNumber = readerInfo.version, !versionNumber.isEmpty {
             versionNumberView.titleText = ClearentConstants.Localized.ReaderDetails.version
             versionNumberView.descriptionText = versionNumber
-            versionNumberView.button.isHidden = true
+            versionNumberView.primaryButton.isHidden = true
             versionNumberView.isHidden = false
         }
     }
