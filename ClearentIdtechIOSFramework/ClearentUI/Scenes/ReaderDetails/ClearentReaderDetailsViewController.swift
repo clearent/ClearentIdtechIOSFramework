@@ -132,9 +132,9 @@ class ClearentReaderDetailsViewController: UIViewController {
             }
             
             customReaderName.secondIconName = ClearentConstants.IconName.deleteButton
-            customReaderName.secondaryButton.isHidden = false
+            customReaderName.deleteButton.isHidden = false
         } else {
-            customReaderName.secondaryButton.isHidden = true
+            customReaderName.deleteButton.isHidden = true
         }
         
         if let friendlyreaderName = detailsPresenter.currentReader.customReaderName {
