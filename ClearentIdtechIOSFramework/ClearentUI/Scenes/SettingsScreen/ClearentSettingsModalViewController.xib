@@ -25,6 +25,7 @@
                 <outlet property="offlineQuestionTitle" destination="83H-cK-isG" id="Xa4-lC-1j7"/>
                 <outlet property="offlineSectionSubtitle" destination="b9m-5T-Mp4" id="y7F-SU-ujf"/>
                 <outlet property="offlineStatusView" destination="sF1-XE-yMJ" id="nnr-6z-BU2"/>
+                <outlet property="offlineStatusViewTopSpace" destination="DFO-kr-CuE" id="lca-GW-emw"/>
                 <outlet property="readersListView" destination="JZr-nT-oZU" id="5EY-CW-X7I"/>
                 <outlet property="settingsStackView" destination="Lc0-bw-wpf" id="Fdw-x5-XqX"/>
                 <outlet property="titleLabel" destination="jm9-My-LzE" id="yA5-VL-3HG"/>

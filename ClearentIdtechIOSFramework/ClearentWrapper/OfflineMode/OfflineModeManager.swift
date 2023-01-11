@@ -43,7 +43,6 @@ class OfflineModeManager {
     func saveSignatureForTransaction(transactionID: String, image: UIImage) -> TransactionStoreStatus {
         if let data = image.pngData() {
             UserDefaults.standard.set(data, forKey: transactionID)
-            UserDefaults.standard.synchronize()
             return .success
         }
 
@@ -62,7 +61,6 @@ class OfflineModeManager {
     
     func saveEmailForTransaction(transactionID: String, emailAddress: String) {
         UserDefaults.standard.set(emailAddress, forKey: "\(UserDefaultKeys.emailAddressPrefix)\(transactionID)")
-        UserDefaults.standard.synchronize()
     }
     
     func retrieveEmailForTransaction(transactionID: String) -> String? {

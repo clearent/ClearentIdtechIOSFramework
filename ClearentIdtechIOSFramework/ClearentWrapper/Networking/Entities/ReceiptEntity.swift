@@ -11,7 +11,6 @@ struct ReceiptEntity: CodableProtocol {
     let id: Int
 
     enum CodingKeys: String, CodingKey {
-        case emailAddress = "email-address"
-        case id = "id"
+        case emailAddress = "email-address", id = "id"
     }
 }

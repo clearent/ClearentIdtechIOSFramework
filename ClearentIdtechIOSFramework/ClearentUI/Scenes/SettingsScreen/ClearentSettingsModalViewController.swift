@@ -16,6 +16,7 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     @IBOutlet var offlineSectionSubtitle: UILabel!
     @IBOutlet var enableOfflineMode: ClearentLabelSwitch!
     @IBOutlet var enablePromptMode: ClearentLabelSwitch!
+    @IBOutlet var offlineStatusViewTopSpace: ClearentEmptySpace!
     @IBOutlet var offlineStatusView: ClearentLabelWithButton!
     @IBOutlet var emailSectionSubtitle: UILabel!
     @IBOutlet var enableEmailReceipt: ClearentLabelSwitch!
@@ -205,8 +206,9 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
 }
 
 extension ClearentSettingsModalViewController: ClearentSettingsPresenterView {
-    func removeOfflineStatusView() {
-        offlineStatusView.isHidden = true
+    func updateOfflineStatusViewVisibility(show: Bool) {
+        offlineStatusView.isHidden = !show
+        offlineStatusViewTopSpace.isHidden = !show
     }
     
     func updateOfflineStatusView(inProgress: Bool) {

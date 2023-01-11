@@ -46,9 +46,7 @@ class ClearentTextField: ClearentMarginableView, UITextFieldDelegate {
         self.init()
         self.infoLabel.text = inputTitle
         self.inputField.placeholder = hint
-        if let inputText = inputText {
-            self.inputField.text = inputText
-        }
+        self.inputField.text = inputText
         self.inputField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: .editingChanged)
         self.inputField.delegate = self
         self.delegate = delegate

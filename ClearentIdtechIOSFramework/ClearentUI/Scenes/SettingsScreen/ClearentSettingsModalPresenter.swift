@@ -7,7 +7,7 @@
 //
 
 protocol ClearentSettingsPresenterView: AnyObject {
-    func removeOfflineStatusView()
+    func updateOfflineStatusViewVisibility(show: Bool)
     func updateOfflineStatusView(inProgress: Bool)
     func presentReportScreen()
     func displayNoInternetAlert()
@@ -42,7 +42,7 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
     
     func updateOfflineStatus() {
         guard let offlineManager = ClearentWrapper.shared.retrieveOfflineManager() else {
-            settingsPresenterView?.removeOfflineStatusView()
+            settingsPresenterView?.updateOfflineStatusViewVisibility(show: false)
             return
         }
         
@@ -53,7 +53,7 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
             if pendingTransactions > 0 {
                 setupPendingTransactions(counter: pendingTransactions)
             } else {
-                settingsPresenterView?.removeOfflineStatusView()
+                settingsPresenterView?.updateOfflineStatusViewVisibility(show: false)
             }
         }
         settingsPresenterView?.updateOfflineStatusView(inProgress: false)

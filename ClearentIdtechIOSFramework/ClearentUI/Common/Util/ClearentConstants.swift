@@ -272,6 +272,8 @@ import UIKit
             public static let errorMessage = "xsdk_general_error_message".localized
             public static let transactionID = "xsdk_general_error_transaction_id".localized
             public static let exchangeID = "xsdk_general_error_exchange_id".localized
+            public static let parseHttpResponseErrorTitle = "xsdk_response_parsing_error".localized
+            public static let parseHttpResponseErrorMessage = "xsdk_http_response_parsing_error_message".localized
         }
         
         enum FlowDataProvider {

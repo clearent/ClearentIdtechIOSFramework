@@ -25,7 +25,6 @@ public class UserDefaultsPersistence {
     static func removeValue(forKey key: String) {
         guard let userDefaults = userDefaults else { return }
         userDefaults.removeObject(forKey: key)
-        userDefaults.synchronize()
     }
     
     /// Deletes all saved user defaults which contain the clearentSdkPrefix
