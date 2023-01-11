@@ -45,7 +45,7 @@ import UIKit
 
     // MARK: Assets
 
-    enum IconName {
+    public enum IconName {
         // Reader Battery Status
         static let batteryFull = "full"
         static let batteryHigh = "high"
@@ -74,6 +74,7 @@ import UIKit
 
         // Pairing
         static let rightArrow = "right-arrow"
+        public static let rightArrowLarge = "right-arrow-large"
         static let reader = "reader"
         static let bubbleTail = "bubbleTail"
 

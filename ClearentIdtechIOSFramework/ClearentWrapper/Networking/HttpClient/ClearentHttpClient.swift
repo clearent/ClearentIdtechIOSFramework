@@ -69,7 +69,7 @@ class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
             completion(data, error)
         }
     }
-
+    
     func sendSignature(base64Image: String, transactionID: Int, completion: @escaping (Data?, Error?) -> Void) {
         let created = Date().dateAndTimeToString()
         let signatureURL = URL(string: baseURL + ClearentEndpoints.signature)

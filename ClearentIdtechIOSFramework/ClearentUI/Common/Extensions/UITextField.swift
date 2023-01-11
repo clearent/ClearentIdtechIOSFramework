@@ -10,7 +10,7 @@ extension UITextField {
     typealias KeyboardAction = (target: Any, action: Selector, isEnabled: Bool)
     
     // Adds a toolbar with a done button to the UITextField's Keyboard
-    func addDoneToKeyboard() {
+    public func addDoneToKeyboard() {
         let onDone = (target: self, action: #selector(doneButtonTapped), isEnabled: true)
         let doneBtn = UIBarButtonItem(title: ClearentConstants.Localized.Keyboard.done, style: .done, target: onDone.target, action: onDone.action)
         let flexibleSpace = UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: self, action: nil)

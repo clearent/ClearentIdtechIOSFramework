@@ -45,6 +45,7 @@ public class SaleEntity: CodableProtocol {
 }
 
 // MARK: - ClientInformation
+
 @objc public class ClientInformation: NSObject, Codable {
     let company, firstName, fromZip, lastName, zip, street, city, phone: String?
 

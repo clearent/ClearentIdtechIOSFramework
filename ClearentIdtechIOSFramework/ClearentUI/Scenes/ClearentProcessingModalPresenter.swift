@@ -364,7 +364,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             sdkFeedbackProvider.showEncryptionWarning()
             return
         }
-        
+
         if let amountFormatted = paymentInfo?.amount.stringFormattedWithTwoDecimals {
             let saleEntity = SaleEntity(amount: amountFormatted,
                                         tipAmount: tip?.stringFormattedWithTwoDecimals,

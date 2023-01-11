@@ -9,7 +9,7 @@
 class ClearentLabelWithButton: ClearentMarginableView {
 
     @IBOutlet weak var label: UILabel!
-    @IBOutlet weak var button: ClearentPrimaryButton!
+    @IBOutlet public weak var button: ClearentPrimaryButton!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
     override var margins: [BottomMargin] {

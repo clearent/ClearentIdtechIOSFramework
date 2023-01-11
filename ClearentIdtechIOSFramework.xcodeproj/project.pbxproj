@@ -28,6 +28,7 @@
 		0108460F292295E700BFE00D /* ClearentOfflineModeReportViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01084609292295E700BFE00D /* ClearentOfflineModeReportViewController.xib */; };
 		0128C87029019C3C0050EB97 /* ClearentReaderRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0128C86F29019C3C0050EB97 /* ClearentReaderRepository.swift */; };
 		0128C8742902A97B0050EB97 /* ClearentTransactionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0128C8732902A97B0050EB97 /* ClearentTransactionRepository.swift */; };
+		0132BFBD296EDC0200155947 /* ClearentLabelWithButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0132BFBC296EDC0200155947 /* ClearentLabelWithButton.xib */; };
 		01442C7A28B3D343006DD15C /* BluetoothScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442C7928B3D343006DD15C /* BluetoothScanner.swift */; };
 		01442CEE28B3D836006DD15C /* FlowDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442C8028B3D835006DD15C /* FlowDataProvider.swift */; };
 		01442CEF28B3D836006DD15C /* Identifiers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442C8128B3D835006DD15C /* Identifiers.swift */; };
@@ -269,6 +270,7 @@
 		01084609292295E700BFE00D /* ClearentOfflineModeReportViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ClearentOfflineModeReportViewController.xib; sourceTree = "<group>"; };
 		0128C86F29019C3C0050EB97 /* ClearentReaderRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentReaderRepository.swift; sourceTree = "<group>"; };
 		0128C8732902A97B0050EB97 /* ClearentTransactionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentTransactionRepository.swift; sourceTree = "<group>"; };
+		0132BFBC296EDC0200155947 /* ClearentLabelWithButton.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ClearentLabelWithButton.xib; sourceTree = "<group>"; };
 		01442C7928B3D343006DD15C /* BluetoothScanner.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BluetoothScanner.swift; sourceTree = "<group>"; };
 		01442C8028B3D835006DD15C /* FlowDataProvider.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FlowDataProvider.swift; sourceTree = "<group>"; };
 		01442C8128B3D835006DD15C /* Identifiers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Identifiers.swift; sourceTree = "<group>"; };
@@ -382,6 +384,7 @@
 		0198BA082968361500C8D3C3 /* ClearentTextFieldAndButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentTextFieldAndButton.swift; sourceTree = "<group>"; };
 		0198BA0A2968362100C8D3C3 /* ClearentTextFieldAndButton.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentTextFieldAndButton.xib; sourceTree = "<group>"; };
 		01BFBC412934A8E700B694F6 /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
+		01BFBC462934BA9400B694F6 /* DateExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		01BFBC4F293A0C0E00B694F6 /* ClearentServiceFeeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentServiceFeeView.swift; sourceTree = "<group>"; };
 		01BFBC51293A0C1900B694F6 /* ClearentServiceFeeView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentServiceFeeView.xib; sourceTree = "<group>"; };
 		01C3E418292664490011676B /* UIViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerExtension.swift; sourceTree = "<group>"; };
@@ -560,6 +563,7 @@
 		010F8F4F291BC0F0007D39B6 /* Recovered References */ = {
 			isa = PBXGroup;
 			children = (
+				01BFBC462934BA9400B694F6 /* DateExtension.swift */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -663,7 +667,7 @@
 		01442C9E28B3D835006DD15C /* UIComponents */ = {
 			isa = PBXGroup;
 			children = (
-				018B29EA2953477000B64EBD /* ClearentLabelWithButton.xib */,
+				0132BFBC296EDC0200155947 /* ClearentLabelWithButton.xib */,
 				01442C8B28B3D835006DD15C /* AdaptiveStackView */,
 				01442C9F28B3D835006DD15C /* ClearentPairingReaderItem.swift */,
 				01442CA028B3D835006DD15C /* LoadingView */,
@@ -1280,7 +1284,7 @@
 				01442D3D28B3D836006DD15C /* ClearentEmptySpace.xib in Resources */,
 				01442D1128B3D836006DD15C /* ClearentLabelWithIcon.xib in Resources */,
 				01442D3C28B3D836006DD15C /* ClearentLabelSwitch.xib in Resources */,
-				018B29EB2953477000B64EBD /* ClearentLabelWithButton.xib in Resources */,
+				0132BFBD296EDC0200155947 /* ClearentLabelWithButton.xib in Resources */,
 				01442D4128B3D836006DD15C /* SF-Pro-Display-Bold.otf in Resources */,
 				0108460E292295E700BFE00D /* ClearentOfflineResultTableViewCell.xib in Resources */,
 				01442D3928B3D836006DD15C /* ClearentPaymentFooterView.xib in Resources */,

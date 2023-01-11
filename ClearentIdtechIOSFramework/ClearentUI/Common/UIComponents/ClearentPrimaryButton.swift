@@ -85,6 +85,14 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         button.layer.masksToBounds = true
         textFont = ClearentUIBrandConfigurator.shared.fonts.primaryButtonTextFont
     }
+    
+    public func setDisabledButton() {
+        button.backgroundColor = filledDisabledBackgroundColor
+    }
+    
+    public func setEnabledButton() {
+        button.backgroundColor = filledBackgroundColor
+    }
 
     @IBAction func buttonWasPressed(_: Any) {
         action?()
@@ -107,19 +115,11 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         button.setTitleColor(filledDisabledButtonTextColor, for: .disabled)
         button.layer.borderWidth = 0
     }
-    
+
     internal func setLinkButton() {
         button.backgroundColor = .clear
         button.setTitleColor(linkButtonTextColor, for: .normal)
         button.setTitleColor(linkButtonDisabledColor, for: .disabled)
         button.layer.borderWidth = 0
-    }
-    
-    internal func setDisabledButton() {
-        button.backgroundColor = filledDisabledBackgroundColor
-    }
-    
-    internal func setEnabledButton() {
-        button.backgroundColor = filledBackgroundColor
     }
 }
