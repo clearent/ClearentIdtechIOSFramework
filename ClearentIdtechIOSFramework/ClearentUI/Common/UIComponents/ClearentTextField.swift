@@ -15,6 +15,8 @@ protocol ClearentTextFieldProtocol {
 
 class ClearentTextField: ClearentMarginableView, UITextFieldDelegate {
 
+    // MARK: - Properties
+    
     @IBOutlet var inputField: UITextField!
     @IBOutlet private var infoLabel: UILabel!
     @IBOutlet private var errorLabel: UILabel!
@@ -53,6 +55,8 @@ class ClearentTextField: ClearentMarginableView, UITextFieldDelegate {
         self.delegate?.didFinishWithResult(name: self.inputField.text)
     }
 
+    // MARK: - Methods
+    
     override func configure() {
         infoLabel.font = ClearentUIBrandConfigurator.shared.fonts.customNameInfoLabelFont
         infoLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.infoLabelColor

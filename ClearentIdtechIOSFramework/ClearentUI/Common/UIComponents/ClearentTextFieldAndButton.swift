@@ -27,6 +27,8 @@ class ClearentTextFieldAndButton: ClearentMarginableView {
         }
     }
     
+    // MARK: - Methods
+    
     convenience init(textFieldTitle: String, textFieldPlaceholder: String, buttonTitle: String) {
         self.init()
         self.textField.infoLabelText = textFieldTitle
