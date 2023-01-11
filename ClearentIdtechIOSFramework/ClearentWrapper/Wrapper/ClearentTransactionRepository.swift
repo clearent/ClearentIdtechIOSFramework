@@ -278,7 +278,6 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     
     /**
      * Saves  the image representing the user's signature
-     *  @param transactionID, the id of the transaction for wich we save the signature
      *  @param the actual image containing the signature
      */
     func saveSignatureImageForTransaction(image: UIImage) {
@@ -298,9 +297,8 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     }
     
     /**
-     * Saves  the image representing the user's signature
-     *  @param transactionID, the id of the transaction for wich we save the signature
-     *  @param the actual image containing the signature
+     * Saves the email address of the user
+     * @param emailAddress, email of the user
      */
     func saveEmailForTransaction(emailAddress: String) {
         guard let transactionID = offlineTransaction?.transactionID else { return }
