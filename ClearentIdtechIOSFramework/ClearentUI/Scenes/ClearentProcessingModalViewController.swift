@@ -85,7 +85,6 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             stackView.insertArrangedSubview(iconAndLabel, at: 1)
             stackView.layoutSubviews()
         }
-        
     }
     
     func startPairNewReaderFlow() {
@@ -195,12 +194,14 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             }
             return ClearentReadersTableView(dataSource: readersTableViewDataSource, delegate: self)
         case .input:
-            return ClearentTextField(currentReaderName: presenter?.editableReader?.customReaderName, inputName: ClearentConstants.Localized.Pairing.readerName, hint: ClearentConstants.Localized.Pairing.readerNameInputHint, delegate: self)
+            return ClearentTextField(inputText: presenter?.editableReader?.customReaderName, inputTitle: ClearentConstants.Localized.Pairing.readerName, hint: ClearentConstants.Localized.Pairing.readerNameInputHint, delegate: self)
         case .tips:
             guard let amountInfo = object as? AmountInfo else { return nil }
             return tipOptionsListView(with: amountInfo)
         case .signature:
             return signatureView()
+        case .receipt:
+            return emailForm()
         case .manualEntry:
             return manualEntryFormView()
         case .error:
@@ -220,6 +221,20 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             self?.presenter?.handleSignature(with: signatureImage)
         }
         return signatureView
+    }
+    
+    private func emailForm() -> ClearentTextFieldAndButton {
+        let emailForm = ClearentTextFieldAndButton(textFieldTitle: ClearentConstants.Localized.EmailReceipt.emailFormTitle,
+                                               textFieldPlaceholder: ClearentConstants.Localized.EmailReceipt.emailFormInputPlaceholder,
+                                               buttonTitle: ClearentConstants.Localized.EmailReceipt.emailFormButtonSend)
+        emailForm.buttonAction = { email in
+            if let email = email, ClearentFieldValidationHelper.isEmailValid(emailAddress: email) {
+                self.presenter?.handleEmailReceipt(with: email)
+            } else {
+                emailForm.textFieldError = ClearentConstants.Localized.EmailReceipt.emailFormInvalidAddress
+            }
+        }
+        return emailForm
     }
     
     private func manualEntryFormView() -> ClearentManualEntryFormView {
@@ -278,7 +293,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
         button.title = userAction.title
         button.type = userAction
         
-        if [.cancel, .pairNewReader, .renameReaderLater, .transactionWithoutTip, .skipSignature, .denyOfflineMode].contains(userAction) {
+        if [.cancel, .pairNewReader, .renameReaderLater, .transactionWithoutTip, .skipSignature, .denyOfflineMode, .emailReceiptOptionNo, .emailFormSkip].contains(userAction) {
             button.buttonStyle = .bordered
         }
         

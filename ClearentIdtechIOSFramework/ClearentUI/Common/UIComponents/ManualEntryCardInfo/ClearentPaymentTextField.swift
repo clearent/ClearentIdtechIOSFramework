@@ -29,7 +29,7 @@ class ClearentPaymentTextField: ClearentXibView {
         errorImageView.image = UIImage(named: ClearentConstants.IconName.exclamationMark, in: ClearentConstants.bundle, compatibleWith: nil)
         errorImageView.isHidden = true
         
-        errorLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.manualPaymentErrorMessageColor
+        errorLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.fieldValidationErrorMessageColor
         errorLabel.font = ClearentUIBrandConfigurator.shared.fonts.errorMessageLabelFont
         errorLabel.isHidden = true
 
@@ -77,7 +77,7 @@ class ClearentPaymentTextField: ClearentXibView {
         errorImageView.isHidden = false
         errorLabel.isHidden = false
         errorLabel.text = errorMessage
-        textField.layer.borderColor = ClearentUIBrandConfigurator.shared.colorPalette.manualPaymentErrorMessageColor.cgColor
+        textField.layer.borderColor = ClearentUIBrandConfigurator.shared.colorPalette.fieldValidationErrorMessageColor.cgColor
     }
     
     func disableErrorState() {

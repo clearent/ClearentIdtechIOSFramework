@@ -6,6 +6,8 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
+import UIKit
+
 public class ClearentSettingsModalViewController: ClearentBaseViewController {
     
     @IBOutlet var titleLabel: ClearentTitleLabel!
@@ -14,7 +16,10 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     @IBOutlet var offlineSectionSubtitle: UILabel!
     @IBOutlet var enableOfflineMode: ClearentLabelSwitch!
     @IBOutlet var enablePromptMode: ClearentLabelSwitch!
+    @IBOutlet var offlineStatusViewTopSpace: ClearentEmptySpace!
     @IBOutlet var offlineStatusView: ClearentLabelWithButton!
+    @IBOutlet var emailSectionSubtitle: UILabel!
+    @IBOutlet var enableEmailReceipt: ClearentLabelSwitch!
     @IBOutlet var doneButton: ClearentPrimaryButton!
     
     // Offline mode question prompt
@@ -53,13 +58,16 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         }
         
         // Offline section
-        setupOfflineSectionSubtitle()
+        setupSectionSubtitle(for: offlineSectionSubtitle, with: ClearentConstants.Localized.Settings.settingsOfflineModeSubtitle)
         setupEnableOfflineModeSwitch()
         setupEnablePromptModeSwitch()
         setupDoneButton()
         setupOfflineModeQuestion()
-        
         offlineQuestionStackView.isHidden = true
+        
+        // Email section
+        setupSectionSubtitle(for: emailSectionSubtitle, with: ClearentConstants.Localized.Settings.settingsEmailReceiptSubtitle)
+        setupEmailReceiptSwitch()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -88,10 +96,10 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         titleLabel.font = ClearentUIBrandConfigurator.shared.fonts.settingsScreenTitle
     }
     
-    private func setupOfflineSectionSubtitle() {
-        offlineSectionSubtitle.text = ClearentConstants.Localized.Settings.settingsOfflineModeSubtitle
-        offlineSectionSubtitle.font = ClearentUIBrandConfigurator.shared.fonts.settingsOfflineModeSubtitle
-        offlineSectionSubtitle.textColor = ClearentUIBrandConfigurator.shared.colorPalette.subtitleLabelColor
+    private func setupSectionSubtitle(for label: UILabel, with title: String) {
+        label.text = title
+        label.font = ClearentUIBrandConfigurator.shared.fonts.settingsOfflineModeSubtitle
+        label.textColor = ClearentUIBrandConfigurator.shared.colorPalette.subtitleLabelColor
     }
     
     private func setupEnableOfflineModeSwitch() {
@@ -109,6 +117,17 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
                 self?.presenter?.updatePromptMode(isEnabled: false)
                 self?.presenter?.updateOfflineMode(isEnabled: false)
             }
+        }
+    }
+    
+    private func setupEmailReceiptSwitch() {
+        enableEmailReceipt.titleText = ClearentConstants.Localized.Settings.settingsEmailReceiptEnabled
+        enableEmailReceipt.titleTextColor = ClearentUIBrandConfigurator.shared.colorPalette.titleLabelColor
+        enableEmailReceipt.descriptionText = nil
+        enableEmailReceipt.isOn = ClearentWrapperDefaults.enableEmailReceipt
+        
+        enableEmailReceipt.valueChangedAction = { [weak self] isOn in
+            self?.presenter?.updateEmailReceiptStatus(isEnabled: isOn)
         }
     }
     
@@ -187,8 +206,9 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
 }
 
 extension ClearentSettingsModalViewController: ClearentSettingsPresenterView {
-    func removeOfflineStatusView() {
-        offlineStatusView.isHidden = true
+    func updateOfflineStatusViewVisibility(show: Bool) {
+        offlineStatusView.isHidden = !show
+        offlineStatusViewTopSpace.isHidden = !show
     }
     
     func updateOfflineStatusView(inProgress: Bool) {

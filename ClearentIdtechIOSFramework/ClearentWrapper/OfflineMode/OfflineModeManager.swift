@@ -12,6 +12,11 @@ import Foundation
 /**
  * Offline Manager, handles the offlline transactions, saves, updates, deletes, retrieves, processing and reporting.
  */
+
+private struct UserDefaultKeys {
+    static let emailAddressPrefix = "email_"
+}
+
 class OfflineModeManager {
     public var storage: TransactionStorageProtocol
 
@@ -38,7 +43,6 @@ class OfflineModeManager {
     func saveSignatureForTransaction(transactionID: String, image: UIImage) -> TransactionStoreStatus {
         if let data = image.pngData() {
             UserDefaults.standard.set(data, forKey: transactionID)
-            UserDefaults.standard.synchronize()
             return .success
         }
 
@@ -52,6 +56,17 @@ class OfflineModeManager {
             }
         }
 
+        return nil
+    }
+    
+    func saveEmailForTransaction(transactionID: String, emailAddress: String) {
+        UserDefaults.standard.set(emailAddress, forKey: "\(UserDefaultKeys.emailAddressPrefix)\(transactionID)")
+    }
+    
+    func retrieveEmailForTransaction(transactionID: String) -> String? {
+        if let email = UserDefaults.standard.value(forKey: "\(UserDefaultKeys.emailAddressPrefix)\(transactionID)") as? String {
+            return email
+        }
         return nil
     }
     

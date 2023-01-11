@@ -36,6 +36,7 @@ protocol ProcessingModalProtocol {
     func updateTemporaryReaderName(name: String?)
     func enableDoneButtonForInput(enabled: Bool)
     func handleSignature(with image: UIImage)
+    func handleEmailReceipt(with emailAddress: String)
     func sendManualEntryTransaction(with dataSource: ClearentPaymentDataSource)
     func handleOfflineModeCancelOption()
     func handleOfflineModeConfirmationOption()
@@ -170,12 +171,14 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                     shouldStartTransactionAfterRenameReader = false
                     startTransactionFlow()
                     modalProcessingView?.positionViewOnTop(flag: false)
+                } else if sdkWrapper.flowType?.flowFeedbackType == .signatureError {
+                    showEmailReceiptOption()
                 } else {
                     modalProcessingView?.dismissViewController(result: .success(editableReader?.customReaderName))
                 }
             }
             ClearentUIManager.shared.isOfflineModeConfirmed = false
-        case .cancel:
+        case .cancel, .emailReceiptOptionNo, .emailFormSkip:
             sdkWrapper.isNewPaymentProcess = true
             ClearentUIManager.shared.isOfflineModeConfirmed = false
             modalProcessingView?.dismissViewController(result: .failure(.init(type: .cancelledByUser)))
@@ -189,7 +192,6 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             let url = URL(string: UIApplication.openSettingsURLString + Bundle.main.bundleIdentifier!)!
             UIApplication.shared.open(url)
         case .addReaderName:
-            modalProcessingView?.positionViewOnTop(flag: true)
             showRenameReader()
         case .transactionWithTip, .transactionWithoutTip, .transactionWithServiceFee:
             handlePaymentWithAdditionalFees()
@@ -205,6 +207,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             sdkFeedbackProvider.delegate = self
             modalProcessingView?.showLoadingView()
             handleTerminalSettings()
+        case .emailReceiptOptionYes:
+            showEmailFormScreen()
         }
     }
     
@@ -216,6 +220,22 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                 self?.modalProcessingView?.dismissViewController(result: .failure(error))
             } else {
                 self?.sdkFeedbackProvider.didFinishedSignatureUploadWith(response: response, error: error)
+            }
+        }
+    }
+    
+    func handleEmailReceipt(with emailAddress: String) {
+        modalProcessingView?.showLoadingView()
+        
+        sdkWrapper.sendReceipt(emailAddress: emailAddress) {  [weak self] (response, error) in
+            if let error = error {
+                if error.type.isMissingKeyError {
+                    self?.modalProcessingView?.dismissViewController(result: .failure(error))
+                } else {
+                    self?.sdkFeedbackProvider.didFinishedSendingReceiptWithError(response: response, error: error)
+                }
+            } else {
+                self?.modalProcessingView?.dismissViewController(result: .success(self?.editableReader?.customReaderName))
             }
         }
     }
@@ -393,6 +413,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     private func showRenameReader() {
+        modalProcessingView?.positionViewOnTop(flag: true)
         temporaryReaderName = nil
         let items = [FlowDataItem(type: .hint, object: ClearentConstants.Localized.Pairing.renameReader),
                      FlowDataItem(type: .input, object: FlowInputType.nameInput),
@@ -424,7 +445,28 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             editableReader = reader
         }
     }
-
+    
+    private func showEmailReceiptOption() {
+        if ClearentWrapperDefaults.enableEmailReceipt {
+            let items = [FlowDataItem(type: .hint, object: ClearentConstants.Localized.EmailReceipt.emailReceiptOptionTitle),
+                         FlowDataItem(type: .userAction, object: FlowButtonType.emailReceiptOptionYes),
+                         FlowDataItem(type: .userAction, object: FlowButtonType.emailReceiptOptionNo)]
+            let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.info, items: items)
+            modalProcessingView?.updateContent(with: feedback)
+        } else {
+            modalProcessingView?.dismissViewController(result: .success(editableReader?.customReaderName))
+        }
+    }
+    
+    private func showEmailFormScreen() {
+        modalProcessingView?.positionViewOnTop(flag: true)
+        let items = [FlowDataItem(type: .hint, object: ClearentConstants.Localized.EmailReceipt.emailFormTitle),
+                     FlowDataItem(type: .receipt, object: nil),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.emailFormSkip)]
+        let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.renameReaderDone, items: items)
+        modalProcessingView?.updateContent(with: feedback)
+    }
+    
     private func startTransaction(saleEntity: SaleEntity, isManualTransaction: Bool) {
         modalProcessingView?.showLoadingView()
         sdkWrapper.startTransaction(with: saleEntity, isManualTransaction: isManualTransaction) { [weak self] error in
@@ -473,7 +515,9 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 extension ClearentProcessingModalPresenter: FlowDataProtocol {
     
     func didFinishSignature() {
-        successfulDissmissViewWithDelay()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
+            self?.showEmailReceiptOption()
+        }
         sdkWrapper.isNewPaymentProcess = true
         ClearentUIManager.shared.isOfflineModeConfirmed = false
     }

@@ -6,7 +6,7 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
-extension UIViewController {
+public extension UIViewController {
     func addNavigationBarWithBackItem(barTitle: String) {
         let navigationBar = createNavigationBar()
         view.addSubview(navigationBar)

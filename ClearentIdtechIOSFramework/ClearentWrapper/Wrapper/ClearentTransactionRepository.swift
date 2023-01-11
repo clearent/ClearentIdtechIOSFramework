@@ -11,6 +11,7 @@ protocol TransactionRepositoryProtocol {
     var offlineManager: OfflineModeManager? { get set }
     func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
     func sendSignatureRequest(image: UIImage, completion: @escaping (SignatureResponse?, ClearentError?) -> Void)
+    func sendReceiptRequest(emailAddress: String, completion: @escaping (ReceiptResponse?, ClearentError?) -> Void)
     func resendSignature(completion: @escaping (SignatureResponse?, ClearentError?) -> Void)
     func refundTransaction(jwt: String, amount: String, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
     func voidTransaction(transactionID: String, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
@@ -19,6 +20,7 @@ protocol TransactionRepositoryProtocol {
     func manualEntryTransaction(saleEntity: SaleEntity)
     func saveOfflineTransaction(paymentData: PaymentData)
     func saveSignatureImageForTransaction(image: UIImage)
+    func saveEmailForTransaction(emailAddress: String)
     func resaveSignatureImageForTransaction()
     func fetchOfflineTransactions() -> [OfflineTransaction]?
     func serviceFeeForAmount(amount: Double) -> Double?
@@ -82,7 +84,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
                 let errType = (decodedResponse.payload.transaction?.result == TransactionStatus.declined) ? ClearentErrorType.gatewayDeclined : ClearentErrorType.httpError
                 completion(decodedResponse, ClearentError(type: errType, code: transactionError.code, message: transactionError.message))
             } catch let jsonDecodingError {
-                completion(nil, ClearentError(type: .httpError, code: "xsdk_response_parsing_error".localized, message: "xsdk_http_response_parsing_error_message".localized))
+                completion(nil, ClearentError(type: .httpError, code: ClearentConstants.Localized.Error.parseHttpResponseErrorTitle, message: ClearentConstants.Localized.Error.parseHttpResponseErrorMessage.localized))
                 print(jsonDecodingError)
             }
         }
@@ -150,7 +152,28 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
                     completion(decodedResponse, .init(type: .httpError, code: signatureError.code, message: signatureError.message))
                 // error call delegate
                 } catch let jsonDecodingError {
-                    completion(nil, ClearentError(type: .httpError, code: "xsdk_response_parsing_error".localized, message: "xsdk_http_response_parsing_error_message".localized))
+                    completion(nil, ClearentError(type: .httpError, code: ClearentConstants.Localized.Error.parseHttpResponseErrorTitle, message: ClearentConstants.Localized.Error.parseHttpResponseErrorMessage.localized))
+                    print(jsonDecodingError)
+                }
+            }
+        }
+    }
+    
+    func sendReceiptRequest(emailAddress: String, completion: @escaping (ReceiptResponse?, ClearentError?) -> Void) {
+        if let id = lastTransactionID, let tid = Int(id) {
+            httpClient.sendReceipt(emailAddress: emailAddress, transactionID: tid) { data, error in
+                guard let responseData = data else { return }
+                
+                do {
+                    let decodedResponse = try JSONDecoder().decode(ReceiptResponse.self, from: responseData)
+                    guard let receiptError = decodedResponse.payload.error else {
+                        completion(decodedResponse, nil)
+                        return
+                    }
+                    completion(decodedResponse, .init(type: .httpError, code: receiptError.code, message: receiptError.message))
+                // error call delegate
+                } catch let jsonDecodingError {
+                    completion(nil, ClearentError(type: .httpError, code: ClearentConstants.Localized.Error.parseHttpResponseErrorTitle, message: ClearentConstants.Localized.Error.parseHttpResponseErrorMessage.localized))
                     print(jsonDecodingError)
                 }
             }
@@ -255,7 +278,6 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     
     /**
      * Saves  the image representing the user's signature
-     *  @param transactionID, the id of the transaction for wich we save the signature
      *  @param the actual image containing the signature
      */
     func saveSignatureImageForTransaction(image: UIImage) {
@@ -272,6 +294,15 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         guard let signatureImage = signatureImage else { return }
         
         saveSignatureImageForTransaction(image: signatureImage)
+    }
+    
+    /**
+     * Saves the email address of the user
+     * @param emailAddress, email of the user
+     */
+    func saveEmailForTransaction(emailAddress: String) {
+        guard let transactionID = offlineTransaction?.transactionID else { return }
+        offlineManager?.saveEmailForTransaction(transactionID: transactionID, emailAddress: emailAddress)
     }
     
     // MARK: - Private
@@ -306,7 +337,13 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
                     return
                 }
                 self?.sendSignatureRequest(image: image) { (_, error) in
-                    completion(error, nil)
+                    guard let emailAddress = self?.offlineManager?.retrieveEmailForTransaction(transactionID: offlineTransaction.transactionID) else {
+                        completion(error, nil)
+                        return
+                    }
+                    self?.sendReceiptRequest(emailAddress: emailAddress) { (_, error) in
+                        completion(error, nil)
+                    }
                 }
             }
         }

@@ -27,6 +27,12 @@ public struct SignatureResponse: Codable {
     var payload: Payload
 }
 
+public struct ReceiptResponse: Codable {
+    var code: String
+    var status: String
+    var payload: Payload
+}
+
 public struct Links: Codable {
     var rel: String
     var href: String

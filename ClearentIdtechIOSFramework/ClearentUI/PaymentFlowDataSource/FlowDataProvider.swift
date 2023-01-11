@@ -338,6 +338,18 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         }
     }
     
+    func didFinishedSendingReceiptWithError(response: ReceiptResponse?, error: ClearentError) {
+        let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
+                     FlowDataItem(type: .title, object: ClearentConstants.Localized.EmailReceipt.emailFormSendReceiptFailed),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+        
+        let feedback = FlowDataFactory.component(with: .payment,
+                                                 type: .emailReceiptDone,
+                                                 readerInfo: fetchReaderInfo(),
+                                                 payload: items)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
+    }
+
     func didAcceptOfflineSignature(status: TransactionStoreStatus, transactionID: String) {
         let items: [FlowDataItem]
         let feedback: FlowFeedback

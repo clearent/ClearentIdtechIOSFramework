@@ -14,8 +14,8 @@ class ClearentOfflineResultTableViewCell: UITableViewCell {
     @IBOutlet weak var itemValueLabel: UILabel!
     
     enum Layout {
-           static let cellHeight: CGFloat = 40
-       }
+        static let cellHeight: CGFloat = 40
+    }
 
     static let identifier = "ClearentOflineResultCellIdentifier"
     static let nib = "ClearentOfflineResultTableViewCell"

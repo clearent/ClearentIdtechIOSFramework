@@ -13,11 +13,11 @@ enum SignalLevel: Int {
 }
 
 enum FlowDataKeys {
-    case readerInfo, graphicType, title, description, userAction, devicesFound, recentlyPaired, hint, input, tips, serviceFee, signature, manualEntry, error
+    case readerInfo, graphicType, title, description, userAction, devicesFound, recentlyPaired, hint, input, tips, serviceFee, signature, receipt, manualEntry, error
 }
 
 public enum FlowFeedbackType {
-    case error, info, warning, searchDevices, showReaders, pairingDoneInfo, renameReaderDone, signature, signatureError
+    case error, info, warning, searchDevices, showReaders, pairingDoneInfo, renameReaderDone, signature, signatureError, emailReceiptDone
 }
 
 public enum ProcessType: Equatable {
@@ -66,7 +66,7 @@ enum FlowGraphicType {
 }
 
 public enum FlowButtonType {
-    case cancel, retry, pair, done, skipSignature, pairNewReader, settings, pairInFlow, addReaderName, renameReaderLater, transactionWithTip, transactionWithoutTip, manuallyEnterCardInfo, acceptOfflineMode, denyOfflineMode, confirmOfflineModeWarningMessage, transactionWithServiceFee
+    case cancel, retry, pair, done, skipSignature, pairNewReader, settings, pairInFlow, addReaderName, renameReaderLater, transactionWithTip, transactionWithoutTip, manuallyEnterCardInfo, acceptOfflineMode, denyOfflineMode, confirmOfflineModeWarningMessage, transactionWithServiceFee, emailReceiptOptionYes, emailReceiptOptionNo, emailFormSkip
 
     var title: String {
         switch self {
@@ -102,6 +102,12 @@ public enum FlowButtonType {
             return ClearentConstants.Localized.OfflineMode.offlineModeCancelOption
         case .confirmOfflineModeWarningMessage:
             return ClearentConstants.Localized.OfflineMode.offlineModeWarningMessageConfirm
+        case .emailReceiptOptionYes:
+            return ClearentConstants.Localized.EmailReceipt.emailReceiptOptionButtonYes
+        case .emailReceiptOptionNo:
+            return ClearentConstants.Localized.EmailReceipt.emailReceiptOptionButtonNo
+        case .emailFormSkip:
+            return ClearentConstants.Localized.EmailReceipt.emailFormButtonSkip
         }
     }
 

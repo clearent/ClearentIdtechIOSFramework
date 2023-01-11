@@ -17,6 +17,7 @@ private struct ClearentEndpoints {
     static let refund: String = "/rest/v2/mobile/transactions/refund"
     static let void: String = "/rest/v2/transactions/void"
     static let signature: String = "/rest/v2/signature"
+    static let receipt = "/rest/v2/receipts"
     static let settings = "/rest/v2/settings/terminal"
 }
 
@@ -29,6 +30,7 @@ protocol ClearentHttpClientProtocol {
     func refundTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (Data?, Error?) -> Void)
     func voidTransaction(transactionID: String, completion: @escaping (Data?, Error?) -> Void)
     func sendSignature(base64Image: String, transactionID: Int, completion: @escaping (Data?, Error?) -> Void)
+    func sendReceipt(emailAddress: String, transactionID: Int, completion: @escaping (Data?, Error?) -> Void)
     func terminalSettings(completion: @escaping (Data?, Error?) -> Void)
 }
 
@@ -73,6 +75,14 @@ class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
         let signatureURL = URL(string: baseURL + ClearentEndpoints.signature)
         let headers = headers(jwt: nil, apiKey: self.apiKey)
         let _ = HttpClient.makeRawRequest(to: signatureURL!, method: signatureHTTPMethod(base64Image: base64Image, created: created, transactionID: transactionID), headers: headers) { data, error in
+            completion(data, error)
+        }
+    }
+    
+    func sendReceipt(emailAddress: String, transactionID: Int, completion: @escaping (Data?, Error?) -> Void) {
+        let receiptURL = URL(string: baseURL + ClearentEndpoints.receipt)
+        let headers = headers(jwt: nil, apiKey: self.apiKey)
+        let _ = HttpClient.makeRawRequest(to: receiptURL!, method: receiptHTTPMethod(emailAddress: emailAddress, transactionID: transactionID), headers: headers) { data, error in
             completion(data, error)
         }
     }
@@ -122,6 +132,12 @@ class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
     
     private func signatureHTTPMethod(base64Image: String, created: String, transactionID: Int) -> HttpClient.HTTPMethod {
         let signatureEntity = SignatureEntity(base64Image: base64Image, created: created, transactionID: transactionID)
+        let body = HttpClient.HTTPBody.codableObject(signatureEntity, HttpClient.ParameterEncoding.json)
+        return HttpClient.HTTPMethod.POST(body)
+    }
+    
+    private func receiptHTTPMethod(emailAddress: String, transactionID: Int) -> HttpClient.HTTPMethod {
+        let signatureEntity = ReceiptEntity(emailAddress: emailAddress, id: transactionID)
         let body = HttpClient.HTTPBody.codableObject(signatureEntity, HttpClient.ParameterEncoding.json)
         return HttpClient.HTTPMethod.POST(body)
     }

@@ -7,7 +7,7 @@
 //
 
 protocol ClearentSettingsPresenterView: AnyObject {
-    func removeOfflineStatusView()
+    func updateOfflineStatusViewVisibility(show: Bool)
     func updateOfflineStatusView(inProgress: Bool)
     func presentReportScreen()
     func displayNoInternetAlert()
@@ -21,6 +21,7 @@ protocol ClearentSettingsPresenterProtocol {
     func updateOfflineStatus()
     func updateOfflineMode(isEnabled: Bool)
     func updatePromptMode(isEnabled: Bool)
+    func updateEmailReceiptStatus(isEnabled: Bool)
 }
 
 class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
@@ -41,7 +42,7 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
     
     func updateOfflineStatus() {
         guard let offlineManager = ClearentWrapper.shared.retrieveOfflineManager() else {
-            settingsPresenterView?.removeOfflineStatusView()
+            settingsPresenterView?.updateOfflineStatusViewVisibility(show: false)
             return
         }
         
@@ -52,7 +53,7 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
             if pendingTransactions > 0 {
                 setupPendingTransactions(counter: pendingTransactions)
             } else {
-                settingsPresenterView?.removeOfflineStatusView()
+                settingsPresenterView?.updateOfflineStatusViewVisibility(show: false)
             }
         }
         settingsPresenterView?.updateOfflineStatusView(inProgress: false)
@@ -72,6 +73,10 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
     
     func updatePromptMode(isEnabled: Bool) {
         ClearentWrapperDefaults.enableOfflinePromptMode = isEnabled
+    }
+    
+    func updateEmailReceiptStatus(isEnabled: Bool) {
+        ClearentWrapperDefaults.enableEmailReceipt = isEnabled
     }
 
     // MARK: - Private

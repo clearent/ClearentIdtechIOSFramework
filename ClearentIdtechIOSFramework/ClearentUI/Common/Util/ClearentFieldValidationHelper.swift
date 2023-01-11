@@ -75,6 +75,11 @@ class ClearentFieldValidationHelper {
         let regex = ".{0,\(item.maxNoOfChars)}"
         return evaluate(text: item.enteredValue, regex: regex)
     }
+    
+    static func isEmailValid(emailAddress: String) -> Bool {
+        let regex = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$"
+        return evaluate(text: emailAddress, regex: regex)
+    }
 
     /**
      If the value is valid, it is masked by replacing all digits except the last 4 with '*'

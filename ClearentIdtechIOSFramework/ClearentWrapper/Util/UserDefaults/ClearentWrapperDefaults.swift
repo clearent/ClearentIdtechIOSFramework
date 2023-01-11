@@ -14,6 +14,7 @@ private struct DefaultKeys {
     static let skipOnboarding = "\(UserDefaultsPersistence.clearentSdkPrefix)_skip_onboarding_key"
     static let enableOfflineMode = "\(UserDefaultsPersistence.clearentSdkPrefix)_enable_offline_mode"
     static let enableOfflinePromptMode = "\(UserDefaultsPersistence.clearentSdkPrefix)_enable_offline_prompt_mode"
+    static let enableEmailReceipt = "\(UserDefaultsPersistence.clearentSdkPrefix)_enable_email_receipt"
 }
 
 public class ClearentWrapperDefaults: UserDefaultsPersistence {
@@ -82,6 +83,15 @@ public class ClearentWrapperDefaults: UserDefaultsPersistence {
         }
         set {
             UserDefaults.standard.set(newValue, forKey: DefaultKeys.enableOfflinePromptMode)
+        }
+    }
+    
+    static var enableEmailReceipt: Bool {
+        get {
+            return UserDefaults.standard.bool(forKey: DefaultKeys.enableEmailReceipt)
+        }
+        set {
+            UserDefaults.standard.set(newValue, forKey: DefaultKeys.enableEmailReceipt)
         }
     }
 }

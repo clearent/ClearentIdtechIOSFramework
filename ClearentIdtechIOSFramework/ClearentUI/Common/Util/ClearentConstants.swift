@@ -214,6 +214,19 @@ import UIKit
             public static let signatureAcceptedSuccessfully = "xsdk_signature_accepted_succesful_title".localized
         }
         
+        enum EmailReceipt {
+            public static let emailReceiptOptionTitle = "xsdk_email_option_title".localized
+            public static let emailReceiptOptionButtonYes = "xsdk_email_option_button_yes".localized
+            public static let emailReceiptOptionButtonNo = "xsdk_email_option_button_no".localized
+            public static let emailFormTitle = "xsdk_email_form_title".localized
+            public static let emailFormSubtitle = "xsdk_email_form_subtitle".localized
+            public static let emailFormInputPlaceholder = "xsdk_email_form_input_placeholder".localized
+            public static let emailFormInvalidAddress = "xsdk_email_form_invalid_address".localized
+            public static let emailFormButtonSend = "xsdk_email_form_button_send".localized
+            public static let emailFormButtonSkip = "xsdk_email_form_button_skip".localized
+            public static let emailFormSendReceiptFailed = "xsdk_email_form_send_receipt_failed".localized
+        }
+        
         enum Keyboard {
             public static let done = "xsdk_keyboard_done".localized
         }
@@ -260,6 +273,8 @@ import UIKit
             public static let errorMessage = "xsdk_general_error_message".localized
             public static let transactionID = "xsdk_general_error_transaction_id".localized
             public static let exchangeID = "xsdk_general_error_exchange_id".localized
+            public static let parseHttpResponseErrorTitle = "xsdk_response_parsing_error".localized
+            public static let parseHttpResponseErrorMessage = "xsdk_http_response_parsing_error_message".localized
         }
         
         enum FlowDataProvider {
@@ -336,9 +351,9 @@ import UIKit
         }
         
         enum Settings {
-            public static let settingsOfflineModeTitle = "xsdk_settings_title".localized;
+            public static let settingsOfflineModeTitle = "xsdk_settings_title".localized
             public static let settingsReadersPlaceholder = "xsdk_settings_readers_placeholder".localized
-            public static let settingsOfflineModeSubtitle = "xsdk_settings_offline_subtitle".localized;
+            public static let settingsOfflineModeSubtitle = "xsdk_settings_offline_subtitle".localized
             public static let settingsOfflineSwitchEnabled = "xsdk_settings_offline_switch_enabled".localized
             public static let settingsOfflineSwitchEnablePrompt = "xsdk_settings_offline_switch_enable_prompt".localized
             public static let settingsOfflinePendingTransactions = "xsdk_settings_offline_pending_transactions".localized
@@ -349,6 +364,8 @@ import UIKit
             public static let settingsOfflineButtonReport = "xsdk_settings_offline_btn_report".localized
             public static let settingsOfflineButtonDone = "xsdk_settings_offline_btn_done".localized
             public static let settingsOfflineButtonProcessNoInternet = "xsdk_settings_offline_btn_process_no_internet".localized
+            public static let settingsEmailReceiptSubtitle = "xsdk_settings_email_receipt_subtitle".localized
+            public static let settingsEmailReceiptEnabled = "xsdk_settings_email_receipt_enabled".localized
         }
     }
 }
