@@ -8,13 +8,22 @@
 import Foundation
 import CocoaLumberjack
 import Network
-
+import CryptoKit
 
 public final class ClearentWrapper : NSObject {
     
+    // MARK: - Public properties
+    
     public static let shared = ClearentWrapper()
     
-    /// The list of readers  stored in user defaults, that were previoulsy paired
+    public weak var delegate: ClearentWrapperProtocol? {
+        didSet {
+            readerRepository?.delegate = delegate
+            transactionRepository?.delegate = delegate
+        }
+    }
+    
+    /// The list of readers stored in user defaults that were previously paired.
     public var previouslyPairedReaders: [ReaderInfo] {
         ClearentWrapperDefaults.recentlyPairedReaders ?? []
     }
@@ -22,381 +31,425 @@ public final class ClearentWrapper : NSObject {
     /// Determines the current flow type
     public var flowType: (processType: ProcessType, flowFeedbackType: FlowFeedbackType?)?
     
-    /// Closure called when reader info (signal, battery, reader name, connection status) is received
-    public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
-    
     /// Specifies what payment flow is preferred. If true, card reader is used. Otherwise, a form where the user has to enter manually the card info is displayed.
     public var cardReaderPaymentIsPreffered: Bool = true
     
     /// If card reader payment fails, the option to use manual payment can be displayed in UI as a fallback method. If user selects this method, useManualPaymentAsFallback needs to be set to true.
     public var useManualPaymentAsFallback: Bool?
     
-    /// Enables or disables the use of enhanced messages
-    public var enableEnhancedMessaging: Bool = false
+    public static var configuration: ClearentWrapperConfiguration!
+    
+    // MARK: - Internal properties
     
     /// Stores the enhanced messages read from the messages bundle
-    internal var enhancedMessagesDict: [String:String]?
+    var enhancedMessagesDict: [String:String]?
     
-    public weak var delegate: ClearentWrapperProtocol?
-
-    private lazy var clearentVP3300: Clearent_VP3300 = {
-        let config = ClearentVP3300Config(noContactlessNoConfiguration: baseURL, publicKey: publicKey)
-        return Clearent_VP3300.init(connectionHandling: self, clearentVP3300Configuration: config)
-    }()
+    var tipEnabled: Bool { ClearentWrapperDefaults.terminalSettings?.tipEnabled ?? false }
+    var serviceFeeEnabled: Bool {
+        guard let serviceFeeState = ClearentWrapperDefaults.terminalSettings?.serviceFeeState, serviceFeeState ==  ServiceFeeState.ENABLED else { return false }
+        if ClearentWrapperDefaults.terminalSettings?.serviceFeeProgram == .CONVENIENCE_FEE {
+            return !useCardReaderPaymentMethod
+        }
+        return true
+    }
+    var useCardReaderPaymentMethod: Bool {
+        cardReaderPaymentIsPreffered && useManualPaymentAsFallback == nil
+    }
     
-    private lazy var clearentManualEntry: ClearentManualEntry = {
-        return ClearentManualEntry(self, clearentBaseUrl: baseURL, publicKey: publicKey)
-    }()
-
-    private var connection  = ClearentConnection(bluetoothSearch: ())
-    private var baseURL: String = ""
-    private var apiKey: String = ""
-    private var publicKey: String = ""
-    private var saleEntity: SaleEntity?
-    private var lastTransactionID: String?
-    private var bleManager : BluetoothScanner?
-    private let monitor = NWPathMonitor()
-    private var isInternetOn = false
-    private var signatureImage: UIImage?
-    private var connectivityActionNeeded: UserAction? {
-        if cardReaderPaymentIsPreffered && useManualPaymentAsFallback == nil {
-            return isBluetoothPermissionGranted ? (isInternetOn ? (isBluetoothOn ? nil : .noBluetooth) : .noInternet) : .noBluetoothPermission
-        } else {
-            return isInternetOn ? nil : .noInternet
+    var isNewPaymentProcess = true
+    var isInternetOn: Bool = false {
+        didSet {
+            readerRepository?.isInternetOn = isInternetOn
         }
     }
-    private lazy var httpClient: ClearentHttpClient = {
-        ClearentHttpClient(baseURL: baseURL, apiKey: apiKey)
-    }()
-    internal var isBluetoothOn = false
-    internal var tipEnabled = false
-    internal var shouldSendPressButton = false
-    private var continuousSearchingTimer: Timer?
-    private var connectToReaderTimer: Timer?
-    private var shouldStopUpdatingReadersListDuringContinuousSearching: Bool? = false
-    internal var shouldBeginContinuousSearchingForReaders: ((_ searchingEnabled: Bool) -> Void)?
     
-    // MARK: Init
+    /// Force the transaction to be processed online in case the internet connection is enabled and the state of the offline mode is set to prompted.
+    var processTransactionOnline = true {
+        didSet {
+            clearentVP3300.setOfflineMode(!processTransactionOnline)
+        }
+    }
+    
+    // MARK: - Private properties
+    
+    private var clearentVP3300: Clearent_VP3300!
+    private var VP3300Config: ClearentVP3300Config?
+    private var saleEntity = SaleEntity(amount: "")
+    private let monitor = NWPathMonitor()
+    private var readerRepository: ReaderRepositoryProtocol?
+    private var transactionRepository: TransactionRepositoryProtocol?
+    
+    // MARK: - Init
     
     private override init() {
         super.init()
-
-        createLogFile()
-        self.startConnectionListener()
-        bleManager = BluetoothScanner.init(udid: nil, delegate: self)
         
-        shouldBeginContinuousSearchingForReaders = { searchingEnabled in
-            if searchingEnabled {
-                self.continuousSearchingTimer = Timer.scheduledTimer(withTimeInterval: 5.0, repeats: false) { [weak self] _ in
-                    guard let strongSelf = self, let _ = strongSelf.shouldStopUpdatingReadersListDuringContinuousSearching else { return }
-                    strongSelf.shouldStopUpdatingReadersListDuringContinuousSearching = true
-                    strongSelf.startPairing(reconnectIfPossible: false)
-                }
-            } else {
-                self.connection?.searchBluetooth = false
-                self.continuousSearchingTimer?.invalidate()
-                self.continuousSearchingTimer = nil
-                self.shouldStopUpdatingReadersListDuringContinuousSearching = false
-            }
-        }
+        createLogFile()
     }
     
-    // MARK - Public
+    // MARK: - Public
     
     /**
-     * Method that will start the pairing process by creating a new connection and starting a bluetooth search.
+     * This method updates the SDK with the necessary configuration to work properly.
+     */
+    public func initialize(with config: ClearentWrapperConfiguration) {
+        ClearentWrapper.configuration = config
+        
+        let manualEntry = ClearentManualEntry(self, clearentBaseUrl: config.baseURL, publicKey: config.publicKey)
+        
+        if VP3300Config != nil {
+            VP3300Config?.publicKey = config.publicKey
+            clearentVP3300.setPublicKey(config.publicKey)
+        } else {
+            VP3300Config = ClearentVP3300Config(noContactlessNoConfiguration: ClearentWrapper.configuration.baseURL, publicKey: ClearentWrapper.configuration.publicKey)
+            clearentVP3300 = Clearent_VP3300(connectionHandling: self, clearentVP3300Configuration: VP3300Config)
+            
+            readerRepository = ReaderRepository(clearentVP3300: clearentVP3300)
+            
+            if config.enableEnhancedMessaging {
+                readEnhancedMessages()
+            }
+        }
+        transactionRepository = TransactionRepository(baseURL: config.baseURL, apiKey: config.apiKey, clearentVP3300: clearentVP3300, clearentManualEntry: manualEntry)
+        
+        if let offlineModeEncryptionKey = ClearentWrapper.configuration.offlineModeEncryptionKey {
+            transactionRepository?.offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: ClearentConstants.KeychainService.serviceName, account: ClearentConstants.KeychainService.account, encryptionKey: offlineModeEncryptionKey))
+        }
+        startConnectionListener()
+        setupOfflineMode()
+    }
+    
+    /**
+     * Method that should be called to enable offline mode.
+     */
+    public func enableOfflineMode() throws {
+        guard transactionRepository?.offlineManager != nil else { throw ClearentErrorType.offlineModeEncryptionKeyNotProvided }
+        clearentVP3300.setOfflineMode(true)
+        ClearentWrapperDefaults.enableOfflineMode = true
+    }
+    
+    /**
+     * Method that should be called to disable offline mode.
+     */
+    public func disableOfflineMode() {
+        clearentVP3300.setOfflineMode(false)
+        ClearentWrapperDefaults.enableOfflineMode = false
+    }
+    
+    /**
+     * Method retrieves all saved offline transactions if the encryption key provided is valid and can decrypt them.
+     */
+    public func retrieveAllOfflineTransactions() -> [OfflineTransaction]? {
+        transactionRepository?.fetchOfflineTransactions()
+    }
+    
+    /**
+     * Method that starts the pairing process by creating a new connection and starting a bluetooth search.
      * @param reconnectIfPossible, if  false  a connection that will search for bluetooth devices will be started, if true a connection with the last paired reader will be tried
      */
     public func startPairing(reconnectIfPossible: Bool) {
-        if shouldDisplayConnectivityWarning() { return }
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let strongSelf = self else { return }
-            
-            if let readerInfo = ClearentWrapperDefaults.pairedReaderInfo, reconnectIfPossible == true   {
-                strongSelf.connection = ClearentConnection(bluetoothWithFriendlyName: readerInfo.readerName)
-                DispatchQueue.main.async {
-                    strongSelf.startConnectionTimeoutTimer()
-                }
-            } else {
-                strongSelf.connection = ClearentConnection(bluetoothSearch: ())
-                DispatchQueue.main.async {
-                    guard let shouldStopUpdatingReadersListDuringContinuousSearching = strongSelf.shouldStopUpdatingReadersListDuringContinuousSearching else { return }
-                    shouldStopUpdatingReadersListDuringContinuousSearching ? strongSelf.delegate?.didBeginContinuousSearching() : strongSelf.delegate?.didStartPairing()
-                }
-            }
-            strongSelf.clearentVP3300.start(strongSelf.connection)
-        }
-    }
+        if checkForConnectivityWarning(for: .pairing()) { return }
         
+        readerRepository?.startPairing(reconnectIfPossible: reconnectIfPossible)
+    }
     
     /**
-     * Method that will try to initiate a connection to a specific reader
+     * Method that tries to initiate a connection to a specific reader.
      * @param reader, the card reader to connect to
      */
     public func connectTo(reader: ReaderInfo) {
-        if reader.uuid != nil {
-            DispatchQueue.main.async {
-                self.startConnectionTimeoutTimer()
-            }
-            shouldStopUpdatingReadersListDuringContinuousSearching = nil
-            connection  = ClearentConnection(bluetoothWithFriendlyName: reader.readerName)
-            updateConnectionWithDevice(readerInfo: reader)
-        }
+        readerRepository?.connectTo(reader: reader)
     }
     
     /**
-     * Method that will cancel a transaction
+     * Method that cancels a transaction.
      */
     public func cancelTransaction() {
         useManualPaymentAsFallback = nil
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            self?.clearentVP3300.device_cancelTransaction()
-        }        
+        readerRepository?.cancelTransaction()
     }
-     
     
     /**
-     * This method will update the current SDK keys
-     * @param baseURL, the backend endpoint
-     * @param publicKey, publicKey used by the IDTech reader framework
-     * @param apiKey, API Key used for http calls
+     * Method that searches for currently used readers and calls the delegate methods with the results.
      */
-    public func updateWithInfo(baseURL:String, publicKey: String, apiKey: String, enableEnhancedMessaging: Bool) {
-        self.baseURL = baseURL
-        self.apiKey = apiKey
-        self.publicKey = publicKey
-        self.enableEnhancedMessaging = enableEnhancedMessaging
-        
-        if enableEnhancedMessaging {
-            readEnhancedMessages()
-        }
+    public func searchRecentlyUsedReaders() {
+        readerRepository?.searchRecentlyUsedReaders()
     }
     
+    /**
+     * Method that checks if a reader is already paired and connected.
+     * returns a bool indicating if there is a reader connected
+     */
+    public func isReaderConnected() -> Bool {
+        guard let readerRepository = readerRepository else { return false }
+        return readerRepository.isReaderConnected()
+    }
+    
+    public func disconnectFromReader() {
+        readerRepository?.disconnectFromReader()
+    }
+    
+    public func stopContinousSearching() {
+        readerRepository?.stopContinousSearching()
+    }
+    
+    public func isReaderEncrypted() -> Bool? {
+        readerRepository?.isReaderEncrypted()
+    }
     
     /**
-     * This method will start a transaction, if manualEntryCardInfo is not null then a manual transaction will be performed otherwise a card reader transcation will be initiated
+     * Method that starts a transaction. If manualEntryCardInfo is not null then a manual transaction will be performed otherwise a card reader transaction will be initiated.
      * @param SaleEntity,  holds informations used for the transcation
-     * @param ManualEntryCardInfo,  all the information needed for a manual card transaction
+     * @param isManualTransaction,  specifies if the transaction is manual
+     * @param completion, the closure that will be called when a missing key error is detected
      */
-    public func startTransaction(with saleEntity: SaleEntity, manualEntryCardInfo: ManualEntryCardInfo? = nil) throws {
-        if let error = checkForMissingKeys() { throw error }
+    public func startTransaction(with saleEntity: SaleEntity, isManualTransaction: Bool, completion: @escaping((ClearentError?) -> Void)) {
+        if let error = checkForMissingKeys() {
+            completion(.init(type: error))
+        }
         
         if !saleEntity.amount.canBeConverted(to: .utf8) { return }
         if let tip = saleEntity.tipAmount, !tip.canBeConverted(to: .utf8) { return }
         
         self.saleEntity = saleEntity
         
-        if shouldDisplayConnectivityWarning() { return }
-        
-        if let manualEntryCardInfo = manualEntryCardInfo {
-            manualEntryTransaction(cardNo: manualEntryCardInfo.card, expirationDate: manualEntryCardInfo.expirationDateMMYY, csc: manualEntryCardInfo.csc)
+        if ClearentWrapperDefaults.enableOfflineMode {
+            if isManualTransaction {
+                if processTransactionOnline {
+                    transactionRepository?.manualEntryTransaction(saleEntity: saleEntity)
+                } else {
+                    transactionRepository?.saveOfflineTransaction(paymentData: PaymentData(saleEntity: saleEntity))
+                }
+            } else {
+                if let userAction = getBluetoothConnectivityStatus() {
+                    self.delegate?.userActionNeeded(action: userAction)
+                    return
+                }
+                readerRepository?.cardReaderTransaction()
+            }
+        } else if isInternetOn {
+            if isManualTransaction {
+                transactionRepository?.manualEntryTransaction(saleEntity: saleEntity)
+            } else {
+                if let userAction = getBluetoothConnectivityStatus() {
+                    self.delegate?.userActionNeeded(action: userAction)
+                    return
+                }
+                readerRepository?.cardReaderTransaction()
+            }
         } else {
-            cardReaderTransaction()
+            self.delegate?.userActionNeeded(action: .noInternet)
+            return
         }
     }
     
     /**
-     * Method that will search for currently used readers and call the delegate methods with the results
-     */
-    
-    public func searchRecentlyUsedReaders() {
-        if let recentlyUsedReaders = ClearentWrapperDefaults.recentlyPairedReaders, recentlyUsedReaders.count > 0 {
-            delegate?.didFindRecentlyUsedReaders(readers: recentlyUsedReaders)
-        } else {
-            delegate?.didFindRecentlyUsedReaders(readers: [])
-        }
-    }
-    
-    /**
-     * Method that will send a transaction to the payment gateway for processing
-     * @param jwt, Token received from the card reader
+     * Method that sends a transaction to the payment gateway for processing.
+     * @param jwt, token received from the card reader
      * @param SaleEntity, information about the transaction
+     * @param completion, the closure that will be called after a sale response is received. This is dispatched onto the main queue
      */
-    public func saleTransaction(jwt: String, saleEntity: SaleEntity) {
-        httpClient.saleTransaction(jwt: jwt, saleEntity: saleEntity) { data, error in
-            guard let responseData = data else { return }
-
-            do {
-                let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
-                guard let transactionError = decodedResponse.payload.error else {
-                    DispatchQueue.main.async {
-                        if let linksItem = decodedResponse.links?.first {
-                            self.lastTransactionID = linksItem.id
-                        }
-
-                        self.delegate?.didFinishTransaction(response: decodedResponse, error: nil)
-                    }
-                    return
-                }
-                DispatchQueue.main.async {
-                    self.delegate?.didFinishTransaction(response: decodedResponse, error: transactionError)
-                }
-            } catch let jsonDecodingError {
-                self.delegate?.didFinishTransaction(response: nil, error: ResponseError.init(code: "xsdk_response_parsing_error".localized,
-                                                                                             message: "xsdk_http_response_parsing_error_message".localized))
-                print(jsonDecodingError)
-            }
-        }
-    }
-    
-    public func resendSignature(completion: (CompletionResult) -> Void) {
-        guard let signatureImage = signatureImage else { return }
-        
-        do {
-            try sendSignatureWithImage(image: signatureImage)
-        } catch {
-            if let error = error as? ClearentResult {
-                completion(.failure(error))
-            }
-        }
-    }
-
-    /**
-     * Method that will send a jpeg with client signature tot the payment gateway for storage
-     * @param image, UIImage to be uploaded
-     */
-    public func sendSignatureWithImage(image: UIImage) throws {
-        if shouldDisplayConnectivityWarning() { return }
-        if let error = checkForMissingKeys() { throw error }
-        
-        if let id = lastTransactionID {
-            if let tid = Int(id) {
-                 signatureImage = image
-                 guard let dataImage = image.resize()?.jpegData(compressionQuality: 0) else { return }
-                 let base64Image = dataImage.base64EncodedString()
-                 httpClient.sendSignature(base64Image: base64Image, transactionID: tid) { data, error in
-                     guard let responseData = data else { return }
-                     
-                     do {
-                         let decodedResponse = try JSONDecoder().decode(SignatureResponse.self, from: responseData)
-                         DispatchQueue.main.async {
-                             guard let signatureError = decodedResponse.payload.error else {
-                                 self.signatureImage = nil
-                                 self.delegate?.didFinishedSignatureUploadWith(response: decodedResponse, error: nil)
-                                 return
-                             }
-                             self.delegate?.didFinishedSignatureUploadWith(response: decodedResponse, error: signatureError)
-                         }
-                         // error call delegate
-                     } catch let jsonDecodingError {
-                         self.delegate?.didFinishedSignatureUploadWith(response:nil ,
-                                                                       error: ResponseError.init(code: "xsdk_response_parsing_error".localized,
-                                                                                                 message: "xsdk_http_response_parsing_error_message".localized))
-                         print(jsonDecodingError)
-                     }
-                 }
-            }
-        }
-    }
-    
-    /**
-     * Method that will mark a transaction for refund
-     * @param jwt, Token generated by te card reader
-     * @param amount, Amount to be refunded
-     */
-    public func refundTransaction(jwt: String, amount: String) throws {
-        if let error = checkForMissingKeys() { throw error }
-        
-        httpClient.refundTransaction(jwt: jwt, saleEntity: SaleEntity(amount: amount)) { data, error in
-            guard let responseData = data else { return }
-            
-            do {
-                let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
-                guard let transactionError = decodedResponse.payload.error else {
-                    DispatchQueue.main.async {
-                        self.delegate?.didFinishTransaction(response: decodedResponse, error: nil)
-                    }
-                    return
-                }
-                DispatchQueue.main.async {
-                    self.delegate?.didFinishTransaction(response: decodedResponse, error: transactionError)
-                }
-            } catch let jsonDecodingError {
-                print(jsonDecodingError)
-            }
-        }
-    }
-    
-    /**
-     * Method that will void a transaction
-     * @param transactionID, ID of transaction to be voided
-     */
-    public func voidTransaction(transactionID: String) throws {
-        if let error = checkForMissingKeys() { throw error }
-        
-        httpClient.voidTransaction(transactionID: transactionID) { data, error in
-            guard let responseData = data else { return }
-            
-            do {
-                let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
-                guard let transactionError = decodedResponse.payload.error else {
-                    DispatchQueue.main.async {
-                        self.delegate?.didFinishTransaction(response: decodedResponse, error: nil)
-                    }
-                    return
-                }
-                DispatchQueue.main.async {
-                    self.delegate?.didFinishTransaction(response: decodedResponse, error: transactionError)
-                }
-            } catch let jsonDecodingError {
-                print(jsonDecodingError)
-            }
-        }
-    }
-    
-    /**
-     * Method that will fetch the tip settings for current mechant
-     * @param transactionID, ID of transcation to be voided
-     */
-    public func fetchTipSetting(completion: @escaping () -> Void) {
-        if shouldDisplayConnectivityWarning() { return }
-
-        httpClient.merchantSettings() { data, error in
+    public func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (TransactionResponse?, ClearentError?) -> Void) {
+        transactionRepository?.saleTransaction(jwt: jwt, saleEntity: saleEntity) { (response, error) in
             DispatchQueue.main.async {
-                do {
-                    guard let data = data else {
-                        completion()
-                        return
-                    }
-                    
-                    let decodedResponse = try JSONDecoder().decode(MerchantSettingsEntity.self, from: data)
-                    self.tipEnabled = decodedResponse.payload.terminalSettings.enableTip
-                } catch let jsonDecodingError {
-                    print(jsonDecodingError)
+                completion(response, error)
+            }
+        }
+    }
+    
+    /**
+     * Method that sends a jpeg with client signature to the payment gateway for storage.
+     * @param image, UIImage to be uploaded
+     * @param completion, the closure that will be called after a send signature response is received. This is dispatched onto the main queue
+     */
+    
+    public func sendSignatureWithImage(image: UIImage, completion: @escaping (SignatureResponse?, ClearentError?) -> Void) {
+        if processTransactionOnline {
+            transactionRepository?.sendSignatureRequest(image: image) { (response, error) in
+                DispatchQueue.main.async {
+                    completion(response, error)
                 }
+            }
+        } else if ClearentWrapperDefaults.enableOfflineMode {
+            transactionRepository?.saveSignatureImageForTransaction(image: image)
+        } else if checkForConnectivityWarning(for: .payment) {
+            completion(nil, .init(type: .connectivityError))
+            return
+        } else {
+            transactionRepository?.sendSignatureRequest(image: image) { (response, error) in
+                DispatchQueue.main.async {
+                    completion(response, error)
+                }
+            }
+        }
+    }
+    
+    /**
+     * Method that marks a transaction for refund.
+     * @param jwt, token generated by te card reader
+     * @param amount, Amount to be refunded
+     * @param completion, the closure that will be called after refund response is received. This is dispatched onto the main queue
+     */
+    public func refundTransaction(jwt: String, amount: String, completion: @escaping (TransactionResponse?, ClearentError?) -> Void) {
+        if let error = checkForMissingKeys() {
+            completion(nil, .init(type: error))
+        }
+        transactionRepository?.refundTransaction(jwt: jwt, amount: amount) { (response, error) in
+            DispatchQueue.main.async {
+                completion(response, error)
+            }
+        }
+    }
+    
+    /**
+     * Method that voids a transaction.
+     * @param transactionID, ID of the transaction to be voided
+     * @param completion, the closure that will be called after void response is received. This is dispatched onto the main queue
+     */
+    public func voidTransaction(transactionID: String, completion: @escaping (TransactionResponse?, ClearentError?) -> Void) {
+        if let error = checkForMissingKeys() {
+            completion(nil, .init(type: error))
+        }
+        transactionRepository?.voidTransaction(transactionID: transactionID) { (response, error) in
+            DispatchQueue.main.async {
+                completion(response, error)
+            }
+        }
+    }
+    
+    /**
+     * Method that fetches the tip settings for the current mechant.
+     * @param completion, the closure that will be called after receiving the data. This is dispatched onto the main queue
+     */
+    public func fetchTerminalSetting(completion: @escaping (ClearentError?) -> Void) {
+        if let error = checkForMissingKeys() {
+            completion(.init(type: error))
+            return
+        }
+        
+        if processTransactionOnline, checkForConnectivityWarning(for: .payment) { return }
+    
+        if isInternetOn {
+            transactionRepository?.fetchTerminalSetting() {
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
+            }
+        } else {
+            completion(nil)
+        }
+    }
+    
+    /**
+     * Method that returns the offline manager instance
+     */
+    
+    func retrieveOfflineManager() -> OfflineModeManager? {
+        transactionRepository?.offlineManager
+    }
+    
+    /**
+     * Method that returns the amount of service fee calculated based on the current terminal settings
+     * @param amount, the amount that service  will be applied to
+     * If there are no terminal settings fetched or the service fee is disabled it will return nil
+     */
+    func serviceFeeAmount(amount: Double) -> Double? {
+        transactionRepository?.serviceFeeForAmount(amount: amount)
+    }
+    
+    /**
+     * Method that returns the service fee program type if available
+     */
+    func serviceFeeProgramType() -> ServiceFeeProgramType? {
+        ClearentWrapperDefaults.terminalSettings?.serviceFeeProgram
+    }
+    
+    /**
+     * Method that uploads all the transactions that were made in offline mode
+     * @param completion, the closure that is called after all the offline transactions are processed. This is dispatched onto the main queue.
+     */
+    public func processOfflineTransactions(completion: @escaping (() -> Void)) {
+        transactionRepository?.processOfflineTransactions() {
+            DispatchQueue.main.async {
                 completion()
             }
         }
     }
     
-    /**
-     * Method that checks if a reader is already paired and connected
-     * return A bool indicating if there is a reader connected
-     */
-    public func isReaderConnected() -> Bool {
-        return (ClearentWrapperDefaults.pairedReaderInfo != nil && ClearentWrapperDefaults.pairedReaderInfo?.isConnected == true)
-    }
+    // MARK: - Internal
     
     /**
-     * Method that triggers a fetch of data about the reader
+     * Method that resends the last client signature image to the payment gateway for storage.
+     * @param completion, the closure that will be called after a send signature response is received. This is dispatched onto the main queue
      */
-    public func startDeviceInfoUpdate() {
-        bleManager?.readRSSI()
-        getBatterylevel()
-        getReaderVersion()
-        getSerialNumber()
+    func resendSignature(completion: @escaping (SignatureResponse?, ClearentError?) -> Void) {
+        if processTransactionOnline {
+            transactionRepository?.resendSignature() { (response, error) in
+                DispatchQueue.main.async {
+                    completion(response, error)
+                }
+            }
+        } else if ClearentWrapperDefaults.enableOfflineMode {
+            transactionRepository?.resaveSignatureImageForTransaction()
+        } else if checkForConnectivityWarning(for: .payment) {
+            completion(nil, .init(type: .connectivityError))
+            return
+        } else {
+            transactionRepository?.resendSignature() { (response, error) in
+                DispatchQueue.main.async {
+                    completion(response, error)
+                }
+            }
+        }
     }
     
-    public func stopContinousSearching() {
-        connection?.searchBluetooth = false
-        shouldBeginContinuousSearchingForReaders?(false)
-        invalidateConnectionTimer()
+    func updateReaderInRecentlyUsed(reader: ReaderInfo) {
+        readerRepository?.updateReaderInRecentlyUsed(reader: reader)
     }
     
-    // MARK - Private
+    func removeReaderFromRecentlyUsed(reader: ReaderInfo) {
+        readerRepository?.removeReaderFromRecentlyUsed(reader: reader)
+    }
     
-    private func shouldDisplayConnectivityWarning() -> Bool {
-        if let action = connectivityActionNeeded {
+    func addReaderToRecentlyUsed(reader: ReaderInfo) {
+        readerRepository?.addReaderToRecentlyUsed(reader: reader)
+    }
+    
+    // MARK: - Private
+    
+    private func setupOfflineMode() {
+        if ClearentWrapperDefaults.enableOfflineMode {
+            do {
+                try enableOfflineMode()
+            } catch {
+                print("Error: \(error)")
+            }
+        } else {
+            disableOfflineMode()
+        }
+    }
+    
+    private func getBluetoothConnectivityStatus() -> UserAction? {
+        let isBluetoothPermissionGranted = readerRepository?.isBluetoothPermissionGranted ?? false
+        let isBluetoothOn = readerRepository?.isBluetoothOn ?? false
+        
+        return isBluetoothPermissionGranted ? (isBluetoothOn ? nil : .noBluetooth) : .noBluetoothPermission
+    }
+    
+    private func getConnectivityStatus(for processType: ProcessType) -> UserAction? {
+        if processType == .payment {
+            if useCardReaderPaymentMethod {
+                return isInternetOn ? getBluetoothConnectivityStatus() : .noInternet
+            } else {
+                return isInternetOn ? nil : .noInternet
+            }
+        } else {
+            return getBluetoothConnectivityStatus()
+        }
+    }
+    
+    private func checkForConnectivityWarning(for processType: ProcessType) -> Bool {
+        if let action = getConnectivityStatus(for: processType) {
             DispatchQueue.main.async {
                 self.delegate?.userActionNeeded(action: action)
             }
@@ -423,148 +476,49 @@ public final class ClearentWrapper : NSObject {
         monitor.start(queue: queue)
     }
     
-    private func updateConnectionWithDevice(readerInfo: ReaderInfo) {
-        ClearentWrapperDefaults.pairedReaderInfo?.isConnected = false
-        ClearentWrapperDefaults.pairedReaderInfo = readerInfo
-
-        if let uuid = readerInfo.uuid {
-            bleManager?.udid? = uuid
-            bleManager?.setupDevice()
-            connection?.bluetoothDeviceId = uuid.uuidString
-            connection?.fullFriendlyName = readerInfo.readerName
-        }
-        
-        connection?.searchBluetooth = false
-        clearentVP3300.start(connection)
-        self.delegate?.startedReaderConnection(with: readerInfo)
-    }
-        
-    private func getBatterylevel() {
-        var response : NSData? = NSData()
-        _ = clearentVP3300.device_sendIDGCommand(0xF0, subCommand: 0x02, data: nil, response: &response)
-        guard let response = response else {
-            ClearentWrapperDefaults.pairedReaderInfo?.batterylevel = nil
-            return
-        }
-        let curentLevel = response.int
-        
-        if (curentLevel > 0) {
-            let batteryLevel = batteryLevelPercentageFrom(level: response.int)
-            ClearentWrapperDefaults.pairedReaderInfo?.batterylevel = batteryLevel
-        } else {
-            ClearentWrapperDefaults.pairedReaderInfo?.batterylevel = nil
-        }
-    }
-    
-    private func getReaderVersion() {
-        var response: NSString? = NSString()
-        _ = clearentVP3300.device_getFirmwareVersion(&response)
-        guard let response = response else { return }
-        ClearentWrapperDefaults.pairedReaderInfo?.version = response.description
-    }
-    
-    private func getSerialNumber() {
-        var response: NSString? = NSString()
-        _ = clearentVP3300.config_getSerialNumber(&response)
-        guard let response = response else { return }
-        ClearentWrapperDefaults.pairedReaderInfo?.serialNumber = response.description
-    }
-        
-    private func batteryLevelPercentageFrom(level: Int) -> Int {
-        let minim = 192.0
-        let maxim = 210.0
-        let lvl = min(maxim, Double(level))
-        var percentage: Double = Double((lvl - minim) / (maxim - minim) * 100.0)
-        percentage = min(percentage, 100)
-        var result = 0
-        
-        if percentage > 95 { result = 100 }
-        else if percentage > 75 { result = 75 }
-        else if percentage > 50 { result = 50 }
-        else if percentage > 25 { result = 25 }
-        else if percentage > 5 { result = 5 }
-        return result
-    }
-    
-    private func startConnectionTimeoutTimer() {
-        self.shouldSendPressButton = true
-        connectToReaderTimer = Timer.scheduledTimer(withTimeInterval: 17, repeats: false) { [weak self] _ in
-            guard let strongSelf = self else { return }
-            DispatchQueue.main.async {
-                if strongSelf.shouldSendPressButton && strongSelf.isBluetoothOn && strongSelf.isInternetOn {
-                    self?.delegate?.userActionNeeded(action: .connectionTimeout)
-                }
-            }
-        }
-    }
-    
-    private func checkForMissingKeys() -> ClearentResult? {
-        guard !baseURL.isEmpty else { return ClearentResult.baseURLNotProvided }
-        guard !apiKey.isEmpty else { return ClearentResult.apiKeyNotProvided }
-        guard !publicKey.isEmpty else { return ClearentResult.publicKeyNotProvided }
+    private func checkForMissingKeys() -> ClearentErrorType? {
+        guard !ClearentWrapper.configuration.baseURL.isEmpty else { return ClearentErrorType.baseURLNotProvided }
+        guard !ClearentWrapper.configuration.apiKey.isEmpty else { return ClearentErrorType.apiKeyNotProvided }
+        guard !ClearentWrapper.configuration.publicKey.isEmpty else { return ClearentErrorType.publicKeyNotProvided }
         
         return nil
     }
     
-    /**
-     * Method that performs a manual card transaction
-     * @param cardNo, card number as String
-     * @param expirationDate, card expiration date as String
-     * @param csc, card security code as String
-     */
-    private func manualEntryTransaction(cardNo: String, expirationDate: String, csc: String) {
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let strongSelf = self else { return }
-            let card = ClearentCard()
-            card.card = cardNo
-            card.expirationDateMMYY = expirationDate
-            card.csc = csc
-            strongSelf.clearentManualEntry.createTransactionToken(card)
-        }
-    }
-    
-    /**
-     * Method that will start a card reader transaction
-     */
-    private func cardReaderTransaction() {
-        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
-            guard let strongSelf = self, let saleEntity = strongSelf.saleEntity else { return }
-            ClearentWrapper.shared.startDeviceInfoUpdate()
-            let payment = ClearentPayment.init(sale: ())
-            payment?.amount = Double(saleEntity.amount) ?? 0
-            strongSelf.clearentVP3300.startTransaction(payment, clearentConnection: strongSelf.connection)
-        }
+    internal func currentSDKVersion() -> String? {
+        let bundle = Bundle(identifier: "com.clearent.quest.ClearentIdtechIOSFramework")! // Get a reference to the bundle from your framework (not the bundle of the app itself!)
+        return bundle.infoDictionary?[kCFBundleVersionKey as String] as? String //
     }
 }
 
-extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
+extension ClearentWrapper: Clearent_Public_IDTech_VP3300_Delegate {
     
     public func successTransactionToken(_ clearentTransactionToken: ClearentTransactionToken!) {
-        guard let saleEntity = saleEntity else { return }
         // make sure we have two decimals otherwise the API will return an error
-        let amountArray = saleEntity.amount.split(separator: ".")
-        if (amountArray.last?.count == 1) {
-            saleEntity.amount = saleEntity.amount + "0"
-        }
+        saleEntity.amount = saleEntity.amount.setTwoDecimals()
+        saleEntity.tipAmount = saleEntity.tipAmount?.setTwoDecimals()
         
-        if let tipAmount = saleEntity.tipAmount {
-            let tipAmountArray = tipAmount.split(separator: ".")
-            if tipAmountArray.last?.count == 1 {
-                saleEntity.tipAmount = tipAmount + "0"
+        saleTransaction(jwt: clearentTransactionToken.jwt, saleEntity: saleEntity) { [weak self] (response, error) in
+            DispatchQueue.main.async {
+                self?.delegate?.didFinishTransaction(response: response, error: error)
             }
         }
-
-        saleTransaction(jwt: clearentTransactionToken.jwt, saleEntity: saleEntity)
     }
     
-    public func disconnectFromReader() {
-        clearentVP3300.device_disconnectBLE()
-        bleManager?.cancelPeripheralConnection()
-        ClearentWrapperDefaults.pairedReaderInfo?.isConnected = false
+    public func successOfflineTransactionToken(_ clearentTransactionTokenRequestData: Data?, isTransactionEncrypted isEncrypted: Bool) {
+        guard let cardToken = clearentTransactionTokenRequestData else { return }
+        
+        ClearentWrapperDefaults.pairedReaderInfo?.encrypted = isEncrypted
+        if (!isEncrypted) {
+            self.delegate?.showEncryptionWarning()
+            disableOfflineMode()
+            return
+        }
+        
+        let paymentData = PaymentData(saleEntity: saleEntity, cardToken: cardToken)
+        transactionRepository?.saveOfflineTransaction(paymentData: paymentData)
     }
     
     public func feedback(_ clearentFeedback: ClearentFeedback!) {
-        
         switch clearentFeedback.feedBackMessageType {
         case .TYPE_UNKNOWN:
             DispatchQueue.main.async {
@@ -585,7 +539,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
             
             if (clearentFeedback.message == "BLUETOOTH CONNECTED"){
                 DispatchQueue.main.async {
-                    self.invalidateConnectionTimer()
+                    self.readerRepository?.invalidateConnectionTimer()
                 }
             }
         case .ERROR:
@@ -596,7 +550,7 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
                         self.delegate?.userActionNeeded(action: action)
                     }
                 }
-            } else  if let action = UserAction.action(for: clearentFeedback.message) {
+            } else if let action = UserAction.action(for: clearentFeedback.message) {
                 DispatchQueue.main.async {
                     self.delegate?.userActionNeeded(action: action)
                 }
@@ -613,50 +567,25 @@ extension ClearentWrapper : Clearent_Public_IDTech_VP3300_Delegate {
     }
     
     public func bluetoothDevices(_ bluetoothDevices: [ClearentBluetoothDevice]!) {
-        if (bluetoothDevices.count > 0) {
-            let readers = bluetoothDevices.map { readerInfo(from: $0) }
-            self.delegate?.didFindReaders(readers: readers)
-        } else {
-            self.delegate?.didFindReaders(readers: [])
-        }
-        
-        shouldStopUpdatingReadersListDuringContinuousSearching = true
-        shouldBeginContinuousSearchingForReaders?(true)
+        readerRepository?.bluetoothDevices(bluetoothDevices)
     }
-
+    
     public func deviceMessage(_ message: String!) {
         /// It appears this is the only feedback we get if the public key is not valid
-        ///  This method is deprecated
-        
-        DispatchQueue.main.async {
-            if (message == "xsdk_token_generation_failed_message".localized) {
-                self.delegate?.didFinishTransaction(response: nil, error: ResponseError.init(code: "xsdk_general_error_title".localized, message: "xsdk_token_generation_failed_message".localized))
+        /// This method is deprecated
+        if (message == "xsdk_token_generation_failed_message".localized) {
+            DispatchQueue.main.async {
+                self.delegate?.didFinishTransaction(response: nil, error: ClearentError(type: .missingToken, code: "xsdk_general_error_title".localized, message: "xsdk_token_generation_failed_message".localized))
             }
         }
     }
     
-    private func invalidateConnectionTimer() {
-        DispatchQueue.main.async {
-            self.connectToReaderTimer?.invalidate()
-            self.connectToReaderTimer = nil
-            self.shouldSendPressButton = false
-        }
-    }
-    
     public func deviceConnected() {
-        invalidateConnectionTimer()
-        bleManager?.udid = ClearentWrapperDefaults.pairedReaderInfo?.uuid
-        bleManager?.setupDevice()
-        startDeviceInfoUpdate()
-        ClearentWrapperDefaults.pairedReaderInfo?.isConnected = true
-        self.delegate?.didFinishPairing()
+        readerRepository?.deviceConnected()
     }
     
     public func deviceDisconnected() {
-        DispatchQueue.main.async {
-            ClearentWrapperDefaults.pairedReaderInfo?.isConnected = false
-            self.bleManager?.cancelPeripheralConnection()
-            self.delegate?.deviceDidDisconnect()
-        }
+        readerRepository?.deviceDisconnected()
     }
+    
 }

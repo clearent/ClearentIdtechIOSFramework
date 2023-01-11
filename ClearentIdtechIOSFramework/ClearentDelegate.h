@@ -29,6 +29,7 @@ typedef enum {SWIPE=90} supportedNonEmvEntryMode;
 @property(nonatomic) NSString *kernelVersion;
 @property(nonatomic) NSString *baseUrl;
 @property(nonatomic) NSString *publicKey;
+@property(nonatomic) BOOL offlineMode;
 @property(nonatomic) BOOL autoConfiguration;
 @property(nonatomic) BOOL contactless;
 @property(nonatomic) BOOL contactlessAutoConfiguration;
@@ -130,9 +131,20 @@ During a Contactless transaction, if events are enabled, they will be sent to th
 
 - (void) updatePublicKey:(NSString *)publicKey;
 
+- (void) updateOfflineMode:(BOOL)offlineMode;
+
 - (void) resetTransaction;
 
 - (void) setEnhancedMessaging;
+
+
+/**
+ * This method does a POST request to obtain a transaction token.
+ *
+ * @param postData this represents a token which will be inserted in the HTTPBody of the request
+ * @param completion the block that is being called after a reponse is received from backend
+ */
+- (void) fetchTransactionToken:(NSData*)postData completion:(void (^_Nullable)(ClearentTransactionToken* _Nullable))completion;
 
 @end
 

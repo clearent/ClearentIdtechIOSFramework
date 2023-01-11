@@ -6,11 +6,22 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
+/// Used to determine whether a flow succeeded or failed. The success case stores an optional string that represents the custom name of the reader.
+public typealias CompletionResult = Result<String?, ClearentError>
 
-/// Used to determine whether a flow succeeded or failed. The assosiated value is of type String? and represents the custom name of the reader
-public typealias CompletionResult = Result<String?, ClearentResult>
+@objc public class ClearentError: NSObject, Error, Codable {
+    let type: ClearentErrorType
+    let code: String?
+    let message: String?
+    
+    init(type: ClearentErrorType, code: String? = nil, message: String? = nil) {
+        self.type = type
+        self.code = code
+        self.message = message
+    }
+}
 
-@objc public enum ClearentResult:Int, Error {
+@objc public enum ClearentErrorType: Int, Error, Codable {
      /// The user aborted the current flow
     case cancelledByUser = 0
 
@@ -23,6 +34,27 @@ public typealias CompletionResult = Result<String?, ClearentResult>
     /// No publicKey was passed to SDK
     case publicKeyNotProvided
     
-    /// Process finished
-    case processFinishedWithoutError
+    /// No encryption key for offline mode was passed to SDK
+    case offlineModeEncryptionKeyNotProvided
+
+    /// Error related to http response
+    case httpError
+    
+    /// Error related to transaction response
+    case gatewayDeclined
+    
+    /// No internet connection or bluetooth availabe
+    case connectivityError
+
+    /// No transaction token was received from backend
+    case missingToken
+    
+    /// Signature image not found on user defaults for offline transaction
+    case missingSignatureImage
+    
+    case none
+    
+    var isMissingKeyError: Bool {
+        return [.apiKeyNotProvided, .baseURLNotProvided, .publicKeyNotProvided].contains(self)
+    }
 }

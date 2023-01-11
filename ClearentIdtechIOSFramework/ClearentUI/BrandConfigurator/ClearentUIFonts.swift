@@ -79,4 +79,22 @@ public protocol ClearentUIFonts {
     // MARK: - ClearentPaymentTextField
     
     var textfieldPlaceholder: UIFont { get }
+    
+    // MARK: - ClearentSettingsModalViewController
+    
+    var settingsScreenTitle: UIFont { get }
+    
+    var settingsOfflineModeSubtitle: UIFont { get }
+    
+    var settingsOfflineModeProcessLabel: UIFont { get }
+    
+    var settingsReadersPlaceholderLabel: UIFont { get }
+    
+    var settingsReadersDescriptionLabel: UIFont { get }
+
+    // MARK: - OfflineResultItem
+    
+    var offlineResultItemLabelFont: UIFont { get }
+    
+    var offlineReportFieldLabel: UIFont { get }
 }

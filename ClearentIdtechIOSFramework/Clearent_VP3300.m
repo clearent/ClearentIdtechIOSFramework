@@ -566,6 +566,14 @@
     [ClearentLumberjack updatePublicKey:publicKey];
 }
 
+-(void) setOfflineMode:(BOOL)offlineMode {
+    [clearentDelegate updateOfflineMode:offlineMode];
+}
+
+- (void)fetchTransactionToken:(NSData*)postData completion:(void (^)(ClearentTransactionToken* _Nullable))completion {
+    [clearentDelegate fetchTransactionToken:postData completion: completion];
+}
+
 @end
 
 

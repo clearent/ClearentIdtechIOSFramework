@@ -12,49 +12,9 @@ import CocoaLumberjack
 
 extension ClearentWrapper {
     
-    internal func addReaderToRecentlyUsed(reader: ReaderInfo) {
-        guard var existingReaders = ClearentWrapperDefaults.recentlyPairedReaders, !existingReaders.isEmpty else {
-            ClearentWrapperDefaults.recentlyPairedReaders = [reader]
-            return
-        }
-        if let defaultReaderIndex = existingReaders.firstIndex(where: { $0 == reader }) {
-            existingReaders[defaultReaderIndex] = reader
-        } else {
-            existingReaders.insert(reader, at: 0)
-        }
-        ClearentWrapperDefaults.recentlyPairedReaders = existingReaders
-    }
-    
-    internal func updateReaderInRecentlyUsed(reader: ReaderInfo) {
-        guard var existingReaders = ClearentWrapperDefaults.recentlyPairedReaders, !existingReaders.isEmpty else { return }
-        if let defaultReaderIndex = existingReaders.firstIndex(where: { $0 == reader }) {
-            existingReaders[defaultReaderIndex] = reader
-        }
-        ClearentWrapperDefaults.recentlyPairedReaders = existingReaders
-    }
-    
-    internal func removeReaderFromRecentlyUsed(reader: ReaderInfo) {
-        guard var existingReaders = ClearentWrapperDefaults.recentlyPairedReaders else { return }
-        existingReaders.removeAll(where: { $0 == reader })
-        ClearentWrapperDefaults.recentlyPairedReaders = existingReaders
-    }
-    
-    internal func readerFromRecentlyPaired(uuid: UUID?) -> ReaderInfo? {
-       return ClearentWrapperDefaults.recentlyPairedReaders?.first {
-            $0.uuid == uuid
-        }
-    }
-    
-    internal func readerInfo(from clearentDevice:ClearentBluetoothDevice) -> ReaderInfo {
-        let uuid: UUID? = UUID(uuidString: clearentDevice.deviceId)
-        let customReader = readerFromRecentlyPaired(uuid: uuid)
-            
-        return ReaderInfo(readerName: clearentDevice.friendlyName, customReaderName: customReader?.customReaderName, batterylevel: nil, signalLevel: nil, isConnected: clearentDevice.connected, autojoin: customReader?.autojoin ?? false, uuid: uuid, serialNumber: nil, version: nil)
-    }
-    
     // MARK - Public Logger related
     
-    public func retriveLoggFileContents() -> String {
+    public func retrieveLoggFileContents() -> String {
         var logs = ""
         let fileInfo = fetchLoggerFileInfo()
         if let newFileInfo = fileInfo {
@@ -142,36 +102,5 @@ extension ClearentWrapper : ClearentManualEntryDelegate {
                 self.delegate?.didEncounteredGeneralError()
             }
         }
-    }
-}
-
-extension ClearentWrapper: BluetoothScannerProtocol {
-    
-    var isBluetoothPermissionGranted: Bool {
-        if #available(iOS 13.1, *) {
-            return CBCentralManager.authorization == .allowedAlways
-        } else if #available(iOS 13.0, *) {
-            return CBCentralManager().authorization == .allowedAlways
-        }
-        
-        // Before iOS 13, Bluetooth permissions are not required
-        return true
-    }
-    
-    func didUpdateBluetoothState(isOn: Bool) {
-        isBluetoothOn = isOn
-        
-        if (!isBluetoothOn) {
-            ClearentWrapper.shared.disconnectFromReader()
-        }
-    }
-    
-    internal func didReceivedSignalStrength(level: SignalLevel) {
-        ClearentWrapperDefaults.pairedReaderInfo?.signalLevel = level.rawValue
-        delegate?.didReceiveSignalStrength()
-    }
-    
-    internal func didFinishWithError() {
-        self.delegate?.didFinishPairing()
     }
 }

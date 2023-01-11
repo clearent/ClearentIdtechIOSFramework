@@ -16,6 +16,11 @@ import UIKit
     
     // MARK: - Internal
     
+    internal enum KeychainService {
+        static let account = "xplor_sdk_account"
+        static let serviceName = "xplor_sdk_offline_mode_service"
+    }
+    
     internal enum Messaging {
         static let suppress = "SUPPRESS"
     }
@@ -64,6 +69,7 @@ import UIKit
         // Information
         static let error = "error"
         static let warning = "warning"
+        static let smallWarning = "small_warning"
         static let success = "success"
 
         // Pairing
@@ -88,6 +94,9 @@ import UIKit
         static let expandMedium = "expandMedium"
         static let collapseMedium = "collapseMedium"
         static let deleteButton = "smallDeleteButton"
+        
+        // Offline transactions report
+        static let separatorLine = "report_line"
     }
     
     enum AnimationName {
@@ -99,7 +108,7 @@ import UIKit
         public static let modalStackViewMargin = 32.0
     }
     
-    enum Tips {
+    public enum Tips {
         public static let defaultTipPercentages = [15, 18, 20]
         public static let minCustomTipValue: Double = 0.01
     }
@@ -112,6 +121,7 @@ import UIKit
         enum Internet {
             public static let noConnection = "xsdk_internet_no_connection".localized
             public static let error = "xsdk_internet_error_title".localized
+            public static let noConnectionDoneButton = "xsdk_internet_no_connection_btn_ok".localized
         }
         
         enum Bluetooth {
@@ -119,6 +129,20 @@ import UIKit
             public static let noPermission = "xsdk_bluetooth_no_permission".localized
             public static let error = "xsdk_bluetooth_error_title".localized
             public static let permissionError = "xsdk_bluetooth_permission_error_title".localized
+        }
+        
+        enum OfflineReport {
+            public static let navigationItem = "xsdk_offline_report_nav_title".localized
+            public static let clearButtonTitle = "xsdk_offline_report_clear_report".localized
+            public static let saveLogButtonTitle = "xsdk_offline_report_save_error_log".localized
+            public static let infoLabeltext = "xsdk_offline_info".localized
+            
+            public static let approvedCount = "xsdk_offline_report_entry_approved_count".localized
+            public static let approvedAmount = "xsdk_offline_report_entry_approved_amount".localized
+            public static let declinedCount = "xsdk_offline_report_entry_declined_count".localized
+            public static let declinedAmount = "xsdk_offline_report_entry_declined_amount".localized
+            public static let errorCount = "xsdk_offline_report_entry_error_count".localized
+            public static let errorAmount = "xsdk_offline_report_entry_error_amount".localized
         }
         
         enum ReaderDetails {
@@ -186,7 +210,8 @@ import UIKit
             public static let action = "xsdk_signature_action".localized
             public static let skip = "xsdk_signature_error_action_skip".localized
             public static let signatureUploadFailure = "xsdk_signature_upload_failure_title".localized
-            public static let signatureUploadSuccessful = "xsdk_signature_upload_sucessful_title".localized
+            public static let signatureUploadSuccessfully = "xsdk_signature_upload_sucessful_title".localized
+            public static let signatureAcceptedSuccessfully = "xsdk_signature_accepted_succesful_title".localized
         }
         
         enum Keyboard {
@@ -239,6 +264,9 @@ import UIKit
         
         enum FlowDataProvider {
             public static let transactionCompleted = "xsdk_payment_transaction_completed_description".localized
+            public static let transactionCompletedSurchargeAvoided = "xsdk_payment_transaction_completed_avoided_surcharge".localized
+            public static let transactionAccepted = "xsdk_payment_transaction_accepted_description".localized
+            public static let transactionNotAccepted = "xsdk_payment_transaction_not_accepted_description".localized
         }
         
         enum Tips {
@@ -247,6 +275,80 @@ import UIKit
             public static let transactionTip = "xsdk_tips_user_transaction_tip_title".localized
             public static let withoutTip = "xsdk_tips_user_action_transaction_without_tip".localized
             public static let withTip = "xsdk_tips_user_action_transaction_with_tip".localized
+        }
+        
+        enum ServiceFee {
+            public static let typeSurcharge = "xsdk_service_fee_type_surcharge".localized
+            public static let typeNCA = "xsdk_service_fee_type_nca".localized
+            public static let typeServiceLite = "xsdk_service_fee_type_service_lite".localized
+            public static let typeService = "xsdk_service_fee_type_service".localized
+            public static let typeConvenience = "xsdk_service_fee_type_convenience".localized
+            public static let basePrice = "xsdk_service_fee_base_price".localized
+            public static let basePriceCash = "xsdk_service_fee_base_price_cash".localized
+            public static let basePriceCashDebitCard = "xsdk_service_fee_base_price_cash_debit_card".localized
+            public static let adjustedPriceCard = "xsdk_service_fee_adjusted_price_card".localized
+            public static let adjustedPriceCreditCard = "xsdk_service_fee_adjusted_price_credit_card".localized
+            public static let adjustedPriceTotal = "xsdk_service_fee_adjusted_price_total".localized
+            public static let description = "xsdk_service_fee_description".localized
+        }
+        
+        enum OfflineMode {
+            public static let enableOfflineMode = "xsdk_offline_mode_enable_title".localized
+            public static let offlineModeConfirmOption = "xsdk_offline_mode_confirm_option".localized
+            public static let offlineModeCancelOption = "xsdk_offline_mode_cancel_option".localized
+            public static let offlineModeConfirmationMessage = "xsdk_offline_mode_confirmation_message".localized
+            public static let offlineModeConfirmationMessageConfirm = "xsdk_offline_mode_confirmation_proceed".localized
+            public static let offlineModeConfirmationMessageCancel = "xsdk_offline_mode_confirmation_cancel".localized
+            public static let offlineModeWarningMessageTitle = "xsdk_offline_mode_warning_message_title".localized
+            public static let offlineModeWarningMessageDescription = "xsdk_offline_mode_warning_message_description".localized
+            public static let offlineModeWarningConfirmationDescription = "xsdk_offline_mode_warning_confirmation_description".localized
+            public static let offlineModeEnabled = "xsdk_offline_mode_enabled".localized
+            public static let offlineModeWarningMessageConfirm = "xsdk_offline_mode_warning_message_confirmation".localized
+            public static let offlineModeEncryptionWarningMessage = "xsdk_offline_mode_encryption_message".localized
+            
+            public static let offlineModeReportTitle = "xsdk_offline_mode_report_title".localized
+            public static let offlineModeMechantID = "xsdk_offline_mode_report_merchant_id".localized
+            public static let offlineModeTerminalID = "xsdk_offline_mode_report_terminal_id".localized
+            public static let offlineModeReportDate = "xsdk_offline_mode_report_report_date".localized
+            public static let offlineModeReportTime = "xsdk_offline_mode_report_report_time".localized
+            public static let offlineModeReportOfflineDate = "xsdk_offline_mode_report_offline_date".localized
+            public static let offlineModeReportOfflineTime = "xsdk_offline_mode_report_offline_time".localized
+            public static let offlineModeReportTransactionID = "xsdk_offline_mode_report_transaction_id".localized
+            public static let offlineModeReportExternalRefID = "xsdk_offline_mode_report_external_ref_id".localized
+            public static let offlineModeReportCardHolderName = "xsdk_offline_mode_report_cardholder_name".localized
+            public static let offlineModeReportCardType = "xsdk_offline_mode_report_card_type".localized
+            public static let offlineModeReportLastFourDigits = "xsdk_offline_mode_report_last_four_digits".localized
+            public static let offlineModeReportExpirationDate = "xsdk_offline_mode_report_expiration_date".localized
+            public static let offlineModeReportAmount = "xsdk_offline_mode_report_amount".localized
+            public static let offlineModeReportTipAmount = "xsdk_offline_mode_report_tip_amount".localized
+            public static let offlineModeReportEmpowerAmount = "xsdk_offline_mode_report_empower_amount".localized
+            public static let offlineModeReportTotalAmount = "xsdk_offline_mode_report_total_amount".localized
+            public static let offlineModeReportCustomerID = "xsdk_offline_mode_report_customer_id".localized
+            public static let offlineModeReportOrderID = "xsdk_offline_mode_report_order_id".localized
+            public static let offlineModeReportInvoice = "xsdk_offline_mode_report_invoice".localized
+            public static let offlineModeReportBillingAddress = "xsdk_offline_mode_report_billing_address".localized
+            public static let offlineModeReportShippingAddress = "xsdk_offline_mode_report_shipping_address".localized
+            public static let offlineModeReportSoftwareType = "xsdk_offline_mode_report_software_type".localized
+            public static let offlineModeReportSoftwareVersion = "xsdk_offline_mode_report_software_version".localized
+            public static let offlineModeReportError = "xsdk_offline_mode_report_error".localized
+            public static let offlineModeReportErrorDate = "xsdk_offline_mode_report_error_date".localized
+            public static let offlineModeReportErrorTime = "xsdk_offline_mode_report_error_time".localized
+        }
+        
+        enum Settings {
+            public static let settingsOfflineModeTitle = "xsdk_settings_title".localized;
+            public static let settingsReadersPlaceholder = "xsdk_settings_readers_placeholder".localized
+            public static let settingsOfflineModeSubtitle = "xsdk_settings_offline_subtitle".localized;
+            public static let settingsOfflineSwitchEnabled = "xsdk_settings_offline_switch_enabled".localized
+            public static let settingsOfflineSwitchEnablePrompt = "xsdk_settings_offline_switch_enable_prompt".localized
+            public static let settingsOfflinePendingTransactions = "xsdk_settings_offline_pending_transactions".localized
+            public static let settingsOfflineOnePendingTransactions = "xsdk_settings_offline_one_pending_transaction".localized
+            public static let settingsOfflineUploadErrors = "xsdk_settings_offline_upload_errors".localized
+            public static let settingsOfflineUploadSuccess = "xsdk_settings_offline_upload_success".localized
+            public static let settingsOfflineButtonProcess = "xsdk_settings_offline_btn_process".localized
+            public static let settingsOfflineButtonReport = "xsdk_settings_offline_btn_report".localized
+            public static let settingsOfflineButtonDone = "xsdk_settings_offline_btn_done".localized
+            public static let settingsOfflineButtonProcessNoInternet = "xsdk_settings_offline_btn_process_no_internet".localized
         }
     }
 }

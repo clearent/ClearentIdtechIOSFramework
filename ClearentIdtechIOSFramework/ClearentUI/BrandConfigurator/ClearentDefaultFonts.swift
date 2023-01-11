@@ -59,4 +59,18 @@ class ClearentDefaultFonts: ClearentUIFonts {
     var sectionTitleLabelFont: UIFont { proTextLarge }
     
     var textfieldPlaceholder: UIFont { proTextNormal }
+    
+    var settingsScreenTitle: UIFont { proTextLarge }
+    
+    var settingsOfflineModeSubtitle: UIFont { proTextSmall }
+    
+    var settingsOfflineModeProcessLabel: UIFont { proTextSmall }
+
+    var offlineResultItemLabelFont: UIFont { proTextNormal }
+    
+    var settingsReadersPlaceholderLabel: UIFont { proTextSmall }
+    
+    var settingsReadersDescriptionLabel: UIFont { proTextNormal }
+    
+    var offlineReportFieldLabel: UIFont { proTextNormal }
 }

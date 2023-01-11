@@ -34,7 +34,8 @@ public class FlowFeedback {
 
 class FlowDataFactory {
     class func component(with flow: ProcessType, type: FlowFeedbackType, readerInfo: ReaderInfo?, payload: [FlowDataItem]) -> FlowFeedback {
-        let isNotManualPayment = FlowDataProvider.useCardReaderPaymentMethod || ClearentWrapper.shared.flowType?.processType != .payment
+        let isNotManualPayment = ClearentWrapper.shared.useCardReaderPaymentMethod || ClearentWrapper.shared.flowType?.processType != .payment
+        
         if (readerInfo != nil || !ClearentWrapper.shared.previouslyPairedReaders.isEmpty) && isNotManualPayment {
             var allItems = [FlowDataItem(type: .readerInfo, object: readerInfo)]
             allItems.append(contentsOf: payload)
@@ -48,7 +49,7 @@ class FlowDataFactory {
 
 protocol FlowDataProtocol : AnyObject {
     func didFinishSignature()
-    func didFinishTransaction(error: ResponseError?)
+    func didFinishTransaction(response: Transaction?)
     func deviceDidDisconnect()
     func didFinishedPairing()
     func didReceiveFlowFeedback(feedback: FlowFeedback)
@@ -60,21 +61,29 @@ class FlowDataProvider : NSObject {
     
     let sdkWrapper = ClearentWrapper.shared
     var connectionErrorDisplayed = false
-    static var useCardReaderPaymentMethod: Bool {
-        ClearentWrapper.shared.cardReaderPaymentIsPreffered && ClearentWrapper.shared.useManualPaymentAsFallback == nil
+    
+    private var shouldAskForOfflineModePermission: Bool {
+        if ClearentWrapperDefaults.enableOfflinePromptMode {
+            return sdkWrapper.isNewPaymentProcess ? true : false
+        }
+        return false
     }
+
+    // MARK: - Init
     
     public override init() {
         super.init()
         sdkWrapper.delegate = self
     }
     
+    // MARK: - Internal
+    
     func fetchReaderInfo() -> ReaderInfo? {
-        return ClearentWrapperDefaults.pairedReaderInfo
+        ClearentWrapperDefaults.pairedReaderInfo
     }
     
-    public func startTipTransaction(amountWithoutTip: Double) {
-        let amountInfo = AmountInfo(amountWithoutTip: amountWithoutTip, availableTipPercentages: ClearentUIManager.shared.tipAmounts)
+    func startTipTransaction(amountWithoutTip: Double) {
+        let amountInfo = AmountInfo(amountWithoutTip: amountWithoutTip, availableTipPercentages: ClearentUIManager.configuration.tipAmounts)
         
         let items = [FlowDataItem(type: .title, object: ClearentConstants.Localized.Tips.transactionTip),
                      FlowDataItem(type: .tips, object: amountInfo),
@@ -83,39 +92,146 @@ class FlowDataProvider : NSObject {
         
         let feedback = FlowFeedback(flow: .payment, type: FlowFeedbackType.info, items: items)
 
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
+    }
+    
+    func showServiceFeeScreen(for serviceFeeType: ServiceFeeProgramType) {
+        let items = [FlowDataItem(type: .serviceFee, object: serviceFeeType),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.transactionWithServiceFee),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+        let feedback = FlowFeedback(flow: .payment, type: FlowFeedbackType.info, items: items)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
+    }
+    
+    func displayOfflineModeWarning() {
+        let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
+                     FlowDataItem(type: .title, object: ClearentConstants.Localized.OfflineMode.offlineModeWarningMessageTitle),
+                     FlowDataItem(type: .description, object: ClearentConstants.Localized.OfflineMode.offlineModeWarningMessageDescription),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.confirmOfflineModeWarningMessage)]
+        let feedback = FlowDataFactory.component(with: .payment,
+                                                 type: .info,
+                                                 readerInfo:fetchReaderInfo(),
+                                                 payload: items)
+        
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
+    }
+    
+    func displayOfflineModeQuestion() {
+        let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
+                 FlowDataItem(type: .title, object: ClearentConstants.Localized.OfflineMode.enableOfflineMode),
+                 FlowDataItem(type: .description, object: ClearentConstants.Localized.OfflineMode.offlineModeWarningMessageDescription),
+                 FlowDataItem(type: .description, object: ClearentConstants.Localized.OfflineMode.offlineModeWarningConfirmationDescription),
+                 FlowDataItem(type: .userAction, object: FlowButtonType.acceptOfflineMode),
+                 FlowDataItem(type: .userAction, object: FlowButtonType.denyOfflineMode)]
+        
+        let feedback = FlowDataFactory.component(with: .payment,
+                                                 type: .info,
+                                                 readerInfo: fetchReaderInfo(),
+                                                 payload: items)
+        
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
 }
 
 extension FlowDataProvider : ClearentWrapperProtocol {
     
-    func didFinishedSignatureUploadWith(response: SignatureResponse?, error: ResponseError?) {
+    // MARK - Pairing related
+    
+    func didStartPairing() {
+        let items = [FlowDataItem(type: .hint, object: ClearentConstants.Localized.Pairing.selectReader),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+
+        let feedback = FlowDataFactory.component(with: .pairing(),
+                                                 type: .info,
+                                                 readerInfo: nil,
+                                                 payload: items)
+        
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
+    }
+    
+    func didFinishPairing() {
+        if case .showReaders = ClearentWrapper.shared.flowType?.processType {
+            createFeedbackForSuccessfulPairing()
+        } else {
+            let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.pairingSuccessful),
+                         FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader)]
+            let feedback = FlowDataFactory.component(with: .pairing(),
+                                                     type: .searchDevices,
+                                                     readerInfo: fetchReaderInfo(),
+                                                     payload: items)
+            delegate?.didReceiveFlowFeedback(feedback: feedback)
+            delegate?.didFinishedPairing()
+        }
+    }
+    
+    func didReceiveSignalStrength() {
+        // when signal strength is received, content should be reloaded
+        if case .showReaders = ClearentWrapper.shared.flowType?.processType {
+            createFeedbackForSuccessfulPairing()
+        }
+    }
+    
+    func didFindReaders(readers: [ReaderInfo]) {
+        let title = readers.count > 0 ? ClearentConstants.Localized.Pairing.selectReader : ClearentConstants.Localized.Pairing.noReadersFoundTitle
+        let flowDataItem = readers.count > 0 ? FlowDataItem(type: .devicesFound, object: readers) : FlowDataItem(type: .description, object: ClearentConstants.Localized.Pairing.noReadersFoundDescription)
+        let flowFeedbackType = readers.count > 0 ? FlowFeedbackType.searchDevices : FlowFeedbackType.info
+        
+        let items = [FlowDataItem(type: .hint, object: title),
+                     flowDataItem,
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+
+        let feedback = FlowDataFactory.component(with: .pairing(),
+                                                 type: flowFeedbackType,
+                                                 readerInfo: nil,
+                                                 payload: items)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
+     }
+    
+    func deviceDidDisconnect() {
+        delegate?.deviceDidDisconnect()
+    }
+    
+    func startedReaderConnection(with reader: ReaderInfo) {
+        let items: [FlowDataItem]
         let feedback: FlowFeedback
         
-        if error != nil {
-            let errItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
-                            FlowDataItem(type: .title, object: ClearentConstants.Localized.Signature.signatureUploadFailure),
-                            FlowDataItem(type: .userAction, object: FlowButtonType.retry),
-                            FlowDataItem(type: .userAction, object: FlowButtonType.skipSignature)]
+        if case .showReaders = ClearentWrapper.shared.flowType?.processType {
+            guard let recentlyPairedDevices = ClearentWrapperDefaults.recentlyPairedReaders else { return }
             
-           feedback = FlowDataFactory.component(with: .payment,
-                                                    type: .signatureError,
-                                                    readerInfo: fetchReaderInfo(),
-                                                    payload: errItems)
+            items = [FlowDataItem(type: .recentlyPaired, object: recentlyPairedDevices),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
+            feedback = FlowDataFactory.component(with: .showReaders,
+                                                 type: .showReaders,
+                                                 readerInfo: reader,
+                                                 payload: items)
         } else {
-            let transactionItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.transaction_completed),
-                                    FlowDataItem(type: .title, object: ClearentConstants.Localized.Signature.signatureUploadSuccessful)]
-            
-            feedback = FlowDataFactory.component(with: .payment,
-                                                 type: .info,
-                                                 readerInfo: fetchReaderInfo(),
-                                                 payload: transactionItems)
-            self.delegate?.didFinishSignature()
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
+                     FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader)]
+            feedback = FlowDataFactory.component(with: .pairing(),
+                                                 type: .searchDevices,
+                                                 readerInfo: reader,
+                                                 payload: items)
         }
-        
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
- 
+    
+    func didFindRecentlyUsedReaders(readers: [ReaderInfo]) {
+        let flowDataItem = readers.count > 0 ? FlowDataItem(type: .recentlyPaired, object: readers) : FlowDataItem(type: .description, object: ClearentConstants.Localized.Pairing.noReadersFoundDescription)
+        let items = [flowDataItem,
+                     FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
+        
+        let feedback = FlowDataFactory.component(with: .showReaders,
+                                                 type: .showReaders,
+                                                 readerInfo: ClearentWrapperDefaults.pairedReaderInfo,
+                                                 payload: items)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
+    }
+    
+    func didBeginContinuousSearching() {
+        delegate?.didBeginContinuousSearching()
+    }
+    
     // MARK - Transaction related
     
     func didEncounteredGeneralError() {
@@ -127,51 +243,125 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  type: .error,
                                                  readerInfo: fetchReaderInfo(),
                                                  payload: items)
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
-        
-    func didFinishTransaction(response: TransactionResponse?, error: ResponseError?) {
+    
+    func didFinishTransaction(response: TransactionResponse?, error: ClearentError?) {
         let feedback: FlowFeedback
+        let items: [FlowDataItem]
         
         if let error = error {
-            
             var detailedErrorMessage = ""
+            
             if let response = response {
                 detailedErrorMessage = createDetailedErrorMessage(with: error.code, message: response.payload.transaction?.message, transactionID: response.links?.first?.id, exchangeID: response.exchange_id)
             } else {
                 detailedErrorMessage = createDetailedErrorMessage(with: error.code, message: error.message, transactionID: nil, exchangeID: "-")
             }
             
-            let errorItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
-                            FlowDataItem(type: .title, object: ClearentConstants.Localized.Error.generalErrorTitle),
-                            FlowDataItem(type: .error, object: detailedErrorMessage),
-                            FlowDataItem(type: .userAction, object: FlowButtonType.retry),
-                            FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
+                     FlowDataItem(type: .title, object: ClearentConstants.Localized.Error.generalErrorTitle),
+                     FlowDataItem(type: .error, object: detailedErrorMessage),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.retry),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
             
             feedback = FlowDataFactory.component(with: .payment,
-                                                     type: .error,
-                                                     readerInfo: fetchReaderInfo(),
-                                                     payload: errorItems)
+                                                 type: .error,
+                                                 readerInfo: fetchReaderInfo(),
+                                                 payload: items)
+            delegate?.didReceiveFlowFeedback(feedback: feedback)
         } else {
-            let transactionItems = [FlowDataItem(type: .graphicType, object: FlowGraphicType.transaction_completed),
-                                    FlowDataItem(type: .title, object: ClearentConstants.Localized.FlowDataProvider.transactionCompleted)]
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.transaction_completed),
+                     FlowDataItem(type: .title, object: ClearentConstants.Localized.FlowDataProvider.transactionCompleted)]
             
             feedback = FlowDataFactory.component(with: .payment,
                                                  type: .info,
                                                  readerInfo: fetchReaderInfo(),
-                                                 payload: transactionItems)
-            
+                                                 payload: items)
+            delegate?.didReceiveFlowFeedback(feedback: feedback)
+            delegate?.didFinishTransaction(response: response?.payload.transaction)
         }
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
-        self.delegate?.didFinishTransaction(error: error)
     }
     
-    func deviceDidDisconnect() {
-        delegate?.deviceDidDisconnect()
+    func didAcceptOfflineTransaction(status: TransactionStoreStatus) {
+        let items: [FlowDataItem]
+        let feedback: FlowFeedback
+        
+        if status == .success {
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.transaction_completed),
+                         FlowDataItem(type: .title, object: ClearentConstants.Localized.FlowDataProvider.transactionAccepted)]
+            feedback = FlowDataFactory.component(with: .payment,
+                                                 type: .info,
+                                                 readerInfo: fetchReaderInfo(),
+                                                 payload: items)
+            delegate?.didReceiveFlowFeedback(feedback: feedback)
+            delegate?.didFinishTransaction(response: nil)
+        } else {
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
+                     FlowDataItem(type: .title, object: ClearentConstants.Localized.Error.generalErrorTitle),
+                     FlowDataItem(type: .error, object: ClearentConstants.Localized.FlowDataProvider.transactionNotAccepted),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.retry),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+            feedback = FlowDataFactory.component(with: .payment,
+                                                 type: .error,
+                                                 readerInfo: fetchReaderInfo(),
+                                                 payload: items)
+            delegate?.didReceiveFlowFeedback(feedback: feedback)
+        }
     }
     
-    func didBeginContinuousSearching() {
-        self.delegate?.didBeginContinuousSearching()
+    func didFinishedSignatureUploadWith(response: SignatureResponse?, error: ClearentError?) {
+        let feedback: FlowFeedback
+        let items: [FlowDataItem]
+        
+        if let _ = error {
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
+                            FlowDataItem(type: .title, object: ClearentConstants.Localized.Signature.signatureUploadFailure),
+                            FlowDataItem(type: .userAction, object: FlowButtonType.retry),
+                            FlowDataItem(type: .userAction, object: FlowButtonType.skipSignature)]
+            
+            feedback = FlowDataFactory.component(with: .payment,
+                                                 type: .signatureError,
+                                                 readerInfo: fetchReaderInfo(),
+                                                 payload: items)
+            delegate?.didReceiveFlowFeedback(feedback: feedback)
+        } else {
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.transaction_completed),
+                                    FlowDataItem(type: .title, object: ClearentConstants.Localized.Signature.signatureUploadSuccessfully)]
+            
+            feedback = FlowDataFactory.component(with: .payment,
+                                                 type: .info,
+                                                 readerInfo: fetchReaderInfo(),
+                                                 payload: items)
+            delegate?.didReceiveFlowFeedback(feedback: feedback)
+            delegate?.didFinishSignature()
+        }
+    }
+    
+    func didAcceptOfflineSignature(status: TransactionStoreStatus, transactionID: String) {
+        let items: [FlowDataItem]
+        let feedback: FlowFeedback
+        
+        if status == .success {
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.transaction_completed),
+                     FlowDataItem(type: .title, object: ClearentConstants.Localized.Signature.signatureAcceptedSuccessfully)]
+            feedback = FlowDataFactory.component(with: .payment,
+                                                 type: .signature,
+                                                 readerInfo: fetchReaderInfo(),
+                                                 payload: items)
+            delegate?.didReceiveFlowFeedback(feedback: feedback)
+            delegate?.didFinishSignature()
+        } else {
+            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
+                     FlowDataItem(type: .title, object: ClearentConstants.Localized.Signature.signatureUploadFailure),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.retry),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.skipSignature)]
+            feedback = FlowDataFactory.component(with: .payment,
+                                                 type: .signatureError,
+                                                 readerInfo: fetchReaderInfo(),
+                                                 payload: items)
+            delegate?.didReceiveFlowFeedback(feedback: feedback)
+        }
     }
     
     func userActionNeeded(action: UserAction) {
@@ -189,6 +379,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             items = [FlowDataItem(type: .description, object: ClearentConstants.Localized.Pairing.readerRange),
                      FlowDataItem(type: .graphicType, object: FlowGraphicType.press_button),
                      FlowDataItem(type: .description, object: action.description)]
+            
             if ClearentWrapper.shared.flowType?.processType == .payment, connectionErrorDisplayed {
                 items?.append(FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo))
             }
@@ -205,13 +396,30 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             print("nothing to do here")
         case .noInternet:
             type = .warning
-            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
-                     FlowDataItem(type: .title, object: ClearentConstants.Localized.Internet.error),
-                     FlowDataItem(type: .description, object: action.description),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.retry),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+            
+            if !ClearentWrapperDefaults.enableOfflineMode {
+                items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
+                         FlowDataItem(type: .title, object: ClearentConstants.Localized.Internet.error),
+                         FlowDataItem(type: .description, object: action.description),
+                         FlowDataItem(type: .userAction, object: FlowButtonType.retry),
+                         FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+            } else {
+                if !ClearentWrapperDefaults.enableOfflinePromptMode && !ClearentUIManager.shared.isOfflineModeConfirmed {
+                    displayOfflineModeWarning()
+                    return
+                } else if sdkWrapper.isNewPaymentProcess && !ClearentUIManager.shared.isOfflineModeConfirmed {
+                    displayOfflineModeQuestion()
+                    return
+                } else if !ClearentUIManager.shared.isOfflineModeConfirmed {
+                    items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
+                             FlowDataItem(type: .title, object: ClearentConstants.Localized.Internet.error),
+                             FlowDataItem(type: .description, object: action.description),
+                             FlowDataItem(type: .userAction, object: FlowButtonType.retry),
+                             FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+                }
+            }
         case .noBluetooth:
-            guard FlowDataProvider.useCardReaderPaymentMethod else { return }
+            guard ClearentWrapper.shared.useCardReaderPaymentMethod else { return }
             type = .warning
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
                      FlowDataItem(type: .title, object: ClearentConstants.Localized.Bluetooth.error),
@@ -272,97 +480,19 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                      type: ClearentWrapper.shared.flowType?.flowFeedbackType ?? type,
                                                      readerInfo: fetchReaderInfo(),
                                                      payload: flowItems)
-            self.delegate?.didReceiveFlowFeedback(feedback: feedback)
+            delegate?.didReceiveFlowFeedback(feedback: feedback)
         }
     }
     
-    // MARK - Pairing related
-    
-    func didFinishPairing() {
-        if case .showReaders = ClearentWrapper.shared.flowType?.processType {
-            createFeedbackForSuccessfulPairing()
-        } else {
-            let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.pairingSuccessful),
-                         FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader)]
-            let feedback = FlowDataFactory.component(with: .pairing(),
-                                                     type: .searchDevices,
+    func showEncryptionWarning() {
+        let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
+                     FlowDataItem(type: .title, object: ClearentConstants.Localized.OfflineMode.offlineModeEncryptionWarningMessage),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+        let flowFeedback = FlowDataFactory.component(with: .payment,
+                                                     type: .warning,
                                                      readerInfo: fetchReaderInfo(),
                                                      payload: items)
-            delegate?.didReceiveFlowFeedback(feedback: feedback)
-            delegate?.didFinishedPairing()
-        }
-    }
-
-    func didStartPairing() {
-        let items = [FlowDataItem(type: .hint, object: ClearentConstants.Localized.Pairing.selectReader),
-                     FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
-
-        let feedback = FlowDataFactory.component(with: .pairing(),
-                                                 type: .info,
-                                                 readerInfo: nil,
-                                                 payload: items)
-        
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
-    }
-    
-    func didFindReaders(readers: [ReaderInfo]) {
-        let title = readers.count > 0 ? ClearentConstants.Localized.Pairing.selectReader : ClearentConstants.Localized.Pairing.noReadersFoundTitle
-        let flowDataItem = readers.count > 0 ? FlowDataItem(type: .devicesFound, object: readers) : FlowDataItem(type: .description, object: ClearentConstants.Localized.Pairing.noReadersFoundDescription)
-        let flowFeedbackType = readers.count > 0 ? FlowFeedbackType.searchDevices : FlowFeedbackType.info
-        
-        let items = [FlowDataItem(type: .hint, object: title),
-                     flowDataItem,
-                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
-
-        let feedback = FlowDataFactory.component(with: .pairing(),
-                                                 type: flowFeedbackType,
-                                                 readerInfo: nil,
-                                                 payload: items)
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
-     }
-    
-    func startedReaderConnection(with reader: ReaderInfo) {
-        let items: [FlowDataItem]
-        let feedback: FlowFeedback
-        
-        if case .showReaders = ClearentWrapper.shared.flowType?.processType {
-            guard let recentlyPairedDevices = ClearentWrapperDefaults.recentlyPairedReaders else { return }
-            
-            items = [FlowDataItem(type: .recentlyPaired, object: recentlyPairedDevices),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
-            feedback = FlowDataFactory.component(with: .showReaders,
-                                                 type: .showReaders,
-                                                 readerInfo: reader,
-                                                 payload: items)
-        } else {
-            items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
-                     FlowDataItem(type: .graphicType, object: FlowGraphicType.pairedReader)]
-            feedback = FlowDataFactory.component(with: .pairing(),
-                                                 type: .searchDevices,
-                                                 readerInfo: reader,
-                                                 payload: items)
-        }
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
-    }
-    
-    func didFindRecentlyUsedReaders(readers: [ReaderInfo]) {
-        let flowDataItem = readers.count > 0 ? FlowDataItem(type: .recentlyPaired, object: readers) : FlowDataItem(type: .description, object: ClearentConstants.Localized.Pairing.noReadersFoundDescription)
-        let items = [flowDataItem,
-                     FlowDataItem(type: .userAction, object: FlowButtonType.pairNewReader)]
-        
-        let feedback = FlowDataFactory.component(with: .showReaders,
-                                                 type: .showReaders,
-                                                 readerInfo: ClearentWrapperDefaults.pairedReaderInfo,
-                                                 payload: items)
-        self.delegate?.didReceiveFlowFeedback(feedback: feedback)
-    }
-
-    func didReceiveSignalStrength() {
-        // when signal strength is received, content should be reloaded
-        if case .showReaders = ClearentWrapper.shared.flowType?.processType {
-            createFeedbackForSuccessfulPairing()
-        }
+        delegate?.didReceiveFlowFeedback(feedback: flowFeedback)
     }
     
     // MARK: - Private
@@ -383,7 +513,9 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         delegate?.didReceiveFlowFeedback(feedback: feedback)
     }
     
-    private func createDetailedErrorMessage(with errorCode: String, message: String?, transactionID: String?, exchangeID: String) -> String {
+    private func createDetailedErrorMessage(with errorCode: String?, message: String?, transactionID: String?, exchangeID: String) -> String {
+        guard let errorCode = errorCode else { return "" }
+
         var detailedErrorMessage = String(format: ClearentConstants.Localized.Error.errorCode, errorCode)
         
         if let errorMessage = message {

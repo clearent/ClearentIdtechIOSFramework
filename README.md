@@ -63,11 +63,11 @@ The SDK supports current version of iOS and two previous versions. Curently 13, 
 
 ## How to Integrate
 
-In order to integrate the **SDK UI** you will need the **API URL**, **API KEY** and the **PUBLIC KEY**. 
-Use ClearentUIManager class to update the SDK with this information like this. 
+In order to integrate the **SDK UI** you will need to create a configuration object and pass it ClearentUIManager like in the following example: 
 
 ```
-ClearentUIManager.shared.updateWith(baseURL: baseURL, apiKey: apiKey, publicKey: publicKey)
+  let uiManagerConfig = ClearentUIManagerConfiguration(baseURL: baseURL, apiKey: apiKey, publicKey: publickKey, tipAmounts: [1, 2, 3], signatureEnabled: true)
+  ClearentUIManager.shared.initialize(with: uiManagerConfig)
 ```
 
 ### Important!
@@ -77,18 +77,8 @@ ClearentUIManager.shared.updateWith(baseURL: baseURL, apiKey: apiKey, publicKey:
 
 **Tips** 
 
-This feature can be enabled from your merchant account and when it's enabled the first step in the transaction flow will be a prompt where the user/client is prompted with UI that will offer some options to choose a tip. The options the user/client has are three fixed options in percents and a custom tip input field. The three options are customizable by settting the **tipAmounts** that is an array of Int values property of the **ClearentUIManager** as below.
+This feature can be enabled from your merchant account and when it's enabled the first step in the transaction flow will be a prompt where the user/client is prompted with UI that will offer some options to choose a tip. The options the user/client has are three fixed options in percents and a custom tip input field. The three options are customizable by setting the **tipAmounts** that is an array of Int values property of the **ClearentUIManagerConfiguration**.
 
-```
-ClearentUIManager.tipAmounts = [5, 15, 20]
-```
-
-
-**Disabling the signature functionality**
-The signature feature is enabled by default, if you want to disable it:
-```
-ClearentUIManager.shared.signatureEnabled = false
-```
 
 Now you are ready to use the SDK UI. 
 In order to display the UI from the SDK you need to have an instance of **UINavigationController** that you will use to present specific UIControllers from the SDK.
@@ -131,10 +121,10 @@ Another option for accesing the reader info is to use **ClearentWrapperDefaults*
 
 **Reader Status**
 
-If you want to display the reader's status in your app you cand use the  **readerInfoReceived** clojure of the **ClearentUIManager**.
+If you want to display the reader's status in your app you cand use the  **readerInfoReceived** closure of the **ClearentUIManagerConfiguration**.
 
 
-Here is the defintion of the clojure. You will receive a **ReaderInfo** object that contains reader related information.
+Here is the defintion of the closure. You will receive a **ReaderInfo** object that contains reader related information.
 ```
 public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
 
@@ -143,7 +133,7 @@ public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
 How to use it.
 
 ```
-ClearentUIManager.shared.readerInfoReceived = { [weak self] reader in
+ClearentUIManager.configuration.readerInfoReceived = { [weak self] reader in
     // update your UI
 }
 ```
@@ -206,14 +196,12 @@ class ViewController: UIViewController {
     
     func initSDK() {
         
-        // Update the SDk with needed info to work properly
-        ClearentUIManager.shared.updateWith(baseURL: Constants.Api.baseURL, apiKey: Constants.Api.apiKey, publicKey: Constants.Api.publicKey, enableEnhancedMessaging: false)
-              
+        // Setup the SDK with needed config to work properly
+        let uiManagerConfiguration = ClearentUIManagerConfiguration(baseURL: "https....", apiKey: "api key...", publicKey: "public key")
+        ClearentUIManager.shared.initialize(with: uiManagerConfiguration)
+        
         // Load the default fonts from our SDK
         UIFont.loadFonts()
-        
-        // The signature step from transaction is enabled by default
-        ClearentUIManager.shared.signatureEnabled = false
     }
     
     
@@ -221,17 +209,23 @@ class ViewController: UIViewController {
     
     @IBAction func showRederDetailsAction(_ sender: Any) {
         
-        let readerDetailsVC = ClearentUIManager.shared.readersViewController()
+        let readerDetailsVC = ClearentUIManager.shared.readersViewController { error in
+            //do something that you want on dismiss
+        }
         self.navigationController?.present(readerDetailsVC, animated: true, completion: { })
     }
     
     @IBAction func startTransactionAction(_ sender: Any) {
-        let transactionVC = ClearentUIManager.shared.paymentViewController(paymentInfo: PaymentInfo(amount: 20.0))
+        let transactionVC = ClearentUIManager.shared.paymentViewController(paymentInfo: PaymentInfo(amount: 20.0)) { error in
+            //do something that you want on dismiss
+        }
         self.navigationController?.present(transactionVC, animated: true, completion: { })
     }
     
     @IBAction func startPairingProcess(_ sender: Any) {
-        let pairingVC = ClearentUIManager.shared.pairingViewController()
+        let pairingVC = ClearentUIManager.shared.pairingViewController { error in
+            //do something that you want on dismiss
+        }
         self.navigationController?.present(pairingVC, animated: true, completion: { })
     }
 }
@@ -257,26 +251,29 @@ Objective-C example of the ClearenSDKUI  integration [Obj-C Example](https://git
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
-    [[ClearentUIManager shared] updateWithBaseURL:@"https...."
-                                           apiKey:@"api key..."
-                                        publicKey:@"publick key"];
-    
-    [[ClearentUIManager shared] setSignatureEnabled:NO];
+
+    ClearentUIManagerConfiguration* configuration = [[ClearentUIManagerConfiguration alloc] initWithBaseURL:@"https...."
+                                                                                                    apiKey:@"api key..."
+                                                                                                    publicKey:@"publick key"
+                                                                                                    enableEnhancedMessaging:false
+                                                                                                    enableOfflineMode:false
+                                                                                                    tipAmounts: @[@10, @15, @20]
+                                                                                                    signatureEnabled:true];
+    [[ClearentUIManager shared] initializeWith: configuration];
     
     [UIFont loadFontsWithFonts:[NSArray arrayWithObjects: @"SF-Pro-Display-Bold.otf", @"SF-Pro-Text-Bold.otf", @"SF-Pro-Text-Medium.otf", nil] bundle:ClearentConstants.bundle];
 }
 
 - (IBAction)showReaderDetails:(id)sender {
-    UIViewController *vc = [[ClearentUIManager shared] readersViewControllerWithCompletion:^(enum ClearentResult result) {
+    UIViewController *vc = [[ClearentUIManager shared] readersViewControllerWithCompletion:^(ClearentError* error) {
         //do something that you want on dismiss
     }];
     [self presentViewController:vc animated:YES completion:nil];
 }
 
 - (IBAction)startPairing:(id)sender {
-    UIViewController *vc = [[ClearentUIManager shared] pairingViewControllerWithCompletion:^(enum ClearentResult result) {
-        //do something that you want on dismiss
+    UIViewController *vc = [[ClearentUIManager shared] pairingViewControllerWithCompletion:^(ClearentError* error) {
+        //do omething that you want on dismiss
     }];
     [self presentViewController:vc animated:YES completion:nil];
 }
@@ -347,16 +344,16 @@ When you call the startTransaction method the SDK will start guide you to the pr
 1. **userActionNeeded(action: UserAction)** , indicates that the user need to do an action like swiping the card, removing the card etc.
 2. **didReceiveInfo(info: UserInfo)**, this method presents different information related to the transaction.
 
-After the transaction is completed the delegate method didFinishTransaction(response: TransactionResponse, error: ResponseError?) will get called. You can check the error parameter to know if the transaction was successful or not.
+After the transaction is completed the delegate method didFinishTransaction(response: TransactionResponse?, error: ClearentError?) will get called. You can check the error parameter to know if the transaction was successful or not.
 
 **2. Performing a transaction using manual card entry.**
 
-You can start a transaction using startTransaction(with saleEntity: SaleEntity, manualEntryCardInfo: ManualEntryCardInfo?) method where the manualEntryCardInfo parameter will contain the card informations.
+You can start a transaction using startTransaction(with saleEntity: SaleEntity, isManualTransaction: Bool, completion: @escaping((ClearentError?) -> Void)) method.
 
 
 **Cancelling , voiding and refunding a transaction**
 
-If you started a card reader transaction and want to cancel it you can use cancelTransaction() method and after this call the card reader will be ready to take another transaction. You can use this method only before the card is read by the card reader. Once the card has been read the transaction will be performed and the transaction will be also registered by the payment gateway. In this case you can use the **voidTransaction(transactionID:String)** to void the transaction you want (this will work only if the transaction was not yet processed by the gateway). Another option is to perform a refund using the **refundTransaction(jwt: String, amount: String)**.
+If you started a card reader transaction and want to cancel it you can use cancelTransaction() method and after this call the card reader will be ready to take another transaction. You can use this method only before the card is read by the card reader. Once the card has been read the transaction will be performed and the transaction will be also registered by the payment gateway. In this case you can use the **func voidTransaction(transactionID: String, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)** to void the transaction you want (this will work only if the transaction was not yet processed by the gateway). Another option is to perform a refund using the **func refundTransaction(jwt: String, amount: String, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)**.
 
 
 ## Getting information related to the card reader status
@@ -376,8 +373,8 @@ You can check if a reader is connected by using the **isReaderConnected()** meth
 ## Uploading a signature
 
 If you want to upload a signature image after a transaction, you can use 
-**sendSignatureWithImage(image: UIImage)**. After this method is called, the **didFinishedSignatureUploadWith(response: SignatureResponse, error: ResponseError?)** delegate method will be called.  Note that the sendSignature method will use the latest transaction ID as the ID for the signature in the API call.
-In case of error you can use the **resendSignature()** method to retry the signature upload
+**func sendSignatureWithImage(image: UIImage, completion: @escaping (SignatureResponse?, ClearentError?) -> Void)**. After this method is called, the **didFinishedSignatureUploadWith(response: SignatureResponse?, error: ClearentError?)** delegate method will be called.  Note that the sendSignature method will use the latest transaction ID as the ID for the signature in the API call.
+In case of error you can use the **resendSignature(completion: @escaping (SignatureResponse?, ClearentError?) -> Void)** method to retry the signature upload
 
 
 ## Relevant code snippets
@@ -435,18 +432,19 @@ Using a card reader
 ```
    // Define a SaleEntity, you can also add client information on the SaleEntity
    let saleEntity = SaleEntity(amount: 22.0, tipAmount: 5)
-   ClearentWrapper.shared.startTransaction(with: saleEntity)
+   ClearentWrapper.shared.startTransaction(with: SaleEntity, isManualTransaction: false) { error in
+       // handle completion
+   }
 ```
 
 Using manual card entry
 
 ```
-   // Define a SaleEntity, you can also add client information on the SaleEntity
-   let saleEntity = SaleEntity(amount: 22.0, tipAmount: 5)
-   
-   // Create a manual card entry instance
-   let ManualEntryCardInfo(card: "4111111111111111", expirationDateMMYY: "0728", csc: "999")
-   ClearentWrapper.shared.startTransaction(with: saleEntity, manualEntryCardInfo: manualEntryCardInfo)
+   // Create a SaleEntity object and, besides amount, add card info
+   let saleEntity = SaleEntity(amount: 22.0, tipAmount: 5, card: "4111111111111111", csc: "999", expirationDateMMYY: "11/28")
+   ClearentWrapper.shared.startTransaction(with: saleEntity, manualEntryCardInfo: true) { error in
+      // handle completion
+   }
 ```
 
 After starting a transaction feedback messages will be triggered on the delegate.
@@ -472,7 +470,7 @@ User info contains informations related to the transaction status e.g. Processin
 After the transaction is proccesed a delegate method will inform you about the status.
 
 ```
-    func didFinishTransaction(error: ResponseError?) {
+    func didFinishTransaction(response: TransactionResponse?, error: ClearentError?) {
         if error == nil {
            // no error
         } else {

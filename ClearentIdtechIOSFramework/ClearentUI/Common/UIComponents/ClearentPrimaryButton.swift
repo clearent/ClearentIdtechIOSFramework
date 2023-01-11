@@ -10,7 +10,7 @@ import UIKit
 
 
 public enum ButtonStyleType {
-    case bordered, filled
+    case bordered, filled, link
 }
 
 public class ClearentPrimaryButton: ClearentMarginableView {
@@ -38,6 +38,9 @@ public class ClearentPrimaryButton: ClearentMarginableView {
     public var borderColor: UIColor = ClearentUIBrandConfigurator.shared.colorPalette.borderColor
     public var borderedBackgroundColor = ClearentUIBrandConfigurator.shared.colorPalette.borderedBackgroundColor
     public var borderedButtonTextColor = ClearentUIBrandConfigurator.shared.colorPalette.borderedButtonTextColor
+    
+    public var linkButtonTextColor = ClearentUIBrandConfigurator.shared.colorPalette.linkButtonTextColor
+    public var linkButtonDisabledColor = ClearentUIBrandConfigurator.shared.colorPalette.linkButtonDisabledTextColor
 
     public var buttonStyle: ButtonStyleType = .filled {
         didSet {
@@ -46,6 +49,8 @@ public class ClearentPrimaryButton: ClearentMarginableView {
                 setBorderedButton()
             case .filled:
                 setFilledButton()
+            case .link:
+                setLinkButton()
             }
         }
     }
@@ -67,10 +72,16 @@ public class ClearentPrimaryButton: ClearentMarginableView {
             button.setTitle(title, for: .normal)
         }
     }
+    
+    var cornerRadius: CGFloat = 20 {
+        didSet {
+            button.layer.cornerRadius = cornerRadius
+        }
+    }
 
     public override func configure() {
         setFilledButton()
-        button.layer.cornerRadius = button.bounds.height / 2
+        cornerRadius = button.bounds.height / 2
         button.layer.masksToBounds = true
         textFont = ClearentUIBrandConfigurator.shared.fonts.primaryButtonTextFont
     }
@@ -102,6 +113,13 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         button.backgroundColor = filledBackgroundColor
         button.setTitleColor(filledButtonTextColor, for: .normal)
         button.setTitleColor(filledDisabledButtonTextColor, for: .disabled)
+        button.layer.borderWidth = 0
+    }
+
+    internal func setLinkButton() {
+        button.backgroundColor = .clear
+        button.setTitleColor(linkButtonTextColor, for: .normal)
+        button.setTitleColor(linkButtonDisabledColor, for: .disabled)
         button.layer.borderWidth = 0
     }
 }

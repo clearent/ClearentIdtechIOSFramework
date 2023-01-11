@@ -29,6 +29,10 @@ class ClearentColorsDefaultPalette: ClearentUIColors {
     
     var borderedButtonTextColor: UIColor { UIColor(hexString: "272431") }
     
+    var linkButtonTextColor: UIColor { UIColor(hexString: "6923F4") }
+    
+    var linkButtonDisabledTextColor: UIColor { UIColor(hexString: "C3ADFF") }
+    
     var enabledTextColor: UIColor { UIColor(hexString: "#FFFFFF") }
     
     var disabledTextColor: UIColor { UIColor(hexString: "#FFFFFF") }
@@ -44,6 +48,8 @@ class ClearentColorsDefaultPalette: ClearentUIColors {
     var titleLabelColor: UIColor { UIColor(hexString: "#272431") }
     
     var subtitleLabelColor: UIColor { UIColor(hexString: "#6A6D7D") }
+    
+    var subtitleWarningLabelColor: UIColor { UIColor(hexString: "#FA8A07") }
     
     var readerNameColor: UIColor { UIColor(hexString: "1B181F") }
     
@@ -79,5 +85,19 @@ class ClearentColorsDefaultPalette: ClearentUIColors {
     
     var manualPaymentErrorMessageColor: UIColor { UIColor(hexString: "C2210F") }
     
-    var manualPaymentTextFieldPlaceholder: UIColor { UIColor(hexString: "#6A6D7D")}
+    var manualPaymentTextFieldPlaceholder: UIColor { UIColor(hexString: "#6A6D7D") }
+    
+    var settingOfflineStatusLabel: UIColor { UIColor(hexString: "#FA8A07") }
+    
+    var settingsOfflineStatusLabelFail: UIColor { UIColor(hexString: "#C2210F") }
+    
+    var settingsOfflineStatusLabelSuccess: UIColor { UIColor(hexString: "#2FAC10") }
+    
+    var settingsReadersPlaceholderColor: UIColor { UIColor(hexString: "#6A6D7D") }
+    
+    var settingsReadersDescriptionColor: UIColor { UIColor(hexString: "#272431") }
+    
+    var errorLogKeyLabelColor: UIColor { UIColor(hexString: "#6A6D7D") }
+    
+    var errorLogValueLabelColor: UIColor { UIColor(hexString: "000000") }
 }

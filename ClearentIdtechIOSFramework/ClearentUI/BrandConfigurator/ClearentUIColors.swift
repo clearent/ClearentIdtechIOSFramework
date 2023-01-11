@@ -39,6 +39,12 @@ public protocol ClearentUIColors {
     // The text's color for button of type bordered
     var borderedButtonTextColor: UIColor { get }
     
+    // The text's color for button of type link
+    var linkButtonTextColor: UIColor { get }
+    
+    // The text's color for button of type link when disabled
+    var linkButtonDisabledTextColor: UIColor { get }
+    
     // MARK: - ClearentHintView
     
     // The background's color when this component is highlighted
@@ -52,13 +58,16 @@ public protocol ClearentUIColors {
     
     // MARK: - ClearentTitleLabel
     
-    // The label's text color (also used in ClearentReaderDetailsScreen)
+    // The label's text color (also used in ClearentReaderDetailsScreen and ClearentSettingsModalViewController)
     var titleLabelColor: UIColor { get }
     
     // MARK: - ClearentSubtitleLabel
     
     // The label's text color (also used in ClearentReaderDetailsScreen)
     var subtitleLabelColor: UIColor { get }
+    
+    // The warning label's text color (also used to indicate offline mode)
+    var subtitleWarningLabelColor: UIColor { get }
     
     // MARK: - ClearentReaderStatusHeaderView
     
@@ -131,4 +140,30 @@ public protocol ClearentUIColors {
     
     // The payment textfield placeholder's color
     var manualPaymentTextFieldPlaceholder: UIColor { get }
+    
+    // MARK: - ClearentSettingsModalViewController
+
+    // The color of the label displayed in Settings screen when there are pending offline transactions
+    var settingOfflineStatusLabel: UIColor { get }
+    
+    // The color of the label displayed in Settings screen when the upload of the offline transactions completed with errors
+    var settingsOfflineStatusLabelFail: UIColor { get }
+    
+    // The color of the label displayed in Settings screen when the upload of the offline transactions completed successfully
+    var settingsOfflineStatusLabelSuccess: UIColor { get }
+    
+    // The color of the readers placeholder displayed in Settings screen when there is no reader connected
+    var settingsReadersPlaceholderColor: UIColor { get }
+    
+    // The color of the readers label displayed in Settings screen when there is a reader connected
+    var settingsReadersDescriptionColor: UIColor { get }
+    
+    // MARK: - Offline Mode Report
+    
+    // The color of the key value in the error log pdf report
+    var errorLogKeyLabelColor: UIColor { get }
+    
+    // The color of the value value in the error log pdf report
+    var errorLogValueLabelColor: UIColor { get }
+    
 }

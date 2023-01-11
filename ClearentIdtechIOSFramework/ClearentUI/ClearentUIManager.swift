@@ -9,25 +9,29 @@
 import Foundation
 
 /**
- * This class is to be used as a singleton and its main purpose is to start different processes from the SDK by providing UIControllers that will handle the entire process
- *
+ * This class is to be used as a singleton and its main purpose is to start different processes from the SDK by providing UINavigationControllers that handles the entire process.
  */
 public final class ClearentUIManager: NSObject {
     private let clearentWrapper = ClearentWrapper.shared
     @objc public static let shared = ClearentUIManager()
-    public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
-    @objc public var signatureEnabled: Bool = true
+    
+    @objc public static var configuration: ClearentUIManagerConfiguration!
+
     @objc public var cardReaderPaymentIsPreferred: Bool = true {
         didSet {
             clearentWrapper.cardReaderPaymentIsPreffered = cardReaderPaymentIsPreferred
         }
     }
-    @objc public var tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages
     
+    var isOfflineModeConfirmed = false
+
     // MARK: Init
     
-    public override init() {
-        super.init()
+    /**
+     * This method updates the SDK with the necessary configuration to work properly.
+     */
+    public func initialize(with configuration: ClearentUIManagerConfiguration) {
+        ClearentUIManager.configuration = configuration
         setupReaderInfo()
     }
     
@@ -39,77 +43,99 @@ public final class ClearentUIManager: NSObject {
         }
         
         ClearentWrapperDefaults.lastPairedReaderInfo = ClearentWrapperDefaults.recentlyPairedReaders?.first { $0.autojoin }
-
-        clearentWrapper.readerInfoReceived = { [weak self] reader in
+        
+        ClearentWrapper.configuration.readerInfoReceived = { reader in
             DispatchQueue.main.async {
-                self?.readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
+                ClearentUIManager.configuration.readerInfoReceived?(ClearentWrapperDefaults.pairedReaderInfo)
             }
         }
     }
     
     // MARK: Public
-    
     /**
-     * Method updates the SDK with needed parameters to work properly
-     * @param baseURL, the endpoint of the backend
-     * @param apiKey, the API Key in order to use the API
-     * @param publicKey, needed for the card reader initialisation
-     */
-    @objc public func updateWith(baseURL: String, apiKey: String, publicKey: String, enableEnhancedMessaging: Bool) {
-        clearentWrapper.updateWithInfo(baseURL: baseURL, publicKey: publicKey, apiKey: apiKey, enableEnhancedMessaging: enableEnhancedMessaging)
-    }
-    
-    /**
-     * Method returns a UIController that can handle the entire payment process
-     * @param paymentInfo, a PaymentInfo object that contains information related to payment (amount, customerID, invoice, etc)
+     * Method that returns a UINavigationController that can handle the entire payment process.
+     * @param amount, the amount to be charged in a transaction
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
-    @objc public func paymentViewController(paymentInfo: PaymentInfo?, completion: ((ClearentResult) -> Void)?) -> UINavigationController {
-        viewController(processType: .payment, paymentInfo: paymentInfo, dismissCompletion: { [weak self] result in
-            guard let completionResult = self?.resultFor(completionResult: result) else { return }
+    @objc public func paymentViewController(paymentInfo: PaymentInfo?, completion: ((ClearentError?) -> Void)?) -> UINavigationController {
+        navigationController(processType: .payment, paymentInfo: paymentInfo, dismissCompletion: { [weak self] result in
+            let completionResult = self?.resultFor(completionResult: result)
             completion?(completionResult)
         })
     }
     
     /**
-     * Method returns a UIController that can handle the pairing process of a card reader
+     * Method that returns a UINavigationController that can handle the pairing process of a card reader.
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
-    @objc public func pairingViewController(completion: ((ClearentResult) -> Void)?) -> UINavigationController {
-        viewController(processType: .pairing(), dismissCompletion: { [weak self] result in
-            guard let completionResult = self?.resultFor(completionResult: result) else { return }
+    @objc public func pairingViewController(completion: ((ClearentError?) -> Void)?) -> UINavigationController {
+        navigationController(processType: .pairing(), dismissCompletion: { [weak self] result in
+            let completionResult = self?.resultFor(completionResult: result)
             completion?(completionResult)
         })
     }
     
     /**
-     * Method returns a UIController that will display a list containing current card reader informations and recently paired readers
+     * Method returns a UINavigationController that will display a list containing current card reader informations and recently paired readers
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
-    @objc public func readersViewController(completion: ((ClearentResult) -> Void)?) -> UINavigationController {
-        viewController(processType: .showReaders, dismissCompletion: {[weak self] result in
-            guard let completionResult = self?.resultFor(completionResult: result) else { return }
+    @objc public func settingsViewController(completion: ((ClearentError?) -> Void)?) -> UINavigationController {
+        navigationController(processType: .showSettings, dismissCompletion: { [weak self] result in
+            let completionResult = self?.resultFor(completionResult: result)
             completion?(completionResult)
         })
+    }
+    
+    @objc public func allUnprocessedOfflineTransactionsCount() -> Int {
+        let offlineManager = clearentWrapper.retrieveOfflineManager()
+        return offlineManager?.unproccesedTransactionsCount() ?? 0
+    }
+    
+    /**
+     * Method that returns a bool representing if we should display the offline mode warning
+     */
+    @objc public func shouldDisplayOfflineModeLabel() -> Bool {
+        ClearentWrapperDefaults.enableOfflineMode && !ClearentWrapperDefaults.enableOfflinePromptMode
     }
 
-    internal func viewController(processType: ProcessType, paymentInfo: PaymentInfo? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UINavigationController {
-        let viewController = ClearentProcessingModalViewController(showOnTop: processType == .showReaders || processType == .renameReader)
-        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, paymentInfo: paymentInfo, processType: processType)
-        presenter.editableReader = editableReader
-        viewController.presenter = presenter
-        viewController.dismissCompletion = dismissCompletion
-
+    func navigationController(processType: ProcessType, paymentInfo: PaymentInfo? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UINavigationController {
+        var viewController: UIViewController?
+        if processType == .showSettings {
+            viewController = settingsViewController(dismissCompletion: dismissCompletion)
+        } else {
+            viewController = processingModalViewController(processType: processType, paymentInfo: paymentInfo, editableReader: editableReader, dismissCompletion: dismissCompletion)
+        }
+        
+        guard let viewController = viewController else {
+            return UINavigationController()
+        }
         let navigationController = UINavigationController(rootViewController: viewController)
         navigationController.isNavigationBarHidden = true
         navigationController.modalPresentationStyle = .overFullScreen
         return navigationController
     }
+
+    private func processingModalViewController(processType: ProcessType, paymentInfo: PaymentInfo? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UIViewController {
+        let viewController = ClearentProcessingModalViewController(showOnTop: processType == .showReaders || processType == .renameReader)
+        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, paymentInfo: paymentInfo, processType: processType)
+        presenter.editableReader = editableReader
+        viewController.presenter = presenter
+        viewController.dismissCompletion = dismissCompletion
+        return viewController
+    }
     
-    private func resultFor(completionResult:CompletionResult) -> ClearentResult {
+    private func settingsViewController(dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UIViewController {
+        let viewController = ClearentSettingsModalViewController()
+        let presenter = ClearentSettingsPresenter(settingsPresenterView: viewController)
+        viewController.presenter = presenter
+        viewController.dismissCompletion = dismissCompletion
+        return viewController
+    }
+    
+    private func resultFor(completionResult: CompletionResult) -> ClearentError? {
         switch completionResult {
         case .success(_):
-            return ClearentResult.processFinishedWithoutError
+            return nil
         case .failure(let err):
             return err
         }

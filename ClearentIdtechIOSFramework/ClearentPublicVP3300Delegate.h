@@ -22,6 +22,11 @@
 -(void) successTransactionToken:(ClearentTransactionToken *) clearentTransactionToken;
 
 /**
+* This will notify you when a ClearentTransactionTokenRequest has been created, this will only be called when the SDK is in offline mode.
+*/
+-(void) successOfflineTransactionToken:(NSData *) clearentTokenRequestData isTransactionEncrypted:(BOOL)isEncrypted;
+
+/**
  *  When the framework wants to communicate back it will call this method.
  */
 - (void) feedback:(ClearentFeedback*) clearentFeedback;

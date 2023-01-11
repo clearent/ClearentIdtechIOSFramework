@@ -28,8 +28,10 @@ class ClearentSignatureView: ClearentMarginableView {
     public var doneAction: ((_ resultedImage: UIImage) -> Void)?
 
     override var margins: [BottomMargin] {
-        [RelativeBottomMargin(constant: 16.0, relatedViewType: ClearentPrimaryButton.self),
-         BottomMargin(constant: 16)]
+        [
+            RelativeBottomMargin(constant: 16.0, relatedViewType: ClearentPrimaryButton.self),
+            BottomMargin(constant: 16)
+        ]
     }
 
     @IBAction func clearButtonWasTapped(_: Any) {
