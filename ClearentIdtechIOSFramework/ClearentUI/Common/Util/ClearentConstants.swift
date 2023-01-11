@@ -348,9 +348,9 @@ import UIKit
         }
         
         enum Settings {
-            public static let settingsOfflineModeTitle = "xsdk_settings_title".localized;
+            public static let settingsOfflineModeTitle = "xsdk_settings_title".localized
             public static let settingsReadersPlaceholder = "xsdk_settings_readers_placeholder".localized
-            public static let settingsOfflineModeSubtitle = "xsdk_settings_offline_subtitle".localized;
+            public static let settingsOfflineModeSubtitle = "xsdk_settings_offline_subtitle".localized
             public static let settingsOfflineSwitchEnabled = "xsdk_settings_offline_switch_enabled".localized
             public static let settingsOfflineSwitchEnablePrompt = "xsdk_settings_offline_switch_enable_prompt".localized
             public static let settingsOfflinePendingTransactions = "xsdk_settings_offline_pending_transactions".localized
@@ -361,7 +361,7 @@ import UIKit
             public static let settingsOfflineButtonReport = "xsdk_settings_offline_btn_report".localized
             public static let settingsOfflineButtonDone = "xsdk_settings_offline_btn_done".localized
             public static let settingsOfflineButtonProcessNoInternet = "xsdk_settings_offline_btn_process_no_internet".localized
-            public static let settingsEmailReceiptSubtitle = "xsdk_settings_email_receipt_subtitle".localized;
+            public static let settingsEmailReceiptSubtitle = "xsdk_settings_email_receipt_subtitle".localized
             public static let settingsEmailReceiptEnabled = "xsdk_settings_email_receipt_enabled".localized
         }
     }
