@@ -11,6 +11,7 @@ protocol TransactionRepositoryProtocol {
     var offlineManager: OfflineModeManager? { get set }
     func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
     func sendSignatureRequest(image: UIImage, completion: @escaping (SignatureResponse?, ClearentError?) -> Void)
+    func sendReceiptRequest(emailAddress: String, completion: @escaping (ReceiptResponse?, ClearentError?) -> Void)
     func resendSignature(completion: @escaping (SignatureResponse?, ClearentError?) -> Void)
     func refundTransaction(jwt: String, amount: String, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
     func voidTransaction(transactionID: String, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
@@ -19,6 +20,7 @@ protocol TransactionRepositoryProtocol {
     func manualEntryTransaction(saleEntity: SaleEntity)
     func saveOfflineTransaction(paymentData: PaymentData)
     func saveSignatureImageForTransaction(image: UIImage)
+    func saveEmailForTransaction(emailAddress: String)
     func resaveSignatureImageForTransaction()
     func fetchOfflineTransactions() -> [OfflineTransaction]?
     func serviceFeeForAmount(amount: Double) -> Double?
@@ -157,6 +159,27 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         }
     }
     
+    func sendReceiptRequest(emailAddress: String, completion: @escaping (ReceiptResponse?, ClearentError?) -> Void) {
+        if let id = lastTransactionID, let tid = Int(id) {
+            httpClient.sendReceipt(emailAddress: emailAddress, transactionID: tid) { data, error in
+                guard let responseData = data else { return }
+                
+                do {
+                    let decodedResponse = try JSONDecoder().decode(ReceiptResponse.self, from: responseData)
+                    guard let receiptError = decodedResponse.payload.error else {
+                        completion(decodedResponse, nil)
+                        return
+                    }
+                    completion(decodedResponse, .init(type: .httpError, code: receiptError.code, message: receiptError.message))
+                // error call delegate
+                } catch let jsonDecodingError {
+                    completion(nil, ClearentError(type: .httpError, code: "xsdk_response_parsing_error".localized, message: "xsdk_http_response_parsing_error_message".localized))
+                    print(jsonDecodingError)
+                }
+            }
+        }
+    }
+    
     func fetchTerminalSetting(completion: @escaping () -> Void) {
         httpClient.terminalSettings() { data, error in
             DispatchQueue.main.async {
@@ -274,6 +297,16 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         saveSignatureImageForTransaction(image: signatureImage)
     }
     
+    /**
+     * Saves  the image representing the user's signature
+     *  @param transactionID, the id of the transaction for wich we save the signature
+     *  @param the actual image containing the signature
+     */
+    func saveEmailForTransaction(emailAddress: String) {
+        guard let transactionID = offlineTransaction?.transactionID else { return }
+        offlineManager?.saveEmailForTransaction(transactionID: transactionID, emailAddress: emailAddress)
+    }
+    
     // MARK: - Private
     
     private func calculateFeeFor(amount: Double, feeType: ServiceFeeType, feeValue: Double) -> Double {
@@ -306,7 +339,13 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
                     return
                 }
                 self?.sendSignatureRequest(image: image) { (_, error) in
-                    completion(error, nil)
+                    guard let emailAddress = self?.offlineManager?.retrieveEmailForTransaction(transactionID: offlineTransaction.transactionID) else {
+                        completion(error, nil)
+                        return
+                    }
+                    self?.sendReceiptRequest(emailAddress: emailAddress) { (_, error) in
+                        completion(error, nil)
+                    }
                 }
             }
         }

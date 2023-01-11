@@ -80,6 +80,13 @@ public protocol ClearentWrapperProtocol : AnyObject {
      func didFinishedSignatureUploadWith(response: SignatureResponse?, error: ClearentError?)
     
     /**
+     * Method called when the process of posting a transaction receipt is completed.
+     * @param response, the response received from the API
+     * @param error, if not null it will contain the error received from the API
+     */
+     func didFinishedSendingReceipt(response: ReceiptResponse?, error: ClearentError?)
+    
+    /**
      * Method called when an offline signature was successfully saved.
      * @param status TransactionStoreStatus, the status of the offline signature proccesing
      */

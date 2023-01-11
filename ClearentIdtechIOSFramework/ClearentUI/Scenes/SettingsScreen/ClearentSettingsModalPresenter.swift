@@ -21,6 +21,7 @@ protocol ClearentSettingsPresenterProtocol {
     func updateOfflineStatus()
     func updateOfflineMode(isEnabled: Bool)
     func updatePromptMode(isEnabled: Bool)
+    func updateEmailReceiptStatus(isEnabled: Bool)
 }
 
 class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
@@ -72,6 +73,10 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
     
     func updatePromptMode(isEnabled: Bool) {
         ClearentWrapperDefaults.enableOfflinePromptMode = isEnabled
+    }
+    
+    func updateEmailReceiptStatus(isEnabled: Bool) {
+        ClearentWrapperDefaults.enableEmailReceipt = isEnabled
     }
 
     // MARK: - Private

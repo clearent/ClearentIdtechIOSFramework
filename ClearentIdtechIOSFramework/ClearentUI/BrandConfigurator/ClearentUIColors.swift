@@ -133,8 +133,8 @@ public protocol ClearentUIColors {
     // The color of header, fields and section displayed on Manual Entry Form view
     var manualPaymentTitleColor: UIColor { get }
     
-    // The error message's text color
-    var manualPaymentErrorMessageColor: UIColor { get }
+    // The color of a field validation error
+    var fieldValidationErrorMessageColor: UIColor { get }
     
     // MARK: - ClearentPaymentTextField
     

@@ -79,6 +79,19 @@
 "xsdk_signature_accepted_succesful_title" = "Signature accepted successfully";
 "xsdk_signature_upload_failure_title" = "Signature capture failed";
 
+// MARK: - Payment Flow - Email Receipt
+
+"xsdk_email_option_title" = "Would you like to send the receipt via email?";
+"xsdk_email_option_button_yes" = "Yes";
+"xsdk_email_option_button_no" = "No";
+"xsdk_email_form_title" = "Send receipt";
+"xsdk_email_form_subtitle" = "Email address";
+"xsdk_email_form_input_placeholder" = "Input an email address";
+"xsdk_email_form_invalid_address" = "Please enter a valid email address.";
+"xsdk_email_form_button_send" = "Send";
+"xsdk_email_form_button_skip" = "Skip";
+"xsdk_email_form_upload_failed" = "Email upload failed";
+
 // MARK: - Payment Flow - Manually Enter Card Info
 
 "xsdk_payment_manual_entry_title" = "Please fill in the credit card information";
@@ -273,4 +286,5 @@
 "xsdk_settings_offline_btn_report" = "Report";
 "xsdk_settings_offline_btn_done" = "OK";
 "xsdk_settings_offline_btn_process_no_internet" = "The transactions cannot be processed until the internet connection is restored";
-
+"xsdk_settings_email_receipt_subtitle" = "Receipt";
+"xsdk_settings_email_receipt_enabled" = "Ask to email transaction receipt";

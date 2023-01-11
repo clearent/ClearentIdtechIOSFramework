@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="20037" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ClearentTextFieldAndButton" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+            <connections>
+                <outlet property="button" destination="Zvu-2Q-3wx" id="xTS-Va-6BD"/>
+                <outlet property="textField" destination="lJ4-iL-wG9" id="BOP-2t-kcE"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="252" height="296"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="lxn-hV-P7a" customClass="ClearentAdaptiveStackView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                    <rect key="frame" x="0.0" y="0.0" width="252" height="296"/>
+                    <subviews>
+                        <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lJ4-iL-wG9" customClass="ClearentTextField" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="252" height="50"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        </view>
+                        <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zvu-2Q-3wx" customClass="ClearentPrimaryButton" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="50" width="252" height="246"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <connections>
+                                <outletCollection property="gestureRecognizers" destination="Mhf-bi-mmQ" appends="YES" id="kHc-To-lNc"/>
+                            </connections>
+                        </view>
+                    </subviews>
+                </stackView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <gestureRecognizers/>
+            <constraints>
+                <constraint firstItem="lxn-hV-P7a" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="2hz-H3-DQs"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="lxn-hV-P7a" secondAttribute="trailing" id="FH7-QS-z9d"/>
+                <constraint firstItem="lxn-hV-P7a" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="cq4-qY-rtl"/>
+                <constraint firstAttribute="bottom" secondItem="lxn-hV-P7a" secondAttribute="bottom" id="qgf-IY-jQD"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="20.289855072463769" y="150"/>
+        </view>
+        <tapGestureRecognizer id="Mhf-bi-mmQ">
+            <connections>
+                <action selector="doneButtonWasTapped:" destination="-1" id="ZHb-Hk-8Eh"/>
+            </connections>
+        </tapGestureRecognizer>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

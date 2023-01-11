@@ -15,24 +15,37 @@ protocol ClearentTextFieldProtocol {
 
 class ClearentTextField: ClearentMarginableView, UITextFieldDelegate {
 
-    @IBOutlet weak var infoLabel: UILabel!
-    @IBOutlet weak var inputField: UITextField!
+    @IBOutlet var inputField: UITextField!
+    @IBOutlet private var infoLabel: UILabel!
+    @IBOutlet private var errorLabel: UILabel!
+    
     var delegate: ClearentTextFieldProtocol?
 
-    private var readerName: String?
-        override public var margins: [BottomMargin] {
+    override public var margins: [BottomMargin] {
         [
             BottomMargin(constant: 80)
         ]
     }
     
-    convenience init(currentReaderName: String?, inputName: String, hint: String, delegate: ClearentTextFieldProtocol) {
+    var errorLabelText: String? {
+        didSet {
+            errorLabel.isHidden = errorLabelText?.isEmpty ?? true || errorLabel == nil
+            errorLabel.text = errorLabelText
+        }
+    }
+    
+    var infoLabelText: String? {
+        didSet {
+            infoLabel.text = infoLabelText
+        }
+    }
+    
+    convenience init(inputText: String?, inputTitle: String, hint: String, delegate: ClearentTextFieldProtocol) {
         self.init()
-        self.readerName = currentReaderName
-        self.infoLabel.text = inputName
+        self.infoLabel.text = inputTitle
         self.inputField.placeholder = hint
-        if let readerName = self.readerName {
-            self.inputField.text = readerName
+        if let inputText = inputText {
+            self.inputField.text = inputText
         }
         self.inputField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: .editingChanged)
         self.inputField.delegate = self
@@ -41,11 +54,13 @@ class ClearentTextField: ClearentMarginableView, UITextFieldDelegate {
     }
 
     override func configure() {
-        self.infoLabel.font = ClearentUIBrandConfigurator.shared.fonts.customNameInfoLabelFont
-        self.infoLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.infoLabelColor
-        self.inputField.font = ClearentUIBrandConfigurator.shared.fonts.customNameInputLabelFont
+        infoLabel.font = ClearentUIBrandConfigurator.shared.fonts.customNameInfoLabelFont
+        infoLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.infoLabelColor
+        inputField.font = ClearentUIBrandConfigurator.shared.fonts.customNameInputLabelFont
+        errorLabel.font = ClearentUIBrandConfigurator.shared.fonts.errorMessageLabelFont
+        errorLabel.textColor = ClearentUIBrandConfigurator.shared.colorPalette.fieldValidationErrorMessageColor
+        errorLabel.isHidden = true
     }
-    
     
     @objc func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         let maxLength = 50
@@ -55,6 +70,8 @@ class ClearentTextField: ClearentMarginableView, UITextFieldDelegate {
         return newString.count <= maxLength
     }
     
+    // MARK: - Private
+     
     @objc final private func textFieldDidChange(textField: UITextField) {
         
         let isValid = textField.hasText && textField.text?.count ?? 0 >= 3
