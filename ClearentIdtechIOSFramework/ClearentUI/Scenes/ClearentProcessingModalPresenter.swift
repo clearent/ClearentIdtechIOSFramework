@@ -232,7 +232,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                 if error.type.isMissingKeyError {
                     self?.modalProcessingView?.dismissViewController(result: .failure(error))
                 } else {
-                    self?.sdkFeedbackProvider.didFinishedSendingReceipt(response: response, error: error)
+                    self?.sdkFeedbackProvider.didFinishedSendingReceiptWithError(response: response, error: error)
                 }
             } else {
                 self?.modalProcessingView?.dismissViewController(result: .success(self?.editableReader?.customReaderName))

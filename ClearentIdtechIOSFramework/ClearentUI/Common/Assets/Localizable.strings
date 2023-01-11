@@ -90,7 +90,7 @@
 "xsdk_email_form_invalid_address" = "Please enter a valid email address.";
 "xsdk_email_form_button_send" = "Send";
 "xsdk_email_form_button_skip" = "Skip";
-"xsdk_email_form_upload_failed" = "Email upload failed";
+"xsdk_email_form_send_receipt_failed" = "Sending receipt failed";
 
 // MARK: - Payment Flow - Manually Enter Card Info
 
