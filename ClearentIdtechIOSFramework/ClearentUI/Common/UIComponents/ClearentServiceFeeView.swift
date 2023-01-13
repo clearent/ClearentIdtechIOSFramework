@@ -9,7 +9,6 @@
 class ClearentServiceFeeView: ClearentMarginableView {
 
     @IBOutlet weak var stackView: ClearentAdaptiveStackView!
-    @IBOutlet weak var titleLabel: ClearentTitleLabel!
     @IBOutlet weak var basePriceTitle: ClearentSubtitleLabel!
     @IBOutlet weak var basePriceAmount: ClearentTitleLabel!
     @IBOutlet weak var adjustedPriceTitle: ClearentSubtitleLabel!
@@ -22,18 +21,15 @@ class ClearentServiceFeeView: ClearentMarginableView {
         if serviceFeeType.description == nil {
             descriptionLabel.isHidden = true
         }
-        stackView.setCustomSpacing(8, after: titleLabel)
     }
     
     override func configure() {
-        titleLabel.font = ClearentUIBrandConfigurator.shared.fonts.screenTitleFont
         basePriceAmount.font = ClearentUIBrandConfigurator.shared.fonts.screenTitleFont
         adjustedPriceAmount.font = ClearentUIBrandConfigurator.shared.fonts.screenTitleFont
     }
     
     // MARK: - Private
     private func setupTitles(for serviceFeeType: ServiceFeeProgramType, amountWithTip: String, amountWithTipAndServiceFee: String) {
-        titleLabel.title = serviceFeeType.title
         basePriceTitle.title = serviceFeeType.basePriceTitle
         basePriceAmount.title = amountWithTip
         adjustedPriceTitle.title = serviceFeeType.adjustedPriceTitle

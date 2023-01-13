@@ -80,7 +80,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             }
         }
             
-        if let presenter = presenter, presenter.useCardReaderPaymentMethod, shouldDisplayOfflineModeLabel() {
+        if let presenter = presenter, shouldDisplayOfflineModeLabel(), feedback.items.first?.type != .manualEntry {
             let iconAndLabel = ClearentIconAndLabel(icon: UIImage(named: ClearentConstants.IconName.smallWarning, in: ClearentConstants.bundle, compatibleWith: nil), text: presenter.offlineTransactionsWarningText())
             stackView.insertArrangedSubview(iconAndLabel, at: 1)
             stackView.layoutSubviews()
