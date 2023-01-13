@@ -12,7 +12,11 @@ import Foundation
  * This class is to be used as a singleton and its main purpose is to start different processes from the SDK by providing UINavigationControllers that handles the entire process.
  */
 public final class ClearentUIManager: NSObject {
+    
+    // MARK: - Properties
+    
     private let clearentWrapper = ClearentWrapper.shared
+    
     @objc public static let shared = ClearentUIManager()
     
     @objc public static var configuration: ClearentUIManagerConfiguration!
@@ -25,7 +29,7 @@ public final class ClearentUIManager: NSObject {
     
     var isOfflineModeConfirmed = false
 
-    // MARK: Init
+    // MARK: - Init
     
     /**
      * This method updates the SDK with the necessary configuration to work properly.
@@ -34,6 +38,8 @@ public final class ClearentUIManager: NSObject {
         ClearentUIManager.configuration = configuration
         setupReaderInfo()
     }
+    
+    // MARK: - Internal
     
     func setupReaderInfo() {
         // reset connection status on app restart
@@ -114,6 +120,8 @@ public final class ClearentUIManager: NSObject {
         navigationController.modalPresentationStyle = .overFullScreen
         return navigationController
     }
+    
+    // MARK: - Private
 
     private func processingModalViewController(processType: ProcessType, paymentInfo: PaymentInfo? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UIViewController {
         let viewController = ClearentProcessingModalViewController(showOnTop: processType == .showReaders || processType == .renameReader)
