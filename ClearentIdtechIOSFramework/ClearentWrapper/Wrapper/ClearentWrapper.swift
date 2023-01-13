@@ -120,6 +120,14 @@ public final class ClearentWrapper : NSObject {
     }
     
     /**
+     * Updates the authorization for the gateway, should be call each time the token is refreshed
+     * Do not use unless you have a vt-token fro Merchant Home  App
+     */
+    public func updateAuthrization(with vtToken: String, merchantID: String) {
+        self.transactionRepository?.updateVToken(token: vtToken, merchantID: merchantID)
+    }
+     
+    /**
      * Method that should be called to enable offline mode.
      */
     public func enableOfflineMode() throws {
@@ -506,7 +514,7 @@ public final class ClearentWrapper : NSObject {
     
     private func checkForMissingKeys() -> ClearentErrorType? {
         guard !ClearentWrapper.configuration.baseURL.isEmpty else { return ClearentErrorType.baseURLNotProvided }
-        guard !ClearentWrapper.configuration.apiKey.isEmpty else { return ClearentErrorType.apiKeyNotProvided }
+        // guard !ClearentWrapper.configuration.apiKey.isEmpty else { return ClearentErrorType.apiKeyNotProvided }
         guard !ClearentWrapper.configuration.publicKey.isEmpty else { return ClearentErrorType.publicKeyNotProvided }
         
         return nil

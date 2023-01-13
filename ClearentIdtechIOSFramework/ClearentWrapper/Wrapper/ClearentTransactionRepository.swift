@@ -24,6 +24,7 @@ protocol TransactionRepositoryProtocol {
     func resaveSignatureImageForTransaction()
     func fetchOfflineTransactions() -> [OfflineTransaction]?
     func serviceFeeForAmount(amount: Double) -> Double?
+    func updateVToken(token: String, merchantID: String)
 }
 
 class TransactionRepository: NSObject, TransactionRepositoryProtocol {
@@ -38,11 +39,19 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     
     // MARK: - Init
     
-    init(httpClient: ClearentHttpClientProtocol? = nil, baseURL: String, apiKey: String, clearentVP3300: Clearent_VP3300, clearentManualEntry: ClearentManualEntry?) {
+    init(httpClient: ClearentHttpClientProtocol? = nil, baseURL: String, apiKey: String?, clearentVP3300: Clearent_VP3300, clearentManualEntry: ClearentManualEntry?) {
         self.httpClient = httpClient ?? ClearentDefaultHttpClient(baseURL: baseURL, apiKey: apiKey)
         super.init()
         self.clearentManualEntry = clearentManualEntry
         self.clearentVP3300 = clearentVP3300
+    }
+    
+    /**
+     * Updates the authorization for the gateway
+     * Do not use unless you have a vt-token fro Merchant Home  App
+     */
+    func updateVToken(token: String, merchantID: String) {
+        self.httpClient.updateAuthrization(with: token, merchantID: merchantID)
     }
     
     /**
