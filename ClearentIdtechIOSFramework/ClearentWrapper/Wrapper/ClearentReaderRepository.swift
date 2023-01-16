@@ -6,6 +6,8 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
+import CoreBluetooth
+
 protocol ReaderRepositoryProtocol {
     var delegate: ClearentWrapperProtocol? { get set }
     var isBluetoothPermissionGranted: Bool { get }

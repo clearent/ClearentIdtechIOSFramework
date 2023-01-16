@@ -123,8 +123,8 @@ public final class ClearentWrapper : NSObject {
      * Updates the authorization for the gateway, should be call each time the token is refreshed
      * Do not use unless you have a vt-token fro Merchant Home  App
      */
-    public func updateAuthrization(with vtToken: String, merchantID: String) {
-        self.transactionRepository?.updateVToken(token: vtToken, merchantID: merchantID)
+    public func updateWebAuth(with auth: ClearentWebAuth) {
+        self.transactionRepository?.updateWebAuth(auth: auth)
     }
      
     /**

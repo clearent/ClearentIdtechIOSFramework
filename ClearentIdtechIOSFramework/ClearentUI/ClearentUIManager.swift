@@ -115,7 +115,7 @@ public final class ClearentUIManager: NSObject {
         return navigationController
     }
 
-    private func processingModalViewController(processType: ProcessType, paymentInfo: PaymentInfo? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UIViewController {
+    private func processingModalViewController(processType: ProcessType, paymentInfo: PaymentInfo? = nil, clearentAuth:ClearentWebAuth? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UIViewController {
         let viewController = ClearentProcessingModalViewController(showOnTop: processType == .showReaders || processType == .renameReader)
         let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, paymentInfo: paymentInfo, processType: processType)
         presenter.editableReader = editableReader

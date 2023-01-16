@@ -32,7 +32,7 @@ protocol ClearentHttpClientProtocol {
     func sendSignature(base64Image: String, transactionID: Int, completion: @escaping (Data?, Error?) -> Void)
     func sendReceipt(emailAddress: String, transactionID: Int, completion: @escaping (Data?, Error?) -> Void)
     func terminalSettings(completion: @escaping (Data?, Error?) -> Void)
-    func updateAuthrization(with vtToken: String, merchantID: String)
+    func updateWebAuth(with auth: ClearentWebAuth)
 }
 
 class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
@@ -40,16 +40,14 @@ class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
     var httpClient: HttpClient? = nil
     let baseURL: String
     let apiKey: String?
-    var vtToken: String?
-    var merchantID: String?
+    var webAuth: ClearentWebAuth?
     
     // MARK: Init
     
-    public init(baseURL: String, apiKey: String?, vtToken:String? = nil, merchantID:String? = nil) {
+    public init(baseURL: String, apiKey: String?, webAuth: ClearentWebAuth? = nil) {
         self.baseURL = baseURL
         self.apiKey = apiKey
-        self.vtToken = vtToken
-        self.merchantID = merchantID
+        self.webAuth = webAuth
         guard let url = URL(string: baseURL) else { return }
         
         self.httpClient = HttpClient(baseURL: url)
@@ -57,9 +55,8 @@ class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
     
     // MARK - Public
     
-    public func updateAuthrization(with vtToken: String, merchantID: String) {
-        self.vtToken = vtToken
-        self.merchantID = merchantID
+    public func updateWebAuth(with auth: ClearentWebAuth) {
+        self.webAuth = auth
     }
     
     func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (Data?, Error?) -> Void) {
@@ -131,9 +128,9 @@ class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
             headers["mobilejwt"] = jwt
         }
         
-        if let token = vtToken, let _ = merchantID {
-            headers["Authorization"] = "vt-token " + token
-            headers["MerchantID"] = merchantID
+        if let webAuth = webAuth {
+            headers["Authorization"] = "vt-token " + webAuth.vtToken
+            headers["MerchantID"] = webAuth.merchantID
         } else if let apiKey = apiKey {
             headers["api-key"] = apiKey
         }

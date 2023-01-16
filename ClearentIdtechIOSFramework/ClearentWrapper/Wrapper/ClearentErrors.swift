@@ -21,6 +21,17 @@ public typealias CompletionResult = Result<String?, ClearentError>
     }
 }
 
+
+@objc public class ClearentWebAuth: NSObject {
+    let merchantID: String
+    let vtToken: String
+    
+    init(merchantID: String, vtToken: String) {
+        self.merchantID = merchantID
+        self.vtToken = vtToken
+    }
+}
+
 @objc public enum ClearentErrorType: Int, Error, Codable {
      /// The user aborted the current flow
     case cancelledByUser = 0
