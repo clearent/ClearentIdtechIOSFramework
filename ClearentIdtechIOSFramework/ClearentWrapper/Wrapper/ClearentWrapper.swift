@@ -299,7 +299,6 @@ public final class ClearentWrapper : NSObject {
             }
         } else if ClearentWrapperDefaults.enableOfflineMode {
             transactionRepository?.saveEmailForTransaction(emailAddress: emailAddress)
-            completion(nil, nil)
         } else if checkForConnectivityWarning(for: .payment) {
             completion(nil, .init(type: .connectivityError))
             return

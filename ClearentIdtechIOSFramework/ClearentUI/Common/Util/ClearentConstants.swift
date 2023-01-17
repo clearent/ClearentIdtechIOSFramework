@@ -224,7 +224,10 @@ import UIKit
             public static let emailFormInvalidAddress = "xsdk_email_form_invalid_address".localized
             public static let emailFormButtonSend = "xsdk_email_form_button_send".localized
             public static let emailFormButtonSkip = "xsdk_email_form_button_skip".localized
+            public static let emailFormSendReceiptSuccess = "xsdk_email_form_send_receipt_success".localized
             public static let emailFormSendReceiptFailed = "xsdk_email_form_send_receipt_failed".localized
+            public static let emailFormSaveEmailSuccess = "xsdk_email_form_save_email_success".localized            
+            public static let emailFormOfflineModeInfo = "xsdk_email_form_offline_mode_info".localized
         }
         
         enum Keyboard {
