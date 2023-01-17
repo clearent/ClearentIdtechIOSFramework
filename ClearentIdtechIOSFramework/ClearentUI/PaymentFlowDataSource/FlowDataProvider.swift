@@ -354,7 +354,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
             delegate?.didReceiveFlowFeedback(feedback: feedback)
         } else {
             let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.transaction_completed),
-                                        FlowDataItem(type: .title, object: ClearentConstants.Localized.EmailReceipt.emailFormSendReceiptSuccess)]
+                         FlowDataItem(type: .title, object: ClearentConstants.Localized.EmailReceipt.emailFormSendReceiptSuccess)]
             
             let feedback = FlowDataFactory.component(with: .payment,
                                                      type: .info,

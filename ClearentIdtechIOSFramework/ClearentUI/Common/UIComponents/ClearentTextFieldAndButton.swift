@@ -36,11 +36,11 @@ class ClearentTextFieldAndButton: ClearentMarginableView {
     
     // MARK: - Methods
     
-    convenience init(textFieldTitle: String, textFieldPlaceholder: String, subtitleTitle: String, buttonTitle: String) {
+    convenience init(textFieldTitle: String, textFieldPlaceholder: String, subtitleText: String, buttonTitle: String) {
         self.init()
         self.textField.infoLabelText = textFieldTitle
         self.textField.placeholderText = textFieldPlaceholder
-        self.subtitleLabel.title = subtitleTitle
+        self.subtitleLabel.title = subtitleText
         self.button.title = buttonTitle
     }
     

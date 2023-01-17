@@ -90,8 +90,8 @@
 "xsdk_email_form_invalid_address" = "Please enter a valid email address.";
 "xsdk_email_form_button_send" = "Send";
 "xsdk_email_form_button_skip" = "Skip";
-"xsdk_email_form_send_receipt_failed" = "Email receipt failed";
-"xsdk_email_form_send_receipt_success" = "Email receipt sent successfully";
+"xsdk_email_form_send_receipt_failed" = "Email sending failed";
+"xsdk_email_form_send_receipt_success" = "Email sent successfully";
 "xsdk_email_form_save_email_success" = "Email accepted successfully";
 "xsdk_email_form_offline_mode_info" = "Emailed receipt may not be instant";
 

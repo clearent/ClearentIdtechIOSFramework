@@ -502,12 +502,12 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
 
     private func completeTransaction() {
-        if ClearentUIManager.configuration.signatureEnabled {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                self.showSignatureScreen()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
+            if ClearentUIManager.configuration.signatureEnabled {
+                self?.showSignatureScreen()
+            } else {
+                self?.showEmailReceiptOption()
             }
-        } else {
-            showEmailReceiptOption()
         }
     }
 }
