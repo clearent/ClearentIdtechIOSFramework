@@ -52,6 +52,14 @@ extension SaleEntity {
         static let offlineText = "offline"
         static let platform = "iOS"
     }
+    
+    /**
+     Updates software type based on the following scenarios:
+      1. Our native app is used ->  Xplor Pay Mobile_[offline]_iOS
+                        -> add sdk version to softwareTypeVersion field
+      2. Integrator didn’t add anything -> Xplor Pay SDK_<sdk version>_ [offline]_iOS
+      3. Otherwise -> <integrator's choice>_Xplor Pay SDK_<sdk version>_[offline]_iOS
+     */
     func updateSoftwareType(isOfflineTransaction: Bool) {
         var softwareType = softwareType ?? ""
         let sdkVersion = ClearentWrapper.shared.currentSDKVersion()
