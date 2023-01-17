@@ -63,7 +63,7 @@ extension SaleEntity {
     func updateSoftwareType(isOfflineTransaction: Bool) {
         var softwareType = softwareType ?? ""
         let sdkVersion = ClearentWrapper.shared.currentSDKVersion()
-        if softwareType.lowercased().contains(SoftwareTypeNaming.hostAppTitle) { // check if the Host App is Xplor app
+        if softwareType.lowercased().contains(SoftwareTypeNaming.hostAppTitle) { // checks if the Host App is Xplor app
             softwareTypeVersion = sdkVersion
         } else {
             if !softwareType.isEmpty {
