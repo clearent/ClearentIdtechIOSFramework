@@ -316,6 +316,10 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     private func startTransactionFlow() {
+        if let auth = webAuth {
+            ClearentWrapper.shared.updateWebAuth(with: auth)
+        }
+        
         sdkFeedbackProvider.delegate = self
 
         if useCardReaderPaymentMethod, !sdkWrapper.isReaderConnected() {

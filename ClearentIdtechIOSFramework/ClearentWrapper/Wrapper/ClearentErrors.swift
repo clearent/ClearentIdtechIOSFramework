@@ -26,7 +26,7 @@ public typealias CompletionResult = Result<String?, ClearentError>
     let merchantID: String
     let vtToken: String
     
-    init(merchantID: String, vtToken: String) {
+    public init(merchantID: String, vtToken: String) {
         self.merchantID = merchantID
         self.vtToken = vtToken
     }
