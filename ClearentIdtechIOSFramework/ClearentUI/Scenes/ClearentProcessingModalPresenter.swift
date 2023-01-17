@@ -513,14 +513,12 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
 }
 
 extension ClearentProcessingModalPresenter: FlowDataProtocol {
-
     func didFinishSignature() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
             self?.showEmailReceiptOption()
         }
         sdkWrapper.isNewPaymentProcess = true
         ClearentUIManager.shared.isOfflineModeConfirmed = false
-        
     }
     
     func didFinishHandlingReceipt() {
