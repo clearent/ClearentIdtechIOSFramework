@@ -13,13 +13,15 @@
     public var orderID: String?
     public var billing: ClientInformation?
     public var shipping: ClientInformation?
+    public var softwareType: String?
     
-    @objc public init(amount: Double, customerID: String? = nil, invoice: String? = nil, orderID: String? = nil, billing: ClientInformation? = nil, shipping: ClientInformation? = nil) {
+    @objc public init(amount: Double, customerID: String? = nil, invoice: String? = nil, orderID: String? = nil, billing: ClientInformation? = nil, shipping: ClientInformation? = nil, softwareType: String? = nil) {
         self.amount = amount
         self.customerID = customerID
         self.invoice = invoice
         self.orderID = orderID
         self.billing = billing
         self.shipping = shipping
+        self.softwareType = softwareType
     }
 }

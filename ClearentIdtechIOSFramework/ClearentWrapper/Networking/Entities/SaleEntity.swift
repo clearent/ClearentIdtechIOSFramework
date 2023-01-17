@@ -44,6 +44,36 @@ public class SaleEntity: CodableProtocol {
     }
 }
 
+extension SaleEntity {
+    enum SoftwareTypeNaming {
+        static let separator = "_"
+        static let sdkTitle = "Xplor Pay SDK"
+        static let hostAppTitle = "xplor"
+        static let offlineText = "offline"
+        static let platform = "iOS"
+    }
+    func updateSoftwareType(isOfflineTransaction: Bool) {
+        var softwareType = softwareType ?? ""
+        let sdkVersion = ClearentWrapper.shared.currentSDKVersion()
+        if softwareType.lowercased().contains(SoftwareTypeNaming.hostAppTitle) { // check if the Host App is Xplor app
+            softwareTypeVersion = sdkVersion
+        } else {
+            if !softwareType.isEmpty {
+                softwareType.append(contentsOf: SoftwareTypeNaming.separator)
+            }
+            softwareType.append(contentsOf: SoftwareTypeNaming.sdkTitle)
+            if let sdkVersion = sdkVersion {
+                softwareType.append(contentsOf: "\(SoftwareTypeNaming.separator)\(sdkVersion)")
+            }
+        }
+        if isOfflineTransaction {
+            softwareType.append(contentsOf: "\(SoftwareTypeNaming.separator)\(SoftwareTypeNaming.offlineText)")
+        }
+        softwareType.append(contentsOf: "\(SoftwareTypeNaming.separator)\(SoftwareTypeNaming.platform)")
+        self.softwareType = softwareType
+    }
+}
+
 // MARK: - ClientInformation
 
 @objc public class ClientInformation: NSObject, Codable {

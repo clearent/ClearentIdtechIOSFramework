@@ -1,6 +1,6 @@
 //
 //  ClearentMarginable.swift
-//  XplorPayMobile
+//  ClearentIdtechIOSFramework
 //
 //  Created by Carmen Jurcovan on 06.04.2022.
 //

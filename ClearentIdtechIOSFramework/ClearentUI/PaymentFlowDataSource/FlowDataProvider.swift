@@ -96,7 +96,7 @@ class FlowDataProvider : NSObject {
     }
     
     func showServiceFeeScreen(for serviceFeeType: ServiceFeeProgramType) {
-        let items = [ FlowDataItem(type: .hint, object: serviceFeeType.title),
+        let items = [ FlowDataItem(type: .title, object: serviceFeeType.title),
                      FlowDataItem(type: .serviceFee, object: serviceFeeType),
                      FlowDataItem(type: .userAction, object: FlowButtonType.transactionWithServiceFee),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
