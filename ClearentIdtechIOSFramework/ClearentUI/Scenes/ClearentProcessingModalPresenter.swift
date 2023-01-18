@@ -257,6 +257,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         
         let saleEntity = SaleEntity(amount: amount,
                                     tipAmount: tip?.stringFormattedWithTwoDecimals,
+                                    softwareType: paymentInfo?.softwareType,
                                     billing: billingInfo,
                                     shipping: shippingInfo,
                                     card: cardNo,
@@ -368,6 +369,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         if let amountFormatted = paymentInfo?.amount.stringFormattedWithTwoDecimals {
             let saleEntity = SaleEntity(amount: amountFormatted,
                                         tipAmount: tip?.stringFormattedWithTwoDecimals,
+                                        softwareType: paymentInfo?.softwareType,
                                         billing: paymentInfo?.billing,
                                         shipping: paymentInfo?.shipping,
                                         customerID: paymentInfo?.customerID,

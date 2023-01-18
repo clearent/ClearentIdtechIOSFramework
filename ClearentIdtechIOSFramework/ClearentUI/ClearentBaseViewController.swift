@@ -1,6 +1,6 @@
 //
 //  ClearentBaseViewController.swift
-//  XplorPayMobile
+//  ClearentIdtechIOSFramework
 //
 //  Created by Carmen Jurcovan on 10.05.2022.
 //

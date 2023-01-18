@@ -117,6 +117,8 @@ import UIKit
         public static let maxNoOfCharacters = 11
     }
     
+    // MARK: - Localizable
+
     enum Localized {
         enum Internet {
             public static let noConnection = "xsdk_internet_no_connection".localized
