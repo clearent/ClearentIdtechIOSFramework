@@ -305,6 +305,8 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     func saveEmailForTransaction(emailAddress: String) {
         guard let transactionID = offlineTransaction?.transactionID else { return }
         offlineManager?.saveEmailForTransaction(transactionID: transactionID, emailAddress: emailAddress)
+        
+        delegate?.didAcceptOfflineEmail(transactionID: transactionID)
     }
     
     // MARK: - Private
