@@ -9,7 +9,7 @@
 import Foundation
 
 
-class ClearentWarninglabel: ClearentTitleLabel {
+class ClearentWarningLabel: ClearentTitleLabel {
     public override var nibName: String? {
         String(describing: ClearentTitleLabel.self)
     }

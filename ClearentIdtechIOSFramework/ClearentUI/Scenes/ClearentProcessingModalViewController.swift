@@ -80,7 +80,7 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
             }
         }
             
-        if let presenter = presenter, presenter.useCardReaderPaymentMethod, shouldDisplayOfflineModeLabel() {
+        if let presenter = presenter, shouldDisplayOfflineModeLabel(), feedback.items.first?.type != .manualEntry {
             let iconAndLabel = ClearentIconAndLabel(icon: UIImage(named: ClearentConstants.IconName.smallWarning, in: ClearentConstants.bundle, compatibleWith: nil), text: presenter.offlineTransactionsWarningText())
             stackView.insertArrangedSubview(iconAndLabel, at: 1)
             stackView.layoutSubviews()
@@ -224,9 +224,11 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     }
     
     private func emailForm() -> ClearentTextFieldAndButton {
-        let emailForm = ClearentTextFieldAndButton(textFieldTitle: ClearentConstants.Localized.EmailReceipt.emailFormTitle,
-                                               textFieldPlaceholder: ClearentConstants.Localized.EmailReceipt.emailFormInputPlaceholder,
-                                               buttonTitle: ClearentConstants.Localized.EmailReceipt.emailFormButtonSend)
+        let emailForm = ClearentTextFieldAndButton(textFieldTitle: ClearentConstants.Localized.EmailReceipt.emailFormSubtitle,
+                                                   textFieldPlaceholder: ClearentConstants.Localized.EmailReceipt.emailFormInputPlaceholder,
+                                                   subtitleText: ClearentConstants.Localized.EmailReceipt.emailFormOfflineModeInfo,
+                                                   buttonTitle: ClearentConstants.Localized.EmailReceipt.emailFormButtonSend)
+        emailForm.showSubtitleLabel = shouldDisplayOfflineModeLabel()
         emailForm.buttonAction = { email in
             if let email = email, ClearentFieldValidationHelper.isEmailValid(emailAddress: email) {
                 self.presenter?.handleEmailReceipt(with: email)

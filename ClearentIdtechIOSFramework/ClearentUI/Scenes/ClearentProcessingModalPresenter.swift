@@ -87,11 +87,19 @@ class ClearentProcessingModalPresenter {
         sdkFeedbackProvider.delegate = self
     }
 
-    private func successfulDissmissViewWithDelay() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
-            let result = CompletionResult.success(ClearentWrapperDefaults.pairedReaderInfo?.customReaderName)
-            self?.modalProcessingView?.dismissViewController(result: result)
+    private func dissmissView(with delay: CGFloat = 0, error: ClearentError? = nil) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
+            if let error = error {
+                self?.modalProcessingView?.dismissViewController(result: .failure(error))
+            } else {
+                let result = CompletionResult.success(ClearentWrapperDefaults.pairedReaderInfo?.customReaderName)
+                self?.modalProcessingView?.dismissViewController(result: result)
+            }
         }
+        
+        // reset status
+        sdkWrapper.isNewPaymentProcess = true
+        ClearentUIManager.shared.isOfflineModeConfirmed = false
     }
 }
 
@@ -176,14 +184,12 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                 } else if sdkWrapper.flowType?.flowFeedbackType == .signatureError {
                     showEmailReceiptOption()
                 } else {
-                    modalProcessingView?.dismissViewController(result: .success(editableReader?.customReaderName))
+                    dissmissView()
                 }
             }
             ClearentUIManager.shared.isOfflineModeConfirmed = false
         case .cancel, .emailReceiptOptionNo, .emailFormSkip:
-            sdkWrapper.isNewPaymentProcess = true
-            ClearentUIManager.shared.isOfflineModeConfirmed = false
-            modalProcessingView?.dismissViewController(result: .failure(.init(type: .cancelledByUser)))
+            dissmissView(error: .init(type: .cancelledByUser))
         case .retry, .pair:
             restartProcess(newPair: false)
         case .pairInFlow:
@@ -230,14 +236,10 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         modalProcessingView?.showLoadingView()
         
         sdkWrapper.sendReceipt(emailAddress: emailAddress) {  [weak self] (response, error) in
-            if let error = error {
-                if error.type.isMissingKeyError {
-                    self?.modalProcessingView?.dismissViewController(result: .failure(error))
-                } else {
-                    self?.sdkFeedbackProvider.didFinishedSendingReceiptWithError(response: response, error: error)
-                }
+            if let error = error, error.type.isMissingKeyError {
+                self?.dissmissView(error: error)
             } else {
-                self?.modalProcessingView?.dismissViewController(result: .success(self?.editableReader?.customReaderName))
+                self?.sdkFeedbackProvider.didFinishedSendingReceipt(response: response, error: error)
             }
         }
     }
@@ -259,6 +261,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         
         let saleEntity = SaleEntity(amount: amount,
                                     tipAmount: tip?.stringFormattedWithTwoDecimals,
+                                    softwareType: paymentInfo?.softwareType,
                                     billing: billingInfo,
                                     shipping: shippingInfo,
                                     card: cardNo,
@@ -342,7 +345,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                                                     !ClearentUIManager.shared.isOfflineModeConfirmed
         sdkWrapper.fetchTerminalSetting { [weak self] error in
             if let error = error, error.type.isMissingKeyError {
-                self?.modalProcessingView?.dismissViewController(result: .failure(error))
+                self?.dissmissView(error: error)
             }
             self?.handlePaymentWithAdditionalFees()
         }
@@ -374,6 +377,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         if let amountFormatted = paymentInfo?.amount.stringFormattedWithTwoDecimals {
             let saleEntity = SaleEntity(amount: amountFormatted,
                                         tipAmount: tip?.stringFormattedWithTwoDecimals,
+                                        softwareType: paymentInfo?.softwareType,
                                         billing: paymentInfo?.billing,
                                         shipping: paymentInfo?.shipping,
                                         customerID: paymentInfo?.customerID,
@@ -460,7 +464,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.info, items: items)
             modalProcessingView?.updateContent(with: feedback)
         } else {
-            modalProcessingView?.dismissViewController(result: .success(editableReader?.customReaderName))
+           dissmissView(error: nil)
         }
     }
     
@@ -477,7 +481,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         modalProcessingView?.showLoadingView()
         sdkWrapper.startTransaction(with: saleEntity, isManualTransaction: isManualTransaction) { [weak self] error in
             if let error = error {
-                self?.modalProcessingView?.dismissViewController(result: .failure(error))
+                self?.dissmissView(error: error)
             }
         }
     }
@@ -506,26 +510,27 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
 
     private func completeTransaction() {
-        if ClearentUIManager.configuration.signatureEnabled {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-                self.showSignatureScreen()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
+            if ClearentUIManager.configuration.signatureEnabled {
+                self?.showSignatureScreen()
+            } else {
+                self?.showEmailReceiptOption()
             }
-        } else {
-            successfulDissmissViewWithDelay()
-            sdkWrapper.isNewPaymentProcess = true
-            ClearentUIManager.shared.isOfflineModeConfirmed = false
         }
     }
 }
 
 extension ClearentProcessingModalPresenter: FlowDataProtocol {
-    
     func didFinishSignature() {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
             self?.showEmailReceiptOption()
         }
         sdkWrapper.isNewPaymentProcess = true
         ClearentUIManager.shared.isOfflineModeConfirmed = false
+    }
+    
+    func didFinishHandlingReceipt() {
+        dissmissView(with: 2)
     }
     
     func didFinishTransaction(response: Transaction?) {

@@ -49,6 +49,7 @@ class FlowDataFactory {
 
 protocol FlowDataProtocol : AnyObject {
     func didFinishSignature()
+    func didFinishHandlingReceipt()
     func didFinishTransaction(response: Transaction?)
     func deviceDidDisconnect()
     func didFinishedPairing()
@@ -96,7 +97,8 @@ class FlowDataProvider : NSObject {
     }
     
     func showServiceFeeScreen(for serviceFeeType: ServiceFeeProgramType) {
-        let items = [FlowDataItem(type: .serviceFee, object: serviceFeeType),
+        let items = [ FlowDataItem(type: .title, object: serviceFeeType.title),
+                     FlowDataItem(type: .serviceFee, object: serviceFeeType),
                      FlowDataItem(type: .userAction, object: FlowButtonType.transactionWithServiceFee),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         let feedback = FlowFeedback(flow: .payment, type: FlowFeedbackType.info, items: items)
@@ -134,6 +136,7 @@ class FlowDataProvider : NSObject {
 }
 
 extension FlowDataProvider : ClearentWrapperProtocol {
+    
     
     // MARK - Pairing related
     
@@ -338,16 +341,29 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         }
     }
     
-    func didFinishedSendingReceiptWithError(response: ReceiptResponse?, error: ClearentError) {
-        let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
-                     FlowDataItem(type: .title, object: ClearentConstants.Localized.EmailReceipt.emailFormSendReceiptFailed),
-                     FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
-        
-        let feedback = FlowDataFactory.component(with: .payment,
-                                                 type: .emailReceiptDone,
-                                                 readerInfo: fetchReaderInfo(),
-                                                 payload: items)
-        delegate?.didReceiveFlowFeedback(feedback: feedback)
+    func didFinishedSendingReceipt(response: ReceiptResponse?, error: ClearentError?) {
+        if let _ = error {
+            let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.error),
+                         FlowDataItem(type: .title, object: ClearentConstants.Localized.EmailReceipt.emailFormSendReceiptFailed),
+                         FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
+            
+            let feedback = FlowDataFactory.component(with: .payment,
+                                                     type: .emailReceiptDone,
+                                                     readerInfo: fetchReaderInfo(),
+                                                     payload: items)
+            delegate?.didReceiveFlowFeedback(feedback: feedback)
+        } else {
+            let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.transaction_completed),
+                         FlowDataItem(type: .title, object: ClearentConstants.Localized.EmailReceipt.emailFormSendReceiptSuccess)]
+            
+            let feedback = FlowDataFactory.component(with: .payment,
+                                                     type: .info,
+                                                     readerInfo: fetchReaderInfo(),
+                                                     payload: items)
+            delegate?.didReceiveFlowFeedback(feedback: feedback)
+            delegate?.didFinishHandlingReceipt()
+        }
+
     }
 
     func didAcceptOfflineSignature(status: TransactionStoreStatus, transactionID: String) {
@@ -374,6 +390,17 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                                                  payload: items)
             delegate?.didReceiveFlowFeedback(feedback: feedback)
         }
+    }
+    
+    func didAcceptOfflineEmail(transactionID: String) {
+        let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.transaction_completed),
+                     FlowDataItem(type: .title, object: ClearentConstants.Localized.EmailReceipt.emailFormSaveEmailSuccess)]
+        let feedback = FlowDataFactory.component(with: .payment,
+                                                 type: .info,
+                                                 readerInfo: fetchReaderInfo(),
+                                                 payload: items)
+        delegate?.didReceiveFlowFeedback(feedback: feedback)
+        delegate?.didFinishHandlingReceipt()
     }
     
     func userActionNeeded(action: UserAction) {

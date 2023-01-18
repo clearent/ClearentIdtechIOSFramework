@@ -224,7 +224,7 @@ class ReaderRepository: ReaderRepositoryProtocol {
     }
     
     func cardReaderTransaction() {
-        let dispatchQueue = DispatchQueue(label: "xplor.UserInteractiveQueue", qos: .userInteractive, attributes: .concurrent)
+        let dispatchQueue = DispatchQueue(label: "xsdk.UserInteractiveQueue", qos: .userInteractive, attributes: .concurrent)
         dispatchQueue.async { [weak self] in
             guard let strongSelf = self else { return }
             strongSelf.startDeviceInfoUpdate()

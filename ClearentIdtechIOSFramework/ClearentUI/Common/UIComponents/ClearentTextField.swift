@@ -42,6 +42,12 @@ class ClearentTextField: ClearentMarginableView, UITextFieldDelegate {
         }
     }
     
+    var placeholderText: String? {
+        didSet {
+            inputField.placeholder = placeholderText
+        }
+    }
+    
     convenience init(inputText: String?, inputTitle: String, hint: String, delegate: ClearentTextFieldProtocol) {
         self.init()
         self.infoLabel.text = inputTitle
