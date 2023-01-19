@@ -17,7 +17,7 @@
                 <outlet property="descriptionLabel" destination="1tT-We-w07" id="oEt-WM-JOt"/>
                 <outlet property="separatorView" destination="YCy-Np-oaG" id="kQ8-9K-EwB"/>
                 <outlet property="titleLabel" destination="9wu-cf-sMc" id="Z6y-93-27s"/>
-                <outlet property="warningLabel" destination="vNf-Nc-sz4" id="Hzj-IT-pXm"/>
+                <outlet property="warningTextView" destination="EQP-jQ-dCn" id="EPy-30-pNO"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -29,19 +29,23 @@
                     <rect key="frame" x="0.0" y="0.0" width="561" height="249"/>
                     <subviews>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="249" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9wu-cf-sMc" userLabel="title">
-                            <rect key="frame" x="0.0" y="0.0" width="561" height="218"/>
+                            <rect key="frame" x="0.0" y="0.0" width="561" height="180"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <stackView autoresizesSubviews="NO" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PoJ-Gi-HH0">
-                            <rect key="frame" x="0.0" y="223" width="561" height="20"/>
+                            <rect key="frame" x="0.0" y="185" width="561" height="20"/>
                             <subviews>
-                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1tT-We-w07" userLabel="description">
+                                <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="1tT-We-w07" userLabel="description">
                                     <rect key="frame" x="0.0" y="0.0" width="501" height="20"/>
+                                    <gestureRecognizers/>
                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                     <nil key="textColor"/>
                                     <nil key="highlightedColor"/>
+                                    <connections>
+                                        <outletCollection property="gestureRecognizers" destination="5D3-sf-SXW" appends="YES" id="DpN-sP-YDn"/>
+                                    </connections>
                                 </label>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yqO-NI-Jdg" userLabel="secondaryButton">
                                     <rect key="frame" x="501" y="0.0" width="20" height="20"/>
@@ -78,18 +82,19 @@
                             </subviews>
                         </stackView>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YCy-Np-oaG" userLabel="separator">
-                            <rect key="frame" x="0.0" y="248" width="561" height="1"/>
+                            <rect key="frame" x="0.0" y="210" width="561" height="1"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="1" id="ec8-H1-YDN"/>
                             </constraints>
                         </view>
-                        <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vNf-Nc-sz4" userLabel="warningLabel">
-                            <rect key="frame" x="0.0" y="249" width="561" height="0.0"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                            <nil key="textColor"/>
-                            <nil key="highlightedColor"/>
-                        </label>
+                        <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="justified" translatesAutoresizingMaskIntoConstraints="NO" id="EQP-jQ-dCn">
+                            <rect key="frame" x="0.0" y="216" width="561" height="33"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                            <color key="textColor" systemColor="labelColor"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                        </textView>
                     </subviews>
                 </stackView>
             </subviews>
@@ -99,22 +104,22 @@
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="gE3-JD-taj" secondAttribute="trailing" id="0nC-I0-ttA"/>
                 <constraint firstAttribute="bottom" secondItem="gE3-JD-taj" secondAttribute="bottom" id="hJu-4U-c70"/>
-                <constraint firstItem="gE3-JD-taj" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="jgL-WS-IT2"/>
+                <constraint firstItem="gE3-JD-taj" firstAttribute="leading" secondItem="iN0-l3-epB" secondAttribute="leading" id="jgL-WS-IT2"/>
                 <constraint firstItem="gE3-JD-taj" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="p8q-Uq-r6U"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
-            <connections>
-                <outletCollection property="gestureRecognizers" destination="cag-Ym-LIi" appends="YES" id="DTs-MT-dEG"/>
-            </connections>
             <point key="canvasLocation" x="342.75362318840581" y="-13.727678571428571"/>
         </view>
-        <tapGestureRecognizer id="cag-Ym-LIi">
+        <tapGestureRecognizer id="5D3-sf-SXW">
             <connections>
-                <action selector="containerWasPressed:" destination="-1" id="wMF-nf-o2g"/>
+                <action selector="containerWasPressed:" destination="-1" id="303-TZ-cWs"/>
             </connections>
         </tapGestureRecognizer>
     </objects>
     <resources>
+        <systemColor name="labelColor">
+            <color white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
         <systemColor name="systemBackgroundColor">
             <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
         </systemColor>

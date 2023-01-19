@@ -13,8 +13,8 @@ open class ClearentInfoWithIcon: ClearentMarginableView {
     @IBOutlet var descriptionLabel: UILabel!
     @IBOutlet var button: UIButton!
     @IBOutlet var deleteButton: UIButton!
-    @IBOutlet var warningLabel: UILabel!
     @IBOutlet var separatorView: UIView!
+    @IBOutlet var warningTextView: UITextView!
     
     public var editButtonPressed: (() -> Void)?
     public var deleteButtonPressed: (() -> Void)?
@@ -64,22 +64,23 @@ open class ClearentInfoWithIcon: ClearentMarginableView {
         }
     }
     
-    public var warningTextColor: UIColor? {
-        didSet {
-            warningLabel.textColor = warningTextColor
-        }
-    }
-    
     public var warningFont: UIFont? {
         didSet {
-            warningLabel.font = warningFont
+            warningTextView.font = warningFont
         }
     }
     
     public var warningText: String? {
         didSet {
             guard let warningText = warningText else { return }
-            warningLabel.text = warningText
+            warningTextView.text = warningText
+        }
+    }
+    
+    public var warningAttributedText: NSAttributedString? {
+        didSet {
+            guard let attributedText = warningAttributedText else { return }
+            warningTextView.attributedText = attributedText
         }
     }
     
@@ -101,7 +102,13 @@ open class ClearentInfoWithIcon: ClearentMarginableView {
     
     public var shouldHideWarning: Bool = true {
         didSet {
-            warningLabel.isHidden = shouldHideWarning
+            warningTextView.isHidden = shouldHideWarning
+        }
+    }
+    
+    public var isInteractionEnabled: Bool = true {
+        didSet {
+            descriptionLabel.isUserInteractionEnabled = isInteractionEnabled
         }
     }
 
@@ -111,6 +118,9 @@ open class ClearentInfoWithIcon: ClearentMarginableView {
         descriptionFont = ClearentUIBrandConfigurator.shared.fonts.detailScreenItemSubtitleFont
         descriptionTextColor = ClearentConstants.Color.base01
         separatorView.backgroundColor = ClearentConstants.Color.backgroundSecondary02
+        warningTextView.textContainer.lineFragmentPadding = 0
+        warningTextView.delegate = self
+        warningTextView.dataDetectorTypes = .link
     }
 
     @IBAction func buttonAction(_: Any) {
@@ -123,5 +133,13 @@ open class ClearentInfoWithIcon: ClearentMarginableView {
     
     @IBAction func containerWasPressed(_: Any) {
         containerWasPressed?()
+    }
+}
+
+extension ClearentInfoWithIcon: UITextViewDelegate {
+    public func textView(_ textView: UITextView, shouldInteractWith URL: URL, in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        UIApplication.shared.open(URL)
+        
+        return true
     }
 }
