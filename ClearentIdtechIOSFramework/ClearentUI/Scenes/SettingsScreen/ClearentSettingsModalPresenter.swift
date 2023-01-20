@@ -36,11 +36,7 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
 
     // MARK: Init
 
-    init(settingsPresenterView: ClearentSettingsPresenterView, webAuth: ClearentWebAuth? = nil) {
-        if let auth = webAuth {
-            ClearentWrapper.shared.updateWebAuth(with: auth)
-        }
-    
+    init(settingsPresenterView: ClearentSettingsPresenterView) {
         self.settingsPresenterView = settingsPresenterView
     }
     

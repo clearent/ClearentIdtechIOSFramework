@@ -85,6 +85,10 @@ class ClearentProcessingModalPresenter {
         self.webAuth = webAuth
         sdkFeedbackProvider = FlowDataProvider()
         sdkFeedbackProvider.delegate = self
+        
+        if let auth = webAuth {
+            ClearentWrapper.shared.updateWebAuth(with: auth)
+        }
     }
 
     private func dissmissView(with delay: CGFloat = 0, error: ClearentError? = nil) {
@@ -319,10 +323,6 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     private func startTransactionFlow() {
-        if let auth = webAuth {
-            ClearentWrapper.shared.updateWebAuth(with: auth)
-        }
-        
         sdkFeedbackProvider.delegate = self
 
         if useCardReaderPaymentMethod, !sdkWrapper.isReaderConnected() {

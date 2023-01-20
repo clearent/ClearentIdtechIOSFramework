@@ -57,8 +57,8 @@ public final class ClearentUIManager: NSObject {
      * @param amount, the amount to be charged in a transaction
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
-    @objc public func paymentViewController(paymentInfo: PaymentInfo?, webAuth: ClearentWebAuth? = nil, completion: ((ClearentError?) -> Void)?) -> UINavigationController {
-        navigationController(processType: .payment, paymentInfo: paymentInfo, webAuth: webAuth, dismissCompletion: { [weak self] result in
+    @objc public func paymentViewController(paymentInfo: PaymentInfo?, completion: ((ClearentError?) -> Void)?) -> UINavigationController {
+        navigationController(processType: .payment, paymentInfo: paymentInfo, dismissCompletion: { [weak self] result in
             let completionResult = self?.resultFor(completionResult: result)
             completion?(completionResult)
         })
@@ -69,7 +69,7 @@ public final class ClearentUIManager: NSObject {
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
     @objc public func pairingViewController(webAuth: ClearentWebAuth? = nil, completion: ((ClearentError?) -> Void)?) -> UINavigationController {
-        navigationController(processType: .pairing(), webAuth: webAuth, dismissCompletion: { [weak self] result in
+        navigationController(processType: .pairing(), dismissCompletion: { [weak self] result in
             let completionResult = self?.resultFor(completionResult: result)
             completion?(completionResult)
         })
@@ -80,7 +80,7 @@ public final class ClearentUIManager: NSObject {
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
     @objc public func settingsViewController(webAuth: ClearentWebAuth? = nil, completion: ((ClearentError?) -> Void)?) -> UINavigationController {
-        navigationController(processType: .showSettings, webAuth: webAuth, dismissCompletion: { [weak self] result in
+        navigationController(processType: .showSettings, dismissCompletion: { [weak self] result in
             let completionResult = self?.resultFor(completionResult: result)
             completion?(completionResult)
         })
@@ -98,12 +98,12 @@ public final class ClearentUIManager: NSObject {
         ClearentWrapperDefaults.enableOfflineMode && !ClearentWrapperDefaults.enableOfflinePromptMode
     }
 
-    func navigationController(processType: ProcessType, paymentInfo: PaymentInfo? = nil, webAuth: ClearentWebAuth? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UINavigationController {
+    func navigationController(processType: ProcessType, paymentInfo: PaymentInfo? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UINavigationController {
         var viewController: UIViewController?
         if processType == .showSettings {
-            viewController = settingsViewController(webAuth: webAuth, dismissCompletion: dismissCompletion)
+            viewController = settingsViewController(dismissCompletion: dismissCompletion)
         } else {
-            viewController = processingModalViewController(processType: processType, paymentInfo: paymentInfo, webAuth: webAuth, editableReader: editableReader, dismissCompletion: dismissCompletion)
+            viewController = processingModalViewController(processType: processType, paymentInfo: paymentInfo, editableReader: editableReader, dismissCompletion: dismissCompletion)
         }
         
         guard let viewController = viewController else {
@@ -115,18 +115,18 @@ public final class ClearentUIManager: NSObject {
         return navigationController
     }
 
-    private func processingModalViewController(processType: ProcessType, paymentInfo: PaymentInfo? = nil, webAuth: ClearentWebAuth? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UIViewController {
+    private func processingModalViewController(processType: ProcessType, paymentInfo: PaymentInfo? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UIViewController {
         let viewController = ClearentProcessingModalViewController(showOnTop: processType == .showReaders || processType == .renameReader)
-        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, paymentInfo: paymentInfo, processType: processType, webAuth: webAuth)
+        let presenter = ClearentProcessingModalPresenter(modalProcessingView: viewController, paymentInfo: paymentInfo, processType: processType)
         presenter.editableReader = editableReader
         viewController.presenter = presenter
         viewController.dismissCompletion = dismissCompletion
         return viewController
     }
     
-    private func settingsViewController(webAuth: ClearentWebAuth?, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UIViewController {
+    private func settingsViewController(dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UIViewController {
         let viewController = ClearentSettingsModalViewController()
-        let presenter = ClearentSettingsPresenter(settingsPresenterView: viewController, webAuth: webAuth)
+        let presenter = ClearentSettingsPresenter(settingsPresenterView: viewController)
         viewController.presenter = presenter
         viewController.dismissCompletion = dismissCompletion
         return viewController
