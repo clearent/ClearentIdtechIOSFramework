@@ -224,9 +224,11 @@ extension ClearentProcessingModalViewController: ClearentProcessingModalView {
     }
     
     private func emailForm() -> ClearentTextFieldAndButton {
-        let emailForm = ClearentTextFieldAndButton(textFieldTitle: ClearentConstants.Localized.EmailReceipt.emailFormTitle,
-                                               textFieldPlaceholder: ClearentConstants.Localized.EmailReceipt.emailFormInputPlaceholder,
-                                               buttonTitle: ClearentConstants.Localized.EmailReceipt.emailFormButtonSend)
+        let emailForm = ClearentTextFieldAndButton(textFieldTitle: ClearentConstants.Localized.EmailReceipt.emailFormSubtitle,
+                                                   textFieldPlaceholder: ClearentConstants.Localized.EmailReceipt.emailFormInputPlaceholder,
+                                                   subtitleText: ClearentConstants.Localized.EmailReceipt.emailFormOfflineModeInfo,
+                                                   buttonTitle: ClearentConstants.Localized.EmailReceipt.emailFormButtonSend)
+        emailForm.showSubtitleLabel = shouldDisplayOfflineModeLabel()
         emailForm.buttonAction = { email in
             if let email = email, ClearentFieldValidationHelper.isEmailValid(emailAddress: email) {
                 self.presenter?.handleEmailReceipt(with: email)

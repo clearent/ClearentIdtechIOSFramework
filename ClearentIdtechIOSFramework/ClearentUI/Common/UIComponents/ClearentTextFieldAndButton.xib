@@ -12,6 +12,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ClearentTextFieldAndButton" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
             <connections>
                 <outlet property="button" destination="Zvu-2Q-3wx" id="xTS-Va-6BD"/>
+                <outlet property="subtitleLabel" destination="JEV-Rs-fp6" id="nDY-Uc-6Sv"/>
                 <outlet property="textField" destination="lJ4-iL-wG9" id="BOP-2t-kcE"/>
             </connections>
         </placeholder>
@@ -24,11 +25,15 @@
                     <rect key="frame" x="0.0" y="0.0" width="252" height="296"/>
                     <subviews>
                         <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="lJ4-iL-wG9" customClass="ClearentTextField" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="0.0" width="252" height="50"/>
+                            <rect key="frame" x="0.0" y="0.0" width="252" height="0.0"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        </view>
+                        <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JEV-Rs-fp6" customClass="ClearentSubtitleLabel" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="252" height="128"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         </view>
                         <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Zvu-2Q-3wx" customClass="ClearentPrimaryButton" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="50" width="252" height="246"/>
+                            <rect key="frame" x="0.0" y="128" width="252" height="168"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <connections>
                                 <outletCollection property="gestureRecognizers" destination="Mhf-bi-mmQ" appends="YES" id="kHc-To-lNc"/>

@@ -250,7 +250,7 @@ public final class ClearentWrapper : NSObject {
      * @param completion, the closure that will be called after a sale response is received. This is dispatched onto the main queue
      */
     public func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (TransactionResponse?, ClearentError?) -> Void) {
-        transactionRepository?.saleTransaction(jwt: jwt, saleEntity: saleEntity) { (response, error) in
+        transactionRepository?.saleTransaction(jwt: jwt, saleEntity: saleEntity, isOfflineTransaction: false) { (response, error) in
             DispatchQueue.main.async {
                 completion(response, error)
             }
@@ -299,7 +299,6 @@ public final class ClearentWrapper : NSObject {
             }
         } else if ClearentWrapperDefaults.enableOfflineMode {
             transactionRepository?.saveEmailForTransaction(emailAddress: emailAddress)
-            completion(nil, nil)
         } else if checkForConnectivityWarning(for: .payment) {
             completion(nil, .init(type: .connectivityError))
             return

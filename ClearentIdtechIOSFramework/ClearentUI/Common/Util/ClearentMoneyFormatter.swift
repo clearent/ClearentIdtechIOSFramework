@@ -1,6 +1,6 @@
 //
 //  MoneyFormatter.swift
-//  XplorPayMobile
+//  ClearentIdtechIOSFramework
 //
 //  Created by Carmen Jurcovan on 23.03.2022.
 //

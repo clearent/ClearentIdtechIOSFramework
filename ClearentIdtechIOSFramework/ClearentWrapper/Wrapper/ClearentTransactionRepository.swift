@@ -9,7 +9,7 @@
 protocol TransactionRepositoryProtocol {
     var delegate: ClearentWrapperProtocol? { get set }
     var offlineManager: OfflineModeManager? { get set }
-    func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
+    func saleTransaction(jwt: String, saleEntity: SaleEntity, isOfflineTransaction: Bool, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
     func sendSignatureRequest(image: UIImage, completion: @escaping (SignatureResponse?, ClearentError?) -> Void)
     func sendReceiptRequest(emailAddress: String, completion: @escaping (ReceiptResponse?, ClearentError?) -> Void)
     func resendSignature(completion: @escaping (SignatureResponse?, ClearentError?) -> Void)
@@ -63,7 +63,9 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     
     // MARK: - Internal
     
-    func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (TransactionResponse?, ClearentError?) -> Void) {
+    func saleTransaction(jwt: String, saleEntity: SaleEntity, isOfflineTransaction: Bool, completion: @escaping (TransactionResponse?, ClearentError?) -> Void) {
+        let saleEntity = saleEntity
+        saleEntity.updateSoftwareType(isOfflineTransaction: isOfflineTransaction)
         httpClient.saleTransaction(jwt: jwt, saleEntity: saleEntity) { [weak self] data, error in
             guard let strongSelf = self else { return }
             guard let responseData = data else {
@@ -246,7 +248,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
      * Method that performs a manual card transaction.
      */
      func manualEntryTransaction(saleEntity: SaleEntity) {
-        let dispatchQueue = DispatchQueue(label: "xplor.UserInteractiveQueue", qos: .userInteractive, attributes: .concurrent)
+        let dispatchQueue = DispatchQueue(label: "xsdk.UserInteractiveQueue", qos: .userInteractive, attributes: .concurrent)
          
         dispatchQueue.async { [weak self] in
             guard let strongSelf = self else { return }
@@ -303,6 +305,8 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     func saveEmailForTransaction(emailAddress: String) {
         guard let transactionID = offlineTransaction?.transactionID else { return }
         offlineManager?.saveEmailForTransaction(transactionID: transactionID, emailAddress: emailAddress)
+        
+        delegate?.didAcceptOfflineEmail(transactionID: transactionID)
     }
     
     // MARK: - Private
@@ -328,7 +332,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         saleEntity.amount = saleEntity.amount.setTwoDecimals()
         saleEntity.tipAmount = saleEntity.tipAmount?.setTwoDecimals()
         
-        saleTransaction(jwt: token.jwt, saleEntity: saleEntity) { [weak self] (response, error) in
+        saleTransaction(jwt: token.jwt, saleEntity: saleEntity, isOfflineTransaction: true) { [weak self] (response, error) in
             if error != nil {
                 completion(error, response)
             } else  {
