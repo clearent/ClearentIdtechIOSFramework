@@ -48,7 +48,6 @@ class ClearentProcessingModalPresenter {
     // MARK: - Properties
 
     private weak var modalProcessingView: ClearentProcessingModalView?
-    private let webAuth: ClearentWebAuth?
     private var temporaryReaderName: String?
     private let sdkWrapper = ClearentWrapper.shared
     private var tipsScreenWasNotShown = true
@@ -78,15 +77,14 @@ class ClearentProcessingModalPresenter {
 
     // MARK: Init
 
-    init(modalProcessingView: ClearentProcessingModalView, paymentInfo: PaymentInfo?, processType: ProcessType, webAuth: ClearentWebAuth? = nil) {
+    init(modalProcessingView: ClearentProcessingModalView, paymentInfo: PaymentInfo?, processType: ProcessType) {
         self.modalProcessingView = modalProcessingView
         self.paymentInfo = paymentInfo
         self.processType = processType
-        self.webAuth = webAuth
         sdkFeedbackProvider = FlowDataProvider()
         sdkFeedbackProvider.delegate = self
         
-        if let auth = webAuth {
+        if let auth = paymentInfo?.webAuth {
             ClearentWrapper.shared.updateWebAuth(with: auth)
         }
     }

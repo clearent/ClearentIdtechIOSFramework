@@ -68,7 +68,7 @@ public final class ClearentUIManager: NSObject {
      * Method that returns a UINavigationController that can handle the pairing process of a card reader.
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
-    @objc public func pairingViewController(webAuth: ClearentWebAuth? = nil, completion: ((ClearentError?) -> Void)?) -> UINavigationController {
+    @objc public func pairingViewController( completion: ((ClearentError?) -> Void)?) -> UINavigationController {
         navigationController(processType: .pairing(), dismissCompletion: { [weak self] result in
             let completionResult = self?.resultFor(completionResult: result)
             completion?(completionResult)
@@ -79,7 +79,7 @@ public final class ClearentUIManager: NSObject {
      * Method returns a UINavigationController that will display a list containing current card reader informations and recently paired readers
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
-    @objc public func settingsViewController(webAuth: ClearentWebAuth? = nil, completion: ((ClearentError?) -> Void)?) -> UINavigationController {
+    @objc public func settingsViewController(completion: ((ClearentError?) -> Void)?) -> UINavigationController {
         navigationController(processType: .showSettings, dismissCompletion: { [weak self] result in
             let completionResult = self?.resultFor(completionResult: result)
             completion?(completionResult)
