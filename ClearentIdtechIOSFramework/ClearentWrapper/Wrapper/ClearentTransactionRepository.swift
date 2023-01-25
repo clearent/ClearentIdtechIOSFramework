@@ -25,6 +25,7 @@ protocol TransactionRepositoryProtocol {
     func fetchOfflineTransactions() -> [OfflineTransaction]?
     func serviceFeeForAmount(amount: Double) -> Double?
     func updateWebAuth(auth: ClearentWebAuth)
+    func hasAuthentication() -> Bool
 }
 
 class TransactionRepository: NSObject, TransactionRepositoryProtocol {
@@ -47,11 +48,19 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     }
     
     /**
-     * Updates the authorization for the gateway
+     * Updates the authorization for the api
      * Do not use unless you have a vt-token fro Merchant Home  App
      */
     func updateWebAuth(auth: ClearentWebAuth) {
         self.httpClient.updateWebAuth(with: auth)
+    }
+    
+    /**
+     * Checks if a apiKey or webAuth were provided
+     * Returs true or false
+     */
+    func hasAuthentication() -> Bool {
+        return self.httpClient.hasAuth()
     }
     
     /**
@@ -271,7 +280,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     
     /**
      * Saves and validates offline transactions, calls a delegate method with the result.
-     *  @param transaction, represents an offline transaction
+     *  @param paymentData, represents an offline transaction
      */
     func saveOfflineTransaction(paymentData: PaymentData) {
         let offlineTransaction = OfflineTransaction(paymentData: paymentData, sdkVersion: ClearentWrapper.shared.currentSDKVersion())

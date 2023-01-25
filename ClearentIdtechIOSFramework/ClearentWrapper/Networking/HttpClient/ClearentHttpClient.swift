@@ -29,6 +29,7 @@ protocol ClearentHttpClientProtocol {
     func sendReceipt(emailAddress: String, transactionID: Int, completion: @escaping (Data?, Error?) -> Void)
     func terminalSettings(completion: @escaping (Data?, Error?) -> Void)
     func updateWebAuth(with auth: ClearentWebAuth)
+    func hasAuth() -> Bool
 }
 
 class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
@@ -55,8 +56,14 @@ class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
         self.webAuth = auth
     }
     
+    public func hasAuth() -> Bool {
+        if let _ = self.webAuth { return true }
+        if let _ = self.apiKey { return true }
+        
+        return false
+    }
+    
     func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (Data?, Error?) -> Void) {
-
         let saleURL = URL(string: baseURL + ClearentEndpoints.sale)
         let headers = headers(jwt: jwt)
         let _ = HttpClient.makeRawRequest(to: saleURL!, method: transactionMethod(type: TransactionType.sale.rawValue, saleEntity: saleEntity), headers: headers) { data, error in

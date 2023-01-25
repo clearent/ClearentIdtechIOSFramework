@@ -120,13 +120,13 @@ public final class ClearentWrapper : NSObject {
     }
     
     /**
-     * Updates the authorization for the gateway, should be call each time the token is refreshed
-     * Do not use unless you have a vt-token fro Merchant Home  App
+     * Updates the authorization for the gateway, should be called each time the token is refreshed
+     * Do not use unless you have a vt-token from the web side
      */
     public func updateWebAuth(with auth: ClearentWebAuth) {
         self.transactionRepository?.updateWebAuth(auth: auth)
     }
-     
+
     /**
      * Method that should be called to enable offline mode.
      */
@@ -452,6 +452,14 @@ public final class ClearentWrapper : NSObject {
     
     // MARK: - Private
     
+    /**
+     * Checks if a apiKey or webAuth were provided
+     * Returs true or false
+     */
+    private func transactionRepoHasAPIAuth() -> Bool {
+        return transactionRepository?.hasAuthentication() ?? false
+    }
+    
     private func setupOfflineMode() {
         if ClearentWrapperDefaults.enableOfflineMode {
             do {
@@ -513,8 +521,11 @@ public final class ClearentWrapper : NSObject {
     
     private func checkForMissingKeys() -> ClearentErrorType? {
         guard !ClearentWrapper.configuration.baseURL.isEmpty else { return ClearentErrorType.baseURLNotProvided }
-        // guard !ClearentWrapper.configuration.apiKey.isEmpty else { return ClearentErrorType.apiKeyNotProvided }
         guard !ClearentWrapper.configuration.publicKey.isEmpty else { return ClearentErrorType.publicKeyNotProvided }
+        
+        if (!transactionRepoHasAPIAuth()) {
+            return ClearentErrorType.noAPIAuthentication
+        }
         
         return nil
     }
