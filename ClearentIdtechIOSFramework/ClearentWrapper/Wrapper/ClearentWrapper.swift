@@ -454,7 +454,7 @@ public final class ClearentWrapper : NSObject {
     
     /**
      * Checks if a apiKey or webAuth were provided
-     * Returs true or false
+     * Returns true or false
      */
     private func transactionRepoHasAPIAuth() -> Bool {
         return transactionRepository?.hasAuthentication() ?? false
