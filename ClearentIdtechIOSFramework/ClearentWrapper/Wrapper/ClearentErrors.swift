@@ -21,12 +21,23 @@ public typealias CompletionResult = Result<String?, ClearentError>
     }
 }
 
+
+@objc public class ClearentWebAuth: NSObject {
+    let merchantID: String
+    let vtToken: String
+    
+    public init(merchantID: String, vtToken: String) {
+        self.merchantID = merchantID
+        self.vtToken = vtToken
+    }
+}
+
 @objc public enum ClearentErrorType: Int, Error, Codable {
      /// The user aborted the current flow
     case cancelledByUser = 0
 
-    /// No apiKey was passed to SDK
-    case apiKeyNotProvided
+    /// No apiKey or (vtToken, merchantNumber) were passed to SDK
+    case noAPIAuthentication
 
     /// No baseURL was passed to SDK
     case baseURLNotProvided
@@ -55,6 +66,6 @@ public typealias CompletionResult = Result<String?, ClearentError>
     case none
     
     var isMissingKeyError: Bool {
-        return [.apiKeyNotProvided, .baseURLNotProvided, .publicKeyNotProvided].contains(self)
+        return [.noAPIAuthentication, .baseURLNotProvided, .publicKeyNotProvided].contains(self)
     }
 }

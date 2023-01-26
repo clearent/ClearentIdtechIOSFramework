@@ -83,6 +83,10 @@ class ClearentProcessingModalPresenter {
         self.processType = processType
         sdkFeedbackProvider = FlowDataProvider()
         sdkFeedbackProvider.delegate = self
+        
+        if let auth = paymentInfo?.webAuth {
+            ClearentWrapper.shared.updateWebAuth(with: auth)
+        }
     }
 
     private func dissmissView(with delay: CGFloat = 0, error: ClearentError? = nil) {

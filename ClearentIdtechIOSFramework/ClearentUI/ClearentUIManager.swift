@@ -74,7 +74,7 @@ public final class ClearentUIManager: NSObject {
      * Method that returns a UINavigationController that can handle the pairing process of a card reader.
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
-    @objc public func pairingViewController(completion: ((ClearentError?) -> Void)?) -> UINavigationController {
+    @objc public func pairingViewController( completion: ((ClearentError?) -> Void)?) -> UINavigationController {
         navigationController(processType: .pairing(), dismissCompletion: { [weak self] result in
             let completionResult = self?.resultFor(completionResult: result)
             completion?(completionResult)

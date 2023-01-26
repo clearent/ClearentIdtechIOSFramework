@@ -28,20 +28,23 @@ protocol ClearentHttpClientProtocol {
     func sendSignature(base64Image: String, transactionID: Int, completion: @escaping (Data?, Error?) -> Void)
     func sendReceipt(emailAddress: String, transactionID: Int, completion: @escaping (Data?, Error?) -> Void)
     func terminalSettings(completion: @escaping (Data?, Error?) -> Void)
+    func updateWebAuth(with auth: ClearentWebAuth)
+    func hasAuth() -> Bool
 }
 
 class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
     
     var httpClient: HttpClient? = nil
     let baseURL: String
-    let apiKey: String
+    let apiKey: String?
+    var webAuth: ClearentWebAuth?
     
     // MARK: Init
     
-    public init(baseURL: String, apiKey: String) {
+    public init(baseURL: String, apiKey: String?, webAuth: ClearentWebAuth? = nil) {
         self.baseURL = baseURL
         self.apiKey = apiKey
-        
+        self.webAuth = webAuth
         guard let url = URL(string: baseURL) else { return }
         
         self.httpClient = HttpClient(baseURL: url)
@@ -49,10 +52,17 @@ class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
     
     // MARK - Public
     
+    public func updateWebAuth(with auth: ClearentWebAuth) {
+        self.webAuth = auth
+    }
+    
+    public func hasAuth() -> Bool {
+        return webAuth != nil || apiKey != nil
+    }
+    
     func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (Data?, Error?) -> Void) {
-
         let saleURL = URL(string: baseURL + ClearentEndpoints.sale)
-        let headers = headers(jwt: jwt, apiKey: self.apiKey)
+        let headers = headers(jwt: jwt)
         let _ = HttpClient.makeRawRequest(to: saleURL!, method: transactionMethod(type: TransactionType.sale.rawValue, saleEntity: saleEntity), headers: headers) { data, error in
             completion(data, error)
         }
@@ -60,7 +70,7 @@ class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
     
     func refundTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (Data?, Error?) -> Void) {
         let refundURL = URL(string: baseURL + ClearentEndpoints.refund)
-        let headers = headers(jwt: jwt, apiKey: self.apiKey)
+        let headers = headers(jwt: jwt)
         let _ = HttpClient.makeRawRequest(to: refundURL!, method: transactionMethod(type: TransactionType.refund.rawValue, saleEntity: saleEntity), headers: headers) { data, error in
             completion(data, error)
         }
@@ -69,7 +79,7 @@ class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
     func sendSignature(base64Image: String, transactionID: Int, completion: @escaping (Data?, Error?) -> Void) {
         let created = Date().dateAndTimeToString()
         let signatureURL = URL(string: baseURL + ClearentEndpoints.signature)
-        let headers = headers(jwt: nil, apiKey: self.apiKey)
+        let headers = headers(jwt: nil)
         let _ = HttpClient.makeRawRequest(to: signatureURL!, method: signatureHTTPMethod(base64Image: base64Image, created: created, transactionID: transactionID), headers: headers) { data, error in
             completion(data, error)
         }
@@ -77,7 +87,7 @@ class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
     
     func sendReceipt(emailAddress: String, transactionID: Int, completion: @escaping (Data?, Error?) -> Void) {
         let receiptURL = URL(string: baseURL + ClearentEndpoints.receipt)
-        let headers = headers(jwt: nil, apiKey: self.apiKey)
+        let headers = headers(jwt: nil)
         let _ = HttpClient.makeRawRequest(to: receiptURL!, method: receiptHTTPMethod(emailAddress: emailAddress, transactionID: transactionID), headers: headers) { data, error in
             completion(data, error)
         }
@@ -85,7 +95,7 @@ class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
     
     func voidTransaction(transactionID: String, completion: @escaping (Data?, Error?) -> Void) {
         let voidURL = URL(string: baseURL + ClearentEndpoints.void)
-        let headers = headers(jwt: nil, apiKey: self.apiKey)
+        let headers = headers(jwt: nil)
         let _ = HttpClient.makeRawRequest(to: voidURL!, method: voidHTTPMethod(transactionID: transactionID), headers: headers) { data, error in
             completion(data, error)
         }
@@ -93,7 +103,7 @@ class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
     
     func terminalSettings(completion: @escaping (Data?, Error?) -> Void) {
         let settingsURL = URL(string: baseURL + ClearentEndpoints.settings)
-        let headers = headers(jwt: nil, apiKey: self.apiKey)
+        let headers = headers(jwt: nil)
         let _ = HttpClient.makeRawRequest(to: settingsURL!,  headers: headers) { data, error in
             completion(data, error)
         }
@@ -110,11 +120,19 @@ class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
         return body
     }
     
-    private func headers(jwt: String?, apiKey:String) -> Dictionary<String, String> {
-        var headers = ["Content-Type": "application/json", "Accept": "application/json", "api-key" : apiKey]
+    private func headers(jwt: String?) -> Dictionary<String, String> {
+        var headers = ["Content-Type": "application/json", "Accept": "application/json"]
         if let jwt = jwt {
             headers["mobilejwt"] = jwt
         }
+        
+        if let webAuth = webAuth {
+            headers["Authorization"] = "vt-token " + webAuth.vtToken
+            headers["MerchantID"] = webAuth.merchantID
+        } else if let apiKey = apiKey {
+            headers["api-key"] = apiKey
+        }
+        
         return headers
     }
     
