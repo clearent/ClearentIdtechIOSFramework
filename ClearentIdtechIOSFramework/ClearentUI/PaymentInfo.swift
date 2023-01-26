@@ -14,8 +14,9 @@
     public var billing: ClientInformation?
     public var shipping: ClientInformation?
     public var softwareType: String?
+    public var webAuth: ClearentWebAuth?
     
-    @objc public init(amount: Double, customerID: String? = nil, invoice: String? = nil, orderID: String? = nil, billing: ClientInformation? = nil, shipping: ClientInformation? = nil, softwareType: String? = nil) {
+    @objc public init(amount: Double, customerID: String? = nil, invoice: String? = nil, orderID: String? = nil, billing: ClientInformation? = nil, shipping: ClientInformation? = nil, softwareType: String? = nil, webAuth: ClearentWebAuth? = nil) {
         self.amount = amount
         self.customerID = customerID
         self.invoice = invoice
@@ -23,5 +24,6 @@
         self.billing = billing
         self.shipping = shipping
         self.softwareType = softwareType
+        self.webAuth = webAuth
     }
 }

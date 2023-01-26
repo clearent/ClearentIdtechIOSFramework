@@ -10,7 +10,7 @@ import CryptoKit
 
 @objc public class ClearentWrapperConfiguration: NSObject {
     public var baseURL: String
-    public var apiKey: String
+    public var apiKey: String?
     public var publicKey: String
     
     /// Enables or disables the use of enhanced messages
@@ -24,14 +24,14 @@ import CryptoKit
     
     // MARK: - Init
     
-    public init(baseURL: String, apiKey: String, publicKey: String, enableEnhancedMessaging: Bool = false) {
+    public init(baseURL: String, apiKey: String?, publicKey: String, enableEnhancedMessaging: Bool = false) {
         self.baseURL = baseURL
         self.apiKey = apiKey
         self.publicKey = publicKey
         self.enableEnhancedMessaging = enableEnhancedMessaging
     }
     
-    public init(baseURL: String, apiKey: String, publicKey: String, offlineModeEncryptionKeyData: Data, enableEnhancedMessaging: Bool = false) {
+    public init(baseURL: String, apiKey: String?, publicKey: String, offlineModeEncryptionKeyData: Data, enableEnhancedMessaging: Bool = false) {
         self.baseURL = baseURL
         self.apiKey = apiKey
         self.publicKey = publicKey
