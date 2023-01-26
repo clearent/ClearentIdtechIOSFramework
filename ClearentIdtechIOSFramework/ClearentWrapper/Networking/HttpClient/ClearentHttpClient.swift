@@ -57,10 +57,7 @@ class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
     }
     
     public func hasAuth() -> Bool {
-        if let _ = self.webAuth { return true }
-        if let _ = self.apiKey { return true }
-        
-        return false
+        return webAuth != nil || apiKey != nil
     }
     
     func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (Data?, Error?) -> Void) {
