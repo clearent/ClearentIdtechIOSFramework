@@ -5,7 +5,6 @@
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="20020"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -21,14 +20,14 @@
             <rect key="frame" x="0.0" y="0.0" width="518" height="63"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
-                <stackView opaque="NO" contentMode="center" alignment="center" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="X2h-RU-ant">
-                    <rect key="frame" x="0.0" y="0.0" width="518" height="63"/>
+                <stackView opaque="NO" contentMode="center" distribution="equalSpacing" alignment="center" spacing="4" translatesAutoresizingMaskIntoConstraints="NO" id="X2h-RU-ant">
+                    <rect key="frame" x="230" y="0.0" width="58.5" height="63"/>
                     <subviews>
                         <imageView clipsSubviews="YES" contentMode="scaleAspectFit" verticalHuggingPriority="251" image="small_warning" translatesAutoresizingMaskIntoConstraints="NO" id="N83-GT-eqc">
-                            <rect key="frame" x="0.0" y="25" width="472.5" height="13"/>
+                            <rect key="frame" x="0.0" y="25" width="13" height="13"/>
                         </imageView>
                         <label opaque="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="edH-If-OKx">
-                            <rect key="frame" x="476.5" y="21.5" width="41.5" height="20.5"/>
+                            <rect key="frame" x="17" y="21.5" width="41.5" height="20.5"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
@@ -37,13 +36,13 @@
                 </stackView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
-            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <gestureRecognizers/>
             <constraints>
                 <constraint firstItem="X2h-RU-ant" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="GeO-ZY-NjL"/>
                 <constraint firstAttribute="bottom" secondItem="X2h-RU-ant" secondAttribute="bottom" id="PkP-Ha-vUa"/>
-                <constraint firstItem="X2h-RU-ant" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="lue-FU-Xey"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="X2h-RU-ant" secondAttribute="trailing" id="w6e-gB-Fmg"/>
+                <constraint firstItem="X2h-RU-ant" firstAttribute="centerX" secondItem="vUN-kp-3ea" secondAttribute="centerX" id="Qk9-nU-ntg"/>
+                <constraint firstItem="X2h-RU-ant" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="vUN-kp-3ea" secondAttribute="leading" id="lue-FU-Xey"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="X2h-RU-ant" secondAttribute="trailing" id="w6e-gB-Fmg"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <connections>
@@ -59,8 +58,5 @@
     </objects>
     <resources>
         <image name="small_warning" width="13" height="13"/>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
     </resources>
 </document>

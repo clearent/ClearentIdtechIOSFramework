@@ -118,6 +118,7 @@ open class ClearentInfoWithIcon: ClearentMarginableView {
         descriptionFont = ClearentUIBrandConfigurator.shared.fonts.detailScreenItemSubtitleFont
         descriptionTextColor = ClearentConstants.Color.base01
         separatorView.backgroundColor = ClearentConstants.Color.backgroundSecondary02
+        shouldHideWarning = true
         warningTextView.textContainer.lineFragmentPadding = 0
         warningTextView.delegate = self
         warningTextView.dataDetectorTypes = .link
