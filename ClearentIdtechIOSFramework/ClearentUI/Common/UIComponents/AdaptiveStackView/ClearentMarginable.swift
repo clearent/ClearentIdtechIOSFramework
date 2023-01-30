@@ -30,15 +30,25 @@ extension ClearentMarginable {
 }
 
 public class BottomMargin {
+    
+    // MARK: - Properties
+    
     var constant: CGFloat
 
+    // MARK: - Init
+    
     init(constant: CGFloat) {
         self.constant = constant
     }
 }
 
 class RelativeBottomMargin: BottomMargin {
+    
+    // MARK: - Properties
+    
     var relatedViewType: UIView.Type
+    
+    // MARK: - Init
     
     public init(constant: CGFloat, relatedViewType: UIView.Type) {
         self.relatedViewType = relatedViewType

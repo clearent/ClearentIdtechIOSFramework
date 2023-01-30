@@ -8,10 +8,54 @@
 
 import UIKit
 
-class ClearentLabelSwitch: ClearentInfoWithIcon {
+class ClearentLabelSwitch: ClearentMarginableView {
     @IBOutlet var switchView: UISwitch!
-
+    @IBOutlet var titleLabel: UILabel!
+    @IBOutlet var descriptionLabel: UILabel!
+    
+    @IBOutlet weak var separatorView: UIView!
+    
     var valueChangedAction: ((_ isOn: Bool) -> Void)?
+    
+    public var titleTextColor: UIColor? {
+        didSet {
+            titleLabel.textColor = titleTextColor
+        }
+    }
+
+    public var titleFont: UIFont? {
+        didSet {
+            titleLabel.font = titleFont
+        }
+    }
+
+    public var titleText: String? {
+        didSet {
+            titleLabel.text = titleText
+        }
+    }
+
+    public var descriptionTextColor: UIColor? {
+        didSet {
+            descriptionLabel.textColor = descriptionTextColor
+        }
+    }
+
+    public var descriptionFont: UIFont? {
+        didSet {
+            descriptionLabel.font = descriptionFont
+        }
+    }
+
+    public var descriptionText: String? {
+        didSet {
+            guard let descriptionText = descriptionText else {
+                descriptionLabel.removeFromSuperview()
+                return
+            }
+            descriptionLabel.text = descriptionText
+        }
+    }
 
     override var margins: [BottomMargin] {
         [
@@ -30,12 +74,16 @@ class ClearentLabelSwitch: ClearentInfoWithIcon {
 
     override func configure() {
         super.configure()
+        titleFont = ClearentUIBrandConfigurator.shared.fonts.detailScreenItemTitleFont
+        titleTextColor = ClearentConstants.Color.base02
+        descriptionFont = ClearentUIBrandConfigurator.shared.fonts.detailScreenItemSubtitleFont
+        descriptionTextColor = ClearentConstants.Color.base01
         switchView.transform = CGAffineTransform(scaleX: 0.83, y: 0.77)
         descriptionFont = ClearentUIBrandConfigurator.shared.fonts.detailScreenItemDescriptionFont
         descriptionTextColor = ClearentConstants.Color.base02
         separatorView.backgroundColor = ClearentConstants.Color.backgroundSecondary02
     }
-
+    
     @IBAction func switchValueDidChange(_ sender: UISwitch) {
         valueChangedAction?(sender.isOn)
     }

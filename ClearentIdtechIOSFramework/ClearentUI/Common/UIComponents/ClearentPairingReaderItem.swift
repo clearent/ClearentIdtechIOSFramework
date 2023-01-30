@@ -7,12 +7,16 @@
 //
 
 class ClearentPairingReaderItem: ClearentMarginableView {
-    // MARK: - Properties
-
-    public var action: (() -> Void)?
+    
+    // MARK: - IBOutlets
+    
     @IBOutlet var container: UIView!
     @IBOutlet var label: UILabel!
     @IBOutlet var rightIcon: UIImageView!
+    
+    // MARK: - Properties
+
+    public var action: (() -> Void)?
 
     override var margins: [BottomMargin] {
         [RelativeBottomMargin(constant: 8, relatedViewType: ClearentPairingReaderItem.self)]
@@ -43,7 +47,7 @@ class ClearentPairingReaderItem: ClearentMarginableView {
         }
     }
 
-    // MARK: - Methods
+    // MARK: - Init
 
     convenience init(title: String, action: (() -> Void)?) {
         self.init()
@@ -51,6 +55,8 @@ class ClearentPairingReaderItem: ClearentMarginableView {
         self.action = action
     }
 
+    // MARK: - Public
+    
     override func configure() {
         container.layer.cornerRadius = container.bounds.height / 4
         container.layer.masksToBounds = true
@@ -60,6 +66,8 @@ class ClearentPairingReaderItem: ClearentMarginableView {
         rightIconName = ClearentConstants.IconName.rightArrow
     }
 
+    // MARK: - Actions
+    
     @IBAction func viewWasPressed() {
         action?()
     }

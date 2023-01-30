@@ -9,9 +9,13 @@
 import UIKit
 
 public class ClearentIconAndLabel: ClearentMarginableView {
+    
+    // MARK: - IBOutlets
 
     @IBOutlet weak var iconImageView: UIImageView!
     @IBOutlet weak var textLabel: UILabel!
+    
+    // MARK: - Properties
     
     public override var nibName: String? {
         String(describing: ClearentIconAndLabel.self)
@@ -43,13 +47,20 @@ public class ClearentIconAndLabel: ClearentMarginableView {
         }
     }
     
+    public var action: (() -> Void)?
+    
+    // MARK: - Init
+    
     convenience init(icon: UIImage?, text: String) {
         self.init()
+        
         if let image = icon {
             self.iconImageView.image = image
         }
         textLabel.text = text
     }
+    
+    // MARK: - Public
     
     public override func configure() {
         font = ClearentUIBrandConfigurator.shared.fonts.statusLabelFont
@@ -61,5 +72,11 @@ public class ClearentIconAndLabel: ClearentMarginableView {
             self.iconImageView.image = image
         }
         textLabel.text = text
+    }
+    
+    // MARK: - Private
+    
+    @IBAction func didTapOnView(_ sender: Any) {
+        action?()
     }
 }

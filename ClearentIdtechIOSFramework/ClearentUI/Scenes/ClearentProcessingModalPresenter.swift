@@ -113,7 +113,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     func offlineTransactionsWarningText() -> String {
-        return String(format: ClearentConstants.Localized.OfflineMode.offlineModeEnabled, String(ClearentUIManager.shared.allUnprocessedOfflineTransactionsCount()))
+        String(format: ClearentConstants.Localized.OfflineMode.offlineModeEnabled, String(ClearentUIManager.shared.allUnprocessedOfflineTransactionsCount()))
     }
     
     func handleOfflineModeCancelOption() {

@@ -179,11 +179,7 @@
             </constraints>
             <point key="canvasLocation" x="131.8840579710145" y="131.91964285714286"/>
         </view>
-        <tapGestureRecognizer id="LlY-34-Crc">
-            <connections>
-                <action selector="readersSectionWasPressed:" destination="-1" id="kiS-kW-aVB"/>
-            </connections>
-        </tapGestureRecognizer>
+        <tapGestureRecognizer id="LlY-34-Crc"/>
     </objects>
     <resources>
         <systemColor name="systemBackgroundColor">
