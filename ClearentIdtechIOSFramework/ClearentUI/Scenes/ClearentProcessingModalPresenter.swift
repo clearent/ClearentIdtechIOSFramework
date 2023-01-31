@@ -307,6 +307,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                 showSignatureScreen()
             case .signatureError:
                 resendSignature()
+            case .emailReceipt:
+                showEmailReceiptOption()
             default:
                 startTransactionFlow()
             }
@@ -459,7 +461,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             let items = [FlowDataItem(type: .hint, object: ClearentConstants.Localized.EmailReceipt.emailReceiptOptionTitle),
                          FlowDataItem(type: .userAction, object: FlowButtonType.emailReceiptOptionYes),
                          FlowDataItem(type: .userAction, object: FlowButtonType.emailReceiptOptionNo)]
-            let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.info, items: items)
+            let feedback = FlowFeedback(flow: .pairing(), type: .emailReceipt, items: items)
             modalProcessingView?.updateContent(with: feedback)
         } else {
            dissmissView(error: nil)
@@ -471,7 +473,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         let items = [FlowDataItem(type: .hint, object: ClearentConstants.Localized.EmailReceipt.emailFormTitle),
                      FlowDataItem(type: .receipt, object: nil),
                      FlowDataItem(type: .userAction, object: FlowButtonType.emailFormSkip)]
-        let feedback = FlowFeedback(flow: .pairing(), type: FlowFeedbackType.renameReaderDone, items: items)
+        let feedback = FlowFeedback(flow: .pairing(), type: .emailReceipt, items: items)
         modalProcessingView?.updateContent(with: feedback)
     }
     
@@ -523,8 +525,6 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
             self?.showEmailReceiptOption()
         }
-        sdkWrapper.isNewPaymentProcess = true
-        ClearentUIManager.shared.isOfflineModeConfirmed = false
     }
     
     func didFinishHandlingReceipt() {
