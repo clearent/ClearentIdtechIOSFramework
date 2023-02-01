@@ -9,6 +9,7 @@
 import UIKit
 
 public class ClearentSettingsModalViewController: ClearentBaseViewController {
+
     @IBOutlet var titleLabel: ClearentTitleLabel!
     @IBOutlet var settingsStackView: UIStackView!
     @IBOutlet var readersListView: ClearentInfoWithIcon!
@@ -47,7 +48,6 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     
     public override func viewDidLoad() {
         super.viewDidLoad()
-        
         setupTitle()
         
         // Readers section
