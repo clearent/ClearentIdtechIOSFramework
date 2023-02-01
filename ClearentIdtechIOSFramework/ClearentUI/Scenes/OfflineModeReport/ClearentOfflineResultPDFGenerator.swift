@@ -239,12 +239,12 @@ class ClearentOfflineResultPDFGenerator {
             transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportInvoice, invoice))
         }
         
-        if let billingAddress = transactionResponse?.billing {
-        transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportBillingAddress, billingAddress.street!))
+        if let billingAddress = transactionResponse?.billing, let street = billingAddress.street {
+        transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportBillingAddress, street))
         }
         
-        if let shippingAddress = transactionResponse?.shipping {
-            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportShippingAddress, shippingAddress.street!))
+        if let shippingAddress = transactionResponse?.shipping, let shippingStreet = shippingAddress.street {
+            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportShippingAddress, shippingStreet))
         }
 
         if let softwareType = transactionResponse?.softwareType {
