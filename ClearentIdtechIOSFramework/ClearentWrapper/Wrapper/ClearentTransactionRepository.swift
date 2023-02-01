@@ -9,6 +9,7 @@
 protocol TransactionRepositoryProtocol {
     var delegate: ClearentWrapperProtocol? { get set }
     var offlineManager: OfflineModeManager? { get set }
+    var signatureImage: UIImage? { get set }
     func saleTransaction(jwt: String, saleEntity: SaleEntity, isOfflineTransaction: Bool, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
     func sendSignatureRequest(image: UIImage, completion: @escaping (SignatureResponse?, ClearentError?) -> Void)
     func sendReceiptRequest(emailAddress: String, completion: @escaping (ReceiptResponse?, ClearentError?) -> Void)
@@ -31,8 +32,8 @@ protocol TransactionRepositoryProtocol {
 class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     var delegate: ClearentWrapperProtocol?
     var offlineManager: OfflineModeManager?
+    var signatureImage: UIImage?
     private var lastTransactionID: String?
-    private var signatureImage: UIImage?
     private var httpClient: ClearentHttpClientProtocol
     private var clearentManualEntry: ClearentManualEntry?
     private var clearentVP3300: Clearent_VP3300?
@@ -152,7 +153,6 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     
     func sendSignatureRequest(image: UIImage, completion: @escaping (SignatureResponse?, ClearentError?) -> Void) {
         if let id = lastTransactionID, let tid = Int(id) {
-            signatureImage = image
             guard let dataImage = image.resize()?.jpegData(compressionQuality: 0) else {
                 completion(nil, .init(type: .missingSignatureImage))
                 return
