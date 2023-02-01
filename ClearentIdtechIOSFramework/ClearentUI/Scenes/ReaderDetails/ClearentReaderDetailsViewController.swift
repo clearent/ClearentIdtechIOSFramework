@@ -8,12 +8,11 @@
 
 import UIKit
 
-class ClearentReaderDetailsViewController: UIViewController {
+class ClearentReaderDetailsViewController: ClearentAbstractViewController {
     var readerInfo: ReaderInfo { detailsPresenter.currentReader }
     var detailsPresenter: ClearentReaderDetailsProtocol!
 
     // MARK: - IBOutlets
-
     @IBOutlet var stackView: ClearentAdaptiveStackView!
     @IBOutlet var connectedView: ClearentLabelSwitch!
     @IBOutlet var signalStatusView: ClearentLabelWithIcon!

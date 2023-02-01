@@ -28,8 +28,11 @@ public class ClearentAdaptiveStackView: UIStackView {
         bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -margin).isActive = !onTop
         topAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.topAnchor, constant: margin).isActive = !onTop
 
-        leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor, constant: margin).isActive = true
-        rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -margin).isActive = true
+        leftAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.leftAnchor, constant: margin).isActive = true
+        rightAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.rightAnchor, constant: margin).isActive = true
+        
+        centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        widthAnchor.constraint(lessThanOrEqualToConstant: ClearentConstants.Size.modalStackMaxWidth).isActive = true
         
         UIView.animate(withDuration: 0.5, delay: 0.1) { [weak self] in
             self?.alpha = 1.0

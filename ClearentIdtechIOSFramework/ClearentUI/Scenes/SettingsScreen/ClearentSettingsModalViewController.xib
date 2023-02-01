@@ -11,6 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ClearentSettingsModalViewController" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
             <connections>
+                <outlet property="containerMaxWidthConstraint" destination="BbS-Rc-wRR" id="3ad-D9-5vS"/>
                 <outlet property="doneButton" destination="qvS-xB-3xk" id="7hL-Rp-Kbw"/>
                 <outlet property="emailSectionSubtitle" destination="KNm-sw-duo" id="6Zf-NH-Gzl"/>
                 <outlet property="enableEmailReceipt" destination="9l1-Zq-ed1" id="qcT-e6-6RF"/>
@@ -168,14 +169,18 @@
                         </stackView>
                     </subviews>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="width" relation="lessThanOrEqual" constant="600" id="BbS-Rc-wRR"/>
+                    </constraints>
                 </stackView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="tNN-bV-Kb9"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="tNN-bV-Kb9" firstAttribute="trailing" secondItem="f7W-9u-7im" secondAttribute="trailing" constant="32" id="PB8-ZC-FKT"/>
+                <constraint firstItem="tNN-bV-Kb9" firstAttribute="trailing" secondItem="f7W-9u-7im" secondAttribute="trailing" priority="999" constant="32" id="PB8-ZC-FKT"/>
+                <constraint firstItem="f7W-9u-7im" firstAttribute="centerX" secondItem="tNN-bV-Kb9" secondAttribute="centerX" id="bHg-xS-ZEv"/>
                 <constraint firstAttribute="bottom" secondItem="f7W-9u-7im" secondAttribute="bottom" constant="32" id="cQU-sN-LhM"/>
-                <constraint firstItem="f7W-9u-7im" firstAttribute="leading" secondItem="tNN-bV-Kb9" secondAttribute="leading" constant="32" id="rgG-Re-CIx"/>
+                <constraint firstItem="f7W-9u-7im" firstAttribute="leading" secondItem="tNN-bV-Kb9" secondAttribute="leading" priority="999" constant="32" id="rgG-Re-CIx"/>
             </constraints>
             <point key="canvasLocation" x="131.8840579710145" y="131.91964285714286"/>
         </view>

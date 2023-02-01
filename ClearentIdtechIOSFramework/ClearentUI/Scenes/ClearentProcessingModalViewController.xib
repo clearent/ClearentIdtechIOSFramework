@@ -11,6 +11,7 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ClearentProcessingModalViewController" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
             <connections>
+                <outlet property="containerMaxWidthConstraint" destination="vQr-Et-OGY" id="fpI-zI-hbx"/>
                 <outlet property="stackView" destination="78l-9c-DkQ" id="WXk-mh-EzE"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -23,14 +24,17 @@
                 <stackView opaque="NO" contentMode="scaleToFill" placeholderIntrinsicWidth="350" placeholderIntrinsicHeight="278" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="78l-9c-DkQ" customClass="ClearentRoundedCornersStackView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
                     <rect key="frame" x="32" y="586" width="350" height="278"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <constraints>
+                        <constraint firstAttribute="width" relation="lessThanOrEqual" constant="600" id="vQr-Et-OGY"/>
+                    </constraints>
                 </stackView>
             </subviews>
             <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="78l-9c-DkQ" secondAttribute="trailing" constant="32" id="AGU-Sp-bHr"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="78l-9c-DkQ" secondAttribute="trailing" priority="900" constant="32" id="AGU-Sp-bHr"/>
                 <constraint firstAttribute="bottom" secondItem="78l-9c-DkQ" secondAttribute="bottom" constant="32" id="Bkk-y5-4SR"/>
-                <constraint firstItem="78l-9c-DkQ" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" constant="32" id="Uhx-44-AlM"/>
+                <constraint firstItem="78l-9c-DkQ" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" priority="900" constant="32" id="Uhx-44-AlM"/>
             </constraints>
             <point key="canvasLocation" x="131.8840579710145" y="131.91964285714286"/>
         </view>

@@ -103,9 +103,10 @@ import UIKit
         static let cardInteraction = "card_animation"
     }
 
-    enum Size {
+    public enum Size {
         public static let defaultButtonBorderWidth = 1.0
         public static let modalStackViewMargin = 32.0
+        public static let modalStackMaxWidth = 600.0
     }
     
     public enum Tips {
