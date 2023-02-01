@@ -13,6 +13,6 @@ open class ClearentAbstractViewController: UIViewController {
     
     open override func viewDidLoad() {
         super.viewDidLoad()
-        containerMaxWidthConstraint.constant = 600
+        containerMaxWidthConstraint.constant = ClearentConstants.Size.defaultScreenMaxWidth
     }
 }

@@ -106,7 +106,8 @@ import UIKit
     public enum Size {
         public static let defaultButtonBorderWidth = 1.0
         public static let modalStackViewMargin = 32.0
-        public static let modalStackMaxWidth = 600.0
+        public static let defaultScreenMaxWidth = 600.0
+        public static let paymentScreenMaxWidth = 400.0
     }
     
     public enum Tips {

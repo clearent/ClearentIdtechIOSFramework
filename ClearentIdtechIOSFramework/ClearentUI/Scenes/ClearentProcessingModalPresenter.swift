@@ -516,6 +516,14 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             }
         }
     }
+    
+    private func changeOrientationToDefault() {
+        let orientation: UIInterfaceOrientationMask = UIDevice.current.userInterfaceIdiom == .phone ? .portrait : .landscape
+        let or = orientation == .portrait ? "portrait" : "landscape"
+        print("🍎 didReceiveFlowFeedback: \(or)")
+        ClearentApplicationOrientation.customOrientationMaskClosure?(orientation)
+        UIDevice.current.setValue(orientation.rawValue, forKey: "orientation")
+    }
 }
 
 extension ClearentProcessingModalPresenter: FlowDataProtocol {
@@ -525,6 +533,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
         }
         sdkWrapper.isNewPaymentProcess = true
         ClearentUIManager.shared.isOfflineModeConfirmed = false
+        changeOrientationToDefault()
     }
     
     func didFinishHandlingReceipt() {
@@ -561,10 +570,6 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
     }
 
     func didReceiveFlowFeedback(feedback: FlowFeedback) {
-       // print("🍎 didReceiveFlowFeedback - portrait")
-        let orientation: UIInterfaceOrientationMask = UIDevice.current.userInterfaceIdiom == .phone ? .portrait : .landscape
-        ClearentApplicationOrientation.customOrientationMaskClosure?(orientation)
-        UIDevice.current.setValue(orientation.rawValue, forKey: "orientation")
         modalProcessingView?.updateContent(with: feedback)
     }
 

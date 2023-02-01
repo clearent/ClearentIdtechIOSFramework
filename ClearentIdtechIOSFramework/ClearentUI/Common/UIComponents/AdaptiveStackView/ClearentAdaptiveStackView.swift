@@ -32,7 +32,7 @@ public class ClearentAdaptiveStackView: UIStackView {
         rightAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.rightAnchor, constant: margin).isActive = true
         
         centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        widthAnchor.constraint(lessThanOrEqualToConstant: ClearentConstants.Size.modalStackMaxWidth).isActive = true
+        widthAnchor.constraint(lessThanOrEqualToConstant: ClearentConstants.Size.defaultScreenMaxWidth).isActive = true
         
         UIView.animate(withDuration: 0.5, delay: 0.1) { [weak self] in
             self?.alpha = 1.0
