@@ -13,6 +13,7 @@ class ClearentReaderDetailsViewController: ClearentAbstractViewController {
     var detailsPresenter: ClearentReaderDetailsProtocol!
 
     // MARK: - IBOutlets
+
     @IBOutlet var stackView: ClearentAdaptiveStackView!
     @IBOutlet var connectedView: ClearentLabelSwitch!
     @IBOutlet var signalStatusView: ClearentLabelWithIcon!

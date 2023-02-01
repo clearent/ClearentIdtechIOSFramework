@@ -240,7 +240,7 @@ class ClearentOfflineResultPDFGenerator {
         }
         
         if let billingAddress = transactionResponse?.billing {
-            transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportBillingAddress, billingAddress.street!))
+        transactionData.append((ClearentConstants.Localized.OfflineMode.offlineModeReportBillingAddress, billingAddress.street!))
         }
         
         if let shippingAddress = transactionResponse?.shipping {
