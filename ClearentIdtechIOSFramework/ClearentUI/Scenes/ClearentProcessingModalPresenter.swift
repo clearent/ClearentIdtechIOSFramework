@@ -518,7 +518,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     private func changeOrientationToDefault() {
-        let orientationMask: UIInterfaceOrientationMask = UIDevice.current.userInterfaceIdiom == .phone ? .portrait : .landscapeLeft
+        let orientationMask: UIInterfaceOrientationMask = UIDevice.current.userInterfaceIdiom == .phone ? .portrait : .landscape
         let orientation: UIInterfaceOrientation = UIDevice.current.userInterfaceIdiom == .phone ? .portrait : .landscapeLeft
         ClearentApplicationOrientation.customOrientationMaskClosure?(orientationMask)
         UIDevice.current.setValue(orientation.rawValue, forKey: "orientation")
