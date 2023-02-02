@@ -273,6 +273,11 @@ public final class ClearentWrapper : NSObject {
     
     public func sendSignatureWithImage(image: UIImage, completion: @escaping (SignatureResponse?, ClearentError?) -> Void) {
         if processTransactionOnline {
+            transactionRepository?.signatureImage = image
+            if checkForConnectivityWarning(for: .payment) {
+                completion(nil, .init(type: .connectivityError))
+                return
+            }
             transactionRepository?.sendSignatureRequest(image: image) { (response, error) in
                 DispatchQueue.main.async {
                     completion(response, error)
@@ -280,15 +285,6 @@ public final class ClearentWrapper : NSObject {
             }
         } else if ClearentWrapperDefaults.enableOfflineMode {
             transactionRepository?.saveSignatureImageForTransaction(image: image)
-        } else if checkForConnectivityWarning(for: .payment) {
-            completion(nil, .init(type: .connectivityError))
-            return
-        } else {
-            transactionRepository?.sendSignatureRequest(image: image) { (response, error) in
-                DispatchQueue.main.async {
-                    completion(response, error)
-                }
-            }
         }
     }
     
@@ -300,6 +296,10 @@ public final class ClearentWrapper : NSObject {
     
     public func sendReceipt(emailAddress: String, completion: @escaping (ReceiptResponse?, ClearentError?) -> Void) {
         if processTransactionOnline {
+            if checkForConnectivityWarning(for: .payment) {
+                completion(nil, .init(type: .connectivityError))
+                return
+            }
             transactionRepository?.sendReceiptRequest(emailAddress: emailAddress) { (response, error) in
                 DispatchQueue.main.async {
                     completion(response, error)
@@ -307,15 +307,6 @@ public final class ClearentWrapper : NSObject {
             }
         } else if ClearentWrapperDefaults.enableOfflineMode {
             transactionRepository?.saveEmailForTransaction(emailAddress: emailAddress)
-        } else if checkForConnectivityWarning(for: .payment) {
-            completion(nil, .init(type: .connectivityError))
-            return
-        } else {
-            transactionRepository?.sendReceiptRequest(emailAddress: emailAddress) { (response, error) in
-                DispatchQueue.main.async {
-                    completion(response, error)
-                }
-            }
         }
     }
     
@@ -419,6 +410,10 @@ public final class ClearentWrapper : NSObject {
      */
     func resendSignature(completion: @escaping (SignatureResponse?, ClearentError?) -> Void) {
         if processTransactionOnline {
+            if checkForConnectivityWarning(for: .payment) {
+                completion(nil, .init(type: .connectivityError))
+                return
+            }
             transactionRepository?.resendSignature() { (response, error) in
                 DispatchQueue.main.async {
                     completion(response, error)
@@ -426,15 +421,6 @@ public final class ClearentWrapper : NSObject {
             }
         } else if ClearentWrapperDefaults.enableOfflineMode {
             transactionRepository?.resaveSignatureImageForTransaction()
-        } else if checkForConnectivityWarning(for: .payment) {
-            completion(nil, .init(type: .connectivityError))
-            return
-        } else {
-            transactionRepository?.resendSignature() { (response, error) in
-                DispatchQueue.main.async {
-                    completion(response, error)
-                }
-            }
         }
     }
     
