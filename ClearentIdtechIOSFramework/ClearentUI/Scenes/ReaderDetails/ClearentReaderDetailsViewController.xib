@@ -14,6 +14,7 @@
                 <outlet property="autojoinView" destination="Xrv-n7-BFt" id="Hzv-Ff-37e"/>
                 <outlet property="batteryStatusView" destination="hii-ez-GMs" id="Hyf-wB-4NI"/>
                 <outlet property="connectedView" destination="mMf-Rb-yxr" id="o91-XM-9bA"/>
+                <outlet property="containerMaxWidthConstraint" destination="vnm-4n-8PR" id="9TL-mg-gZQ"/>
                 <outlet property="customReaderName" destination="dwA-ol-9Ru" id="sM0-nn-vUr"/>
                 <outlet property="readerName" destination="o6o-lI-X3o" id="Zw8-EU-AUv"/>
                 <outlet property="removeReaderButton" destination="RMX-cF-dCe" id="aJ4-BJ-dP1"/>
@@ -75,6 +76,7 @@
                         <constraint firstItem="ndA-by-iyK" firstAttribute="top" secondItem="irp-yA-dbn" secondAttribute="top" id="AVX-RZ-Tz8"/>
                         <constraint firstItem="ndA-by-iyK" firstAttribute="leading" secondItem="irp-yA-dbn" secondAttribute="leading" id="LRs-YN-NXV"/>
                         <constraint firstAttribute="trailing" secondItem="ndA-by-iyK" secondAttribute="trailing" id="mvU-PG-zXf"/>
+                        <constraint firstAttribute="width" relation="lessThanOrEqual" constant="600" id="vnm-4n-8PR"/>
                         <constraint firstAttribute="bottom" secondItem="ndA-by-iyK" secondAttribute="bottom" id="weS-B2-AyD"/>
                     </constraints>
                 </scrollView>
@@ -89,12 +91,13 @@
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
             <constraints>
+                <constraint firstItem="irp-yA-dbn" firstAttribute="centerX" secondItem="vUN-kp-3ea" secondAttribute="centerX" id="MiC-U6-i0p"/>
                 <constraint firstItem="irp-yA-dbn" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="78" id="aIc-zC-Ltd"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="irp-yA-dbn" secondAttribute="trailing" constant="16" id="dGS-Jb-b9j"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="irp-yA-dbn" secondAttribute="trailing" priority="900" constant="16" id="dGS-Jb-b9j"/>
                 <constraint firstItem="RMX-cF-dCe" firstAttribute="centerX" secondItem="vUN-kp-3ea" secondAttribute="centerX" id="npI-X5-W3q"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="RMX-cF-dCe" secondAttribute="bottom" constant="16" id="rJJ-Ly-8hC"/>
                 <constraint firstItem="irp-yA-dbn" firstAttribute="bottom" secondItem="RMX-cF-dCe" secondAttribute="top" constant="-14" id="vzn-qb-4St"/>
-                <constraint firstItem="irp-yA-dbn" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="16" id="xzM-Sg-RlQ"/>
+                <constraint firstItem="irp-yA-dbn" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" priority="900" constant="16" id="xzM-Sg-RlQ"/>
             </constraints>
             <point key="canvasLocation" x="374" y="102"/>
         </view>

@@ -8,7 +8,7 @@
 import UIKit
 
 /// A custom view controller that has a semi-transparent background
-open class ClearentBaseViewController: UIViewController {
+open class ClearentBaseViewController: ClearentAbstractViewController {
     private let backgroundView = UIView()
     
     override open func viewDidLoad() {

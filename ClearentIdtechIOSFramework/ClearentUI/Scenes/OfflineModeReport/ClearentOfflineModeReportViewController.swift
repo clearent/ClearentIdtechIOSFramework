@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ClearentOfflineModeReportViewController: UIViewController {
+class ClearentOfflineModeReportViewController: ClearentAbstractViewController {
     
     @IBOutlet weak var clearReportButton: ClearentPrimaryButton!
     @IBOutlet weak var saveErrorLogButton: ClearentPrimaryButton!

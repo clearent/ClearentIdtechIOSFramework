@@ -8,7 +8,7 @@
 
 import UIKit
 
-class ClearentReaderDetailsViewController: UIViewController {
+class ClearentReaderDetailsViewController: ClearentAbstractViewController {
     var readerInfo: ReaderInfo { detailsPresenter.currentReader }
     var detailsPresenter: ClearentReaderDetailsProtocol!
 

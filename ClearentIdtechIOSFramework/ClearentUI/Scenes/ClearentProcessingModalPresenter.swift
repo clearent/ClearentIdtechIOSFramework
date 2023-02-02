@@ -518,6 +518,13 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             }
         }
     }
+    
+    private func changeOrientationToDefault() {
+        let orientationMask: UIInterfaceOrientationMask = UIDevice.current.userInterfaceIdiom == .phone ? .portrait : .landscape
+        let orientation: UIInterfaceOrientation = UIDevice.current.userInterfaceIdiom == .phone ? .portrait : .landscapeLeft
+        ClearentApplicationOrientation.customOrientationMaskClosure?(orientationMask)
+        UIDevice.current.setValue(orientation.rawValue, forKey: "orientation")
+    }
 }
 
 extension ClearentProcessingModalPresenter: FlowDataProtocol {
@@ -525,6 +532,7 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
             self?.showEmailReceiptOption()
         }
+        changeOrientationToDefault()
     }
     
     func didFinishHandlingReceipt() {
@@ -561,8 +569,6 @@ extension ClearentProcessingModalPresenter: FlowDataProtocol {
     }
 
     func didReceiveFlowFeedback(feedback: FlowFeedback) {
-        ClearentApplicationOrientation.customOrientationMaskClosure?(UIInterfaceOrientationMask.portrait)
-        UIDevice.current.setValue(UIInterfaceOrientation.portrait.rawValue, forKey: "orientation")
         modalProcessingView?.updateContent(with: feedback)
     }
 

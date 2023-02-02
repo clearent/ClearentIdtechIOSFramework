@@ -9,7 +9,7 @@
 import UIKit
 
 public class ClearentSettingsModalViewController: ClearentBaseViewController {
-    
+
     @IBOutlet var titleLabel: ClearentTitleLabel!
     @IBOutlet var settingsStackView: UIStackView!
     @IBOutlet var readersListView: ClearentInfoWithIcon!
