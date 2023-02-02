@@ -62,6 +62,12 @@ class ClearentOfflineModeReportViewController: ClearentAbstractViewController {
 extension ClearentOfflineModeReportViewController: ClearentOfflineViewProtocol {
     func showShareMenu(with fileURL: URL) {
        let activityViewController = UIActivityViewController(activityItems: [fileURL], applicationActivities: nil)
+        
+        if let popoverController = activityViewController.popoverPresentationController {
+            popoverController.sourceView = view
+            popoverController.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
+        }
+
        present(activityViewController, animated: true, completion: nil)
    }
 }
