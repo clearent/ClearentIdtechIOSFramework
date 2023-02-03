@@ -219,6 +219,9 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             handleTerminalSettings()
         case .emailReceiptOptionYes:
             showEmailFormScreen()
+        case .callSupport:
+            guard let number = URL(string: "tel://\(ClearentConstants.ContactSupport.phoneNumber)") else { return }
+            UIApplication.shared.open(number)
         }
     }
     

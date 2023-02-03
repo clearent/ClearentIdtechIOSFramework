@@ -8,6 +8,7 @@
 
 // MARK: - Common
 "xsdk_keyboard_done" = "Done";
+"xsdk_contact_support_phone_number" = "012.345.6789"; // This needs to be overriden by the client's support number
 
 // MARK: - Pairing Flow
 // Texts that are displayed during the pairing flow
@@ -236,7 +237,8 @@
 "xsdk_offline_mode_warning_confirmation_description" = "\n\nAre you sure you want to use the application in offline mode?";
 "xsdk_offline_mode_enabled" = "Offline Mode (%@)";
 "xsdk_offline_mode_warning_message_confirmation" = "OK";
-"xsdk_offline_mode_encryption_message" = "Please try again using an encrypted reader";
+"xsdk_offline_mode_encryption_message" = "Your reader is unencrypted.\nPlease contact support for more information.";
+"xsdk_offline_mode_encryption_call_support" = "Call Support";
 
 // Offline mode report texts
 

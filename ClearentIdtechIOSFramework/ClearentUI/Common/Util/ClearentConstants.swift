@@ -118,6 +118,10 @@ import UIKit
         public static let maxNoOfCharacters = 11
     }
     
+    public enum ContactSupport {
+        public static let phoneNumber = "xsdk_contact_support_phone_number".localized
+    }
+    
     // MARK: - Localizable
 
     enum Localized {
@@ -326,6 +330,7 @@ import UIKit
             public static let offlineModeEnabled = "xsdk_offline_mode_enabled".localized
             public static let offlineModeWarningMessageConfirm = "xsdk_offline_mode_warning_message_confirmation".localized
             public static let offlineModeEncryptionWarningMessage = "xsdk_offline_mode_encryption_message".localized
+            public static let offlineModeEncryptioContactSupport = "xsdk_offline_mode_encryption_call_support".localized
             
             public static let offlineModeReportTitle = "xsdk_offline_mode_report_title".localized
             public static let offlineModeMechantID = "xsdk_offline_mode_report_merchant_id".localized
