@@ -20,7 +20,6 @@ class ClearentTipOptionView: ClearentMarginableView {
     
     override var margins: [BottomMargin] {
         [
-            RelativeBottomMargin(constant: 16, relatedViewType: ClearentTipOptionView.self),
             BottomMargin(constant: 0)
         ]
     }
