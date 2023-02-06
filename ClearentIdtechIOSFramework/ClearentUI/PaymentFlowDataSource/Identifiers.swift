@@ -109,7 +109,7 @@ public enum FlowButtonType {
         case .emailFormSkip:
             return ClearentConstants.Localized.EmailReceipt.emailFormButtonSkip
         case .callSupport:
-            return ClearentConstants.Localized.OfflineMode.offlineModeEncryptioContactSupport
+            return ClearentConstants.Localized.OfflineMode.offlineModeEncryptionContactSupport
         }
     }
 
