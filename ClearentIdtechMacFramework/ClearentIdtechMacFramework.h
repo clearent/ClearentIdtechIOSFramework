@@ -6,7 +6,6 @@
 //  Copyright © 2018 Clearent, L.L.C. All rights reserved.
 //
 
-#import <Cocoa/Cocoa.h>
 
 //! Project version number for ClearentIdtechMacFramework.
 FOUNDATION_EXPORT double ClearentIdtechMacFrameworkVersionNumber;

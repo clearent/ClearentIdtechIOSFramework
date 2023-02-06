@@ -204,6 +204,7 @@
 		CCBAEE4E291BC54B004A22D9 /* ClearentWarningLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCBAEE4D291BC54B004A22D9 /* ClearentWarningLabel.swift */; };
 		CCBAEE50291BE05B004A22D9 /* ClearentIconAndLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCBAEE4F291BE05B004A22D9 /* ClearentIconAndLabel.swift */; };
 		CCBAEE52291BE069004A22D9 /* ClearentIconAndLabel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CCBAEE51291BE069004A22D9 /* ClearentIconAndLabel.xib */; };
+		CCD2A6C9299128DB00B11EAD /* libOCMock.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCD2A6C8299128DB00B11EAD /* libOCMock.xcframework */; };
 		E702E5702364835B0032ED8D /* ClearentVP3300Config.m in Sources */ = {isa = PBXBuildFile; fileRef = E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */; };
 		E702E572236488630032ED8D /* ClearentPayment.h in Headers */ = {isa = PBXBuildFile; fileRef = E746CB5F235896EC00C41DF1 /* ClearentPayment.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E702E5732364886C0032ED8D /* ClearentVP3300Config.h in Headers */ = {isa = PBXBuildFile; fileRef = E702E571236485280032ED8D /* ClearentVP3300Config.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -212,7 +213,6 @@
 		E721ECE821F7483B0064163F /* ClearentManualEntry.h in Headers */ = {isa = PBXBuildFile; fileRef = E7B89E2F21F6A69300078C73 /* ClearentManualEntry.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E721ECEA21F74B560064163F /* ClearentCard.h in Headers */ = {isa = PBXBuildFile; fileRef = E7B89E2B21F6A38200078C73 /* ClearentCard.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E726A0382258B5B400F3E8B7 /* ClearentCache.m in Sources */ = {isa = PBXBuildFile; fileRef = E726A0372258B5B400F3E8B7 /* ClearentCache.m */; };
-		E728DB4C20E687A6004C01E7 /* libOCMock.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E728DB4B20E687A6004C01E7 /* libOCMock.a */; };
 		E746CB612358983200C41DF1 /* ClearentPayment.m in Sources */ = {isa = PBXBuildFile; fileRef = E746CB602358983200C41DF1 /* ClearentPayment.m */; };
 		E75891EE225522AB00288032 /* ClearentLoggingRequest.h in Headers */ = {isa = PBXBuildFile; fileRef = E75891DE225522AB00288032 /* ClearentLoggingRequest.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		E75891F1225522AB00288032 /* ClearentLogging.h in Headers */ = {isa = PBXBuildFile; fileRef = E75891E1225522AB00288032 /* ClearentLogging.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -384,7 +384,6 @@
 		0198BA082968361500C8D3C3 /* ClearentTextFieldAndButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentTextFieldAndButton.swift; sourceTree = "<group>"; };
 		0198BA0A2968362100C8D3C3 /* ClearentTextFieldAndButton.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentTextFieldAndButton.xib; sourceTree = "<group>"; };
 		01BFBC412934A8E700B694F6 /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
-		01BFBC462934BA9400B694F6 /* DateExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateExtension.swift; sourceTree = "<group>"; };
 		01BFBC4F293A0C0E00B694F6 /* ClearentServiceFeeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentServiceFeeView.swift; sourceTree = "<group>"; };
 		01BFBC51293A0C1900B694F6 /* ClearentServiceFeeView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentServiceFeeView.xib; sourceTree = "<group>"; };
 		01C3E418292664490011676B /* UIViewControllerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIViewControllerExtension.swift; sourceTree = "<group>"; };
@@ -447,6 +446,7 @@
 		CCBAEE4D291BC54B004A22D9 /* ClearentWarningLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentWarningLabel.swift; sourceTree = "<group>"; };
 		CCBAEE4F291BE05B004A22D9 /* ClearentIconAndLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentIconAndLabel.swift; sourceTree = "<group>"; };
 		CCBAEE51291BE069004A22D9 /* ClearentIconAndLabel.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentIconAndLabel.xib; sourceTree = "<group>"; };
+		CCD2A6C8299128DB00B11EAD /* libOCMock.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libOCMock.xcframework; path = test/libOCMock.xcframework; sourceTree = "<group>"; };
 		E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentVP3300Config.m; sourceTree = "<group>"; };
 		E702E571236485280032ED8D /* ClearentVP3300Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentVP3300Config.h; sourceTree = "<group>"; };
 		E726A0362258B5A400F3E8B7 /* ClearentCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentCache.h; sourceTree = "<group>"; };
@@ -539,7 +539,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E728DB4C20E687A6004C01E7 /* libOCMock.a in Frameworks */,
+				CCD2A6C9299128DB00B11EAD /* libOCMock.xcframework in Frameworks */,
 				E7CA495820E3C2230090CFFC /* ClearentIdtechIOSFramework.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -558,14 +558,6 @@
 				CCA3FFC6292F82290087FAE5 /* ClearentOfflineResultPDFGenerator.swift */,
 			);
 			path = OfflineModeReport;
-			sourceTree = "<group>";
-		};
-		010F8F4F291BC0F0007D39B6 /* Recovered References */ = {
-			isa = PBXGroup;
-			children = (
-				01BFBC462934BA9400B694F6 /* DateExtension.swift */,
-			);
-			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 		01442C7828B3D343006DD15C /* BluetoothScanner */ = {
@@ -1001,7 +993,6 @@
 				E76E42EE21232FB600F83B41 /* ClearentIdtechMacFramework */,
 				E76504F51FFC306100B345F6 /* Products */,
 				E765050E1FFC30F000B345F6 /* Frameworks */,
-				010F8F4F291BC0F0007D39B6 /* Recovered References */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1080,6 +1071,7 @@
 		E765050E1FFC30F000B345F6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CCD2A6C8299128DB00B11EAD /* libOCMock.xcframework */,
 				4BE4F5312816B39A00357F8F /* IDTech.xcframework */,
 				4BAEA897273410A6007F5FCF /* CocoaLumberjack.xcframework */,
 				4BAEA89327340E89007F5FCF /* CocoaLumberjack.framework */,
@@ -1333,7 +1325,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "UNIVERSAL_OUTPUTFOLDER=/Users/dhigginbotham/Downloads/universal\n# Make sure the output directory exists\nmkdir -p \"${UNIVERSAL_OUTPUTFOLDER}\"\n# Next, work out if we're in SIM or DEVICE\nxcodebuild -target \"${PROJECT_NAME}\" -configuration ${CONFIGURATION} -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO ARCHS=\"x86_64\" VALID_ARCHS=\"x86_64\" BUILD_DIR=\"${UNIVERSAL_OUTPUTFOLDER}/build\" BUILD_ROOT=\"${UNIVERSAL_OUTPUTFOLDER}\" clean build\nxcodebuild -target \"${PROJECT_NAME}\" ONLY_ACTIVE_ARCH=NO -configuration ${CONFIGURATION} ARCHS=\"arm64\" VALID_ARCHS=\"arm64\" defines_module=yes  -sdk iphoneos  BUILD_DIR=\"${UNIVERSAL_OUTPUTFOLDER}/build\" BUILD_ROOT=\"${UNIVERSAL_OUTPUTFOLDER}\" clean build\n# Step 2. Copy the framework structure (from iphoneos build) to the universal folder\ncp -R \"${UNIVERSAL_OUTPUTFOLDER}/build/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework\" \"${UNIVERSAL_OUTPUTFOLDER}/\"\n# Step 3. Copy simulator\ncp -R \"${UNIVERSAL_OUTPUTFOLDER}/build/${CONFIGURATION}-iphonesimulator/${PROJECT_NAME}.framework\" \"${UNIVERSAL_OUTPUTFOLDER}/\"\n# Step 4. Create universal binary file using lipo and place the combined executable in the copied framework directory\nlipo -create -output \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${UNIVERSAL_OUTPUTFOLDER}/build/Debug-iphonesimulator/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${UNIVERSAL_OUTPUTFOLDER}/build/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework/${PROJECT_NAME}\"\n\n";
+			shellScript = "UNIVERSAL_OUTPUTFOLDER=/Users/dhigginbotham/Downloads/universal\n# Make sure the output directory exists\nmkdir -p \"${UNIVERSAL_OUTPUTFOLDER}\"\n# Next, work out if we're in SIM or DEVICE\nxcodebuild -target \"${PROJECT_NAME}\" -configuration ${CONFIGURATION} -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO ARCHS=\"x86_64\" BUILD_DIR=\"${UNIVERSAL_OUTPUTFOLDER}/build\" BUILD_ROOT=\"${UNIVERSAL_OUTPUTFOLDER}\" clean build\nxcodebuild -target \"${PROJECT_NAME}\" ONLY_ACTIVE_ARCH=NO -configuration ${CONFIGURATION} ARCHS=\"arm64\" defines_module=yes  -sdk iphoneos  BUILD_DIR=\"${UNIVERSAL_OUTPUTFOLDER}/build\" BUILD_ROOT=\"${UNIVERSAL_OUTPUTFOLDER}\" clean build\n# Step 2. Copy the framework structure (from iphoneos build) to the universal folder\ncp -R \"${UNIVERSAL_OUTPUTFOLDER}/build/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework\" \"${UNIVERSAL_OUTPUTFOLDER}/\"\n# Step 3. Copy simulator\ncp -R \"${UNIVERSAL_OUTPUTFOLDER}/build/${CONFIGURATION}-iphonesimulator/${PROJECT_NAME}.framework\" \"${UNIVERSAL_OUTPUTFOLDER}/\"\n# Step 4. Create universal binary file using lipo and place the combined executable in the copied framework directory\nlipo -create -output \"${UNIVERSAL_OUTPUTFOLDER}/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${UNIVERSAL_OUTPUTFOLDER}/build/Debug-iphonesimulator/${PROJECT_NAME}.framework/${PROJECT_NAME}\" \"${UNIVERSAL_OUTPUTFOLDER}/build/${CONFIGURATION}-iphoneos/${PROJECT_NAME}.framework/${PROJECT_NAME}\"\n\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1527,7 +1519,6 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				VALID_ARCHS = "";
 			};
 			name = Debug;
 		};
@@ -1546,7 +1537,6 @@
 				ENABLE_BITCODE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				VALID_ARCHS = "";
 			};
 			name = Release;
 		};
@@ -1555,10 +1545,7 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD)";
-				"ARCHS[sdk=iphonesimulator*]" = (
-					x86_64,
-					i386,
-				);
+				"ARCHS[sdk=iphonesimulator*]" = "$(ARCHS_STANDARD)";
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1621,8 +1608,6 @@
 				OTHER_CODE_SIGN_FLAGS = "--remove-signature";
 				OTHER_SWIFT_FLAGS = "-Xcc -Wno-error=non-modular-include-in-framework-module";
 				SDKROOT = iphoneos;
-				VALID_ARCHS = arm64;
-				"VALID_ARCHS[sdk=iphonesimulator*]" = "x86_64 i386";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -1632,14 +1617,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					arm64,
-					armv7,
-				);
-				"ARCHS[sdk=iphonesimulator*]" = (
-					i386,
-					x86_64,
-				);
+				ARCHS = "$(ARCHS_STANDARD)";
+				"ARCHS[sdk=iphonesimulator*]" = "$(ARCHS_STANDARD)";
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -1697,8 +1676,6 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "";
-				"VALID_ARCHS[sdk=iphonesimulator*]" = "x86_64 i386";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -1708,20 +1685,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ARCHS = (
-					arm64,
-					armv7,
-				);
-				"ARCHS[sdk=iphonesimulator*]" = (
-					arm64,
-					x86_64,
-					i386,
-				);
+				ARCHS = "$(ARCHS_STANDARD)";
+				"ARCHS[sdk=iphonesimulator*]" = "$(ARCHS_STANDARD)";
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = YES;
 				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
+				CODE_SIGN_STYLE = Automatic;
 				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
@@ -1729,6 +1700,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_HARDENED_RUNTIME = NO;
 				EXCLUDED_ARCHS = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1748,11 +1720,11 @@
 				MACOSX_DEPLOYMENT_TARGET = "";
 				MODULEMAP_FILE = "";
 				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_SWIFT_FLAGS = "-Xcc -Wno-error=non-modular-include-in-framework-module";
 				PRODUCT_BUNDLE_IDENTIFIER = com.clearent.quest.ClearentIdtechIOSFramework;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
 				SUPPORTS_MACCATALYST = NO;
@@ -1760,7 +1732,6 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TVOS_DEPLOYMENT_TARGET = "";
-				VALID_ARCHS = arm64;
 				WATCHOS_DEPLOYMENT_TARGET = "";
 			};
 			name = Debug;
@@ -1769,22 +1740,21 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ARCHS = arm64;
-				"ARCHS[sdk=iphonesimulator*]" = (
-					x86_64,
-					arm64,
-				);
+				ARCHS = "$(ARCHS_STANDARD)";
+				"ARCHS[sdk=iphonesimulator*]" = "$(ARCHS_STANDARD)";
 				BUILD_LIBRARY_FOR_DISTRIBUTION = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_MODULES_AUTOLINK = YES;
 				CODE_SIGN_IDENTITY = "";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
+				CODE_SIGN_STYLE = Automatic;
 				CREATE_INFOPLIST_SECTION_IN_BINARY = NO;
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = "";
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				ENABLE_HARDENED_RUNTIME = NO;
 				EXCLUDED_ARCHS = "";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1804,19 +1774,17 @@
 				MACOSX_DEPLOYMENT_TARGET = "";
 				MODULEMAP_FILE = "";
 				ONLY_ACTIVE_ARCH = NO;
+				OTHER_CODE_SIGN_FLAGS = "";
 				OTHER_SWIFT_FLAGS = "-Xcc -Wno-error=non-modular-include-in-framework-module";
 				PRODUCT_BUNDLE_IDENTIFIER = com.clearent.quest.ClearentIdtechIOSFramework;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "";
 				SKIP_INSTALL = YES;
 				STRIP_INSTALLED_PRODUCT = NO;
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TVOS_DEPLOYMENT_TARGET = "";
-				VALID_ARCHS = arm64;
-				"VALID_ARCHS[sdk=iphonesimulator*]" = "x86_64 arm64";
 				WATCHOS_DEPLOYMENT_TARGET = "";
 			};
 			name = Release;
@@ -1827,9 +1795,13 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_ENTITLEMENTS = "";
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ClearentIdtechIOSFramework",
@@ -1838,12 +1810,13 @@
 					"$(SRCROOT)/test/libraries",
 					"$(PROJECT_DIR)/test/libraries",
 				);
+				GENERATE_INFOPLIST_FILE = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)",
 					"$(PROJECT_DIR)/test",
 				);
-				INFOPLIST_FILE = "ClearentIdtechIOSFramework-Tests/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				INFOPLIST_FILE = "$(SRCROOT)/ClearentIdtechIOSFramework-Tests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1854,6 +1827,7 @@
 					"$(PROJECT_DIR)/test/libraries",
 				);
 				MACOSX_DEPLOYMENT_TARGET = "";
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -1862,10 +1836,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.clearent.ClearentIdtechIOSFramework-Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TVOS_DEPLOYMENT_TARGET = "";
-				VALID_ARCHS = "";
-				WATCHOS_DEPLOYMENT_TARGET = "";
 			};
 			name = Debug;
 		};
@@ -1875,8 +1848,11 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_INJECT_BASE_ENTITLEMENTS = NO;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
+				ENABLE_HARDENED_RUNTIME = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/ClearentIdtechIOSFramework",
@@ -1886,12 +1862,13 @@
 					"$(PROJECT_DIR)/test/libraries",
 				);
 				GCC_OPTIMIZATION_LEVEL = s;
+				GENERATE_INFOPLIST_FILE = NO;
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)",
 					"$(PROJECT_DIR)/test",
 				);
-				INFOPLIST_FILE = "ClearentIdtechIOSFramework-Tests/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 10.1;
+				INFOPLIST_FILE = "$(SRCROOT)/ClearentIdtechIOSFramework-Tests/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1902,6 +1879,7 @@
 					"$(PROJECT_DIR)/test/libraries",
 				);
 				MACOSX_DEPLOYMENT_TARGET = "";
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-framework",
@@ -1910,10 +1888,9 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "com.clearent.ClearentIdtechIOSFramework-Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TVOS_DEPLOYMENT_TARGET = "";
-				VALID_ARCHS = "";
-				WATCHOS_DEPLOYMENT_TARGET = "";
 			};
 			name = Release;
 		};
