@@ -17,7 +17,7 @@ enum FlowDataKeys {
 }
 
 public enum FlowFeedbackType {
-    case error, info, warning, searchDevices, showReaders, pairingDoneInfo, renameReaderDone, signature, signatureError, emailReceipt
+    case error, info, warning, searchDevices, showReaders, pairingDoneInfo, renameReaderDone, signature, signatureError, emailReceiptOptions, emailReceiptForm
 }
 
 public enum ProcessType: Equatable {

@@ -305,13 +305,19 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                 startPairingFlow()
             }
         case .payment:
+            if sdkWrapper.processTransactionOnline, !sdkWrapper.isInternetOn {
+                sdkFeedbackProvider.userActionNeeded(action: .noInternet)
+                return
+            }
             switch flowFeedbackType {
             case .signature:
                 showSignatureScreen()
             case .signatureError:
                 resendSignature()
-            case .emailReceipt:
+            case .emailReceiptOptions:
                 showEmailReceiptOption()
+            case .emailReceiptForm:
+                showEmailFormScreen()
             default:
                 startTransactionFlow()
             }
@@ -464,7 +470,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             let items = [FlowDataItem(type: .hint, object: ClearentConstants.Localized.EmailReceipt.emailReceiptOptionTitle),
                          FlowDataItem(type: .userAction, object: FlowButtonType.emailReceiptOptionYes),
                          FlowDataItem(type: .userAction, object: FlowButtonType.emailReceiptOptionNo)]
-            let feedback = FlowFeedback(flow: .pairing(), type: .emailReceipt, items: items)
+            let feedback = FlowFeedback(flow: .pairing(), type: .emailReceiptOptions, items: items)
             modalProcessingView?.updateContent(with: feedback)
         } else {
            dissmissView(error: nil)
@@ -476,7 +482,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         let items = [FlowDataItem(type: .hint, object: ClearentConstants.Localized.EmailReceipt.emailFormTitle),
                      FlowDataItem(type: .receipt, object: nil),
                      FlowDataItem(type: .userAction, object: FlowButtonType.emailFormSkip)]
-        let feedback = FlowFeedback(flow: .pairing(), type: .emailReceipt, items: items)
+        let feedback = FlowFeedback(flow: .pairing(), type: .emailReceiptForm, items: items)
         modalProcessingView?.updateContent(with: feedback)
     }
     
@@ -523,10 +529,10 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     }
     
     private func changeOrientationToDefault() {
-        let orientationMask: UIInterfaceOrientationMask = UIDevice.current.userInterfaceIdiom == .phone ? .portrait : .landscape
-        let orientation: UIInterfaceOrientation = UIDevice.current.userInterfaceIdiom == .phone ? .portrait : .landscapeLeft
-        ClearentApplicationOrientation.customOrientationMaskClosure?(orientationMask)
-        UIDevice.current.setValue(orientation.rawValue, forKey: "orientation")
+        if UIDevice.current.userInterfaceIdiom == .phone {
+            ClearentApplicationOrientation.customOrientationMaskClosure?(.portrait)
+            UIDevice.current.setValue(UIInterfaceOrientation.portrait, forKey: "orientation")
+        }
     }
 }
 

@@ -348,7 +348,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                          FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
             
             let feedback = FlowDataFactory.component(with: .payment,
-                                                     type: .emailReceipt,
+                                                     type: .emailReceiptForm,
                                                      readerInfo: fetchReaderInfo(),
                                                      payload: items)
             delegate?.didReceiveFlowFeedback(feedback: feedback)
