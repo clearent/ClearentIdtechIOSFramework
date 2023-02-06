@@ -526,6 +526,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
     func showEncryptionWarning() {
         let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
                      FlowDataItem(type: .title, object: ClearentConstants.Localized.OfflineMode.offlineModeEncryptionWarningMessage),
+                     FlowDataItem(type: .userAction, object: FlowButtonType.callSupport),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         let flowFeedback = FlowDataFactory.component(with: .payment,
                                                      type: .warning,
