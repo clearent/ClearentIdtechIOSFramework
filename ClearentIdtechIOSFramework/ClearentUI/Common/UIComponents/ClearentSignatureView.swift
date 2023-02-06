@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 class ClearentSignatureView: ClearentMarginableView {
     private struct Layout {
@@ -23,7 +24,7 @@ class ClearentSignatureView: ClearentMarginableView {
     @IBOutlet var indicatorLine: UIView!
     @IBOutlet var roundedCornersView: UIView!
     @IBOutlet var descriptionLabel: UILabel!
-    private var previousOrientation: UIDeviceOrientation = .unknown
+    private var previousOrientation: UIDeviceOrientation?
 
     public var doneAction: ((_ resultedImage: UIImage) -> Void)?
 
@@ -49,13 +50,20 @@ class ClearentSignatureView: ClearentMarginableView {
         setupRoundedCornersView()
         clearButton.titleLabel?.font = ClearentUIBrandConfigurator.shared.fonts.primaryButtonTextFont
 
+        previousOrientation = UIDevice.current.orientation
         NotificationCenter.default.addObserver(self, selector: #selector(orientationDidChange), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
    
     @objc func orientationDidChange() {
-        if UIDevice.current.orientation != previousOrientation {
+        guard let previousOrientation = previousOrientation else { return }
+        let landscapeOrientations = [UIDeviceOrientation.landscapeLeft, UIDeviceOrientation.landscapeRight]
+        let portraitOrientations = [UIDeviceOrientation.portrait, UIDeviceOrientation.portraitUpsideDown]
+        
+        let orientationDidChange = landscapeOrientations.contains(UIDevice.current.orientation) && portraitOrientations.contains(previousOrientation) ||
+                                   portraitOrientations.contains(UIDevice.current.orientation) && landscapeOrientations.contains(previousOrientation)
+        if orientationDidChange {
             drawingPanel.clearDrawing()
-            previousOrientation = UIDevice.current.orientation
+            self.previousOrientation = UIDevice.current.orientation
         }
     }
     
