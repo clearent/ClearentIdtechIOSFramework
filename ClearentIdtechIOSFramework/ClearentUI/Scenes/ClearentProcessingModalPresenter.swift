@@ -190,8 +190,10 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                 }
             }
             ClearentUIManager.shared.isOfflineModeConfirmed = false
-        case .cancel, .emailReceiptOptionNo, .emailFormSkip:
+        case .cancel:
             dissmissView(error: .init(type: .cancelledByUser))
+        case .emailReceiptOptionNo, .emailFormSkip:
+            dissmissView()
         case .retry, .pair:
             restartProcess(newPair: false)
         case .pairInFlow:
