@@ -62,7 +62,7 @@ public typealias CompletionResult = Result<String?, ClearentError>
     
     case none
     
-    public var isMissingKeyError: Bool {
+    public var isMissingDataError: Bool {
         return [.noAPIAuthentication, .baseURLNotProvided].contains(self)
     }
 }

@@ -231,7 +231,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         modalProcessingView?.showLoadingView()
         
         sdkWrapper.sendSignatureWithImage(image: image) { [weak self] (response, error) in
-            if let error = error, error.type.isMissingKeyError {
+            if let error = error, error.type.isMissingDataError {
                 self?.modalProcessingView?.dismissViewController(result: .failure(error))
             } else {
                 self?.sdkFeedbackProvider.didFinishedSignatureUploadWith(response: response, error: error)
@@ -243,7 +243,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         modalProcessingView?.showLoadingView()
         
         sdkWrapper.sendReceipt(emailAddress: emailAddress) {  [weak self] (response, error) in
-            if let error = error, error.type.isMissingKeyError {
+            if let error = error, error.type.isMissingDataError {
                 self?.dissmissView(error: error)
             } else {
                 self?.sdkFeedbackProvider.didFinishedSendingReceipt(response: response, error: error)
@@ -355,7 +355,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                                                     !ClearentWrapperDefaults.enableOfflineMode ||
                                                     !ClearentUIManager.shared.isOfflineModeConfirmed
         sdkWrapper.fetchTerminalSetting { [weak self] error in
-            if let error = error, error.type.isMissingKeyError {
+            if let error = error, error.type.isMissingDataError {
                 self?.dissmissView(error: error)
             }
             self?.handlePaymentWithAdditionalFees()
