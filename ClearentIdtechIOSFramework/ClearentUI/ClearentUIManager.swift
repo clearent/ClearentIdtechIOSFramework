@@ -133,13 +133,13 @@ public final class ClearentUIManager: NSObject {
     }
     
     private func settingsViewController(dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UIViewController {
-        let viewController = ClearentSettingsModalViewController()
-        let presenter = ClearentSettingsPresenter(settingsPresenterView: viewController)
-        viewController.presenter = presenter
-        viewController.dismissCompletion = dismissCompletion
+        let viewController = OfflinePromptViewController()
+//        let presenter = ClearentSettingsPresenter(settingsPresenterView: viewController)
+//        viewController.presenter = presenter
+//        viewController.dismissCompletion = dismissCompletion
         return viewController
     }
-    
+        
     private func resultFor(completionResult: CompletionResult) -> ClearentError? {
         switch completionResult {
         case .success(_):
