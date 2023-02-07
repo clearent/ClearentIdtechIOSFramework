@@ -14,7 +14,8 @@ private struct ClearentEndpoints {
     static let void: String = "/rest/v2/transactions/void"
     static let signature: String = "/rest/v2/signature"
     static let receipt = "/rest/v2/receipts"
-    static let settings = "/rest/v2/settings/terminal"
+    static let terminalSettings = "/rest/v2/settings/terminal"
+    static let hppSettings = "\(terminalSettings)/hpp"
 }
 
 enum TransactionType : String {
@@ -28,6 +29,7 @@ protocol ClearentHttpClientProtocol {
     func sendSignature(base64Image: String, transactionID: Int, completion: @escaping (Data?, Error?) -> Void)
     func sendReceipt(emailAddress: String, transactionID: Int, completion: @escaping (Data?, Error?) -> Void)
     func terminalSettings(completion: @escaping (Data?, Error?) -> Void)
+    func hppSettings(completion: @escaping (Data?, Error?) -> Void)
     func updateWebAuth(with auth: ClearentWebAuth)
     func hasAuth() -> Bool
 }
@@ -102,7 +104,15 @@ class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
     }
     
     func terminalSettings(completion: @escaping (Data?, Error?) -> Void) {
-        let settingsURL = URL(string: baseURL + ClearentEndpoints.settings)
+        let settingsURL = URL(string: baseURL + ClearentEndpoints.terminalSettings)
+        let headers = headers(jwt: nil)
+        let _ = HttpClient.makeRawRequest(to: settingsURL!,  headers: headers) { data, error in
+            completion(data, error)
+        }
+    }
+    
+    func hppSettings(completion: @escaping (Data?, Error?) -> Void) {
+        let settingsURL = URL(string: baseURL + ClearentEndpoints.hppSettings)
         let headers = headers(jwt: nil)
         let _ = HttpClient.makeRawRequest(to: settingsURL!,  headers: headers) { data, error in
             completion(data, error)

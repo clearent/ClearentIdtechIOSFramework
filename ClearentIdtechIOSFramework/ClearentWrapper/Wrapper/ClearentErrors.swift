@@ -10,7 +10,7 @@
 public typealias CompletionResult = Result<String?, ClearentError>
 
 @objc public class ClearentError: NSObject, Error, Codable {
-    let type: ClearentErrorType
+    public let type: ClearentErrorType
     let code: String?
     let message: String?
     
@@ -42,9 +42,6 @@ public typealias CompletionResult = Result<String?, ClearentError>
     /// No baseURL was passed to SDK
     case baseURLNotProvided
     
-    /// No publicKey was passed to SDK
-    case publicKeyNotProvided
-    
     /// No encryption key for offline mode was passed to SDK
     case offlineModeEncryptionKeyNotProvided
 
@@ -65,7 +62,7 @@ public typealias CompletionResult = Result<String?, ClearentError>
     
     case none
     
-    var isMissingKeyError: Bool {
-        return [.noAPIAuthentication, .baseURLNotProvided, .publicKeyNotProvided].contains(self)
+    public var isMissingKeyError: Bool {
+        return [.noAPIAuthentication, .baseURLNotProvided].contains(self)
     }
 }
