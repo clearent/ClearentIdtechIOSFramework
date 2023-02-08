@@ -12,6 +12,12 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="OfflinePromptViewController" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
             <connections>
                 <outlet property="containerMaxWidthConstraint" destination="Tgq-Ga-QJK" id="Dut-NZ-sGm"/>
+                <outlet property="offlineQuestionCancelBtn" destination="KWN-UD-iOp" id="GJG-wp-i5e"/>
+                <outlet property="offlineQuestionConfirmBtn" destination="IS7-RW-7PI" id="5Tl-Mz-9bO"/>
+                <outlet property="offlineQuestionFirstSubtitle" destination="eb5-A1-nLY" id="muv-5O-sSw"/>
+                <outlet property="offlineQuestionIcon" destination="Ebl-4e-MVe" id="lFd-NZ-WCE"/>
+                <outlet property="offlineQuestionSecondSubtitle" destination="MnI-gy-OOa" id="aRH-FB-w0B"/>
+                <outlet property="offlineQuestionTitle" destination="3wZ-Am-zOy" id="E7I-fl-GbI"/>
                 <outlet property="stackView" destination="fH9-Hv-deq" id="xgY-Cq-AjN"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>

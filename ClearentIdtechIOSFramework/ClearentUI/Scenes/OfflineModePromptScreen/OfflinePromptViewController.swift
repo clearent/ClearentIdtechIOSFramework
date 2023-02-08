@@ -12,7 +12,12 @@ class OfflinePromptViewController: ClearentBaseViewController {
     
     
     @IBOutlet weak var stackView: ClearentRoundedCornersStackView!
-    
+    @IBOutlet weak var offlineQuestionIcon: ClearentIcon!
+    @IBOutlet weak var offlineQuestionTitle: ClearentTitleLabel!
+    @IBOutlet weak var offlineQuestionFirstSubtitle: ClearentSubtitleLabel!
+    @IBOutlet weak var offlineQuestionSecondSubtitle: ClearentSubtitleLabel!
+    @IBOutlet weak var offlineQuestionConfirmBtn: ClearentPrimaryButton!
+    @IBOutlet weak var offlineQuestionCancelBtn: ClearentPrimaryButton!
     // MARK: - Init
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -25,7 +30,27 @@ class OfflinePromptViewController: ClearentBaseViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        setupOfflineModeQuestions()
+    }
+    
+    private func setupOfflineModeQuestions() {
+        offlineQuestionIcon.iconName = ClearentConstants.IconName.warning
+        offlineQuestionTitle.title = ClearentConstants.Localized.OfflineMode.enableOfflineMode
+        offlineQuestionFirstSubtitle.title = ClearentConstants.Localized.OfflineMode.offlineModeWarningMessageDescription
+        offlineQuestionSecondSubtitle.title = ClearentConstants.Localized.OfflineMode.offlineModeWarningConfirmationDescription
+        offlineQuestionConfirmBtn.title = ClearentConstants.Localized.OfflineMode.offlineModeConfirmOption
+        offlineQuestionCancelBtn.title = ClearentConstants.Localized.OfflineMode.offlineModeCancelOption
+        
+        offlineQuestionConfirmBtn.action = { [weak self] in
+//            self?.showOfflineModeQuestionIfNeeded(shouldShow: false)
+//            self?.updatePromptModeState(isUserInteractionEnabled: true)
+//            self?.presenter?.updateOfflineMode(isEnabled: true)
+        }
+        offlineQuestionCancelBtn.title = ClearentConstants.Localized.OfflineMode.offlineModeCancelOption
+        offlineQuestionCancelBtn.buttonStyle = .bordered
+        offlineQuestionCancelBtn.action = { [weak self] in
+//            self?.enableOfflineMode.isOn = false
+//            self?.showOfflineModeQuestionIfNeeded(shouldShow: false)
+        }
     }
 }
