@@ -231,8 +231,6 @@ extension ClearentSettingsModalViewController: ClearentSettingsPresenterView {
     }
     
     func displayNoInternetAlert() {
-        let alert = UIAlertController(title: ClearentConstants.Localized.Internet.error, message: ClearentConstants.Localized.Settings.settingsOfflineButtonProcessNoInternet, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: ClearentConstants.Localized.Internet.noConnectionDoneButton, style: .cancel))
-        present(alert, animated: true, completion: nil)
+        showCancelAlert(title: ClearentConstants.Localized.Internet.error, message: ClearentConstants.Localized.Settings.settingsOfflineButtonProcessNoInternet, cancelTitle: ClearentConstants.Localized.Internet.noConnectionDoneButton)
     }
 }
