@@ -138,6 +138,7 @@
 		01754CB128F7F90C009B2ED9 /* OfflineModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01754CAE28F7F90C009B2ED9 /* OfflineModeManager.swift */; };
 		01754CB228F7F90C009B2ED9 /* OfflineModeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01754CAF28F7F90C009B2ED9 /* OfflineModeModels.swift */; };
 		01754CB328F7F90C009B2ED9 /* OfflineModeKeychainStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01754CB028F7F90C009B2ED9 /* OfflineModeKeychainStorage.swift */; };
+		0184D6B72992657A00109CB2 /* HppSettingsEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0184D6B62992657A00109CB2 /* HppSettingsEntity.swift */; };
 		0198BA0329672AD500C8D3C3 /* ReceiptEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0198BA0229672AD500C8D3C3 /* ReceiptEntity.swift */; };
 		0198BA092968361500C8D3C3 /* ClearentTextFieldAndButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0198BA082968361500C8D3C3 /* ClearentTextFieldAndButton.swift */; };
 		0198BA0B2968362100C8D3C3 /* ClearentTextFieldAndButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0198BA0A2968362100C8D3C3 /* ClearentTextFieldAndButton.xib */; };
@@ -380,6 +381,7 @@
 		01754CAE28F7F90C009B2ED9 /* OfflineModeManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OfflineModeManager.swift; sourceTree = "<group>"; };
 		01754CAF28F7F90C009B2ED9 /* OfflineModeModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OfflineModeModels.swift; sourceTree = "<group>"; };
 		01754CB028F7F90C009B2ED9 /* OfflineModeKeychainStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OfflineModeKeychainStorage.swift; sourceTree = "<group>"; };
+		0184D6B62992657A00109CB2 /* HppSettingsEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HppSettingsEntity.swift; sourceTree = "<group>"; };
 		0198BA0229672AD500C8D3C3 /* ReceiptEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptEntity.swift; sourceTree = "<group>"; };
 		0198BA082968361500C8D3C3 /* ClearentTextFieldAndButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentTextFieldAndButton.swift; sourceTree = "<group>"; };
 		0198BA0A2968362100C8D3C3 /* ClearentTextFieldAndButton.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentTextFieldAndButton.xib; sourceTree = "<group>"; };
@@ -823,6 +825,7 @@
 				01442D5628B3D84D006DD15C /* SaleEntity.swift */,
 				01442D5728B3D84D006DD15C /* TerminalSettingsEntity.swift */,
 				0198BA0229672AD500C8D3C3 /* ReceiptEntity.swift */,
+				0184D6B62992657A00109CB2 /* HppSettingsEntity.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -1406,6 +1409,7 @@
 				E764E7722303182C0029B753 /* ClearentOfflineDeclineReceipt.m in Sources */,
 				4BAEA888271C5F24007F5FCF /* ClearentLumberjackRemoteLogger.m in Sources */,
 				01442D1528B3D836006DD15C /* ClearentTextField.swift in Sources */,
+				0184D6B72992657A00109CB2 /* HppSettingsEntity.swift in Sources */,
 				014AA0ED291531AA001918F5 /* ClearentSettingsModalViewController.swift in Sources */,
 				CCA86E4D28CF5DB300FF83FB /* ClearentWrapper.swift in Sources */,
 				01442CFE28B3D836006DD15C /* ClearentConstants.swift in Sources */,

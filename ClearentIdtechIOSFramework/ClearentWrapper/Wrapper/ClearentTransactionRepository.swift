@@ -17,6 +17,7 @@ protocol TransactionRepositoryProtocol {
     func refundTransaction(jwt: String, amount: String, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
     func voidTransaction(transactionID: String, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
     func fetchTerminalSetting(completion: @escaping () -> Void)
+    func fetchHppSetting(completion: @escaping () -> Void)
     func processOfflineTransactions(completion: @escaping (() -> Void))
     func manualEntryTransaction(saleEntity: SaleEntity)
     func saveOfflineTransaction(paymentData: PaymentData)
@@ -36,15 +37,18 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     private var lastTransactionID: String?
     private var httpClient: ClearentHttpClientProtocol
     private var clearentManualEntry: ClearentManualEntry?
+    private var clearentManualEntryDelegate: ClearentManualEntryDelegate?
+    private var baseURL: String? = nil
     private var clearentVP3300: Clearent_VP3300?
     private var offlineTransaction: OfflineTransaction? = nil
     
     // MARK: - Init
     
-    init(httpClient: ClearentHttpClientProtocol? = nil, baseURL: String, apiKey: String?, clearentVP3300: Clearent_VP3300, clearentManualEntry: ClearentManualEntry?) {
+    init(httpClient: ClearentHttpClientProtocol? = nil, baseURL: String, apiKey: String?, clearentVP3300: Clearent_VP3300, clearentManualEntryDelegate: ClearentManualEntryDelegate?) {
         self.httpClient = httpClient ?? ClearentDefaultHttpClient(baseURL: baseURL, apiKey: apiKey)
         super.init()
-        self.clearentManualEntry = clearentManualEntry
+        self.baseURL = baseURL
+        self.clearentManualEntryDelegate = clearentManualEntryDelegate
         self.clearentVP3300 = clearentVP3300
     }
     
@@ -201,7 +205,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     }
     
     func fetchTerminalSetting(completion: @escaping () -> Void) {
-        httpClient.terminalSettings() { data, error in
+        httpClient.terminalSettings() { [weak self] data, error in
             DispatchQueue.main.async {
                 do {
                     guard let data = data else {
@@ -211,6 +215,31 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
                     
                     let decodedResponse = try JSONDecoder().decode(TerminalSettingsEntity.self, from: data)
                     ClearentWrapperDefaults.terminalSettings = decodedResponse.payload.terminalSettings
+                } catch let jsonDecodingError {
+                    print(jsonDecodingError)
+                }
+                self?.fetchHppSetting(completion: completion)
+            }
+        }
+    }
+    
+    // Fetches publicKey if it was not passed to the initialization of the SDK
+    func fetchHppSetting(completion: @escaping () -> Void) {
+        guard ClearentWrapper.configuration.publicKey == nil else {
+            completion()
+            return
+        }
+        httpClient.hppSettings() { [weak self] data, error in
+            DispatchQueue.main.async {
+                do {
+                    guard let data = data else {
+                        completion()
+                        return
+                    }
+                    
+                    let decodedResponse = try JSONDecoder().decode(HppSettingsEntity.self, from: data)
+                    self?.clearentVP3300?.setPublicKey(decodedResponse.payload.hppSettings.hppPublicKey)
+                    self?.clearentManualEntry = ClearentManualEntry(self?.clearentManualEntryDelegate, clearentBaseUrl: self?.baseURL, publicKey: decodedResponse.payload.hppSettings.hppPublicKey)
                 } catch let jsonDecodingError {
                     print(jsonDecodingError)
                 }
