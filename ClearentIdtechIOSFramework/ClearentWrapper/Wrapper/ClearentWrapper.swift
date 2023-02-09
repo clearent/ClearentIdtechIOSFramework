@@ -95,8 +95,6 @@ public final class ClearentWrapper : NSObject {
     public func initialize(with config: ClearentWrapperConfiguration) {
         ClearentWrapper.configuration = config
         
-        let manualEntry = ClearentManualEntry(self, clearentBaseUrl: config.baseURL, publicKey: config.publicKey)
-        
         if VP3300Config != nil {
             VP3300Config?.publicKey = config.publicKey
             clearentVP3300.setPublicKey(config.publicKey)
@@ -110,7 +108,7 @@ public final class ClearentWrapper : NSObject {
                 readEnhancedMessages()
             }
         }
-        transactionRepository = TransactionRepository(baseURL: config.baseURL, apiKey: config.apiKey, clearentVP3300: clearentVP3300, clearentManualEntry: manualEntry)
+        transactionRepository = TransactionRepository(baseURL: config.baseURL, apiKey: config.apiKey, clearentVP3300: clearentVP3300, clearentManualEntryDelegate: self)
         
         if let offlineModeEncryptionKey = ClearentWrapper.configuration.offlineModeEncryptionKey {
             transactionRepository?.offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: ClearentConstants.KeychainService.serviceName, account: ClearentConstants.KeychainService.account, encryptionKey: offlineModeEncryptionKey))
@@ -395,9 +393,11 @@ public final class ClearentWrapper : NSObject {
      * @param completion, the closure that is called after all the offline transactions are processed. This is dispatched onto the main queue.
      */
     public func processOfflineTransactions(completion: @escaping (() -> Void)) {
-        transactionRepository?.processOfflineTransactions() {
-            DispatchQueue.main.async {
-                completion()
+        transactionRepository?.fetchHppSetting { [weak self] in
+            self?.transactionRepository?.processOfflineTransactions() {
+                DispatchQueue.main.async {
+                    completion()
+                }
             }
         }
     }
@@ -507,7 +507,6 @@ public final class ClearentWrapper : NSObject {
     
     private func checkForMissingKeys() -> ClearentErrorType? {
         guard !ClearentWrapper.configuration.baseURL.isEmpty else { return ClearentErrorType.baseURLNotProvided }
-        guard !ClearentWrapper.configuration.publicKey.isEmpty else { return ClearentErrorType.publicKeyNotProvided }
         
         if (!transactionRepoHasAPIAuth()) {
             return ClearentErrorType.noAPIAuthentication
