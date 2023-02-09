@@ -8,7 +8,7 @@
 
 import UIKit
 
-class OfflinePromptViewController: ClearentBaseViewController {
+public class OfflinePromptViewController: ClearentBaseViewController {
     
     
     @IBOutlet weak var stackView: ClearentRoundedCornersStackView!
@@ -18,6 +18,8 @@ class OfflinePromptViewController: ClearentBaseViewController {
     @IBOutlet weak var offlineQuestionSecondSubtitle: ClearentSubtitleLabel!
     @IBOutlet weak var offlineQuestionConfirmBtn: ClearentPrimaryButton!
     @IBOutlet weak var offlineQuestionCancelBtn: ClearentPrimaryButton!
+    
+    var dismissCompletion: ((CompletionResult) -> Void)?
     // MARK: - Init
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -28,7 +30,7 @@ class OfflinePromptViewController: ClearentBaseViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         setupOfflineModeQuestions()
     }
@@ -42,15 +44,22 @@ class OfflinePromptViewController: ClearentBaseViewController {
         offlineQuestionCancelBtn.title = ClearentConstants.Localized.OfflineMode.offlineModeCancelOption
         
         offlineQuestionConfirmBtn.action = { [weak self] in
-//            self?.showOfflineModeQuestionIfNeeded(shouldShow: false)
-//            self?.updatePromptModeState(isUserInteractionEnabled: true)
-//            self?.presenter?.updateOfflineMode(isEnabled: true)
+            do {
+                try ClearentWrapper.shared.enableOfflineMode()
+            } catch {
+                print("Error: \(error)")
+                
+            }
+            self?.dismiss(animated: true)
+            self?.dismissCompletion?(.success(nil))
         }
+        
         offlineQuestionCancelBtn.title = ClearentConstants.Localized.OfflineMode.offlineModeCancelOption
         offlineQuestionCancelBtn.buttonStyle = .bordered
         offlineQuestionCancelBtn.action = { [weak self] in
-//            self?.enableOfflineMode.isOn = false
-//            self?.showOfflineModeQuestionIfNeeded(shouldShow: false)
+            self?.dismiss(animated: true)
+            let err = ClearentError(type: .none)
+            self?.dismissCompletion?(.failure(err))
         }
     }
 }

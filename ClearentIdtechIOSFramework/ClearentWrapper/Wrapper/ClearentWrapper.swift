@@ -453,6 +453,8 @@ public final class ClearentWrapper : NSObject {
             } catch {
                 print("Error: \(error)")
             }
+            // Default value on
+            ClearentWrapperDefaults.enableOfflinePromptMode = true
         } else {
             disableOfflineMode()
         }
