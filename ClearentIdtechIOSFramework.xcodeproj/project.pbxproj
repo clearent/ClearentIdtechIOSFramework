@@ -159,6 +159,7 @@
 		019E3C3929954A96008CF419 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 019E3C3729954A96008CF419 /* Main.storyboard */; };
 		019E3C3B29954A98008CF419 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 019E3C3A29954A98008CF419 /* Assets.xcassets */; };
 		019E3C3E29954A98008CF419 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 019E3C3C29954A98008CF419 /* LaunchScreen.storyboard */; };
+		019E3C46299554E3008CF419 /* ClearentOfflineManagerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019E3C45299554E3008CF419 /* ClearentOfflineManagerExtension.swift */; };
 		01BFBC422934A8E700B694F6 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BFBC412934A8E700B694F6 /* UIImageExtension.swift */; };
 		01BFBC50293A0C0E00B694F6 /* ClearentServiceFeeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BFBC4F293A0C0E00B694F6 /* ClearentServiceFeeView.swift */; };
 		01BFBC52293A0C1900B694F6 /* ClearentServiceFeeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01BFBC51293A0C1900B694F6 /* ClearentServiceFeeView.xib */; };
@@ -428,6 +429,7 @@
 		019E3C3A29954A98008CF419 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		019E3C3D29954A98008CF419 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		019E3C3F29954A98008CF419 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		019E3C45299554E3008CF419 /* ClearentOfflineManagerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentOfflineManagerExtension.swift; sourceTree = "<group>"; };
 		01BFBC412934A8E700B694F6 /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
 		01BFBC4F293A0C0E00B694F6 /* ClearentServiceFeeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentServiceFeeView.swift; sourceTree = "<group>"; };
 		01BFBC51293A0C1900B694F6 /* ClearentServiceFeeView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentServiceFeeView.xib; sourceTree = "<group>"; };
@@ -1149,6 +1151,7 @@
 		E76504EA1FFC306100B345F6 = {
 			isa = PBXGroup;
 			children = (
+				019E3C45299554E3008CF419 /* ClearentOfflineManagerExtension.swift */,
 				4BE12F30286B1BAF003283FB /* ClearentIdtechMessages.bundle */,
 				E728DB4920E686CA004C01E7 /* test */,
 				E77687462062B66300284FF4 /* .gitignore */,
@@ -1562,6 +1565,7 @@
 				01442CEF28B3D836006DD15C /* Identifiers.swift in Sources */,
 				01754CA128F59B05009B2ED9 /* StringExtension.swift in Sources */,
 				01442D1E28B3D836006DD15C /* ClearentTipOptionView.swift in Sources */,
+				019E3C46299554E3008CF419 /* ClearentOfflineManagerExtension.swift in Sources */,
 				01442D0228B3D836006DD15C /* UIStackViewExtension.swift in Sources */,
 				CC79F72A293E0D24001A3A31 /* ClearentUIManager.swift in Sources */,
 				4B32C08E2432586500CCF9B9 /* ClearentConnection.m in Sources */,
