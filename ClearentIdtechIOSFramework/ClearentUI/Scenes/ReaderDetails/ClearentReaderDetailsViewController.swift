@@ -9,6 +9,9 @@
 import UIKit
 
 class ClearentReaderDetailsViewController: ClearentAbstractViewController {
+    
+    // MARK: - Properties
+    
     var readerInfo: ReaderInfo { detailsPresenter.currentReader }
     var detailsPresenter: ClearentReaderDetailsProtocol!
 
@@ -25,6 +28,8 @@ class ClearentReaderDetailsViewController: ClearentAbstractViewController {
     @IBOutlet var versionNumberView: ClearentInfoWithIcon!
     @IBOutlet var removeReaderButton: ClearentPrimaryButton!
 
+    // MARK: - Lifecycle
+    
     public override func viewDidLoad() {
         super.viewDidLoad()
         setupSwitches()
@@ -40,6 +45,12 @@ class ClearentReaderDetailsViewController: ClearentAbstractViewController {
         navigationController?.isNavigationBarHidden = true
     }
 
+    // MARK: - Internal
+    
+    override func didPressBackButton() {
+        detailsPresenter.handleBackAction()
+    }
+    
     // MARK: - Private
 
     private func setupSwitches() {
@@ -185,9 +196,5 @@ class ClearentReaderDetailsViewController: ClearentAbstractViewController {
         alert.addAction(UIAlertAction(title: ClearentConstants.Localized.ReaderDetails.cancel, style: .cancel) { _ in })
 
         present(alert, animated: true, completion: nil)
-    }
-    
-    override func didPressBackButton() {
-        detailsPresenter.handleBackAction()
     }
 }

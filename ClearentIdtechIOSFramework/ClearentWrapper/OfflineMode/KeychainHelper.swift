@@ -15,8 +15,15 @@ import CryptoKit
 
 final class KeychainHelper {
     
+    // MARK: - Properties
+    
     static let standard = KeychainHelper()
+    
+    // MARK: - Init
+    
     private init() {}
+    
+    // MARK: - Internal
     
     func save(_ data: Data, service: String, account: String) -> OSStatus {
 

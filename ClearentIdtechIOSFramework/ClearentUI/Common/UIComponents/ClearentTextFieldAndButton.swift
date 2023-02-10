@@ -8,11 +8,13 @@
 
 class ClearentTextFieldAndButton: ClearentMarginableView {
     
-    // MARK: - Properties
+    // MARK: - IBOutlets
     
     @IBOutlet weak var textField: ClearentTextField!
     @IBOutlet weak var subtitleLabel: ClearentSubtitleLabel!
     @IBOutlet weak var button: ClearentPrimaryButton!
+    
+    // MARK: - Properties
     
     var buttonAction: ((_ emailAddress: String?) -> Void)?
     
@@ -34,7 +36,7 @@ class ClearentTextFieldAndButton: ClearentMarginableView {
         }
     }
     
-    // MARK: - Methods
+    // MARK: - Init
     
     convenience init(textFieldTitle: String, textFieldPlaceholder: String, subtitleText: String, buttonTitle: String) {
         self.init()
@@ -44,11 +46,15 @@ class ClearentTextFieldAndButton: ClearentMarginableView {
         self.button.title = buttonTitle
     }
     
+    // MARK: - Internal
+    
     override func configure() {
         button.title = ClearentConstants.Localized.EmailReceipt.emailFormButtonSend
         button.button.isUserInteractionEnabled = false
         subtitleLabel.label.textAlignment = .left
     }
+    
+    // MARK: - Actions
     
     @IBAction func doneButtonWasTapped(_ sender: Any) {
         buttonAction?(textField.inputField.text)

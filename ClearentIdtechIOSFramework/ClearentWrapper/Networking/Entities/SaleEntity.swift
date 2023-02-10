@@ -7,6 +7,20 @@
 //
 
 public class SaleEntity: CodableProtocol {
+    
+    enum CodingKeys: String, CodingKey {
+        case shipping, amount, billing, card, csc, invoice, externelRefID
+        case customerID = "customer-id"
+        case orderID = "order-id"
+        case tipAmount = "tip-amount"
+        case softwareType = "software-type"
+        case softwareTypeVersion = "software-type-version"
+        case expirationDateMMYY = "exp-date"
+        case serviceFeeAmount = "service-fee"
+    }
+    
+    // MARK: - Properties
+    
     var amount: String
     var tipAmount, softwareType, softwareTypeVersion: String?
     var billing, shipping: ClientInformation?
@@ -14,6 +28,8 @@ public class SaleEntity: CodableProtocol {
     var expirationDateMMYY: String?
     var serviceFeeAmount: String?
     var externelRefID: String?
+    
+    // MARK: - Init
 
     public init(amount: String, tipAmount: String? = nil, softwareType: String? = nil, softwareTypeVersion: String? = nil, billing: ClientInformation? = nil, shipping: ClientInformation? = nil, card: String? = nil, csc: String? = nil, customerID: String? = nil, invoice: String? = nil, orderID: String? = nil, expirationDateMMYY: String? = nil, serviceFeeAmount: String? = nil, externelRefID: String? = nil) {
         self.amount = amount
@@ -30,17 +46,6 @@ public class SaleEntity: CodableProtocol {
         self.expirationDateMMYY = expirationDateMMYY
         self.serviceFeeAmount = serviceFeeAmount?.setTwoDecimals()
         self.externelRefID = externelRefID
-    }
-
-    enum CodingKeys: String, CodingKey {
-        case shipping, amount, billing, card, csc, invoice, externelRefID
-        case customerID = "customer-id"
-        case orderID = "order-id"
-        case tipAmount = "tip-amount"
-        case softwareType = "software-type"
-        case softwareTypeVersion = "software-type-version"
-        case expirationDateMMYY = "exp-date"
-        case serviceFeeAmount = "service-fee"
     }
 }
 

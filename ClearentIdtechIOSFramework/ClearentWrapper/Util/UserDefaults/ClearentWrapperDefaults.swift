@@ -20,7 +20,6 @@ private struct DefaultKeys {
 public class ClearentWrapperDefaults: UserDefaultsPersistence {
     static var lastPairedReaderInfo: ReaderInfo?
     
-    
     static internal(set) var terminalSettings: TerminalSettings? {
         get {
             if let savedReaderData = retrieveValue(forKey: DefaultKeys.terminalSettings) as? Data {

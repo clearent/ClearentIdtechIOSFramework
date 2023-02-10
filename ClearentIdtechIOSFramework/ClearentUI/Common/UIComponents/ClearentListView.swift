@@ -7,8 +7,13 @@
 //
 
 class ClearentListView: ClearentMarginableView {
+    
+    // MARK: - IBOutlets
+    
     @IBOutlet var stackView: ClearentAdaptiveStackView!
 
+    // MARK: - Init
+    
     convenience init(items: [ClearentMarginableView]) {
         self.init()
         items.forEach {
@@ -16,6 +21,8 @@ class ClearentListView: ClearentMarginableView {
         }
     }
 
+    // MARK: - Public
+    
     public override var margins: [BottomMargin] {
         [RelativeBottomMargin(constant: 24, relatedViewType: ClearentPrimaryButton.self)]
     }

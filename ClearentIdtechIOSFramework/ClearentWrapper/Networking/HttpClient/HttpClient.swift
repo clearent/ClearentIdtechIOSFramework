@@ -8,12 +8,6 @@
 import Foundation
 
 class HttpClient {
-    static let shared = HttpClient(baseURL: URL(string: "URL")!)
-    var baseURL: URL
-    
-    init(baseURL: URL) {
-        self.baseURL = baseURL
-    }
     
     enum HTTPBody {
         case text(String), data(Data), codableObject(CodableProtocol, ParameterEncoding), parameters([String: Any], ParameterEncoding)
@@ -104,6 +98,19 @@ class HttpClient {
             }
         }
     }
+    
+    // MARK: - Properties
+    
+    static let shared = HttpClient(baseURL: URL(string: "URL")!)
+    var baseURL: URL
+    
+    // MARK: - Init
+    
+    init(baseURL: URL) {
+        self.baseURL = baseURL
+    }
+    
+    // MARK: - Internal
     
     static func makeRawRequest(to url: URL, method: HTTPMethod = .GET, headers: [String: String] = [:], completionHandler: @escaping (Data?, Error?) -> Void) -> URLSessionDataTask {
         var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalAndRemoteCacheData, timeoutInterval: 20)

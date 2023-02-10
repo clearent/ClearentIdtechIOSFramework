@@ -9,7 +9,12 @@
 import Foundation
 
 open class ClearentAbstractViewController: UIViewController {
+    
+    // MARK: - IBOutlets
+    
     @IBOutlet public weak var containerMaxWidthConstraint: NSLayoutConstraint!
+    
+    // MARK: - Lifecycle
     
     open override func viewDidLoad() {
         super.viewDidLoad()

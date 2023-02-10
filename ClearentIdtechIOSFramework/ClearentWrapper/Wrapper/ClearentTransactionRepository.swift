@@ -10,6 +10,7 @@ protocol TransactionRepositoryProtocol {
     var delegate: ClearentWrapperProtocol? { get set }
     var offlineManager: OfflineModeManager? { get set }
     var signatureImage: UIImage? { get set }
+    
     func saleTransaction(jwt: String, saleEntity: SaleEntity, isOfflineTransaction: Bool, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
     func sendSignatureRequest(image: UIImage, completion: @escaping (SignatureResponse?, ClearentError?) -> Void)
     func sendReceiptRequest(emailAddress: String, completion: @escaping (ReceiptResponse?, ClearentError?) -> Void)
@@ -31,6 +32,9 @@ protocol TransactionRepositoryProtocol {
 }
 
 class TransactionRepository: NSObject, TransactionRepositoryProtocol {
+    
+    // MARK: - Properties
+    
     var delegate: ClearentWrapperProtocol?
     var offlineManager: OfflineModeManager?
     var signatureImage: UIImage?
@@ -51,6 +55,8 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         self.clearentManualEntryDelegate = clearentManualEntryDelegate
         self.clearentVP3300 = clearentVP3300
     }
+    
+    // MARK: - Internal
     
     /**
      * Updates the authorization for the api
@@ -83,8 +89,6 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         }
         return nil
     }
-    
-    // MARK: - Internal
     
     func saleTransaction(jwt: String, saleEntity: SaleEntity, isOfflineTransaction: Bool, completion: @escaping (TransactionResponse?, ClearentError?) -> Void) {
         let saleEntity = saleEntity

@@ -10,12 +10,14 @@ import UIKit
 
 public class ClearentHintView: ClearentMarginableView {
 
-    // MARK: - Properties
+    // MARK: - IBOutlets
 
     @IBOutlet var label: PaddingLabel!
     @IBOutlet var bubbleTail: UIImageView!
     @IBOutlet var stackView: UIStackView!
 
+    // MARK: - Properties
+    
     override public var margins: [BottomMargin] {
         [
             RelativeBottomMargin(constant: 40, relatedViewType: ClearentIcon.self),
@@ -72,11 +74,15 @@ public class ClearentHintView: ClearentMarginableView {
         }
     }
 
+    // MARK: - Init
+    
     convenience init(text: String?) {
         self.init()
         label.text = text
     }
 
+    // MARK: - Public
+    
     public override func configure() {
         super.configure()
         updateAppearance()
@@ -111,10 +117,15 @@ public class ClearentHintView: ClearentMarginableView {
 }
 
 class PaddingLabel: UILabel {
+    
+    // MARK: - Properties
+    
     var textEdgeInsets: UIEdgeInsets = .zero {
         didSet { invalidateIntrinsicContentSize() }
     }
 
+    // MARK: - Internal
+    
     override open func textRect(forBounds bounds: CGRect, limitedToNumberOfLines numberOfLines: Int) -> CGRect {
         let insetRect = bounds.inset(by: textEdgeInsets)
         let textRect = super.textRect(forBounds: insetRect, limitedToNumberOfLines: numberOfLines)

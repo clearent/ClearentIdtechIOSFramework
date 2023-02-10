@@ -9,6 +9,9 @@
 import CryptoKit
 
 @objc public class ClearentWrapperConfiguration: NSObject {
+    
+    // MARK: - Properties
+    
     public var baseURL: String
     public var apiKey: String?
     public var publicKey: String?

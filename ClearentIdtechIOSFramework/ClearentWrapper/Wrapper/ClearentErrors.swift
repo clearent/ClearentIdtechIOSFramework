@@ -10,9 +10,14 @@
 public typealias CompletionResult = Result<String?, ClearentError>
 
 @objc public class ClearentError: NSObject, Error, Codable {
+    
+    // MARK: - Properties
+    
     public let type: ClearentErrorType
     let code: String?
     let message: String?
+    
+    // MARK: - Init
     
     init(type: ClearentErrorType, code: String? = nil, message: String? = nil) {
         self.type = type
@@ -23,8 +28,13 @@ public typealias CompletionResult = Result<String?, ClearentError>
 
 
 @objc public class ClearentWebAuth: NSObject {
+    
+    // MARK: - Properties
+    
     let merchantID: String
     let vtToken: String
+    
+    // MARK: - Init
     
     public init(merchantID: String, vtToken: String) {
         self.merchantID = merchantID

@@ -8,8 +8,11 @@
 import Foundation
 
 public struct ClearentMoneyFormatter {
+    
+    // MARK: - Properties
+    
     private static let localeCurrency = "en_US"
-
+    
     fileprivate static var numberFormatterWithSymbol: NumberFormatter {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
@@ -24,6 +27,8 @@ public struct ClearentMoneyFormatter {
         return formatter
     }
 
+    // MARK: - Public
+    
     public static func formattedWithSymbol(from double: Double) -> String {
         numberFormatterWithSymbol.string(for: double) ?? ""
     }

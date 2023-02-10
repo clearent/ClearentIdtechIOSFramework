@@ -58,6 +58,9 @@ protocol FlowDataProtocol : AnyObject {
 }
 
 class FlowDataProvider : NSObject {
+    
+    // MARK: - Properties
+    
     weak var delegate: FlowDataProtocol?
     
     let sdkWrapper = ClearentWrapper.shared

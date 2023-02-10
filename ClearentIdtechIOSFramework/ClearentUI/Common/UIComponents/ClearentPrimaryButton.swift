@@ -15,12 +15,14 @@ public enum ButtonStyleType {
 
 public class ClearentPrimaryButton: ClearentMarginableView {
     
+    // MARK: - IBOutlets
+    
+    @IBOutlet var button: UIButton!
+    
     // MARK: - Properties
 
     public var action: (() -> Void)?
     var type: FlowButtonType?
-
-    @IBOutlet var button: UIButton!
 
     public override var margins: [BottomMargin] {
         [
@@ -79,6 +81,8 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         }
     }
 
+    // MARK: - Public
+    
     public override func configure() {
         setFilledButton()
         cornerRadius = button.bounds.height / 2
@@ -94,6 +98,8 @@ public class ClearentPrimaryButton: ClearentMarginableView {
         button.backgroundColor = filledBackgroundColor
     }
 
+    // MARK: - Actions
+    
     @IBAction func buttonWasPressed(_: Any) {
         action?()
     }

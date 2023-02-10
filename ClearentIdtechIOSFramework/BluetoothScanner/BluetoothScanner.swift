@@ -17,6 +17,8 @@ protocol BluetoothScannerProtocol : AnyObject {
 
 class BluetoothScanner: NSObject {
 
+    // MARK: - Properties
+    
     private var centralManager: CBCentralManager!
     private var readerUDID: String?
     private weak var delegate: BluetoothScannerProtocol?
@@ -75,6 +77,8 @@ class BluetoothScanner: NSObject {
         
         return signal
     }
+    
+    // MARK: - Internal
     
     func cancelPeripheralConnection() {
         guard let device = device else { return }

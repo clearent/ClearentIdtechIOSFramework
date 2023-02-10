@@ -15,7 +15,7 @@ class ClearentSignatureView: ClearentMarginableView {
         static let borderWidth = 1.0
     }
 
-    // MARK: - Properties
+    // MARK: - IBOutlets
 
     @IBOutlet var clearButton: UIButton!
     @IBOutlet var doneButton: ClearentPrimaryButton!
@@ -24,8 +24,10 @@ class ClearentSignatureView: ClearentMarginableView {
     @IBOutlet var indicatorLine: UIView!
     @IBOutlet var roundedCornersView: UIView!
     @IBOutlet var descriptionLabel: UILabel!
+    
+    // MARK: - Properties
+    
     private var previousOrientation: UIInterfaceOrientation?
-
     public var doneAction: ((_ resultedImage: UIImage) -> Void)?
 
     override var margins: [BottomMargin] {
@@ -35,6 +37,8 @@ class ClearentSignatureView: ClearentMarginableView {
         ]
     }
 
+    // MARK: - Actions
+    
     @IBAction func clearButtonWasTapped(_: Any) {
         drawingPanel.clearDrawing()
     }
@@ -42,6 +46,8 @@ class ClearentSignatureView: ClearentMarginableView {
     @IBAction func doneButtonWasTapped(_: Any) {
         doneAction?(drawingPanel.resultedImage)
     }
+    
+    // MARK: - Internal
     
     override func configure() {
         setupDescriptionLabel()
@@ -62,6 +68,8 @@ class ClearentSignatureView: ClearentMarginableView {
             setupPreviousOrientation()
         }
     }
+    
+    // MARK: - Deinit
     
     deinit {
         NotificationCenter.default.removeObserver(self, name: UIDevice.orientationDidChangeNotification, object: nil)
