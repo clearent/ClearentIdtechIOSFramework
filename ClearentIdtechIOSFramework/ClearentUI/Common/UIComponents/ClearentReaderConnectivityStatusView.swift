@@ -9,8 +9,13 @@
 import UIKit
 
 class ClearentReaderConnectivityStatusView: ClearentXibView {
+    
+    // MARK: - IBOutlets
+    
     @IBOutlet weak var statusImageView: UIImageView!
     @IBOutlet weak var statusLabel: UILabel!
+    
+    // MARK: - Properties
     
     var textColor: UIColor? {
         didSet {
@@ -24,6 +29,8 @@ class ClearentReaderConnectivityStatusView: ClearentXibView {
         }
     }
 
+    // MARK: - Internal
+    
     override func configure() {
         textColor = ClearentUIBrandConfigurator.shared.colorPalette.readerStatusLabelColor
         font = ClearentUIBrandConfigurator.shared.fonts.statusLabelFont

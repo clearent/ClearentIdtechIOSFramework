@@ -15,7 +15,7 @@ class ClearentRoundedCornersStackView: ClearentAdaptiveStackView {
         static let backgroundColor = ClearentConstants.Color.backgroundSecondary01
     }
 
-    // MARK: - Lifecycle
+    // MARK: - Init
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -27,6 +27,8 @@ class ClearentRoundedCornersStackView: ClearentAdaptiveStackView {
         setup()
     }
 
+    // MARK: - Internal
+    
     func showLoadingView() {
         removeAllArrangedSubviews()
         let loadingView = ClearentLoadingView()

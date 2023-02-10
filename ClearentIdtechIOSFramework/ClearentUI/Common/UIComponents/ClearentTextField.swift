@@ -15,11 +15,13 @@ protocol ClearentTextFieldProtocol {
 
 class ClearentTextField: ClearentMarginableView, UITextFieldDelegate {
 
-    // MARK: - Properties
+    // MARK: - IBOutlets
     
     @IBOutlet var inputField: UITextField!
     @IBOutlet private var infoLabel: UILabel!
     @IBOutlet private var errorLabel: UILabel!
+    
+    // MARK: - Properties
     
     var delegate: ClearentTextFieldProtocol?
 
@@ -48,6 +50,8 @@ class ClearentTextField: ClearentMarginableView, UITextFieldDelegate {
         }
     }
     
+    // MARK: - Init
+    
     convenience init(inputText: String?, inputTitle: String, hint: String, delegate: ClearentTextFieldProtocol) {
         self.init()
         self.infoLabel.text = inputTitle
@@ -59,7 +63,7 @@ class ClearentTextField: ClearentMarginableView, UITextFieldDelegate {
         self.delegate?.didFinishWithResult(name: self.inputField.text)
     }
 
-    // MARK: - Methods
+    // MARK: - Internal
     
     override func configure() {
         infoLabel.font = ClearentUIBrandConfigurator.shared.fonts.customNameInfoLabelFont
@@ -81,7 +85,6 @@ class ClearentTextField: ClearentMarginableView, UITextFieldDelegate {
     // MARK: - Private
      
     @objc final private func textFieldDidChange(textField: UITextField) {
-        
         let isValid = textField.hasText && textField.text?.count ?? 0 >= 3
         self.delegate?.didChangeValidationState(isValid: isValid)
         self.delegate?.didFinishWithResult(name: textField.text)

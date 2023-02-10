@@ -16,8 +16,13 @@ protocol ClearentReadersTableViewDelegate: AnyObject {
 
 class ClearentReadersTableView: ClearentMarginableView {
     
+    // MARK: - IBOutlets
+    
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var heightConstraint: NSLayoutConstraint!
+    
+    // MARK: - Properties
+    
     private var dataSource: [ReaderItem]?
     private weak var delegate: ClearentReadersTableViewDelegate?
     

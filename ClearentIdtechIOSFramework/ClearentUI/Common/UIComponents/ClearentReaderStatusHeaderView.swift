@@ -10,6 +10,8 @@ import UIKit
 
 public class ClearentReaderStatusHeaderView: ClearentMarginableView {
     
+    // MARK: - IBOutlets
+    
     @IBOutlet weak var stackView: UIStackView!
     @IBOutlet weak var readerNameLabel: UILabel!
     @IBOutlet weak var readerConnectivityStatusView: ClearentReaderConnectivityStatusView!
@@ -17,6 +19,8 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
     @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var verticalSeparator: UIView!
 
+    // MARK: - Properties
+    
     public var action: (() -> Void)?
     
     public override var margins: [BottomMargin] {
@@ -30,6 +34,8 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
             RelativeBottomMargin(constant: 30, relatedViewType: ClearentTitleLabel.self)
         ]
     }
+    
+    // MARK: - Internal
     
     public override func configure() {
         readerNameLabel.font = ClearentUIBrandConfigurator.shared.fonts.readerNameTextFont
@@ -75,6 +81,8 @@ public class ClearentReaderStatusHeaderView: ClearentMarginableView {
         readerBatteryStatusView.isHidden = batteryStatus == nil
         verticalSeparator.isHidden = readerBatteryStatusView.isHidden
     }
+    
+    // MARK: - Actions
     
     @IBAction func didTapOnReaderStatusHeaderView(_ sender: Any) {
         action?()

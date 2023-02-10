@@ -7,8 +7,13 @@
 //
 
 class ClearentLabelWithIcon: ClearentTitleLabel {
+    
+    // MARK: - IBOutlets
+    
     @IBOutlet var icon: UIImageView!
 
+    // MARK: - Properties
+    
     var iconName: String? {
         didSet {
             guard let iconName = iconName else { return }

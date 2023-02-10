@@ -12,6 +12,9 @@ public struct ReaderItem {
 }
 
 public struct ReaderInfo: Codable {
+    
+    // MARK: - Properties
+    
     public var readerName: String
     public var customReaderName: String?
     public var batterylevel: Int?

@@ -25,6 +25,7 @@ protocol ClearentSettingsPresenterProtocol {
 }
 
 class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
+    
     // MARK: - Properties
 
     private weak var settingsPresenterView: ClearentSettingsPresenterView?
@@ -39,6 +40,8 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
     init(settingsPresenterView: ClearentSettingsPresenterView) {
         self.settingsPresenterView = settingsPresenterView
     }
+    
+    // MARK: - Internal
     
     func updateOfflineStatus() {
         guard let offlineManager = ClearentWrapper.shared.retrieveOfflineManager() else {

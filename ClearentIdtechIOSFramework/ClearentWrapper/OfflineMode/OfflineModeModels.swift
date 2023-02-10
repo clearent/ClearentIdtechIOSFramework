@@ -27,12 +27,21 @@ public struct ErrorStatus: Codable {
  * Can be encoded / decoded as json in order to be saved / retrieved / processed.
 */
 public struct OfflineTransaction: CodableProtocol  {
+    
+    enum CodingKeys: String, CodingKey {
+        case transactionID, paymentData, createdDate, errorStatus, transactionResponse, sdkVersion
+    }
+    
+    // MARK: - Properties
+    
     var createdDate: String?
     var transactionID: String
     var sdkVersion: String?
     var paymentData: PaymentData
     var errorStatus: ErrorStatus?
     var transactionResponse: TransactionResponse?
+    
+    // MARK: - Init
     
     init(transactionID: String = UUID().uuidString, createdDate: String? = nil, errorStatus: ErrorStatus? = nil, paymentData: PaymentData, sdkVersion: String? = nil ) {
         self.createdDate = createdDate ?? Date().dateAndTimeToString()
@@ -41,10 +50,8 @@ public struct OfflineTransaction: CodableProtocol  {
         self.errorStatus = errorStatus
         self.sdkVersion = sdkVersion
     }
-        
-    enum CodingKeys: String, CodingKey {
-        case transactionID, paymentData, createdDate, errorStatus, transactionResponse, sdkVersion
-    }
+    
+    // MARK: - Internal
     
     func transactionType() -> OfflineTransactionType {
          if (paymentData.saleEntity.card != nil && paymentData.cardToken == nil) {
@@ -62,8 +69,13 @@ public struct OfflineTransaction: CodableProtocol  {
  * Can be encoded / decoded as json in order to be saved / retrieved / processed.
 */
 class PaymentData : CodableProtocol {
+    
+    // MARK: - Properties
+    
     var saleEntity: SaleEntity
     var cardToken: Data?
+    
+    // MARK: - Init
     
     init(saleEntity: SaleEntity, cardToken: Data? = nil) {
         self.cardToken = cardToken
