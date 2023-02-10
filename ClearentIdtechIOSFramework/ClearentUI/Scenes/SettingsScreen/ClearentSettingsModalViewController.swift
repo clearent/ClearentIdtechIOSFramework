@@ -9,6 +9,8 @@
 import UIKit
 
 public class ClearentSettingsModalViewController: ClearentBaseViewController {
+    
+    // MARK: - IBOutlets
 
     @IBOutlet var titleLabel: ClearentTitleLabel!
     @IBOutlet var settingsStackView: UIStackView!
@@ -31,6 +33,8 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     @IBOutlet var offlineQuestionSecondSubtitle: ClearentSubtitleLabel!
     @IBOutlet var offlineQuestionConfirmBtn: ClearentPrimaryButton!
     @IBOutlet var offlineQuestionCancelBtn: ClearentPrimaryButton!
+    
+    // MARK: - Properties
     
     var presenter: ClearentSettingsPresenterProtocol?
     var dismissCompletion: ((CompletionResult) -> Void)?
@@ -95,12 +99,14 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     }
     
     private func configureOfflineModeSections() {
-        offlineSectionSubtitle.isHidden = !ClearentUIManager.configuration.displayOfflineMode
-        enableOfflineMode.isHidden = !ClearentUIManager.configuration.displayOfflineMode
-        enablePromptMode.isHidden = !ClearentUIManager.configuration.displayOfflineMode
-        offlineModeSectionTopEmptySpace.isHidden = !ClearentUIManager.configuration.displayOfflineMode
+        let isOfflineModeAvailable = ClearentUIManager.configuration.offlineModeEncryptionKey != nil
         
-        if ClearentUIManager.configuration.displayOfflineMode {
+        offlineSectionSubtitle.isHidden = !isOfflineModeAvailable
+        enableOfflineMode.isHidden = !isOfflineModeAvailable
+        enablePromptMode.isHidden = !isOfflineModeAvailable
+        offlineModeSectionTopEmptySpace.isHidden = !isOfflineModeAvailable
+        
+        if isOfflineModeAvailable {
             setupSectionSubtitle(for: offlineSectionSubtitle, with: ClearentConstants.Localized.Settings.settingsOfflineModeSubtitle)
             setupEnableOfflineModeSwitch()
             setupEnablePromptModeSwitch()
