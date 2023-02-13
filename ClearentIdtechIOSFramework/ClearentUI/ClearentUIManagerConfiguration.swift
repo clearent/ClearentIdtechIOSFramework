@@ -14,7 +14,7 @@ import CryptoKit
 
     // MARK: - Init
     
-    @objc public init(baseURL: String, apiKey: String? = nil, publicKey: String, enableEnhancedMessaging: Bool = false, tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages, signatureEnabled: Bool = true) {
+    @objc public init(baseURL: String, apiKey: String? = nil, publicKey: String?, enableEnhancedMessaging: Bool = false, tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages, signatureEnabled: Bool = true) {
         self.tipAmounts = tipAmounts
         self.signatureEnabled = signatureEnabled
         
@@ -23,7 +23,7 @@ import CryptoKit
         ClearentWrapper.shared.initialize(with: ClearentWrapperConfiguration(baseURL: baseURL, apiKey: apiKey, publicKey: publicKey, enableEnhancedMessaging: enableEnhancedMessaging))
     }
     
-    @objc public init(baseURL: String, apiKey: String? = nil, publicKey: String, offlineModeEncryptionKeyData: Data, enableEnhancedMessaging: Bool = false, tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages, signatureEnabled: Bool = true) {
+    @objc public init(baseURL: String, apiKey: String? = nil, publicKey: String?, offlineModeEncryptionKeyData: Data, enableEnhancedMessaging: Bool = false, tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages, signatureEnabled: Bool = true) {
         self.tipAmounts = tipAmounts
         self.signatureEnabled = signatureEnabled
         

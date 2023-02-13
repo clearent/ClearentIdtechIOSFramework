@@ -17,7 +17,7 @@ enum FlowDataKeys {
 }
 
 public enum FlowFeedbackType {
-    case error, info, warning, searchDevices, showReaders, pairingDoneInfo, renameReaderDone, signature, signatureError, emailReceipt
+    case error, info, warning, searchDevices, showReaders, pairingDoneInfo, renameReaderDone, signature, signatureError, emailReceiptOptions, emailReceiptForm
 }
 
 public enum ProcessType: Equatable {
@@ -66,7 +66,7 @@ enum FlowGraphicType {
 }
 
 public enum FlowButtonType {
-    case cancel, retry, pair, done, skipSignature, pairNewReader, settings, pairInFlow, addReaderName, renameReaderLater, transactionWithTip, transactionWithoutTip, manuallyEnterCardInfo, acceptOfflineMode, denyOfflineMode, confirmOfflineModeWarningMessage, transactionWithServiceFee, emailReceiptOptionYes, emailReceiptOptionNo, emailFormSkip
+    case cancel, retry, pair, done, skipSignature, pairNewReader, settings, pairInFlow, addReaderName, renameReaderLater, transactionWithTip, transactionWithoutTip, manuallyEnterCardInfo, acceptOfflineMode, denyOfflineMode, confirmOfflineModeWarningMessage, transactionWithServiceFee, emailReceiptOptionYes, emailReceiptOptionNo, emailFormSkip, callSupport
 
     var title: String {
         switch self {
@@ -108,6 +108,8 @@ public enum FlowButtonType {
             return ClearentConstants.Localized.EmailReceipt.emailReceiptOptionButtonNo
         case .emailFormSkip:
             return ClearentConstants.Localized.EmailReceipt.emailFormButtonSkip
+        case .callSupport:
+            return ClearentConstants.Localized.OfflineMode.offlineModeEncryptionContactSupport
         }
     }
 
