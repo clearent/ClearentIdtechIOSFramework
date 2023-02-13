@@ -14,7 +14,7 @@ extension OfflineModeManager {
             let amount = "\(index).00"
             
             // manual entry transactions
-            var cardSaleEntity = SaleEntity(amount: amount, card: "4111111111111111", csc: "999", expirationDateMMYY: "1132")
+            var cardSaleEntity = SaleEntity(amount: amount, card: "4111111111111111", csc: "999", expirationDateMMYY: "1145")
             var paymentData = PaymentData(saleEntity: cardSaleEntity)
             
             if cardReaderTransactions {
