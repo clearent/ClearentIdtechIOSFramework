@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 class ClearentSignatureView: ClearentMarginableView {
     private struct Layout {
@@ -23,7 +24,7 @@ class ClearentSignatureView: ClearentMarginableView {
     @IBOutlet var indicatorLine: UIView!
     @IBOutlet var roundedCornersView: UIView!
     @IBOutlet var descriptionLabel: UILabel!
-    private var previousOrientation: UIDeviceOrientation = .unknown
+    private var previousOrientation: UIInterfaceOrientation?
 
     public var doneAction: ((_ resultedImage: UIImage) -> Void)?
 
@@ -49,13 +50,16 @@ class ClearentSignatureView: ClearentMarginableView {
         setupRoundedCornersView()
         clearButton.titleLabel?.font = ClearentUIBrandConfigurator.shared.fonts.primaryButtonTextFont
 
+        setupPreviousOrientation()
         NotificationCenter.default.addObserver(self, selector: #selector(orientationDidChange), name: UIDevice.orientationDidChangeNotification, object: nil)
     }
-   
+
     @objc func orientationDidChange() {
-        if UIDevice.current.orientation != previousOrientation {
+        guard let previousOrientation = previousOrientation else { return }
+        let orientationDidChange = previousOrientation.isPortrait && Orientation.isLandscape || previousOrientation.isLandscape && Orientation.isPortrait
+        if orientationDidChange {
             drawingPanel.clearDrawing()
-            previousOrientation = UIDevice.current.orientation
+            setupPreviousOrientation()
         }
     }
     
@@ -86,5 +90,20 @@ class ClearentSignatureView: ClearentMarginableView {
         roundedCornersView.layer.cornerRadius = Layout.cornerRadius
         roundedCornersView.layer.borderWidth = Layout.borderWidth
         roundedCornersView.layer.borderColor = ClearentConstants.Color.backgroundSecondary02.cgColor
+    }
+    
+    private func setupPreviousOrientation() {
+        previousOrientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? .portrait
+    }
+}
+
+
+private struct Orientation {
+    static var isPortrait: Bool {
+        get { UIApplication.shared.windows.first?.windowScene?.interfaceOrientation.isPortrait ?? false }
+    }
+    
+    static var isLandscape: Bool {
+        get { UIApplication.shared.windows.first?.windowScene?.interfaceOrientation.isLandscape ?? false }
     }
 }

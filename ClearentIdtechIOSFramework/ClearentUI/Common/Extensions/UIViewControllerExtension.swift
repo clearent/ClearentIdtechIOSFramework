@@ -6,6 +6,9 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
+
+// MARK: - UIViewController+Navigation
+
 public extension UIViewController {
     func addNavigationBarWithBackItem(barTitle: String) {
         let navigationBar = createNavigationBar()
@@ -34,5 +37,20 @@ public extension UIViewController {
     
     @objc func didPressBackButton() {
         navigationController?.popViewController(animated: true)
+    }
+}
+
+// MARK: - UIViewController+Alert
+
+public extension UIViewController {
+    func showCancelAlert(title: String?, message: String?, cancelTitle: String?, cancelAction: (() -> Void)? = nil) {
+        let cancel = UIAlertAction(title: cancelTitle, style: .cancel) { _ in cancelAction?() }
+        showAlert(title: title, message: message, action: cancel)
+    }
+    
+    func showAlert(title: String?, message: String?, action: UIAlertAction, completion: (() -> Void)? = nil) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertController.addAction(action)
+        present(alertController, animated: true, completion: completion)
     }
 }
