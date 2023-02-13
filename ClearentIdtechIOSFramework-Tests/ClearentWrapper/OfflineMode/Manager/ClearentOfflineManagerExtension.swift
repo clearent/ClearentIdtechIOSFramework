@@ -6,6 +6,8 @@
 //  Copyright © 2023 Clearent, L.L.C. All rights reserved.
 //
 
+@testable import ClearentIdtechIOSFramework
+
 extension OfflineModeManager {
     func generateOfflineTransactions(count: Int, cardReaderTransactions: Bool) {
         for index in 1...count {

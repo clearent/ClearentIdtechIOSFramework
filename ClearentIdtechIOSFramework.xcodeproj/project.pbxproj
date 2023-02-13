@@ -141,6 +141,7 @@
 		014AA0FE2917C417001918F5 /* ClearentProcessingModalViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 014AA0FD2917C417001918F5 /* ClearentProcessingModalViewController.xib */; };
 		014AA1032917C75F001918F5 /* ClearentSettingsModalViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 014AA1022917C75F001918F5 /* ClearentSettingsModalViewController.xib */; };
 		014AA1052917FBF6001918F5 /* ClearentLabelWithButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014AA1042917FBF6001918F5 /* ClearentLabelWithButton.swift */; };
+		014B6FEB299A261900D9372D /* ClearentOfflineManagerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019E3C45299554E3008CF419 /* ClearentOfflineManagerExtension.swift */; };
 		016BFEA02906E987006F26B6 /* ClearentWrapperConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016BFE9F2906E987006F26B6 /* ClearentWrapperConfiguration.swift */; };
 		016BFEA22906E99E006F26B6 /* ClearentUIManagerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016BFEA12906E99E006F26B6 /* ClearentUIManagerConfiguration.swift */; };
 		0172018C28F4395A0084B80B /* AsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0172018B28F4395A0084B80B /* AsyncOperation.swift */; };
@@ -159,7 +160,6 @@
 		019E3C3929954A96008CF419 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 019E3C3729954A96008CF419 /* Main.storyboard */; };
 		019E3C3B29954A98008CF419 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 019E3C3A29954A98008CF419 /* Assets.xcassets */; };
 		019E3C3E29954A98008CF419 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 019E3C3C29954A98008CF419 /* LaunchScreen.storyboard */; };
-		019E3C46299554E3008CF419 /* ClearentOfflineManagerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019E3C45299554E3008CF419 /* ClearentOfflineManagerExtension.swift */; };
 		01BFBC422934A8E700B694F6 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BFBC412934A8E700B694F6 /* UIImageExtension.swift */; };
 		01BFBC50293A0C0E00B694F6 /* ClearentServiceFeeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BFBC4F293A0C0E00B694F6 /* ClearentServiceFeeView.swift */; };
 		01BFBC52293A0C1900B694F6 /* ClearentServiceFeeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01BFBC51293A0C1900B694F6 /* ClearentServiceFeeView.xib */; };
@@ -699,6 +699,7 @@
 		0113B04829953168009BDF12 /* Manager */ = {
 			isa = PBXGroup;
 			children = (
+				019E3C45299554E3008CF419 /* ClearentOfflineManagerExtension.swift */,
 				0113B04929953168009BDF12 /* OfflineModeManagerTests.swift */,
 			);
 			path = Manager;
@@ -1151,7 +1152,6 @@
 		E76504EA1FFC306100B345F6 = {
 			isa = PBXGroup;
 			children = (
-				019E3C45299554E3008CF419 /* ClearentOfflineManagerExtension.swift */,
 				4BE12F30286B1BAF003283FB /* ClearentIdtechMessages.bundle */,
 				E728DB4920E686CA004C01E7 /* test */,
 				E77687462062B66300284FF4 /* .gitignore */,
@@ -1565,7 +1565,6 @@
 				01442CEF28B3D836006DD15C /* Identifiers.swift in Sources */,
 				01754CA128F59B05009B2ED9 /* StringExtension.swift in Sources */,
 				01442D1E28B3D836006DD15C /* ClearentTipOptionView.swift in Sources */,
-				019E3C46299554E3008CF419 /* ClearentOfflineManagerExtension.swift in Sources */,
 				01442D0228B3D836006DD15C /* UIStackViewExtension.swift in Sources */,
 				CC79F72A293E0D24001A3A31 /* ClearentUIManager.swift in Sources */,
 				4B32C08E2432586500CCF9B9 /* ClearentConnection.m in Sources */,
@@ -1710,6 +1709,7 @@
 				4B074F4E24474FD100868E21 /* TestPublicDelegate.m in Sources */,
 				0113B05829953168009BDF12 /* ClearentWrapperDefaultsTests.swift in Sources */,
 				0113B05029953168009BDF12 /* ReaderDetailsPresenterTests.swift in Sources */,
+				014B6FEB299A261900D9372D /* ClearentOfflineManagerExtension.swift in Sources */,
 				E7CA495620E3C2230090CFFC /* ClearentIdtechIOSFramework_Tests.m in Sources */,
 				4B074F4B2447313900868E21 /* ClearentDeviceConnector_Tests.m in Sources */,
 				0113B05629953168009BDF12 /* HttpClientMock.swift in Sources */,
@@ -2160,7 +2160,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ClearentIdtechIOSFramework-ExampleApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ClearentIdtechIOSFramework-ExampleApp";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ClearentIdtechIOSFramework-ExampleApp.app/ClearentIdtechIOSFramework-ExampleApp";
 				TVOS_DEPLOYMENT_TARGET = "";
 			};
 			name = Debug;
@@ -2213,7 +2213,7 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ClearentIdtechIOSFramework-ExampleApp.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ClearentIdtechIOSFramework-ExampleApp";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ClearentIdtechIOSFramework-ExampleApp.app/ClearentIdtechIOSFramework-ExampleApp";
 				TVOS_DEPLOYMENT_TARGET = "";
 			};
 			name = Release;
