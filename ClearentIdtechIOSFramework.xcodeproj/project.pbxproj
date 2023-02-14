@@ -151,9 +151,10 @@
 		01754CB128F7F90C009B2ED9 /* OfflineModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01754CAE28F7F90C009B2ED9 /* OfflineModeManager.swift */; };
 		01754CB228F7F90C009B2ED9 /* OfflineModeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01754CAF28F7F90C009B2ED9 /* OfflineModeModels.swift */; };
 		01754CB328F7F90C009B2ED9 /* OfflineModeKeychainStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01754CB028F7F90C009B2ED9 /* OfflineModeKeychainStorage.swift */; };
+		0184D6B72992657A00109CB2 /* HppSettingsEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0184D6B62992657A00109CB2 /* HppSettingsEntity.swift */; };
+		018679AE299A6A0F00B87870 /* ClearentWrapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018679AD299A6A0F00B87870 /* ClearentWrapperTests.swift */; };
 		018691B4299A29DF00DE2E90 /* DateExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018691B3299A29DF00DE2E90 /* DateExtensionTests.swift */; };
 		018691B6299A3EAF00DE2E90 /* StringExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018691B5299A3EAF00DE2E90 /* StringExtensionTests.swift */; };
-		0184D6B72992657A00109CB2 /* HppSettingsEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0184D6B62992657A00109CB2 /* HppSettingsEntity.swift */; };
 		0198BA0329672AD500C8D3C3 /* ReceiptEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0198BA0229672AD500C8D3C3 /* ReceiptEntity.swift */; };
 		0198BA092968361500C8D3C3 /* ClearentTextFieldAndButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0198BA082968361500C8D3C3 /* ClearentTextFieldAndButton.swift */; };
 		0198BA0B2968362100C8D3C3 /* ClearentTextFieldAndButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0198BA0A2968362100C8D3C3 /* ClearentTextFieldAndButton.xib */; };
@@ -421,9 +422,10 @@
 		01754CAE28F7F90C009B2ED9 /* OfflineModeManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OfflineModeManager.swift; sourceTree = "<group>"; };
 		01754CAF28F7F90C009B2ED9 /* OfflineModeModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OfflineModeModels.swift; sourceTree = "<group>"; };
 		01754CB028F7F90C009B2ED9 /* OfflineModeKeychainStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OfflineModeKeychainStorage.swift; sourceTree = "<group>"; };
+		0184D6B62992657A00109CB2 /* HppSettingsEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HppSettingsEntity.swift; sourceTree = "<group>"; };
+		018679AD299A6A0F00B87870 /* ClearentWrapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentWrapperTests.swift; sourceTree = "<group>"; };
 		018691B3299A29DF00DE2E90 /* DateExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtensionTests.swift; sourceTree = "<group>"; };
 		018691B5299A3EAF00DE2E90 /* StringExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensionTests.swift; sourceTree = "<group>"; };
-		0184D6B62992657A00109CB2 /* HppSettingsEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HppSettingsEntity.swift; sourceTree = "<group>"; };
 		0198BA0229672AD500C8D3C3 /* ReceiptEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptEntity.swift; sourceTree = "<group>"; };
 		0198BA082968361500C8D3C3 /* ClearentTextFieldAndButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentTextFieldAndButton.swift; sourceTree = "<group>"; };
 		0198BA0A2968362100C8D3C3 /* ClearentTextFieldAndButton.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentTextFieldAndButton.xib; sourceTree = "<group>"; };
@@ -676,11 +678,11 @@
 		0113B04429953168009BDF12 /* ClearentWrapper */ = {
 			isa = PBXGroup;
 			children = (
+				018679AC299A69DF00B87870 /* Wrapper */,
 				018691B1299A29BB00DE2E90 /* Util */,
 				0113B04529953168009BDF12 /* Mocks */,
 				0113B04729953168009BDF12 /* OfflineMode */,
 				0113B04A29953168009BDF12 /* UserDefaults */,
-				0113B04C29953168009BDF12 /* ClearentTransactionRepositoryTests.swift */,
 				0113B04D29953168009BDF12 /* ReaderInfoTests.swift */,
 				0113B04E29953168009BDF12 /* ClearentTransactionToken.json */,
 			);
@@ -1029,6 +1031,15 @@
 				01442D5328B3D84D006DD15C /* Entities */,
 			);
 			path = Networking;
+			sourceTree = "<group>";
+		};
+		018679AC299A69DF00B87870 /* Wrapper */ = {
+			isa = PBXGroup;
+			children = (
+				0113B04C29953168009BDF12 /* ClearentTransactionRepositoryTests.swift */,
+				018679AD299A6A0F00B87870 /* ClearentWrapperTests.swift */,
+			);
+			path = Wrapper;
 			sourceTree = "<group>";
 		};
 		018691B1299A29BB00DE2E90 /* Util */ = {
@@ -1743,6 +1754,7 @@
 				0113B05629953168009BDF12 /* HttpClientMock.swift in Sources */,
 				0113B05329953168009BDF12 /* ClearentPairingReaderItemTests.swift in Sources */,
 				4B32C0C0243FB9DF00CCF9B9 /* ClearentConfigFetcher.m in Sources */,
+				018679AE299A6A0F00B87870 /* ClearentWrapperTests.swift in Sources */,
 				0113B04F29953168009BDF12 /* ClearentReaderDetailsViewControllerTests.swift in Sources */,
 				4B074F4924471F2700868E21 /* ClearentConnection_Tests.m in Sources */,
 			);

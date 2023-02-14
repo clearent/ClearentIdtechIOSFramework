@@ -14,7 +14,7 @@ protocol TransactionRepositoryProtocol {
     func sendSignatureRequest(image: UIImage, completion: @escaping (SignatureResponse?, ClearentError?) -> Void)
     func sendReceiptRequest(emailAddress: String, completion: @escaping (ReceiptResponse?, ClearentError?) -> Void)
     func resendSignature(completion: @escaping (SignatureResponse?, ClearentError?) -> Void)
-    func refundTransaction(jwt: String, amount: String, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
+    func refundTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
     func voidTransaction(transactionID: String, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
     func fetchTerminalSetting(completion: @escaping () -> Void)
     func fetchHppSetting(completion: @escaping () -> Void)
@@ -34,9 +34,9 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     var delegate: ClearentWrapperProtocol?
     var offlineManager: OfflineModeManager?
     var signatureImage: UIImage?
+    var clearentManualEntry: ClearentManualEntry?
     private var lastTransactionID: String?
     private var httpClient: ClearentHttpClientProtocol
-    private var clearentManualEntry: ClearentManualEntry?
     private var clearentManualEntryDelegate: ClearentManualEntryDelegate?
     private var baseURL: String? = nil
     private var clearentVP3300: Clearent_VP3300?
@@ -115,9 +115,12 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         }
     }
     
-    func refundTransaction(jwt: String, amount: String, completion: @escaping (TransactionResponse?, ClearentError?) -> Void) {
-        httpClient.refundTransaction(jwt: jwt, saleEntity: SaleEntity(amount: amount)) { data, error in
-            guard let responseData = data else { return }
+    func refundTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (TransactionResponse?, ClearentError?) -> Void) {
+        httpClient.refundTransaction(jwt: jwt, saleEntity: saleEntity) { data, error in
+            guard let responseData = data else {
+                completion(nil, ClearentError(type: .httpError))
+                return
+            }
             
             do {
                 let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
@@ -127,6 +130,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
                 }
                 completion(decodedResponse, .init(type: .httpError, code: transactionError.code, message: transactionError.message))
             } catch let jsonDecodingError {
+                completion(nil, ClearentError(type: .httpError, code: ClearentConstants.Localized.Error.parseHttpResponseErrorTitle, message: ClearentConstants.Localized.Error.parseHttpResponseErrorMessage.localized))
                 print(jsonDecodingError)
             }
         }
@@ -134,7 +138,10 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     
     func voidTransaction(transactionID: String, completion: @escaping (TransactionResponse?, ClearentError?) -> Void) {
         httpClient.voidTransaction(transactionID: transactionID) { data, error in
-            guard let responseData = data else { return }
+            guard let responseData = data else {
+                completion(nil, ClearentError(type: .httpError))
+                return
+            }
             
             do {
                 let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
@@ -144,6 +151,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
                 }
                 completion(decodedResponse, ClearentError(type: .httpError, code: transactionError.code, message: transactionError.message))
             } catch let jsonDecodingError {
+                completion(nil, ClearentError(type: .httpError, code: ClearentConstants.Localized.Error.parseHttpResponseErrorTitle, message: ClearentConstants.Localized.Error.parseHttpResponseErrorMessage.localized))
                 print(jsonDecodingError)
             }
         }

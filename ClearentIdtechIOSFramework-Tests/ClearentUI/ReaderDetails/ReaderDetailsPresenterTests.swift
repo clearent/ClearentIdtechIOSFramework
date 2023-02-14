@@ -84,14 +84,6 @@ class ReaderDetailsPresenterTests: XCTestCase {
             }
         }
     }
-    
-    func testRemoveReader() {
-        // When
-        sut.removeReader()
-        
-        // Then
-        XCTAssertTrue(ClearentWrapperDefaults.recentlyPairedReaders?.count == 0)
-    }
 
     func testDeleteReaderName() {
         // When

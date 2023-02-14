@@ -8,14 +8,6 @@
 @testable import ClearentIdtechIOSFramework
 
 class HttpClientMock: ClearentHttpClientProtocol {
-    func sendReceipt(emailAddress: String, transactionID: Int, completion: @escaping (Data?, Error?) -> Void) {}
-    
-    func terminalSettings(completion: @escaping (Data?, Error?) -> Void) {}
-    
-    func updateWebAuth(with auth: ClearentIdtechIOSFramework.ClearentWebAuth) {}
-    
-    func hasAuth() -> Bool { true }
-    
     var shouldSucceed: Bool = false
     
     func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (Data?, Error?) -> Void) {
@@ -40,9 +32,23 @@ class HttpClientMock: ClearentHttpClientProtocol {
         }
     }
     
-    func merchantSettings(completion: @escaping (Data?, Error?) -> Void) {
+//    func merchantSettings(completion: @escaping (Data?, Error?) -> Void) {
+//        if shouldSucceed {
+//            let responseMock = TerminalSettingsEntity(payload: PayloadSettings(terminalSettings: TerminalSettings(tipEnabled: true, serviceFeeState: nil, serviceFee: nil, serviceFeeType: nil, serviceFeeProgram: nil)))
+//            guard let json = try? JSONEncoder().encode(responseMock) else { return }
+//            completion(json, nil)
+//        } else {
+//            completion(nil, NSError(domain: "test-domain", code: 400))
+//        }
+//    }
+    
+    func hppSettings(completion: @escaping (Data?, Error?) -> Void) {
+        
+    }
+    
+    func sendReceipt(emailAddress: String, transactionID: Int, completion: @escaping (Data?, Error?) -> Void) {
         if shouldSucceed {
-            let responseMock = TerminalSettingsEntity(payload: PayloadSettings(terminalSettings: TerminalSettings(tipEnabled: true, serviceFeeState: nil, serviceFee: nil, serviceFeeType: nil, serviceFeeProgram: nil)))
+            let responseMock = ReceiptResponse(code: "200", status: "success", payload: Payload(payloadType: "receipt"))
             guard let json = try? JSONEncoder().encode(responseMock) else { return }
             completion(json, nil)
         } else {
@@ -50,9 +56,20 @@ class HttpClientMock: ClearentHttpClientProtocol {
         }
     }
     
+    func terminalSettings(completion: @escaping (Data?, Error?) -> Void) {
+        
+    }
+    
+    func updateWebAuth(with auth: ClearentIdtechIOSFramework.ClearentWebAuth) {
+        
+    }
+    
+    func hasAuth() -> Bool { true }
+    
     private func handleTransactionResponse(completion: @escaping (Data?, Error?) -> Void) {
         if shouldSucceed {
-            let responseMock = TransactionResponse(code: "200", status: "success", exchange_id: "ID-clearent-mobile-jwt-1-57d719e7-7c62-4e95-b8ee-d3a4acbada50", links: nil, payload: Payload(error: nil, transaction: nil, payloadType: "transaction"))
+            let linksMock = Links(rel: "test_rel", href: "test_href", id: "123")
+            let responseMock = TransactionResponse(code: "200", status: "success", exchange_id: "ID-clearent-mobile-jwt-1-57d719e7-7c62-4e95-b8ee-d3a4acbada50", links: [linksMock], payload: Payload(error: nil, transaction: nil, payloadType: "transaction"))
             guard let json = try? JSONEncoder().encode(responseMock) else { return }
             completion(json, nil)
         } else {
