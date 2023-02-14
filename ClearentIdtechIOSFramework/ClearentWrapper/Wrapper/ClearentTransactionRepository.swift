@@ -16,8 +16,8 @@ protocol TransactionRepositoryProtocol {
     func resendSignature(completion: @escaping (SignatureResponse?, ClearentError?) -> Void)
     func refundTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
     func voidTransaction(transactionID: String, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
-    func fetchTerminalSetting(completion: @escaping () -> Void)
-    func fetchHppSetting(completion: @escaping () -> Void)
+    func fetchTerminalSetting(completion: @escaping (ClearentError?) -> Void)
+    func fetchHppSetting(completion: @escaping (ClearentError?) -> Void)
     func processOfflineTransactions(completion: @escaping (() -> Void))
     func manualEntryTransaction(saleEntity: SaleEntity)
     func saveOfflineTransaction(paymentData: PaymentData)
@@ -212,12 +212,12 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         }
     }
     
-    func fetchTerminalSetting(completion: @escaping () -> Void) {
+    func fetchTerminalSetting(completion: @escaping (ClearentError?) -> Void) {
         httpClient.terminalSettings() { [weak self] data, error in
             DispatchQueue.main.async {
                 do {
                     guard let data = data else {
-                        completion()
+                        completion(nil)
                         return
                     }
                     
@@ -232,26 +232,27 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     }
     
     // Fetches publicKey if it was not passed to the initialization of the SDK
-    func fetchHppSetting(completion: @escaping () -> Void) {
+    func fetchHppSetting(completion: @escaping (ClearentError?) -> Void) {
         guard ClearentWrapper.configuration.publicKey == nil else {
-            completion()
+            completion(nil)
             return
         }
         httpClient.hppSettings() { [weak self] data, error in
             DispatchQueue.main.async {
                 do {
                     guard let data = data else {
-                        completion()
+                        completion(ClearentError(type: .httpError))
                         return
                     }
                     
                     let decodedResponse = try JSONDecoder().decode(HppSettingsEntity.self, from: data)
                     self?.clearentVP3300?.setPublicKey(decodedResponse.payload.hppSettings.hppPublicKey)
                     self?.clearentManualEntry = ClearentManualEntry(self?.clearentManualEntryDelegate, clearentBaseUrl: self?.baseURL, publicKey: decodedResponse.payload.hppSettings.hppPublicKey)
+                    completion(nil)
                 } catch let jsonDecodingError {
+                    completion(ClearentError(type: .httpError, code: ClearentConstants.Localized.Error.parseHttpResponseErrorTitle, message: ClearentConstants.Localized.Error.parseHttpResponseErrorMessage.localized))
                     print(jsonDecodingError)
                 }
-                completion()
             }
         }
     }

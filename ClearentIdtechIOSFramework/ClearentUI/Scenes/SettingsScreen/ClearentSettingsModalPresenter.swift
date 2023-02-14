@@ -92,8 +92,12 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
         offlineStatusButtonAction = { [weak self] in
             if ClearentWrapper.shared.isInternetOn {
                 self?.settingsPresenterView?.updateOfflineStatusView(inProgress: true)
-                ClearentWrapper.shared.processOfflineTransactions() {
-                    self?.updateOfflineStatus()
+                ClearentWrapper.shared.processOfflineTransactions() { error in
+                    if error == nil {
+                        self?.updateOfflineStatus()
+                    } else {
+                        self?.settingsPresenterView?.displayNoInternetAlert()
+                    }
                 }
             } else {
                 self?.settingsPresenterView?.displayNoInternetAlert()

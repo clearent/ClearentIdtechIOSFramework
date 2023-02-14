@@ -351,9 +351,9 @@ public final class ClearentWrapper : NSObject {
         if processTransactionOnline, checkForConnectivityWarning(for: .payment) { return }
     
         if isInternetOn {
-            transactionRepository?.fetchTerminalSetting() {
+            transactionRepository?.fetchTerminalSetting() { error in
                 DispatchQueue.main.async {
-                    completion(nil)
+                    completion(error)
                 }
             }
         } else {
@@ -389,11 +389,15 @@ public final class ClearentWrapper : NSObject {
      * Method that uploads all the transactions that were made in offline mode
      * @param completion, the closure that is called after all the offline transactions are processed. This is dispatched onto the main queue.
      */
-    public func processOfflineTransactions(completion: @escaping (() -> Void)) {
-        transactionRepository?.fetchHppSetting { [weak self] in
+    public func processOfflineTransactions(completion: @escaping ((ClearentError?) -> Void)) {
+        transactionRepository?.fetchHppSetting { [weak self] error in
+            if error != nil {
+                completion(ClearentError(type: .httpError))
+                return
+            }
             self?.transactionRepository?.processOfflineTransactions() {
                 DispatchQueue.main.async {
-                    completion()
+                    completion(nil)
                 }
             }
         }

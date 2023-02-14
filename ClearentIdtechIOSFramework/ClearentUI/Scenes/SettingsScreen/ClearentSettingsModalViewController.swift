@@ -233,4 +233,8 @@ extension ClearentSettingsModalViewController: ClearentSettingsPresenterView {
     func displayNoInternetAlert() {
         showCancelAlert(title: ClearentConstants.Localized.Internet.error, message: ClearentConstants.Localized.Settings.settingsOfflineButtonProcessNoInternet, cancelTitle: ClearentConstants.Localized.Internet.noConnectionDoneButton)
     }
+    
+    func displayErrorAlert() {
+        showCancelAlert(title: ClearentConstants.Localized.Internet.error, message: ClearentConstants.Localized.Error.generalErrorDescription, cancelTitle: ClearentConstants.Localized.Error.cancel)
+    }
 }
