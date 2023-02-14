@@ -6,7 +6,7 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
-struct TerminalSettingsEntity: Codable {
+struct TerminalSettingsResponse: Codable {
     var payload: PayloadSettings
 }
 

@@ -75,7 +75,7 @@ class ClearentTransactionRepositoryTests: XCTestCase {
             exp.fulfill()
         }
         
-        waitForExpectations(timeout: 1)
+        waitForExpectations(timeout: 0.5)
     }
     
     func testRefundTransaction_failure() {
@@ -95,37 +95,37 @@ class ClearentTransactionRepositoryTests: XCTestCase {
             exp.fulfill()
         }
         
-        waitForExpectations(timeout: 1)
+        waitForExpectations(timeout: 0.5)
     }
     
     func testSendSignatureRequest_success() throws {
         // Given
         let exp = expectation(description: "`Send signature`")
-        let testImage = try XCTUnwrap(emptyImage())
+        let validImage = try XCTUnwrap(emptyImage())
         
         // When
         httpClientMock.shouldSucceed = true
         sut.saleTransaction(jwt: testJwt, saleEntity: SaleEntity(amount: "20.00"), isOfflineTransaction: false) { [weak self] (transactionResponse, error) in
-            self?.sut.sendSignatureRequest(image: testImage) { (signatureResponse, error) in
+            self?.sut.sendSignatureRequest(image: validImage) { (signatureResponse, error) in
                 // Then
                 XCTAssertNil(error)
                 exp.fulfill()
             }
         }
         
-        waitForExpectations(timeout: 1)
+        waitForExpectations(timeout: 0.5)
         
     }
     
     func testSendSignatureRequest_failure() {
         // Given
         let exp = expectation(description: "Send signature")
-        let testImage = UIImage()
+        let invalidImage = UIImage()
         
         // When
         httpClientMock.shouldSucceed = true
         sut.saleTransaction(jwt: testJwt, saleEntity: SaleEntity(amount: "20.00"), isOfflineTransaction: false) { [weak self] (transactionResponse, error) in
-            self?.sut.sendSignatureRequest(image: testImage) { (signatureResponse, signatureError) in
+            self?.sut.sendSignatureRequest(image: invalidImage) { (signatureResponse, signatureError) in
                 // Then
                 guard let signatureError = signatureError else {
                     XCTFail("Error shouldn't be nil")
@@ -136,7 +136,57 @@ class ClearentTransactionRepositoryTests: XCTestCase {
             }
         }
         
-        waitForExpectations(timeout: 1)
+        waitForExpectations(timeout: 0.5)
+    }
+    
+    func testResendSignature_success() throws {
+        // Given
+        let exp = expectation(description: "Resend signature")
+        let validImage = try XCTUnwrap(emptyImage())
+        httpClientMock.shouldSucceed = true
+        
+        // When
+        sut.saleTransaction(jwt: testJwt, saleEntity: SaleEntity(amount: "2.00"), isOfflineTransaction: false) { [weak self] (response1, error1) in
+            self?.httpClientMock.shouldSucceed = false
+            self?.sut.signatureImage = validImage
+            self?.sut.sendSignatureRequest(image: validImage) { [weak self] (response2, error2) in
+                XCTAssertNotNil(self?.sut.signatureImage)
+                self?.httpClientMock.shouldSucceed = true
+                self?.sut.resendSignature() { (response3, error3) in
+                    // Then
+                    XCTAssertNil(self?.sut.signatureImage)
+                    XCTAssertNil(error3)
+                    exp.fulfill()
+                }
+            }
+        }
+        
+        waitForExpectations(timeout: 0.5)
+    }
+    
+    func testResendSignature_failure() {
+        // Given
+        let exp = expectation(description: "Resend signature")
+        let invalidImage = UIImage()
+        httpClientMock.shouldSucceed = true
+        
+        // When
+        sut.saleTransaction(jwt: testJwt, saleEntity: SaleEntity(amount: "2.00"), isOfflineTransaction: false) { [weak self] (response1, error1) in
+            self?.sut.signatureImage = invalidImage
+            self?.httpClientMock.shouldSucceed = false
+            self?.sut.sendSignatureRequest(image: invalidImage) { [weak self] (response2, error2) in
+                XCTAssertNotNil(self?.sut.signatureImage)
+                self?.httpClientMock.shouldSucceed = true
+                self?.sut.resendSignature() { (response3, error3) in
+                    // Then
+                    XCTAssertNotNil(self?.sut.signatureImage)
+                    XCTAssertNotNil(error3)
+                    exp.fulfill()
+                }
+            }
+        }
+        
+        waitForExpectations(timeout: 0.5)
     }
     
     func testSendReceiptRequest_success() {
@@ -154,7 +204,7 @@ class ClearentTransactionRepositoryTests: XCTestCase {
             }
         }
         
-        waitForExpectations(timeout: 1)
+        waitForExpectations(timeout: 0.5)
     }
     
     func testSendReceiptRequest_failure_noTransactionId() {
@@ -168,22 +218,52 @@ class ClearentTransactionRepositoryTests: XCTestCase {
                 XCTFail("Error shouldn't be nil")
                 return
             }
-            XCTAssertEqual(receiptError.type, ClearentErrorType.httpError)
+            XCTAssertEqual(receiptError.type, ClearentErrorType.missingData)
             exp.fulfill()
         }
         
-        waitForExpectations(timeout: 1)
+        waitForExpectations(timeout: 0.5)
     }
     
-    func testFetchTerminalSetting() {
+    func testFetchTerminalSetting_success() {
+        // Given
+        let exp = expectation(description: "Fetch terminal settings")
+        ClearentWrapper.configuration = ClearentWrapperConfiguration(baseURL: "test_base_url", apiKey: nil, publicKey: nil)
+        httpClientMock.shouldSucceed = true
+        XCTAssertNil(sut.clearentManualEntry?.publicKey)
         
+        // When
+        sut.fetchTerminalSetting() { [weak self] error in
+            // Then
+            XCTAssertNil(error)
+            XCTAssertTrue(ClearentWrapperDefaults.terminalSettings?.tipEnabled ?? false)
+            XCTAssertEqual(ClearentWrapperDefaults.terminalSettings?.serviceFeeType, .PERCENTAGE)
+            XCTAssertEqual(ClearentWrapperDefaults.terminalSettings?.serviceFeeProgram, .CONVENIENCE_FEE)
+            XCTAssertEqual(self?.sut.clearentManualEntry?.publicKey, "test_public_key")
+            exp.fulfill()
+        }
+        waitForExpectations(timeout: 0.5)
     }
     
-    func testFetchHppSetting() {
+    func testFetchTerminalSetting_failure() {
+        // Given
+        let exp = expectation(description: "Fetch terminal settings")
+        ClearentWrapper.configuration = ClearentWrapperConfiguration(baseURL: "test_base_url", apiKey: nil, publicKey: nil)
+        httpClientMock.shouldSucceed = false
+        XCTAssertNil(sut.clearentManualEntry?.publicKey)
         
+        // When
+        sut.fetchTerminalSetting() { [weak self] error in
+            // Then
+            XCTAssertEqual(error?.type, ClearentErrorType.httpError)
+            XCTAssertNil(ClearentWrapperDefaults.terminalSettings)
+            XCTAssertNil(self?.sut.clearentManualEntry?.publicKey)
+            exp.fulfill()
+        }
+        waitForExpectations(timeout: 0.5)
     }
     
-    func testProcessOfflineTransactions_success() {
+    func testProcessOfflineTransactions_success() throws {
         // Given
         let exp = expectation(description: "Process offline transactions")
         offlineManager.generateOfflineTransactions(count: 1, cardReaderTransactions: true)
@@ -191,40 +271,46 @@ class ClearentTransactionRepositoryTests: XCTestCase {
         httpClientMock.shouldSucceed = true
         
         // When
-        sut.processOfflineTransactions() {
+        sut.processOfflineTransactions() { [weak self] in
+            // Then
+            guard let strongSelf = self else {
+                XCTFail("self should not be nil")
+                return
+            }
+            let allOfflineTransactions = strongSelf.offlineManager.retrieveAll()
+            XCTAssertEqual(allOfflineTransactions.count, 3)
+            allOfflineTransactions.forEach {
+                XCTAssertEqual($0.errorStatus?.error.type, ClearentErrorType.none)
+            }
             exp.fulfill()
         }
         
-        waitForExpectations(timeout: 1)
-        
-        // Then
-        let allOfflineTransactions = offlineManager.retrieveAll()
-        XCTAssertEqual(allOfflineTransactions.count, 3)
-        allOfflineTransactions.forEach {
-            XCTAssertEqual($0.errorStatus?.error.type, ClearentErrorType.none)
-        }
+        waitForExpectations(timeout: 0.5)
     }
     
-    func testProcessOfflineTransactions_failure() {
+    func testProcessOfflineTransactions_failure() throws {
         // Given
-        let exp = expectation(description: "Process offline transactions")
+        let exp = expectation(description: "Process offline transactions fail")
         offlineManager.generateOfflineTransactions(count: 1, cardReaderTransactions: true)
         offlineManager.generateOfflineTransactions(count: 2, cardReaderTransactions: false)
         httpClientMock.shouldSucceed = false
         
         // When
-        sut.processOfflineTransactions() {
+        sut.processOfflineTransactions() { [weak self] in
+            // Then
+            guard let strongSelf = self else {
+                XCTFail("self should not be nil")
+                return
+            }
+            let allOfflineTransactions = strongSelf.offlineManager.retrieveAll()
+            XCTAssertEqual(allOfflineTransactions.count, 3)
+            allOfflineTransactions.forEach {
+                XCTAssertEqual($0.errorStatus?.error.type, ClearentErrorType.httpError)
+            }
             exp.fulfill()
+            
         }
-        
-        waitForExpectations(timeout: 1)
-        
-        // Then
-        let allOfflineTransactions = offlineManager.retrieveAll()
-        XCTAssertEqual(allOfflineTransactions.count, 3)
-        allOfflineTransactions.forEach {
-            XCTAssertEqual($0.errorStatus?.error.type, ClearentErrorType.httpError)
-        }
+        waitForExpectations(timeout: 0.5)
     }
 }
 

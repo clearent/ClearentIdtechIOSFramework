@@ -32,20 +32,6 @@ class HttpClientMock: ClearentHttpClientProtocol {
         }
     }
     
-//    func merchantSettings(completion: @escaping (Data?, Error?) -> Void) {
-//        if shouldSucceed {
-//            let responseMock = TerminalSettingsEntity(payload: PayloadSettings(terminalSettings: TerminalSettings(tipEnabled: true, serviceFeeState: nil, serviceFee: nil, serviceFeeType: nil, serviceFeeProgram: nil)))
-//            guard let json = try? JSONEncoder().encode(responseMock) else { return }
-//            completion(json, nil)
-//        } else {
-//            completion(nil, NSError(domain: "test-domain", code: 400))
-//        }
-//    }
-    
-    func hppSettings(completion: @escaping (Data?, Error?) -> Void) {
-        
-    }
-    
     func sendReceipt(emailAddress: String, transactionID: Int, completion: @escaping (Data?, Error?) -> Void) {
         if shouldSucceed {
             let responseMock = ReceiptResponse(code: "200", status: "success", payload: Payload(payloadType: "receipt"))
@@ -57,7 +43,23 @@ class HttpClientMock: ClearentHttpClientProtocol {
     }
     
     func terminalSettings(completion: @escaping (Data?, Error?) -> Void) {
-        
+        if shouldSucceed {
+            let responseMock = TerminalSettingsResponse(payload: PayloadSettings(terminalSettings: TerminalSettings(tipEnabled: true, serviceFeeState: .ENABLED, serviceFee: "1.00", serviceFeeType: .PERCENTAGE, serviceFeeProgram:  .CONVENIENCE_FEE)))
+            guard let json = try? JSONEncoder().encode(responseMock) else { return }
+            completion(json, nil)
+        } else {
+            completion(nil, NSError(domain: "test-domain", code: 400))
+        }
+    }
+    
+    func hppSettings(completion: @escaping (Data?, Error?) -> Void) {
+        if shouldSucceed {
+            let responseMock = HppSettingsResponse(payload: HppPayloadSettings(hppSettings: HppSettings(hppPublicKey: "test_public_key")))
+            guard let json = try? JSONEncoder().encode(responseMock) else { return }
+            completion(json, nil)
+        } else {
+            completion(nil, NSError(domain: "test-domain", code: 400))
+        }
     }
     
     func updateWebAuth(with auth: ClearentIdtechIOSFramework.ClearentWebAuth) {

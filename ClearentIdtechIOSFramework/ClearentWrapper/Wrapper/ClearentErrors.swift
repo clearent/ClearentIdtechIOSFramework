@@ -60,6 +60,9 @@ public typealias CompletionResult = Result<String?, ClearentError>
     /// Signature image not found on user defaults for offline transaction
     case missingSignatureImage
     
+    /// Some data needed to proceed with the current process is missing
+    case missingData
+    
     case none
     
     public var isMissingDataError: Bool {
