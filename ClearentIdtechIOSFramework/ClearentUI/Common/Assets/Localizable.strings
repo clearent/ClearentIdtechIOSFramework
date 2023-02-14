@@ -269,6 +269,9 @@
 "xsdk_offline_mode_report_error" = "Error:";
 "xsdk_offline_mode_report_error_date" = "Error date:";
 "xsdk_offline_mode_report_error_time" = "Error time:";
+"xsdk_offline_mode_process_info_title" = "Info";
+"xsdk_offline_mode_process_info_description"= "Please confirm you want your offline transactions processed at:\n\n(%@)\n(%@)\n\nIf this is not correct, click cancel and go to settings to select the proper account and terminal before proceeding.";
+"xsdk_offline_mode_process_info_process_alert_action" = "OK";
 
 // MARK: API parse errors
 // Texts that are displayed in case of no bluetooth connection

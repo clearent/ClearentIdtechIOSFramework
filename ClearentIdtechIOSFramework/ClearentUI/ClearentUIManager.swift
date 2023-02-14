@@ -112,7 +112,7 @@ public final class ClearentUIManager: NSObject {
      * Method that returns a bool representing if we should display the offline mode warning
      */
     @objc public func shouldDisplayOfflineModeLabel() -> Bool {
-        ClearentWrapperDefaults.enableOfflineMode && !ClearentWrapperDefaults.enableOfflinePromptMode
+        ClearentWrapperDefaults.enableOfflineMode
     }
 
     func navigationController(processType: ProcessType, paymentInfo: PaymentInfo? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UINavigationController {

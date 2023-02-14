@@ -124,6 +124,14 @@ public final class ClearentWrapper : NSObject {
     public func updateWebAuth(with auth: ClearentWebAuth) {
         self.transactionRepository?.updateWebAuth(auth: auth)
     }
+    
+    /**
+     * Updates the authorization for the gateway, should be called each time the token is refreshed
+     * Do not use unless you have a vt-token from the web side
+     */
+    public func hasWebAuth() -> Bool {
+        ((self.transactionRepository?.hasAuthentication()) != nil)
+    }
 
     /**
      * Method that should be called to enable offline mode.
@@ -509,10 +517,10 @@ public final class ClearentWrapper : NSObject {
     
     private func checkForMissingKeys() -> ClearentErrorType? {
         guard !ClearentWrapper.configuration.baseURL.isEmpty else { return ClearentErrorType.baseURLNotProvided }
-        
-        if (!transactionRepoHasAPIAuth()) {
-            return ClearentErrorType.noAPIAuthentication
-        }
+        // orotaru
+//        if (!transactionRepoHasAPIAuth()) {
+//            return ClearentErrorType.noAPIAuthentication
+//        }
         
         return nil
     }
@@ -539,13 +547,13 @@ extension ClearentWrapper: Clearent_Public_IDTech_VP3300_Delegate {
     
     public func successOfflineTransactionToken(_ clearentTransactionTokenRequestData: Data?, isTransactionEncrypted isEncrypted: Bool) {
         guard let cardToken = clearentTransactionTokenRequestData else { return }
-        
-        ClearentWrapperDefaults.pairedReaderInfo?.encrypted = isEncrypted
-        if (!isEncrypted) {
-            self.delegate?.showEncryptionWarning()
-            disableOfflineMode()
-            return
-        }
+        //orotaru
+//        ClearentWrapperDefaults.pairedReaderInfo?.encrypted = isEncrypted
+//        if (!isEncrypted) {
+//            self.delegate?.showEncryptionWarning()
+//            disableOfflineMode()
+//            return
+//        }
         
         let paymentData = PaymentData(saleEntity: saleEntity, cardToken: cardToken)
         transactionRepository?.saveOfflineTransaction(paymentData: paymentData)

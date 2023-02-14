@@ -11,6 +11,7 @@ protocol ClearentSettingsPresenterView: AnyObject {
     func updateOfflineStatusView(inProgress: Bool)
     func presentReportScreen()
     func displayNoInternetAlert()
+    func displayMerchanAndTerminalInfo(merchant: String, terminal: String, action: UIAlertAction)
 }
 
 protocol ClearentSettingsPresenterProtocol {
@@ -91,12 +92,36 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
         offlineStatusDescriptionColor = ClearentUIBrandConfigurator.shared.colorPalette.settingOfflineStatusLabel
         offlineStatusButtonAction = { [weak self] in
             if ClearentWrapper.shared.isInternetOn {
-                self?.settingsPresenterView?.updateOfflineStatusView(inProgress: true)
-                ClearentWrapper.shared.processOfflineTransactions() {
-                    self?.updateOfflineStatus()
+                
+                if (ClearentWrapper.shared.hasWebAuth()) {
+                    self?.handleOfflineTransactionsWithWebAuth()
+                } else {
+                    self?.settingsPresenterView?.updateOfflineStatusView(inProgress: true)
+                    ClearentWrapper.shared.processOfflineTransactions() {
+                        self?.updateOfflineStatus()
+                    }
                 }
             } else {
                 self?.settingsPresenterView?.displayNoInternetAlert()
+            }
+        }
+    }
+    
+    
+    private func handleOfflineTransactionsWithWebAuth() {
+        if let hook = ClearentWrapper.configuration.provideAuthAndMerchantTerminalDetails {
+            let result = hook()
+            if let merchantName = result.0, let terminalName = result.1 , let webAuth = result.2 {
+                ClearentWrapper.shared.updateWebAuth(with: webAuth)
+                
+                let action = UIAlertAction(title: ClearentConstants.Localized.OfflineMode.offlineProcessInfoConfirmationAlertOK, style: UIAlertAction.Style.default, handler: {_ in
+                    self.settingsPresenterView?.updateOfflineStatusView(inProgress: true)
+                    ClearentWrapper.shared.processOfflineTransactions() {
+                        self.updateOfflineStatus()
+                    }
+                })
+                
+                self.settingsPresenterView?.displayMerchanAndTerminalInfo(merchant: merchantName, terminal: terminalName, action: action)
             }
         }
     }
