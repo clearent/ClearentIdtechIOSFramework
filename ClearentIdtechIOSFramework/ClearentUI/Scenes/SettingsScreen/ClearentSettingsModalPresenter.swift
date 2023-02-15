@@ -94,7 +94,7 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
             if ClearentWrapper.shared.isInternetOn {
                 
                 if (ClearentWrapper.shared.hasWebAuth()) {
-                    self?.handleOfflineTransactionsWithWebAuth()
+                    self?.processOfflineTransactionsWithWebAuth()
                 } else {
                     self?.settingsPresenterView?.updateOfflineStatusView(inProgress: true)
                     ClearentWrapper.shared.processOfflineTransactions() {
@@ -108,7 +108,7 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
     }
     
     
-    private func handleOfflineTransactionsWithWebAuth() {
+    private func processOfflineTransactionsWithWebAuth() {
         if let hook = ClearentWrapper.configuration.provideAuthAndMerchantTerminalDetails {
             let result = hook()
             if let merchantName = result.0, let terminalName = result.1 , let webAuth = result.2 {
