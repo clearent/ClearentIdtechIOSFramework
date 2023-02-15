@@ -230,6 +230,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     // Fetches publicKey if it was not passed to the initialization of the SDK
     func fetchHppSetting(completion: @escaping () -> Void) {
         guard ClearentWrapper.configuration.publicKey == nil else {
+            clearentManualEntry = ClearentManualEntry(clearentManualEntryDelegate, clearentBaseUrl: baseURL, publicKey: ClearentWrapper.configuration.publicKey)
             completion()
             return
         }
