@@ -257,4 +257,8 @@ extension ClearentSettingsModalViewController: ClearentSettingsPresenterView {
         let message = String(format: ClearentConstants.Localized.OfflineMode.offlineProcessInfoConfirmationAlert, merchant, terminal)
         showOfflineProcessConfirmation(title: ClearentConstants.Localized.OfflineMode.offlineProcessInfoConfirmationAlertTitle, message: message, cancelTitle: "Cancel", action: action)
     }
+    
+    func displayNoMerchantAndTerminal() {
+        showCancelAlert(title: ClearentConstants.Localized.OfflineMode.offlineProcessingError, message: ClearentConstants.Localized.OfflineMode.offlineProcessingErrorDetails, cancelTitle: ClearentConstants.Localized.Internet.noConnectionDoneButton)
+    }
 }

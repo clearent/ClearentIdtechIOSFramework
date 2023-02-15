@@ -12,6 +12,7 @@ protocol ClearentSettingsPresenterView: AnyObject {
     func presentReportScreen()
     func displayNoInternetAlert()
     func displayMerchanAndTerminalInfo(merchant: String, terminal: String, action: UIAlertAction)
+    func displayNoMerchantAndTerminal()
 }
 
 protocol ClearentSettingsPresenterProtocol {
@@ -125,6 +126,8 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
                 })
                 
                 self.settingsPresenterView?.displayMerchanAndTerminalInfo(merchant: merchantName, terminal: terminalName, action: action)
+            } else {
+                self.settingsPresenterView?.displayNoMerchantAndTerminal() 
             }
         }
     }

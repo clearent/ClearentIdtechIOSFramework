@@ -272,6 +272,9 @@
 "xsdk_offline_mode_process_info_title" = "Info";
 "xsdk_offline_mode_process_info_description"= "Please confirm you want your offline transactions processed at:\n\n(%@)\n(%@)\n\nIf this is not correct, click cancel and go to settings to select the proper account and terminal before proceeding.";
 "xsdk_offline_mode_process_info_process_alert_action" = "OK";
+"xsdk_no_merchant_error_title" = "Info";
+"xsdk_no_merchant_error_description" = "You have to select a merchant and terminal in order to processs the offline transactions.";
+"xsdk_no_merchant_error_ok_button" = "OK";
 
 // MARK: API parse errors
 // Texts that are displayed in case of no bluetooth connection

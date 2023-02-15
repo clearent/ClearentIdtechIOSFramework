@@ -542,7 +542,7 @@ extension ClearentWrapper: Clearent_Public_IDTech_VP3300_Delegate {
     
     public func successOfflineTransactionToken(_ clearentTransactionTokenRequestData: Data?, isTransactionEncrypted isEncrypted: Bool) {
         guard let cardToken = clearentTransactionTokenRequestData else { return }
-        //orotaru
+  
 //        ClearentWrapperDefaults.pairedReaderInfo?.encrypted = isEncrypted
 //        if (!isEncrypted) {
 //            self.delegate?.showEncryptionWarning()

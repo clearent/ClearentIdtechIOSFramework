@@ -362,7 +362,9 @@ import UIKit
             public static let offlineProcessInfoConfirmationAlertTitle = "xsdk_offline_mode_process_info_title".localized
             public static let offlineProcessInfoConfirmationAlert = "xsdk_offline_mode_process_info_description".localized
             public static let offlineProcessInfoConfirmationAlertOK = "xsdk_offline_mode_process_info_process_alert_action".localized
-            
+            public static let offlineProcessingError = "xsdk_no_merchant_error_title".localized
+            public static let offlineProcessingErrorDetails = "xsdk_no_merchant_error_description".localized
+            public static let offlineProcessingErrorOkButton = "xsdk_no_merchant_error_ok_button".localized
         }
         
         enum Settings {
