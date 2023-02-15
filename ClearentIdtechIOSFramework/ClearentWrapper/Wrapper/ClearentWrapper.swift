@@ -410,6 +410,14 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
+    /**
+     * Method that  checks if there are temrinal settings already fetched
+     * Returns a bool
+     */
+    public func areTerminalSettingsCached() -> Bool {
+        return ClearentWrapperDefaults.terminalSettings != nil
+    }
+    
     // MARK: - Internal
     
     /**
