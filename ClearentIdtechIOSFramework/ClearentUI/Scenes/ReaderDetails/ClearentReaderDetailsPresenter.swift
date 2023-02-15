@@ -22,6 +22,9 @@ protocol ClearentReaderDetailsDismissProtocol: AnyObject {
 }
 
 class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
+    
+    // MARK: - Properties
+    
     public var currentReader: ReaderInfo
     private weak var delegate: ClearentReaderDetailsDismissProtocol?
     private var flowDataProvider: FlowDataProvider
@@ -48,6 +51,8 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
         return (title, batteryStatus.iconName)
     }
 
+    // MARK: - Init
+    
     init(currentReader: ReaderItem, flowDataProvider: FlowDataProvider, navigationController: UINavigationController, delegate: ClearentReaderDetailsDismissProtocol) {
         self.currentReader = currentReader.readerInfo
         self.flowDataProvider = flowDataProvider
@@ -55,6 +60,8 @@ class ClearentReaderDetailsPresenter: ClearentReaderDetailsProtocol {
         self.delegate = delegate
     }
 
+    // MARK: - Internal
+    
     func removeReader() {
         // if default reader
         if currentReader == ClearentWrapperDefaults.pairedReaderInfo {

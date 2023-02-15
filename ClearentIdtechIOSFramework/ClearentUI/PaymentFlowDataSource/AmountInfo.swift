@@ -11,6 +11,7 @@ struct AmountInfo {
 
     var amountWithoutTip: Double
     var availableTipPercentages: [Int]
+    var selectedTipValue: Double?
 
     var tipOptions: [TipOption] {
         var tips: [TipOption] = availableTipPercentages.map {
@@ -23,7 +24,6 @@ struct AmountInfo {
         return tips
     }
 
-    var selectedTipValue: Double?
     var finalAmount: Double {
         if let selectedTipValue = selectedTipValue { return amountWithoutTip + selectedTipValue }
         return amountWithoutTip

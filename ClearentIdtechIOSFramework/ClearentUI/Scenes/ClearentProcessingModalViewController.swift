@@ -47,6 +47,8 @@ class ClearentProcessingModalViewController: ClearentBaseViewController {
         NotificationCenter.default.removeObserver(self)
     }
     
+    // MARK: - Private
+    
     private func setupNotifications() {
         // Register keyboard notifications
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)

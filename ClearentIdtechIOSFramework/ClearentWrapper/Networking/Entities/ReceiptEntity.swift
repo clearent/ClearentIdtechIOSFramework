@@ -7,6 +7,9 @@
 //
 
 struct ReceiptEntity: CodableProtocol {
+    
+    // MARK: - Properties
+    
     let emailAddress: String
     let id: Int
 

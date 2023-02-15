@@ -18,12 +18,19 @@ private struct UserDefaultKeys {
 }
 
 class OfflineModeManager {
+    
+    // MARK: - Properties
+    
     public var storage: TransactionStorageProtocol
 
+    // MARK: - Init
+    
     init(storage: TransactionStorageProtocol) {
         self.storage = storage
     }
 
+    // MARK: - Internal
+    
     func saveOfflineTransaction(transaction: OfflineTransaction) -> TransactionStoreStatus {
         var result: TransactionStoreStatus = .success
         

@@ -9,6 +9,9 @@
 import Foundation
 
 public class ClearentUIBrandConfigurator {
+    
+    // MARK: - Properties
+    
     public static var shared = ClearentUIBrandConfigurator()
 
     /// Offers the possibility to customize the colors used in UI components.

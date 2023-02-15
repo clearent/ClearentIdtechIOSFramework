@@ -9,6 +9,9 @@
 import Foundation
 
 class AsyncOperation: Operation {
+    
+    // MARK: - Properties
+    
     enum State: String {
         case waiting, ready, executing, finished, cancelled
     }
@@ -80,14 +83,20 @@ class AsyncOperation: Operation {
 }
 
 class AsyncBlockOperation: AsyncOperation {
+    
+    // MARK: - Properties
+    
     public typealias Closure = (AsyncBlockOperation) -> ()
-
     let closure: Closure
 
+    // MARK: - Init
+    
     init(closure: @escaping Closure) {
         self.closure = closure
     }
 
+    // MARK: - Internal
+    
     override func main() {
         guard !isCancelled else { return }
 

@@ -10,8 +10,12 @@ import UIKit
 
 class ClearentOfflineResultTableViewCell: UITableViewCell {
     
+    // MARK: - IBOutlets
+    
     @IBOutlet weak var itemNameLabel: UILabel!
     @IBOutlet weak var itemValueLabel: UILabel!
+    
+    // MARK: - Properties
     
     enum Layout {
         static let cellHeight: CGFloat = 40

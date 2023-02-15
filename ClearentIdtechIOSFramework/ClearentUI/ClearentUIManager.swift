@@ -57,6 +57,26 @@ public final class ClearentUIManager: NSObject {
         }
     }
     
+    func navigationController(processType: ProcessType, paymentInfo: PaymentInfo? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UINavigationController {
+        var viewController: UIViewController?
+        
+        if processType == .offlineModeSetup {
+            viewController = offlineSetupViewController(dismissCompletion: dismissCompletion)
+        } else if processType == .showSettings {
+            viewController = settingsViewController(dismissCompletion: dismissCompletion)
+        } else {
+            viewController = processingModalViewController(processType: processType, paymentInfo: paymentInfo, editableReader: editableReader, dismissCompletion: dismissCompletion)
+        }
+        
+        guard let viewController = viewController else {
+            return UINavigationController()
+        }
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.isNavigationBarHidden = true
+        navigationController.modalPresentationStyle = .overFullScreen
+        return navigationController
+    }
+    
     // MARK: Public
     /**
      * Method that returns a UINavigationController that can handle the entire payment process.
@@ -113,26 +133,6 @@ public final class ClearentUIManager: NSObject {
      */
     @objc public func shouldDisplayOfflineModeLabel() -> Bool {
         ClearentWrapperDefaults.enableOfflineMode
-    }
-
-    func navigationController(processType: ProcessType, paymentInfo: PaymentInfo? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UINavigationController {
-        var viewController: UIViewController?
-        
-        if processType == .offlineModeSetup {
-            viewController = offlineSetupViewController(dismissCompletion: dismissCompletion)
-        } else if processType == .showSettings {
-            viewController = settingsViewController(dismissCompletion: dismissCompletion)
-        } else {
-            viewController = processingModalViewController(processType: processType, paymentInfo: paymentInfo, editableReader: editableReader, dismissCompletion: dismissCompletion)
-        }
-        
-        guard let viewController = viewController else {
-            return UINavigationController()
-        }
-        let navigationController = UINavigationController(rootViewController: viewController)
-        navigationController.isNavigationBarHidden = true
-        navigationController.modalPresentationStyle = .overFullScreen
-        return navigationController
     }
     
     // MARK: - Private

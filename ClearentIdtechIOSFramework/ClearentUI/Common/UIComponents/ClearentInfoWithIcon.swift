@@ -9,12 +9,17 @@
 import UIKit
 
 open class ClearentInfoWithIcon: ClearentMarginableView {
+    
+    // MARK: - IBOutlets
+    
     @IBOutlet var titleLabel: UILabel!
     @IBOutlet var descriptionLabel: UILabel!
     @IBOutlet var button: UIButton!
     @IBOutlet var deleteButton: UIButton!
     @IBOutlet var separatorView: UIView!
     @IBOutlet var warningTextView: UITextView!
+    
+    // MARK: - Properties
     
     public var editButtonPressed: (() -> Void)?
     public var deleteButtonPressed: (() -> Void)?
@@ -112,6 +117,8 @@ open class ClearentInfoWithIcon: ClearentMarginableView {
         }
     }
 
+    // MARK: - Internal
+    
     override open func configure() {
         titleFont = ClearentUIBrandConfigurator.shared.fonts.detailScreenItemTitleFont
         titleTextColor = ClearentConstants.Color.base02
@@ -123,6 +130,8 @@ open class ClearentInfoWithIcon: ClearentMarginableView {
         warningTextView.delegate = self
         warningTextView.dataDetectorTypes = .link
     }
+    
+    // MARK: - Actions
 
     @IBAction func buttonAction(_: Any) {
         editButtonPressed?()
