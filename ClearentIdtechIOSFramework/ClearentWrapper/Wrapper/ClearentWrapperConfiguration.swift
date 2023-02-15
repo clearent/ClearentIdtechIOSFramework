@@ -25,6 +25,11 @@ import CryptoKit
     /// Closure called when reader info (signal, battery, reader name, connection status) is received
     public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
     
+    /// Closure called when the SDK needs to inform the user about the current merchant & terminal selected. Only used when the webAuth is used instead of API KEY for the API authentication.
+    /// Returns a tuple representing the merchant and terminal names also providing the auth for processing offline transactions
+    /// Only for integrators that provide the webAuth (merchant id , vt-token) for api auth
+    public var provideAuthAndMerchantTerminalDetails: (() -> (String?, String?, ClearentWebAuth?))?
+    
     // MARK: - Init
     
     public init(baseURL: String, apiKey: String?, publicKey: String?, enableEnhancedMessaging: Bool = false) {

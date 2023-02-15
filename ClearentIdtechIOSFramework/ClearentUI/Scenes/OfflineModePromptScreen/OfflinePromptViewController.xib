@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_0" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="OfflinePromptViewController" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+            <connections>
+                <outlet property="containerMaxWidthConstraint" destination="Tgq-Ga-QJK" id="Dut-NZ-sGm"/>
+                <outlet property="offlineQuestionCancelBtn" destination="KWN-UD-iOp" id="GJG-wp-i5e"/>
+                <outlet property="offlineQuestionConfirmBtn" destination="IS7-RW-7PI" id="5Tl-Mz-9bO"/>
+                <outlet property="offlineQuestionFirstSubtitle" destination="eb5-A1-nLY" id="muv-5O-sSw"/>
+                <outlet property="offlineQuestionIcon" destination="Ebl-4e-MVe" id="lFd-NZ-WCE"/>
+                <outlet property="offlineQuestionSecondSubtitle" destination="MnI-gy-OOa" id="aRH-FB-w0B"/>
+                <outlet property="offlineQuestionTitle" destination="3wZ-Am-zOy" id="E7I-fl-GbI"/>
+                <outlet property="stackView" destination="fH9-Hv-deq" id="xgY-Cq-AjN"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="390" height="844"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" placeholderIntrinsicWidth="350" placeholderIntrinsicHeight="278" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="fH9-Hv-deq" customClass="ClearentRoundedCornersStackView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                    <rect key="frame" x="32" y="0.0" width="326" height="778"/>
+                    <subviews>
+                        <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="J04-Qw-Srj" customClass="ClearentAdaptiveStackView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                            <rect key="frame" x="0.0" y="0.0" width="326" height="778"/>
+                            <subviews>
+                                <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Ebl-4e-MVe" customClass="ClearentIcon" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="0.0" width="326" height="128"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                </view>
+                                <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="3wZ-Am-zOy" customClass="ClearentTitleLabel" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="128" width="326" height="128"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                </view>
+                                <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="eb5-A1-nLY" customClass="ClearentSubtitleLabel" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="256" width="326" height="128"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                </view>
+                                <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MnI-gy-OOa" customClass="ClearentSubtitleLabel" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="384" width="326" height="96"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                </view>
+                                <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="IS7-RW-7PI" customClass="ClearentPrimaryButton" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="480" width="326" height="170"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                </view>
+                                <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="KWN-UD-iOp" customClass="ClearentPrimaryButton" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
+                                    <rect key="frame" x="0.0" y="650" width="326" height="128"/>
+                                    <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                                </view>
+                            </subviews>
+                            <constraints>
+                                <constraint firstAttribute="width" relation="lessThanOrEqual" constant="600" id="Tgq-Ga-QJK"/>
+                            </constraints>
+                        </stackView>
+                    </subviews>
+                    <viewLayoutGuide key="safeArea" id="i36-lJ-45o"/>
+                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                </stackView>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+            <constraints>
+                <constraint firstItem="fH9-Hv-deq" firstAttribute="centerX" secondItem="i5M-Pr-FkT" secondAttribute="centerX" id="2dS-ob-O5v"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="fH9-Hv-deq" secondAttribute="bottom" constant="32" id="ltk-DX-QEF"/>
+                <constraint firstAttribute="trailing" secondItem="fH9-Hv-deq" secondAttribute="trailing" priority="999" constant="32" id="nBD-j3-pal"/>
+                <constraint firstItem="fH9-Hv-deq" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" priority="999" constant="32" id="vpu-jZ-d9r"/>
+            </constraints>
+            <point key="canvasLocation" x="130.76923076923077" y="-11.374407582938389"/>
+        </view>
+    </objects>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
+</document>

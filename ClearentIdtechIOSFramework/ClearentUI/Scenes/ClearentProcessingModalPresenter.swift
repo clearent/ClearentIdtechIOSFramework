@@ -333,6 +333,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
             showRenameReader()
         case .showSettings:
             break;
+        case .offlineModeSetup:
+            break;
         }
     }
     

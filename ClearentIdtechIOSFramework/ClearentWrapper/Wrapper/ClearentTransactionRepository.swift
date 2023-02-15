@@ -29,6 +29,7 @@ protocol TransactionRepositoryProtocol {
     func serviceFeeForAmount(amount: Double) -> Double?
     func updateWebAuth(auth: ClearentWebAuth)
     func hasAuthentication() -> Bool
+    func hasWebAuthentication() -> Bool
 }
 
 class TransactionRepository: NSObject, TransactionRepositoryProtocol {
@@ -71,6 +72,14 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
      * Returns true or false
      */
     func hasAuthentication() -> Bool {
+        return self.httpClient.hasAuth()
+    }
+    
+    /**
+     * Checks if webAuth was provided
+     * Returns true or false
+     */
+    func hasWebAuthentication() -> Bool {
         return self.httpClient.hasAuth()
     }
     
