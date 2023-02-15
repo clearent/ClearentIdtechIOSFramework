@@ -93,7 +93,7 @@ public final class ClearentUIManager: NSObject {
     }
     
     /**
-     * Method returns a UINavigationController that will display a pop-up tthat willnotify the user about offline mode
+     * Method returns a UINavigationController that will display a pop-up that will notify the user about offline mode
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
     @objc public func offlineModeQuestionViewController(completion: ((ClearentError?) -> Void)?) -> UINavigationController {

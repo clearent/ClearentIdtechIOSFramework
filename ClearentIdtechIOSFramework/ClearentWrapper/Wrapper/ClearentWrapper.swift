@@ -517,11 +517,6 @@ public final class ClearentWrapper : NSObject {
     
     private func checkForMissingKeys() -> ClearentErrorType? {
         guard !ClearentWrapper.configuration.baseURL.isEmpty else { return ClearentErrorType.baseURLNotProvided }
-        // orotaru
-//        if (!transactionRepoHasAPIAuth()) {
-//            return ClearentErrorType.noAPIAuthentication
-//        }
-        
         return nil
     }
     
