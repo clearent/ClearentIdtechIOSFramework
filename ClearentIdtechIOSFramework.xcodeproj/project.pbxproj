@@ -207,7 +207,6 @@
 		CCBAEE52291BE069004A22D9 /* ClearentIconAndLabel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CCBAEE51291BE069004A22D9 /* ClearentIconAndLabel.xib */; };
 		CCEC76B42992738C001FF4A4 /* OfflinePromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCEC76B22992738C001FF4A4 /* OfflinePromptViewController.swift */; };
 		CCEC76B52992738C001FF4A4 /* OfflinePromptViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CCEC76B32992738C001FF4A4 /* OfflinePromptViewController.xib */; };
-		CCEC76B7299273B7001FF4A4 /* OfflinePromptPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCEC76B6299273B7001FF4A4 /* OfflinePromptPresenter.swift */; };
 		E702E5702364835B0032ED8D /* ClearentVP3300Config.m in Sources */ = {isa = PBXBuildFile; fileRef = E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */; };
 		E702E572236488630032ED8D /* ClearentPayment.h in Headers */ = {isa = PBXBuildFile; fileRef = E746CB5F235896EC00C41DF1 /* ClearentPayment.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E702E5732364886C0032ED8D /* ClearentVP3300Config.h in Headers */ = {isa = PBXBuildFile; fileRef = E702E571236485280032ED8D /* ClearentVP3300Config.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -454,7 +453,6 @@
 		CCBAEE51291BE069004A22D9 /* ClearentIconAndLabel.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentIconAndLabel.xib; sourceTree = "<group>"; };
 		CCEC76B22992738C001FF4A4 /* OfflinePromptViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflinePromptViewController.swift; sourceTree = "<group>"; };
 		CCEC76B32992738C001FF4A4 /* OfflinePromptViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OfflinePromptViewController.xib; sourceTree = "<group>"; };
-		CCEC76B6299273B7001FF4A4 /* OfflinePromptPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflinePromptPresenter.swift; sourceTree = "<group>"; };
 		E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentVP3300Config.m; sourceTree = "<group>"; };
 		E702E571236485280032ED8D /* ClearentVP3300Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentVP3300Config.h; sourceTree = "<group>"; };
 		E726A0362258B5A400F3E8B7 /* ClearentCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentCache.h; sourceTree = "<group>"; };
@@ -956,7 +954,6 @@
 			children = (
 				CCEC76B22992738C001FF4A4 /* OfflinePromptViewController.swift */,
 				CCEC76B32992738C001FF4A4 /* OfflinePromptViewController.xib */,
-				CCEC76B6299273B7001FF4A4 /* OfflinePromptPresenter.swift */,
 			);
 			path = OfflineModePromptScreen;
 			sourceTree = "<group>";
@@ -1424,7 +1421,6 @@
 				CCA86E4F28CF5DB300FF83FB /* ClearentWrapperExtensions.swift in Sources */,
 				01442D0028B3D836006DD15C /* NSDataExtension.swift in Sources */,
 				CCBAEE4E291BC54B004A22D9 /* ClearentWarningLabel.swift in Sources */,
-				CCEC76B7299273B7001FF4A4 /* OfflinePromptPresenter.swift in Sources */,
 				01442CF628B3D836006DD15C /* ClearentXibView.swift in Sources */,
 				E764E7722303182C0029B753 /* ClearentOfflineDeclineReceipt.m in Sources */,
 				4BAEA888271C5F24007F5FCF /* ClearentLumberjackRemoteLogger.m in Sources */,
