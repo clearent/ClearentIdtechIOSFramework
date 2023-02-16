@@ -55,6 +55,9 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         self.baseURL = baseURL
         self.clearentManualEntryDelegate = clearentManualEntryDelegate
         self.clearentVP3300 = clearentVP3300
+        if let publicKey = ClearentWrapper.configuration.publicKey {
+            clearentManualEntry = ClearentManualEntry(clearentManualEntryDelegate, clearentBaseUrl: baseURL, publicKey: publicKey)
+        }
     }
     
     // MARK: - Internal
@@ -218,7 +221,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     }
     
     func fetchTerminalSetting(completion: @escaping () -> Void) {
-        httpClient.terminalSettings() { [weak self] data, error in
+        httpClient.terminalSettings() { data, error in
             DispatchQueue.main.async {
                 do {
                     guard let data = data else {
@@ -231,7 +234,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
                 } catch let jsonDecodingError {
                     print(jsonDecodingError)
                 }
-                self?.fetchHppSetting(completion: completion)
+                completion()
             }
         }
     }
@@ -239,7 +242,6 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     // Fetches publicKey if it was not passed to the initialization of the SDK
     func fetchHppSetting(completion: @escaping () -> Void) {
         guard ClearentWrapper.configuration.publicKey == nil else {
-            clearentManualEntry = ClearentManualEntry(clearentManualEntryDelegate, clearentBaseUrl: baseURL, publicKey: ClearentWrapper.configuration.publicKey)
             completion()
             return
         }

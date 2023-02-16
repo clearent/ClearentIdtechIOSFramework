@@ -218,42 +218,44 @@ public final class ClearentWrapper : NSObject {
      * @param completion, the closure that will be called when a missing key error is detected
      */
     public func startTransaction(with saleEntity: SaleEntity, isManualTransaction: Bool, completion: @escaping((ClearentError?) -> Void)) {
-        if let error = checkForMissingKeys() {
-            completion(.init(type: error))
-        }
-        
-        if !saleEntity.amount.canBeConverted(to: .utf8) { return }
-        if let tip = saleEntity.tipAmount, !tip.canBeConverted(to: .utf8) { return }
-        
-        self.saleEntity = saleEntity
-        
-        if ClearentWrapperDefaults.enableOfflineMode {
-            if isManualTransaction {
-                if processTransactionOnline {
-                    transactionRepository?.manualEntryTransaction(saleEntity: saleEntity)
+        transactionRepository?.fetchHppSetting { [weak self] in
+            guard let strongSelf = self else { return }
+            if let error = strongSelf.checkForMissingKeys() {
+                completion(.init(type: error))
+            }
+            
+            if !saleEntity.amount.canBeConverted(to: .utf8), let tip = saleEntity.tipAmount, !tip.canBeConverted(to: .utf8) { return }
+            
+            strongSelf.saleEntity = saleEntity
+            
+            if ClearentWrapperDefaults.enableOfflineMode {
+                if isManualTransaction {
+                    if strongSelf.processTransactionOnline {
+                        strongSelf.transactionRepository?.manualEntryTransaction(saleEntity: saleEntity)
+                    } else {
+                        strongSelf.transactionRepository?.saveOfflineTransaction(paymentData: PaymentData(saleEntity: saleEntity))
+                    }
                 } else {
-                    transactionRepository?.saveOfflineTransaction(paymentData: PaymentData(saleEntity: saleEntity))
+                    if let userAction = strongSelf.getBluetoothConnectivityStatus() {
+                        strongSelf.delegate?.userActionNeeded(action: userAction)
+                        return
+                    }
+                    strongSelf.readerRepository?.cardReaderTransaction()
+                }
+            } else if strongSelf.isInternetOn {
+                if isManualTransaction {
+                    strongSelf.transactionRepository?.manualEntryTransaction(saleEntity: saleEntity)
+                } else {
+                    if let userAction = strongSelf.getBluetoothConnectivityStatus() {
+                        strongSelf.delegate?.userActionNeeded(action: userAction)
+                        return
+                    }
+                    strongSelf.readerRepository?.cardReaderTransaction()
                 }
             } else {
-                if let userAction = getBluetoothConnectivityStatus() {
-                    self.delegate?.userActionNeeded(action: userAction)
-                    return
-                }
-                readerRepository?.cardReaderTransaction()
+                strongSelf.delegate?.userActionNeeded(action: .noInternet)
+                return
             }
-        } else if isInternetOn {
-            if isManualTransaction {
-                transactionRepository?.manualEntryTransaction(saleEntity: saleEntity)
-            } else {
-                if let userAction = getBluetoothConnectivityStatus() {
-                    self.delegate?.userActionNeeded(action: userAction)
-                    return
-                }
-                readerRepository?.cardReaderTransaction()
-            }
-        } else {
-            self.delegate?.userActionNeeded(action: .noInternet)
-            return
         }
     }
     
@@ -528,9 +530,9 @@ public final class ClearentWrapper : NSObject {
         return nil
     }
     
-    internal func currentSDKVersion() -> String? {
-        let bundle = Bundle(identifier: "com.clearent.quest.ClearentIdtechIOSFramework")! // Get a reference to the bundle from your framework (not the bundle of the app itself!)
-        return bundle.infoDictionary?[kCFBundleVersionKey as String] as? String //
+    func currentSDKVersion() -> String? {
+        let bundle = ClearentConstants.bundle  // Get a reference to the bundle from your framework (not the bundle of the app itself
+        return bundle.infoDictionary?[kCFBundleVersionKey as String] as? String
     }
 }
 
@@ -550,7 +552,7 @@ extension ClearentWrapper: Clearent_Public_IDTech_VP3300_Delegate {
     
     public func successOfflineTransactionToken(_ clearentTransactionTokenRequestData: Data?, isTransactionEncrypted isEncrypted: Bool) {
         guard let cardToken = clearentTransactionTokenRequestData else { return }
-  
+        let isEncrypted = true
         ClearentWrapperDefaults.pairedReaderInfo?.encrypted = isEncrypted
         if (!isEncrypted) {
             self.delegate?.showEncryptionWarning()

@@ -34,7 +34,7 @@
                             <nil key="highlightedColor"/>
                         </label>
                         <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="-1" estimatedSectionHeaderHeight="-1" sectionFooterHeight="-1" estimatedSectionFooterHeight="-1" translatesAutoresizingMaskIntoConstraints="NO" id="bat-7R-MEz">
-                            <rect key="frame" x="0.0" y="95" width="374" height="300"/>
+                            <rect key="frame" x="0.0" y="135" width="374" height="300"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="300" id="U1x-Qp-lVv"/>
@@ -63,7 +63,7 @@
                         <constraint firstItem="bat-7R-MEz" firstAttribute="leading" secondItem="0dD-Iv-As1" secondAttribute="leading" id="CVN-yu-BoE"/>
                         <constraint firstItem="tRk-LW-Pna" firstAttribute="centerX" secondItem="0dD-Iv-As1" secondAttribute="centerX" id="GoU-qk-KvX"/>
                         <constraint firstAttribute="width" relation="lessThanOrEqual" constant="600" id="HhS-jO-9Sq"/>
-                        <constraint firstItem="Mcc-fr-DiZ" firstAttribute="bottom" secondItem="bat-7R-MEz" secondAttribute="top" constant="20" id="VJv-BQ-DNz"/>
+                        <constraint firstItem="Mcc-fr-DiZ" firstAttribute="bottom" secondItem="bat-7R-MEz" secondAttribute="top" constant="-20" id="VJv-BQ-DNz"/>
                         <constraint firstItem="Mcc-fr-DiZ" firstAttribute="leading" secondItem="0dD-Iv-As1" secondAttribute="leading" id="ZU0-o8-Wwe"/>
                         <constraint firstAttribute="trailing" secondItem="bat-7R-MEz" secondAttribute="trailing" id="agz-iF-9hZ"/>
                         <constraint firstAttribute="trailing" secondItem="Mcc-fr-DiZ" secondAttribute="trailing" id="atm-d1-nhz"/>
