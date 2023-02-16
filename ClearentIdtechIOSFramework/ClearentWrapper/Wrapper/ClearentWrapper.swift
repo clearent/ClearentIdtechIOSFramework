@@ -222,6 +222,7 @@ public final class ClearentWrapper : NSObject {
             guard let strongSelf = self else { return }
             if let error = strongSelf.checkForMissingKeys() {
                 completion(.init(type: error))
+                return
             }
             
             if !saleEntity.amount.canBeConverted(to: .utf8), let tip = saleEntity.tipAmount, !tip.canBeConverted(to: .utf8) { return }
