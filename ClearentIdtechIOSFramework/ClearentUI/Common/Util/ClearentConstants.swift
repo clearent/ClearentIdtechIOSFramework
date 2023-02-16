@@ -9,7 +9,7 @@
 import UIKit
 
 @objc public class ClearentConstants: NSObject {
-    // use a class from same package to identify the package
+    // Use a class from same package to identify the package
     @objc public class var bundle: Bundle {
         return Bundle(for: FlowDataProvider.self)
     }
