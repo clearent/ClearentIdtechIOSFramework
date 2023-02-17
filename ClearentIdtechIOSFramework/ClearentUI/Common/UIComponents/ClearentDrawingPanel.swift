@@ -7,6 +7,9 @@
 //
 
 class ClearentDrawingPanel: UIView {
+    
+    // MARK: - Properties
+    
     private var bufferImage: UIImage?
     private var drawingLayer: CAShapeLayer?
     private var currentPath: UIBezierPath?
@@ -33,6 +36,8 @@ class ClearentDrawingPanel: UIView {
         setup()
     }
 
+    // MARK: - Private
+    
     private func setup() {
         layer.removeAllAnimations()
         layer.masksToBounds = true // Restrict the drawing within the canvas
@@ -40,7 +45,7 @@ class ClearentDrawingPanel: UIView {
         isMultipleTouchEnabled = false
     }
 
-    // MARK: Drawing
+    // MARK: - Internal
 
     override func draw(_ rect: CGRect) {
         bufferImage?.draw(in: rect)

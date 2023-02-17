@@ -17,18 +17,19 @@ public class ClearentErrorDetailsView: UIView, ClearentMarginable {
     // MARK: - Properties
     
     public var viewType: UIView.Type { type(of: self) }
+    private var bottomLayoutConstraint: NSLayoutConstraint?
+    private var textView = UITextView()
     
     public var margins: [BottomMargin] {
         [RelativeBottomMargin(constant: 10, relatedViewType: ClearentPrimaryButton.self)]
     }
     
+    // MARK: - Public
+    
     public func setBottomMargin(margin: BottomMargin) {
         bottomLayoutConstraint = NSLayoutConstraint(item: textView, attribute: .bottomMargin, relatedBy: .equal, toItem: self, attribute: .bottomMargin, multiplier: 1.0, constant: -margin.constant)
         configureLayout()
     }
-    
-    private var bottomLayoutConstraint: NSLayoutConstraint?
-    private var textView = UITextView()
     
     // MARK: - Init
     

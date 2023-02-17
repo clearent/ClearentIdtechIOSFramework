@@ -27,13 +27,20 @@ protocol ClearentOfflineModeReportViewProtocol {
 }
 
 class ClearentOfflineModeReportPresenter {
+    
+    // MARK: - Properties
+    
     private var dataSource: [ReportItem] = []
     private var offlineResultView: ClearentOfflineViewProtocol?
+    
+    // MARK: - Init
     
     init(view: ClearentOfflineViewProtocol) {
         offlineResultView = view
         updateDataSource()
     }
+    
+    // MARK: - Internal
     
     func updateDataSource() {
         let transactions = ClearentWrapper.shared.retrieveAllOfflineTransactions()

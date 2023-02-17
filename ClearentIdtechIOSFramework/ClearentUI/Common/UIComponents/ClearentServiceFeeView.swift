@@ -8,12 +8,16 @@
 
 class ClearentServiceFeeView: ClearentMarginableView {
 
+    // MARK: - IBOutlets
+    
     @IBOutlet weak var stackView: ClearentAdaptiveStackView!
     @IBOutlet weak var basePriceTitle: ClearentSubtitleLabel!
     @IBOutlet weak var basePriceAmount: ClearentTitleLabel!
     @IBOutlet weak var adjustedPriceTitle: ClearentSubtitleLabel!
     @IBOutlet weak var adjustedPriceAmount: ClearentTitleLabel!
     @IBOutlet weak var descriptionLabel: ClearentSubtitleLabel!
+    
+    // MARK: - Init
     
     convenience init(serviceFeeType: ServiceFeeProgramType, amountWithTip: String, amountWithTipAndServiceFee: String) {
         self.init()
@@ -23,12 +27,15 @@ class ClearentServiceFeeView: ClearentMarginableView {
         }
     }
     
+    // MARK: - Internal
+    
     override func configure() {
         basePriceAmount.font = ClearentUIBrandConfigurator.shared.fonts.screenTitleFont
         adjustedPriceAmount.font = ClearentUIBrandConfigurator.shared.fonts.screenTitleFont
     }
     
     // MARK: - Private
+    
     private func setupTitles(for serviceFeeType: ServiceFeeProgramType, amountWithTip: String, amountWithTipAndServiceFee: String) {
         basePriceTitle.title = serviceFeeType.basePriceTitle
         basePriceAmount.title = amountWithTip

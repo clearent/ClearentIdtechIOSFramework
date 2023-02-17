@@ -228,6 +228,8 @@
 		CCBAEE50291BE05B004A22D9 /* ClearentIconAndLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCBAEE4F291BE05B004A22D9 /* ClearentIconAndLabel.swift */; };
 		CCBAEE52291BE069004A22D9 /* ClearentIconAndLabel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CCBAEE51291BE069004A22D9 /* ClearentIconAndLabel.xib */; };
 		CCD2A6C9299128DB00B11EAD /* libOCMock.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCD2A6C8299128DB00B11EAD /* libOCMock.xcframework */; };
+		CCEC76B42992738C001FF4A4 /* OfflinePromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCEC76B22992738C001FF4A4 /* OfflinePromptViewController.swift */; };
+		CCEC76B52992738C001FF4A4 /* OfflinePromptViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CCEC76B32992738C001FF4A4 /* OfflinePromptViewController.xib */; };
 		E702E5702364835B0032ED8D /* ClearentVP3300Config.m in Sources */ = {isa = PBXBuildFile; fileRef = E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */; };
 		E702E572236488630032ED8D /* ClearentPayment.h in Headers */ = {isa = PBXBuildFile; fileRef = E746CB5F235896EC00C41DF1 /* ClearentPayment.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E702E5732364886C0032ED8D /* ClearentVP3300Config.h in Headers */ = {isa = PBXBuildFile; fileRef = E702E571236485280032ED8D /* ClearentVP3300Config.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -502,6 +504,8 @@
 		CCBAEE4F291BE05B004A22D9 /* ClearentIconAndLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentIconAndLabel.swift; sourceTree = "<group>"; };
 		CCBAEE51291BE069004A22D9 /* ClearentIconAndLabel.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentIconAndLabel.xib; sourceTree = "<group>"; };
 		CCD2A6C8299128DB00B11EAD /* libOCMock.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libOCMock.xcframework; path = test/libOCMock.xcframework; sourceTree = "<group>"; };
+		CCEC76B22992738C001FF4A4 /* OfflinePromptViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflinePromptViewController.swift; sourceTree = "<group>"; };
+		CCEC76B32992738C001FF4A4 /* OfflinePromptViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OfflinePromptViewController.xib; sourceTree = "<group>"; };
 		E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentVP3300Config.m; sourceTree = "<group>"; };
 		E702E571236485280032ED8D /* ClearentVP3300Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentVP3300Config.h; sourceTree = "<group>"; };
 		E726A0362258B5A400F3E8B7 /* ClearentCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentCache.h; sourceTree = "<group>"; };
@@ -985,6 +989,7 @@
 		014AA0FF2917C52C001918F5 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				CCEC76B12992734B001FF4A4 /* OfflineModePromptScreen */,
 				01084604292295E700BFE00D /* OfflineModeReport */,
 				01A31742291CE0CD00FB6CB9 /* SettingsScreen */,
 				01442C8328B3D835006DD15C /* ReaderDetails */,
@@ -1134,6 +1139,15 @@
 				CCA86E5428CF5E0F00FF83FB /* HttpClient.swift */,
 			);
 			path = HttpClient;
+			sourceTree = "<group>";
+		};
+		CCEC76B12992734B001FF4A4 /* OfflineModePromptScreen */ = {
+			isa = PBXGroup;
+			children = (
+				CCEC76B22992738C001FF4A4 /* OfflinePromptViewController.swift */,
+				CCEC76B32992738C001FF4A4 /* OfflinePromptViewController.xib */,
+			);
+			path = OfflineModePromptScreen;
 			sourceTree = "<group>";
 		};
 		E728DB4920E686CA004C01E7 /* test */ = {
@@ -1524,6 +1538,7 @@
 				01442D3928B3D836006DD15C /* ClearentPaymentFooterView.xib in Resources */,
 				01442D1C28B3D836006DD15C /* ClearentPrimaryButton.xib in Resources */,
 				E77687472062B66300284FF4 /* .gitignore in Resources */,
+				CCEC76B52992738C001FF4A4 /* OfflinePromptViewController.xib in Resources */,
 				0108460F292295E700BFE00D /* ClearentOfflineModeReportViewController.xib in Resources */,
 				01442D0928B3D836006DD15C /* ClearentLoadingView.xib in Resources */,
 				014AA1032917C75F001918F5 /* ClearentSettingsModalViewController.xib in Resources */,
@@ -1634,6 +1649,7 @@
 				01442D0A28B3D836006DD15C /* ProgressShapeLayer.swift in Sources */,
 				E7CA494220E171960090CFFC /* ClearentConfiguration.m in Sources */,
 				CCA3FFC7292F82290087FAE5 /* ClearentOfflineResultPDFGenerator.swift in Sources */,
+				CCEC76B42992738C001FF4A4 /* OfflinePromptViewController.swift in Sources */,
 				E79BC82520B366300030FD8C /* Clearent_VP3300.m in Sources */,
 				01E22E0228B77D9F004C4ADF /* SVGLoader.swift in Sources */,
 				01442D4728B3D836006DD15C /* ClearentDefaultFonts.swift in Sources */,

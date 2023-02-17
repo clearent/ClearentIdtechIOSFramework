@@ -57,6 +57,26 @@ public final class ClearentUIManager: NSObject {
         }
     }
     
+    func navigationController(processType: ProcessType, paymentInfo: PaymentInfo? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UINavigationController {
+        var viewController: UIViewController?
+        
+        if processType == .offlineModeSetup {
+            viewController = offlineSetupViewController(dismissCompletion: dismissCompletion)
+        } else if processType == .showSettings {
+            viewController = settingsViewController(dismissCompletion: dismissCompletion)
+        } else {
+            viewController = processingModalViewController(processType: processType, paymentInfo: paymentInfo, editableReader: editableReader, dismissCompletion: dismissCompletion)
+        }
+        
+        guard let viewController = viewController else {
+            return UINavigationController()
+        }
+        let navigationController = UINavigationController(rootViewController: viewController)
+        navigationController.isNavigationBarHidden = true
+        navigationController.modalPresentationStyle = .overFullScreen
+        return navigationController
+    }
+    
     // MARK: Public
     /**
      * Method that returns a UINavigationController that can handle the entire payment process.
@@ -92,6 +112,17 @@ public final class ClearentUIManager: NSObject {
         })
     }
     
+    /**
+     * Method returns a UINavigationController that will display a pop-up that will notify the user about offline mode
+     * @param completion, a closure to be executed once the clearent SDK UI is dimissed
+     */
+    @objc public func offlineModeQuestionViewController(completion: ((ClearentError?) -> Void)?) -> UINavigationController {
+        navigationController(processType: .offlineModeSetup, dismissCompletion: { [weak self] result in
+            let completionResult = self?.resultFor(completionResult: result)
+            completion?(completionResult)
+        })
+    }
+    
     @objc public func allUnprocessedOfflineTransactionsCount() -> Int {
         let offlineManager = clearentWrapper.retrieveOfflineManager()
         return offlineManager?.unproccesedTransactionsCount() ?? 0
@@ -101,24 +132,7 @@ public final class ClearentUIManager: NSObject {
      * Method that returns a bool representing if we should display the offline mode warning
      */
     @objc public func shouldDisplayOfflineModeLabel() -> Bool {
-        ClearentWrapperDefaults.enableOfflineMode && !ClearentWrapperDefaults.enableOfflinePromptMode
-    }
-
-    func navigationController(processType: ProcessType, paymentInfo: PaymentInfo? = nil, editableReader: ReaderInfo? = nil, dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UINavigationController {
-        var viewController: UIViewController?
-        if processType == .showSettings {
-            viewController = settingsViewController(dismissCompletion: dismissCompletion)
-        } else {
-            viewController = processingModalViewController(processType: processType, paymentInfo: paymentInfo, editableReader: editableReader, dismissCompletion: dismissCompletion)
-        }
-        
-        guard let viewController = viewController else {
-            return UINavigationController()
-        }
-        let navigationController = UINavigationController(rootViewController: viewController)
-        navigationController.isNavigationBarHidden = true
-        navigationController.modalPresentationStyle = .overFullScreen
-        return navigationController
+        ClearentWrapperDefaults.enableOfflineMode
     }
     
     // MARK: - Private
@@ -140,6 +154,12 @@ public final class ClearentUIManager: NSObject {
         return viewController
     }
     
+    private func offlineSetupViewController(dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UIViewController {
+        let viewController = OfflinePromptViewController()
+        viewController.dismissCompletion = dismissCompletion
+        return viewController
+    }
+        
     private func resultFor(completionResult: CompletionResult) -> ClearentError? {
         switch completionResult {
         case .success(_):

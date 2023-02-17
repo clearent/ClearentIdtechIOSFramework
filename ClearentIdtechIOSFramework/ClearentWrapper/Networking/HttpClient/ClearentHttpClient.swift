@@ -36,6 +36,8 @@ protocol ClearentHttpClientProtocol {
 
 class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
     
+    // MARK: - Properties
+    
     var httpClient: HttpClient? = nil
     let baseURL: String
     let apiKey: String?
@@ -61,6 +63,12 @@ class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
     public func hasAuth() -> Bool {
         return webAuth != nil || apiKey != nil
     }
+    
+    public func haswebAuth() -> Bool {
+        return webAuth != nil
+    }
+
+    // MARK: - Internal
     
     func saleTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (Data?, Error?) -> Void) {
         let saleURL = URL(string: baseURL + ClearentEndpoints.sale)

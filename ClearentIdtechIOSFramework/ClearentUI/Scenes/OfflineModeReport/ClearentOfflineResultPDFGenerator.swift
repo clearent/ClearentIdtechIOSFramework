@@ -10,6 +10,8 @@ import Foundation
 
 class ClearentOfflineResultPDFGenerator {
     
+    // MARK: - Internal
+    
     func generateReport(transactions: [OfflineTransaction]) -> URL {
         let documentsDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let outputFileURL = documentsDirectory.appendingPathComponent("OfflineErrorsReport.pdf")
@@ -102,15 +104,6 @@ class ClearentOfflineResultPDFGenerator {
             
         }
         return nil
-    }
-    
-    private func createSeparatorImage() -> NSMutableAttributedString  {
-        let paraStyle = NSMutableParagraphStyle()
-        let imageString = NSMutableAttributedString(string: "\n", attributes:  [.paragraphStyle : paraStyle])
-        let attachment = NSTextAttachment()
-        attachment.image = UIImage(named: ClearentConstants.IconName.separatorLine, in: ClearentConstants.bundle, compatibleWith: nil)
-        imageString.append(NSAttributedString(attachment: attachment))
-        return imageString
     }
 
     func createHeaderString(merchantName: String, terminalID: String) -> NSMutableAttributedString {
@@ -265,5 +258,16 @@ class ClearentOfflineResultPDFGenerator {
         }
         
         return transactionData
+    }
+    
+    // MARK: - Private
+    
+    private func createSeparatorImage() -> NSMutableAttributedString  {
+        let paraStyle = NSMutableParagraphStyle()
+        let imageString = NSMutableAttributedString(string: "\n", attributes:  [.paragraphStyle : paraStyle])
+        let attachment = NSTextAttachment()
+        attachment.image = UIImage(named: ClearentConstants.IconName.separatorLine, in: ClearentConstants.bundle, compatibleWith: nil)
+        imageString.append(NSAttributedString(attachment: attachment))
+        return imageString
     }
 }

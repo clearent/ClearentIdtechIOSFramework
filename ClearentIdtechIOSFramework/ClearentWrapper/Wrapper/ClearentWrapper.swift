@@ -121,6 +121,14 @@ public final class ClearentWrapper : NSObject {
     public func updateWebAuth(with auth: ClearentWebAuth) {
         self.transactionRepository?.updateWebAuth(auth: auth)
     }
+    
+    /**
+     * Updates the authorization for the gateway, should be called each time the token is refreshed
+     * Do not use unless you have a vt-token from the web side
+     */
+    public func hasWebAuth() -> Bool {
+        ((self.transactionRepository?.hasAuthentication()) != nil)
+    }
 
     /**
      * Method that should be called to enable offline mode.
@@ -207,42 +215,46 @@ public final class ClearentWrapper : NSObject {
      * @param completion, the closure that will be called when a missing key error is detected
      */
     public func startTransaction(with saleEntity: SaleEntity, isManualTransaction: Bool, completion: @escaping((ClearentError?) -> Void)) {
-        if let error = checkForMissingKeys() {
-            completion(.init(type: error))
-        }
-        
-        if !saleEntity.amount.canBeConverted(to: .utf8) { return }
-        if let tip = saleEntity.tipAmount, !tip.canBeConverted(to: .utf8) { return }
-        
-        self.saleEntity = saleEntity
-        
-        if ClearentWrapperDefaults.enableOfflineMode {
-            if isManualTransaction {
-                if processTransactionOnline {
-                    transactionRepository?.manualEntryTransaction(saleEntity: saleEntity)
+        transactionRepository?.fetchHppSetting { [weak self] error in
+            guard let strongSelf = self else { return }
+
+            if let error = strongSelf.checkForMissingKeys() ?? error?.type {
+                completion(.init(type: error))
+                return
+            }
+            
+            if !saleEntity.amount.canBeConverted(to: .utf8), let tip = saleEntity.tipAmount, !tip.canBeConverted(to: .utf8) { return }
+            
+            strongSelf.saleEntity = saleEntity
+            
+            if ClearentWrapperDefaults.enableOfflineMode {
+                if isManualTransaction {
+                    if strongSelf.processTransactionOnline {
+                        strongSelf.transactionRepository?.manualEntryTransaction(saleEntity: saleEntity)
+                    } else {
+                        strongSelf.transactionRepository?.saveOfflineTransaction(paymentData: PaymentData(saleEntity: saleEntity))
+                    }
                 } else {
-                    transactionRepository?.saveOfflineTransaction(paymentData: PaymentData(saleEntity: saleEntity))
+                    if let userAction = strongSelf.getBluetoothConnectivityStatus() {
+                        strongSelf.delegate?.userActionNeeded(action: userAction)
+                        return
+                    }
+                    strongSelf.readerRepository?.cardReaderTransaction()
+                }
+            } else if strongSelf.isInternetOn {
+                if isManualTransaction {
+                    strongSelf.transactionRepository?.manualEntryTransaction(saleEntity: saleEntity)
+                } else {
+                    if let userAction = strongSelf.getBluetoothConnectivityStatus() {
+                        strongSelf.delegate?.userActionNeeded(action: userAction)
+                        return
+                    }
+                    strongSelf.readerRepository?.cardReaderTransaction()
                 }
             } else {
-                if let userAction = getBluetoothConnectivityStatus() {
-                    self.delegate?.userActionNeeded(action: userAction)
-                    return
-                }
-                readerRepository?.cardReaderTransaction()
+                strongSelf.delegate?.userActionNeeded(action: .noInternet)
+                return
             }
-        } else if isInternetOn {
-            if isManualTransaction {
-                transactionRepository?.manualEntryTransaction(saleEntity: saleEntity)
-            } else {
-                if let userAction = getBluetoothConnectivityStatus() {
-                    self.delegate?.userActionNeeded(action: userAction)
-                    return
-                }
-                readerRepository?.cardReaderTransaction()
-            }
-        } else {
-            self.delegate?.userActionNeeded(action: .noInternet)
-            return
         }
     }
     
@@ -351,9 +363,9 @@ public final class ClearentWrapper : NSObject {
         if processTransactionOnline, checkForConnectivityWarning(for: .payment) { return }
     
         if isInternetOn {
-            transactionRepository?.fetchTerminalSetting() { error in
+            transactionRepository?.fetchTerminalSetting() {
                 DispatchQueue.main.async {
-                    completion(error)
+                    completion(nil)
                 }
             }
         } else {
@@ -401,6 +413,14 @@ public final class ClearentWrapper : NSObject {
                 }
             }
         }
+    }
+    
+    /**
+     * Method that  checks if there are temrinal settings already fetched
+     * Returns a bool
+     */
+    public func areTerminalSettingsCached() -> Bool {
+        return ClearentWrapperDefaults.terminalSettings != nil
     }
     
     // MARK: - Internal
@@ -454,6 +474,8 @@ public final class ClearentWrapper : NSObject {
             } catch {
                 print("Error: \(error)")
             }
+            // Default value on
+            ClearentWrapperDefaults.enableOfflinePromptMode = true
         } else {
             disableOfflineMode()
         }
@@ -508,17 +530,12 @@ public final class ClearentWrapper : NSObject {
     
     private func checkForMissingKeys() -> ClearentErrorType? {
         guard !ClearentWrapper.configuration.baseURL.isEmpty else { return ClearentErrorType.baseURLNotProvided }
-        
-        if (!transactionRepoHasAPIAuth()) {
-            return ClearentErrorType.noAPIAuthentication
-        }
-        
         return nil
     }
     
-    internal func currentSDKVersion() -> String? {
-        let bundle = Bundle(identifier: "com.clearent.quest.ClearentIdtechIOSFramework")! // Get a reference to the bundle from your framework (not the bundle of the app itself!)
-        return bundle.infoDictionary?[kCFBundleVersionKey as String] as? String //
+    func currentSDKVersion() -> String? {
+        let bundle = ClearentConstants.bundle  // Get a reference to the bundle from your framework (not the bundle of the app itself
+        return bundle.infoDictionary?[kCFBundleVersionKey as String] as? String
     }
 }
 
@@ -538,7 +555,7 @@ extension ClearentWrapper: Clearent_Public_IDTech_VP3300_Delegate {
     
     public func successOfflineTransactionToken(_ clearentTransactionTokenRequestData: Data?, isTransactionEncrypted isEncrypted: Bool) {
         guard let cardToken = clearentTransactionTokenRequestData else { return }
-        
+
         ClearentWrapperDefaults.pairedReaderInfo?.encrypted = isEncrypted
         if (!isEncrypted) {
             self.delegate?.showEncryptionWarning()

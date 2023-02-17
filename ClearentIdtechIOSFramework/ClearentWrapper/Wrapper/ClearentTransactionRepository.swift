@@ -10,13 +10,14 @@ protocol TransactionRepositoryProtocol {
     var delegate: ClearentWrapperProtocol? { get set }
     var offlineManager: OfflineModeManager? { get set }
     var signatureImage: UIImage? { get set }
+    
     func saleTransaction(jwt: String, saleEntity: SaleEntity, isOfflineTransaction: Bool, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
     func sendSignatureRequest(image: UIImage, completion: @escaping (SignatureResponse?, ClearentError?) -> Void)
     func sendReceiptRequest(emailAddress: String, completion: @escaping (ReceiptResponse?, ClearentError?) -> Void)
     func resendSignature(completion: @escaping (SignatureResponse?, ClearentError?) -> Void)
     func refundTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
     func voidTransaction(transactionID: String, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
-    func fetchTerminalSetting(completion: @escaping (ClearentError?) -> Void)
+    func fetchTerminalSetting(completion: @escaping () -> Void)
     func fetchHppSetting(completion: @escaping (ClearentError?) -> Void)
     func processOfflineTransactions(completion: @escaping (() -> Void))
     func manualEntryTransaction(saleEntity: SaleEntity)
@@ -28,9 +29,13 @@ protocol TransactionRepositoryProtocol {
     func serviceFeeForAmount(amount: Double) -> Double?
     func updateWebAuth(auth: ClearentWebAuth)
     func hasAuthentication() -> Bool
+    func hasWebAuthentication() -> Bool
 }
 
 class TransactionRepository: NSObject, TransactionRepositoryProtocol {
+    
+    // MARK: - Properties
+    
     var delegate: ClearentWrapperProtocol?
     var offlineManager: OfflineModeManager?
     var signatureImage: UIImage?
@@ -50,7 +55,12 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         self.baseURL = baseURL
         self.clearentManualEntryDelegate = clearentManualEntryDelegate
         self.clearentVP3300 = clearentVP3300
+        if let publicKey = ClearentWrapper.configuration.publicKey {
+            clearentManualEntry = ClearentManualEntry(clearentManualEntryDelegate, clearentBaseUrl: baseURL, publicKey: publicKey)
+        }
     }
+    
+    // MARK: - Internal
     
     /**
      * Updates the authorization for the api
@@ -69,6 +79,14 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     }
     
     /**
+     * Checks if webAuth was provided
+     * Returns true or false
+     */
+    func hasWebAuthentication() -> Bool {
+        return self.httpClient.hasAuth()
+    }
+    
+    /**
      * Calculates the amount of the service fee based on the current terminal settings
      * If there are no terminal settings fetched or the service fee is disabled it will return nil
      */
@@ -83,8 +101,6 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         }
         return nil
     }
-    
-    // MARK: - Internal
     
     func saleTransaction(jwt: String, saleEntity: SaleEntity, isOfflineTransaction: Bool, completion: @escaping (TransactionResponse?, ClearentError?) -> Void) {
         let saleEntity = saleEntity
@@ -223,8 +239,8 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         
     }
     
-    func fetchTerminalSetting(completion: @escaping (ClearentError?) -> Void) {
-        httpClient.terminalSettings() { [weak self] data, error in
+    func fetchTerminalSetting(completion: @escaping () -> Void) {
+        httpClient.terminalSettings() { data, error in
             DispatchQueue.main.async {
                 do {
                     if let data = data {
@@ -234,7 +250,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
                 } catch let jsonDecodingError {
                     print(jsonDecodingError)
                 }
-                self?.fetchHppSetting(completion: completion)
+                completion()
             }
         }
     }

@@ -9,8 +9,13 @@
 import Foundation
 
 class ClearentFieldValidationHelper {
+    
+    // MARK: - Properties
+    
     private static var previousText: String = ""
 
+    // MARK: - Internal
+    
     static func validateCardData(item: ClearentPaymentItem?) -> Bool {
         guard let item = item else { return false }
 

@@ -9,10 +9,13 @@
 import UIKit
 
 public class ClearentSettingsModalViewController: ClearentBaseViewController {
+    
+    // MARK: - IBOutlets
 
     @IBOutlet var titleLabel: ClearentTitleLabel!
     @IBOutlet var settingsStackView: UIStackView!
     @IBOutlet var readersListView: ClearentInfoWithIcon!
+    @IBOutlet var offlineModeSectionTopEmptySpace: ClearentEmptySpace!
     @IBOutlet var offlineSectionSubtitle: UILabel!
     @IBOutlet var enableOfflineMode: ClearentLabelSwitch!
     @IBOutlet var enablePromptMode: ClearentLabelSwitch!
@@ -30,6 +33,8 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     @IBOutlet var offlineQuestionSecondSubtitle: ClearentSubtitleLabel!
     @IBOutlet var offlineQuestionConfirmBtn: ClearentPrimaryButton!
     @IBOutlet var offlineQuestionCancelBtn: ClearentPrimaryButton!
+    
+    // MARK: - Properties
     
     var presenter: ClearentSettingsPresenterProtocol?
     var dismissCompletion: ((CompletionResult) -> Void)?
@@ -58,12 +63,9 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         }
         
         // Offline section
-        setupSectionSubtitle(for: offlineSectionSubtitle, with: ClearentConstants.Localized.Settings.settingsOfflineModeSubtitle)
-        setupEnableOfflineModeSwitch()
-        setupEnablePromptModeSwitch()
-        setupDoneButton()
-        setupOfflineModeQuestion()
+        configureOfflineModeSections()
         offlineQuestionStackView.isHidden = true
+        setupDoneButton()
         
         // Email section
         setupSectionSubtitle(for: emailSectionSubtitle, with: ClearentConstants.Localized.Settings.settingsEmailReceiptSubtitle)
@@ -78,6 +80,11 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     
     // MARK: - Private
     
+    private func setupTitle() {
+        titleLabel.title = ClearentConstants.Localized.Settings.settingsOfflineModeTitle
+        titleLabel.font = ClearentUIBrandConfigurator.shared.fonts.settingsScreenTitle
+    }
+    
     private func setupReaderListSelection() {
         if let readerName = ClearentWrapperDefaults.lastPairedReaderInfo?.customReaderName ?? ClearentWrapperDefaults.lastPairedReaderInfo?.readerName {
             readersListView.descriptionText = readerName
@@ -91,9 +98,20 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         readersListView.button.isUserInteractionEnabled = false
     }
     
-    private func setupTitle() {
-        titleLabel.title = ClearentConstants.Localized.Settings.settingsOfflineModeTitle
-        titleLabel.font = ClearentUIBrandConfigurator.shared.fonts.settingsScreenTitle
+    private func configureOfflineModeSections() {
+        let isOfflineModeAvailable = ClearentUIManager.configuration.offlineModeEncryptionKey != nil
+        
+        offlineSectionSubtitle.isHidden = !isOfflineModeAvailable
+        enableOfflineMode.isHidden = !isOfflineModeAvailable
+        enablePromptMode.isHidden = !isOfflineModeAvailable
+        offlineModeSectionTopEmptySpace.isHidden = !isOfflineModeAvailable
+        
+        if isOfflineModeAvailable {
+            setupSectionSubtitle(for: offlineSectionSubtitle, with: ClearentConstants.Localized.Settings.settingsOfflineModeSubtitle)
+            setupEnableOfflineModeSwitch()
+            setupEnablePromptModeSwitch()
+            setupOfflineModeQuestion()
+        }
     }
     
     private func setupSectionSubtitle(for label: UILabel, with title: String) {
@@ -206,6 +224,7 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
 }
 
 extension ClearentSettingsModalViewController: ClearentSettingsPresenterView {
+    
     func updateOfflineStatusViewVisibility(show: Bool) {
         offlineStatusView.isHidden = !show
         offlineStatusViewTopSpace.isHidden = !show
@@ -214,6 +233,7 @@ extension ClearentSettingsModalViewController: ClearentSettingsPresenterView {
     func updateOfflineStatusView(inProgress: Bool) {
         offlineStatusView.activityIndicator.isHidden = !inProgress
         offlineStatusView.button.isHidden = inProgress
+        
         if inProgress {
             offlineStatusView.activityIndicator.startAnimating()
         }
@@ -236,5 +256,14 @@ extension ClearentSettingsModalViewController: ClearentSettingsPresenterView {
     
     func displayErrorAlert() {
         showCancelAlert(title: ClearentConstants.Localized.Internet.error, message: ClearentConstants.Localized.Error.generalErrorDescription, cancelTitle: ClearentConstants.Localized.Error.cancel)
+    }
+    
+    func displayMerchantAndTerminalInfo(merchant: String, terminal: String, action: UIAlertAction) {
+        let message = String(format: ClearentConstants.Localized.OfflineMode.offlineProcessInfoConfirmationAlert, merchant, terminal)
+        showOfflineProcessConfirmation(title: ClearentConstants.Localized.OfflineMode.offlineProcessInfoConfirmationAlertTitle, message: message, cancelTitle: "Cancel", action: action)
+    }
+    
+    func displayNoMerchantAndTerminal() {
+        showCancelAlert(title: ClearentConstants.Localized.OfflineMode.offlineProcessingError, message: ClearentConstants.Localized.OfflineMode.offlineProcessingErrorDetails, cancelTitle: ClearentConstants.Localized.Internet.noConnectionDoneButton)
     }
 }

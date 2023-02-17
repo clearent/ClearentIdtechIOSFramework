@@ -27,6 +27,7 @@ protocol ProcessingModalProtocol {
     var sdkFeedbackProvider: FlowDataProvider { get set }
     var selectedReaderFromReadersList: ReaderItem? { get set }
     var useCardReaderPaymentMethod: Bool { get }
+    
     func handleUserAction(userAction: FlowButtonType)
     func restartProcess(newPair: Bool)
     func startFlow()
@@ -88,6 +89,8 @@ class ClearentProcessingModalPresenter {
             ClearentWrapper.shared.updateWebAuth(with: auth)
         }
     }
+    
+    // MARK: - Private
 
     private func dissmissView(with delay: CGFloat = 0, error: ClearentError? = nil) {
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
@@ -329,6 +332,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         case .renameReader:
             showRenameReader()
         case .showSettings:
+            break;
+        case .offlineModeSetup:
             break;
         }
     }

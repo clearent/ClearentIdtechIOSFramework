@@ -9,6 +9,9 @@
 import CryptoKit
 
 @objc public class ClearentUIManagerConfiguration: ClearentWrapperConfiguration {
+    
+    // MARK: - Properties
+    
     public var tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages
     public var signatureEnabled: Bool = true
 
