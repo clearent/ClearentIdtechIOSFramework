@@ -8,6 +8,7 @@
 
 // MARK: - Common
 "xsdk_keyboard_done" = "Done";
+"xsdk_common_ok" = "OK";
 "xsdk_contact_support_phone_number" = "012.345.6789"; // This needs to be overriden by the client's support number
 
 // MARK: - Pairing Flow

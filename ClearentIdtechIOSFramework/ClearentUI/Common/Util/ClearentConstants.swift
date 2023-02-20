@@ -241,6 +241,10 @@ import UIKit
             public static let done = "xsdk_keyboard_done".localized
         }
         
+        enum Common {
+            public static let ok = "xsdk_common_ok".localized
+        }
+        
         enum Pairing {
             public static let connecting = "xsdk_pairing_connecting_reader".localized
             public static let connectionSuccessful = "xsdk_pairing_connection_sucessful".localized
