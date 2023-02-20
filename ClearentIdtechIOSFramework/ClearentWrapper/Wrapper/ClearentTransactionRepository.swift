@@ -46,17 +46,19 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     private var baseURL: String? = nil
     private var clearentVP3300: Clearent_VP3300?
     private var offlineTransaction: OfflineTransaction? = nil
+    private var configPublicKey: String? = nil
     
     // MARK: - Init
     
-    init(httpClient: ClearentHttpClientProtocol? = nil, baseURL: String, apiKey: String?, clearentVP3300: Clearent_VP3300, clearentManualEntryDelegate: ClearentManualEntryDelegate?) {
+    init(httpClient: ClearentHttpClientProtocol? = nil, baseURL: String, publicKey: String?, apiKey: String?, clearentVP3300: Clearent_VP3300, clearentManualEntryDelegate: ClearentManualEntryDelegate?) {
         self.httpClient = httpClient ?? ClearentDefaultHttpClient(baseURL: baseURL, apiKey: apiKey)
         super.init()
         self.baseURL = baseURL
         self.clearentManualEntryDelegate = clearentManualEntryDelegate
         self.clearentVP3300 = clearentVP3300
-        if let publicKey = ClearentWrapper.configuration.publicKey {
+        if let publicKey = publicKey {
             clearentManualEntry = ClearentManualEntry(clearentManualEntryDelegate, clearentBaseUrl: baseURL, publicKey: publicKey)
+            self.configPublicKey = publicKey
         }
     }
     
@@ -257,7 +259,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     
     // Fetches publicKey if it was not passed to the initialization of the SDK
     func fetchHppSetting(completion: @escaping (ClearentError?) -> Void) {
-        guard ClearentWrapper.configuration.publicKey == nil else {
+        guard configPublicKey == nil else {
             completion(nil)
             return
         }

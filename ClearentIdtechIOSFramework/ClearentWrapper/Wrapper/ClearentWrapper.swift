@@ -105,7 +105,7 @@ public final class ClearentWrapper : NSObject {
             readEnhancedMessages()
         }
         
-        transactionRepository = TransactionRepository(baseURL: config.baseURL, apiKey: config.apiKey, clearentVP3300: clearentVP3300, clearentManualEntryDelegate: self)
+        transactionRepository = TransactionRepository(baseURL: config.baseURL, publicKey: config.publicKey, apiKey: config.apiKey, clearentVP3300: clearentVP3300, clearentManualEntryDelegate: self)
         
         if let offlineModeEncryptionKey = ClearentWrapper.configuration.offlineModeEncryptionKey {
             transactionRepository?.offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: ClearentConstants.KeychainService.serviceName, account: ClearentConstants.KeychainService.account, encryptionKey: offlineModeEncryptionKey))
