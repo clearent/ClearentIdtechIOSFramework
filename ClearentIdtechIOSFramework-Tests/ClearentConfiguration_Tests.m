@@ -9,7 +9,6 @@
 #import <XCTest/XCTest.h>
 #import <ClearentIdtechIOSFramework/ClearentConfiguration.h>
 
-
 @interface ClearentConfiguration_Tests : XCTestCase
 @property (nonatomic) ClearentConfiguration *clearentConfiguration;
 @end

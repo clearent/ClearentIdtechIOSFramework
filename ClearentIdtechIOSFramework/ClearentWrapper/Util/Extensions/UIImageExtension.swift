@@ -13,7 +13,7 @@ extension UIImage {
         let newSize = CGSize(width: size.width * scaleRatio, height: size.height * scaleRatio)
         let newRect = CGRect(origin: .zero, size: newSize)
         
-        // Ddo the resizing to the rect using the ImageContext
+        // Do the resizing to the rect using the ImageContext
         UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
         draw(in: newRect)
         let newImage = UIGraphicsGetImageFromCurrentImageContext()

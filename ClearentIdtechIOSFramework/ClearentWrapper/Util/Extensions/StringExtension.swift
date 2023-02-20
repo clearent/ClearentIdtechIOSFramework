@@ -9,7 +9,7 @@
 extension String {
     func setTwoDecimals() -> String {
         let valueArray = self.split(separator: ".")
-        if (valueArray.last?.count == 1) {
+        if valueArray.last?.count == 1, valueArray.count > 1 {
             return self + "0"
         }
         return self

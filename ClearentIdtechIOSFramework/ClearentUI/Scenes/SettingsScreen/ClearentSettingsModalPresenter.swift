@@ -11,7 +11,8 @@ protocol ClearentSettingsPresenterView: AnyObject {
     func updateOfflineStatusView(inProgress: Bool)
     func presentReportScreen()
     func displayNoInternetAlert()
-    func displayMerchanAndTerminalInfo(merchant: String, terminal: String, action: UIAlertAction)
+    func displayErrorAlert()
+    func displayMerchantAndTerminalInfo(merchant: String, terminal: String, action: UIAlertAction)
     func displayNoMerchantAndTerminal()
 }
 
@@ -96,13 +97,16 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
         offlineStatusDescriptionColor = ClearentUIBrandConfigurator.shared.colorPalette.settingOfflineStatusLabel
         offlineStatusButtonAction = { [weak self] in
             if ClearentWrapper.shared.isInternetOn {
-                
                 if (ClearentWrapper.shared.hasWebAuth()) {
                     self?.processOfflineTransactionsWithWebAuth()
                 } else {
                     self?.settingsPresenterView?.updateOfflineStatusView(inProgress: true)
-                    ClearentWrapper.shared.processOfflineTransactions() {
-                        self?.updateOfflineStatus()
+                    ClearentWrapper.shared.processOfflineTransactions() { error in
+                        if error == nil {
+                            self?.updateOfflineStatus()
+                        } else {
+                            self?.settingsPresenterView?.displayErrorAlert()
+                        }
                     }
                 }
             } else {
@@ -120,12 +124,16 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
                 
                 let action = UIAlertAction(title: ClearentConstants.Localized.OfflineMode.offlineProcessInfoConfirmationAlertOK, style: UIAlertAction.Style.default, handler: {_ in
                     self.settingsPresenterView?.updateOfflineStatusView(inProgress: true)
-                    ClearentWrapper.shared.processOfflineTransactions() {
-                        self.updateOfflineStatus()
+                    ClearentWrapper.shared.processOfflineTransactions() { [weak self] error in
+                           if error == nil {
+                               self?.updateOfflineStatus()
+                           } else {
+                               self?.settingsPresenterView?.displayErrorAlert()
+                           }
                     }
                 })
                 
-                self.settingsPresenterView?.displayMerchanAndTerminalInfo(merchant: merchantName, terminal: terminalName, action: action)
+                self.settingsPresenterView?.displayMerchantAndTerminalInfo(merchant: merchantName, terminal: terminalName, action: action)
             } else {
                 self.settingsPresenterView?.displayNoMerchantAndTerminal() 
             }

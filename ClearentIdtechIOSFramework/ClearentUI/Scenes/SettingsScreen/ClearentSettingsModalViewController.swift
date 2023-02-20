@@ -224,6 +224,7 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
 }
 
 extension ClearentSettingsModalViewController: ClearentSettingsPresenterView {
+    
     func updateOfflineStatusViewVisibility(show: Bool) {
         offlineStatusView.isHidden = !show
         offlineStatusViewTopSpace.isHidden = !show
@@ -253,7 +254,11 @@ extension ClearentSettingsModalViewController: ClearentSettingsPresenterView {
         showCancelAlert(title: ClearentConstants.Localized.Internet.error, message: ClearentConstants.Localized.Settings.settingsOfflineButtonProcessNoInternet, cancelTitle: ClearentConstants.Localized.Internet.noConnectionDoneButton)
     }
     
-    func displayMerchanAndTerminalInfo(merchant: String, terminal: String, action: UIAlertAction) {
+    func displayErrorAlert() {
+        showCancelAlert(title: ClearentConstants.Localized.Internet.error, message: ClearentConstants.Localized.Error.generalErrorDescription, cancelTitle: ClearentConstants.Localized.Error.cancel)
+    }
+    
+    func displayMerchantAndTerminalInfo(merchant: String, terminal: String, action: UIAlertAction) {
         let message = String(format: ClearentConstants.Localized.OfflineMode.offlineProcessInfoConfirmationAlert, merchant, terminal)
         showOfflineProcessConfirmation(title: ClearentConstants.Localized.OfflineMode.offlineProcessInfoConfirmationAlertTitle, message: message, cancelTitle: "Cancel", action: action)
     }

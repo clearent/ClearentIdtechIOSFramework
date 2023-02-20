@@ -15,10 +15,10 @@ protocol TransactionRepositoryProtocol {
     func sendSignatureRequest(image: UIImage, completion: @escaping (SignatureResponse?, ClearentError?) -> Void)
     func sendReceiptRequest(emailAddress: String, completion: @escaping (ReceiptResponse?, ClearentError?) -> Void)
     func resendSignature(completion: @escaping (SignatureResponse?, ClearentError?) -> Void)
-    func refundTransaction(jwt: String, amount: String, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
+    func refundTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
     func voidTransaction(transactionID: String, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
     func fetchTerminalSetting(completion: @escaping () -> Void)
-    func fetchHppSetting(completion: @escaping () -> Void)
+    func fetchHppSetting(completion: @escaping (ClearentError?) -> Void)
     func processOfflineTransactions(completion: @escaping (() -> Void))
     func manualEntryTransaction(saleEntity: SaleEntity)
     func saveOfflineTransaction(paymentData: PaymentData)
@@ -39,9 +39,9 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     var delegate: ClearentWrapperProtocol?
     var offlineManager: OfflineModeManager?
     var signatureImage: UIImage?
+    var clearentManualEntry: ClearentManualEntry?
     private var lastTransactionID: String?
     private var httpClient: ClearentHttpClientProtocol
-    private var clearentManualEntry: ClearentManualEntry?
     private var clearentManualEntryDelegate: ClearentManualEntryDelegate?
     private var baseURL: String? = nil
     private var clearentVP3300: Clearent_VP3300?
@@ -108,7 +108,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         httpClient.saleTransaction(jwt: jwt, saleEntity: saleEntity) { [weak self] data, error in
             guard let strongSelf = self else { return }
             guard let responseData = data else {
-                completion(nil, ClearentError(type: .httpError))
+                completion(nil, .init(type: .httpError))
                 return
             }
 
@@ -131,9 +131,12 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
         }
     }
     
-    func refundTransaction(jwt: String, amount: String, completion: @escaping (TransactionResponse?, ClearentError?) -> Void) {
-        httpClient.refundTransaction(jwt: jwt, saleEntity: SaleEntity(amount: amount)) { data, error in
-            guard let responseData = data else { return }
+    func refundTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (TransactionResponse?, ClearentError?) -> Void) {
+        httpClient.refundTransaction(jwt: jwt, saleEntity: saleEntity) { data, error in
+            guard let responseData = data else {
+                completion(nil, .init(type: .httpError))
+                return
+            }
             
             do {
                 let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
@@ -143,6 +146,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
                 }
                 completion(decodedResponse, .init(type: .httpError, code: transactionError.code, message: transactionError.message))
             } catch let jsonDecodingError {
+                completion(nil, ClearentError(type: .httpError, code: ClearentConstants.Localized.Error.parseHttpResponseErrorTitle, message: ClearentConstants.Localized.Error.parseHttpResponseErrorMessage.localized))
                 print(jsonDecodingError)
             }
         }
@@ -150,7 +154,10 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     
     func voidTransaction(transactionID: String, completion: @escaping (TransactionResponse?, ClearentError?) -> Void) {
         httpClient.voidTransaction(transactionID: transactionID) { data, error in
-            guard let responseData = data else { return }
+            guard let responseData = data else {
+                completion(nil, .init(type: .httpError))
+                return
+            }
             
             do {
                 let decodedResponse = try JSONDecoder().decode(TransactionResponse.self, from: responseData)
@@ -160,77 +167,86 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
                 }
                 completion(decodedResponse, ClearentError(type: .httpError, code: transactionError.code, message: transactionError.message))
             } catch let jsonDecodingError {
+                completion(nil, ClearentError(type: .httpError, code: ClearentConstants.Localized.Error.parseHttpResponseErrorTitle, message: ClearentConstants.Localized.Error.parseHttpResponseErrorMessage.localized))
                 print(jsonDecodingError)
             }
         }
     }
     
     func resendSignature(completion: @escaping (SignatureResponse?, ClearentError?) -> Void) {
-        guard let signatureImage = signatureImage else { return }
+        guard let signatureImage = signatureImage else {
+            completion(nil, .init(type: .missingSignatureImage))
+            return
+        }
 
         sendSignatureRequest(image: signatureImage, completion: completion)
     }
     
     func sendSignatureRequest(image: UIImage, completion: @escaping (SignatureResponse?, ClearentError?) -> Void) {
-        if let id = lastTransactionID, let tid = Int(id) {
-            guard let dataImage = image.resize()?.jpegData(compressionQuality: 0) else {
-                completion(nil, .init(type: .missingSignatureImage))
+        guard let id = lastTransactionID, let tid = Int(id) else {
+            completion(nil, .init(type: .httpError))
+            return
+        }
+        guard let dataImage = image.resize()?.jpegData(compressionQuality: 0) else {
+            completion(nil, .init(type: .missingSignatureImage))
+            return
+        }
+        let base64Image = dataImage.base64EncodedString()
+        httpClient.sendSignature(base64Image: base64Image, transactionID: tid) { [weak self] data, error in
+            guard let responseData = data else {
+                completion(nil, .init(type: .httpError))
                 return
             }
-            let base64Image = dataImage.base64EncodedString()
-            httpClient.sendSignature(base64Image: base64Image, transactionID: tid) { [weak self] data, error in
-                guard let strongSelf = self else { return }
-                guard let responseData = data else { return }
-                
-                do {
-                    let decodedResponse = try JSONDecoder().decode(SignatureResponse.self, from: responseData)
-                    guard let signatureError = decodedResponse.payload.error else {
-                        strongSelf.signatureImage = nil
-                        completion(decodedResponse, nil)
-                        return
-                    }
-                    completion(decodedResponse, .init(type: .httpError, code: signatureError.code, message: signatureError.message))
-                // error call delegate
-                } catch let jsonDecodingError {
-                    completion(nil, ClearentError(type: .httpError, code: ClearentConstants.Localized.Error.parseHttpResponseErrorTitle, message: ClearentConstants.Localized.Error.parseHttpResponseErrorMessage.localized))
-                    print(jsonDecodingError)
+            
+            do {
+                let decodedResponse = try JSONDecoder().decode(SignatureResponse.self, from: responseData)
+                guard let signatureError = decodedResponse.payload.error else {
+                    self?.signatureImage = nil
+                    completion(decodedResponse, nil)
+                    return
                 }
+                completion(decodedResponse, .init(type: .httpError, code: signatureError.code, message: signatureError.message))
+                // error call delegate
+            } catch let jsonDecodingError {
+                completion(nil,.init(type: .httpError, code: ClearentConstants.Localized.Error.parseHttpResponseErrorTitle, message: ClearentConstants.Localized.Error.parseHttpResponseErrorMessage.localized))
+                print(jsonDecodingError)
             }
         }
+        
     }
     
     func sendReceiptRequest(emailAddress: String, completion: @escaping (ReceiptResponse?, ClearentError?) -> Void) {
-        if let id = lastTransactionID, let tid = Int(id) {
-            httpClient.sendReceipt(emailAddress: emailAddress, transactionID: tid) { data, error in
-                guard let responseData = data else { return }
-                
-                do {
-                    let decodedResponse = try JSONDecoder().decode(ReceiptResponse.self, from: responseData)
-                    guard let receiptError = decodedResponse.payload.error else {
-                        completion(decodedResponse, nil)
-                        return
-                    }
-                    completion(decodedResponse, .init(type: .httpError, code: receiptError.code, message: receiptError.message))
-                // error call delegate
-                } catch let jsonDecodingError {
-                    completion(nil, ClearentError(type: .httpError, code: ClearentConstants.Localized.Error.parseHttpResponseErrorTitle, message: ClearentConstants.Localized.Error.parseHttpResponseErrorMessage.localized))
-                    print(jsonDecodingError)
+        guard let id = lastTransactionID, let tid = Int(id) else {
+            completion(nil, .init(type: .missingData))
+            return
+        }
+        httpClient.sendReceipt(emailAddress: emailAddress, transactionID: tid) { data, error in
+            guard let responseData = data else { return }
+            
+            do {
+                let decodedResponse = try JSONDecoder().decode(ReceiptResponse.self, from: responseData)
+                guard let receiptError = decodedResponse.payload.error else {
+                    completion(decodedResponse, nil)
+                    return
                 }
+                completion(decodedResponse, .init(type: .httpError, code: receiptError.code, message: receiptError.message))
+                // error call delegate
+            } catch let jsonDecodingError {
+                completion(nil, .init(type: .httpError, code: ClearentConstants.Localized.Error.parseHttpResponseErrorTitle, message: ClearentConstants.Localized.Error.parseHttpResponseErrorMessage.localized))
+                print(jsonDecodingError)
             }
         }
+        
     }
     
     func fetchTerminalSetting(completion: @escaping () -> Void) {
         httpClient.terminalSettings() { data, error in
             DispatchQueue.main.async {
                 do {
-                    guard let data = data else {
-                        completion()
-                        return
+                    if let data = data {
+                        let decodedResponse = try JSONDecoder().decode(TerminalSettingsResponse.self, from: data)
+                        ClearentWrapperDefaults.terminalSettings = decodedResponse.payload.terminalSettings
                     }
-                    
-                    let decodedResponse = try JSONDecoder().decode(TerminalSettingsEntity.self, from: data)
-                    ClearentWrapperDefaults.terminalSettings = decodedResponse.payload.terminalSettings
                 } catch let jsonDecodingError {
                     print(jsonDecodingError)
                 }
@@ -240,26 +256,27 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
     }
     
     // Fetches publicKey if it was not passed to the initialization of the SDK
-    func fetchHppSetting(completion: @escaping () -> Void) {
+    func fetchHppSetting(completion: @escaping (ClearentError?) -> Void) {
         guard ClearentWrapper.configuration.publicKey == nil else {
-            completion()
+            completion(nil)
             return
         }
         httpClient.hppSettings() { [weak self] data, error in
             DispatchQueue.main.async {
                 do {
                     guard let data = data else {
-                        completion()
+                        completion(ClearentError(type: .httpError))
                         return
                     }
                     
-                    let decodedResponse = try JSONDecoder().decode(HppSettingsEntity.self, from: data)
+                    let decodedResponse = try JSONDecoder().decode(HppSettingsResponse.self, from: data)
                     self?.clearentVP3300?.setPublicKey(decodedResponse.payload.hppSettings.hppPublicKey)
                     self?.clearentManualEntry = ClearentManualEntry(self?.clearentManualEntryDelegate, clearentBaseUrl: self?.baseURL, publicKey: decodedResponse.payload.hppSettings.hppPublicKey)
+                    completion(nil)
                 } catch let jsonDecodingError {
+                    completion(ClearentError(type: .httpError, code: ClearentConstants.Localized.Error.parseHttpResponseErrorTitle, message: ClearentConstants.Localized.Error.parseHttpResponseErrorMessage.localized))
                     print(jsonDecodingError)
                 }
-                completion()
             }
         }
     }
