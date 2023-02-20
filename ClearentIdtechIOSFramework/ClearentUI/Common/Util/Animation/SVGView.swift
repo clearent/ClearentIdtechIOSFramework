@@ -9,10 +9,14 @@
 import WebKit
 
 class SVGView: UIView {
+    
+    // MARK: - Init
 
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
+    
+    // MARK: - Internal
     
     func setupAnimation(name: String) {
         guard let loader = SVGLoader(animationName: name, bundle: ClearentConstants.bundle) else {

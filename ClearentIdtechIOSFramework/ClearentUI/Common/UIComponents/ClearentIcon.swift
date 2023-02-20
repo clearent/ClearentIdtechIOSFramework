@@ -7,6 +7,9 @@
 //
 
 class ClearentIcon: UIView, ClearentMarginable {
+    
+    // MARK: - Properties
+    
     public var viewType: UIView.Type { type(of: self) }
     
     private var bottomConstraint: NSLayoutConstraint?
@@ -22,6 +25,15 @@ class ClearentIcon: UIView, ClearentMarginable {
         ]
     }
     
+    var iconName: String? {
+        didSet {
+            guard let iconName = iconName else { return }
+            imageView.image = UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil)
+        }
+    }
+    
+    // MARK: - Init
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
@@ -30,27 +42,26 @@ class ClearentIcon: UIView, ClearentMarginable {
         super.init(coder: coder)
     }
     
-    func setBottomMargin(margin: BottomMargin) {
-        bottomConstraint?.constant = -margin.constant
+    convenience init(iconName: String) {
+        self.init()
+        configure()
+        imageView.image = UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil)
     }
+    
+    // MARK: - Lifecycle
     
     public override func awakeFromNib() {
         super.awakeFromNib()
         configure()
     }
     
-    var iconName: String? {
-        didSet {
-            guard let iconName = iconName else { return }
-            imageView.image = UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil)
-        }
-    }
+    // MARK: - Internal
     
-    convenience init(iconName: String) {
-        self.init()
-        configure()
-        imageView.image = UIImage(named: iconName, in: ClearentConstants.bundle, compatibleWith: nil)
+    func setBottomMargin(margin: BottomMargin) {
+        bottomConstraint?.constant = -margin.constant
     }
+
+    // MARK: - Private
     
     private func configure() {
         addSubview(imageView)

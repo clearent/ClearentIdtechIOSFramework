@@ -11,6 +11,9 @@ protocol ClearentSettingsPresenterView: AnyObject {
     func updateOfflineStatusView(inProgress: Bool)
     func presentReportScreen()
     func displayNoInternetAlert()
+    func displayErrorAlert()
+    func displayMerchantAndTerminalInfo(merchant: String, terminal: String, action: UIAlertAction)
+    func displayNoMerchantAndTerminal()
 }
 
 protocol ClearentSettingsPresenterProtocol {
@@ -25,6 +28,7 @@ protocol ClearentSettingsPresenterProtocol {
 }
 
 class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
+    
     // MARK: - Properties
 
     private weak var settingsPresenterView: ClearentSettingsPresenterView?
@@ -39,6 +43,8 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
     init(settingsPresenterView: ClearentSettingsPresenterView) {
         self.settingsPresenterView = settingsPresenterView
     }
+    
+    // MARK: - Internal
     
     func updateOfflineStatus() {
         guard let offlineManager = ClearentWrapper.shared.retrieveOfflineManager() else {
@@ -91,12 +97,45 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
         offlineStatusDescriptionColor = ClearentUIBrandConfigurator.shared.colorPalette.settingOfflineStatusLabel
         offlineStatusButtonAction = { [weak self] in
             if ClearentWrapper.shared.isInternetOn {
-                self?.settingsPresenterView?.updateOfflineStatusView(inProgress: true)
-                ClearentWrapper.shared.processOfflineTransactions() {
-                    self?.updateOfflineStatus()
+                if (ClearentWrapper.shared.hasWebAuth()) {
+                    self?.processOfflineTransactionsWithWebAuth()
+                } else {
+                    self?.settingsPresenterView?.updateOfflineStatusView(inProgress: true)
+                    ClearentWrapper.shared.processOfflineTransactions() { error in
+                        if error == nil {
+                            self?.updateOfflineStatus()
+                        } else {
+                            self?.settingsPresenterView?.displayErrorAlert()
+                        }
+                    }
                 }
             } else {
                 self?.settingsPresenterView?.displayNoInternetAlert()
+            }
+        }
+    }
+    
+    
+    private func processOfflineTransactionsWithWebAuth() {
+        if let hook = ClearentWrapper.configuration.provideAuthAndMerchantTerminalDetails {
+            let result = hook()
+            if let merchantName = result.0, let terminalName = result.1 , let webAuth = result.2 {
+                ClearentWrapper.shared.updateWebAuth(with: webAuth)
+                
+                let action = UIAlertAction(title: ClearentConstants.Localized.OfflineMode.offlineProcessInfoConfirmationAlertOK, style: UIAlertAction.Style.default, handler: {_ in
+                    self.settingsPresenterView?.updateOfflineStatusView(inProgress: true)
+                    ClearentWrapper.shared.processOfflineTransactions() { [weak self] error in
+                           if error == nil {
+                               self?.updateOfflineStatus()
+                           } else {
+                               self?.settingsPresenterView?.displayErrorAlert()
+                           }
+                    }
+                })
+                
+                self.settingsPresenterView?.displayMerchantAndTerminalInfo(merchant: merchantName, terminal: terminalName, action: action)
+            } else {
+                self.settingsPresenterView?.displayNoMerchantAndTerminal() 
             }
         }
     }

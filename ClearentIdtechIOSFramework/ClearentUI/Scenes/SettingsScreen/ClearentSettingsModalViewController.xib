@@ -17,6 +17,7 @@
                 <outlet property="enableEmailReceipt" destination="9l1-Zq-ed1" id="qcT-e6-6RF"/>
                 <outlet property="enableOfflineMode" destination="YvF-Jp-B5R" id="oBh-5X-T3u"/>
                 <outlet property="enablePromptMode" destination="SF4-Ln-73M" id="0fC-g6-3sk"/>
+                <outlet property="offlineModeSectionTopEmptySpace" destination="RUJ-vz-94S" id="YC3-Lq-5TV"/>
                 <outlet property="offlineQuestionCancelBtn" destination="RF7-Mm-SVi" id="40V-zj-Ozk"/>
                 <outlet property="offlineQuestionConfirmBtn" destination="uOQ-9Z-iPW" id="Pxo-W7-nfV"/>
                 <outlet property="offlineQuestionFirstSubtitle" destination="bHp-S0-UJa" id="0XJ-iv-3XR"/>

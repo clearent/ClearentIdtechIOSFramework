@@ -8,6 +8,7 @@
 
 @IBDesignable
 public class ClearentTitleLabel: ClearentMarginableView {
+    
     // MARK: - Properties
 
     @IBOutlet var label: UILabel!
@@ -41,11 +42,15 @@ public class ClearentTitleLabel: ClearentMarginableView {
         }
     }
 
+    // MARK: - Init
+    
     convenience init(text: String?) {
         self.init()
         label.text = text
     }
 
+    // MARK: - Public
+    
     public override func configure() {
         label.textAlignment = .center
         font = ClearentUIBrandConfigurator.shared.fonts.modalTitleFont

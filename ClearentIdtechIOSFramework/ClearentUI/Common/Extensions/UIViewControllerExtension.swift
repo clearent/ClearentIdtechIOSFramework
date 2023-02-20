@@ -43,6 +43,15 @@ public extension UIViewController {
 // MARK: - UIViewController+Alert
 
 public extension UIViewController {
+    
+    func showOfflineProcessConfirmation(title: String?, message: String?, cancelTitle: String?, action: UIAlertAction) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let cancel = UIAlertAction(title: cancelTitle, style: .cancel) { _ in self.dismiss(animated: true) }
+        alertController.addAction(cancel)
+        alertController.addAction(action)
+        present(alertController, animated: true, completion: nil)
+    }
+    
     func showCancelAlert(title: String?, message: String?, cancelTitle: String?, cancelAction: (() -> Void)? = nil) {
         let cancel = UIAlertAction(title: cancelTitle, style: .cancel) { _ in cancelAction?() }
         showAlert(title: title, message: message, action: cancel)

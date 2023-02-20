@@ -15,17 +15,24 @@ import Foundation
  */
 
 class KeyChainStorage: TransactionStorageProtocol {
+    
+    // MARK: - Properties
+    
     var serviceName: String
     var account: String
     var encryptionKey: SymmetricKey
     let helper = KeychainHelper.standard
 
+    // MARK: - Init
+    
     init(serviceName: String, account: String, encryptionKey: SymmetricKey) {
         self.serviceName = serviceName
         self.account = account
         self.encryptionKey = encryptionKey
     }
 
+    // MARK: - Internal
+    
     func save(transaction: OfflineTransaction) -> TransactionStoreStatus {
         let oftr = transaction.encode()
         guard let encodedTransaction = oftr else { return .parsingError }
@@ -110,6 +117,8 @@ class KeyChainStorage: TransactionStorageProtocol {
         helper.delete(service: serviceName, account: account)
     }
 
+    // MARK: - Private
+    
     private func encryptAndSaveTransactions(transactions: [OfflineTransaction]) -> TransactionStoreStatus {
         let currentSavedItems = NSMutableArray()
         

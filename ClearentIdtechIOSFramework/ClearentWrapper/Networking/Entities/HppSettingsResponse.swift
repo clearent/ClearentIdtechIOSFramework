@@ -6,7 +6,7 @@
 //  Copyright © 2023 Clearent, L.L.C. All rights reserved.
 //
 
-struct HppSettingsEntity: Codable {
+struct HppSettingsResponse: Codable {
     var payload: HppPayloadSettings
 }
 

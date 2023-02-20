@@ -9,11 +9,15 @@
 import UIKit
 
 class ClearentLabelSwitch: ClearentMarginableView {
+    
+    // MARK: - IBOutlets
+    
     @IBOutlet var switchView: UISwitch!
     @IBOutlet var titleLabel: UILabel!
     @IBOutlet var descriptionLabel: UILabel!
-    
     @IBOutlet weak var separatorView: UIView!
+    
+    // MARK: - Properties
     
     var valueChangedAction: ((_ isOn: Bool) -> Void)?
     
@@ -72,6 +76,8 @@ class ClearentLabelSwitch: ClearentMarginableView {
         set { switchView.isOn = newValue }
     }
 
+    // MARK: - Configure
+    
     override func configure() {
         super.configure()
         titleFont = ClearentUIBrandConfigurator.shared.fonts.detailScreenItemTitleFont
@@ -83,6 +89,8 @@ class ClearentLabelSwitch: ClearentMarginableView {
         descriptionTextColor = ClearentConstants.Color.base02
         separatorView.backgroundColor = ClearentConstants.Color.backgroundSecondary02
     }
+    
+    // MARK: - Actions
     
     @IBAction func switchValueDidChange(_ sender: UISwitch) {
         valueChangedAction?(sender.isOn)

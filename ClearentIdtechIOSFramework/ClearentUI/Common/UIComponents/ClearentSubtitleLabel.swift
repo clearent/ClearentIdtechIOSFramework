@@ -7,6 +7,9 @@
 //
 
 public class ClearentSubtitleLabel: ClearentTitleLabel {
+    
+    // MARK: - Properties
+    
     public override var nibName: String? {
         String(describing: ClearentTitleLabel.self)
     }
@@ -24,6 +27,8 @@ public class ClearentSubtitleLabel: ClearentTitleLabel {
         ]
     }
 
+    // MARK: - Public
+    
     public override func configure() {
         label.textAlignment = .center
         font = ClearentUIBrandConfigurator.shared.fonts.modalSubtitleFont

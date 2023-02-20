@@ -13,6 +13,7 @@ protocol ReaderRepositoryProtocol {
     var isBluetoothPermissionGranted: Bool { get }
     var isBluetoothOn: Bool { get }
     var isInternetOn: Bool { get set }
+    
     func startPairing(reconnectIfPossible: Bool)
     func connectTo(reader: ReaderInfo)
     func startTransaction(payment: ClearentPayment?)
@@ -34,6 +35,9 @@ protocol ReaderRepositoryProtocol {
 }
 
 class ReaderRepository: ReaderRepositoryProtocol {
+    
+    // MARK: - Properties
+    
     var delegate: ClearentWrapperProtocol?
     var isInternetOn = false
     var isBluetoothOn = false

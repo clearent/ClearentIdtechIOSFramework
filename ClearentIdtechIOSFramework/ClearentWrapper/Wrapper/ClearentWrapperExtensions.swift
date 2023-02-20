@@ -12,7 +12,7 @@ import CocoaLumberjack
 
 extension ClearentWrapper {
     
-    // MARK - Public Logger related
+    // MARK: - Public Logger related
     
     public func retrieveLoggFileContents() -> String {
         var logs = ""
@@ -41,7 +41,8 @@ extension ClearentWrapper {
             }
         }
     }
-
+    
+    // MARK: - Internal
     
     internal func readEnhancedMessages() {
         guard let path = Bundle.main.path(forResource: "ClearentIdtechMessages", ofType: "bundle") else {return}
@@ -50,8 +51,6 @@ extension ClearentWrapper {
                    self.enhancedMessagesDict = dict as? [String:String]
         }
     }
-    
-    // MARK - Private Logger related
     
     internal func createLogFile() {
         DDLog.allLoggers.forEach { logger in
@@ -67,6 +66,8 @@ extension ClearentWrapper {
             }
         }
     }
+    
+    // MARK: - Private
     
     private func fetchLoggerFileInfo() -> DDLogFileInfo? {
         var resultFileInfo : DDLogFileInfo? = nil

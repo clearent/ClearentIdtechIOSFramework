@@ -8,10 +8,14 @@
 
 class ClearentLabelWithButton: ClearentMarginableView {
 
+    // MARK: - IBOutlets
+    
     @IBOutlet weak var label: UILabel!
     @IBOutlet public weak var button: ClearentPrimaryButton!
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
 
+    // MARK: - Properties
+    
     override var margins: [BottomMargin] {
         [
             RelativeBottomMargin(constant: 32, relatedViewType: ClearentPrimaryButton.self)
@@ -47,6 +51,8 @@ class ClearentLabelWithButton: ClearentMarginableView {
             button.action = buttonAction
         }
     }
+    
+    // MARK: - Internal
     
     override func configure() {
         descriptionFont = ClearentUIBrandConfigurator.shared.fonts.settingsOfflineModeProcessLabel

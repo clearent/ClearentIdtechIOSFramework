@@ -17,12 +17,16 @@ class ClearentReadersTableViewCell: UITableViewCell {
     static let identifier = "ClearentReadersTableViewCellIdentifier"
     static let nib = "ClearentReadersTableViewCell"
 
+    // MARK: - IBOutlets
+    
     @IBOutlet weak var stackView: UIStackView!
     @IBOutlet weak var readerStatusIcon: UIView!
     @IBOutlet weak var readerNameLabel: UILabel!
     @IBOutlet weak var detailsButton: UIButton!
     @IBOutlet weak var roundedCornersView: UIView!
 
+    // MARK: - Properties
+    
     var detailsAction: (() -> Void)?
 
     // MARK: Lifecycle
@@ -84,6 +88,8 @@ class ClearentReadersTableViewCell: UITableViewCell {
         detailsButton.setTitle("", for: .normal)
     }
 
+    // MARK: - Actions
+    
     @IBAction func detailsButtonWasPressed(_: Any) {
         detailsAction?()
     }

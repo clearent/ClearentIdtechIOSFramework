@@ -10,17 +10,22 @@ import Foundation
 
 class ClearentAnimationWithSubtitle: ClearentMarginableView {
 
+    // MARK: - IBOutlets
+    
     @IBOutlet weak var animatedView: SVGView!
     @IBOutlet weak var subtitle: ClearentSubtitleLabel!
     
-    private var timer: Timer?
+    // MARK: - Properties
     
+    private var timer: Timer?
     var bottomConstraint: NSLayoutConstraint?
     
     override var margins: [BottomMargin] {
         [RelativeBottomMargin(constant: 24, relatedViewType: ClearentPrimaryButton.self)]
     }
 
+    // MARK: - Init
+    
     convenience init(animationName: String, subtitles: [String]?) {
         self.init()
         subtitle.title = subtitles?[0]
@@ -33,6 +38,8 @@ class ClearentAnimationWithSubtitle: ClearentMarginableView {
         }
     }
 
+    // MARK: - Deinit
+    
     deinit {
         timer?.invalidate()
         timer = nil

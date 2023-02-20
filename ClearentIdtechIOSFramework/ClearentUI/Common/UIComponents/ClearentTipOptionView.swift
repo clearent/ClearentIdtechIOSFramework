@@ -8,14 +8,15 @@
 
 class ClearentTipOptionView: ClearentMarginableView {
 
-    // MARK: - Properties
+    // MARK: - IBOutlets
     
     @IBOutlet weak var checkView: UIImageView!
     @IBOutlet weak var percentageLabel: UILabel!
     @IBOutlet weak var customAmountTextField: UITextField!
     
-    var tipSelectedAction: ((_ tipValue: Double) -> Void)?
+    // MARK: - Properties
     
+    var tipSelectedAction: ((_ tipValue: Double) -> Void)?
     private var tipValue: Double = 0
     
     override var margins: [BottomMargin] {
@@ -31,6 +32,8 @@ class ClearentTipOptionView: ClearentMarginableView {
         }
     }
     
+    // MARK: - Init
+    
     convenience init(percentageTextAndValue: String, tipValue: Double, isCustomTip: Bool = false) {
         self.init()
         self.tipValue = tipValue
@@ -38,10 +41,14 @@ class ClearentTipOptionView: ClearentMarginableView {
         setTextField(isCustomTip: isCustomTip)
     }
     
+    // MARK: - Internal
+    
     override func configure() {
         setCheckView()
         setLabels()
     }
+    
+    // MARK: - Actions
     
     @IBAction func tipWasPressed() {
         guard let superview = superview else { return }
@@ -58,7 +65,6 @@ class ClearentTipOptionView: ClearentMarginableView {
     }
     
     // MARK: - Private
-    
     
     private func setTextField(isCustomTip: Bool) {
         customAmountTextField.isHidden = !isCustomTip

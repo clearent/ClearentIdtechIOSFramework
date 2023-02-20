@@ -27,6 +27,18 @@
 		0108460E292295E700BFE00D /* ClearentOfflineResultTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01084608292295E700BFE00D /* ClearentOfflineResultTableViewCell.xib */; };
 		0108460F292295E700BFE00D /* ClearentOfflineModeReportViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01084609292295E700BFE00D /* ClearentOfflineModeReportViewController.xib */; };
 		0111763D298A84110004FDCE /* ClearentAbstractViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0111763C298A84110004FDCE /* ClearentAbstractViewController.swift */; };
+		0113B04F29953168009BDF12 /* ClearentReaderDetailsViewControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0113B03929953168009BDF12 /* ClearentReaderDetailsViewControllerTests.swift */; };
+		0113B05029953168009BDF12 /* ReaderDetailsPresenterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0113B03A29953168009BDF12 /* ReaderDetailsPresenterTests.swift */; };
+		0113B05129953168009BDF12 /* ClearentFieldValidationHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0113B03D29953168009BDF12 /* ClearentFieldValidationHelperTests.swift */; };
+		0113B05229953168009BDF12 /* ClearentMoneyFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0113B03E29953168009BDF12 /* ClearentMoneyFormatterTests.swift */; };
+		0113B05329953168009BDF12 /* ClearentPairingReaderItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0113B04029953168009BDF12 /* ClearentPairingReaderItemTests.swift */; };
+		0113B05429953168009BDF12 /* ClearentMarginableExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0113B04229953168009BDF12 /* ClearentMarginableExtension.swift */; };
+		0113B05629953168009BDF12 /* HttpClientMock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0113B04629953168009BDF12 /* HttpClientMock.swift */; };
+		0113B05729953168009BDF12 /* OfflineModeManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0113B04929953168009BDF12 /* OfflineModeManagerTests.swift */; };
+		0113B05829953168009BDF12 /* ClearentWrapperDefaultsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0113B04B29953168009BDF12 /* ClearentWrapperDefaultsTests.swift */; };
+		0113B05929953168009BDF12 /* ClearentTransactionRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0113B04C29953168009BDF12 /* ClearentTransactionRepositoryTests.swift */; };
+		0113B05A29953168009BDF12 /* ReaderInfoTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0113B04D29953168009BDF12 /* ReaderInfoTests.swift */; };
+		0113B05B29953168009BDF12 /* ClearentTransactionToken.json in Resources */ = {isa = PBXBuildFile; fileRef = 0113B04E29953168009BDF12 /* ClearentTransactionToken.json */; };
 		0128C87029019C3C0050EB97 /* ClearentReaderRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0128C86F29019C3C0050EB97 /* ClearentReaderRepository.swift */; };
 		0128C8742902A97B0050EB97 /* ClearentTransactionRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0128C8732902A97B0050EB97 /* ClearentTransactionRepository.swift */; };
 		0132BFBD296EDC0200155947 /* ClearentLabelWithButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0132BFBC296EDC0200155947 /* ClearentLabelWithButton.xib */; };
@@ -123,12 +135,13 @@
 		01442D5D28B3D84D006DD15C /* Entities.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442D5428B3D84D006DD15C /* Entities.swift */; };
 		01442D5E28B3D84D006DD15C /* SignatureEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442D5528B3D84D006DD15C /* SignatureEntity.swift */; };
 		01442D5F28B3D84D006DD15C /* SaleEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442D5628B3D84D006DD15C /* SaleEntity.swift */; };
-		01442D6028B3D84D006DD15C /* TerminalSettingsEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442D5728B3D84D006DD15C /* TerminalSettingsEntity.swift */; };
+		01442D6028B3D84D006DD15C /* TerminalSettingsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01442D5728B3D84D006DD15C /* TerminalSettingsResponse.swift */; };
 		014AA0ED291531AA001918F5 /* ClearentSettingsModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014AA0EC291531AA001918F5 /* ClearentSettingsModalViewController.swift */; };
 		014AA0EF291531BB001918F5 /* ClearentSettingsModalPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014AA0EE291531BB001918F5 /* ClearentSettingsModalPresenter.swift */; };
 		014AA0FE2917C417001918F5 /* ClearentProcessingModalViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 014AA0FD2917C417001918F5 /* ClearentProcessingModalViewController.xib */; };
 		014AA1032917C75F001918F5 /* ClearentSettingsModalViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 014AA1022917C75F001918F5 /* ClearentSettingsModalViewController.xib */; };
 		014AA1052917FBF6001918F5 /* ClearentLabelWithButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 014AA1042917FBF6001918F5 /* ClearentLabelWithButton.swift */; };
+		014B6FEB299A261900D9372D /* ClearentOfflineManagerExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019E3C45299554E3008CF419 /* ClearentOfflineManagerExtension.swift */; };
 		016BFEA02906E987006F26B6 /* ClearentWrapperConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016BFE9F2906E987006F26B6 /* ClearentWrapperConfiguration.swift */; };
 		016BFEA22906E99E006F26B6 /* ClearentUIManagerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 016BFEA12906E99E006F26B6 /* ClearentUIManagerConfiguration.swift */; };
 		0172018C28F4395A0084B80B /* AsyncOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0172018B28F4395A0084B80B /* AsyncOperation.swift */; };
@@ -138,10 +151,19 @@
 		01754CB128F7F90C009B2ED9 /* OfflineModeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01754CAE28F7F90C009B2ED9 /* OfflineModeManager.swift */; };
 		01754CB228F7F90C009B2ED9 /* OfflineModeModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01754CAF28F7F90C009B2ED9 /* OfflineModeModels.swift */; };
 		01754CB328F7F90C009B2ED9 /* OfflineModeKeychainStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01754CB028F7F90C009B2ED9 /* OfflineModeKeychainStorage.swift */; };
-		0184D6B72992657A00109CB2 /* HppSettingsEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0184D6B62992657A00109CB2 /* HppSettingsEntity.swift */; };
+		0184D6B72992657A00109CB2 /* HppSettingsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0184D6B62992657A00109CB2 /* HppSettingsResponse.swift */; };
+		018679AE299A6A0F00B87870 /* ClearentWrapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018679AD299A6A0F00B87870 /* ClearentWrapperTests.swift */; };
+		018691B4299A29DF00DE2E90 /* DateExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018691B3299A29DF00DE2E90 /* DateExtensionTests.swift */; };
+		018691B6299A3EAF00DE2E90 /* StringExtensionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 018691B5299A3EAF00DE2E90 /* StringExtensionTests.swift */; };
 		0198BA0329672AD500C8D3C3 /* ReceiptEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0198BA0229672AD500C8D3C3 /* ReceiptEntity.swift */; };
 		0198BA092968361500C8D3C3 /* ClearentTextFieldAndButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0198BA082968361500C8D3C3 /* ClearentTextFieldAndButton.swift */; };
 		0198BA0B2968362100C8D3C3 /* ClearentTextFieldAndButton.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0198BA0A2968362100C8D3C3 /* ClearentTextFieldAndButton.xib */; };
+		019E3C3229954A96008CF419 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019E3C3129954A96008CF419 /* AppDelegate.swift */; };
+		019E3C3429954A96008CF419 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019E3C3329954A96008CF419 /* SceneDelegate.swift */; };
+		019E3C3629954A96008CF419 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 019E3C3529954A96008CF419 /* ViewController.swift */; };
+		019E3C3929954A96008CF419 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 019E3C3729954A96008CF419 /* Main.storyboard */; };
+		019E3C3B29954A98008CF419 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 019E3C3A29954A98008CF419 /* Assets.xcassets */; };
+		019E3C3E29954A98008CF419 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 019E3C3C29954A98008CF419 /* LaunchScreen.storyboard */; };
 		01BFBC422934A8E700B694F6 /* UIImageExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BFBC412934A8E700B694F6 /* UIImageExtension.swift */; };
 		01BFBC50293A0C0E00B694F6 /* ClearentServiceFeeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01BFBC4F293A0C0E00B694F6 /* ClearentServiceFeeView.swift */; };
 		01BFBC52293A0C1900B694F6 /* ClearentServiceFeeView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 01BFBC51293A0C1900B694F6 /* ClearentServiceFeeView.xib */; };
@@ -206,6 +228,8 @@
 		CCBAEE50291BE05B004A22D9 /* ClearentIconAndLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCBAEE4F291BE05B004A22D9 /* ClearentIconAndLabel.swift */; };
 		CCBAEE52291BE069004A22D9 /* ClearentIconAndLabel.xib in Resources */ = {isa = PBXBuildFile; fileRef = CCBAEE51291BE069004A22D9 /* ClearentIconAndLabel.xib */; };
 		CCD2A6C9299128DB00B11EAD /* libOCMock.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCD2A6C8299128DB00B11EAD /* libOCMock.xcframework */; };
+		CCEC76B42992738C001FF4A4 /* OfflinePromptViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCEC76B22992738C001FF4A4 /* OfflinePromptViewController.swift */; };
+		CCEC76B52992738C001FF4A4 /* OfflinePromptViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CCEC76B32992738C001FF4A4 /* OfflinePromptViewController.xib */; };
 		E702E5702364835B0032ED8D /* ClearentVP3300Config.m in Sources */ = {isa = PBXBuildFile; fileRef = E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */; };
 		E702E572236488630032ED8D /* ClearentPayment.h in Headers */ = {isa = PBXBuildFile; fileRef = E746CB5F235896EC00C41DF1 /* ClearentPayment.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		E702E5732364886C0032ED8D /* ClearentVP3300Config.h in Headers */ = {isa = PBXBuildFile; fileRef = E702E571236485280032ED8D /* ClearentVP3300Config.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -254,6 +278,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		019E3C4329954AB1008CF419 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = E76504EB1FFC306100B345F6 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 019E3C2E29954A95008CF419;
+			remoteInfo = "ClearentIdtechIOSFramework-ExampleApp";
+		};
 		E7CA495920E3C2230090CFFC /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = E76504EB1FFC306100B345F6 /* Project object */;
@@ -270,6 +301,18 @@
 		01084608292295E700BFE00D /* ClearentOfflineResultTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ClearentOfflineResultTableViewCell.xib; sourceTree = "<group>"; };
 		01084609292295E700BFE00D /* ClearentOfflineModeReportViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ClearentOfflineModeReportViewController.xib; sourceTree = "<group>"; };
 		0111763C298A84110004FDCE /* ClearentAbstractViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentAbstractViewController.swift; sourceTree = "<group>"; };
+		0113B03929953168009BDF12 /* ClearentReaderDetailsViewControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentReaderDetailsViewControllerTests.swift; sourceTree = "<group>"; };
+		0113B03A29953168009BDF12 /* ReaderDetailsPresenterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderDetailsPresenterTests.swift; sourceTree = "<group>"; };
+		0113B03D29953168009BDF12 /* ClearentFieldValidationHelperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentFieldValidationHelperTests.swift; sourceTree = "<group>"; };
+		0113B03E29953168009BDF12 /* ClearentMoneyFormatterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentMoneyFormatterTests.swift; sourceTree = "<group>"; };
+		0113B04029953168009BDF12 /* ClearentPairingReaderItemTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentPairingReaderItemTests.swift; sourceTree = "<group>"; };
+		0113B04229953168009BDF12 /* ClearentMarginableExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentMarginableExtension.swift; sourceTree = "<group>"; };
+		0113B04629953168009BDF12 /* HttpClientMock.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpClientMock.swift; sourceTree = "<group>"; };
+		0113B04929953168009BDF12 /* OfflineModeManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OfflineModeManagerTests.swift; sourceTree = "<group>"; };
+		0113B04B29953168009BDF12 /* ClearentWrapperDefaultsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentWrapperDefaultsTests.swift; sourceTree = "<group>"; };
+		0113B04C29953168009BDF12 /* ClearentTransactionRepositoryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClearentTransactionRepositoryTests.swift; sourceTree = "<group>"; };
+		0113B04D29953168009BDF12 /* ReaderInfoTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReaderInfoTests.swift; sourceTree = "<group>"; };
+		0113B04E29953168009BDF12 /* ClearentTransactionToken.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = ClearentTransactionToken.json; sourceTree = "<group>"; };
 		0128C86F29019C3C0050EB97 /* ClearentReaderRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentReaderRepository.swift; sourceTree = "<group>"; };
 		0128C8732902A97B0050EB97 /* ClearentTransactionRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentTransactionRepository.swift; sourceTree = "<group>"; };
 		0132BFBC296EDC0200155947 /* ClearentLabelWithButton.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ClearentLabelWithButton.xib; sourceTree = "<group>"; };
@@ -366,7 +409,7 @@
 		01442D5428B3D84D006DD15C /* Entities.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Entities.swift; sourceTree = "<group>"; };
 		01442D5528B3D84D006DD15C /* SignatureEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignatureEntity.swift; sourceTree = "<group>"; };
 		01442D5628B3D84D006DD15C /* SaleEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SaleEntity.swift; sourceTree = "<group>"; };
-		01442D5728B3D84D006DD15C /* TerminalSettingsEntity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TerminalSettingsEntity.swift; sourceTree = "<group>"; };
+		01442D5728B3D84D006DD15C /* TerminalSettingsResponse.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TerminalSettingsResponse.swift; sourceTree = "<group>"; };
 		014AA0EC291531AA001918F5 /* ClearentSettingsModalViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentSettingsModalViewController.swift; sourceTree = "<group>"; };
 		014AA0EE291531BB001918F5 /* ClearentSettingsModalPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentSettingsModalPresenter.swift; sourceTree = "<group>"; };
 		014AA0FD2917C417001918F5 /* ClearentProcessingModalViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ClearentProcessingModalViewController.xib; sourceTree = "<group>"; };
@@ -381,10 +424,22 @@
 		01754CAE28F7F90C009B2ED9 /* OfflineModeManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OfflineModeManager.swift; sourceTree = "<group>"; };
 		01754CAF28F7F90C009B2ED9 /* OfflineModeModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OfflineModeModels.swift; sourceTree = "<group>"; };
 		01754CB028F7F90C009B2ED9 /* OfflineModeKeychainStorage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OfflineModeKeychainStorage.swift; sourceTree = "<group>"; };
-		0184D6B62992657A00109CB2 /* HppSettingsEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HppSettingsEntity.swift; sourceTree = "<group>"; };
+		0184D6B62992657A00109CB2 /* HppSettingsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HppSettingsResponse.swift; sourceTree = "<group>"; };
+		018679AD299A6A0F00B87870 /* ClearentWrapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentWrapperTests.swift; sourceTree = "<group>"; };
+		018691B3299A29DF00DE2E90 /* DateExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtensionTests.swift; sourceTree = "<group>"; };
+		018691B5299A3EAF00DE2E90 /* StringExtensionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringExtensionTests.swift; sourceTree = "<group>"; };
 		0198BA0229672AD500C8D3C3 /* ReceiptEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptEntity.swift; sourceTree = "<group>"; };
 		0198BA082968361500C8D3C3 /* ClearentTextFieldAndButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentTextFieldAndButton.swift; sourceTree = "<group>"; };
 		0198BA0A2968362100C8D3C3 /* ClearentTextFieldAndButton.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentTextFieldAndButton.xib; sourceTree = "<group>"; };
+		019E3C2F29954A95008CF419 /* ClearentIdtechIOSFramework-ExampleApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ClearentIdtechIOSFramework-ExampleApp.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		019E3C3129954A96008CF419 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		019E3C3329954A96008CF419 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
+		019E3C3529954A96008CF419 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		019E3C3829954A96008CF419 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		019E3C3A29954A98008CF419 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		019E3C3D29954A98008CF419 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		019E3C3F29954A98008CF419 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		019E3C45299554E3008CF419 /* ClearentOfflineManagerExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentOfflineManagerExtension.swift; sourceTree = "<group>"; };
 		01BFBC412934A8E700B694F6 /* UIImageExtension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIImageExtension.swift; sourceTree = "<group>"; };
 		01BFBC4F293A0C0E00B694F6 /* ClearentServiceFeeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentServiceFeeView.swift; sourceTree = "<group>"; };
 		01BFBC51293A0C1900B694F6 /* ClearentServiceFeeView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentServiceFeeView.xib; sourceTree = "<group>"; };
@@ -449,6 +504,8 @@
 		CCBAEE4F291BE05B004A22D9 /* ClearentIconAndLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClearentIconAndLabel.swift; sourceTree = "<group>"; };
 		CCBAEE51291BE069004A22D9 /* ClearentIconAndLabel.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ClearentIconAndLabel.xib; sourceTree = "<group>"; };
 		CCD2A6C8299128DB00B11EAD /* libOCMock.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libOCMock.xcframework; path = test/libOCMock.xcframework; sourceTree = "<group>"; };
+		CCEC76B22992738C001FF4A4 /* OfflinePromptViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OfflinePromptViewController.swift; sourceTree = "<group>"; };
+		CCEC76B32992738C001FF4A4 /* OfflinePromptViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OfflinePromptViewController.xib; sourceTree = "<group>"; };
 		E702E56F2364835B0032ED8D /* ClearentVP3300Config.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ClearentVP3300Config.m; sourceTree = "<group>"; };
 		E702E571236485280032ED8D /* ClearentVP3300Config.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentVP3300Config.h; sourceTree = "<group>"; };
 		E726A0362258B5A400F3E8B7 /* ClearentCache.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ClearentCache.h; sourceTree = "<group>"; };
@@ -523,6 +580,13 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		019E3C2C29954A95008CF419 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E76504F01FFC306100B345F6 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -560,6 +624,106 @@
 				CCA3FFC6292F82290087FAE5 /* ClearentOfflineResultPDFGenerator.swift */,
 			);
 			path = OfflineModeReport;
+			sourceTree = "<group>";
+		};
+		0113B03729953168009BDF12 /* ClearentUI */ = {
+			isa = PBXGroup;
+			children = (
+				0113B03829953168009BDF12 /* ReaderDetails */,
+				0113B03B29953168009BDF12 /* Common */,
+				0113B04129953168009BDF12 /* Helper */,
+			);
+			path = ClearentUI;
+			sourceTree = "<group>";
+		};
+		0113B03829953168009BDF12 /* ReaderDetails */ = {
+			isa = PBXGroup;
+			children = (
+				0113B03929953168009BDF12 /* ClearentReaderDetailsViewControllerTests.swift */,
+				0113B03A29953168009BDF12 /* ReaderDetailsPresenterTests.swift */,
+			);
+			path = ReaderDetails;
+			sourceTree = "<group>";
+		};
+		0113B03B29953168009BDF12 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				0113B03C29953168009BDF12 /* Util */,
+				0113B03F29953168009BDF12 /* UIComponents */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		0113B03C29953168009BDF12 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				0113B03D29953168009BDF12 /* ClearentFieldValidationHelperTests.swift */,
+				0113B03E29953168009BDF12 /* ClearentMoneyFormatterTests.swift */,
+			);
+			path = Util;
+			sourceTree = "<group>";
+		};
+		0113B03F29953168009BDF12 /* UIComponents */ = {
+			isa = PBXGroup;
+			children = (
+				0113B04029953168009BDF12 /* ClearentPairingReaderItemTests.swift */,
+			);
+			path = UIComponents;
+			sourceTree = "<group>";
+		};
+		0113B04129953168009BDF12 /* Helper */ = {
+			isa = PBXGroup;
+			children = (
+				0113B04229953168009BDF12 /* ClearentMarginableExtension.swift */,
+			);
+			path = Helper;
+			sourceTree = "<group>";
+		};
+		0113B04429953168009BDF12 /* ClearentWrapper */ = {
+			isa = PBXGroup;
+			children = (
+				018679AC299A69DF00B87870 /* Wrapper */,
+				018691B1299A29BB00DE2E90 /* Util */,
+				0113B04529953168009BDF12 /* Mocks */,
+				0113B04729953168009BDF12 /* OfflineMode */,
+				0113B04A29953168009BDF12 /* UserDefaults */,
+				0113B04D29953168009BDF12 /* ReaderInfoTests.swift */,
+				0113B04E29953168009BDF12 /* ClearentTransactionToken.json */,
+			);
+			path = ClearentWrapper;
+			sourceTree = "<group>";
+		};
+		0113B04529953168009BDF12 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				0113B04629953168009BDF12 /* HttpClientMock.swift */,
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
+		0113B04729953168009BDF12 /* OfflineMode */ = {
+			isa = PBXGroup;
+			children = (
+				0113B04829953168009BDF12 /* Manager */,
+			);
+			path = OfflineMode;
+			sourceTree = "<group>";
+		};
+		0113B04829953168009BDF12 /* Manager */ = {
+			isa = PBXGroup;
+			children = (
+				019E3C45299554E3008CF419 /* ClearentOfflineManagerExtension.swift */,
+				0113B04929953168009BDF12 /* OfflineModeManagerTests.swift */,
+			);
+			path = Manager;
+			sourceTree = "<group>";
+		};
+		0113B04A29953168009BDF12 /* UserDefaults */ = {
+			isa = PBXGroup;
+			children = (
+				0113B04B29953168009BDF12 /* ClearentWrapperDefaultsTests.swift */,
+			);
+			path = UserDefaults;
 			sourceTree = "<group>";
 		};
 		01442C7828B3D343006DD15C /* BluetoothScanner */ = {
@@ -815,9 +979,9 @@
 				01442D5428B3D84D006DD15C /* Entities.swift */,
 				01442D5528B3D84D006DD15C /* SignatureEntity.swift */,
 				01442D5628B3D84D006DD15C /* SaleEntity.swift */,
-				01442D5728B3D84D006DD15C /* TerminalSettingsEntity.swift */,
+				01442D5728B3D84D006DD15C /* TerminalSettingsResponse.swift */,
 				0198BA0229672AD500C8D3C3 /* ReceiptEntity.swift */,
-				0184D6B62992657A00109CB2 /* HppSettingsEntity.swift */,
+				0184D6B62992657A00109CB2 /* HppSettingsResponse.swift */,
 			);
 			path = Entities;
 			sourceTree = "<group>";
@@ -825,6 +989,7 @@
 		014AA0FF2917C52C001918F5 /* Scenes */ = {
 			isa = PBXGroup;
 			children = (
+				CCEC76B12992734B001FF4A4 /* OfflineModePromptScreen */,
 				01084604292295E700BFE00D /* OfflineModeReport */,
 				01A31742291CE0CD00FB6CB9 /* SettingsScreen */,
 				01442C8328B3D835006DD15C /* ReaderDetails */,
@@ -871,6 +1036,46 @@
 				01442D5328B3D84D006DD15C /* Entities */,
 			);
 			path = Networking;
+			sourceTree = "<group>";
+		};
+		018679AC299A69DF00B87870 /* Wrapper */ = {
+			isa = PBXGroup;
+			children = (
+				0113B04C29953168009BDF12 /* ClearentTransactionRepositoryTests.swift */,
+				018679AD299A6A0F00B87870 /* ClearentWrapperTests.swift */,
+			);
+			path = Wrapper;
+			sourceTree = "<group>";
+		};
+		018691B1299A29BB00DE2E90 /* Util */ = {
+			isa = PBXGroup;
+			children = (
+				018691B2299A29C800DE2E90 /* Extensions */,
+			);
+			path = Util;
+			sourceTree = "<group>";
+		};
+		018691B2299A29C800DE2E90 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				018691B3299A29DF00DE2E90 /* DateExtensionTests.swift */,
+				018691B5299A3EAF00DE2E90 /* StringExtensionTests.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		019E3C3029954A96008CF419 /* ClearentIdtechIOSFramework-ExampleApp */ = {
+			isa = PBXGroup;
+			children = (
+				019E3C3129954A96008CF419 /* AppDelegate.swift */,
+				019E3C3329954A96008CF419 /* SceneDelegate.swift */,
+				019E3C3529954A96008CF419 /* ViewController.swift */,
+				019E3C3729954A96008CF419 /* Main.storyboard */,
+				019E3C3A29954A98008CF419 /* Assets.xcassets */,
+				019E3C3C29954A98008CF419 /* LaunchScreen.storyboard */,
+				019E3C3F29954A98008CF419 /* Info.plist */,
+			);
+			path = "ClearentIdtechIOSFramework-ExampleApp";
 			sourceTree = "<group>";
 		};
 		01A31742291CE0CD00FB6CB9 /* SettingsScreen */ = {
@@ -936,6 +1141,15 @@
 			path = HttpClient;
 			sourceTree = "<group>";
 		};
+		CCEC76B12992734B001FF4A4 /* OfflineModePromptScreen */ = {
+			isa = PBXGroup;
+			children = (
+				CCEC76B22992738C001FF4A4 /* OfflinePromptViewController.swift */,
+				CCEC76B32992738C001FF4A4 /* OfflinePromptViewController.xib */,
+			);
+			path = OfflineModePromptScreen;
+			sourceTree = "<group>";
+		};
 		E728DB4920E686CA004C01E7 /* test */ = {
 			isa = PBXGroup;
 			children = (
@@ -994,6 +1208,7 @@
 				E76504F61FFC306100B345F6 /* ClearentIdtechIOSFramework */,
 				E7CA495420E3C2230090CFFC /* ClearentIdtechIOSFramework-Tests */,
 				E76E42EE21232FB600F83B41 /* ClearentIdtechMacFramework */,
+				019E3C3029954A96008CF419 /* ClearentIdtechIOSFramework-ExampleApp */,
 				E76504F51FFC306100B345F6 /* Products */,
 				E765050E1FFC30F000B345F6 /* Frameworks */,
 			);
@@ -1004,6 +1219,7 @@
 			children = (
 				E76504F41FFC306100B345F6 /* ClearentIdtechIOSFramework.framework */,
 				E7CA495320E3C2230090CFFC /* ClearentIdtechIOSFramework-Tests.xctest */,
+				019E3C2F29954A95008CF419 /* ClearentIdtechIOSFramework-ExampleApp.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1105,6 +1321,8 @@
 		E7CA495420E3C2230090CFFC /* ClearentIdtechIOSFramework-Tests */ = {
 			isa = PBXGroup;
 			children = (
+				0113B03729953168009BDF12 /* ClearentUI */,
+				0113B04429953168009BDF12 /* ClearentWrapper */,
 				E7CA495520E3C2230090CFFC /* ClearentIdtechIOSFramework_Tests.m */,
 				E7CA495720E3C2230090CFFC /* Info.plist */,
 				E7CA495E20E3C2460090CFFC /* ClearentConfiguration_Tests.m */,
@@ -1172,6 +1390,23 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		019E3C2E29954A95008CF419 /* ClearentIdtechIOSFramework-ExampleApp */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 019E3C4029954A98008CF419 /* Build configuration list for PBXNativeTarget "ClearentIdtechIOSFramework-ExampleApp" */;
+			buildPhases = (
+				019E3C2B29954A95008CF419 /* Sources */,
+				019E3C2C29954A95008CF419 /* Frameworks */,
+				019E3C2D29954A95008CF419 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "ClearentIdtechIOSFramework-ExampleApp";
+			productName = "ClearentIdtechIOSFramework-ExampleApp";
+			productReference = 019E3C2F29954A95008CF419 /* ClearentIdtechIOSFramework-ExampleApp.app */;
+			productType = "com.apple.product-type.application";
+		};
 		E76504F31FFC306100B345F6 /* ClearentIdtechIOSFramework */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = E76505081FFC306100B345F6 /* Build configuration list for PBXNativeTarget "ClearentIdtechIOSFramework" */;
@@ -1203,6 +1438,7 @@
 			);
 			dependencies = (
 				E7CA495A20E3C2230090CFFC /* PBXTargetDependency */,
+				019E3C4429954AB1008CF419 /* PBXTargetDependency */,
 			);
 			name = "ClearentIdtechIOSFramework-Tests";
 			productName = "ClearentIdtechIOSFramework-Tests";
@@ -1215,9 +1451,13 @@
 		E76504EB1FFC306100B345F6 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
+				LastSwiftUpdateCheck = 1400;
 				LastUpgradeCheck = 1330;
 				ORGANIZATIONNAME = "Clearent, L.L.C.";
 				TargetAttributes = {
+					019E3C2E29954A95008CF419 = {
+						CreatedOnToolsVersion = 14.0;
+					};
 					3F7724CF2405CBC600E1A14A = {
 						CreatedOnToolsVersion = 11.3.1;
 					};
@@ -1227,6 +1467,7 @@
 					};
 					E7CA495220E3C2230090CFFC = {
 						CreatedOnToolsVersion = 9.4.1;
+						TestTargetID = 019E3C2E29954A95008CF419;
 					};
 				};
 			};
@@ -1246,11 +1487,22 @@
 				E76504F31FFC306100B345F6 /* ClearentIdtechIOSFramework */,
 				E7CA495220E3C2230090CFFC /* ClearentIdtechIOSFramework-Tests */,
 				3F7724CF2405CBC600E1A14A /* ClearentIdtechIOSFrameworkUniversal */,
+				019E3C2E29954A95008CF419 /* ClearentIdtechIOSFramework-ExampleApp */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		019E3C2D29954A95008CF419 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				019E3C3E29954A98008CF419 /* LaunchScreen.storyboard in Resources */,
+				019E3C3B29954A98008CF419 /* Assets.xcassets in Resources */,
+				019E3C3929954A96008CF419 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E76504F21FFC306100B345F6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1286,6 +1538,7 @@
 				01442D3928B3D836006DD15C /* ClearentPaymentFooterView.xib in Resources */,
 				01442D1C28B3D836006DD15C /* ClearentPrimaryButton.xib in Resources */,
 				E77687472062B66300284FF4 /* .gitignore in Resources */,
+				CCEC76B52992738C001FF4A4 /* OfflinePromptViewController.xib in Resources */,
 				0108460F292295E700BFE00D /* ClearentOfflineModeReportViewController.xib in Resources */,
 				01442D0928B3D836006DD15C /* ClearentLoadingView.xib in Resources */,
 				014AA1032917C75F001918F5 /* ClearentSettingsModalViewController.xib in Resources */,
@@ -1304,6 +1557,7 @@
 			files = (
 				E7CA496C20E504720090CFFC /* ClearentConfigNoContactAids.json in Resources */,
 				E7CA496E20E505380090CFFC /* ClearentConfigNoPublicKeys.json in Resources */,
+				0113B05B29953168009BDF12 /* ClearentTransactionToken.json in Resources */,
 				E7CA496A20E3CF7C0090CFFC /* ClearentConfiguration.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1333,6 +1587,16 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		019E3C2B29954A95008CF419 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				019E3C3629954A96008CF419 /* ViewController.swift in Sources */,
+				019E3C3229954A96008CF419 /* AppDelegate.swift in Sources */,
+				019E3C3429954A96008CF419 /* SceneDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E76504EF1FFC306100B345F6 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1385,6 +1649,7 @@
 				01442D0A28B3D836006DD15C /* ProgressShapeLayer.swift in Sources */,
 				E7CA494220E171960090CFFC /* ClearentConfiguration.m in Sources */,
 				CCA3FFC7292F82290087FAE5 /* ClearentOfflineResultPDFGenerator.swift in Sources */,
+				CCEC76B42992738C001FF4A4 /* OfflinePromptViewController.swift in Sources */,
 				E79BC82520B366300030FD8C /* Clearent_VP3300.m in Sources */,
 				01E22E0228B77D9F004C4ADF /* SVGLoader.swift in Sources */,
 				01442D4728B3D836006DD15C /* ClearentDefaultFonts.swift in Sources */,
@@ -1401,7 +1666,7 @@
 				E764E7722303182C0029B753 /* ClearentOfflineDeclineReceipt.m in Sources */,
 				4BAEA888271C5F24007F5FCF /* ClearentLumberjackRemoteLogger.m in Sources */,
 				01442D1528B3D836006DD15C /* ClearentTextField.swift in Sources */,
-				0184D6B72992657A00109CB2 /* HppSettingsEntity.swift in Sources */,
+				0184D6B72992657A00109CB2 /* HppSettingsResponse.swift in Sources */,
 				014AA0ED291531AA001918F5 /* ClearentSettingsModalViewController.swift in Sources */,
 				CCA86E4D28CF5DB300FF83FB /* ClearentWrapper.swift in Sources */,
 				01442CFE28B3D836006DD15C /* ClearentConstants.swift in Sources */,
@@ -1413,7 +1678,7 @@
 				01442CF728B3D836006DD15C /* ClearentAdaptiveStackView.swift in Sources */,
 				01442D5D28B3D84D006DD15C /* Entities.swift in Sources */,
 				E702E5702364835B0032ED8D /* ClearentVP3300Config.m in Sources */,
-				01442D6028B3D84D006DD15C /* TerminalSettingsEntity.swift in Sources */,
+				01442D6028B3D84D006DD15C /* TerminalSettingsResponse.swift in Sources */,
 				4BCD80B528745F2100507B3B /* ClearentIDTUtility.m in Sources */,
 				01442D2328B3D836006DD15C /* ClearentListView.swift in Sources */,
 				01754CAB28F7F7F2009B2ED9 /* ClearentWrapperDefaults.swift in Sources */,
@@ -1482,16 +1747,31 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0113B05929953168009BDF12 /* ClearentTransactionRepositoryTests.swift in Sources */,
+				018691B4299A29DF00DE2E90 /* DateExtensionTests.swift in Sources */,
+				0113B05A29953168009BDF12 /* ReaderInfoTests.swift in Sources */,
 				4B074F4724471B7900868E21 /* ClearentBluetoothDevice_Tests.m in Sources */,
 				4B074F3C2447173200868E21 /* ClearentConfigFetcher_Tests.m in Sources */,
 				4B32C0BF243FB9D500CCF9B9 /* ClearentConfiguration.m in Sources */,
+				018691B6299A3EAF00DE2E90 /* StringExtensionTests.swift in Sources */,
+				0113B05429953168009BDF12 /* ClearentMarginableExtension.swift in Sources */,
 				E7CA495F20E3C2460090CFFC /* ClearentConfiguration_Tests.m in Sources */,
 				4B074F52244DFCA100868E21 /* ClearentFeedback_Tests.m in Sources */,
+				0113B05129953168009BDF12 /* ClearentFieldValidationHelperTests.swift in Sources */,
 				4B074F50244DBABA00868E21 /* ClearentTransactions_Tests.m in Sources */,
+				0113B05229953168009BDF12 /* ClearentMoneyFormatterTests.swift in Sources */,
+				0113B05729953168009BDF12 /* OfflineModeManagerTests.swift in Sources */,
 				4B074F4E24474FD100868E21 /* TestPublicDelegate.m in Sources */,
+				0113B05829953168009BDF12 /* ClearentWrapperDefaultsTests.swift in Sources */,
+				0113B05029953168009BDF12 /* ReaderDetailsPresenterTests.swift in Sources */,
+				014B6FEB299A261900D9372D /* ClearentOfflineManagerExtension.swift in Sources */,
 				E7CA495620E3C2230090CFFC /* ClearentIdtechIOSFramework_Tests.m in Sources */,
 				4B074F4B2447313900868E21 /* ClearentDeviceConnector_Tests.m in Sources */,
+				0113B05629953168009BDF12 /* HttpClientMock.swift in Sources */,
+				0113B05329953168009BDF12 /* ClearentPairingReaderItemTests.swift in Sources */,
 				4B32C0C0243FB9DF00CCF9B9 /* ClearentConfigFetcher.m in Sources */,
+				018679AE299A6A0F00B87870 /* ClearentWrapperTests.swift in Sources */,
+				0113B04F29953168009BDF12 /* ClearentReaderDetailsViewControllerTests.swift in Sources */,
 				4B074F4924471F2700868E21 /* ClearentConnection_Tests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1499,6 +1779,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		019E3C4429954AB1008CF419 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 019E3C2E29954A95008CF419 /* ClearentIdtechIOSFramework-ExampleApp */;
+			targetProxy = 019E3C4329954AB1008CF419 /* PBXContainerItemProxy */;
+		};
 		E7CA495A20E3C2230090CFFC /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = E76504F31FFC306100B345F6 /* ClearentIdtechIOSFramework */;
@@ -1506,7 +1791,96 @@
 		};
 /* End PBXTargetDependency section */
 
+/* Begin PBXVariantGroup section */
+		019E3C3729954A96008CF419 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				019E3C3829954A96008CF419 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		019E3C3C29954A98008CF419 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				019E3C3D29954A98008CF419 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
 /* Begin XCBuildConfiguration section */
+		019E3C4129954A98008CF419 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "ClearentIdtechIOSFramework-ExampleApp/Info.plist";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "Clearent.ClearentIdtechIOSFramework-ExampleApp";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		019E3C4229954A98008CF419 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "ClearentIdtechIOSFramework-ExampleApp/Info.plist";
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
+				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = "Clearent.ClearentIdtechIOSFramework-ExampleApp";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		3F7724D12405CBC600E1A14A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1796,7 +2170,6 @@
 		E7CA495C20E3C2230090CFFC /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_ENTITLEMENTS = "";
@@ -1841,7 +2214,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.clearent.ClearentIdtechIOSFramework-Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ClearentIdtechIOSFramework-ExampleApp.app/ClearentIdtechIOSFramework-ExampleApp";
 				TVOS_DEPLOYMENT_TARGET = "";
 			};
 			name = Debug;
@@ -1849,7 +2224,6 @@
 		E7CA495D20E3C2230090CFFC /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
 				CODE_SIGN_IDENTITY = "";
@@ -1893,7 +2267,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.clearent.ClearentIdtechIOSFramework-Tests";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ClearentIdtechIOSFramework-ExampleApp.app/ClearentIdtechIOSFramework-ExampleApp";
 				TVOS_DEPLOYMENT_TARGET = "";
 			};
 			name = Release;
@@ -1901,6 +2277,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		019E3C4029954A98008CF419 /* Build configuration list for PBXNativeTarget "ClearentIdtechIOSFramework-ExampleApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				019E3C4129954A98008CF419 /* Debug */,
+				019E3C4229954A98008CF419 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		3F7724D02405CBC600E1A14A /* Build configuration list for PBXAggregateTarget "ClearentIdtechIOSFrameworkUniversal" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

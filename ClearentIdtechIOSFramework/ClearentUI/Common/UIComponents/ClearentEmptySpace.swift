@@ -8,8 +8,13 @@
 import UIKit
 
 class ClearentEmptySpace: ClearentMarginableView {
+    
+    // MARK: - IBOutlets
+    
     @IBOutlet var heightConstraint: NSLayoutConstraint!
 
+    // MARK: - Properties
+    
     var height = 16.0 {
         didSet {
             heightConstraint?.constant = height
@@ -17,13 +22,15 @@ class ClearentEmptySpace: ClearentMarginableView {
         }
     }
 
-    // MARK: - Lifecycle
+    // MARK: - Init
 
     convenience init(height: CGFloat) {
         self.init()
         setHeight(height: height)
     }
 
+    // MARK: - Internal
+    
     override func configure() {
         setHeight(height: height)
     }

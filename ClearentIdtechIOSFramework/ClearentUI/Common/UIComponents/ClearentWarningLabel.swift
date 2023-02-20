@@ -10,6 +10,9 @@ import Foundation
 
 
 class ClearentWarningLabel: ClearentTitleLabel {
+    
+    // MARK: - Properties
+    
     public override var nibName: String? {
         String(describing: ClearentTitleLabel.self)
     }
@@ -24,6 +27,8 @@ class ClearentWarningLabel: ClearentTitleLabel {
             BottomMargin(constant: 80)
         ]
     }
+    
+    // MARK: - Public
 
     public override func configure() {
         label.textAlignment = .center

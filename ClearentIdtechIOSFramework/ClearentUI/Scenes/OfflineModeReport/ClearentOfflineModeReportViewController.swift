@@ -10,13 +10,19 @@ import UIKit
 
 class ClearentOfflineModeReportViewController: ClearentAbstractViewController {
     
+    // MARK: - IBOutlets
+    
     @IBOutlet weak var clearReportButton: ClearentPrimaryButton!
     @IBOutlet weak var saveErrorLogButton: ClearentPrimaryButton!
     @IBOutlet weak var infoLabel: UILabel!
     @IBOutlet weak var tableView: UITableView!
     
+    // MARK: - Properties
+    
     private var defaultCellIdentifier = "kOfflineResultCell"
     var reportPresenter: ClearentOfflineModeReportViewProtocol!
+    
+    // MARK: - Lifecycle
     
     public override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,7 +38,6 @@ class ClearentOfflineModeReportViewController: ClearentAbstractViewController {
         super.viewWillAppear(animated)
         navigationController?.isNavigationBarHidden = true
     }
-    
     
     // MARK: - Private
     
