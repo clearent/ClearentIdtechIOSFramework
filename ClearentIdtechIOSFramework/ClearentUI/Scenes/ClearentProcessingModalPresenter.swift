@@ -227,6 +227,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
         case .callSupport:
             guard let number = URL(string: "tel://\(ClearentConstants.ContactSupport.phoneNumber)") else { return }
             UIApplication.shared.open(number)
+        case .serviceFeeOK:
+            completeTransaction()
         }
     }
     
@@ -398,7 +400,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                                         shipping: paymentInfo?.shipping,
                                         customerID: paymentInfo?.customerID,
                                         invoice: paymentInfo?.invoice,
-                                        orderID: paymentInfo?.orderID)
+                                        orderID: paymentInfo?.orderID,
+                                        serviceFeeAmount: serviceFeeAmount?.stringFormattedWithTwoDecimals)
             startTransaction(saleEntity: saleEntity, isManualTransaction: false)
         }
     }
@@ -504,7 +507,7 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
     
     private func displaySurchargeAvoidedIfNeeded(response: Transaction?) {
         guard let surchargeApplied = response?.surchargeApplied, !surchargeApplied, let amountWithTip = amountWithTip, let serviceFeeAmount = serviceFeeAmount else {
-            completeTransaction()
+            completeTransaction(with: 1.5)
             return
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
@@ -512,21 +515,19 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                                      ClearentMoneyFormatter.formattedWithSymbol(from: serviceFeeAmount),
                                      ClearentMoneyFormatter.formattedWithSymbol(from: amountWithTip))
             let items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.transaction_completed),
-                         FlowDataItem(type: .title, object: description)]
+                         FlowDataItem(type: .title, object: description),
+                         FlowDataItem(type: .userAction, object: FlowButtonType.serviceFeeOK)]
             
             let feedback = FlowDataFactory.component(with: .payment,
                                                      type: .info,
                                                      readerInfo: ClearentWrapperDefaults.lastPairedReaderInfo,
                                                      payload: items)
             self?.modalProcessingView?.updateContent(with: feedback)
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) { [weak self] in
-                self?.completeTransaction()
-            }
         }
     }
 
-    private func completeTransaction() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
+    private func completeTransaction(with delay: Double = 0) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [weak self] in
             if ClearentUIManager.configuration.signatureEnabled {
                 self?.showSignatureScreen()
             } else {

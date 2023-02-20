@@ -67,7 +67,7 @@ enum FlowGraphicType {
 }
 
 public enum FlowButtonType {
-    case cancel, retry, pair, done, skipSignature, pairNewReader, settings, pairInFlow, addReaderName, renameReaderLater, transactionWithTip, transactionWithoutTip, manuallyEnterCardInfo, acceptOfflineMode, denyOfflineMode, confirmOfflineModeWarningMessage, transactionWithServiceFee, emailReceiptOptionYes, emailReceiptOptionNo, emailFormSkip, callSupport
+    case cancel, retry, pair, done, skipSignature, pairNewReader, settings, pairInFlow, addReaderName, renameReaderLater, transactionWithTip, transactionWithoutTip, manuallyEnterCardInfo, acceptOfflineMode, denyOfflineMode, confirmOfflineModeWarningMessage, transactionWithServiceFee, emailReceiptOptionYes, emailReceiptOptionNo, emailFormSkip, callSupport, serviceFeeOK
 
     var title: String {
         switch self {
@@ -111,6 +111,8 @@ public enum FlowButtonType {
             return ClearentConstants.Localized.EmailReceipt.emailFormButtonSkip
         case .callSupport:
             return ClearentConstants.Localized.OfflineMode.offlineModeEncryptionContactSupport
+        case .serviceFeeOK:
+            return ClearentConstants.Localized.Common.ok
         }
     }
 
