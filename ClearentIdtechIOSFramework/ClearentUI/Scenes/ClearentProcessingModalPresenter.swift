@@ -400,7 +400,8 @@ extension ClearentProcessingModalPresenter: ProcessingModalProtocol {
                                         shipping: paymentInfo?.shipping,
                                         customerID: paymentInfo?.customerID,
                                         invoice: paymentInfo?.invoice,
-                                        orderID: paymentInfo?.orderID)
+                                        orderID: paymentInfo?.orderID,
+                                        serviceFeeAmount: serviceFeeAmount?.stringFormattedWithTwoDecimals)
             startTransaction(saleEntity: saleEntity, isManualTransaction: false)
         }
     }
