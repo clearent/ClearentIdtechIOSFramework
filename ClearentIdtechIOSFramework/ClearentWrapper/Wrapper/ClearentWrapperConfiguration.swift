@@ -39,11 +39,13 @@ import CryptoKit
         self.enableEnhancedMessaging = enableEnhancedMessaging
     }
     
-    public init(baseURL: String, apiKey: String?, publicKey: String?, offlineModeEncryptionKeyData: Data, enableEnhancedMessaging: Bool = false) {
+    public init(baseURL: String, apiKey: String?, publicKey: String?, offlineModeEncryptionKeyData: Data?, enableEnhancedMessaging: Bool = false) {
         self.baseURL = baseURL
         self.apiKey = apiKey
         self.publicKey = publicKey
-        self.offlineModeEncryptionKey = SymmetricKey(data: offlineModeEncryptionKeyData)
+        if let key = offlineModeEncryptionKeyData {
+            self.offlineModeEncryptionKey = SymmetricKey(data: key)
+        }
         self.enableEnhancedMessaging = enableEnhancedMessaging
     }
 }

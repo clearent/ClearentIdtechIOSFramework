@@ -13,11 +13,11 @@ import CryptoKit
  * Keychain Wrapper Implementation
  */
 
-final class KeychainHelper {
+final public class KeychainHelper {
     
     // MARK: - Properties
     
-    static let standard = KeychainHelper()
+    public static let standard = KeychainHelper()
     
     // MARK: - Init
     
@@ -25,7 +25,7 @@ final class KeychainHelper {
     
     // MARK: - Internal
     
-    func save(_ data: Data, service: String, account: String) -> OSStatus {
+    public func save(_ data: Data, service: String, account: String) -> OSStatus {
 
         let query = [
             kSecValueData: data,
@@ -54,7 +54,7 @@ final class KeychainHelper {
         return status
     }
     
-    func read(service: String, account: String) -> Data? {
+    public func read(service: String, account: String) -> Data? {
         
         let query = [
             kSecAttrService: service,
@@ -69,7 +69,7 @@ final class KeychainHelper {
         return (result as? Data)
     }
     
-    func delete(service: String, account: String) {
+    public func delete(service: String, account: String) {
         
         let query = [
             kSecAttrService: service,
