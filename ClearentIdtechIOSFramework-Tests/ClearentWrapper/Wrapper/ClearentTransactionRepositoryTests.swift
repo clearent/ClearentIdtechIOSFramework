@@ -23,7 +23,7 @@ class ClearentTransactionRepositoryTests: XCTestCase {
         httpClientMock = HttpClientMock()
         offlineManager = OfflineModeManager(storage: KeyChainStorage(serviceName: "test_service_name1", account: "test_account_name2", encryptionKey: SymmetricKey(data: SHA256.hash(data: "some_secret_here".data(using: .utf8)!))))
         
-        sut = TransactionRepository(httpClient: httpClientMock, baseURL: baseURL, apiKey: "test_api_key", clearentVP3300: vp3300Mock!, clearentManualEntryDelegate: nil)
+        sut = TransactionRepository(httpClient: httpClientMock, baseURL: baseURL, publicKey: nil, apiKey: "test_api_key", clearentVP3300: vp3300Mock!, clearentManualEntryDelegate: nil)
         sut.offlineManager = offlineManager
         sut.clearentManualEntry = ClearentManualEntryMock()
     }
