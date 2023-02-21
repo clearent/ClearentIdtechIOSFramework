@@ -34,7 +34,7 @@ public final class ClearentUIManager: NSObject {
     /**
      * This method updates the SDK with the necessary configuration to work properly.
      */
-    public func initialize(with configuration: ClearentUIManagerConfiguration) {
+    @objc public func initialize(with configuration: ClearentUIManagerConfiguration) {
         ClearentUIManager.configuration = configuration
         setupReaderInfo()
     }

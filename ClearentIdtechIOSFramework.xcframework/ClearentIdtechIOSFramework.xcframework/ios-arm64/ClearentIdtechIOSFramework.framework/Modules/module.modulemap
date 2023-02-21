@@ -1,0 +1,11 @@
+framework module ClearentIdtechIOSFramework {
+  umbrella header "ClearentIdtechIOSFramework.h"
+
+  export *
+  module * { export * }
+}
+
+module ClearentIdtechIOSFramework.Swift {
+  header "ClearentIdtechIOSFramework-Swift.h"
+  requires objc
+}

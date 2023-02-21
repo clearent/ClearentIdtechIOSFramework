@@ -1,0 +1,792 @@
+// swift-interface-format-version: 1.0
+// swift-compiler-version: Apple Swift version 5.7 (swiftlang-5.7.0.127.4 clang-1400.0.29.50)
+// swift-module-flags: -target arm64-apple-ios13.0 -enable-objc-interop -enable-library-evolution -swift-version 5 -enforce-exclusivity=checked -O -module-name ClearentIdtechIOSFramework
+// swift-module-flags-ignorable: -enable-bare-slash-regex
+@_exported import ClearentIdtechIOSFramework
+import CocoaLumberjack
+import CoreBluetooth
+import CoreMedia
+import CryptoKit
+import Foundation
+import Network
+import Swift
+import UIKit
+import WebKit
+import _Concurrency
+import _StringProcessing
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class ClearentAbstractViewController : UIKit.UIViewController {
+  @objc @IBOutlet @_Concurrency.MainActor(unsafe) weak public var containerMaxWidthConstraint: UIKit.NSLayoutConstraint!
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewDidLoad()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+extension UIKit.UITextField {
+  @_Concurrency.MainActor(unsafe) public func addDoneToKeyboard()
+}
+@objc @_inheritsConvenienceInitializers @IBDesignable @_Concurrency.MainActor(unsafe) public class ClearentTitleLabel : ClearentIdtechIOSFramework.ClearentMarginableView {
+  @_Concurrency.MainActor(unsafe) override public var margins: [ClearentIdtechIOSFramework.BottomMargin] {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var textColor: UIKit.UIColor? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var font: UIKit.UIFont? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var title: Swift.String? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) override public func configure()
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc deinit
+}
+public enum FlowFeedbackType {
+  case error, info, warning, searchDevices, showReaders, pairingDoneInfo, renameReaderDone, signature, signatureError, emailReceiptOptions, emailReceiptForm
+  public static func == (a: ClearentIdtechIOSFramework.FlowFeedbackType, b: ClearentIdtechIOSFramework.FlowFeedbackType) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public enum ProcessType : Swift.Equatable {
+  case pairing(withReader: ClearentIdtechIOSFramework.ReaderInfo? = nil), payment, showReaders, renameReader, showSettings, offlineModeSetup
+  public static func == (lhs: ClearentIdtechIOSFramework.ProcessType, rhs: ClearentIdtechIOSFramework.ProcessType) -> Swift.Bool
+}
+public enum FlowButtonType {
+  case cancel, retry, pair, done, skipSignature, pairNewReader, settings, pairInFlow, addReaderName, renameReaderLater, transactionWithTip, transactionWithoutTip, manuallyEnterCardInfo, acceptOfflineMode, denyOfflineMode, confirmOfflineModeWarningMessage, transactionWithServiceFee, emailReceiptOptionYes, emailReceiptOptionNo, emailFormSkip, callSupport, serviceFeeOK
+  public static func == (a: ClearentIdtechIOSFramework.FlowButtonType, b: ClearentIdtechIOSFramework.FlowButtonType) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+public enum FlowInputType {
+  case nameInput
+  public static func == (a: ClearentIdtechIOSFramework.FlowInputType, b: ClearentIdtechIOSFramework.FlowInputType) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+@objc @_inheritsConvenienceInitializers final public class ClearentUIManager : ObjectiveC.NSObject {
+  @objc public static let shared: ClearentIdtechIOSFramework.ClearentUIManager
+  @objc public static var configuration: ClearentIdtechIOSFramework.ClearentUIManagerConfiguration!
+  @objc final public var cardReaderPaymentIsPreferred: Swift.Bool {
+    @objc get
+    @objc set
+  }
+  @objc final public func initialize(with configuration: ClearentIdtechIOSFramework.ClearentUIManagerConfiguration)
+  @objc final public func paymentViewController(paymentInfo: ClearentIdtechIOSFramework.PaymentInfo?, completion: ((ClearentIdtechIOSFramework.ClearentError?) -> Swift.Void)?) -> UIKit.UINavigationController
+  @objc final public func pairingViewController(completion: ((ClearentIdtechIOSFramework.ClearentError?) -> Swift.Void)?) -> UIKit.UINavigationController
+  @objc final public func settingsViewController(completion: ((ClearentIdtechIOSFramework.ClearentError?) -> Swift.Void)?) -> UIKit.UINavigationController
+  @objc final public func offlineModeQuestionViewController(completion: ((ClearentIdtechIOSFramework.ClearentError?) -> Swift.Void)?) -> UIKit.UINavigationController
+  @objc final public func allUnprocessedOfflineTransactionsCount() -> Swift.Int
+  @objc final public func shouldDisplayOfflineModeLabel() -> Swift.Bool
+  @objc override dynamic public init()
+  @objc deinit
+}
+extension UIKit.UIViewController {
+  @_Concurrency.MainActor(unsafe) public func addNavigationBarWithBackItem(barTitle: Swift.String)
+  @objc @_Concurrency.MainActor(unsafe) dynamic public func didPressBackButton()
+}
+extension UIKit.UIViewController {
+  @_Concurrency.MainActor(unsafe) public func showOfflineProcessConfirmation(title: Swift.String?, message: Swift.String?, cancelTitle: Swift.String?, action: UIKit.UIAlertAction)
+  @_Concurrency.MainActor(unsafe) public func showCancelAlert(title: Swift.String?, message: Swift.String?, cancelTitle: Swift.String?, cancelAction: (() -> Swift.Void)? = nil)
+  @_Concurrency.MainActor(unsafe) public func showAlert(title: Swift.String?, message: Swift.String?, action: UIKit.UIAlertAction, completion: (() -> Swift.Void)? = nil)
+}
+public protocol ClearentWrapperProtocol : AnyObject {
+  func didStartPairing()
+  func didFinishPairing()
+  func didReceiveSignalStrength()
+  func didFindReaders(readers: [ClearentIdtechIOSFramework.ReaderInfo])
+  func deviceDidDisconnect()
+  func startedReaderConnection(with reader: ClearentIdtechIOSFramework.ReaderInfo)
+  func didFindRecentlyUsedReaders(readers: [ClearentIdtechIOSFramework.ReaderInfo])
+  func didBeginContinuousSearching()
+  func didEncounteredGeneralError()
+  func didFinishTransaction(response: ClearentIdtechIOSFramework.TransactionResponse?, error: ClearentIdtechIOSFramework.ClearentError?)
+  func didAcceptOfflineTransaction(status: ClearentIdtechIOSFramework.TransactionStoreStatus)
+  func didFinishedSignatureUploadWith(response: ClearentIdtechIOSFramework.SignatureResponse?, error: ClearentIdtechIOSFramework.ClearentError?)
+  func didFinishedSendingReceipt(response: ClearentIdtechIOSFramework.ReceiptResponse?, error: ClearentIdtechIOSFramework.ClearentError?)
+  func didAcceptOfflineSignature(status: ClearentIdtechIOSFramework.TransactionStoreStatus, transactionID: Swift.String)
+  func didAcceptOfflineEmail(transactionID: Swift.String)
+  func userActionNeeded(action: ClearentIdtechIOSFramework.UserAction)
+  func showEncryptionWarning()
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class ClearentMarginableView : ClearentIdtechIOSFramework.ClearentXibView, ClearentIdtechIOSFramework.ClearentMarginable {
+  @_Concurrency.MainActor(unsafe) public var viewType: UIKit.UIView.Type {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var margins: [ClearentIdtechIOSFramework.BottomMargin] {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public func setBottomMargin(margin: ClearentIdtechIOSFramework.BottomMargin)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc deinit
+}
+public enum UserAction : Swift.String, Swift.CaseIterable {
+  case pleaseWait, swipeTapOrInsert, swipeInsert, pressReaderButton, removeCard, tryICCAgain, goingOnline, cardSecured, cardHasChip, chipNotRecognized, tryMSRAgain, useMagstripe, transactionStarted, transactionFailed, tapFailed, connectionTimeout, noInternet, noBluetooth, noBluetoothPermission, failedToStartSwipe, badChip, cardUnsupported, cardBlocked, cardExpired, authorizing, processing, amountNotAllowedForTap
+  public init?(rawValue: Swift.String)
+  public typealias AllCases = [ClearentIdtechIOSFramework.UserAction]
+  public typealias RawValue = Swift.String
+  public static var allCases: [ClearentIdtechIOSFramework.UserAction] {
+    get
+  }
+  public var rawValue: Swift.String {
+    get
+  }
+}
+@objc public enum OfflineModeState : Swift.Int {
+  case on, prompted
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class ClearentErrorDetailsView : UIKit.UIView, ClearentIdtechIOSFramework.ClearentMarginable {
+  @_Concurrency.MainActor(unsafe) public var viewType: UIKit.UIView.Type {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var margins: [ClearentIdtechIOSFramework.BottomMargin] {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public func setBottomMargin(margin: ClearentIdtechIOSFramework.BottomMargin)
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class UserDefaultsPersistence {
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers final public class KeychainHelper {
+  public static let standard: ClearentIdtechIOSFramework.KeychainHelper
+  final public func save(_ data: Foundation.Data, service: Swift.String, account: Swift.String) -> Darwin.OSStatus
+  final public func read(service: Swift.String, account: Swift.String) -> Foundation.Data?
+  final public func delete(service: Swift.String, account: Swift.String)
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class OfflinePromptViewController : ClearentIdtechIOSFramework.ClearentBaseViewController {
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewDidLoad()
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class ClearentIconAndLabel : ClearentIdtechIOSFramework.ClearentMarginableView {
+  @_Concurrency.MainActor(unsafe) override public var nibName: Swift.String? {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) override public var margins: [ClearentIdtechIOSFramework.BottomMargin] {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var textColor: UIKit.UIColor? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var font: UIKit.UIFont? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var action: (() -> Swift.Void)?
+  @_Concurrency.MainActor(unsafe) override public func configure()
+  @_Concurrency.MainActor(unsafe) public func update(icon: UIKit.UIImage?, text: Swift.String)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class ClearentReaderStatusHeaderView : ClearentIdtechIOSFramework.ClearentMarginableView {
+  @_Concurrency.MainActor(unsafe) public var action: (() -> Swift.Void)?
+  @_Concurrency.MainActor(unsafe) override public var margins: [ClearentIdtechIOSFramework.BottomMargin] {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) override public func configure()
+  @_Concurrency.MainActor(unsafe) public func setup(readerName: Swift.String, dropDownIconName: Swift.String? = nil, description: Swift.String? = nil, signalStatus: (iconName: Swift.String?, title: Swift.String)? = nil, batteryStatus: (iconName: Swift.String, title: Swift.String)? = nil)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc deinit
+}
+extension ClearentIdtechIOSFramework.ClearentWrapper {
+  final public func retrieveLoggFileContents() -> Swift.String
+  final public func fetchLogFileURL() -> Foundation.URL?
+  final public func clearLogFile()
+}
+extension ClearentIdtechIOSFramework.ClearentWrapper : ClearentIdtechIOSFramework.ClearentManualEntryDelegate {
+  @objc final public func handleManualEntryError(_ message: Swift.String!)
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class ClearentXibView : UIKit.UIView {
+  @_Concurrency.MainActor(unsafe) open var bundle: Foundation.Bundle? {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) open var nibName: Swift.String? {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func awakeFromNib()
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc convenience dynamic public init()
+  @_Concurrency.MainActor(unsafe) open func configure()
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers @_Concurrency.MainActor(unsafe) public class ClearentSettingsModalViewController : ClearentIdtechIOSFramework.ClearentBaseViewController {
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewDidLoad()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func viewWillAppear(_ animated: Swift.Bool)
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers final public class ClearentWrapper : ObjectiveC.NSObject {
+  public static var shared: ClearentIdtechIOSFramework.ClearentWrapper
+  weak final public var delegate: ClearentIdtechIOSFramework.ClearentWrapperProtocol? {
+    get
+    set
+  }
+  final public var previouslyPairedReaders: [ClearentIdtechIOSFramework.ReaderInfo] {
+    get
+  }
+  final public var flowType: (processType: ClearentIdtechIOSFramework.ProcessType, flowFeedbackType: ClearentIdtechIOSFramework.FlowFeedbackType?)?
+  final public var cardReaderPaymentIsPreffered: Swift.Bool
+  final public var useManualPaymentAsFallback: Swift.Bool?
+  public static var configuration: ClearentIdtechIOSFramework.ClearentWrapperConfiguration!
+  final public func initialize(with config: ClearentIdtechIOSFramework.ClearentWrapperConfiguration)
+  final public func updateWebAuth(with auth: ClearentIdtechIOSFramework.ClearentWebAuth)
+  final public func hasWebAuth() -> Swift.Bool
+  final public func enableOfflineMode() throws
+  final public func disableOfflineMode()
+  final public func retrieveAllOfflineTransactions() -> [ClearentIdtechIOSFramework.OfflineTransaction]?
+  final public func startPairing(reconnectIfPossible: Swift.Bool)
+  final public func connectTo(reader: ClearentIdtechIOSFramework.ReaderInfo)
+  final public func cancelTransaction()
+  final public func searchRecentlyUsedReaders()
+  final public func isReaderConnected() -> Swift.Bool
+  final public func disconnectFromReader()
+  final public func stopContinousSearching()
+  final public func isReaderEncrypted() -> Swift.Bool?
+  final public func startTransaction(with saleEntity: ClearentIdtechIOSFramework.SaleEntity, isManualTransaction: Swift.Bool, completion: @escaping ((ClearentIdtechIOSFramework.ClearentError?) -> Swift.Void))
+  final public func saleTransaction(jwt: Swift.String, saleEntity: ClearentIdtechIOSFramework.SaleEntity, completion: @escaping (ClearentIdtechIOSFramework.TransactionResponse?, ClearentIdtechIOSFramework.ClearentError?) -> Swift.Void)
+  final public func sendSignatureWithImage(image: UIKit.UIImage, completion: @escaping (ClearentIdtechIOSFramework.SignatureResponse?, ClearentIdtechIOSFramework.ClearentError?) -> Swift.Void)
+  final public func sendReceipt(emailAddress: Swift.String, completion: @escaping (ClearentIdtechIOSFramework.ReceiptResponse?, ClearentIdtechIOSFramework.ClearentError?) -> Swift.Void)
+  final public func refundTransaction(jwt: Swift.String, saleEntity: ClearentIdtechIOSFramework.SaleEntity, completion: @escaping (ClearentIdtechIOSFramework.TransactionResponse?, ClearentIdtechIOSFramework.ClearentError?) -> Swift.Void)
+  final public func voidTransaction(transactionID: Swift.String, completion: @escaping (ClearentIdtechIOSFramework.TransactionResponse?, ClearentIdtechIOSFramework.ClearentError?) -> Swift.Void)
+  final public func fetchTerminalSetting(completion: @escaping (ClearentIdtechIOSFramework.ClearentError?) -> Swift.Void)
+  final public func processOfflineTransactions(completion: @escaping ((ClearentIdtechIOSFramework.ClearentError?) -> Swift.Void))
+  final public func areTerminalSettingsCached() -> Swift.Bool
+  @objc deinit
+}
+extension ClearentIdtechIOSFramework.ClearentWrapper : ClearentIdtechIOSFramework.Clearent_Public_IDTech_VP3300_Delegate {
+  @objc final public func successTransactionToken(_ clearentTransactionToken: ClearentIdtechIOSFramework.ClearentTransactionToken!)
+  @objc final public func successOfflineTransactionToken(_ clearentTransactionTokenRequestData: Foundation.Data?, isTransactionEncrypted isEncrypted: Swift.Bool)
+  @objc final public func feedback(_ clearentFeedback: ClearentIdtechIOSFramework.ClearentFeedback!)
+  @objc final public func bluetoothDevices(_ bluetoothDevices: [ClearentIdtechIOSFramework.ClearentBluetoothDevice]!)
+  @objc final public func deviceMessage(_ message: Swift.String!)
+  @objc final public func deviceConnected()
+  @objc final public func deviceDisconnected()
+}
+@_inheritsConvenienceInitializers @objc public class ClearentConstants : ObjectiveC.NSObject {
+  @objc public class var bundle: Foundation.Bundle {
+    @objc get
+  }
+  public enum Color {
+    public static let backgroundPrimary02: UIKit.UIColor
+    public static let backgroundSecondary01: UIKit.UIColor
+    public static let backgroundSecondary02: UIKit.UIColor
+    public static let backgroundSecondary03: UIKit.UIColor
+    public static let accent01: UIKit.UIColor
+    public static let base01: UIKit.UIColor
+    public static let base02: UIKit.UIColor
+    public static let base03: UIKit.UIColor
+    public static let base05: UIKit.UIColor
+    public static let warning: UIKit.UIColor
+  }
+  public enum IconName {
+    public static let rightArrowLarge: Swift.String
+  }
+  public enum Tips {
+    public static let defaultTipPercentages: [Swift.Int]
+    public static let minCustomTipValue: Swift.Double
+  }
+  public enum Amount {
+    public static let maxNoOfCharacters: Swift.Int
+  }
+  public enum ContactSupport {
+    public static let phoneNumber: Swift.String
+  }
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc public class PaymentInfo : ObjectiveC.NSObject {
+  public var amount: Swift.Double
+  public var customerID: Swift.String?
+  public var invoice: Swift.String?
+  public var orderID: Swift.String?
+  public var billing: ClearentIdtechIOSFramework.ClientInformation?
+  public var shipping: ClearentIdtechIOSFramework.ClientInformation?
+  public var softwareType: Swift.String?
+  public var webAuth: ClearentIdtechIOSFramework.ClearentWebAuth?
+  @objc public init(amount: Swift.Double, customerID: Swift.String? = nil, invoice: Swift.String? = nil, orderID: Swift.String? = nil, billing: ClearentIdtechIOSFramework.ClientInformation? = nil, shipping: ClearentIdtechIOSFramework.ClientInformation? = nil, softwareType: Swift.String? = nil, webAuth: ClearentIdtechIOSFramework.ClearentWebAuth? = nil)
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class ClearentHintView : ClearentIdtechIOSFramework.ClearentMarginableView {
+  @_Concurrency.MainActor(unsafe) override public var margins: [ClearentIdtechIOSFramework.BottomMargin] {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var title: Swift.String? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var highlightedTextColor: UIKit.UIColor {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var defaultTextColor: UIKit.UIColor {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var highlightedBackgroundColor: UIKit.UIColor {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var textFont: UIKit.UIFont? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var isHighlighted: Swift.Bool {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var bubbleTailIsOnTop: Swift.Bool {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) override public func configure()
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class ClearentAdaptiveStackView : UIKit.UIStackView {
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public func layoutSubviews()
+  @_Concurrency.MainActor(unsafe) public func positionView(onTop: Swift.Bool, of view: UIKit.UIView)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init(coder: Foundation.NSCoder)
+  @objc deinit
+}
+public struct TransactionResponse : Swift.Codable {
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct SignatureResponse : Swift.Codable {
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct ReceiptResponse : Swift.Codable {
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct Links : Swift.Codable {
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct Payload : Swift.Codable {
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct ResponseError : Swift.Codable {
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct Transaction : Swift.Codable {
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+@_inheritsConvenienceInitializers @_hasMissingDesignatedInitializers public class ClearentWrapperDefaults : ClearentIdtechIOSFramework.UserDefaultsPersistence {
+  @objc deinit
+}
+public struct ReaderItem {
+}
+public struct ReaderInfo : Swift.Codable {
+  public var readerName: Swift.String
+  public var customReaderName: Swift.String?
+  public var batterylevel: Swift.Int?
+  public var signalLevel: Swift.Int?
+  public var isConnected: Swift.Bool {
+    get
+    set
+  }
+  public var autojoin: Swift.Bool
+  public var uuid: Foundation.UUID?
+  public var serialNumber: Swift.String?
+  public var version: Swift.String?
+  public var encrypted: Swift.Bool?
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+extension ClearentIdtechIOSFramework.ReaderInfo : Swift.Equatable {
+  public static func == (lhs: ClearentIdtechIOSFramework.ReaderInfo, rhs: ClearentIdtechIOSFramework.ReaderInfo) -> Swift.Bool
+}
+extension ClearentIdtechIOSFramework.ReaderInfo {
+  public func batteryStatus(flowFeedbackType: ClearentIdtechIOSFramework.FlowFeedbackType? = nil) -> (iconName: Swift.String, title: Swift.String)?
+  public func signalStatus(flowFeedbackType: ClearentIdtechIOSFramework.FlowFeedbackType? = nil, isConnecting: Swift.Bool? = nil) -> (iconName: Swift.String?, title: Swift.String)
+}
+public typealias CompletionResult = Swift.Result<Swift.String?, ClearentIdtechIOSFramework.ClearentError>
+@_hasMissingDesignatedInitializers @objc public class ClearentError : ObjectiveC.NSObject, Swift.Error, Swift.Codable {
+  final public let type: ClearentIdtechIOSFramework.ClearentErrorType
+  @objc deinit
+  public func encode(to encoder: Swift.Encoder) throws
+  required public init(from decoder: Swift.Decoder) throws
+}
+@objc public class ClearentWebAuth : ObjectiveC.NSObject {
+  public init(merchantID: Swift.String, vtToken: Swift.String)
+  @objc deinit
+}
+@objc public enum ClearentErrorType : Swift.Int, Swift.Error, Swift.Codable {
+  case cancelledByUser = 0
+  case noAPIAuthentication
+  case baseURLNotProvided
+  case offlineModeEncryptionKeyNotProvided
+  case httpError
+  case gatewayDeclined
+  case connectivityError
+  case missingToken
+  case missingSignatureImage
+  case missingData
+  case none
+  public var isMissingDataError: Swift.Bool {
+    get
+  }
+  public init?(rawValue: Swift.Int)
+  public typealias RawValue = Swift.Int
+  public static var _nsErrorDomain: Swift.String {
+    get
+  }
+  public var rawValue: Swift.Int {
+    get
+  }
+}
+@objc public class ClearentUIManagerConfiguration : ClearentIdtechIOSFramework.ClearentWrapperConfiguration {
+  public var tipAmounts: [Swift.Int]
+  public var signatureEnabled: Swift.Bool
+  @objc public init(baseURL: Swift.String, apiKey: Swift.String? = nil, publicKey: Swift.String?, enableEnhancedMessaging: Swift.Bool = false, tipAmounts: [Swift.Int] = ClearentConstants.Tips.defaultTipPercentages, signatureEnabled: Swift.Bool = true)
+  @objc public init(baseURL: Swift.String, apiKey: Swift.String? = nil, publicKey: Swift.String?, offlineModeEncryptionKeyData: Foundation.Data?, enableEnhancedMessaging: Swift.Bool = false, tipAmounts: [Swift.Int] = ClearentConstants.Tips.defaultTipPercentages, signatureEnabled: Swift.Bool = true)
+  @objc deinit
+}
+@_hasMissingDesignatedInitializers public class ClearentApplicationOrientation {
+  public static var customOrientationMaskClosure: ((UIKit.UIInterfaceOrientationMask) -> Swift.Void?)?
+  @objc deinit
+}
+extension UIKit.UIFont {
+  @objc dynamic public class func loadFonts(fonts: [Swift.String]? = ["SF-Pro-Display-Bold.otf", "SF-Pro-Text-Bold.otf", "SF-Pro-Text-Medium.otf"], bundle: Foundation.Bundle? = ClearentConstants.bundle)
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class ClearentSubtitleLabel : ClearentIdtechIOSFramework.ClearentTitleLabel {
+  @_Concurrency.MainActor(unsafe) override public var nibName: Swift.String? {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) override public var margins: [ClearentIdtechIOSFramework.BottomMargin] {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) override public func configure()
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc deinit
+}
+public class SaleEntity : ClearentIdtechIOSFramework.CodableProtocol {
+  public init(amount: Swift.String, tipAmount: Swift.String? = nil, softwareType: Swift.String? = nil, softwareTypeVersion: Swift.String? = nil, billing: ClearentIdtechIOSFramework.ClientInformation? = nil, shipping: ClearentIdtechIOSFramework.ClientInformation? = nil, card: Swift.String? = nil, csc: Swift.String? = nil, customerID: Swift.String? = nil, invoice: Swift.String? = nil, orderID: Swift.String? = nil, expirationDateMMYY: Swift.String? = nil, serviceFeeAmount: Swift.String? = nil, externelRefID: Swift.String? = nil)
+  @objc deinit
+  public func encode(to encoder: Swift.Encoder) throws
+  required public init(from decoder: Swift.Decoder) throws
+}
+@_hasMissingDesignatedInitializers @objc public class ClientInformation : ObjectiveC.NSObject, Swift.Codable {
+  @objc deinit
+  public func encode(to encoder: Swift.Encoder) throws
+  required public init(from decoder: Swift.Decoder) throws
+}
+@_inheritsConvenienceInitializers @objc public class Crypto : ObjectiveC.NSObject {
+  @objc public static func SHA256hash(data: Foundation.Data) -> Foundation.Data
+  @objc override dynamic public init()
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class ClearentInfoWithIcon : ClearentIdtechIOSFramework.ClearentMarginableView {
+  @_Concurrency.MainActor(unsafe) public var editButtonPressed: (() -> Swift.Void)?
+  @_Concurrency.MainActor(unsafe) public var deleteButtonPressed: (() -> Swift.Void)?
+  @_Concurrency.MainActor(unsafe) public var containerWasPressed: (() -> Swift.Void)?
+  @_Concurrency.MainActor(unsafe) override public var margins: [ClearentIdtechIOSFramework.BottomMargin] {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var titleTextColor: UIKit.UIColor? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var titleFont: UIKit.UIFont? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var titleText: Swift.String? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var descriptionTextColor: UIKit.UIColor? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var descriptionFont: UIKit.UIFont? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var descriptionText: Swift.String? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var warningFont: UIKit.UIFont? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var warningText: Swift.String? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var warningAttributedText: Foundation.NSAttributedString? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var iconName: Swift.String? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var secondIconName: Swift.String? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var shouldHideWarning: Swift.Bool {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var isInteractionEnabled: Swift.Bool {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) override open func configure()
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc deinit
+}
+extension ClearentIdtechIOSFramework.ClearentInfoWithIcon : UIKit.UITextViewDelegate {
+  @_Concurrency.MainActor(unsafe) @objc dynamic public func textView(_ textView: UIKit.UITextView, shouldInteractWith URL: Foundation.URL, in characterRange: Foundation.NSRange, interaction: UIKit.UITextItemInteraction) -> Swift.Bool
+}
+public protocol CodableProtocol : Swift.Decodable, Swift.Encodable {
+}
+@_hasMissingDesignatedInitializers public class ClearentUIBrandConfigurator {
+  public static var shared: ClearentIdtechIOSFramework.ClearentUIBrandConfigurator
+  public var colorPalette: ClearentIdtechIOSFramework.ClearentUIColors
+  public var fonts: ClearentIdtechIOSFramework.ClearentUIFonts
+  public var overriddenLocalizedStrings: [Swift.String : Swift.String]?
+  @objc deinit
+}
+public enum OfflineTransactionType : Swift.String, Swift.Codable {
+  case cardReaderTransaction
+  case manualTransaction
+  case none
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public struct ErrorStatus : Swift.Codable {
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public struct OfflineTransaction : ClearentIdtechIOSFramework.CodableProtocol {
+  public func encode(to encoder: Swift.Encoder) throws
+  public init(from decoder: Swift.Decoder) throws
+}
+public enum TransactionStoreStatus : Swift.String {
+  case parsingError
+  case success
+  case genericError
+  case fullDiskError
+  case validationError
+  case encryptionError
+  case transactionDoesNotExist
+  public init?(rawValue: Swift.String)
+  public typealias RawValue = Swift.String
+  public var rawValue: Swift.String {
+    get
+  }
+}
+public enum ButtonStyleType {
+  case bordered, filled, link
+  public static func == (a: ClearentIdtechIOSFramework.ButtonStyleType, b: ClearentIdtechIOSFramework.ButtonStyleType) -> Swift.Bool
+  public func hash(into hasher: inout Swift.Hasher)
+  public var hashValue: Swift.Int {
+    get
+  }
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) public class ClearentPrimaryButton : ClearentIdtechIOSFramework.ClearentMarginableView {
+  @_Concurrency.MainActor(unsafe) public var action: (() -> Swift.Void)?
+  @_Concurrency.MainActor(unsafe) override public var margins: [ClearentIdtechIOSFramework.BottomMargin] {
+    get
+  }
+  @_Concurrency.MainActor(unsafe) public var filledBackgroundColor: UIKit.UIColor
+  @_Concurrency.MainActor(unsafe) public var filledButtonTextColor: UIKit.UIColor
+  @_Concurrency.MainActor(unsafe) public var filledDisabledBackgroundColor: UIKit.UIColor
+  @_Concurrency.MainActor(unsafe) public var filledDisabledButtonTextColor: UIKit.UIColor
+  @_Concurrency.MainActor(unsafe) public var borderColor: UIKit.UIColor
+  @_Concurrency.MainActor(unsafe) public var borderedBackgroundColor: UIKit.UIColor
+  @_Concurrency.MainActor(unsafe) public var borderedButtonTextColor: UIKit.UIColor
+  @_Concurrency.MainActor(unsafe) public var linkButtonTextColor: UIKit.UIColor
+  @_Concurrency.MainActor(unsafe) public var linkButtonDisabledColor: UIKit.UIColor
+  @_Concurrency.MainActor(unsafe) public var buttonStyle: ClearentIdtechIOSFramework.ButtonStyleType {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var isEnabled: Swift.Bool {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) public var title: Swift.String? {
+    get
+    set
+  }
+  @_Concurrency.MainActor(unsafe) override public func configure()
+  @_Concurrency.MainActor(unsafe) public func setDisabledButton()
+  @_Concurrency.MainActor(unsafe) public func setEnabledButton()
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder aDecoder: Foundation.NSCoder)
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(frame: CoreFoundation.CGRect)
+  @objc deinit
+}
+public protocol ClearentMarginable {
+  var viewType: UIKit.UIView.Type { get }
+  var margins: [ClearentIdtechIOSFramework.BottomMargin] { get }
+  func handleBottomMargin(to neighbor: ClearentIdtechIOSFramework.ClearentMarginable?)
+  func setBottomMargin(margin: ClearentIdtechIOSFramework.BottomMargin)
+}
+extension ClearentIdtechIOSFramework.ClearentMarginable {
+  public func handleBottomMargin(to neighbor: ClearentIdtechIOSFramework.ClearentMarginable?)
+}
+@_hasMissingDesignatedInitializers public class BottomMargin {
+  @objc deinit
+}
+@objc public class ClearentWrapperConfiguration : ObjectiveC.NSObject {
+  public var baseURL: Swift.String
+  public var apiKey: Swift.String?
+  public var publicKey: Swift.String?
+  public var readerInfoReceived: ((_ readerInfo: ClearentIdtechIOSFramework.ReaderInfo?) -> Swift.Void)?
+  public var provideAuthAndMerchantTerminalDetails: (() -> (Swift.String?, Swift.String?, ClearentIdtechIOSFramework.ClearentWebAuth?))?
+  public init(baseURL: Swift.String, apiKey: Swift.String?, publicKey: Swift.String?, enableEnhancedMessaging: Swift.Bool = false)
+  public init(baseURL: Swift.String, apiKey: Swift.String?, publicKey: Swift.String?, offlineModeEncryptionKeyData: Foundation.Data?, enableEnhancedMessaging: Swift.Bool = false)
+  @objc deinit
+}
+public struct FlowDataItem {
+}
+@_hasMissingDesignatedInitializers public class FlowFeedback {
+  @objc deinit
+}
+@objc @_inheritsConvenienceInitializers @_Concurrency.MainActor(unsafe) open class ClearentBaseViewController : ClearentIdtechIOSFramework.ClearentAbstractViewController {
+  @_Concurrency.MainActor(unsafe) @objc override dynamic open func viewDidLoad()
+  @_Concurrency.MainActor(unsafe) @objc override dynamic public init(nibName nibNameOrNil: Swift.String?, bundle nibBundleOrNil: Foundation.Bundle?)
+  @_Concurrency.MainActor(unsafe) @objc required dynamic public init?(coder: Foundation.NSCoder)
+  @objc deinit
+}
+public protocol ClearentUIColors {
+  var loadingViewFillColor: UIKit.UIColor { get }
+  var filledBackgroundColor: UIKit.UIColor { get }
+  var filledButtonTextColor: UIKit.UIColor { get }
+  var filledDisabledBackgroundColor: UIKit.UIColor { get }
+  var filledDisabledButtonTextColor: UIKit.UIColor { get }
+  var borderColor: UIKit.UIColor { get }
+  var borderedBackgroundColor: UIKit.UIColor { get }
+  var borderedButtonTextColor: UIKit.UIColor { get }
+  var linkButtonTextColor: UIKit.UIColor { get }
+  var linkButtonDisabledTextColor: UIKit.UIColor { get }
+  var highlightedBackgroundColor: UIKit.UIColor { get }
+  var highlightedTextColor: UIKit.UIColor { get }
+  var defaultTextColor: UIKit.UIColor { get }
+  var titleLabelColor: UIKit.UIColor { get }
+  var subtitleLabelColor: UIKit.UIColor { get }
+  var subtitleWarningLabelColor: UIKit.UIColor { get }
+  var readerNameColor: UIKit.UIColor { get }
+  var readerStatusLabelColor: UIKit.UIColor { get }
+  var readerNameLabelColor: UIKit.UIColor { get }
+  var readerStatusConnectedIconColor: UIKit.UIColor { get }
+  var readerStatusNotConnectedIconColor: UIKit.UIColor { get }
+  var readersCellBackgroundColor: UIKit.UIColor { get }
+  var checkboxSelectedBorderColor: UIKit.UIColor { get }
+  var checkboxUnselectedBorderColor: UIKit.UIColor { get }
+  var tipLabelColor: UIKit.UIColor { get }
+  var infoLabelColor: UIKit.UIColor { get }
+  var navigationBarTintColor: UIKit.UIColor { get }
+  var screenTitleColor: UIKit.UIColor { get }
+  var removeReaderButtonBorderColor: UIKit.UIColor { get }
+  var removeReaderButtonTextColor: UIKit.UIColor { get }
+  var signatureDescriptionMessageColor: UIKit.UIColor { get }
+  var manualPaymentTitleColor: UIKit.UIColor { get }
+  var fieldValidationErrorMessageColor: UIKit.UIColor { get }
+  var manualPaymentTextFieldPlaceholder: UIKit.UIColor { get }
+  var settingOfflineStatusLabel: UIKit.UIColor { get }
+  var settingsOfflineStatusLabelFail: UIKit.UIColor { get }
+  var settingsOfflineStatusLabelSuccess: UIKit.UIColor { get }
+  var settingsReadersPlaceholderColor: UIKit.UIColor { get }
+  var settingsReadersDescriptionColor: UIKit.UIColor { get }
+  var errorLogKeyLabelColor: UIKit.UIColor { get }
+  var errorLogValueLabelColor: UIKit.UIColor { get }
+}
+public protocol ClearentUIFonts {
+  var primaryButtonTextFont: UIKit.UIFont { get }
+  var hintTextFont: UIKit.UIFont { get }
+  var modalTitleFont: UIKit.UIFont { get }
+  var modalSubtitleFont: UIKit.UIFont { get }
+  var listItemTextFont: UIKit.UIFont { get }
+  var readerNameTextFont: UIKit.UIFont { get }
+  var statusLabelFont: UIKit.UIFont { get }
+  var tipItemTextFont: UIKit.UIFont { get }
+  var customNameInfoLabelFont: UIKit.UIFont { get }
+  var customNameInputLabelFont: UIKit.UIFont { get }
+  var screenTitleFont: UIKit.UIFont { get }
+  var signatureSubtitleFont: UIKit.UIFont { get }
+  var detailScreenItemTitleFont: UIKit.UIFont { get }
+  var detailScreenItemSubtitleFont: UIKit.UIFont { get }
+  var detailScreenItemDescriptionFont: UIKit.UIFont { get }
+  var paymentViewTitleLabelFont: UIKit.UIFont { get }
+  var paymentFieldTitleLabelFont: UIKit.UIFont { get }
+  var errorMessageLabelFont: UIKit.UIFont { get }
+  var sectionTitleLabelFont: UIKit.UIFont { get }
+  var textfieldPlaceholder: UIKit.UIFont { get }
+  var settingsScreenTitle: UIKit.UIFont { get }
+  var settingsOfflineModeSubtitle: UIKit.UIFont { get }
+  var settingsOfflineModeProcessLabel: UIKit.UIFont { get }
+  var settingsReadersPlaceholderLabel: UIKit.UIFont { get }
+  var settingsReadersDescriptionLabel: UIKit.UIFont { get }
+  var offlineResultItemLabelFont: UIKit.UIFont { get }
+  var offlineReportFieldLabel: UIKit.UIFont { get }
+}
+public struct ClearentMoneyFormatter {
+  public static func formattedWithSymbol(from double: Swift.Double) -> Swift.String
+  public static func formattedWithoutSymbol(from double: Swift.Double) -> Swift.String
+  public static func formattedWithSymbol(from string: Swift.String) -> Swift.String
+}
+extension Swift.String {
+  public var double: Swift.Double {
+    get
+  }
+}
+extension ClearentIdtechIOSFramework.FlowFeedbackType : Swift.Equatable {}
+extension ClearentIdtechIOSFramework.FlowFeedbackType : Swift.Hashable {}
+extension ClearentIdtechIOSFramework.FlowButtonType : Swift.Equatable {}
+extension ClearentIdtechIOSFramework.FlowButtonType : Swift.Hashable {}
+extension ClearentIdtechIOSFramework.FlowInputType : Swift.Equatable {}
+extension ClearentIdtechIOSFramework.FlowInputType : Swift.Hashable {}
+extension ClearentIdtechIOSFramework.UserAction : Swift.Equatable {}
+extension ClearentIdtechIOSFramework.UserAction : Swift.Hashable {}
+extension ClearentIdtechIOSFramework.UserAction : Swift.RawRepresentable {}
+extension ClearentIdtechIOSFramework.OfflineModeState : Swift.Equatable {}
+extension ClearentIdtechIOSFramework.OfflineModeState : Swift.Hashable {}
+extension ClearentIdtechIOSFramework.OfflineModeState : Swift.RawRepresentable {}
+extension ClearentIdtechIOSFramework.ClearentErrorType : Swift.Equatable {}
+extension ClearentIdtechIOSFramework.ClearentErrorType : Swift.Hashable {}
+extension ClearentIdtechIOSFramework.ClearentErrorType : Swift.RawRepresentable {}
+extension ClearentIdtechIOSFramework.OfflineTransactionType : Swift.Equatable {}
+extension ClearentIdtechIOSFramework.OfflineTransactionType : Swift.Hashable {}
+extension ClearentIdtechIOSFramework.OfflineTransactionType : Swift.RawRepresentable {}
+extension ClearentIdtechIOSFramework.TransactionStoreStatus : Swift.Equatable {}
+extension ClearentIdtechIOSFramework.TransactionStoreStatus : Swift.Hashable {}
+extension ClearentIdtechIOSFramework.TransactionStoreStatus : Swift.RawRepresentable {}
+extension ClearentIdtechIOSFramework.ButtonStyleType : Swift.Equatable {}
+extension ClearentIdtechIOSFramework.ButtonStyleType : Swift.Hashable {}
