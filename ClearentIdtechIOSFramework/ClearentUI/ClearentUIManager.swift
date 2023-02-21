@@ -104,7 +104,7 @@ public final class ClearentUIManager: NSObject {
     }
     
     /**
-     * Method returns a UINavigationController that will display settings information like: link to recently paired readers, offline mode related info, option to enable email receipt functionality
+     * Method returns a UINavigationController that will display settings information like the following: link to recently paired readers, offline mode related info, option to enable email receipt functionality
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
     @objc public func settingsViewController(completion: ((ClearentError?) -> Void)?) -> UINavigationController {
