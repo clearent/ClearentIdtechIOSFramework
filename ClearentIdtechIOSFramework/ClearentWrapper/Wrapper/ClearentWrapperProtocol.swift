@@ -89,6 +89,7 @@ public protocol ClearentWrapperProtocol : AnyObject {
     /**
      * Method called when an offline signature was successfully saved.
      * @param status TransactionStoreStatus, the status of the offline signature proccesing
+     * @param status transactionID, the id of the offline transaction
      */
     func didAcceptOfflineSignature(status: TransactionStoreStatus, transactionID: String)
     
@@ -100,8 +101,7 @@ public protocol ClearentWrapperProtocol : AnyObject {
     
     /**
      * Method called each time the reader needs an action from the user.
-     * @UserAction, please check the enum for more cases
-     * @action, User Action needed to be performed by the user
+     * @action, User Action needed to be performed by the user. Please check the UserAction enum for more cases
      */
     func userActionNeeded(action: UserAction)
     

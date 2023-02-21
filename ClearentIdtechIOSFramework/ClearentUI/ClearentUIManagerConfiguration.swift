@@ -12,21 +12,21 @@ import CryptoKit
     
     // MARK: - Properties
     
-    public var tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages
-    public var signatureEnabled: Bool = true
+    var tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages
+    var signatureEnabled: Bool = true
 
     // MARK: - Init
     
-    @objc public init(baseURL: String, apiKey: String? = nil, publicKey: String?, enableEnhancedMessaging: Bool = false, tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages, signatureEnabled: Bool = true) {
-        self.tipAmounts = tipAmounts
-        self.signatureEnabled = signatureEnabled
-        
-        super.init(baseURL: baseURL, apiKey: apiKey, publicKey: publicKey, enableEnhancedMessaging: enableEnhancedMessaging)
-        
-        ClearentWrapper.shared.initialize(with: ClearentWrapperConfiguration(baseURL: baseURL, apiKey: apiKey, publicKey: publicKey, enableEnhancedMessaging: enableEnhancedMessaging))
-    }
-    
-    @objc public init(baseURL: String, apiKey: String? = nil, publicKey: String?, offlineModeEncryptionKeyData: Data?, enableEnhancedMessaging: Bool = false, tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages, signatureEnabled: Bool = true) {
+    /**
+     * @param baseURL, required parameter that needs to point either to prod - gateway.clearent.net or sandbox - gateway-sb.clearent.net.
+     * @param apiKey, used for API authentication. This parameter can be nil as long as web authentication is used: ClearenwtWrapper.shared.updateWebAuth(...)
+     * @publicKey, if not passed, publicKey will be fetched from the web everytime a transaction is being made
+     * @offlineModeEncryptionKeyData, the key used to encrypt the offline transactions. If not passed, offline mode feature is not available
+     * @enableEnhancedMessaging, enables or disables the use of enhanced messages
+     * @tipAmounts, an array of tip percentages the client select from during the payment process
+     * @signatureEnabled, if true, a screen will be displayed during the payment process where the client can draw the signature
+     */
+    @objc public init(baseURL: String, apiKey: String? = nil, publicKey: String? = nil, offlineModeEncryptionKeyData: Data? = nil, enableEnhancedMessaging: Bool = false, tipAmounts: [Int] = ClearentConstants.Tips.defaultTipPercentages, signatureEnabled: Bool = true) {
         self.tipAmounts = tipAmounts
         self.signatureEnabled = signatureEnabled
         

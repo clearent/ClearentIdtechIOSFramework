@@ -24,7 +24,7 @@ public final class ClearentWrapper : NSObject {
         }
     }
     
-    /// The list of readers stored in user defaults that were previously paired.
+    /// The list of readers stored in user defaults that were previously paired
     public var previouslyPairedReaders: [ReaderInfo] {
         ClearentWrapperDefaults.recentlyPairedReaders ?? []
     }
@@ -38,6 +38,7 @@ public final class ClearentWrapper : NSObject {
     /// If card reader payment fails, the option to use manual payment can be displayed in UI as a fallback method. If user selects this method, useManualPaymentAsFallback needs to be set to true.
     public var useManualPaymentAsFallback: Bool?
     
+    /// Make sure this is set before using the SDK, otherwise the app will crash
     public static var configuration: ClearentWrapperConfiguration!
     
     // MARK: - Internal properties
@@ -209,9 +210,9 @@ public final class ClearentWrapper : NSObject {
     }
     
     /**
-     * Method that starts a transaction. If manualEntryCardInfo is not null then a manual transaction will be performed otherwise a card reader transaction will be initiated.
+     * Method that starts a transaction
      * @param SaleEntity,  holds informations used for the transcation
-     * @param isManualTransaction,  specifies if the transaction is manual
+     * @param isManualTransaction, . If true, a manual transaction will be performed, otherwise a card reader transaction will be initiated
      * @param completion, the closure that will be called when a missing key error is detected
      */
     public func startTransaction(with saleEntity: SaleEntity, isManualTransaction: Bool, completion: @escaping((ClearentError?) -> Void)) {
@@ -296,9 +297,9 @@ public final class ClearentWrapper : NSObject {
     }
     
     /**
-     * Method that sends a transaction receipt to an email recipient.
+     * Method that sends a transaction receipt to an email recipient. If offline mode is enabled, the email will be stored locally until the transaction is uploaded
      * @param emailAddress, the emai address to which the transaction receipt will be sent
-     * @param completion, the closure that will be called after a response from post a receipt request is received. This is dispatched onto the main queue
+     * @param completion, the closure that will be called after a response from the  post request is received. This is dispatched onto the main queue
      */
     
     public func sendReceipt(emailAddress: String, completion: @escaping (ReceiptResponse?, ClearentError?) -> Void) {
@@ -374,6 +375,33 @@ public final class ClearentWrapper : NSObject {
     }
     
     /**
+     * Method that uploads all the transactions that were made in offline mode
+     * @param completion, the closure that is called after all the offline transactions are processed. This is dispatched onto the main queue.
+     */
+    public func processOfflineTransactions(completion: @escaping ((ClearentError?) -> Void)) {
+        transactionRepository?.fetchHppSetting { [weak self] error in
+            if error != nil {
+                completion(ClearentError(type: .httpError))
+                return
+            }
+            self?.transactionRepository?.processOfflineTransactions() {
+                DispatchQueue.main.async {
+                    completion(nil)
+                }
+            }
+        }
+    }
+    
+    /**
+     * Method that  checks if there are terminal settings already fetched
+     */
+    public func areTerminalSettingsCached() -> Bool {
+        return ClearentWrapperDefaults.terminalSettings != nil
+    }
+    
+    // MARK: - Internal
+    
+    /**
      * Method that returns the offline manager instance
      */
     
@@ -396,34 +424,6 @@ public final class ClearentWrapper : NSObject {
     func serviceFeeProgramType() -> ServiceFeeProgramType? {
         ClearentWrapperDefaults.terminalSettings?.serviceFeeProgram
     }
-    
-    /**
-     * Method that uploads all the transactions that were made in offline mode
-     * @param completion, the closure that is called after all the offline transactions are processed. This is dispatched onto the main queue.
-     */
-    public func processOfflineTransactions(completion: @escaping ((ClearentError?) -> Void)) {
-        transactionRepository?.fetchHppSetting { [weak self] error in
-            if error != nil {
-                completion(ClearentError(type: .httpError))
-                return
-            }
-            self?.transactionRepository?.processOfflineTransactions() {
-                DispatchQueue.main.async {
-                    completion(nil)
-                }
-            }
-        }
-    }
-    
-    /**
-     * Method that  checks if there are temrinal settings already fetched
-     * Returns a bool
-     */
-    public func areTerminalSettingsCached() -> Bool {
-        return ClearentWrapperDefaults.terminalSettings != nil
-    }
-    
-    // MARK: - Internal
     
     /**
      * Method that resends the last client signature image to the payment gateway for storage.

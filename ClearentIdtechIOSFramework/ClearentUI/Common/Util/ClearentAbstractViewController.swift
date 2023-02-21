@@ -8,6 +8,9 @@
 
 import Foundation
 
+/// All screens that should have a maximum width (for iPad support) inherit from this class. The maximum width can be set by updating ClearentConstants.Size.defaultScreenMaxWidth.
+/// If a screen needs a custom value, it can override containerMaxWidthConstraint.
+
 open class ClearentAbstractViewController: UIViewController {
     
     // MARK: - IBOutlets

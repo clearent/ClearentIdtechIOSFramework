@@ -19,8 +19,10 @@ public final class ClearentUIManager: NSObject {
     
     @objc public static let shared = ClearentUIManager()
     
+    ///  Make sure this is set before using the SDK
     @objc public static var configuration: ClearentUIManagerConfiguration!
 
+    /// if true, card reader payment flow will be displayed. Otherwise, a form where the user needs to input card data is displayed.
     @objc public var cardReaderPaymentIsPreferred: Bool = true {
         didSet {
             clearentWrapper.cardReaderPaymentIsPreffered = cardReaderPaymentIsPreferred
@@ -80,7 +82,7 @@ public final class ClearentUIManager: NSObject {
     // MARK: Public
     /**
      * Method that returns a UINavigationController that can handle the entire payment process.
-     * @param amount, the amount to be charged in a transaction
+     * @param paymentInfo, a PaymentInfo object that contains information regarding amount, customer, invoice, web auth etc.
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
     @objc public func paymentViewController(paymentInfo: PaymentInfo?, completion: ((ClearentError?) -> Void)?) -> UINavigationController {
@@ -94,7 +96,7 @@ public final class ClearentUIManager: NSObject {
      * Method that returns a UINavigationController that can handle the pairing process of a card reader.
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
-    @objc public func pairingViewController( completion: ((ClearentError?) -> Void)?) -> UINavigationController {
+    @objc public func pairingViewController(completion: ((ClearentError?) -> Void)?) -> UINavigationController {
         navigationController(processType: .pairing(), dismissCompletion: { [weak self] result in
             let completionResult = self?.resultFor(completionResult: result)
             completion?(completionResult)
@@ -102,7 +104,7 @@ public final class ClearentUIManager: NSObject {
     }
     
     /**
-     * Method returns a UINavigationController that will display a list containing current card reader informations and recently paired readers
+     * Method returns a UINavigationController that will display settings information like: link to recently paired readers, offline mode related info, option to enable email receipt functionality
      * @param completion, a closure to be executed once the clearent SDK UI is dimissed
      */
     @objc public func settingsViewController(completion: ((ClearentError?) -> Void)?) -> UINavigationController {
