@@ -22,7 +22,7 @@ public final class ClearentUIManager: NSObject {
     ///  Make sure this is set before using the SDK
     @objc public static var configuration: ClearentUIManagerConfiguration!
 
-    /// if true, card reader payment flow will be displayed. Otherwise, a form where the user needs to input card data is displayed.
+    /// If true, card reader payment flow will be displayed. Otherwise, a form where the user needs to input card data is shown
     @objc public var cardReaderPaymentIsPreferred: Bool = true {
         didSet {
             clearentWrapper.cardReaderPaymentIsPreffered = cardReaderPaymentIsPreferred

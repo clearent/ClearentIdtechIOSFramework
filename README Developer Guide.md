@@ -59,7 +59,7 @@ The UI part simplifies the integration of the SDK by reducing the amount of code
 
 ### UI Initialization
 
-ClearentUIManager is a singleton class that will provide all these view controllers. Similar to ClearentWrapper, ClearentUIManager has a method that sets the configuration needed by the SDK and SDK UI to work properly:
+ClearentUIManager is a singleton class that will provide access to the main UI flows of the SDK. Similar to ClearentWrapper, ClearentUIManager has a method that sets the configuration needed by the SDK and SDK UI to work properly:
 
 ```
     public func initialize(with configuration: ClearentUIManagerConfiguration)
@@ -98,7 +98,7 @@ If you have a look at the implementation behind this, you will observe another t
 **ClearentProcessingModalViewController** and **ClearentProcessingModalPresenter** will be initialized and presented to the user. In order to initialize you need to provide some parameters like
 processType, paymentInfo, a reader if you use this to display the screen where the reader can be edited and also a dismiss completion.
 
-For the settings screen, **ClearentSettingsModalViewController** was created.
+For the settings screen, **ClearentSettingsModalViewController** was created. This contains info about recently paired readers, offline mode feature (if this is available) and the option to enable/disable email receipt functionality.
 
  **OfflinePromptViewController** is used to notify the user about offline mode.
 

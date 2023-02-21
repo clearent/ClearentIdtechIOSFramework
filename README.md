@@ -74,7 +74,7 @@ In order to integrate the **SDK UI** you will need to create a configuration obj
 ### Important!
 
 **The safe keeping of the **BASE URL**, **API KEY** and the **PUBLIC KEY** is the integrators reposability. The SDK stores this information only in memory!
-In case of web authentication, API KEY, will not be used.
+API KEY can be nil as long as web authentication is used: ClearenwtWrapper.shared.updateWebAuth(...). This implies having a vt-token from the web side
 If no PUBLIC KEY is passed to the SDK, the value will be fetched each time a transaction is being made. **
 
 
@@ -117,10 +117,10 @@ navigationController?.present(transactionVC, animated: true, completion: {})
 ```
 The settings screen will display the following sections:
  - a link to the current reader. When tapping on it, a new page will display the status of the current reader and a list of recently paired readers. From this list the user can navigate to the readers details.
- - offline mode related elements enable/disable offline mode, option to process offline transaction and to see an upload report. These are displayed only if offline mode feature is available.
+ - offline mode related elements, option to process offline transaction and to see an upload report. These are displayed only if offline mode feature is available. Otherwise, the section is hidden.
  - a toggle used to enable/disable email receipt
 
-Another option for accesing the reader info is to use **ClearentWrapperDefaults** class that has two important public properties: 
+Another way for accesing the reader info is to use **ClearentWrapperDefaults** class that has two important public properties: 
 
 - recentlyPairedReaders ,a list of ReaderInfo objects, containing previously paired devices
 - pairedReaderInfo, a ReaderInfo? object representing the current paired reader
@@ -128,10 +128,11 @@ Another option for accesing the reader info is to use **ClearentWrapperDefaults*
 
 **Reader Status**
 
-If you want to display the reader's status in your app you cand use the  **readerInfoReceived** closure of the **ClearentUIManagerConfiguration**.
+If you want to display the reader's status in your app you cand use the **readerInfoReceived** closure of the **ClearentUIManagerConfiguration**.
 
 
-Here is the defintion of the closure. You will receive a **ReaderInfo** object that contains reader related information.
+Here is the defintion of the closure. You will receive a **ReaderInfo** object that contains reader related information:
+
 ```
 public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
 

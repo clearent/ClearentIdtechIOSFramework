@@ -212,7 +212,7 @@ public final class ClearentWrapper : NSObject {
     /**
      * Method that starts a transaction
      * @param SaleEntity,  holds informations used for the transcation
-     * @param isManualTransaction, . If true, a manual transaction will be performed, otherwise a card reader transaction will be initiated
+     * @param isManualTransaction, if true, a manual transaction will be performed, otherwise a card reader transaction will be initiated
      * @param completion, the closure that will be called when a missing key error is detected
      */
     public func startTransaction(with saleEntity: SaleEntity, isManualTransaction: Bool, completion: @escaping((ClearentError?) -> Void)) {
@@ -297,9 +297,9 @@ public final class ClearentWrapper : NSObject {
     }
     
     /**
-     * Method that sends a transaction receipt to an email recipient. If offline mode is enabled, the email will be stored locally until the transaction is uploaded
+     * Method that sends a transaction receipt to an email recipient. If offline mode is enabled, the email will be stored locally
      * @param emailAddress, the emai address to which the transaction receipt will be sent
-     * @param completion, the closure that will be called after a response from the  post request is received. This is dispatched onto the main queue
+     * @param completion, the closure that will be called after a response from the request is received. This is dispatched onto the main queue
      */
     
     public func sendReceipt(emailAddress: String, completion: @escaping (ReceiptResponse?, ClearentError?) -> Void) {
@@ -393,7 +393,7 @@ public final class ClearentWrapper : NSObject {
     }
     
     /**
-     * Method that  checks if there are terminal settings already fetched
+     * Method that checks if there are terminal settings already fetched
      */
     public func areTerminalSettingsCached() -> Bool {
         return ClearentWrapperDefaults.terminalSettings != nil

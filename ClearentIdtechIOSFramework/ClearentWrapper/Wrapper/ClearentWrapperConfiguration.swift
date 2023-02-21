@@ -32,7 +32,7 @@ import CryptoKit
      * @param baseURL, required parameter that needs to point either to prod - gateway.clearent.net or sandbox - gateway-sb.clearent.net.
      * @param apiKey, used for API authentication. This parameter can be nil as long as web authentication is used: ClearenwtWrapper.shared.updateWebAuth(...) 
      * @publicKey, if not passed, publicKey will be fetched from the web everytime a transaction is being made
-     * @offlineModeEncryptionKeyData, the key used to encrypt the offline transactions. If not passed, offline mode feature is disabled
+     * @offlineModeEncryptionKeyData, the key used to encrypt the offline transactions. If not passed, offline mode feature is not available
      * @enableEnhancedMessaging, enables or disables the use of enhanced messages
      */
     public init(baseURL: String, apiKey: String?, publicKey: String?, offlineModeEncryptionKeyData: Data? = nil, enableEnhancedMessaging: Bool = false) {
