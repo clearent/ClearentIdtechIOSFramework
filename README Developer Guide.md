@@ -28,14 +28,14 @@ Because it's a static parameter, the configuration can be accessed like this:
 
 Enabling the enhanced messages will use the enhancedmessages-v1.txt file from the ClearentIdtechMessages bundle to provide friendly messages to the user.
 
-readerInfoReceived is a closure that can be called each time there is new info on the reader. This gives the integrator the chance to update the UI. This way, the host app is informed of changes that occurred to the current paired device:
+**readerInfoReceived** is a closure that can be called each time there is new info on the reader. This gives the integrator the chance to update the UI. This way, the host app is informed of changes that occurred to the current paired device:
 
 
 ```
    public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
 ```
 
-provideAuthAndMerchantTerminalDetails is a closure called when the SDK needs to inform the user about the current merchant & terminal selected. Only used when the webAuth is used instead of API KEY for the API authentication.
+**provideAuthAndMerchantTerminalDetails** is a closure called when the SDK needs to inform the user about the current merchant & terminal selected. Only used when the webAuth is used instead of API KEY for the API authentication.
 
 In order to pick and choose only the feedback that is important and it makes sense in the context of the SDK UI, one important enum was created:
 UserAction, this will be initialised if any of the enum values will match the SDK feedback message. If a case is not there the string of the feedback message will be used.

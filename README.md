@@ -99,12 +99,12 @@ Every time you start a transaction you need to pass an instance of PaymentInfo t
 The SDK UI provides the option to enter the card details manually or by using the card reader, use the **cardReaderPaymentIsPreffered** to choose the desired method. If this method fails, the option to use manual payment can be displayed in UI as a fallback method.
 
 ```
- ClearentUIManager.shared.cardReaderPaymentIsPreffered = true
+    ClearentUIManager.shared.cardReaderPaymentIsPreffered = true
 ```
 
 ```
-let transactionVC = ClearentUIManager.shared.paymentViewController(paymentInfo: PaymentInfo(amount: 20.0), completion: {})
-navigationController?.present(transactionVC, animated: true, completion: {})
+    let transactionVC = ClearentUIManager.shared.paymentViewController(paymentInfo: PaymentInfo(amount: 20.0), completion: {})
+    navigationController?.present(transactionVC, animated: true, completion: {})
 ```
 
 
@@ -141,9 +141,9 @@ public var readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?
 How to use it.
 
 ```
-ClearentUIManager.configuration.readerInfoReceived = { [weak self] reader in
-    // update your UI
-}
+    ClearentUIManager.configuration.readerInfoReceived = { [weak self] reader in
+        // update your UI
+    }
 ```
 
 
@@ -153,7 +153,7 @@ The SDK provides the option to customize the fonts, colors and texts used in the
 
 **Colors**
 ```
-ClearentUIBrandConfigurator.shared.colorPalette = ClientColorPalette()
+    ClearentUIBrandConfigurator.shared.colorPalette = ClientColorPalette()
 ```
 
 **ClientColorPalette** is a class that you will need to write and implement **ClearentUIColors** protocol. 
@@ -165,8 +165,8 @@ You will need to implement a class that will implement **ClearentUIFonts** proto
 
 
 ```
-UIFont.loadFonts(fonts: ["Arial Bold.ttf", "Arial.ttf"], bundle: Constants.bundle)
-ClearentUIBrandConfigurator.shared.fonts = ClientFonts()
+    UIFont.loadFonts(fonts: ["Arial Bold.ttf", "Arial.ttf"], bundle: Constants.bundle)
+    ClearentUIBrandConfigurator.shared.fonts = ClientFonts()
 ```
 
 **Texts**
@@ -174,12 +174,12 @@ ClearentUIBrandConfigurator.shared.fonts = ClientFonts()
 In order to customize texts used in the SDK you will need to provide a dictionary containing the new messages you want to show.
 
 ```
-ClearentUIBrandConfigurator.shared.overriddenLocalizedStrings = [
-    "xsdk_tips_custom_amount": "🍎Custom amount",
-    "xsdk_tips_user_transaction_tip_title": "🍎Would you like to add a tip?",
-    "xsdk_tips_user_action_transaction_with_tip": "🍎Charge %@",
-    "xsdk_tips_user_action_transaction_without_tip":"🍎Maybe next time"
-]
+    ClearentUIBrandConfigurator.shared.overriddenLocalizedStrings = [
+        "xsdk_tips_custom_amount": "🍎Custom amount",
+        "xsdk_tips_user_transaction_tip_title": "🍎Would you like to add a tip?",
+        "xsdk_tips_user_action_transaction_with_tip": "🍎Charge %@",
+        "xsdk_tips_user_action_transaction_without_tip":"🍎Maybe next time"
+    ]
 ```
 
 
@@ -327,7 +327,7 @@ You will use this class to update the SDK with the needed information to work pr
 **Important Note:**
 
 The safe keeping of the **API URL**, **API KEY** and the **PUBLIC KEY** is the integrators reposability. The SDK stores this information only in memory!
-If not public key is passed, this will be fetched from the web.
+If no public key is passed, this will be fetched from the web.
 
 **ClearentWrapperProtocol** is the protocol you will need to implement in order to receive updates , error and notifications from the SDK. Each method from the protocol is documented in code.
 
@@ -404,7 +404,7 @@ If you want to email the receipt after a transaction, you can use
 
 ## Process offline transactions
 
-Store and forward feature is available if offlineModeEncryptionKeyData is being passed to the SDK initialization. This means that while offline mode is enabled, all transaction will be stored locally. To upload offline transaction when internet is on, the following method needs to be called.
+Store and forward feature is available if **offlineModeEncryptionKeyData** is being passed to the SDK initialization. This means that while offline mode is enabled, all transaction will be stored locally. To upload offline transaction when internet is on, the following method needs to be called.
 **func processOfflineTransactions(completion: @escaping ((ClearentError?) -> Void))**
 
 ## Relevant code snippets
