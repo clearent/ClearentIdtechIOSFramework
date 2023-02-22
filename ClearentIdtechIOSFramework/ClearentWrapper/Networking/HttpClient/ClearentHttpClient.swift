@@ -32,6 +32,7 @@ protocol ClearentHttpClientProtocol {
     func hppSettings(completion: @escaping (Data?, Error?) -> Void)
     func updateWebAuth(with auth: ClearentWebAuth)
     func hasAuth() -> Bool
+    func hasWebAuth() -> Bool
 }
 
 class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
@@ -64,8 +65,8 @@ class ClearentDefaultHttpClient: ClearentHttpClientProtocol {
         return webAuth != nil || apiKey != nil
     }
     
-    public func haswebAuth() -> Bool {
-        return webAuth != nil
+    public func hasWebAuth() -> Bool {
+        webAuth != nil
     }
 
     // MARK: - Internal

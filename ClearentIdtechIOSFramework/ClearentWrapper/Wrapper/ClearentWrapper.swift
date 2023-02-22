@@ -128,7 +128,7 @@ public final class ClearentWrapper : NSObject {
      * Do not use unless you have a vt-token from the web side
      */
     public func hasWebAuth() -> Bool {
-        ((self.transactionRepository?.hasAuthentication()) != nil)
+        transactionRepository?.hasWebAuthentication() ?? false
     }
 
     /**

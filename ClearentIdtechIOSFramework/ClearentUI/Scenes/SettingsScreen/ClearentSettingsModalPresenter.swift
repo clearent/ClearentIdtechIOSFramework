@@ -97,7 +97,7 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
         offlineStatusDescriptionColor = ClearentUIBrandConfigurator.shared.colorPalette.settingOfflineStatusLabel
         offlineStatusButtonAction = { [weak self] in
             if ClearentWrapper.shared.isInternetOn {
-                if (ClearentWrapper.shared.hasWebAuth()) {
+                if ClearentWrapper.shared.hasWebAuth() {
                     self?.processOfflineTransactionsWithWebAuth()
                 } else {
                     self?.settingsPresenterView?.updateOfflineStatusView(inProgress: true)
