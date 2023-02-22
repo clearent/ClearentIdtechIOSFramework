@@ -85,7 +85,7 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
      * Returns true or false
      */
     func hasWebAuthentication() -> Bool {
-        return self.httpClient.hasAuth()
+        httpClient.hasWebAuth()
     }
     
     /**
