@@ -46,6 +46,8 @@
         clearentDelegate = [[ClearentDelegate alloc] initWithConfig:publicDelegate clearentVP3300Configuration:clearentVP3300Configuration  idTechSharedInstance: [IDT_VP3300 sharedController]];
         clearentTransactions = [[ClearentTransactions alloc] init:clearentDelegate clearentVP3300:self];
         [IDT_VP3300 sharedController].delegate = clearentDelegate;
+        [IDT_VP3300 disableAudioDetection];
+        [IDT_Device disableAudioDetection];
         if(!clearentVP3300Configuration.disableRemoteLogging) {
             
             [ClearentLumberjack initLumberJack:clearentVP3300Configuration.clearentBaseUrl publicKey:clearentVP3300Configuration.publicKey];
@@ -65,6 +67,8 @@
         clearentDelegate = [[ClearentDelegate alloc] initWithPaymentCallback:publicDelegate clearentVP3300Configuration:clearentVP3300Configuration callbackObject:self withSelector:runTransactionSelector idTechSharedInstance: [IDT_VP3300 sharedController]];
 
         [IDT_VP3300 sharedController].delegate = clearentDelegate;
+        [IDT_VP3300 disableAudioDetection];
+        [IDT_Device disableAudioDetection];
         
         clearentDeviceConnector = [[ClearentDeviceConnector alloc] init:clearentDelegate clearentVP3300:self ];
         [clearentDelegate setClearentDeviceConnector:clearentDeviceConnector];
