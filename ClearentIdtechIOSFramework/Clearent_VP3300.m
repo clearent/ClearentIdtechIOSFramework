@@ -31,6 +31,8 @@
         clearentDelegate = [[ClearentDelegate alloc] init:publicDelegate clearentBaseUrl:clearentBaseUrl publicKey:publicKey idTechSharedInstance: [IDT_VP3300 sharedController]];
         clearentTransactions = [[ClearentTransactions alloc] init:clearentDelegate clearentVP3300:self];
         [IDT_VP3300 sharedController].delegate = clearentDelegate;
+        [IDT_VP3300 disableAudioDetection];
+        [IDT_Device disableAudioDetection];
  
         [ClearentLumberjack initLumberJack:clearentBaseUrl publicKey:publicKey];
         
