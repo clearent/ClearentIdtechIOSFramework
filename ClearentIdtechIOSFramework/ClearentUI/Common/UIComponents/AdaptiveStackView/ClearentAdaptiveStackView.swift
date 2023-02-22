@@ -7,7 +7,7 @@
 
 import UIKit
 
-/// A custom UIStackView  that supports subviews with different margins between them.
+/// A custom UIStackView  that supports subviews with different spaces between them.
 public class ClearentAdaptiveStackView: UIStackView {
 
     // MARK: - Public

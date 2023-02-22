@@ -20,6 +20,7 @@ public class OfflinePromptViewController: ClearentBaseViewController {
     @IBOutlet weak var offlineQuestionCancelBtn: ClearentPrimaryButton!
     
     var dismissCompletion: ((CompletionResult) -> Void)?
+    
     // MARK: - Init
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {

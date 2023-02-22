@@ -43,7 +43,7 @@ import UIKit
         public static let warning = UIColor(hexString: "#C2210F")
     }
 
-    // MARK: Assets
+    // MARK: - Assets
 
     public enum IconName {
         // Reader Battery Status

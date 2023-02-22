@@ -110,6 +110,6 @@ protocol TransactionStorageProtocol {
     /// Deletes a transaction
     func deleteTransactionWith(id: String) -> TransactionStoreStatus
     
-    // Deletes a transaction
+    /// Deletes all transactions
     func deleteAllData()
 }

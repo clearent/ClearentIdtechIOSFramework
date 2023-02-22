@@ -6,6 +6,10 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
+/**
+  This class holds the necessary properties needed to initiate a payment request.
+ */
+
 @objc public class PaymentInfo: NSObject {
     
     // MARK: - Properties
