@@ -4,7 +4,7 @@
 
 ## Overview 
 
-Clearent SDK UI is a wrapper over ClearentFrameworkSDK that provides payment capabilities using the IDTech iOS framework to read credit card data using VP3300. Its goal is to ease integration by providing complete UI that handle all important flows end-to-end.
+**Clearent SDK UI** is a wrapper over **ClearentFrameworkSDK** that provides payment capabilities using the **IDTech** iOS framework to read credit card data using **VP3300**. Its goal is to ease integration by providing complete UI that handle all important flows end-to-end.
 
 
  **Clearent SDK UI** wraps all major features of the ClearentFrameworkSDK and adds UI for all major flows:
@@ -19,15 +19,15 @@ Clearent SDK UI is a wrapper over ClearentFrameworkSDK that provides payment cap
 
 1. **Tips**, when this feature is enabled, a tips screen will be displayed during the transaction flow, where the user/client is prompted with UI that will offer some options to choose a tip. This feature can be enabled or disabled from your merchant account.
 
-2. **Signature**, when this feature is enabled, the SDK will display a screen where the user/client can provide a signature. This signature will be uploaded to the Clearent backend.
+2. **Signature**, when this feature is enabled, the SDK will display a screen where the user/client can provide a signature. This signature will be uploaded to the Clearent backend. This feature can be enabled when initializating the SDK UI.
 
-3. **Email receipt**, if this was previously enabled in settings screen, as a last step in the transaction flow, the user will be prompted to enter an email address to which the transation receipt will be sent.
+3. **Email receipt**, if this is enabled in settings screen, as a last step in the transaction flow, the user will be prompted to enter an email address to which the transation receipt will be sent.
 
-4. **Store and Forward**, if this is available, settings screen will display a section related to it. Depending on the options the user enables, transactions will be stored locally or they will be uploaded to the Clearent backend. If transactions are saved locally, a "Process" button will appear on settings screen, under the "Offline mode options" section. Tapping on the button will trigger the upload of the local transactions. An upload report will then be available in settings screen.
+4. **Store and Forward**, if this is available, settings screen will display a section related to it. The feature can be activated by passing `offlineModeEncryptionKeyData` to SDK UI. Depending on the options the user enables in settings screen, transactions will be stored locally or they will be uploaded to the Clearent backend. If transactions are saved locally, a "Process" button will appear on settings, under the "Offline mode options" section. Tapping on the button will trigger the upload of the local transactions. An upload report will then be available in settings screen.
 
-5. **UI Customization**, Clearent SDK UI provides the integrator the chance to customize the fonts, colors and texts used in the UI, This is achieved by overwriting the public properties of each UI element that is exposed.
+5. **UI Customization**, Clearent SDK UI provides the integrator the chance to customize the fonts, colors and texts used in the UI. This is achieved by overwriting the public properties of each UI element that is exposed.
 
-6. **Enhanced Messages**, when this feature is enabled the the feedback that the SDK is providing uses friendlier messages, this messages are stored in the enhancedmessages-v1.txt file from the ClearentIdtechMessages bundle.
+6. **Enhanced Messages**, when this feature is enabled, the feedback that the SDK is providing uses friendlier messages, this messages are stored in the enhancedmessages-v1.txt file from the ClearentIdtechMessages bundle.
     The host app will need to include the bundle in build phases copy resources section.
 
 
@@ -67,7 +67,7 @@ The SDK supports current version of iOS and two previous versions. Curently 14, 
 
 ## How to Integrate
 
-In order to integrate the **SDK UI** you will need to create a configuration object and pass it ClearentUIManager like in the following example: 
+In order to integrate the **SDK UI** you will need to create a configuration object and pass it to `ClearentUIManager`, like in the following example: 
 
 ```
 let uiManagerConfig =
@@ -77,14 +77,14 @@ ClearentUIManager.shared.initialize(with: uiManagerConfig)
 
 ### Important!
 
-**The safe keeping of the `BASE URL`, `API KEY` and the `PUBLIC KEY` is the integrators reposability. The SDK stores this information only in memory!
-API KEY can be nil as long as web authentication is used: ClearenwtWrapper.shared.updateWebAuth(...). This implies having a vt-token from the web side
+**The safe keeping of the `BASE URL`, `API KEY` and the `PUBLIC KEY` is the integrators reposability. The SDK stores this information only in memory!  
+API KEY can be nil as long as web authentication is used: ClearenwtWrapper.shared.updateWebAuth(...). This implies having a vt-token from the web side.  
 If no PUBLIC KEY is passed to the SDK, the value will be fetched each time a transaction is being made.**
 
 
 **Tips** 
 
-This feature can be enabled from your merchant account and when it's enabled the first step in the transaction flow will be a prompt where the user/client is prompted with UI that will offer some options to choose a tip. The options the user/client has are three fixed options in percents and a custom tip input field. The three options are customizable by setting the `tipAmounts` that is an array of Int values property of the `ClearentUIManagerConfiguration`.
+This feature can be enabled from your merchant account and when it's enabled, the user/client is prompted during the transaction flow with UI that will offer some options to choose a tip. The options the user/client has are three fixed options in percents and a custom tip input field. The three options are customizable by setting the `tipAmounts` that is an array of Int values property of the `ClearentUIManagerConfiguration`.
 
 
 Now you are ready to use the SDK UI. 
@@ -118,6 +118,7 @@ navigationController?.present(transactionVC, animated: true, completion: {})
 let settingsVC = ClearentUIManager.shared.settingsViewController(completion: {}) 
 navigationController?.present(settingsVC, animated: true)
 ```
+
 The settings screen will display the following sections:
  - a link to the current reader. When tapping on it, a new page will display the status of the current reader and a list of recently paired readers. From this list the user can navigate to the readers details.
  - offline mode related elements, option to process offline transaction and to see an upload report. These are displayed only if offline mode feature is available. Otherwise, the section is hidden.
@@ -160,7 +161,7 @@ The SDK provides the option to customize the fonts, colors and texts used in the
 ClearentUIBrandConfigurator.shared.colorPalette = ClientColorPalette()
 ```
 
-**ClientColorPalette** is a class that you will need to write and implement `ClearentUIColors` protocol. 
+`ClientColorPalette` is a class that you will need to write and implement `ClearentUIColors` protocol. 
 
 
 **Fonts**
@@ -323,9 +324,9 @@ Objective-C example of the ClearenSDKUI  integration [Obj-C Example](https://git
 
 ## Overview
 
-`ClearentWrapper` is a wrapper over `ClearentFrameworkSDK` that provides payments capabilities using the IDTech iOS framework to read credit card data using VP3300. Its goal is to ease integration and fix some of the most common issues.
+**ClearentWrapper** is a wrapper over **ClearentFrameworkSDK** that provides payments capabilities using the IDTech iOS framework to read credit card data using VP3300. Its goal is to ease integration and fix some of the most common issues.
 
-**ClearentWrapper** is a singleton class and the main interaction point with the SDK.  
+`ClearentWrapper` is a singleton class and the main interaction point with the SDK.  
 
 You will use this class to update the SDK with the needed information to work properly : **API URL**, **API KEY** and the **PUBLIC KEY**. 
 
@@ -364,7 +365,7 @@ A transaction is performed in two steps :
 1. Reading the card, the IDTech framework reads the card info and provides a jwt (token).
 2. Performing an API call that will send the transaction information together with the JWT token to a payment gateway.
 
-You can start a transaction using `func startTransaction(with saleEntity: SaleEntity, isManualTransaction: false, completion: @escaping((ClearentError?) -> Void))`. You need to provide a SaleEntity that will contain the amount, you can also specify a tip and client related information. 
+You can start a transaction using `func startTransaction(with saleEntity: SaleEntity, isManualTransaction: false, completion: @escaping((ClearentError?) -> Void))`. You need to provide a `SaleEntity` that will contain the amount, you can also specify a tip and client related information. 
 
 When you call the startTransaction method the SDK will start guide you to the process by calling two important methods from the ClearentWrapperProtocol  : 
 
@@ -385,13 +386,13 @@ If you started a card reader transaction and want to cancel it you can use cance
 
 ## Getting information related to the card reader status
 
-You can obtain a ReaderInfo  object from **ClearentWrapperDefaults.pairedReader**.  
+You can obtain a `ReaderInfo`  object from `ClearentWrapperDefaults.pairedReader`.  
 Sometimes you will need to request and display new information related to the reader like battery status or signal strength. You can achieve this by using the startDeviceInfoUpdate()` method, calling this method will start fetching new information from the connected reader and when this information will be available it will call `readerInfoReceived: ((_ readerInfo: ReaderInfo?) -> Void)?` closure that you will need to implement in your code.
 
 
 ## Getting information related to previously paired readers
 
-Each time you pair a new reader the SDK will save its information in a User Defaults cache. You can get the list using recentlyPairedReaders  property of the `ClearentWrapperDefaults`. The result will be an array of `ReaderInfo` objects.
+Each time you pair a new reader the SDK will save its information in a User Defaults cache. You can get the list using `recentlyPairedReaders` property of the `ClearentWrapperDefaults`. The result will be an array of `ReaderInfo` objects.
 
 You can check if a reader is connected by using the `isReaderConnected()` method or by checking the `isConnected` property of the `ClearentWrapperDefaults.pairedReader`.
 
@@ -417,11 +418,12 @@ Store and forward feature is available if `offlineModeEncryptionKeyData` is bein
 **Initialisation**  
 
 ```
-    let encryptionKeyData = Crypto.SHA256hash(data: "some_secret_here".data(using: .utf8)!)
-    let clearentWrapperConfiguration = ClearentWrapperConfiguration(baseURL: baseURL, apiKey: apiKey, publicKey: nil, offlineModeEncryptionKeyData: encryptionKeyData)
-    ClearentWrapper.shared.initialize(with: clearentWrapperConfiguration)
-    // You will need to implement the delegate methods
-    ClearentWrapper.shared.delegate = self
+let encryptionKeyData = Crypto.SHA256hash(data: "some_secret_here".data(using: .utf8)!)
+let clearentWrapperConfiguration = ClearentWrapperConfiguration(baseURL: baseURL, apiKey: apiKey, publicKey: nil, offlineModeEncryptionKeyData: encryptionKeyData)
+ClearentWrapper.shared.initialize(with: clearentWrapperConfiguration)
+
+// You will need to implement the delegate methods
+ClearentWrapper.shared.delegate = self
 ```
 
 
@@ -430,22 +432,22 @@ Store and forward feature is available if `offlineModeEncryptionKeyData` is bein
 Calling this method will start the process of pairing a card reader with an iOS device.
 
 ```
-    ClearentWrapper.shared.startPairing(reconnectIfPossible: true)
+ClearentWrapper.shared.startPairing(reconnectIfPossible: true)
 ```
 
 After the search for readers is completed the SDK will trigger a delegate method. 
 
 ```
-    func didFindReaders(readers: [ReaderInfo])  {
-        // you can display the list of readers on the UI
-    }
+func didFindReaders(readers: [ReaderInfo])  {
+    // you can display the list of readers on the UI
+}
 ```
 
 After the user selects one of the readers from the list you need to tell the SDK to connect to it.
 
 ```
-   // reader is a ReaderInfo item
-   ClearentWrapper.shared.connectTo(reader: reader)
+// reader is a ReaderInfo item
+ClearentWrapper.shared.connectTo(reader: reader)
 ```
 
 The SDK will try to connect to the selected device and it will call the `didFinishedPairing()` method when finished.
@@ -457,21 +459,21 @@ Now you have a paired reader and you can start using it for performing transacti
 Using a card reader
 
 ```
-   // Define a SaleEntity, you can also add client information on the SaleEntity
-   let saleEntity = SaleEntity(amount: 22.0, tipAmount: 5)
-   ClearentWrapper.shared.startTransaction(with: SaleEntity, isManualTransaction: false) { error in
-       // handle completion
-   }
+// Define a SaleEntity, you can also add client information on the SaleEntity
+let saleEntity = SaleEntity(amount: 22.0, tipAmount: 5)
+ClearentWrapper.shared.startTransaction(with: SaleEntity, isManualTransaction: false) { error in
+    // handle completion
+}
 ```
 
 Using manual card entry
 
 ```
-   // Create a SaleEntity object and, besides amount, add card info
-   let saleEntity = SaleEntity(amount: 22.0, tipAmount: 5, card: "4111111111111111", csc: "999", expirationDateMMYY: "11/28")
-   ClearentWrapper.shared.startTransaction(with: saleEntity, manualEntryCardInfo: true) { error in
-      // handle completion
-   }
+// Create a SaleEntity object and, besides amount, add card info
+let saleEntity = SaleEntity(amount: 22.0, tipAmount: 5, card: "4111111111111111", csc: "999", expirationDateMMYY: "11/28")
+ClearentWrapper.shared.startTransaction(with: saleEntity, manualEntryCardInfo: true) { error in
+    // handle completion
+}
 ```
 
 After starting a transaction feedback messages will be triggered on the delegate.
@@ -479,32 +481,32 @@ After starting a transaction feedback messages will be triggered on the delegate
 
 User action needed indicates that the user/client needs to perform an action in order for the transaction to continue e.g. Insert the card.
 ```
-    func userActionNeeded(action: UserAction) {
-        // here you should check the user action type and display the informtion to the users
-    }
+func userActionNeeded(action: UserAction) {
+    // here you should check the user action type and display the informtion to the users
+}
 ```
 
 
 User info contains informations related to the transaction status e.g. Processing
 
 ```
-    func didReceiveInfo(info: UserInfo) {
-        // you should display the information to the users
-    }
+func didReceiveInfo(info: UserInfo) {
+    // you should display the information to the users
+}
 ```
 
 
 After the transaction is proccesed a delegate method will inform you about the status.
 
 ```
-    func didFinishTransaction(response: TransactionResponse?, error: ClearentError?) {
-        if error == nil {
-           // no error
-        } else {
-           // you should inform about the error
-        }
+func didFinishTransaction(response: TransactionResponse?, error: ClearentError?) {
+    if error == nil {
+        // no error
+    } else {
+        // you should inform about the error
     }
+}
 ```
 
 
-Full Swift example of the ClearenrWrapper integration: [Swift Wrapper Example](https://github.com/clearent/idtech-ios-sdk/tree/main/ExampleSwiftWrapper).
+Full Swift example of the **ClearentWrapper** integration: [Swift Wrapper Example](https://github.com/clearent/idtech-ios-sdk/tree/main/ExampleSwiftWrapper).
