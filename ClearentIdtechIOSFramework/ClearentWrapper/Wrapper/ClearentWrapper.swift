@@ -96,7 +96,9 @@ public final class ClearentWrapper : NSObject {
      */
     public func initialize(with config: ClearentWrapperConfiguration) {
         ClearentWrapper.configuration = config
-        
+      
+        IDT_VP3300.disableAudioDetection()
+        IDT_Device.disableAudioDetection()
         VP3300Config = ClearentVP3300Config(noContactlessNoConfiguration: ClearentWrapper.configuration.baseURL, publicKey: ClearentWrapper.configuration.publicKey)
         clearentVP3300 = Clearent_VP3300(connectionHandling: self, clearentVP3300Configuration: VP3300Config)
         
