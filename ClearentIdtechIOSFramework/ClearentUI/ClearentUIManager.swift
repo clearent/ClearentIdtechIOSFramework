@@ -133,8 +133,12 @@ public final class ClearentUIManager: NSObject {
     /**
      * Method that returns a bool representing if we should display the offline mode warning
      */
-    @objc public func shouldDisplayOfflineModeLabel() -> Bool {
-        ClearentWrapperDefaults.enableOfflineMode
+    @objc public func shouldDisplayOfflineModeLabel(ignorePromptMode: Bool = false) -> Bool {
+        guard !ignorePromptMode else {
+            return ClearentWrapperDefaults.enableOfflineMode
+        }
+        return ClearentWrapperDefaults.enableOfflineMode &&
+        ((ClearentWrapperDefaults.enableOfflinePromptMode && !clearentWrapper.isInternetOn) || !ClearentWrapperDefaults.enableOfflinePromptMode)
     }
     
     // MARK: - Private

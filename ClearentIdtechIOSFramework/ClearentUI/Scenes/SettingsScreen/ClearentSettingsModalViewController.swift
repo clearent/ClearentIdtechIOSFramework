@@ -255,7 +255,7 @@ extension ClearentSettingsModalViewController: ClearentSettingsPresenterView {
     }
     
     func displayErrorAlert() {
-        showCancelAlert(title: ClearentConstants.Localized.Internet.error, message: ClearentConstants.Localized.Error.generalErrorDescription, cancelTitle: ClearentConstants.Localized.Error.cancel)
+        showCancelAlert(title: ClearentConstants.Localized.Error.generalErrorTitle, message: ClearentConstants.Localized.Error.generalErrorDescription, cancelTitle: ClearentConstants.Localized.Error.cancel)
     }
     
     func displayMerchantAndTerminalInfo(merchant: String, terminal: String, action: UIAlertAction) {

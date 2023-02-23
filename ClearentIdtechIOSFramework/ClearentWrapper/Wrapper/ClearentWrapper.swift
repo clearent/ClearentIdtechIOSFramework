@@ -218,7 +218,7 @@ public final class ClearentWrapper : NSObject {
      * @param completion, the closure that will be called when a missing key error is detected
      */
     public func startTransaction(with saleEntity: SaleEntity, isManualTransaction: Bool, completion: @escaping((ClearentError?) -> Void)) {
-        transactionRepository?.fetchHppSetting { [weak self] error in
+        transactionRepository?.fetchHppSetting(processTransactionsOnline: processTransactionOnline) { [weak self] error in
             guard let strongSelf = self else { return }
 
             if let error = strongSelf.checkForMissingKeys() ?? error?.type {
@@ -381,7 +381,7 @@ public final class ClearentWrapper : NSObject {
      * @param completion, the closure that is called after all the offline transactions are processed. This is dispatched onto the main queue.
      */
     public func processOfflineTransactions(completion: @escaping ((ClearentError?) -> Void)) {
-        transactionRepository?.fetchHppSetting { [weak self] error in
+        transactionRepository?.fetchHppSetting(processTransactionsOnline: true) { [weak self] error in
             if error != nil {
                 completion(ClearentError(type: .httpError))
                 return
