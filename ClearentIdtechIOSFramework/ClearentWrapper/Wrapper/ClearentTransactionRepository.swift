@@ -18,7 +18,7 @@ protocol TransactionRepositoryProtocol {
     func refundTransaction(jwt: String, saleEntity: SaleEntity, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
     func voidTransaction(transactionID: String, completion: @escaping (TransactionResponse?, ClearentError?) -> Void)
     func fetchTerminalSetting(completion: @escaping () -> Void)
-    func fetchHppSetting(completion: @escaping (ClearentError?) -> Void)
+    func fetchHppSetting(processTransactionsOnline: Bool, completion: @escaping (ClearentError?) -> Void)
     func processOfflineTransactions(completion: @escaping (() -> Void))
     func manualEntryTransaction(saleEntity: SaleEntity)
     func saveOfflineTransaction(paymentData: PaymentData)
@@ -249,17 +249,15 @@ class TransactionRepository: NSObject, TransactionRepositoryProtocol {
                         let decodedResponse = try JSONDecoder().decode(TerminalSettingsResponse.self, from: data)
                         ClearentWrapperDefaults.terminalSettings = decodedResponse.payload.terminalSettings
                     }
-                } catch let jsonDecodingError {
-                    print(jsonDecodingError)
-                }
+                } catch {}
                 completion()
             }
         }
     }
     
     // Fetches publicKey if it was not passed to the initialization of the SDK
-    func fetchHppSetting(completion: @escaping (ClearentError?) -> Void) {
-        guard configPublicKey == nil else {
+    func fetchHppSetting(processTransactionsOnline: Bool, completion: @escaping (ClearentError?) -> Void) {
+        guard configPublicKey == nil, processTransactionsOnline else {
             completion(nil)
             return
         }
