@@ -23,4 +23,4 @@ cp -r ${iOS_ARCHIVE_PATH} ${iOS_XC_DEST_FRMWK_PATH}
 cp -r ${SIMULATOR_ARCHIVE_PATH} ${SIMULATOR_XC_DEST_FRMWK_PATH}
 
 
-echo "Modules were replace in the to xcframework"
+echo "Modules were replace in the xcframework output"

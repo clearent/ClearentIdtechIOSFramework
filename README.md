@@ -54,7 +54,7 @@ target 'ExampleSwift' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
 
-  pod 'ClearentIdtechIOSFrameworkPod', '4.0.36' 
+  pod 'ClearentIdtechIOSFrameworkPod', '4.0.63' 
   # Pods for ExampleSwift
 end
 ```
