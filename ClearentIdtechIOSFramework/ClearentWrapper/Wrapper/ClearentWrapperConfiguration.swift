@@ -24,7 +24,7 @@ import CryptoKit
     /// Closure called when the SDK needs to inform the user about the current merchant & terminal selected. Only used when the webAuth is used instead of API KEY for the API authentication.
     /// Returns a tuple representing the merchant and terminal names also providing the auth for processing offline transactions
     /// Only for integrators that provide the webAuth (merchant id , vt-token) for api auth
-    public var provideAuthAndMerchantTerminalDetails: (() -> (String?, String?, ClearentWebAuth?))?
+    public var provideAuthAndMerchantTerminalDetails: (() -> (merchant: String?, terminal: String?, webAuth: ClearentWebAuth?))?
     
     // MARK: - Init
     
