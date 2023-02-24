@@ -435,7 +435,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .removeCard, .cardSecured, .authorizing:
-            print("not handeled")
+            print("not handled")
         case .noInternet:
             type = .warning
             
