@@ -292,6 +292,8 @@ import UIKit
         }
         
         enum FlowDataProvider {
+            public static let transactionInProgressPleaseWait = "xsdk_payment_transaction_please_wait".localized
+            public static let transactionInProgressProcessing = "xsdk_payment_transaction_processing".localized
             public static let transactionCompleted = "xsdk_payment_transaction_completed_description".localized
             public static let transactionCompletedSurchargeAvoided = "xsdk_payment_transaction_completed_avoided_surcharge".localized
             public static let transactionAccepted = "xsdk_payment_transaction_accepted_description".localized
