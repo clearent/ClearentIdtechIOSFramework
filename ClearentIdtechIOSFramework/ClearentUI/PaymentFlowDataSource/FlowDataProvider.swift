@@ -413,7 +413,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
         switch action {
         case .pleaseWait:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
-                     FlowDataItem(type: .description, object: action.description)]
+                     FlowDataItem(type: .description, object: ClearentConstants.Localized.FlowDataProvider.transactionInProgressPleaseWait)]
         case .swipeTapOrInsert:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.animatedCardInteraction),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
@@ -435,7 +435,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .userAction, object: FlowButtonType.manuallyEnterCardInfo),
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .removeCard, .cardSecured, .authorizing:
-            print("nothing to do here")
+            print("not handled")
         case .noInternet:
             type = .warning
             
@@ -500,7 +500,7 @@ extension FlowDataProvider : ClearentWrapperProtocol {
                      FlowDataItem(type: .userAction, object: FlowButtonType.cancel)]
         case .processing, .goingOnline, .transactionStarted:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.loading),
-                     FlowDataItem(type: .description, object: action.description)]
+                     FlowDataItem(type: .description, object: ClearentConstants.Localized.FlowDataProvider.transactionInProgressProcessing)]
         case .amountNotAllowedForTap:
             items = [FlowDataItem(type: .graphicType, object: FlowGraphicType.warning),
                      FlowDataItem(type: .title, object: ClearentConstants.Localized.Error.readerError),
