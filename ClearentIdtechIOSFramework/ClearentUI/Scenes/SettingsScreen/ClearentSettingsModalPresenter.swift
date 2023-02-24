@@ -96,50 +96,44 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
         offlineStatusButtonTitle = ClearentConstants.Localized.Settings.settingsOfflineButtonProcess
         offlineStatusDescriptionColor = ClearentUIBrandConfigurator.shared.colorPalette.settingOfflineStatusLabel
         offlineStatusButtonAction = { [weak self] in
-            if ClearentWrapper.shared.isInternetOn {
-                if ClearentWrapper.shared.hasWebAuth() {
-                    self?.processOfflineTransactionsWithWebAuth()
-                } else {
-                    self?.settingsPresenterView?.updateOfflineStatusView(inProgress: true)
-                    ClearentWrapper.shared.processOfflineTransactions() { error in
-                        if error == nil {
-                            self?.updateOfflineStatus()
-                        } else {
-                            self?.settingsPresenterView?.displayErrorAlert()
-                        }
-                    }
-                }
-            } else {
+            guard ClearentWrapper.shared.isInternetOn else {
                 self?.settingsPresenterView?.displayNoInternetAlert()
+                return
             }
-        }
-    }
-    
-    
-    private func processOfflineTransactionsWithWebAuth() {
-        if let hook = ClearentWrapper.configuration.provideAuthAndMerchantTerminalDetails {
-            let result = hook()
-            if let merchantName = result.0, let terminalName = result.1 , let webAuth = result.2 {
-                ClearentWrapper.shared.updateWebAuth(with: webAuth)
-                
-                let action = UIAlertAction(title: ClearentConstants.Localized.OfflineMode.offlineProcessInfoConfirmationAlertOK, style: UIAlertAction.Style.default, handler: {_ in
-                    self.settingsPresenterView?.updateOfflineStatusView(inProgress: true)
-                    ClearentWrapper.shared.processOfflineTransactions() { [weak self] error in
-                           if error == nil {
-                               self?.updateOfflineStatus()
-                           } else {
-                               self?.settingsPresenterView?.displayErrorAlert()
-                           }
-                    }
-                })
-                
-                self.settingsPresenterView?.displayMerchantAndTerminalInfo(merchant: merchantName, terminal: terminalName, action: action)
+            if let hook = ClearentWrapper.configuration.provideAuthAndMerchantTerminalDetails, let merchantName = hook().merchant {
+                let result = hook()
+                self?.processOfflineTransactionsWithWebAuth(merchantName: merchantName, terminalName: result.terminal, webAuth: result.webAuth)
             } else {
-                self.settingsPresenterView?.displayNoMerchantAndTerminal() 
+                self?.processOfflineTransactions()
             }
         }
     }
+
+    private func processOfflineTransactionsWithWebAuth(merchantName: String, terminalName: String?, webAuth: ClearentWebAuth?) {
+        if let terminalName = terminalName, let webAuth = webAuth {
+            ClearentWrapper.shared.updateWebAuth(with: webAuth)
+            
+            let action = UIAlertAction(title: ClearentConstants.Localized.OfflineMode.offlineProcessInfoConfirmationAlertOK, style: UIAlertAction.Style.default, handler: {_ in
+                self.processOfflineTransactions()
+            })
+            
+            self.settingsPresenterView?.displayMerchantAndTerminalInfo(merchant: merchantName, terminal: terminalName, action: action)
+        } else {
+            self.settingsPresenterView?.displayNoMerchantAndTerminal()
+        }
+    }
     
+    private func processOfflineTransactions() {
+        settingsPresenterView?.updateOfflineStatusView(inProgress: true)
+        ClearentWrapper.shared.processOfflineTransactions() { [weak self] error in
+            if error == nil {
+                self?.updateOfflineStatus()
+            } else {
+                self?.settingsPresenterView?.displayErrorAlert()
+            }
+        }
+    }
+
     private func setupUploadSuccessfully() {
         offlineStatusDescription = ClearentConstants.Localized.Settings.settingsOfflineUploadSuccess
         offlineStatusButtonTitle = ClearentConstants.Localized.Settings.settingsOfflineButtonReport
