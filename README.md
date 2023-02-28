@@ -99,7 +99,7 @@ navigationController?.present(pairingVC, animated: true, completion: { })
 
 **Starting a transaction**
 
-Every time you start a transaction you need to pass an instance of PaymentInfo to the payment controller. This object should contain the amount and some optional parameters like customerID, invoice, orderID, etc.
+Every time you start a transaction you need to pass an instance of `PaymentInfo` to the payment controller. This object should contain the amount and some optional parameters like customerID, invoice, orderID, etc.
 The SDK UI provides the option to enter the card details manually or by using the card reader, use the `cardReaderPaymentIsPreffered` to choose the desired method. If this method fails, the option to use manual payment can be displayed in UI as a fallback method.
 
 ```
@@ -120,13 +120,13 @@ navigationController?.present(settingsVC, animated: true)
 ```
 
 The settings screen will display the following sections:
- - a link to the current reader. When tapping on it, a new page will display the status of the current reader and a list of recently paired readers. From this list the user can navigate to the readers details.
+ - a link that shows the current reader. When tapping on it, a new page will display the status of the current reader and a list of recently paired readers. From this list the user can navigate to the readers details.
  - offline mode related elements, option to process offline transaction and to see an upload report. These are displayed only if offline mode feature is available. Otherwise, the section is hidden.
  - a toggle used to enable/disable email receipt
 
 Another way for accesing the reader info is to use `ClearentWrapperDefaults` class that has two important public properties: 
 
-- recentlyPairedReaders ,a list of ReaderInfo objects, containing previously paired devices
+- recentlyPairedReaders, a list of ReaderInfo objects, containing previously paired devices
 - pairedReaderInfo, a ReaderInfo? object representing the current paired reader
 
 
@@ -166,7 +166,7 @@ ClearentUIBrandConfigurator.shared.colorPalette = ClientColorPalette()
 
 **Fonts**
 
-You will need to implement a class that will implement `ClearentUIFonts` protocol and load your custom fonts.
+You will need to implement a class that will adopt `ClearentUIFonts` protocol and load your custom fonts.
 
 
 ```
@@ -190,7 +190,7 @@ ClearentUIBrandConfigurator.shared.overriddenLocalizedStrings = [
 
 ## Swift Code Example
 
-Swift example of the ClearenSDKUI  integration [Swift Example](https://github.com/clearent/idtech-ios-sdk/tree/main/ExampleSwift).
+Swift example of the **ClearenSDKUI** integration [Swift Example](https://github.com/clearent/idtech-ios-sdk/tree/main/ExampleSwift).
 
 ```
 import UIKit
@@ -258,7 +258,7 @@ class ViewController: UIViewController {
 
 ## Objective-C Code Example
 
-Objective-C example of the ClearenSDKUI  integration [Obj-C Example](https://github.com/clearent/idtech-ios-sdk/tree/main/ObjC-Example).
+Objective-C example of the **ClearenSDKUI** integration [Obj-C Example](https://github.com/clearent/idtech-ios-sdk/tree/main/ObjC-Example).
 
 ```
 @implementation ViewController
@@ -401,7 +401,7 @@ You can check if a reader is connected by using the `isReaderConnected()` method
 
 If you want to upload a signature image after a transaction, you can use 
 `func sendSignatureWithImage(image: UIImage, completion: @escaping (SignatureResponse?, ClearentError?) -> Void)`. After this method is called, the `didFinishedSignatureUploadWith(response: SignatureResponse?, error: ClearentError?)` delegate method will be called.  Note that the sendSignature method will use the latest transaction ID as the ID for the signature in the API call.
-In case of error you can use the `resendSignature(completion: @escaping (SignatureResponse?, ClearentError?) -> Void)` method to retry the signature upload
+If an error occurs you can use the `resendSignature(completion: @escaping (SignatureResponse?, ClearentError?) -> Void)` method to retry the upload of the signature.
 
 ## Email receipt
 If you want to email the receipt after a transaction, you can use 
@@ -409,7 +409,7 @@ If you want to email the receipt after a transaction, you can use
 
 ## Process offline transactions
 
-Store and forward feature is available if `offlineModeEncryptionKeyData` is being passed to the SDK initialization. This means that while offline mode is enabled, all transaction will be stored locally. To upload offline transaction when internet is on, the following method needs to be called.
+Store and forward feature is available if `offlineModeEncryptionKeyData` is passed to the SDK initialization. This means that while offline mode is enabled, all transaction will be stored locally. To upload offline transaction when internet is on, the following method needs to be called.
 `func processOfflineTransactions(completion: @escaping ((ClearentError?) -> Void))`
 
 ## Relevant code snippets
@@ -435,7 +435,7 @@ Calling this method will start the process of pairing a card reader with an iOS 
 ClearentWrapper.shared.startPairing(reconnectIfPossible: true)
 ```
 
-After the search for readers is completed the SDK will trigger a delegate method. 
+After the search for readers is completed, the SDK will trigger a delegate method. 
 
 ```
 func didFindReaders(readers: [ReaderInfo])  {
@@ -476,10 +476,10 @@ ClearentWrapper.shared.startTransaction(with: saleEntity, manualEntryCardInfo: t
 }
 ```
 
-After starting a transaction feedback messages will be triggered on the delegate.
+After starting a transaction, feedback messages will be triggered on the delegate.
 
 
-User action needed indicates that the user/client needs to perform an action in order for the transaction to continue e.g. Insert the card.
+`userActionNeeded` indicates that the user/client needs to perform an action in order for the transaction to continue e.g. Insert the card.
 ```
 func userActionNeeded(action: UserAction) {
     // here you should check the user action type and display the informtion to the users
@@ -487,7 +487,7 @@ func userActionNeeded(action: UserAction) {
 ```
 
 
-User info contains informations related to the transaction status e.g. Processing
+User info contains information related to the transaction status e.g. Processing
 
 ```
 func didReceiveInfo(info: UserInfo) {
@@ -496,7 +496,7 @@ func didReceiveInfo(info: UserInfo) {
 ```
 
 
-After the transaction is proccesed a delegate method will inform you about the status.
+After the transaction is proccesed, a delegate method will inform you about the status.
 
 ```
 func didFinishTransaction(response: TransactionResponse?, error: ClearentError?) {
