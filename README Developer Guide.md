@@ -50,7 +50,7 @@ The `ClearentWrapperProtocol` can be used by the integrators that want to integr
 Another functionality that was added is the cache that will store all readers that were paired with the app/sdk.
  `ClearentWrapperDefaults` hold these values and `ClearentExtension` file will help with adding and removing items from the cache.
  
-The `ClearentHttpClient` knows to do a sale request, void and refund transactions but also fetch merchant settings, send signature files to the backend or email receipt. Have a look on the Entities folder where you can find some of the entities that are used together with the http client.
+The `ClearentHttpClient` knows to do a sale request, void and refund transactions, but also fetch merchant settings, send signature files to the backend or email receipt. Have a look on the Entities folder where you can find some of the entities that are used together with the http client.
 
 
 ## UI
@@ -119,7 +119,7 @@ protocol FlowDataProtocol : AnyObject {
 }
 ```
 
-```didReceiveFlowFeedback(feedback: FlowFeedback)``` is the most called protocol method. FlowFeedback is a type that contains instructions and data for the UI part on how to handle this feedback.
+```didReceiveFlowFeedback(feedback: FlowFeedback)``` is the most called protocol method. `FlowFeedback` is a type that contains instructions and data for the UI part on how to handle this feedback.
 
 **FlowFeedback** will provide a list of items that contain data and the meaning of that data. It is used by the Presenter to create the UI.
 Each modal you see is basically a vertical stack and using the items array UI elements are added to the stack in the same order they are added in the array.
