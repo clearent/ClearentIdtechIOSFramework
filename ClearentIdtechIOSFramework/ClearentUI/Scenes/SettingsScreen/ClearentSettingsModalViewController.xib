@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21225" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21207"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -21,6 +21,7 @@
                 <outlet property="offlineSectionSubtitle" destination="b9m-5T-Mp4" id="y7F-SU-ujf"/>
                 <outlet property="offlineStatusView" destination="sF1-XE-yMJ" id="nnr-6z-BU2"/>
                 <outlet property="offlineStatusViewTopSpace" destination="DFO-kr-CuE" id="lca-GW-emw"/>
+                <outlet property="readersListLabel" destination="NTW-ar-7te" id="Xi0-pw-WcE"/>
                 <outlet property="readersListView" destination="JZr-nT-oZU" id="5EY-CW-X7I"/>
                 <outlet property="settingsStackView" destination="Lc0-bw-wpf" id="X6v-y8-Kgh"/>
                 <outlet property="titleLabel" destination="jm9-My-LzE" id="yA5-VL-3HG"/>
@@ -33,7 +34,7 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <stackView opaque="NO" contentMode="scaleToFill" ambiguous="YES" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Lc0-bw-wpf" customClass="ClearentRoundedCornersStackView" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                    <rect key="frame" x="24" y="48" width="366" height="897"/>
+                    <rect key="frame" x="24" y="48" width="366" height="917.5"/>
                     <subviews>
                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jm9-My-LzE" customClass="ClearentTitleLabel" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="0.0" width="366" height="50"/>
@@ -46,82 +47,88 @@
                                 <constraint firstAttribute="height" constant="32" id="jbf-TB-V02"/>
                             </constraints>
                         </view>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NTW-ar-7te">
+                            <rect key="frame" x="0.0" y="82" width="366" height="20.5"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
                         <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JZr-nT-oZU" userLabel="ClearentReadersSection" customClass="ClearentInfoWithIcon" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="82" width="366" height="128"/>
+                            <rect key="frame" x="0.0" y="102.5" width="366" height="128"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <connections>
                                 <outletCollection property="gestureRecognizers" destination="LlY-34-Crc" appends="YES" id="yju-Ux-xUr"/>
                             </connections>
                         </view>
                         <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="RUJ-vz-94S" customClass="ClearentEmptySpace" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="210" width="366" height="28"/>
+                            <rect key="frame" x="0.0" y="230.5" width="366" height="28"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="28" id="LEc-ht-6KG"/>
                             </constraints>
                         </view>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="b9m-5T-Mp4">
-                            <rect key="frame" x="0.0" y="238" width="366" height="20.5"/>
+                            <rect key="frame" x="0.0" y="258.5" width="366" height="20.5"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="YvF-Jp-B5R" userLabel="EnableOfflineModeSwitch" customClass="ClearentLabelSwitch" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="258.5" width="366" height="128"/>
+                            <rect key="frame" x="0.0" y="279" width="366" height="128"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         </view>
                         <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="El8-ka-x8u" customClass="ClearentEmptySpace" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="386.5" width="366" height="8"/>
+                            <rect key="frame" x="0.0" y="407" width="366" height="8"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="8" id="VwJ-rt-PHy"/>
                             </constraints>
                         </view>
                         <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="SF4-Ln-73M" userLabel="PromptModeSwitch" customClass="ClearentLabelSwitch" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="394.5" width="366" height="128"/>
+                            <rect key="frame" x="0.0" y="415" width="366" height="128"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         </view>
                         <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="DFO-kr-CuE" customClass="ClearentEmptySpace" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="522.5" width="366" height="14"/>
+                            <rect key="frame" x="0.0" y="543" width="366" height="14"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="14" id="M1B-eI-Zlq"/>
                             </constraints>
                         </view>
                         <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sF1-XE-yMJ" customClass="ClearentLabelWithButton" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="536.5" width="366" height="128"/>
+                            <rect key="frame" x="0.0" y="557" width="366" height="128"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         </view>
                         <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="4KL-my-6CO" customClass="ClearentEmptySpace" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="664.5" width="366" height="30"/>
+                            <rect key="frame" x="0.0" y="685" width="366" height="30"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="30" id="XEK-n5-hIz"/>
                             </constraints>
                         </view>
                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KNm-sw-duo">
-                            <rect key="frame" x="0.0" y="694.5" width="366" height="20.5"/>
+                            <rect key="frame" x="0.0" y="715" width="366" height="20.5"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <nil key="textColor"/>
                             <nil key="highlightedColor"/>
                         </label>
                         <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="9l1-Zq-ed1" userLabel="EnableEmailReceiptSwitch" customClass="ClearentLabelSwitch" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="715" width="366" height="72"/>
+                            <rect key="frame" x="0.0" y="735.5" width="366" height="72"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         </view>
                         <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="vow-kX-dSM" customClass="ClearentEmptySpace" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="787" width="366" height="30"/>
+                            <rect key="frame" x="0.0" y="807.5" width="366" height="30"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="30" id="RES-zD-eIb"/>
                             </constraints>
                         </view>
                         <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qvS-xB-3xk" userLabel="OkPrimaryButton" customClass="ClearentPrimaryButton" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="817" width="366" height="50"/>
+                            <rect key="frame" x="0.0" y="837.5" width="366" height="50"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         </view>
                         <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="kr5-sh-vFV" customClass="ClearentEmptySpace" customModule="ClearentIdtechIOSFramework" customModuleProvider="target">
-                            <rect key="frame" x="0.0" y="867" width="366" height="30"/>
+                            <rect key="frame" x="0.0" y="887.5" width="366" height="30"/>
                             <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             <constraints>
                                 <constraint firstAttribute="height" constant="30" id="kFi-lT-Uhd"/>

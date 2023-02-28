@@ -24,7 +24,7 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     @IBOutlet var offlineStatusView: ClearentLabelWithButton!
     @IBOutlet var emailSectionSubtitle: UILabel!
     @IBOutlet var enableEmailReceipt: ClearentLabelSwitch!
-    
+    @IBOutlet weak var readersListLabel: UILabel!
     // MARK: - Properties
     
     var presenter: ClearentSettingsPresenterProtocol?
@@ -104,6 +104,9 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     }
     
     private func setupSectionSubtitle(for label: UILabel, with title: String) {
+        readersListLabel.font = ClearentUIBrandConfigurator.shared.fonts.settingsReadersDescriptionLabel
+        readersListLabel.text = ClearentConstants.Localized.Settings.settingsReadersPlaceholder
+       
         label.text = title
         label.font = ClearentUIBrandConfigurator.shared.fonts.settingsOfflineModeSubtitle
         label.textColor = ClearentUIBrandConfigurator.shared.colorPalette.subtitleLabelColor
