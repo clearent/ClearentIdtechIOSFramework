@@ -288,7 +288,7 @@
 
 // MARK: - Settings
 "xsdk_settings_title" = "Settings";
-"xsdk_settings_readers_placeholder" = "Readers";
+"xsdk_settings_readers_placeholder" = "Bluetooth reader list";
 "xsdk_settings_offline_subtitle" = "Offline mode options";
 "xsdk_settings_offline_switch_enabled" = "Put app in offline mode";
 "xsdk_settings_offline_switch_enable_prompt" = "Only prompt if no internet";

@@ -6,7 +6,7 @@
 //  Copyright © 2022 Clearent, L.L.C. All rights reserved.
 //
 
-class ClearentRoundedCornersStackView: ClearentAdaptiveStackView {
+public class ClearentRoundedCornersStackView: ClearentAdaptiveStackView {
 
     private enum Layout {
         static let cornerRadius = 15.0

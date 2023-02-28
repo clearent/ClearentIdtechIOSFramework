@@ -31,17 +31,17 @@ extension UIView {
 // MARK: - Animations
 
 extension UIView {
-    func fadeIn(completion: (() -> Void)? = nil) {
+    func fadeIn(duration: Double = 0.4, completion: (() -> Void)? = nil) {
         alpha = 0
-        UIView.animate(withDuration: 0.4, animations: {
+        UIView.animate(withDuration: duration, animations: {
             self.alpha = 1
         }) { _ in
             completion?()
         }
     }
 
-    func fadeOut(completion: (() -> Void)? = nil) {
-        UIView.animate(withDuration: 0.4, animations: {
+    func fadeOut(duration: Double = 0.4, completion: (() -> Void)? = nil) {
+        UIView.animate(withDuration: duration, animations: {
             self.alpha = 0
         }) { _ in
             completion?()
