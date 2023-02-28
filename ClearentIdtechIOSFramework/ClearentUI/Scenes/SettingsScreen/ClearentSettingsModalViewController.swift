@@ -117,7 +117,7 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         
         enableOfflineMode.valueChangedAction = { [weak self] isOn in
             if isOn {
-                self?.displayOfflineQuestion()
+                self?.displayOfflineModeQuestion()
             } else {
                 self?.updatePromptModeState(isUserInteractionEnabled: false, enabled: false)
                 self?.presenter?.updatePromptMode(isEnabled: false)
@@ -185,7 +185,7 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         viewController.navigationItem.title = ClearentConstants.Localized.Settings.settingsReadersPlaceholder
     }
     
-    private func displayOfflineQuestion() {
+    private func displayOfflineModeQuestion() {
         // if the current view controller is Settings modal, it should be hidden to avoid overlapping modals
         let settingsModal = navigationController?.topViewController as? ClearentSettingsModalViewController
         let questionVC = ClearentUIManager.shared.offlineModeQuestionViewController() { [weak self] error in
