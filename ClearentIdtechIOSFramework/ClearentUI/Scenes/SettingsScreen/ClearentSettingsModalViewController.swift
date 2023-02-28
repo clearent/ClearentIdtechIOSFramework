@@ -12,8 +12,9 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     
     // MARK: - IBOutlets
 
-    @IBOutlet var titleLabel: ClearentTitleLabel!
-    @IBOutlet var settingsStackView: UIStackView!
+    @IBOutlet public var titleLabel: ClearentTitleLabel!
+    @IBOutlet public var settingsStackView: ClearentRoundedCornersStackView!
+    @IBOutlet public var doneButton: ClearentPrimaryButton!
     @IBOutlet var readersListView: ClearentInfoWithIcon!
     @IBOutlet var offlineModeSectionTopEmptySpace: ClearentEmptySpace!
     @IBOutlet var offlineSectionSubtitle: UILabel!
@@ -23,16 +24,6 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     @IBOutlet var offlineStatusView: ClearentLabelWithButton!
     @IBOutlet var emailSectionSubtitle: UILabel!
     @IBOutlet var enableEmailReceipt: ClearentLabelSwitch!
-    @IBOutlet var doneButton: ClearentPrimaryButton!
-    
-    // Offline mode question prompt
-    @IBOutlet var offlineQuestionStackView: UIStackView!
-    @IBOutlet var offlineQuestionIcon: ClearentIcon!
-    @IBOutlet var offlineQuestionTitle: ClearentTitleLabel!
-    @IBOutlet var offlineQuestionFirstSubtitle: ClearentSubtitleLabel!
-    @IBOutlet var offlineQuestionSecondSubtitle: ClearentSubtitleLabel!
-    @IBOutlet var offlineQuestionConfirmBtn: ClearentPrimaryButton!
-    @IBOutlet var offlineQuestionCancelBtn: ClearentPrimaryButton!
     
     // MARK: - Properties
     
@@ -56,7 +47,7 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         setupTitle()
         
         // Readers section
-        readersListView.iconName = ClearentConstants.IconName.rightArrow
+        readersListView.iconName = ClearentConstants.IconName.rightArrowLarge
         readersListView.titleText = ""
         readersListView.containerWasPressed = { [weak self] in
             self?.displayReadersList()
@@ -64,12 +55,12 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         
         // Offline section
         configureOfflineModeSections()
-        offlineQuestionStackView.isHidden = true
-        setupDoneButton()
         
         // Email section
         setupSectionSubtitle(for: emailSectionSubtitle, with: ClearentConstants.Localized.Settings.settingsEmailReceiptSubtitle)
         setupEmailReceiptSwitch()
+        
+        setupDoneButton()
     }
     
     public override func viewWillAppear(_ animated: Bool) {
@@ -101,16 +92,14 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
     private func configureOfflineModeSections() {
         let isOfflineModeAvailable = ClearentUIManager.configuration.offlineModeEncryptionKey != nil
         
-        offlineSectionSubtitle.isHidden = !isOfflineModeAvailable
-        enableOfflineMode.isHidden = !isOfflineModeAvailable
-        enablePromptMode.isHidden = !isOfflineModeAvailable
-        offlineModeSectionTopEmptySpace.isHidden = !isOfflineModeAvailable
+        [offlineSectionSubtitle, enableOfflineMode, enablePromptMode, offlineModeSectionTopEmptySpace].forEach {
+            $0?.isHidden = !isOfflineModeAvailable
+        }
         
         if isOfflineModeAvailable {
             setupSectionSubtitle(for: offlineSectionSubtitle, with: ClearentConstants.Localized.Settings.settingsOfflineModeSubtitle)
             setupEnableOfflineModeSwitch()
             setupEnablePromptModeSwitch()
-            setupOfflineModeQuestion()
         }
     }
     
@@ -128,10 +117,9 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         
         enableOfflineMode.valueChangedAction = { [weak self] isOn in
             if isOn {
-                self?.showOfflineModeQuestionIfNeeded(shouldShow: true)
+                self?.displayOfflineModeQuestion()
             } else {
-                self?.enablePromptMode.isOn = false
-                self?.updatePromptModeState(isUserInteractionEnabled: false)
+                self?.updatePromptModeState(isUserInteractionEnabled: false, enabled: false)
                 self?.presenter?.updatePromptMode(isEnabled: false)
                 self?.presenter?.updateOfflineMode(isEnabled: false)
             }
@@ -149,31 +137,6 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         }
     }
     
-    private func setupOfflineModeQuestion() {
-        offlineQuestionIcon.iconName = ClearentConstants.IconName.warning
-        offlineQuestionTitle.title = ClearentConstants.Localized.OfflineMode.enableOfflineMode
-        offlineQuestionFirstSubtitle.title = ClearentConstants.Localized.OfflineMode.offlineModeWarningMessageDescription
-        offlineQuestionSecondSubtitle.title = ClearentConstants.Localized.OfflineMode.offlineModeWarningConfirmationDescription
-        offlineQuestionConfirmBtn.title = ClearentConstants.Localized.OfflineMode.offlineModeConfirmOption
-        
-        offlineQuestionConfirmBtn.action = { [weak self] in
-            self?.showOfflineModeQuestionIfNeeded(shouldShow: false)
-            self?.updatePromptModeState(isUserInteractionEnabled: true)
-            self?.presenter?.updateOfflineMode(isEnabled: true)
-        }
-        offlineQuestionCancelBtn.title = ClearentConstants.Localized.OfflineMode.offlineModeCancelOption
-        offlineQuestionCancelBtn.buttonStyle = .bordered
-        offlineQuestionCancelBtn.action = { [weak self] in
-            self?.enableOfflineMode.isOn = false
-            self?.showOfflineModeQuestionIfNeeded(shouldShow: false)
-        }
-    }
-    
-    private func showOfflineModeQuestionIfNeeded(shouldShow: Bool) {
-        offlineQuestionStackView.isHidden = !shouldShow
-        settingsStackView.isHidden = shouldShow
-    }
-    
     private func settingsViewController(dismissCompletion: ((CompletionResult) -> Void)? = nil) -> UIViewController {
         let viewController = ClearentSettingsModalViewController()
         let presenter = ClearentSettingsPresenter(settingsPresenterView: viewController)
@@ -182,7 +145,8 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         return viewController
     }
     
-    private func updatePromptModeState(isUserInteractionEnabled: Bool) {
+    private func updatePromptModeState(isUserInteractionEnabled: Bool, enabled: Bool) {
+        enablePromptMode.isOn = enabled
         enablePromptMode.isUserInteractionEnabled = isUserInteractionEnabled
         enablePromptMode.alpha = isUserInteractionEnabled ? 1.0 : 0.5
     }
@@ -191,8 +155,7 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         enablePromptMode.titleText = ClearentConstants.Localized.Settings.settingsOfflineSwitchEnablePrompt
         enablePromptMode.titleTextColor = ClearentUIBrandConfigurator.shared.colorPalette.titleLabelColor
         enablePromptMode.descriptionText = nil
-        enablePromptMode.isOn = ClearentWrapperDefaults.enableOfflinePromptMode
-        updatePromptModeState(isUserInteractionEnabled: enableOfflineMode.isOn)
+        updatePromptModeState(isUserInteractionEnabled: ClearentWrapperDefaults.enableOfflineMode, enabled: ClearentWrapperDefaults.enableOfflinePromptMode)
         
         enablePromptMode.valueChangedAction = { [weak self] isOn in
             self?.presenter?.updatePromptMode(isEnabled: isOn)
@@ -220,6 +183,20 @@ public class ClearentSettingsModalViewController: ClearentBaseViewController {
         navigationController?.pushViewController(viewController, animated: true)
         viewController.addNavigationBarWithBackItem(barTitle: ClearentConstants.Localized.Settings.settingsReadersPlaceholder)
         viewController.navigationItem.title = ClearentConstants.Localized.Settings.settingsReadersPlaceholder
+    }
+    
+    private func displayOfflineModeQuestion() {
+        // if the current view controller is Settings modal, it should be hidden to avoid overlapping modals
+        let settingsModal = navigationController?.topViewController as? ClearentSettingsModalViewController
+        let questionVC = ClearentUIManager.shared.offlineModeQuestionViewController() { [weak self] error in
+            let enabled = error == nil
+            self?.enableOfflineMode.isOn = enabled
+            self?.updatePromptModeState(isUserInteractionEnabled: enabled, enabled: enabled)
+            self?.presenter?.updatePromptMode(isEnabled: enabled)
+            settingsModal?.view.fadeIn(duration: 0)
+        }
+        navigationController?.present(questionVC, animated: true)
+        settingsModal?.view.fadeOut()
     }
 }
 

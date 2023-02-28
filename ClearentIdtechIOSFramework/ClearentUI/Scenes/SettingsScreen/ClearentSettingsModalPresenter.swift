@@ -88,6 +88,7 @@ class ClearentSettingsPresenter: ClearentSettingsPresenterProtocol {
     // MARK: - Private
     
     private func setupPendingTransactions(counter: Int) {
+        settingsPresenterView?.updateOfflineStatusViewVisibility(show: true)
         if counter > 1 {
             offlineStatusDescription = String(format: ClearentConstants.Localized.Settings.settingsOfflinePendingTransactions, counter)
         } else {
