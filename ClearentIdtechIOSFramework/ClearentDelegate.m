@@ -1048,7 +1048,6 @@ BOOL isSupportedEmvEntryMode (int entryMode) {
     [self addApplicationPreferredName:clearentTransactionTokenRequest tags:outgoingTags];
 
     [self removeInvalidTSYSTags: outgoingTags];
-    [self updateTransactionTimeTags:outgoingTags];
     
     if (emvData.cardType == 1) {
         [self removeInvalidContactlessTags:outgoingTags];
@@ -1305,15 +1304,6 @@ BOOL isEncryptedTransaction (NSDictionary* encryptedTags) {
     if(data9F7C == nil || ([data9F7C isEqualToString:@""]) || ([data9F7C isEqualToString:@"0000000000000000000000000000000000000000"])) {
         [outgoingTags removeObjectForKey:@"9F7C"];
     }
-}
-
-- (void) updateTransactionTimeTags: (NSMutableDictionary*) outgoingTags {
-    [outgoingTags removeObjectForKey:@"9A"];
-    [outgoingTags removeObjectForKey:@"9F21"];
-    [outgoingTags setObject:[self getClockDateAsYYMMDDInHex] forKey:@"9A"];
-    [outgoingTags removeObjectForKey:@"9F21"];
-    [outgoingTags setObject:[self getTimeAsHHMMSSInHex] forKey:@"9F21"];
-
 }
 
 - (void) createTransactionToken:(ClearentTransactionTokenRequest*)clearentTransactionTokenRequest {
