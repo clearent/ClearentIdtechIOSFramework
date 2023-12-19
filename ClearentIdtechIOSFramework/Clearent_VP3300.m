@@ -408,36 +408,11 @@
     
     [self clearCurrentRequest];
     
-    NSData *dateAndTimeTags = [self getDateAndTimeTags];
-    ClearentPayment *clearentPayment = [self createPaymentRequest:amount amtOther:amtOther type:type timeout:timeout tags:dateAndTimeTags forceOnline:forceOnline  fallback:fallback ];
+    ClearentPayment *clearentPayment = [self createPaymentRequest:amount amtOther:amtOther type:type timeout:timeout tags:tags forceOnline:forceOnline  fallback:fallback ];
     
     [clearentDelegate setClearentPayment:clearentPayment];
     
     return [self device_startTransaction:clearentPayment];
-}
-
-+ (NSDateFormatter *) createDateFormatter: (NSString *) format {
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    [formatter setDateFormat:format];
-    return formatter;
-}
-
-- (NSData *) getDateAndTimeTags {
-    NSString *dateTag = [self getDateTag];
-    NSString *timeTag = [self getTimeTag];
-    return [IDTUtility hexToData:[NSString stringWithFormat:@"%@%@", dateTag, timeTag]];
-}
-
-- (NSString *) getDateTag {
-    NSDateFormatter *dateFormatter = [Clearent_VP3300 createDateFormatter:@"yyMMdd"];
-    NSString *dateStr = [dateFormatter stringFromDate:[NSDate date]];
-    return [NSString stringWithFormat:@"9A03%@", dateStr];
-}
-
-- (NSString *) getTimeTag {
-    NSDateFormatter *timeFormatter = [Clearent_VP3300 createDateFormatter:@"HHMMSS"];
-    NSString *timeString = [timeFormatter stringFromDate:[NSDate date]];
-    return [NSString stringWithFormat:@"9F2103%@", timeString];
 }
 
 - (ClearentPayment*) createPaymentRequest:(double)amount amtOther:(double)amtOther type:(int)type timeout:(int)timeout tags:(NSData*)tags forceOnline:(BOOL)forceOnline  fallback:(BOOL)fallback {
