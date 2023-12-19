@@ -15,6 +15,7 @@
 #import "Teleport.h"
 #import "ClearentDeviceConnector.h"
 #import "ClearentUtils.h"
+#import <IDTech/IDTech.h>
 
 @implementation ClearentTransactions
 
@@ -256,11 +257,36 @@
     
     [self clearCurrentRequest];
     
-    ClearentPayment *clearentPayment = [self createPaymentRequest:amount amtOther:amtOther type:type timeout:timeout tags:tags forceOnline:forceOnline  fallback:fallback ];
+    NSData *dateAndTimeTags = [self getDateAndTimeTags];
+    ClearentPayment *clearentPayment = [self createPaymentRequest:amount amtOther:amtOther type:type timeout:timeout tags:dateAndTimeTags forceOnline:forceOnline  fallback:fallback ];
     
     [_clearentDelegate setClearentPayment:clearentPayment];
     
     return [self device_startTransaction:clearentPayment];
+}
+
++ (NSDateFormatter *) createDateFormatter: (NSString *) format {
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    [formatter setDateFormat:format];
+    return formatter;
+}
+
+- (NSData *) getDateAndTimeTags {
+    NSString *dateTag = [self getDateTag];
+    NSString *timeTag = [self getTimeTag];
+    return [IDTUtility hexToData:[NSString stringWithFormat:@"%@%@", dateTag, timeTag]];
+}
+
+- (NSString *) getDateTag {
+    NSDateFormatter *dateFormatter = [ClearentTransactions createDateFormatter:@"yyMMdd"];
+    NSString *dateStr = [dateFormatter stringFromDate:[NSDate date]];
+    return [NSString stringWithFormat:@"9A03%@", dateStr];
+}
+
+- (NSString *) getTimeTag {
+    NSDateFormatter *timeFormatter = [ClearentTransactions createDateFormatter:@"HHMMSS"];
+    NSString *timeString = [timeFormatter stringFromDate:[NSDate date]];
+    return [NSString stringWithFormat:@"9F2103%@", timeString];
 }
 
 //- If the reader if OFF, but SDK thinks it still is connected, you will get a RETURN_CODE_NEO_TIMEOUT, RETURN_CODE_ERR_TIMEDOUT, RETURN_CODE_ERR_TIMEDOUT_
